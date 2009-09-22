@@ -113,7 +113,8 @@ def initialized_sage(server, ulimit):
         Sage
     """
     # Create new pexpect interface to a Python instance
-    S = WorksheetProcess(server=server, ulimit=ulimit)
+    #S = WorksheetProcess(server=server, ulimit=ulimit)
+    S = WorksheetProcess()
     # Send some code to initialize it.
     S.execute('from sagenb.worksheet_init import _support_; import sagenb.notebook.interact')
     # Return our new Sage instance.
@@ -2924,8 +2925,6 @@ class Worksheet:
         
         try:
             output_status = S.output_status()
-            # todo: debug
-            print "output status = ", output_status
         except RuntimeError, msg:
             verbose("Computation was interrupted or failed. Restarting.\n%s"%msg)
             self.__comp_is_running = False
@@ -2940,7 +2939,6 @@ class Worksheet:
             return 'w', C
 
         # Finished a computation.
-        print "Finished a computation."
         self.__comp_is_running = False
         del self.__queue[0]
 

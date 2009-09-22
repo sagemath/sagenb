@@ -1,1 +1,8 @@
 * make sure all "/" is replaced by os.path.join, so will work on windows eventually.
+
+
+* component architecture: see Brickenstein sage-devel email 
+  that mentions http://python-rum.org/browser/rum/component.py
+
+* use memory mapped files for worksheet processes?
+  http://docs.python.org/library/mmap.html

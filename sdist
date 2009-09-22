@@ -1,0 +1,1 @@
+hg ci && python setup.py sdist --no-prune 

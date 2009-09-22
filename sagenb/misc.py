@@ -296,9 +296,31 @@ def sagedoc(*args, **kwds):
 def cython(*args, **kwds):
     pass
 
-@stub
 def word_wrap(s, ncols=85):
-    return s
+    t = []
+    if ncols == 0:
+        return s
+    for x in s.split('\n'):
+        if len(x) == 0 or x.lstrip()[:5] == 'sage:':
+            t.append(x)
+            continue
+        while len(x) > ncols:
+            k = ncols
+            while k > 0 and x[k] != ' ':
+                k -= 1
+            if k == 0:
+                k = ncols
+                end = '\\'
+            else:
+                end = ''
+            t.append(x[:k] + end)
+            x = x[k:]
+            k=0
+            while k < len(x) and x[k] == ' ':
+                k += 1
+            x = x[k:]
+        t.append(x)
+    return '\n'.join(t)
 
 @stub
 def math_parse(*args, **kwds):

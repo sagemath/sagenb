@@ -1477,7 +1477,7 @@ class Cell(Cell_generic):
             '&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0...Test</body>'
         """
         def format(x):
-            return word_wrap(escape(x), ncols=ncols)
+            return word_wrap(escape(x), ncols)
 
         def format_html(x):
             return self.process_cell_urls(x)

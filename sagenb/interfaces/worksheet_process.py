@@ -1,38 +1,138 @@
-###################################################################
-# A blocking reference implementation of worksheet processes
-###################################################################
+"""
+Worksheet process
 
-class WorksheetProcess:
-    def __init__(self, server=None, ulimit=None):
-        self._server = server
-        self._ulimit = ulimit
-        self._answer = ''
-        self._globals = {}
+AUTHORS:
+
+  - William Stein
+"""
+
+#############################################################################
+#
+#       Copyright (C) 2009 William Stein <wstein@gmail.com>
+#  Distributed under the terms of the GNU General Public License (GPL)
+#  The full text of the GPL is available at:
+#                  http://www.gnu.org/licenses/
+#
+#############################################################################
+
+class OutputStatus:
+    """
+    Object that records current status of output from executing some
+    code in a worksheet process.  An OutputStatus object has three
+    attributes:
+
+            - ``output`` - a string, the output so far
+            
+            - ``filenames`` -- list of names of files created by this execution
+
+            - ``done`` -- bool; whether or not the computation is now done
+    
+    """
+    def __init__(self, output, filenames, done):
+        """
+        INPUT:
+
+           - ``output`` -- a string
+
+           - ``filenames`` -- a list of filenames
+
+           - ``done`` -- bool, if True then computation is done, so ``output``
+             is complete.
+        """
+        self.output = output
+        self.filenames = filenames
+        self.done = done
 
     def __repr__(self):
+        """
+        Return string representation of this output status.
+        """
+        return "Output Status:\n\toutput: %s\n\tfilenames: %s\n\tdone: %s"%(
+            self.output, self.filenames, self.done)
+
+
+def displayhook_hack(string):
+    """
+    Modified version of string so that exec'ing it results in
+    displayhook possibly being called.
+    
+    STRING:
+
+        - ``string`` - a string
+
+    OUTPUT:
+
+        - string formated so that when exec'd last line is printed if
+          it is an expression
+    """
+    # This function is all so the last line (or single lines) will
+    # implicitly print as they should, unless they are an assignment.
+    # If anybody knows a better way to do this, please tell me!
+    string = string.splitlines()
+    i = len(string)-1
+    if i >= 0:
+        while len(string[i]) > 0 and string[i][0] in ' \t':
+            i -= 1
+        t = '\n'.join(string[i:])
+        if not t.startswith('def '):
+            try:
+                compile(t+'\n', '', 'single')
+                t = t.replace("'", "\\u0027").replace('\n','\\u000a')
+                string[i] = "exec compile(ur'%s' + '\\n', '', 'single')"%t
+                string = string[:i+1]
+            except SyntaxError, msg:
+                pass
+    return '\n'.join(string)
+
+
+###################################################################
+# Reference implementation
+###################################################################
+class WorksheetProcess:
+    """
+    A controlled Python process that executes code.  This is a
+    reference implementation.
+    """
+    def __init__(self):
+        """
+        Initialize this worksheet process.
+        """
+        self._output_status = OutputStatus('',[],True)
+        self._state = {}
+
+    def __repr__(self):
+        """
+        Return string representation of this worksheet process. 
+        """
         return "Worksheet process"
 
     def __getstate__(self):
-        return {'_server':self._server, '_ulimit':self._ulimit}
+        """
+        Used for pickling.  We return an empty state otherwise
+        this could not be pickled.
+        """
+        return {}
 
     ###########################################################
     # Control the state of the subprocess
     ###########################################################
-    def interrupt(self, tries=1, quit_on_fail=False):
+    def interrupt(self):
         """
-        Stop any computations running in this process. 
+        Send an interrupt signal to the currently running computation
+        in the controlled process.  This may or may not succeed.  Call
+        ``self.is_computing()`` to find out if it did. 
         """
         pass
 
     def quit(self):
         """
-        Stop the subprocess.
+        Quit this worksheet process.  
         """
         pass
 
     def start(self):
         """
-        Start this subprocess running.
+        Start this worksheet process running.
         """
         pass
 
@@ -41,13 +141,21 @@ class WorksheetProcess:
     ###########################################################
     def is_computing(self):
         """
-        Return True if a computation is currently running in this process.
+        Return True if a computation is currently running in this worksheet subprocess.
+
+        OUTPUT:
+
+            - ``bool``
         """
         return False
 
     def is_started(self):
         """
-        Return true if this process has already been started.
+        Return true if this worksheet subprocess has already been started.
+
+        OUTPUT:
+
+            - ``bool``
         """
         return True
 
@@ -57,140 +165,41 @@ class WorksheetProcess:
     def execute(self, string):
         """
         Start executing the given string in this subprocess.
+
+        INPUT:
+
+            ``string`` -- a string containing code to be executed.
         """
         string = displayhook_hack(string)
-        print "Executing '''%s'''"%string
-
         import StringIO, sys
         s = StringIO.StringIO()
         saved_stream = sys.stdout
         sys.stdout = s
         try:
-            exec string in self._globals
+            exec string in self._state
         except Exception, msg:
             s.write(str(msg))
         finally:
             sys.stdout = saved_stream
         s.seek(0)
-        self._answer = str(s.read())
-        print "output: ", self._answer
+        out = str(s.read())
+        self._output_status = OutputStatus(out, [], True)
 
     ###########################################################
     # Getting the output so far from a subprocess
     ###########################################################
     def output_status(self):
         """
-        Return output from the subprocess since this command was last
-        called, along with cummulative output since execute was
-        called.
+        Return OutputStatus object, which includes output from the
+        subprocess from the last executed command up until now,
+        information about files that were created, and whether
+        computing is now done.
 
         OUTPUT:
 
-            - output (string)
-            
-            - new output (string)
-
-            - done (bool) whether or not the computation is now done and
-              we just returned the last output
+            - ``OutputStatus`` object.
         """
-        status = OutputStatus(self._answer, [], True)
-        self._answer = ''
-        return status
+        O = self._output_status
+        self._output_status = OutputStatus('',[],True)
+        return O
 
-
-class OutputStatus:
-    def __init__(self, output, files, done):
-        self.output = output
-        self.files = files
-        self.done = done
-
-    def __repr__(self):
-        return "output: %s\nfiles: %s\ndone: %s"%(
-            self.output, self.files, self.done)
-
-
-
-
-def displayhook_hack(input):
-    # The following is all so the last line (or single lines)
-    # will implicitly print as they should, unless they are
-    # an assignment.   "display hook"  It's very complicated,
-    # but it has to be...
-    input = input.splitlines()
-    i = len(input)-1
-    if i >= 0:
-        while len(input[i]) > 0 and input[i][0] in ' \t':
-            i -= 1
-        t = '\n'.join(input[i:])
-        if not t.startswith('def '):
-            try:
-                compile(t+'\n', '', 'single')
-                t = t.replace("'", "\\u0027").replace('\n','\\u000a')
-                # IMPORTANT: If you change this line, also change
-                # the function format_exception in cell.py
-                input[i] = "exec compile(ur'%s' + '\\n', '', 'single')"%t
-                input = input[:i+1]
-            except SyntaxError, msg:
-                pass
-    return '\n'.join(input)
-
-
-"""
-NOTES:
-
-Old code looked like this:
-
-        input = self.synchronize(input)
-
-        # This magic comment at the very start of the file allows utf8
-        # characters in the file
-        input = '# -*- coding: utf_8 -*-\n' + input
-
-        open(tmp,'w').write(input)
-        
-        cmd = 'execfile("%s")\n'%os.path.abspath(tmp)
-        # Signal an end (which would only be seen if there is an error.)
-        cmd += 'print "\\x01r\\x01e%s"'%self.synchro()
-
-
-
-Also, this wrapped things so it would print:
-
-        input = input.split('\n')
-
-        # The following is all so the last line (or single lines)
-        # will implicitly print as they should, unless they are
-        # an assignment.   "display hook"  It's very complicated,
-        # but it has to be...
-        i = len(input)-1
-        if i >= 0:
-            while len(input[i]) > 0 and input[i][0] in ' \t':
-                i -= 1
-            t = '\n'.join(input[i:])
-            if not t.startswith('def '):
-                try:
-                    compile(t+'\n', '', 'single')
-                    t = t.replace("'", "\\u0027").replace('\n','\\u000a')
-                    # IMPORTANT: If you change this line, also change
-                    # the function format_exception in cell.py
-                    input[i] = "exec compile(ur'%s' + '\\n', '', 'single')"%t
-                    input = input[:i+1]
-                except SyntaxError, msg:
-                    pass
-        input = '\n'.join(input)
-        return input
-
-
-
-    def _process_output(self, s):
-        s = re.sub('\x08.','',s)
-        s = self._strip_synchro_from_start_of_output(s)
-        if SAGE_ERROR in s:
-            i = s.rfind('>>>')
-            if i >= 0:
-                return s[:i-1]
-        # Remove any control codes that might have not got stripped out.
-        return s.replace(SAGE_BEGIN,'').replace(SAGE_END,'').replace(SC,'')
-
-        
-"""
