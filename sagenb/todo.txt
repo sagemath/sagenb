@@ -4,13 +4,19 @@ Current TODO:
 [x] worksheet_process.py -- make it so graphics work, i.e., files created
 [x] jsmath
 [x] static documentation
+[x] jmol
+[x] tinymce
 
-[ ] tinymce
-[ ] jmol
-[ ] live documentation
 [ ] @interact -- need to properly preparse and base64 encode maybe?
+
+[ ] live documentation
 [ ] use multiprocessing 
 [ ] making sure we are getting output as it appears
+
+-------------
+
+[ ] genuine infinite undo implemented not using stupid snapshots but a
+revision log
 
 
 General TODO:

@@ -2065,7 +2065,7 @@ class Worksheet:
         except AttributeError:
             return
         try:
-            S._send('sagenb.notebook.interact.reset_state()')
+            S.execute('sagenb.notebook.interact.reset_state()')
         except OSError:
             # Doesn't matter, since if S is not running, no need
             # to zero out the state dictionary.

@@ -64,7 +64,7 @@ def get_keyboard(s):
         if '%s ='%key not in codes:
             codes += '\n%s = %s'%(key,val)
 
-    return codes
+    return codes.strip()
     
 
 

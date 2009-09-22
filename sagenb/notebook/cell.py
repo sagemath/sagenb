@@ -16,8 +16,11 @@ import os, shutil
 from cgi import escape
 import re
 
-from   sagenb.misc import (word_wrap, SAGE_DOC, math_parse,
-                           strip_string_literals, is_package_installed)
+from   sagenb.misc import (word_wrap, SAGE_DOC,
+                           strip_string_literals,
+                           is_package_installed)
+
+from   jsmath import math_parse
 
 # Maximum number of characters allowed in output.  This is
 # needed avoid overloading web browser.  For example, it
@@ -37,11 +40,7 @@ TRACEBACK = 'Traceback (most recent call last):'
 re_cell = re.compile('"cell://.*?"')
 re_cell_2 = re.compile("'cell://.*?'")   # same, but with single quotes
 
-
-if is_package_installed("tinyMCE"):
-    JEDITABLE_TINYMCE = True
-else:
-    JEDITABLE_TINYMCE = False
+JEDITABLE_TINYMCE = True
 
 # Introspection.  The cache directory is a module-scope variable set
 # in the first call to Cell.set_introspect_html().

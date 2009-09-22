@@ -293,9 +293,6 @@ def word_wrap(s, ncols=85):
         t.append(x)
     return '\n'.join(t)
 
-@stub
-def math_parse(*args, **kwds):
-    pass
 
 try:
     from sage.misc.preparser import strip_string_literals
