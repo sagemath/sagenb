@@ -21,7 +21,7 @@ def all_files(dir, lstrip):
     
 
 code = setup(name = 'sagenb',
-      version     =  '0.1.1',
+      version     =  '0.1.2',
       description = 'The Sage Notebook',
       license     = 'GNU Public License (GPL) v2+',
       author      = 'William Stein et al.',

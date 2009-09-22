@@ -5,8 +5,6 @@ sdist
 setup.py
 .hg/00changelog.i
 .hg/dirstate
-.hg/journal.branch
-.hg/journal.dirstate
 .hg/requires
 .hg/undo.branch
 .hg/undo.dirstate

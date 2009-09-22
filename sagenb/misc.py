@@ -161,36 +161,38 @@ def pad_zeros(s, size=3):
 import sys
 DATA = sys.prefix + '/lib/python/site-packages/sagenb/data/'
 
-try:
-    from sage.misc.misc import DOT_SAGE
-except ImportError:
+#try:
+#    from sage.misc.misc import DOT_SAGE
+#except ImportError:
     #DOT_SAGE = '%s/.sagenb/notebook'%os.environ['HOME']
-    DOT_SAGE="dotsage"
+DOT_SAGE="dotsage"
 
 try:
     from sage.misc.misc import SAGE_URL
 except ImportError:
     SAGE_URL = 'http://sagemath.org'
 
-try:
-    from sage.misc.misc import SAGE_ROOT
-except ImportError:
-    SAGE_ROOT = "stub"
+## try:
+##     from sage.misc.misc import SAGE_ROOT
+## except ImportError:
+##     SAGE_ROOT = "stub"
 
-try:
-    from sage.misc.misc import SAGE_LOCAL
-except ImportError:
-    SAGE_LOCAL = "stub"
+## try:
+##     from sage.misc.misc import SAGE_LOCAL
+## except ImportError:
+##     SAGE_LOCAL = "stub"
 
-try:
-    from sage.misc.misc import SAGE_DOC
-except ImportError:
-    SAGE_DOC = "stub"
+## try:
+##     from sage.misc.misc import SAGE_DOC
+## except ImportError:
+##     SAGE_DOC = "stub"
 
-try:
-    from sage.misc.misc import SAGE_EXTCODE
-except ImportError:
-    SAGE_EXTCODE = "stub"
+## try:
+##     from sage.misc.misc import SAGE_EXTCODE
+## except ImportError:
+##     SAGE_EXTCODE = "stub"
+
+SAGE_ROOT=SAGE_LOCAL=SAGE_DOC=SAGE_EXTCODE="stub"
 
     
 try:
@@ -215,7 +217,6 @@ def sage_eval(value, globs):
 @stub
 def is_package_installed(name):
     pass
-
 
 
 @stub
