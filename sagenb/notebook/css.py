@@ -12,7 +12,7 @@ Notebook Stylesheets (CSS)
 
 import os
 
-from sagenb.misc import DOT_SAGE
+from sagenb.misc import DOT_SAGENB
 
 def css(color='default'):
     r"""
@@ -1768,7 +1768,7 @@ span.pingdown {
         raise ValueError, "unknown color scheme %s"%color
         
     s = s.replace('<color1>',color1).replace('<color2>',color2)
-    user_css = DOT_SAGE + '/notebook.css'
+    user_css = DOT_SAGENB + '/notebook.css'
     if os.path.exists(user_css):
         s += '\n' + open(user_css).read()
 

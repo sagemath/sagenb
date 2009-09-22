@@ -28,7 +28,7 @@ import base64, bz2, calendar, copy, crypt, os, re, shutil, string, time, traceba
 
 # General sage library code
 from sagenb.misc import (remote_file, cython, load, save, 
-                         alarm, cancel_alarm, verbose, DOT_SAGE, walltime)
+                         alarm, cancel_alarm, verbose, DOT_SAGENB, walltime)
 
 from sagenb.support import preparse_file
 
@@ -3404,7 +3404,7 @@ class Worksheet:
         corresponding to attached files that have changed.
         """
         A = self.attached_files()
-        init_sage = DOT_SAGE + 'init.sage'
+        init_sage = DOT_SAGENB + 'init.sage'
         if not init_sage in A.keys() and os.path.exists(init_sage):
             A[init_sage] = 0
 

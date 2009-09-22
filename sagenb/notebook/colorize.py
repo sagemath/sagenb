@@ -17,9 +17,6 @@
       http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/442482
 """
 
-from sagenb.misc import SAGE_EXTCODE
-
-
 # Imports
 import cgi
 import string

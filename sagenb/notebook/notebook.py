@@ -1313,7 +1313,7 @@ class Notebook:
         try:
             D = self.__backup_dir
         except AttributeError:
-            D = os.path.abspath(self.__dir, "backups")
+            D = os.path.join(self.__dir, "backups")
             self.__backup_dir = D 
         if not os.path.exists(D):
             os.makedirs(D)

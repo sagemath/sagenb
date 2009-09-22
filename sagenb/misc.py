@@ -19,7 +19,7 @@ def stub(f):
 
 min_password_length = 1
 
-import os, cPickle, socket
+import os, cPickle, socket, sys
 
 def print_open_msg(address, port, secure=False, path=""):
     """
@@ -157,42 +157,24 @@ def pad_zeros(s, size=3):
     return "0"*(size-len(str(s))) + str(s)
 
 
-import sys
-DATA = sys.prefix + '/lib/python/site-packages/sagenb/data/'
+DATA = os.path.join(sys.prefix, 'lib', 'python', 'site-packages', 'sagenb', 'data')
 
-#try:
-#    from sage.misc.misc import DOT_SAGE
-#except ImportError:
-    #DOT_SAGE = '%s/.sagenb/notebook'%os.environ['HOME']
-DOT_SAGE="dotsage"
+if os.environ.has_key('DOT_SAGENB'):
+    DOT_SAGENB = os.environ['DOT_SAGENB']
+else:
+    DOT_SAGENB = os.path.join(os.environ['HOME'], '.sagenb')
+
+print "Using DOT_SAGENB='%s'"%DOT_SAGENB
 
 try:
     from sage.misc.misc import SAGE_URL
 except ImportError:
     SAGE_URL = 'http://sagemath.org'
 
-## try:
-##     from sage.misc.misc import SAGE_ROOT
-## except ImportError:
-##     SAGE_ROOT = "stub"
-
-## try:
-##     from sage.misc.misc import SAGE_LOCAL
-## except ImportError:
-##     SAGE_LOCAL = "stub"
-
-## try:
-##     from sage.misc.misc import SAGE_DOC
-## except ImportError:
-##     SAGE_DOC = "stub"
-
-## try:
-##     from sage.misc.misc import SAGE_EXTCODE
-## except ImportError:
-##     SAGE_EXTCODE = "stub"
-
-SAGE_ROOT=SAGE_LOCAL=SAGE_DOC=SAGE_EXTCODE="stub"
-
+try:
+    from sage.misc.misc import SAGE_DOC
+except ImportError:
+    SAGE_DOC = "stub"
     
 try:
     from sage.misc.latex_macros import sage_jsmath_macros

@@ -19,13 +19,13 @@ import getpass
 # This actually serves up the notebook.
 ##########################################################
 
-from sagenb.misc import (DOT_SAGE, print_open_msg, find_next_available_port)
+from sagenb.misc import (DOT_SAGENB, print_open_msg, find_next_available_port)
 
 import os, shutil, socket, pexpect
 
 import notebook
 
-conf_path       = os.path.join(DOT_SAGE, 'notebook')
+conf_path       = os.path.join(DOT_SAGENB, 'notebook')
 
 private_pem = conf_path + '/private.pem'
 public_pem  = conf_path + '/public.pem'
@@ -37,7 +37,7 @@ def notebook_setup(self=None):
     try:
         import dsage.all
         print "Using dsage certificates."
-        path = os.path.join(DOT_SAGE, 'dsage')
+        path = os.path.join(DOT_SAGENB, 'dsage')
         dsage.all.dsage.setup()
         shutil.copyfile(path + '/cacert.pem', private_pem)
         shutil.copyfile(path + '/pubcert.pem', public_pem)
@@ -69,7 +69,7 @@ def notebook_twisted(self,
              quiet = False):
              
     if directory is None:
-        directory = '%s/sage_notebook'%DOT_SAGE
+        directory = '%s/sage_notebook'%DOT_SAGENB
     else:
         if isinstance(directory, basestring) and len(directory) > 0 and directory[-1] == "/":
             directory = directory[:-1]

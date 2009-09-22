@@ -1,13 +1,19 @@
 Current TODO:
-[ ] preparser
+[x] preparser
 [x] make sure all "/" is replaced by os.path.join, so will work on windows eventually.
-[ ] getting output as it appears
 [x] worksheet_process.py -- make it so graphics work, i.e., files created
+[x] jsmath
+[x] static documentation
+
+[ ] tinymce
+[ ] jmol
+[ ] live documentation
+[ ] @interact -- need to properly preparse and base64 encode maybe?
 [ ] use multiprocessing 
+[ ] making sure we are getting output as it appears
 
 
 General TODO:
-
 
 * component architecture: see Brickenstein sage-devel email 
   that mentions http://python-rum.org/browser/rum/component.py

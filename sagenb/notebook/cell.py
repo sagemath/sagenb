@@ -1619,7 +1619,7 @@ class Cell(Cell_generic):
             # html is in ReST format, so use Sphinx to process it
             
             # Set the location of the introspection cache, "permanent"
-            # or temporary.  The former, DOT_SAGE/sage_notebook/doc,
+            # or temporary.  The former, DOT_SAGENB/sage_notebook/doc,
             # can pool queries from multiple worksheet processes.  The
             # latter is exclusive to a worksheet's process.  The Sage
             # cleaner should delete the temporary directory (or
@@ -1627,11 +1627,11 @@ class Cell(Cell_generic):
             global _SAGE_INTROSPECT
 
             if _SAGE_INTROSPECT is None:
-                from sagenb.misc import DOT_SAGE, tmp_dir
+                from sagenb.misc import DOT_SAGENB, tmp_dir
                 # It's important to use os.path.join, instead of +,
                 # because Sphinx counts on normalized paths.  It's also
                 # more portable.
-                std_doc_dir = os.path.join(DOT_SAGE, 'sage_notebook/doc')
+                std_doc_dir = os.path.join(DOT_SAGENB, 'sage_notebook/doc')
                 try:
                     os.makedirs(std_doc_dir)
                     _SAGE_INTROSPECT = std_doc_dir
