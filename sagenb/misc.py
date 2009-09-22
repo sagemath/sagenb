@@ -19,7 +19,7 @@ def stub(f):
 
 min_password_length = 1
 
-import os
+import os, cPickle, socket
 
 def print_open_msg(address, port, secure=False, path=""):
     """
@@ -83,7 +83,6 @@ def print_open_msg(address, port, secure=False, path=""):
     print '*'*n
 
 
-import socket
 def find_next_available_port(start, max_tries=100, verbose=False):
     """
     Find the next available port, that is, a port for which a
@@ -232,12 +231,10 @@ def cython(*args, **kwds):
     pass
 
 
-@stub
-def load(*args, **kwds):
-    pass
+def load(filename):
+    return cPickle.loads(open(filename).read())
 
 def save(obj, filename):
-    import cPickle
     s = cPickle.dumps(obj, protocol=2)
     open(filename,'wb').write(s)
 

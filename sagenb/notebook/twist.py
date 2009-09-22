@@ -619,8 +619,7 @@ class Worksheet_cells(WorksheetResource, resource.Resource):
         return static.File(self.worksheet.cells_directory())
 
     def childFactory(self, request, segment):
-        return static.File(self.worksheet.cells_directory() + segment)
-    #return CellData(self.worksheet, segment)
+        return static.File(os.path.join(self.worksheet.cells_directory(), segment))
 
 
 

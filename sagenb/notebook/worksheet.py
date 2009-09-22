@@ -17,34 +17,21 @@ AUTHORS:
 """
 
 ###########################################################################
-#       Copyright (C) 2006 William Stein <wstein@gmail.com>
+#       Copyright (C) 2006-2009 William Stein <wstein@gmail.com>
 #
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
 ###########################################################################
 
 # Import standard Python libraries that we will use below
-import os
-import copy
-import shutil
-import re
-import string
-import traceback
-import time
-import calendar
-import crypt
-import bz2
-import re
-
-# A library that we ship with sage
-import pexpect
+import bz2, calendar, copy, crypt, os, re, shutil, string, time, traceback
 
 # General sage library code
 from sagenb.misc import (remote_file, cython, load, save, preparse_file,
                          alarm, cancel_alarm, verbose, DOT_SAGE, walltime,
                          do_preparse)
 
-from sagenb.interfaces import WorksheetProcess
+from sagenb.interfaces import WorksheetProcess_ReferenceImplementation
                          
 import sagenb.support        as support
 
@@ -113,10 +100,14 @@ def initialized_sage(server, ulimit):
         Sage
     """
     # Create new pexpect interface to a Python instance
-    #S = WorksheetProcess(server=server, ulimit=ulimit)
-    S = WorksheetProcess()
+    S = WorksheetProcess_ReferenceImplementation()
     # Send some code to initialize it.
-    S.execute('from sagenb.worksheet_init import _support_; import sagenb.notebook.interact')
+    S.execute("""from sagenb.worksheet_init import _support_
+import sagenb.notebook.interact
+# The following is Sage-specific
+from sage.all_notebook import *
+sage.plot.plot.EMBEDDED_MODE=True
+""")
     # Return our new Sage instance.
     return S
 
@@ -203,7 +194,7 @@ def worksheet_filename(name, owner):
         sage: sagenb.notebook.worksheet.worksheet_filename('Example#%&! work\\sheet 3', 'sage10')
         'sage10/Example_____work_sheet_3'
     """
-    return owner + '/' + _notebook.clean_name(name)
+    return os.path.join(owner, _notebook.clean_name(name))
 
 class Worksheet:
     def __init__(self, name, dirname, notebook_worksheet_directory, system, owner,
@@ -261,9 +252,9 @@ class Worksheet:
         # set the directory in which the worksheet files will be stored.
         # We also add the hash of the name, since the cleaned name loses info, e.g.,
         # it could be all _'s if all characters are funny.
-        filename = '%s/%s'%(owner, dirname)
+        filename = os.path.join(owner, dirname)
         self.__filename = filename
-        self.__dir = '%s/%s'%(notebook_worksheet_directory, filename)
+        self.__dir = os.path.join(notebook_worksheet_directory, filename)
 
         self.clear()
         self.save_snapshot(owner)
@@ -385,7 +376,7 @@ class Worksheet:
             # the __getstate__ method.
             return self.__conf
         except AttributeError:
-            file = '%s/conf.sobj'%self.directory()
+            file = os.path.join(self.directory(), 'conf.sobj')
             if os.path.exists(file):
                 C = load(file)
             else:
@@ -631,7 +622,7 @@ class Worksheet:
             sage: W.filename()
             'admin/5'
         """
-        filename = '%s/%s'%(self.owner(), nm)
+        filename = os.path.join(self.owner(), nm)
         self.set_filename(filename)
 
     def set_filename(self, filename):
@@ -656,7 +647,7 @@ class Worksheet:
         """
         old_filename = self.__filename
         self.__filename = filename
-        self.__dir = '%s/%s'%(self.notebook().worksheet_directory(), filename)
+        self.__dir = os.path.join(self.notebook().worksheet_directory(), filename)
         self.notebook().change_worksheet_key(old_filename, filename)
 
     def filename(self):
@@ -720,7 +711,7 @@ class Worksheet:
             sage: W.data_directory()
             '.../worksheets/admin/0/data/'
         """
-        d = self.directory() + '/data/'
+        d = os.path.join(self.directory(), 'data')
         if not os.path.exists(d):
             os.makedirs(d)
         return d
@@ -761,7 +752,7 @@ class Worksheet:
             sage: W.cells_directory()
             '.../worksheets/admin/0/cells/'
         """
-        return self.directory() + '/cells/'
+        return os.path.join(self.directory(), 'cells')
 
     def notebook(self):
         """
@@ -1810,7 +1801,8 @@ class Worksheet:
         words appear in the text version of self.
         """
         # Load the worksheet data file from disk.
-        r = open('%s/worksheet.txt'%self.__dir).read().lower()
+        filename = os.path.join(self.__dir, 'worksheet.txt')
+        r = open(filename).read().lower()
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
             if W.lower() not in r:
@@ -1829,16 +1821,16 @@ class Worksheet:
         path = self.__dir
         E = self.edit_text()
         self.save_snapshot(self.owner(), E)
-        save(self.conf(), path + '/conf.sobj')
+        save(self.conf(), os.path.join(path, 'conf.sobj'))
 
     def save_snapshot(self, user, E=None):
         self.uncache_snapshot_data()
         path = self.snapshot_directory()
         basename = str(int(time.time()))
-        filename = '%s/%s.bz2'%(path, basename)
+        filename = os.path.join(path, '%s.bz2'%basename)
         if E is None:
             E = self.edit_text()
-        worksheet_txt = '%s/worksheet.txt'%self.__dir
+        worksheet_txt = os.path.join(self.__dir, 'worksheet.txt')
         if os.path.exists(worksheet_txt) and open(worksheet_txt).read() == E:
             # we already wrote it out...
             return
@@ -1856,7 +1848,7 @@ class Worksheet:
 
     def get_snapshot_text_filename(self, name):
         path = self.snapshot_directory()
-        return '%s/%s'%(path, name)
+        return os.path.join(path, name)
 
     def user_autosave_interval(self, username):
         return self.notebook().user(username)['autosave_interval']
@@ -1875,7 +1867,7 @@ class Worksheet:
 
     def revert_to_snapshot(self, name):
         path = self.snapshot_directory()
-        filename = '%s/%s.txt'%(path, name)
+        filename = os.path.join(path, '%s.txt'%name)
         E = bz2.decompress(open(filename).read())
         self.edit_save(E)
 
@@ -1906,12 +1898,12 @@ class Worksheet:
             pass
 
     def revert_to_last_saved_state(self):
-        filename = '%s/worksheet.txt'%(self.__dir)
+        filename = os.path.join(self.__dir, 'worksheet.txt')
         E = open(filename).read()
         self.edit_save(E)
 
     def snapshot_directory(self):
-        path = os.path.abspath(self.__dir) + '/snapshots/'
+        path = os.path.join(os.path.abspath(self.__dir), 'snapshots')
         if not os.path.exists(path):
             os.makedirs(path)
         return path
@@ -1983,6 +1975,7 @@ class Worksheet:
                 # of the notebook.  Check for this.
                 try:
                     dir = self.directory()
+                    # todo -- this is BAD -- since / won't work on windows!
                     i = dir.find('/worksheets/')
                     if i != -1:
                         i = dir[:i].rfind('/')
@@ -2227,14 +2220,15 @@ class Worksheet:
             except AttributeError:
                 for cell in self.cell_list():
                     cells_html += cell.html(ncols, do_print=True) + '\n'
-                s = template("worksheet/published_worksheet.html", ncols = ncols,
-                             cells_html = cells_html)
+                s = template(os.path.join('worksheet', 'published_worksheet.html'),
+                             ncols = ncols, cells_html = cells_html)
                 self.__html = s
                 return s
         for cell in self.cell_list():
             cells_html += cell.html(ncols, do_print=do_print) + '\n'
             
-        return template("worksheet/worksheet.html", published = self.is_published(),
+        return template(os.path.join("worksheet", "worksheet.html"),
+                        published = self.is_published(),
                         do_print = do_print, confirm_before_leave = confirm_before_leave,
                         cells_html = cells_html,
                         cell_id_list = self.compute_cell_id_list())
@@ -2250,7 +2244,8 @@ class Worksheet:
         name = self.truncated_name()
         warn = self.warn_about_other_person_editing(username, WARN_THRESHOLD)
         
-        return template("worksheet/title.html", worksheet = self,
+        return template(os.path.join("worksheet","title.html"),
+                        worksheet = self,
                         name = cgi.escape(self.truncated_name()),
                         warn = warn, doc_worksheet = self.is_doc_worksheet(),
                         username = username)
@@ -2277,7 +2272,8 @@ class Worksheet:
             sage: W.html_save_discard_buttons()
             '\n\n<button name="button_save" title="Save changes" onClick="save_worksheet();">Save<...'
         """
-        return template("worksheet/save_discard_buttons.html", doc_worksheet = self.is_doc_worksheet())
+        return template(os.path.join("worksheet","save_discard_buttons.html"),
+                        doc_worksheet = self.is_doc_worksheet())
         
     def html_share_publish_buttons(self, select=None, backwards=False):
         r"""
@@ -2298,13 +2294,9 @@ class Worksheet:
             sage: W.html_share_publish_buttons()
             '\n\n\n\n\n<a title="Print this worksheet" class="usercontrol" onClick="print_worksheet()">...'
         """
-        return template("worksheet/share_publish_buttons.html", worksheet = self, select = select, backwards = backwards)
+        return template(os.path.join("worksheet","share_publish_buttons.html"),
+                        worksheet = self, select = select, backwards = backwards)
         
-# <option title="Browse the data directory" value="data/">Browse data directory...</option>
-# <option title="Browse the directory of output from cells" value="cells/">Browse cell output directories...</option>
-
-# <option title="Configure this worksheet" value="worksheet_settings();">Worksheet settings</option>
-
     def html_menu(self):
         r"""
         OUTPUT:
@@ -2318,7 +2310,8 @@ class Worksheet:
             sage: W.html_menu()
             '\n&nbsp;&nbsp;&nbsp;<select class="worksheet"  onchange="go_option(this);">\n    ...'
         """
-        return template("worksheet/menu.html", name = _notebook.clean_name(self.name()),
+        return template(os.path.join("worksheet","menu.html"),
+                        name = _notebook.clean_name(self.name()),
                         filename_ = self.filename(), data = self.attached_data_files().sort(),
                         systems_enumerated = enumerate(self.notebook().systems()),
                         system_names = self.notebook().system_names(),
@@ -2351,7 +2344,7 @@ class Worksheet:
         for cell in self.cell_list():
             cells_html += cell.html(ncols, do_print=do_print) + '\n'
         
-        return template("worksheet/worksheet_body.html",
+        return template(os.path.join("worksheet","worksheet_body.html"),
                         cells_html = cells_html,
                         published = published,
                         do_print = do_print)
@@ -2418,12 +2411,12 @@ class Worksheet:
     def html_time_since_last_edited(self):
         t = self.time_since_last_edited()
         tm = convert_seconds_to_meaningful_time_span(t)
-        return template("worksheet/time_since_last_edited.html",
+        return template(os.path.join("worksheet","time_since_last_edited.html"),
                         last_editor = self.last_to_edit(),
                         time = tm)
 
     def html_time_last_edited(self):
-        return template("worksheet/time_last_edited.html",
+        return template(os.path.join("worksheet","time_last_edited.html"),
                         time = convert_time_to_string(self.last_edited()),
                         last_editor = self.last_to_edit())
 
@@ -2489,7 +2482,7 @@ class Worksheet:
         try:
             return self.__cells
         except AttributeError:
-            worksheet_txt = '%s/worksheet.txt'%self.__dir
+            worksheet_txt = os.path.join(self.__dir, 'worksheet.txt')
             if not os.path.exists(worksheet_txt):
                 #print "Creating new worksheet file %s"%worksheet_txt
                 self.__cells = []
@@ -2724,10 +2717,10 @@ class Worksheet:
         return self.__sage.started()
 
     def initialize_sage(self):
-        self.delete_cell_input_files()
         object_directory = os.path.abspath(self.notebook().object_directory())
         S = self.sage()
         try:
+            # todo -- not windows safe
             cmd = '__DIR__="%s/"; DIR=__DIR__; DATA="%s/"; '%(self.DIR(), os.path.abspath(self.data_directory()))
             cmd += '_support_.init(None, globals()); '
             S.execute(cmd)
@@ -2778,7 +2771,9 @@ class Worksheet:
         C.set_no_output(True)
         C.set_input_text(cmd)
         self.enqueue(C, username=username)
-        
+
+    def cell_directory(self, C):
+        return C.directory()
 
     def start_next_comp(self):
         if len(self.__queue) == 0:
@@ -2817,20 +2812,6 @@ class Worksheet:
         C.code_id = id
 
         # prevent directory disappear problems
-        dir = self.directory()
-        code_dir = '%s/code'%dir
-        if not os.path.exists(code_dir):
-            os.makedirs(code_dir)
-        cell_dir = '%s/cells'%dir            
-        if not os.path.exists(cell_dir):
-            os.makedirs(cell_dir)
-        tmp = '%s/code/%s.py'%(dir, id)
-
-
-        # TODO: delete
-        # absD = os.path.abspath(C.directory())
-        #input = 'os.chdir("%s")\n'%absD
-        #os.system('chmod -R a+rw "%s"'%absD)
 
         input = ''
 
@@ -2945,17 +2926,9 @@ class Worksheet:
         if C.is_no_output():
             # Clean up the temp directories associated to C, and do not set any output
             # text that C might have got.
-            dir = self.directory()
-            code_file = '%s/code/%s.py'%(dir, C.code_id)
-            # NOTE -- this deletes the input file, which in the rare case when
-            # the input defines a function and the user asks for the source of
-            # that function, they wouldn't get it.
-            os.unlink(code_file)
-            cell_dir = '%s/cells/%s'%(dir, C.id())
-            shutil.rmtree(cell_dir)
+            shutil.rmtree(self.cell_directory(C), ignore_errors=True)
             return 'd', C
         
-        print "out = ", out
         if C.introspect():
             before_prompt, after_prompt = C.introspect()
             if len(before_prompt) == 0:
@@ -2969,7 +2942,21 @@ class Worksheet:
             else:
                 C.set_introspect_html(out, completing=False)
         else:
-            C.set_output_text(out, C.files_html(out), sage=self.sage())
+            filenames = output_status.filenames
+            print "filenames = ", filenames
+            if len(filenames) > 0:
+                # Copy files to the cell directory
+                cell_dir = os.path.abspath(self.cell_directory(C))
+                print cell_dir
+                if not os.path.exists(cell_dir):
+                    os.makedirs(cell_dir)
+                for X in filenames:
+                    target = os.path.join(cell_dir, os.path.split(X)[1])
+                    shutil.copyfile(X, target)
+                    
+            # Generate html, etc.
+            html = C.files_html(out)
+            C.set_output_text(out, html, sage=self.sage())
             C.set_introspect_html('')
 
         return 'd', C
@@ -3218,20 +3205,6 @@ class Worksheet:
         except AttributeError:
             return 0
 
-    def delete_cell_input_files(self):
-        r"""
-        Delete all the files ``code_%s.py`` and
-        ``code_%s.spyx`` that are created when evaluating
-        cells. We do this when we first start the notebook to get rid of
-        clutter.
-        """
-        D = self.directory() + '/code/'
-        if os.path.exists(D):
-            for X in os.listdir(D):
-                os.unlink('%s/%s'%(D,X))
-        else:
-            os.makedirs(D)
-
     def check_cell(self, id):
         """
         Check the status on computation of the cell with given id.
@@ -3478,13 +3451,13 @@ class Worksheet:
         OBJECTS = os.path.abspath(self.notebook().object_directory())
         for filename in L.split():
             filename = filename.strip('"').strip("'")
-            if os.path.exists(OBJECTS + '/' + filename):
-                filename = OBJECTS + '/' + filename
-            elif os.path.exists(OBJECTS + '/' + filename + '.sobj'):
-                filename = OBJECTS + '/' + filename + '.sobj'
+            if os.path.exists(os.path.join(OBJECTS, filename)):
+                filename = os.path.join(OBJECTS, filename)
+            elif os.path.exists(os.path.join(OBJECTS, filename + '.sobj')):
+                filename = os.path.join(OBJECTS, filename + '.sobj')
             else:
-                if len(filename) > 0 and filename[0] != '/':
-                    filename = '%s/%s'%(self.DIR(), filename)
+                if len(filename) > 0 and not os.path.exists(filename):
+                    filename = os.path.join(self.DIR(), filename)
                 if not filename.endswith('.py') and not filename.endswith('.sage') and \
                        not filename.endswith('.sobj') and not os.path.exists(filename):
                     if os.path.exists(filename + '.sage'):
@@ -3498,7 +3471,7 @@ class Worksheet:
 
     def load_path(self):
         D = self.cells_directory()
-        return [self.directory() + '/data/'] + [D + x for x in os.listdir(D)]
+        return [os.path.join(self.directory(), 'data')] + [D + x for x in os.listdir(D)]
 
     def hunt_file(self, filename):
         if filename.lower().startswith('http://'):
@@ -3506,7 +3479,7 @@ class Worksheet:
         if not os.path.exists(filename):
             fn = os.path.split(filename)[-1]
             for D in self.load_path():
-                t = D + '/' + fn
+                t = os.path.join(D, fn)
                 if os.path.exists(t):
                     filename = t
                     break
@@ -3640,6 +3613,7 @@ class Worksheet:
         id = self.next_block_id()
         # id = C.relative_id()
         spyx = os.path.abspath('%s/code/sage%s.spyx'%(self.directory(), id))
+        spyx = os.path.abspath(os.path.join(self.directory(), 'code', 'sage%s.spyx'%id))
         if not (os.path.exists(spyx) and open(spyx).read() == cmd):
             open(spyx,'w').write(cmd)
         s  = '_support_.cython_import_all("%s", globals())'%spyx
@@ -3730,7 +3704,7 @@ class Worksheet:
     # List of attached files.
     ##########################################################
     def attached_html(self):
-        return template("worksheet/attached.html",
+        return template(os.path.join("worksheet","attached.html"),
                         attached_files = self.attached_files())
 
     ##########################################################
@@ -3980,7 +3954,8 @@ def format_completions_as_html(cell_id, completions):
     if len(completions) == 0:
         return ''
 
-    return template("worksheet/completions.html", cell_id = cell_id,
+    return template(os.path.join("worksheet","completions.html"),
+                    cell_id = cell_id,
                     # Transpose and enumerate completions to column-major
                     completions_enumerated = enumerate(map(list, zip(*completions))))
 

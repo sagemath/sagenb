@@ -1,24 +1,13 @@
-"""
-Worksheet process base clase
+import os, StringIO, sys, traceback, tempfile
 
-AUTHORS:
-
-  - William Stein
-"""
-
-#############################################################################
-#
-#       Copyright (C) 2009 William Stein <wstein@gmail.com>
-#  Distributed under the terms of the GNU General Public License (GPL)
-#  The full text of the GPL is available at:
-#                  http://www.gnu.org/licenses/
-#
-#############################################################################
+from status import OutputStatus
+from format import displayhook_hack
+from worksheet_process import WorksheetProcess
 
 ###################################################################
-# Abstract base class
+# Reference implementation
 ###################################################################
-class WorksheetProcess:
+class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
     """
     A controlled Python process that executes code.  This is a
     reference implementation.
@@ -27,20 +16,14 @@ class WorksheetProcess:
         """
         Initialize this worksheet process.
         """
-        raise NotImplementedError
+        self._output_status = OutputStatus('',[],True,None)
+        self._state = {}
 
     def __repr__(self):
         """
         Return string representation of this worksheet process. 
         """
-        return "Worksheet process"
-
-    def __getstate__(self):
-        """
-        Used for pickling.  We return an empty state otherwise
-        this could not be pickled.
-        """
-        return {}
+        return "Reference implementation of worksheet process"
 
     ###########################################################
     # Control the state of the subprocess
@@ -51,19 +34,19 @@ class WorksheetProcess:
         in the controlled process.  This may or may not succeed.  Call
         ``self.is_computing()`` to find out if it did. 
         """
-        raise NotImplementedError
+        pass
 
     def quit(self):
         """
         Quit this worksheet process.  
         """
-        raise NotImplementedError
+        pass
 
     def start(self):
         """
         Start this worksheet process running.
         """
-        raise NotImplementedError
+        pass
 
     ###########################################################
     # Query the state of the subprocess
@@ -76,7 +59,7 @@ class WorksheetProcess:
 
             - ``bool``
         """
-        raise NotImplementedError        
+        return False
 
     def is_started(self):
         """
@@ -86,7 +69,7 @@ class WorksheetProcess:
 
             - ``bool``
         """
-        raise NotImplementedError                
+        return True
 
     ###########################################################
     # Sending a string to be executed in the subprocess
@@ -99,7 +82,8 @@ class WorksheetProcess:
 
             ``string`` -- a string containing code to be executed.
         """
-        raise NotImplementedError                        
+        out, files, tempdir = execute_code(string, self._state)
+        self._output_status = OutputStatus(out, files, True, tempdir)
 
     ###########################################################
     # Getting the output so far from a subprocess
@@ -115,8 +99,33 @@ class WorksheetProcess:
 
             - ``OutputStatus`` object.
         """
-        raise NotImplementedError                        
+        OS = self._output_status
+        self._output_status = OutputStatus('',[],True)
+        return OS
 
 
 
 
+def execute_code(string, state):
+    print "execute: '''%s'''"%string
+    string = displayhook_hack(string)
+
+    # Now execute the code capturing the output and files that are
+    # generated.
+    back = os.path.abspath('.')
+    tempdir = tempfile.mkdtemp()
+    s = StringIO.StringIO()
+    saved_stream = sys.stdout
+    sys.stdout = s
+    try:
+        os.chdir(tempdir)
+        exec string in state
+    except Exception, msg:
+        traceback.print_exc(file=s)
+    finally:
+        sys.stdout = saved_stream
+        os.chdir(back)
+    s.seek(0)
+    out = str(s.read())
+    files = [os.path.join(tempdir, x) for x in os.listdir(tempdir)]
+    return out, files, tempdir

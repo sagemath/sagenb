@@ -726,7 +726,7 @@ class Cell(Cell_generic):
         
             sage: import shutil; shutil.rmtree(nb.directory())
         """
-        return '%s/cells/%s'%(self.__worksheet.directory(), self.id())
+        return os.path.join(self.__worksheet.directory(), 'cells', str(self.id()))
 
 
     def __cmp__(self, right):
@@ -1309,7 +1309,7 @@ class Cell(Cell_generic):
                (len(output) > MAX_OUTPUT or output.count('\n') > MAX_OUTPUT_LINES):
             url = ""
             if not self.computing():
-                file = "%s/full_output.txt"%self.directory()
+                file = os.path.join(self.directory(), "full_output.txt")
                 open(file,"w").write(output)
                 url = "<a target='_new' href='%s/full_output.txt' class='file_link'>full_output.txt</a>"%(
                     self.url_to_self())
@@ -1710,7 +1710,7 @@ class Cell(Cell_generic):
                 # also pickles its environment in doctreedir, but we
                 # force Sphinx never to load this pickle with
                 # freshenv=True.
-                confdir = os.path.join(SAGE_DOC, 'en/introspect')
+                confdir = os.path.join(SAGE_DOC, os.path.join('en','introspect'))
                 doctreedir = os.path.normpath(base_name)
                 confoverrides = {'html_context' : {}, 'master_doc' : hash}
 
@@ -1897,7 +1897,7 @@ class Cell(Cell_generic):
         self.__type = 'wrap'
         dir = self.directory()
         for D in os.listdir(dir):
-            F = dir + '/' + D
+            F = os.path.join(dir, D)
             try:
                 os.unlink(F)
             except OSError:
@@ -2216,7 +2216,7 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
         for F in D:
             if 'cell://%s'%F in out:
                 continue
-            url = "%s/%s"%(self.url_to_self(), F)
+            url = os.path.join(self.url_to_self(), F)
             if F.endswith('.png') or F.endswith('.bmp') or \
                     F.endswith('.jpg') or F.endswith('.gif'):
                 images.append('<img src="%s?%d">'%(url, time.time()))
@@ -2246,10 +2246,6 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
                     jmol_file.write(jmol_script)
                     jmol_file.close()
                     
-                #popup  = """<br><a href="javascript:jmol_popup('%s');">Enlarge</a>"""%url
-                #script = '<script>jmol_applet(%s, "%s");</script>%s' % (size, url, popup)
-                #script = '<script>jmol_popup("%s");</script>' % (url)
-
                 script = '<div><script>jmol_applet(%s, "%s?%d");</script></div>' % (size, url, time.time())
                 images.append(script)
             elif F.endswith('.jmol.zip'):
