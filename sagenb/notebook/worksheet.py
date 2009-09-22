@@ -105,13 +105,15 @@ def initialized_sage(server, ulimit):
     # Send some code to initialize it.
     S.execute("""
 import base64
-from sagenb.worksheet_init import _support_
+import sagenb.support as _support_
 import sagenb.notebook.interact
-# The following is Sage-specific
+
+# The following is Sage-specific -- this immediately bombs out if sage isn't installed.
 from sage.all_notebook import *
 sage.plot.plot.EMBEDDED_MODE=True
 sage.misc.latex.EMBEDDED_MODE=True
-# TODO: For now we take back sagenb interact; do until the sage notebook gets removed from the sage library
+# TODO: For now we take back sagenb interact; do this until the sage notebook
+# gets removed from the sage library.
 from sagenb.notebook.all import *
 """)
     # Return our new Sage instance.
