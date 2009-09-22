@@ -255,7 +255,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
         if secure and not quiet:
             print "There is an admin account.  If you do not remember the password,"
             print "quit the notebook and type notebook(reset=True)."
-        cmd = 'sage -twistd --pidfile="%s"/twistd.pid -ny "%s"/twistedconf.tac'%(directory, directory)
+        cmd = 'twistd --pidfile="%s"/twistd.pid -ny "%s"/twistedconf.tac'%(directory, directory)
         if fork:
             return pexpect.spawn(cmd)
         else:
