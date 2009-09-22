@@ -11,8 +11,7 @@ AUTHORS:
 
 This file contains some minimal code to generate the Javascript code 
 which is inserted to the head of the notebook web page.  All of the 
-interesting Javascript code is contained under 
-``SAGE_ROOT/devel/sage/sage/server/notebook/templates/notebook_lib.js``.
+interesting Javascript code is contained under ``data/templates/notebook_lib.js``.
 """
 
 from sagenb.misc import SAGE_URL 

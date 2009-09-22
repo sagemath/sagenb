@@ -111,6 +111,8 @@ import sagenb.notebook.interact
 from sage.all_notebook import *
 sage.plot.plot.EMBEDDED_MODE=True
 sage.misc.latex.EMBEDDED_MODE=True
+# TODO: For now we take back sagenb interact; do until the sage notebook gets removed from the sage library
+from sagenb.notebook.all import *
 """)
     # Return our new Sage instance.
     return S

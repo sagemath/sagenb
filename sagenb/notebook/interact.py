@@ -2258,7 +2258,6 @@ def interact(f):
         <html>...
 
     """
-    
     (args, varargs, varkw, defaults) = inspect.getargspec(f)
 
     if defaults is None:

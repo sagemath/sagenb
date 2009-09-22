@@ -7,9 +7,9 @@ Current TODO:
 [x] jmol
 [x] tinymce
 
-[ ] @interact -- need to properly preparse and base64 encode maybe?
+[x] @interact -- need to properly preparse and base64 encode maybe?
 
-[ ] live documentation
+[x] live documentation
 [ ] use multiprocessing 
 [ ] making sure we are getting output as it appears
 
