@@ -19,7 +19,7 @@ import getpass
 # This actually serves up the notebook.
 ##########################################################
 
-from sagenb.misc import (DOT_SAGENB, print_open_msg, find_next_available_port)
+from sagenb.misc.misc import (DOT_SAGENB, print_open_msg, find_next_available_port)
 
 import os, shutil, socket, pexpect
 
@@ -160,7 +160,7 @@ def notebook_twisted(self,
                 start_path = "'/?startup_token=%s' % startup_token"
             else:
                 start_path = "'/'"
-            open_page = "from sagenb.misc import open_page; open_page('%s', %s, %s, %s)"%(address, port, secure, start_path)
+            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s)"%(address, port, secure, start_path)
         else:
             open_page = ''
         
@@ -297,7 +297,7 @@ def get_admin_passwd():
     print "\n"*2
     while True:
         passwd = getpass.getpass("Enter new password: ")
-        from sagenb.misc import min_password_length
+        from sagenb.misc.misc import min_password_length
         if len(passwd) < min_password_length:
             print "That password is way too short. Enter a password with at least 6 characters."
             continue

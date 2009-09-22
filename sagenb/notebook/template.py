@@ -18,7 +18,7 @@ AUTHORS:
 import jinja
 import sys
 
-from sagenb.misc import version, DATA
+from sagenb.misc.misc import version, DATA
 
 
 TEMPLATE_PATH = DATA + '/templates/'

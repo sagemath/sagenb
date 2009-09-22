@@ -28,7 +28,7 @@ from cgi import escape
 
 
 # Sage libraries
-from   sagenb.misc   import (pad_zeros, is_package_installed,
+from   sagenb.misc.misc   import (pad_zeros, is_package_installed,
                              sage_jsmath_macros, cputime)
 
 # Sage Notebook

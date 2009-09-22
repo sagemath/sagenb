@@ -16,9 +16,8 @@ import os, shutil
 from cgi import escape
 import re
 
-from   sagenb.misc import (word_wrap, SAGE_DOC,
-                           strip_string_literals,
-                           is_package_installed)
+from   sagenb.misc.misc import (word_wrap, SAGE_DOC,
+                                strip_string_literals)
 
 from   jsmath import math_parse
 
@@ -1626,7 +1625,7 @@ class Cell(Cell_generic):
             global _SAGE_INTROSPECT
 
             if _SAGE_INTROSPECT is None:
-                from sagenb.misc import DOT_SAGENB, tmp_dir
+                from sagenb.misc.misc import DOT_SAGENB, tmp_dir
                 # It's important to use os.path.join, instead of +,
                 # because Sphinx counts on normalized paths.  It's also
                 # more portable.

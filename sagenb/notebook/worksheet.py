@@ -27,14 +27,15 @@ AUTHORS:
 import base64, bz2, calendar, copy, crypt, os, re, shutil, string, time, traceback
 
 # General sage library code
-from sagenb.misc import (remote_file, cython, load, save, 
-                         alarm, cancel_alarm, verbose, DOT_SAGENB, walltime)
+from sagenb.misc.misc import (cython, load, save, 
+                              alarm, cancel_alarm, verbose, DOT_SAGENB, walltime)
 
-from sagenb.support import preparse_file
+from sagenb.misc.remote_file import get_remote_file
 
 from sagenb.interfaces import WorksheetProcess_ReferenceImplementation
                          
-import sagenb.support        as support
+from sagenb.misc.support import preparse_file
+import sagenb.misc.support  as support
 
 # Imports specifically relevant to the sage notebook
 import worksheet_conf
@@ -105,8 +106,9 @@ def initialized_sage(server, ulimit):
     # Send some code to initialize it.
     S.execute("""
 import base64
-import sagenb.support as _support_
-import sagenb.notebook.interact
+import sagenb.misc.support as _support_
+import sagenb.notebook.interact  # for setting current cell id
+from sagenb.notebook.interact import interact
 
 # The following is Sage-specific -- this immediately bombs out if sage isn't installed.
 from sage.all_notebook import *
@@ -3481,7 +3483,7 @@ class Worksheet:
 
     def hunt_file(self, filename):
         if filename.lower().startswith('http://'):
-            filename = remote_file.get_remote_file(filename)
+            filename = get_remote_file(filename)
         if not os.path.exists(filename):
             fn = os.path.split(filename)[-1]
             for D in self.load_path():

@@ -16,9 +16,16 @@ import __builtin__
 from cPickle import PicklingError
 import pydoc
 
-from sagenb.misc import loads, dumps, sagedoc, cython, session_init
+from misc import loads, dumps, cython, session_init
 
 import sageinspect
+
+try:
+    from sage.misc.sagedoc import format_src
+except ImportError:
+    # Fallback
+    def format_src(s, *args, **kwds):
+        return s
 
 ######################################################################
 # Initialization
@@ -48,7 +55,7 @@ def init(object_directory=None, globs={}):
 
 
 def setup_systems(globs):
-    from sagenb.misc import InlineFortran
+    from misc import InlineFortran
     fortran = InlineFortran(globs)
     globs['fortran'] = fortran
 
@@ -272,7 +279,7 @@ def source_code(s, globs, system='sage'):
         filename = sageinspect.sage_getfile(obj)
         lines, lineno = sageinspect.sage_getsourcelines(obj, is_binary=False)
         src = indent.join(lines)
-        src = indent + sagedoc.format_src(src)
+        src = indent + format_src(src)
         if not lineno is None:
             output = "**File:** %s"%filename
             output += newline

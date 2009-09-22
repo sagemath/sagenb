@@ -189,29 +189,28 @@ except ImportError:
         pass
     
 
-@stub
-def sage_eval(value, globs):
-    # worry about ^ and preparser -- this gets used in interact.py,
-    # which is a bit weird, but heh.
-    return eval(value, globs)
+try:
+    from sage.misc.sage_eval import sage_eval
+except ImportError:
+    def sage_eval(value, globs):
+        # worry about ^ and preparser -- this gets used in interact.py,
+        # which is a bit weird, but heh.
+        return eval(value, globs)
 
-@stub
-def is_package_installed(name):
-    pass
+try:
+    from sage.misc.all import is_package_installed
+except ImportError:
+    @stub
+    def is_package_installed(name, *args, **kwds):
+        return False
 
 
-@stub
-def browser():
-    return "open"
-
-@stub
-def remote_file(filename, verbose=True):
-    pass
-
-@stub
-def cython(*args, **kwds):
-    pass
-
+try:
+    from sage.misc.viewer import browser
+except ImportError:
+    @stub
+    def browser():
+        return "open"
 
 def load(filename):
     return cPickle.loads(open(filename).read())
@@ -220,28 +219,30 @@ def save(obj, filename):
     s = cPickle.dumps(obj, protocol=2)
     open(filename,'wb').write(s)
 
-@stub
-def loads(*args, **kwds):
-    pass
+try:
+    from sage.structure.sage_object import loads, dumps
+except ImportError:
+    loads = cPickle.loads
+    dumps = cPickle.dumps
 
-@stub
-def dumps(*args, **kwds):
-    pass
-
-@stub
-def alarm(*args, **kwds):
-    pass
-
-@stub
-def cancel_alarm(*args, **kwds):
-    pass
-
-
-@stub
-def verbose(*args, **kwds):
-    pass
+try:
+    from sage.misc.misc import alarm, cancel_alarm, verbose
+except ImportError:
+    # TODO!
+    @stub
+    def alarm(*args, **kwds):
+        pass
+    @stub
+    def cancel_alarm(*args, **kwds):
+        pass
+    @stub
+    def verbose(*args, **kwds):
+        pass
 
 
+################################
+# clocks -- easy to implement
+################################
 import time, resource
 
 def cputime(t=0):
@@ -254,14 +255,6 @@ def cputime(t=0):
 
 def walltime(t=0):
     return time.time() - t
-
-@stub
-def sagedoc(*args, **kwds):
-    pass
-
-@stub
-def cython(*args, **kwds):
-    pass
 
 def word_wrap(s, ncols=85):
     t = []
@@ -293,24 +286,44 @@ def word_wrap(s, ncols=85):
 try:
     from sage.misc.preparser import strip_string_literals
 except ImportError:
-    #@stub
     def strip_string_literals(code, state=None):
-        # todo -- mini implementation?
+        # todo -- do we need this?
         return code
 
-@stub
-def version():
-    pass
+try:
+    from sage.misc.banner import version
+except ImportError:
+    @stub
+    def version():
+        return " alpha"
 
-@stub
-def Color(*args, **kwds):
-    # from sage.plot
-    pass
+try:
+    from sage.plot.all import Color
+except ImportError:
+    class Color:
+        def __init__(self, *args, **kwds):
+            pass
 
-@stub
-def is_Matrix(*args, **kwds):
-    # from sage.structure.element import is_Matrix
-    pass
+########################################
+# this is needed for @interact
+########################################
+def is_Matrix(x):
+    try:
+        from sage.structure.element import is_Matrix
+    except ImportError:
+        return False
+    return is_Matrix(x)
+
+try:
+    from sage.misc.misc import srange
+except ImportError:
+    # TODO: need to put a really srange here!
+    def srange(start, end=None, step=1, universe=None, check=True, include_endpoint=False, endpoint_tolerance=1e-5):
+        v = [start]
+        while v[-1] <= end:
+            v.append(v[-1]+step)
+        return v
+
 
 def register_with_cleaner(pid):
     try:
@@ -319,18 +332,28 @@ def register_with_cleaner(pid):
     except ImportError:
         print "generic cleaner needs to be written"
 
-@stub
-def tmp_filename():
-    pass
+try:
+    from sage.misc.misc import tmp_filename, tmp_dir
+except ImportError:
+    def tmp_filename(name='tmp'):
+        import tempfile
+        return tempfile.mkstemp()[1]
 
-@stub
-def tmp_dir():
-    pass
+    def tmp_dir(name='dir'):
+        import tempfile
+        return tempfile.mkdtemp()
 
-@stub
-def InlineFortran(*args):
-    pass
 
-@stub
-def srange(*args, **kwds):
-    pass
+try:
+    from sage.misc.inline_fortran import InlineFortran
+except ImportError:
+    @stub
+    def InlineFortran(*args, **kwds):
+        pass
+
+try:
+    from sage.misc.cython import cython
+except ImportError:
+    @stub
+    def cython(*args, **kwds):
+        pass

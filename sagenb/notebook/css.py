@@ -12,7 +12,7 @@ Notebook Stylesheets (CSS)
 
 import os
 
-from sagenb.misc import DOT_SAGENB
+from sagenb.misc.misc import DOT_SAGENB
 
 def css(color='default'):
     r"""

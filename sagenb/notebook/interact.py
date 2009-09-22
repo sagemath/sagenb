@@ -147,7 +147,7 @@ import math
 import types
 
 # Sage libraries
-from sagenb.misc import srange, sage_eval, Color, is_Matrix
+from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
 
 # SAGE_CELL_ID is a module scope variable that is always set equal to
 # the current cell id (of the executing cell).  Code that sets this is

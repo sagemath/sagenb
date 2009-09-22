@@ -14,7 +14,7 @@ which is inserted to the head of the notebook web page.  All of the
 interesting Javascript code is contained under ``data/templates/notebook_lib.js``.
 """
 
-from sagenb.misc import SAGE_URL 
+from sagenb.misc.misc import SAGE_URL 
 from compress.JavaScriptCompressor import JavaScriptCompressor
 import keyboards
 

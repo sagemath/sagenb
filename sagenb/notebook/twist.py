@@ -51,7 +51,7 @@ from sagenb.notebook.template import template
 HISTORY_MAX_OUTPUT = 92*5
 HISTORY_NCOLS = 90
 
-from sagenb.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA
+from sagenb.misc.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA
 
 css_path        = os.path.join(DATA, "css")
 image_path      = os.path.join(DATA, "images")

@@ -102,7 +102,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
             # Tell the Sage cleaner about this subprocess, just in case somehow it fails
             # to properly quit (e.g., smtp is taking a long time), so it will get killed
             # no matter what when sage exits.  Zombies are bad bad bad, no matter what!
-            from sagenb.misc import register_with_cleaner
+            from sagenb.misc.misc import register_with_cleaner
             register_with_cleaner(pid)  # register pid of forked process with cleaner
         if verbose:
             print "Child process %s is sending email to %s..."%(pid,to)
@@ -127,7 +127,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
             # zombie cleaner just in case, then we kill ourself, as
             # explained above.
             if kill_on_exit:
-                from sagenb.misc import register_with_cleaner
+                from sagenb.misc.misc import register_with_cleaner
                 register_with_cleaner(pid)  # register pid of forked process with cleaner
             os.kill(os.getpid(),9)                 # suicide
 

@@ -8,7 +8,8 @@ Current TODO:
 [x] tinymce
 [x] @interact -- need to properly preparse and base64 encode maybe?
 [x] live documentation
-[ ] introspection
+[x] introspection
+[ ] fill in not implemented stuff
 
 [ ] write pexpect based worksheet process system.
 [ ] use multiprocessing 
