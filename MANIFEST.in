@@ -1,0 +1,3 @@
+recursive-include sagenb *.txt *.png *.gif *.ico 00* *.py *.html *.js *.template *.tmpl *.css *.jar *.xml
+include MANIFEST.in README.txt
+include .hgignore .hg/* .hgtags
