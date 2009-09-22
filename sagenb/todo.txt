@@ -6,14 +6,18 @@ Current TODO:
 [x] static documentation
 [x] jmol
 [x] tinymce
-
 [x] @interact -- need to properly preparse and base64 encode maybe?
-
 [x] live documentation
+[ ] introspection
+
+[ ] write pexpect based worksheet process system.
 [ ] use multiprocessing 
-[ ] making sure we are getting output as it appears
+
+[ ] fix doctests
 
 -------------
+
+NEW FEATURES:
 
 [ ] genuine infinite undo implemented not using stupid snapshots but a
 revision log

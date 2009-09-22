@@ -16,7 +16,9 @@ import __builtin__
 from cPickle import PicklingError
 import pydoc
 
-from sagenb.misc import loads, dumps, sageinspect, sagedoc, cython, session_init
+from sagenb.misc import loads, dumps, sagedoc, cython, session_init
+
+import sageinspect
 
 ######################################################################
 # Initialization

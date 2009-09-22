@@ -256,10 +256,6 @@ def walltime(t=0):
     return time.time() - t
 
 @stub
-def sageinspect(*args, **kwds):
-    pass
-
-@stub
 def sagedoc(*args, **kwds):
     pass
 
