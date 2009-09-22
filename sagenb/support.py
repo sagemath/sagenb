@@ -16,7 +16,7 @@ import __builtin__
 from cPickle import PicklingError
 import pydoc
 
-from sagenb.misc import loads, dumps, sageinspect, preparse, sagedoc, cython, session_init
+from sagenb.misc import loads, dumps, sageinspect, sagedoc, cython, session_init
 
 ######################################################################
 # Initialization
@@ -455,3 +455,16 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
         if k[0] != '_':
             globals[k] = x
             
+
+
+###################################################
+# Preparser
+###################################################
+try:
+    from sage.misc.preparser import preparse, preparse_file
+except ImportError:
+    def preparse(line, *args, **kwds):
+        return line
+    def preparse_file(contents, *args, **kwds):
+        return contents
+

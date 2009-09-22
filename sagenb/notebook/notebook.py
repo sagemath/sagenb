@@ -78,9 +78,9 @@ class Notebook:
         self.set_system(system)
         self.set_pretty_print(pretty_print)
         self.__worksheets = {}
-        self.__filename      = '%s/nb.sobj'%dir
-        self.__worksheet_dir = '%s/worksheets'%dir
-        self.__object_dir    = '%s/objects'%dir
+        self.__filename      = os.path.join(dir, 'nb.sobj')
+        self.__worksheet_dir = os.path.join(dir, 'worksheets')
+        self.__object_dir    = os.path.join(dir, 'objects')
         self.__makedirs()
         self.__history = []
         self.__history_count = 0
@@ -102,22 +102,12 @@ class Notebook:
     def _migrate_worksheets(self):
         v = []
         for key, W in self.__worksheets.iteritems():
+            # TODO -- will have to fix for windows!
             if not '/' in W.filename():
                 v.append((key, W))
         if len(v) > 0:
             print "Migrating from old to new worksheet format"
             D = self.directory()
-##             if os.path.exists('%s/worksheets'%D):
-##                 import shutil
-##                 target = '%s/../old_worksheets.tar.bz2'%D
-##                 print "First archiving old worksheets and objects directory to '%s'"%target
-##                 os.system('tar jcf "%s" "%s/worksheets" "%s/objects"'%(target, D, D))
-##                 ws_tree = "%s/worksheets"%D
-##                 print "Now removing ", ws_tree
-##                 shutil.rmtree(ws_tree)
-##                 obj_tree = "%s/objects"%D
-##                 if os.path.exists(obj_tree):
-##                     shutil.rmtree(obj_tree)
             for key, W in v:
                 print W.name()
                 txt = W.edit_text()
@@ -654,10 +644,10 @@ class Notebook:
         # Copy over images and other files
         data = src.data_directory()
         if os.path.exists(data):
-            shutil.copytree(data, W.directory() + '/data')
+            shutil.copytree(data, os.path.join(W.directory(),'data'))
         cells = src.cells_directory()
         if os.path.exists(cells):
-            shutil.copytree(cells, W.directory() + '/cells')
+            shutil.copytree(cells, os.path.join(W.directory(),'cells'))
         W.edit_save(src.edit_text())
 
     def publish_worksheet(self, worksheet, username):
@@ -735,7 +725,7 @@ class Notebook:
         if self.__worksheets.has_key(filename):
             return self.__worksheets[filename]
         i = 0
-        dir = self.worksheet_directory() + '/' + username
+        dir = os.path.join(self.worksheet_directory(),username)
         if os.path.exists(dir):
             D = os.listdir(dir)
             D.sort()
@@ -851,7 +841,7 @@ class Notebook:
         """
         raise NotImplementedError
         for w in self.__worksheets.itervalues():
-            if not '/' in w.filename():
+            if not '/' in w.filename():    # todo -- need to fix for windows
                 print "Moving worksheet ", w.name()
                 w.set_owner('old')
                 self.rename_worksheet_filename(w, w.filename())
@@ -935,12 +925,12 @@ class Notebook:
     def set_directory(self, dir):
         if dir == self.__dir:
             return
-        if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":
+        if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":   # todo -- need to fix
             dir = dir[:-1]
         self.__dir = dir
-        self.__filename = '%s/nb.sobj'%dir
-        self.__worksheet_dir = '%s/worksheets'%dir
-        self.__object_dir = '%s/objects'%dir
+        self.__filename = os.path.join(dir, 'nb.sobj')
+        self.__worksheet_dir = os.path.join(dir, 'worksheets')
+        self.__object_dir = os.path.join(dir, 'objects')
 
     ##########################################################
     # The notebook history.
@@ -1023,6 +1013,7 @@ class Notebook:
         W = self.get_worksheet_with_filename(worksheet_filename)
         W.save()
         path = W.filename_without_owner()
+        # TODO: obviously this won't work on windows
         cmd = 'cd "%s/%s/" && tar -jcf "%s" "%s"'%(
             self.__worksheet_dir, W.owner(),
             os.path.abspath(output_filename), path)
@@ -1193,7 +1184,7 @@ class Notebook:
             D = os.listdir(tmp)[0]
         except IndexError:
             raise ValueError, "invalid worksheet"
-        text_filename = '%s/%s/worksheet.txt'%(tmp,D)
+        text_filename = os.path.join(tmp,D,'worksheet.txt')
         worksheet_txt = open(text_filename).read()
         worksheet = self.new_worksheet_with_title_from_text(worksheet_txt, owner)
         worksheet.set_owner(owner)
@@ -1224,11 +1215,12 @@ class Notebook:
 
         # Put the worksheet files in the target directory.
         S = self.__worksheet_dir
-        target = '%s/%s'%(os.path.abspath(S), worksheet.filename())
+        target = os.path.join(os.path.abspath(S), worksheet.filename())
         if not os.path.exists(target):
             os.makedirs(target)
+
+        # TODO: scary!!  redo this to use shutil, etc. 
         cmd = 'rm -rf "%s"/*; mv "%s/%s/"* "%s/"'%(target, tmp, D, target)
-        #print cmd
         if os.system(cmd):
             raise ValueError, "Error moving over files when loading worksheet."
 
@@ -1260,7 +1252,7 @@ class Notebook:
         """
         worksheet = self.get_worksheet_with_filename(filename)
         text = escape(worksheet.plain_text(prompts = prompts))
-        return template("notebook/plain_text_worksheet.html",
+        return template(os.path.join("notebook", "plain_text_worksheet.html"),
                         worksheet_name = worksheet.name(),
                         worksheet_plain_text = text)
 
@@ -1282,7 +1274,7 @@ class Notebook:
 
         - a string
         """
-        P = os.path.abspath('%s/..'%self.__dir)
+        P = os.path.abspath(os.path.join(self.__dir, '..'))
         if not os.path.exists(P):
             # prevent "rm -rf" accidents.
             os.makedirs(P)
@@ -1321,7 +1313,7 @@ class Notebook:
         try:
             D = self.__backup_dir
         except AttributeError:
-            D = self.__dir + "/backups/"            
+            D = os.path.abspath(self.__dir, "backups")
             self.__backup_dir = D 
         if not os.path.exists(D):
             os.makedirs(D)
@@ -1417,7 +1409,8 @@ class Notebook:
             '\n<!D...ript type="text/javascript">cell_id_list=[0];</script>\n\n\n\n\n\n    </body>\n</html>'
         """
         worksheet = self.get_worksheet_with_filename(filename)
-        return template("notebook/worksheet.html", worksheet_name = worksheet.name(),
+        return template(os.path.join("notebook","worksheet.html"),
+                        worksheet_name = worksheet.name(),
                  worksheet_html = worksheet.html(include_title=False, do_print=do_print),
                         do_print = do_print)
 
@@ -1471,7 +1464,8 @@ class Notebook:
         """
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
 
-        return template("notebook/worksheet_revision_list.html", data = data,
+        return template(os.path.join("notebook","worksheet_revision_list.html"),
+                        data = data,
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username,
@@ -1518,7 +1512,8 @@ class Notebook:
                     next_rev = data[i+1][1]
                 break
             
-        return template("notebook/specific_revision.html", worksheet = ws,
+        return template(os.path.join("notebook","specific_revision.html"),
+                        worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username, rev = rev,
                         prev_rev = prev_rev, next_rev = next_rev,
@@ -1555,7 +1550,8 @@ class Notebook:
         other_users = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
         other_users.sort(lambda x,y: cmp(x.lower(), y.lower()))
 
-        return template("notebook/worksheet_share.html", worksheet = worksheet,
+        return template(os.path.join("notebook","worksheet_share.html"),
+                        worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, other_users = other_users,
                         user_is_admin = self.user(username).is_admin(),
@@ -1588,7 +1584,7 @@ class Notebook:
             sage: nb.html_download_or_delete_datafile(W, 'admin', 'bar')
             '\n<!D...ploaded to this worksheet.</p>\n\n<hr class="usercontrol" />\n\n\n\n\n    </body>\n</html>'
         """
-        path = "/home/%s/data/%s"%(ws.filename(), filename)
+        path = os.path.join("home", ws.filename(), "data", filename)
 
         worksheets = self.get_worksheets_with_viewer(username)
         active_worksheets = [worksheet for worksheet in worksheets if worksheet.is_active(username)]
@@ -1602,9 +1598,9 @@ class Notebook:
             file_is_image = True
         if ext in ['.txt', '.tex', '.sage', '.spyx', '.py', '.f', '.f90', '.c']:
             file_is_text = True
-            text_file_content = open('%s/%s'%(ws.data_directory(), filename)).read()
+            text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
 
-        return template("notebook/download_or_delete_datafile.html",
+        return template(os.path.join("notebook","download_or_delete_datafile.html"),
                         worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username,
@@ -1682,7 +1678,7 @@ class Notebook:
         if filename is None:
             F = os.path.abspath(self.__filename)
             backup_dir = self.backup_directory()
-            backup = backup_dir + '/nb-backup-'
+            backup = os.path.join(backup_dir, 'nb-backup-')
             for i in range(self.number_of_backups()-1,0,-1):
                 a = pad_zeros(i-1); b = pad_zeros(i)
                 try:
@@ -1741,7 +1737,7 @@ class Notebook:
             sage: nb.html_debug_window()
             "\n<div class='debug_window'>...</div>"
         """
-        return template("notebook/debug_window.html")
+        return template(os.path.join("notebook","debug_window.html"))
 
     
     def html_plain_text_window(self, worksheet, username):
@@ -1769,7 +1765,7 @@ class Notebook:
         plain_text = worksheet.plain_text(prompts=True, banner=False)
         plain_text = escape(plain_text).strip()
           
-        return template("notebook/plain_text_window.html", worksheet = worksheet,
+        return template(os.path.join("notebook","plain_text_window.html"), worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username,
                         plain_text = plain_text, JSMATH = JSMATH,
@@ -1802,7 +1798,7 @@ class Notebook:
         text = escape(text)
         n_lines = text.count("\n")+1
           
-        return template("notebook/edit_window.html", worksheet = worksheet,
+        return template(os.path.join("notebook","edit_window.html"), worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, text = text,
                         n_lines = n_lines, JSMATH = JSMATH,
@@ -1842,7 +1838,8 @@ class Notebook:
         <input type="checkbox" name="auto" style="margin-left:13px" /> Automatically re-publish when changes are made
         </form>
         """
-        return template("notebook/beforepublish_window.html", worksheet = worksheet,
+        return template(os.path.join("notebook","beforepublish_window.html"),
+                        worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, JSMATH = JSMATH,
                         JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
@@ -1873,7 +1870,8 @@ class Notebook:
         from time import strftime
         time = strftime("%B %d, %Y %I:%M %p", dtime)
         
-        return template("notebook/afterpublish_window.html", worksheet = worksheet,
+        return template(os.path.join("notebook","afterpublish_window.html"),
+                        worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, url = url,
                         time = time, JSMATH = JSMATH,
@@ -1902,7 +1900,8 @@ class Notebook:
             sage: nb.html_upload_data_window(W, 'admin')
             '\n<!D...orksheet_menu" value="Upload File" onClick="form.submit()...r />\n</div>\n\n\n    </body>\n</html>'
         """
-        return template("notebook/upload_data_window.html", worksheet = worksheet,
+        return template(os.path.join("notebook","upload_data_window.html"),
+                        worksheet = worksheet,
                         worksheet_filename = ws.filename(),
                         username = username, JSMATH = JSMATH,
                         JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
@@ -1944,9 +1943,9 @@ class Notebook:
             except KeyError:
                 W = None
 
-        template_page = "notebook/index.html"
+        template_page = os.path.join("notebook","index.html")
         if W.docbrowser():
-            template_page = "notebook/doc_page.html"
+            template_page = os.path.join("notebook","doc_page.html")
             
         return template(template_page, worksheet = W,
                         worksheet_filename = W.filename(),
@@ -1986,7 +1985,7 @@ class Notebook:
             sage: nb.html_worksheet_settings(W, 'admin')
             '\n<!D...lue="Cancel" name="button_cancel"/></span>\n<br /><br /><br />\n\n</form>\n\n\n    </body>\n</html>'
         """
-        return template("notebook/worksheet_settings.html", worksheet = ws,
+        return template(os.path.join("notebook","worksheet_settings.html"), worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username, JSMATH = JSMATH,
                         JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,

@@ -247,10 +247,6 @@ def dumps(*args, **kwds):
     pass
 
 @stub
-def preparse_file(*args, **kwds):
-    pass
-
-@stub
 def alarm(*args, **kwds):
     pass
 
@@ -279,10 +275,6 @@ def walltime(t=0):
 
 @stub
 def sageinspect(*args, **kwds):
-    pass
-
-@stub
-def preparse(*args, **kwds):
     pass
 
 @stub
@@ -359,9 +351,6 @@ def tmp_filename():
 @stub
 def tmp_dir():
     pass
-
-# in sage maybe True.
-do_preparse = False
 
 @stub
 def InlineFortran(*args):

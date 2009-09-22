@@ -53,10 +53,10 @@ HISTORY_NCOLS = 90
 
 from sagenb.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA
 
-css_path        = os.path.join(DATA, "css/")
-image_path      = os.path.join(DATA, "images/")
-javascript_path = os.path.join(DATA, 'javascript/')
-java_path       = os.path.join(DATA, "java/")
+css_path        = os.path.join(DATA, "css")
+image_path      = os.path.join(DATA, "images")
+javascript_path = os.path.join(DATA, "javascript")
+java_path       = os.path.join(DATA, "java")
 
 # the list of users waiting to register
 waiting = {}
@@ -195,7 +195,7 @@ class WorksheetFile(resource.Resource):
         return HTMLResponse(stream=s)
 
     def childFactory(self, request, name):
-        path = self.docpath + '/' + name
+        path = os.path.join(self.docpath, name)
         if name.endswith('.html'):
             return WorksheetFile(path, self.username)
         else:
@@ -205,51 +205,51 @@ class WorksheetFile(resource.Resource):
 # The documentation browsers
 ############################
 
-DOC = os.path.abspath(SAGE_DOC + '/output/html/en/')
-DOC_PDF = os.path.abspath(SAGE_DOC + '/output/pdf')
-DOC_REF_MEDIA = os.path.abspath(SAGE_DOC + '/en/reference/media')
+DOC = os.path.abspath(os.path.join(SAGE_DOC, 'output', 'html', 'en'))
+DOC_PDF = os.path.abspath(os.path.join(SAGE_DOC, 'output', 'pdf'))
+DOC_REF_MEDIA = os.path.abspath(os.path.join(SAGE_DOC,'en', 'reference', 'media'))
 
 class DocPDF(resource.Resource):
     addSlash = True
 
     def render(self, ctx):
-        return static.File('%s' % DOC_PDF)
+        return static.File(DOC_PDF)
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return static.File('%s/%s' % (DOC_PDF, name))
+        return static.File(os.path.join(DOC_PDF, name))
 
 class DocRefMedia(resource.Resource):
     addSlash = True
 
     def render(self, ctx):
-        return static.File('%s' % DOC_REF_MEDIA)
+        return static.File(DOC_REF_MEDIA)
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return static.File('%s/%s' % (DOC_REF_MEDIA, name))
+        return static.File(os.path.join(DOC_REF_MEDIA, name))
 
 class DocReference(resource.Resource):
     addSlash = True
     child_media = DocRefMedia()
 
     def render(self, ctx):
-        return static.File('%s/reference/index.html' % DOC)
+        return static.File(os.path.join(DOC, 'reference', 'index.html'))
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return static.File('%s/reference/%s' % (DOC, name))
+        return static.File(os.path.join(DOC, 'reference', name))
 
 class DocStatic(resource.Resource):
     addSlash = True
     child_reference = DocReference()
 
     def render(self, ctx):
-        return static.File('%s/index.html'%DOC)
+        return static.File(os.path.join(DOC, 'index.html'))
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return static.File('%s/%s'%(DOC,name))
+        return static.File(os.path.join(DOC, name))
 
 class DocLive(resource.Resource):
     addSlash = True
@@ -262,7 +262,7 @@ class DocLive(resource.Resource):
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return WorksheetFile('%s/%s'%(DOC,name), username = self.username)
+        return WorksheetFile(os.path.join(DOC, name), username = self.username)
 
 class Doc(resource.Resource):
     addSlash = True
@@ -296,7 +296,7 @@ class SageTex(resource.Resource):
         return HTMLResponse(stream=s)
 
     def childFactory(self, request, name):
-        return WorksheetFile('%s/%s'%(SAGETEX_PATH,name),
+        return WorksheetFile(os.path.join(SAGETEX_PATH, name),
                              username = self.username)
 
 
@@ -304,7 +304,8 @@ class SageTex(resource.Resource):
 # The source code browser
 ############################
 
-SRC = os.path.abspath(os.environ['SAGE_ROOT'] + '/devel/sage/sage/')
+SRC = os.path.abspath(
+    os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage'))
 
 class SourceBrowser(resource.Resource):
     addSlash = True
@@ -316,7 +317,7 @@ class SourceBrowser(resource.Resource):
         return static.File(SRC)
 
     def childFactory(self, request, name):
-        return Source('%s/%s'%(SRC,name), self.username)
+        return Source(os.path.join(SRC,name), self.username)
 
 class Source(resource.Resource):
     addSlash = True
@@ -338,7 +339,7 @@ class Source(resource.Resource):
             return static.File(filename)
 
     def childFactory(self, request, name):
-        return Source(self.path + '/' + name, self.username)
+        return Source(os.path.join(self.path, name), self.username)
 
 
 ############################
@@ -382,7 +383,7 @@ class UploadWorksheet(resource.PostableResource):
             dir = tmp_dir()
             filename = ctx.files['fileField'][0][0]
             # Make tmp file in Sage temp directory
-            filename = '%s/%s'%(dir, filename)
+            filename = os.path.join(dir, filename)
             f = file(filename,'wb')
             # Then download to that file.
             f.write(ctx.files['fileField'][0][2].read())
@@ -405,7 +406,7 @@ class UploadWorksheet(resource.PostableResource):
                     if filename.endswith('.zip'):
                         # Extract all the .sws files from a zip file.
                         zip_file = zipfile.ZipFile(filename)
-                        sws_file = "%s/%s" % (dir, "tmp.sws")
+                        sws_file = os.path.join(dir, "tmp.sws")
                         for sws in zip_file.namelist():
                             if sws.endswith('.sws'):
                                 open(sws_file, 'w').write(zip_file.read(sws)) # 2.6 zip_file.extract(sws, sws_file)
@@ -491,7 +492,7 @@ class Worksheet_savedatafile(WorksheetResource, resource.PostableResource):
         if ctx.args.has_key('button_save'):
             E = ctx.args['textfield'][0]
             filename = ctx.args['filename'][0]
-            dest = '%s/%s'%(self.worksheet.data_directory(), filename)
+            dest = os.path.join(self.worksheet.data_directory(), filename)
             open(dest,'w').write(E)
         return http.RedirectResponse('/home/'+self.worksheet.filename())
 
@@ -499,9 +500,11 @@ class Worksheet_link_datafile(WorksheetResource, resource.Resource):
     def render(self, ctx):
         target_worksheet_filename = ctx.args['target'][0]
         data_filename = ctx.args['filename'][0]
-        src = os.path.abspath(self.worksheet.data_directory() + '/' +data_filename)
+        src = os.path.abspath(os.path.join(
+            self.worksheet.data_directory(), data_filename))
         target_ws =  notebook.get_worksheet_with_filename(target_worksheet_filename)
-        target = os.path.abspath(target_ws.data_directory() + '/' + data_filename)
+        target = os.path.abspath(os.path.join(
+            target_ws.data_directory(), data_filename))
         if target_ws.owner() != self.username and not target_ws.user_is_collaborator(self.username):
             return HTMLResponse(stream=message("illegal link attempt!"))
         os.system('ln "%s" "%s"'%(src, target))
@@ -534,7 +537,7 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
         if url and not name:
             name = os.path.split(url)[-1]
 
-        dest = '%s/%s'%(self.worksheet.data_directory(), name)
+        dest = os.path.join(self.worksheet.data_directory(), name)
         response = http.RedirectResponse('/home/'+self.worksheet.filename() + '/datafile?name=%s'%name)
 
         if url != '':
@@ -572,7 +575,7 @@ class Worksheet_datafile(WorksheetResource, resource.Resource):
         filename = ctx.args['name'][0]
         if ctx.args.has_key('action'):
             if ctx.args['action'][0] == 'delete':
-                path = '%s/%s'%(self.worksheet.data_directory(), filename)
+                path = os.path.join(self.worksheet.data_directory(), filename)
                 os.unlink(path)
                 return HTMLResponse(stream = message("Successfully deleted '%s'"%filename,
                                                       '/home/' + self.worksheet.filename()))
@@ -594,7 +597,7 @@ class Worksheet_data(WorksheetResource, resource.Resource):
 
     def childFactory(self, request, name):
         dir = os.path.abspath(self.worksheet.data_directory())
-        return static.File('%s/%s'%(dir, name))
+        return static.File(os.path.join(dir, name))
 
 
 class CellData(resource.Resource):
@@ -607,7 +610,7 @@ class CellData(resource.Resource):
 
     def childFactory(self, request, name):
         dir = self.worksheet.directory()
-        path = '%s/cells/%s/%s'%(dir, self.number, name)
+        path = os.path.join(dir, 'cells', str(self.number), name)
         request.setLastModified(os.stat(filename).st_mtime)
         return static.File(path)
 
@@ -620,43 +623,6 @@ class Worksheet_cells(WorksheetResource, resource.Resource):
 
     def childFactory(self, request, segment):
         return static.File(os.path.join(self.worksheet.cells_directory(), segment))
-
-
-
-
-########################################################
-# Use this to wrap a worksheet operation in a confirmation
-# request.  See WorksheetDelete and WorksheetAdd for
-# examples.
-########################################################
-## class FastRedirect(resource.Resource):
-##     def __init__(self, dest):
-##         self.dest = dest
-##     def render(self, ctx):
-##         return http.RedirectResponse(self.dest)
-## class YesNo(resource.Resource):
-##     addSlash = True
-
-##     def __init__(self, mesg, yes, no):
-##         self.mesg = mesg
-##         self.yes = yes
-##         self.no  = no
-
-##     def render(self, ctx):
-##         from sagenb.notebook.template import yes_no_template
-##         lt = yes_no_template(mesg=self.mesg)
-##         return HTMLResponse(stream = lt)
-
-##         s = '%s<br>'%self.mesg
-##         s += '<a href="yes">Yes</a> or <a href="no">No</a>'
-##         return HTMLResponse(stream = message(s))
-
-##     def childFactory(self, request, op):
-##         if op == 'yes':
-##             return FastRedirect(self.yes())
-##         elif op == 'no':
-##             return FastRedirect(self.no())
-
 
 ########################################################
 # keep alive
@@ -1347,7 +1313,6 @@ class Worksheet_download(WorksheetResource, resource.Resource):
         r = open(filename, 'rb').read()
         os.unlink(filename)
         return static.Data(r, 'application/sage')
-        #return static.File(filename)
 
 class DownloadWorksheets(resource.Resource):
 
@@ -1462,12 +1427,12 @@ class Worksheet(WorksheetResource, resource.Resource):
             R = globals()['Worksheet_%s'%op]
             return R(self.name, username = self.username)
         except KeyError:
-            file = self.worksheet.data_directory() + '/' + op
+            file = os.path.join(self.worksheet.data_directory(), op)
             if os.path.exists(file):
                 return static.File(file)
             dir = self.worksheet.cells_directory()
             for F in os.listdir(dir):
-                h = '%s/%s/%s'%(dir,F,op)
+                h = os.path.join(dir,F,op)
                 if os.path.exists(h):
                     return static.File(h)
             return NotImplementedWorksheetOp(op, self.worksheet)
@@ -1794,7 +1759,7 @@ class CSS(resource.Resource):
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return static.File(css_path + "/" + name)
+        return static.File(os.path.join(css_path, name))
 
 setattr(CSS, 'child_main.css', Main_css())
 setattr(CSS, 'child_reset.css', Reset_css())
@@ -1855,7 +1820,7 @@ class Java(resource.Resource):
 
     def childFactory(self, request, name):
         gzip_handler(request)
-        return static.File(java_path + "/" + name)
+        return static.File(os.path.join(java_path, name))
 
 ############################
 # Logout
@@ -1877,7 +1842,7 @@ class Images(resource.Resource):
         return static.File(image_path)
 
     def childFactory(self, request, name):
-        return static.File(image_path + "/" + name)
+        return static.File(os.path.join(image_path, name))
 
 #####################################
 # Confirmation of registration
@@ -2317,7 +2282,7 @@ class Toplevel(resource.PostableResource):
     def childFactory(self, request, name):
         return self.userchildFactory(request, name)
 
-setattr(Toplevel, 'child_favicon.ico', static.File(image_path + '/favicon.ico'))
+setattr(Toplevel, 'child_favicon.ico', static.File(os.path.join(image_path, 'favicon.ico')))
 
 class LoginResourceClass(resource.Resource):
     def render(self, ctx):

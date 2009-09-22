@@ -339,7 +339,7 @@ class FileResource(resource.Resource):
             return http.Response(code=404, stream = "Unspecified cell or file.")
         cell = session.worksheet.get_cell_with_id(cell_id)
         if file_name in cell.files():
-            return static.File("%s/%s" % (cell.directory(), file_name))
+            return static.File(os.path.join(cell.directory(), file_name))
         else:
             return http.Response(code=404, stream = "No such file %s in cell %s." % (file_name, cell_id))
 

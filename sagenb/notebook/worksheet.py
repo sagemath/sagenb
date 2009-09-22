@@ -24,12 +24,13 @@ AUTHORS:
 ###########################################################################
 
 # Import standard Python libraries that we will use below
-import bz2, calendar, copy, crypt, os, re, shutil, string, time, traceback
+import base64, bz2, calendar, copy, crypt, os, re, shutil, string, time, traceback
 
 # General sage library code
-from sagenb.misc import (remote_file, cython, load, save, preparse_file,
-                         alarm, cancel_alarm, verbose, DOT_SAGE, walltime,
-                         do_preparse)
+from sagenb.misc import (remote_file, cython, load, save, 
+                         alarm, cancel_alarm, verbose, DOT_SAGE, walltime)
+
+from sagenb.support import preparse_file
 
 from sagenb.interfaces import WorksheetProcess_ReferenceImplementation
                          
@@ -102,11 +103,14 @@ def initialized_sage(server, ulimit):
     # Create new pexpect interface to a Python instance
     S = WorksheetProcess_ReferenceImplementation()
     # Send some code to initialize it.
-    S.execute("""from sagenb.worksheet_init import _support_
+    S.execute("""
+import base64
+from sagenb.worksheet_init import _support_
 import sagenb.notebook.interact
 # The following is Sage-specific
 from sage.all_notebook import *
 sage.plot.plot.EMBEDDED_MODE=True
+sage.misc.latex.EMBEDDED_MODE=True
 """)
     # Return our new Sage instance.
     return S
@@ -2868,6 +2872,7 @@ class Worksheet:
         if C.time() and not C.introspect():
             input += 'print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__))\n'
         self.__comp_is_running = True
+        'exec _support_.preparse(base64.b64decode("%s"))'%base64.b64encode(input)
         self.sage().execute(input)
                 
     def check_comp(self, wait=0.2):
@@ -2943,11 +2948,9 @@ class Worksheet:
                 C.set_introspect_html(out, completing=False)
         else:
             filenames = output_status.filenames
-            print "filenames = ", filenames
             if len(filenames) > 0:
                 # Copy files to the cell directory
                 cell_dir = os.path.abspath(self.cell_directory(C))
-                print cell_dir
                 if not os.path.exists(cell_dir):
                     os.makedirs(cell_dir)
                 for X in filenames:
@@ -3048,6 +3051,7 @@ class Worksheet:
         
 
     def worksheet_command(self, cmd):
+        # return URL in the web browser of the given cmd
         return '/home/%s/%s'%(self.filename(), cmd)
 
     ##########################################################
@@ -3388,10 +3392,8 @@ class Worksheet:
         return support.get_rightmost_identifier(s)
 
     def preparse(self, s):
-        if do_preparse:
-            s = preparse_file(s, magic=False, do_time=True,
-                              ignore_prompts=False)
-        return s
+        return preparse_file(s, magic=False, do_time=True,
+                          ignore_prompts=False)
 
     ##########################################################
     # Loading and attaching files

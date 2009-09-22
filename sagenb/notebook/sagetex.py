@@ -29,7 +29,7 @@ def sagetex(filename, gen=True, **kwds):
     path = os.path.splitext(absp)[0]
 
     for F in os.listdir(base):
-        fn = '%s/%s'%(base, F)
+        fn = os.path.join(base, F)
         if not fn.endswith('.html'):
             continue
         r = open(fn).read()

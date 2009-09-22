@@ -1,12 +1,13 @@
 Current TODO:
+[ ] preparser
+[x] make sure all "/" is replaced by os.path.join, so will work on windows eventually.
 [ ] getting output as it appears
-[ ] worksheet_process.py -- make it so graphics work, i.e., files created
+[x] worksheet_process.py -- make it so graphics work, i.e., files created
 [ ] use multiprocessing 
 
 
 General TODO:
 
-[ ] make sure all "/" is replaced by os.path.join, so will work on windows eventually.
 
 * component architecture: see Brickenstein sage-devel email 
   that mentions http://python-rum.org/browser/rum/component.py
