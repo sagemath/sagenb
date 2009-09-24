@@ -1665,6 +1665,11 @@ class Cell(Cell_generic):
             # http://www.evanfosmark.com/2009/01/cross-platform-file-locking-support-in-python/
             lock_name = base_name + '.lock'
 
+            ###################
+            # ** TODO ** -- this is worrisome, given that the server
+            # must not block for any nontrivial amount of time!
+            ###################            
+            
             # Try to acquire the lock, periodically.  If we time out,
             # we fall back to plainly formatted documentation.
             timeout = 0.5

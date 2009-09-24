@@ -14,7 +14,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
     A controlled Python process that executes code.  This is a
     reference implementation.
     """
-    def __init__(self):
+    def __init__(self, timeout=0.05):
         """
         Initialize this worksheet process.
         """
@@ -22,6 +22,16 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         self._expect = None
         self._is_started = False
         self._is_computing = False
+        self._timeout = timeout
+        self._prompt = "__SAGE__"
+        self._filename = ''
+        self._tempfiles = []
+
+    def __del__(self):
+        import os
+        for X in self._tempfiles:
+            if os.path.exists(X):
+                os.unlink(X)
 
     def __repr__(self):
         """
@@ -58,9 +68,10 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         Start this worksheet process running.
         """
-        self._expect = pexpect.spawn('python -u')
+        self._expect = pexpect.spawn('python')
         self._is_started = True
         self._is_computing = False
+        self._number = 0
         self._read()
 
 
@@ -100,34 +111,22 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         if self._expect is None:
             self.start()
-            
-        #n = random.randrange(2**256)
-        #self._start_marker = str(n-2)
-        #self._done_marker = str(n)
-#        self._so_far = ''
-        #string = 
-##         cmd = """
-## sys.stdout=open('output','w')        
-## try:
-##     exec r'''%s'''
-## except Exception, msg:
-##     traceback.print_exc(file=sys.stdout)
-## """%string        
-##         #string = "%s\n%s\n%s+1"%(n-2, string, n-1)
-##         print cmd
-
-        fd, name = tempfile.mkstemp()
-        open(name,'w').write(string)
+        self._number += 1
+        _, self._filename = tempfile.mkstemp()
+        self._tempfiles.append(self._filename)
+        open(self._filename,'w').write('import sys;sys.ps1="%s";print "START%s"\n'%(
+                                   self._prompt, self._number) +
+                             displayhook_hack(string))
+        self._expect.sendline('execfile("%s")'%\
+                              os.path.abspath(self._filename))
         self._so_far = ''
-        self._expect.sendline('execfile("%s")'%name)
         self._is_computing = True
 
     def _read(self):
         try:
-            self._expect.expect('>>>', 0.1)
+            self._expect.expect(pexpect.EOF, self._timeout)
             return True
         except:
-            print "read timeout"
             return False
 
     ###########################################################
@@ -144,21 +143,22 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
 
             - ``OutputStatus`` object.
         """
-        if self._expect is None or not self._is_computing:
-            return OutputStatus('',[],True)
-        
-        if self._read():
-            self._is_computing = False
-
+        self._read()
         self._so_far += self._expect.before
-        i = self._so_far.find('\n')
-        if i != -1:
-            s = self._so_far[i:].lstrip()
-            if not self._is_computing:
-                j = s.rfind('\n')
-                if j != -1:
-                    s = s[:j-2]
+        import re
+        v = re.findall('START%s.*%s'%(self._number,self._prompt), self._so_far, re.DOTALL)
+        if len(v) > 0:
+            self._is_computing = False
+            if os.path.exists(self._filename):
+                os.unlink(self._filename)
+            s = v[0][len('START%s'%self._number):-len(self._prompt)]
         else:
-            s = ''
-        
+            v = re.findall('START%s.*'%self._number, self._so_far, re.DOTALL)
+            if len(v) > 0:
+                s = v[0][len('START%s'%self._number):]
+            else:
+                s = ''
+        s = s.strip().rstrip(self._prompt)
+        #if not self._is_computing and os.path.exists(self._filename):
+        #    os.unlink(self._filename)
         return OutputStatus(s, [], not self._is_computing)

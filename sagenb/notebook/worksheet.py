@@ -3025,21 +3025,10 @@ class Worksheet:
         if len(self.__queue) == 0:
             # nothing to do
             return True
-
-        success = False
         # stop the current computation in the running Sage
-        try:
-            S = self.__sage
-        except AttributeError:
-            pass
-        else:
-            S.interrupt(INTERRUPT_TRIES, quit_on_fail=False)
-            import time
-            time.sleep(0.1)  # TODO: this sucks -- redesign!
-            if not S.is_computing():
-                self.clear_queue()
-            
-        return success
+        S = self.__sage
+        S.interrupt()
+        return True
 
     def clear_queue(self):
         # empty the queue
