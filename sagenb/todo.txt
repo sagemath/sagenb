@@ -11,8 +11,10 @@ Current TODO:
 [x] introspection
 [x] fill in not implemented stuff
 
-[ ] write pexpect based worksheet process system.
+[ ] write pexpect based worksheet process system using the filesystem as before.
 [ ] use multiprocessing 
+[ ] reference should have restart reset state
+
 
 [ ] fix doctests
 

@@ -1741,12 +1741,13 @@ class Cell(Cell_generic):
                     print 'Built: %s' % html_name
             finally:
                 # Contents should be flushed on close().
-                fd_html = open(html_name, 'r')
-                new_html = fd_html.read()
-                fd_html.close()
+                if os.path.exists(html_name):
+                    fd_html = open(html_name, 'r')
+                    new_html = fd_html.read()
+                    fd_html.close()
 
-                # We release the lock and delete the lock file.
-                os.close(fd_lock)
+                    # We release the lock and delete the lock file.
+                    os.close(fd_lock)
                 os.unlink(lock_name)
 
                 new_html = new_html.replace('<pre>', '<pre class="literal-block">')

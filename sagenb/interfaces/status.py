@@ -41,5 +41,5 @@ class OutputStatus:
         """
         Return string representation of this output status.
         """
-        return "Output Status:\n\toutput: %s\n\tfilenames: %s\n\tdone: %s"%(
+        return "Output Status:\n\toutput: '%s'\n\tfilenames: %s\n\tdone: %s"%(
             self.output, self.filenames, self.done)

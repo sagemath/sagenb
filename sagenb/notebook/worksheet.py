@@ -32,7 +32,11 @@ from sagenb.misc.misc import (cython, load, save,
 
 from sagenb.misc.remote_file import get_remote_file
 
-from sagenb.interfaces import WorksheetProcess_ReferenceImplementation
+from sagenb.interfaces import WorksheetProcess_ExpectImplementation
+
+WorksheetProcess = WorksheetProcess_ExpectImplementation
+#WorksheetProcess = WorksheetProcess_ReferenceImplementation
+
                          
 from sagenb.misc.support import preparse_file
 import sagenb.misc.support  as support
@@ -102,7 +106,7 @@ def initialized_sage(server, ulimit):
         Sage
     """
     # Create new pexpect interface to a Python instance
-    S = WorksheetProcess_ReferenceImplementation()
+    S = WorksheetProcess()
     # Send some code to initialize it.
     S.execute("""
 import base64
