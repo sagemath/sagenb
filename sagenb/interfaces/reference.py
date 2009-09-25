@@ -107,7 +107,7 @@ class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
 
 
 def execute_code(string, state):
-    print "execute: '''%s'''"%string
+    # print "execute: '''%s'''"%string
     string = displayhook_hack(string)
 
     # Now execute the code capturing the output and files that are

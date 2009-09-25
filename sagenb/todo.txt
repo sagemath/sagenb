@@ -10,21 +10,21 @@ Current TODO:
 [x] live documentation
 [x] introspection
 [x] fill in not implemented stuff
+[x] %cython
+[x] control-c to stop notebook
+[x] write pexpect based worksheet process system using the filesystem as before.
 
-[ ] write pexpect based worksheet process system using the filesystem as before.
-[ ] %modes
-[ ] ?? doesn't work
-[ ] use multiprocessing 
+
 [ ] reference should have restart reset state
-[ ] control-c to stop notebook
 
-
-[ ] fix doctests
+[ ] confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
+[ ] ?? doesn't work: import issue!
 
 -------------
 
 NEW FEATURES:
-
+[ ] fix doctests
+[ ] use multiprocessing 
 [ ] genuine infinite undo implemented not using stupid snapshots but a
 revision log
 

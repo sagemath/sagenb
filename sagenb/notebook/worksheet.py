@@ -32,7 +32,8 @@ from sagenb.misc.misc import (cython, load, save,
 
 from sagenb.misc.remote_file import get_remote_file
 
-from sagenb.interfaces import WorksheetProcess_ExpectImplementation
+from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
+                               WorksheetProcess_ReferenceImplementation)
 
 WorksheetProcess = WorksheetProcess_ExpectImplementation
 #WorksheetProcess = WorksheetProcess_ReferenceImplementation
@@ -122,6 +123,7 @@ sage.misc.latex.EMBEDDED_MODE=True
 # gets removed from the sage library.
 from sagenb.notebook.all import *
 """)
+    S.output_status()
     # Return our new Sage instance.
     return S
 
@@ -2965,7 +2967,12 @@ class Worksheet:
                     os.makedirs(cell_dir)
                 for X in filenames:
                     target = os.path.join(cell_dir, os.path.split(X)[1])
-                    shutil.copyfile(X, target)
+                    try:
+                        shutil.move(X, target)
+                    except Exception, msg:
+                        print msg
+            if output_status.tempdir is not None:
+                shutil.rmtree(output_status.tempdir, ignore_errors=True)
                     
             # Generate html, etc.
             html = C.files_html(out)
@@ -3610,16 +3617,19 @@ class Worksheet:
         # C.relative_id() has the advantage that block evals are cached, i.e.,
         # no need to recompile.  On the other hand tracebacks don't work if
         # you change a cell and create a new function in it.  Caching is
-        # also annoying since the linked .c file disappears. 
+        # also annoying since the linked .c file disappears.
+
+        # TODO: This design will *only* work on local machines -- need to redesign
+        # so works even if compute worksheet process is remote!
         id = self.next_block_id()
-        # id = C.relative_id()
-        spyx = os.path.abspath('%s/code/sage%s.spyx'%(self.directory(), id))
-        spyx = os.path.abspath(os.path.join(self.directory(), 'code', 'sage%s.spyx'%id))
+        code = os.path.join(self.directory(), 'code')
+        if not os.path.exists(code):
+            os.makedirs(code)
+        spyx = os.path.abspath(os.path.join(code, 'sage%s.spyx'%id))
         if not (os.path.exists(spyx) and open(spyx).read() == cmd):
             open(spyx,'w').write(cmd)
-        s  = '_support_.cython_import_all("%s", globals())'%spyx
-        return s
-
+        return '_support_.cython_import_all("%s", globals())'%spyx
+  
     def check_for_system_switching(self, input, cell):
         r"""
         Check for input cells that start with ``%foo``, where

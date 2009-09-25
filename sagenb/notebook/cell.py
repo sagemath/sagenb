@@ -1600,7 +1600,8 @@ class Cell(Cell_generic):
         """
         if html == "" or completing:
             self.__introspect_html = html
-        elif html.find("`") == -1 and html.find("::") == -1:
+        # TODO -- get rid of this -- everything should be rest?
+        elif "`" not in html and "::" not in html:
             # html doesn't seem to be in ReST format so use docutils
             # to process the preamble ("**File:**" etc.)  and put
             # everything else in a <pre> block.
@@ -1629,7 +1630,11 @@ class Cell(Cell_generic):
                 # It's important to use os.path.join, instead of +,
                 # because Sphinx counts on normalized paths.  It's also
                 # more portable.
-                std_doc_dir = os.path.join(DOT_SAGENB, 'sage_notebook/doc')
+
+                # TODO - this is horribly wrong -- it assumes that the notebook
+                # is always running in the sage_notebook directory on DOT_SAGENB,
+                # which is completely false. 
+                std_doc_dir = os.path.join(DOT_SAGENB, os.path.join('sage_notebook','doc'))
                 try:
                     os.makedirs(std_doc_dir)
                     _SAGE_INTROSPECT = std_doc_dir
@@ -1666,12 +1671,17 @@ class Cell(Cell_generic):
             lock_name = base_name + '.lock'
 
             ###################
-            # ** TODO ** -- this is worrisome, given that the server
+            #
+            # ** TODO ** -- this is VERY BAD, given that the server
             # must not block for any nontrivial amount of time!
+            # As is, somebody can probably trivially lock everybody out of the server
+            # by sending introspect requests.  This will have to change.
+            #
             ###################            
             
             # Try to acquire the lock, periodically.  If we time out,
             # we fall back to plainly formatted documentation.
+            
             timeout = 0.5
             delay = 0.05
             start_time = time.time()
@@ -1688,13 +1698,13 @@ class Cell(Cell_generic):
                         self.__introspect_html = '<pre class="introspection">' + plain_html + '</pre>'
                         return
                     time.sleep(delay)
-
+                    
             # We've acquired the lock.  Use cached HTML or run Sphinx.
             try:
                 open(html_name, 'r')
                 if verbose:
                     print 'Found: %s' % html_name
-            except IOError:
+            except IOError, msg:
                 html = html.replace('\\\\', '\\')
                 rst_name = base_name + '.rst'
                 fd_rst = open(rst_name, 'w')
@@ -1717,8 +1727,9 @@ class Cell(Cell_generic):
                 doctreedir = os.path.normpath(base_name)
                 confoverrides = {'html_context' : {}, 'master_doc' : hash}
 
-                # To suppress output, use this:
-
+                 # TODO: the below doesn't work when confdir does not really point to
+                 # a true Sphinx build directory, e.g., when this isn't in SAge.
+                 # This must be fixed for non-Sage.
                 if verbose:
                     import sys
                     sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, 'html', confoverrides, sys.stdout, sys.stderr, True)
@@ -1741,7 +1752,7 @@ class Cell(Cell_generic):
                     os.unlink(doctreedir)
                 except OSError:
                     pass
-
+                
                 if verbose:
                     print 'Built: %s' % html_name
             finally:
@@ -1753,6 +1764,9 @@ class Cell(Cell_generic):
 
                     # We release the lock and delete the lock file.
                     os.close(fd_lock)
+                else:
+                    new_html = html
+                
                 os.unlink(lock_name)
 
                 new_html = new_html.replace('<pre>', '<pre class="literal-block">')

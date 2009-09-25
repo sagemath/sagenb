@@ -23,19 +23,15 @@ class OutputStatus:
 
            - ``done`` -- bool, if True then computation is done, so ``output``
              is complete.
+
+           - ``tempdir`` -- (default: None) a filename of a directory; after
+             computation is done, the caller is responsible for
+             deleting this directory.
         """
         self.output = output
         self.filenames = filenames
         self.done = done
         self.tempdir = tempdir
-
-    def __del__(self):
-        try:
-            import os
-            if self.tempdir is not None and os.path.exists(self.tempdir):
-                shutil.rmtree(self.tempdir, ignore_errors=True)
-        except Exception, msg:
-            print "todo -- issue in status.py -- %s"%msg
 
     def __repr__(self):
         """

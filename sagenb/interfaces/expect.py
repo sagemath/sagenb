@@ -1,4 +1,4 @@
-import os, StringIO, sys, traceback, tempfile, random
+import os, StringIO, sys, traceback, tempfile, random, shutil
 
 from status import OutputStatus
 from format import displayhook_hack
@@ -18,20 +18,21 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         Initialize this worksheet process.
         """
-        self._output_status = OutputStatus('',[],True,None)
+        self._output_status = OutputStatus('',[],True)
         self._expect = None
         self._is_started = False
         self._is_computing = False
         self._timeout = timeout
         self._prompt = "__SAGE__"
         self._filename = ''
-        self._tempfiles = []
+        self._all_tempdirs = []
 
     def __del__(self):
-        import os
-        for X in self._tempfiles:
-            if os.path.exists(X):
-                os.unlink(X)
+        try:
+            for X in self._all_tempdirs:
+                try: shutil.rmtree(X, ignore_errors=True)
+                except: pass
+        except: pass
 
     def __repr__(self):
         """
@@ -57,7 +58,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         if self._expect is None: return
         self._expect.sendline(chr(3))  # send ctrl-c        
-        self._expect.sendline('quit_sage(verbose=%s)'%verbose)
+        self._expect.sendline('quit_sage()')
         os.killpg(self._expect.pid, 9)
         os.kill(self._expect.pid, 9)
         self._expect = None
@@ -112,13 +113,14 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         if self._expect is None:
             self.start()
         self._number += 1
-        _, self._filename = tempfile.mkstemp()
-        self._tempfiles.append(self._filename)
-        open(self._filename,'w').write('import sys;sys.ps1="%s";print "START%s"\n'%(
-                                   self._prompt, self._number) +
-                             displayhook_hack(string))
-        self._expect.sendline('execfile("%s")'%\
-                              os.path.abspath(self._filename))
+        self._tempdir = tempfile.mkdtemp()
+        self._filename = os.path.join(self._tempdir, '_sage_input_.py')
+        self._all_tempdirs.append(self._tempdir)
+        open(self._filename,'w').write(
+            'import sys;sys.ps1="%s";print "START%s"\n'%(
+            self._prompt, self._number) + displayhook_hack(string))
+        self._expect.sendline('\nimport os;os.chdir("%s");\nexecfile("_sage_input_.py")'%(
+                         self._tempdir))
         self._so_far = ''
         self._is_computing = True
 
@@ -159,6 +161,12 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
             else:
                 s = ''
         s = s.strip().rstrip(self._prompt)
-        #if not self._is_computing and os.path.exists(self._filename):
-        #    os.unlink(self._filename)
-        return OutputStatus(s, [], not self._is_computing)
+
+        if self._is_computing:
+            files = []
+        else:
+            if os.path.exists(self._filename):
+                os.unlink(self._filename)
+            files = [os.path.join(self._tempdir, x) for x in os.listdir(self._tempdir)]
+            
+        return OutputStatus(s, files, not self._is_computing, self._tempdir)
