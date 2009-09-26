@@ -13,20 +13,29 @@ Current TODO:
 [x] %cython
 [x] control-c to stop notebook
 [x] write pexpect based worksheet process system using the filesystem as before.
+[x] reference should have restart reset state
 
 
-[ ] reference should have restart reset state
+[ ] implement ulimit/ssh/etc options like before
+[ ] start public demo server using ssh
+[ ] reimplement sphinx introspection. 
+       * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
 
-[ ] confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
-[ ] ?? doesn't work: import issue!
+[ ] hunt for bugs
+[ ] make an official spkg
+[ ] make patch to remove notebook from sage itself.
 
--------------
+-------------------------------------------------------------------
 
-NEW FEATURES:
+[ ] code to benchmark notebook externally
+[ ] implement %cython mode outside sage (and as a full mode?)
 [ ] fix doctests
-[ ] use multiprocessing 
-[ ] genuine infinite undo implemented not using stupid snapshots but a
-revision log
+[ ] worksheet processes use fork
+[ ] worksheet process use multiprocessing 
+[ ] worksheet processes using server on remote machine
+[ ] genuine infinite undo implemented not using stupid snapshots but a revision log
+[ ] @interact: make it so docstring of function is somehow nicely typeset and accessible
+[ ] @interact's that can be included with sage
 
 
 General TODO:

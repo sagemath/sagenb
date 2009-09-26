@@ -200,7 +200,6 @@ except ImportError:
 try:
     from sage.misc.all import is_package_installed
 except ImportError:
-    @stub
     def is_package_installed(name, *args, **kwds):
         return False
 
@@ -356,4 +355,5 @@ try:
 except ImportError:
     @stub
     def cython(*args, **kwds):
-        pass
+        # TODO
+        raise NotImplementedError, "Curently %cython mode requires Sage." 

@@ -114,13 +114,14 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
             self.start()
         self._number += 1
         self._tempdir = tempfile.mkdtemp()
-        self._filename = os.path.join(self._tempdir, '_sage_input_.py')
+        self._filename = os.path.join(self._tempdir, '_sage_input_%s.py'%self._number)
         self._all_tempdirs.append(self._tempdir)
+        # The magic comment at the very start of the file allows utf8 characters.
         open(self._filename,'w').write(
-            'import sys;sys.ps1="%s";print "START%s"\n'%(
+            '# -*- coding: utf_8 -*-\nimport sys;sys.ps1="%s";print "START%s"\n'%(
             self._prompt, self._number) + displayhook_hack(string))
-        self._expect.sendline('\nimport os;os.chdir("%s");\nexecfile("_sage_input_.py")'%(
-                         self._tempdir))
+        self._expect.sendline('\nimport os;os.chdir("%s");\nexecfile("%s")'%(
+                         self._tempdir, self._filename))
         self._so_far = ''
         self._is_computing = True
 
@@ -151,8 +152,6 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         v = re.findall('START%s.*%s'%(self._number,self._prompt), self._so_far, re.DOTALL)
         if len(v) > 0:
             self._is_computing = False
-            if os.path.exists(self._filename):
-                os.unlink(self._filename)
             s = v[0][len('START%s'%self._number):-len(self._prompt)]
         else:
             v = re.findall('START%s.*'%self._number, self._so_far, re.DOTALL)
@@ -165,8 +164,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         if self._is_computing:
             files = []
         else:
-            if os.path.exists(self._filename):
-                os.unlink(self._filename)
             files = [os.path.join(self._tempdir, x) for x in os.listdir(self._tempdir)]
+            files = [x for x in files if x != self._filename]
             
-        return OutputStatus(s, files, not self._is_computing, self._tempdir)
+        return OutputStatus(s, files, not self._is_computing)

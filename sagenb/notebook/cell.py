@@ -1600,8 +1600,9 @@ class Cell(Cell_generic):
         """
         if html == "" or completing:
             self.__introspect_html = html
+            return
         # TODO -- get rid of this -- everything should be rest?
-        elif "`" not in html and "::" not in html:
+        elif True: #"`" not in html and "::" not in html:
             # html doesn't seem to be in ReST format so use docutils
             # to process the preamble ("**File:**" etc.)  and put
             # everything else in a <pre> block.
@@ -1614,9 +1615,25 @@ class Cell(Cell_generic):
             else:
                 preamble = ""
             self.__introspect_html = '<div class="docstring">' + preamble + '<pre>' + html + '</pre></div>'
+            return
         else:
-            # html is in ReST format, so use Sphinx to process it
+            # I AM disabling this beautiful rest stuff for now and
+            # will rewrite it first thing later.  The reason is
+            # because it is a massive security whole and is just wrong
+            # in many ways, and because of how it is written no longer
+            # works.  Some issues:
+            #
+            #     * it is run by the server, but it should be run by
+            #     the worksheet process, which has performance and
+            #     security implications.
+            #
+            #     * it calls produce_latex_macro which does
+            #           exec('from ' + module + ' import ' + real_name)
+            #       which scares the pants off me.
+            raise NotImplementedError
             
+            # html is in ReST format, so use Sphinx to process it
+            #
             # Set the location of the introspection cache, "permanent"
             # or temporary.  The former, DOT_SAGENB/sage_notebook/doc,
             # can pool queries from multiple worksheet processes.  The
@@ -1700,11 +1717,7 @@ class Cell(Cell_generic):
                     time.sleep(delay)
                     
             # We've acquired the lock.  Use cached HTML or run Sphinx.
-            try:
-                open(html_name, 'r')
-                if verbose:
-                    print 'Found: %s' % html_name
-            except IOError, msg:
+            if not os.path.exists(html_name):
                 html = html.replace('\\\\', '\\')
                 rst_name = base_name + '.rst'
                 fd_rst = open(rst_name, 'w')
@@ -1755,22 +1768,19 @@ class Cell(Cell_generic):
                 
                 if verbose:
                     print 'Built: %s' % html_name
-            finally:
-                # Contents should be flushed on close().
-                if os.path.exists(html_name):
-                    fd_html = open(html_name, 'r')
-                    new_html = fd_html.read()
-                    fd_html.close()
 
-                    # We release the lock and delete the lock file.
-                    os.close(fd_lock)
-                else:
-                    new_html = html
+
+            # Contents should be flushed on close().
+            if os.path.exists(html_name):
+                fd_html = open(html_name, 'r')
+                new_html = fd_html.read()
+                fd_html.close()
+
+                # We release the lock and delete the lock file.
+                os.close(fd_lock)
                 
-                os.unlink(lock_name)
-
                 new_html = new_html.replace('<pre>', '<pre class="literal-block">')
-
+                
                 # Translate URLs for media from something like
                 #    "../../media/...path.../blah.png"
                 # or
@@ -1781,8 +1791,18 @@ class Cell(Cell_generic):
                                   'src="/doc/static/reference/media/\\2"',
                                   new_html)
 
-                self.__introspect_html = new_html
-                return
+            else:
+
+                print "BUG -- error constructing html"
+                # TODO -- this should never happen, but does in
+                # case that the Sage Spinx docs aren't installed,
+                # e.g., when running the notebook from outside of sage.
+                new_html = '<pre>%s</pre>'%html
+
+            os.unlink(lock_name)
+
+
+            self.__introspect_html = new_html
 
     def introspect_html(self):
         """

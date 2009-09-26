@@ -582,7 +582,6 @@ def sage_getsourcelines(obj, is_binary=False):
         source_lines = open(filename).readlines()
     except IOError:
         return None
-
     return _extract_source(source_lines, lineno), lineno
 
 

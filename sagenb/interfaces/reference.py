@@ -40,7 +40,7 @@ class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
         """
         Quit this worksheet process.  
         """
-        pass
+        self._state ={}
 
     def start(self):
         """

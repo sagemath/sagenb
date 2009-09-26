@@ -36,6 +36,7 @@ from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
                                WorksheetProcess_ReferenceImplementation)
 
 WorksheetProcess = WorksheetProcess_ExpectImplementation
+
 #WorksheetProcess = WorksheetProcess_ReferenceImplementation
 
                          
@@ -2971,9 +2972,8 @@ class Worksheet:
                         shutil.move(X, target)
                     except Exception, msg:
                         print msg
-            if output_status.tempdir is not None:
-                shutil.rmtree(output_status.tempdir, ignore_errors=True)
-                    
+
+                  
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())
