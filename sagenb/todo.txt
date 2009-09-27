@@ -21,9 +21,17 @@ Current TODO:
 
 [x] good error message on crash of the sage process...
 
-[ ] max_walltime -- doesnt' work
+[x] max_walltime -- doesnt' work
+
+[ ] push my hg repo somewhere
 
 [ ] secure mode -- check it works.
+
+[ ] make sure that the old notebook directory "just works" with the new notebook
+
+[ ] DATA directory permissions issue -- the whole design of the "DATA" directory needs to be redone, since I vastly improved the security model of how the two-user notebook works (now all computations are done by a user that does *not* have permission to view or change *anything* in the server's sage_notebook directory -- everything happens in /tmp -- this is a VAST improvement, but means that DATA directory just doesn't work anymore as implemented). 
+
+[ ] remove list of alternative notebooks when not run as part of sage.
 
 [ ] start public demo server using ssh
 [ ] reimplement sphinx introspection. 
@@ -31,6 +39,7 @@ Current TODO:
 [ ] hunt for bugs
 [ ] make an official spkg
 [ ] make patch to remove notebook from sage itself.
+
 
 [ ] DATA directory *can't* work if all computations remote.  Hmmm.
 
