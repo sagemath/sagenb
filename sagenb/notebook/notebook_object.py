@@ -147,15 +147,12 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
                        server_pool is also given, the worksheet processes
                        are run with these constraints. See the ulimit
                        documentation. Common options include:
-                           -f   The maximum size of files created by the
-                                shell
-                           -t   The maximum amount of cpu time in seconds. 
+                           -t   The maximum amount of cpu time in seconds.
+                                NOTE: For Sage, -t is the wall time, not cpu time.
                            -u   The maximum number of processes available to
                                 a single user. 
                            -v   The maximum amount of virtual memory
                                 available to the process.
-                           -u   The maximum number of processes available to
-                                a single user.
                        Values are in 1024-byte increments, except for `-t',
                        which is in seconds, and `-u' which is a positive
                        integer. Example:  ulimit="-v 400000 -t 30"

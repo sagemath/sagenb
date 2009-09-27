@@ -23,7 +23,7 @@ class WorksheetProcess:
     A controlled Python process that executes code.  This is a
     reference implementation.
     """
-    def __init__(self):
+    def __init__(self, **kwds):
         """
         Initialize this worksheet process.
         """
@@ -64,6 +64,12 @@ class WorksheetProcess:
         Start this worksheet process running.
         """
         raise NotImplementedError
+
+    def update(self):
+        """
+        Update this worksheet process
+        """
+        # default implementation is to do nothing.
 
     ###########################################################
     # Query the state of the subprocess

@@ -15,18 +15,30 @@ Current TODO:
 [x] write pexpect based worksheet process system using the filesystem as before.
 [x] reference should have restart reset state
 
+[x] one user running another user's sage install on OS X -- Abort!
 
-[ ] implement ulimit/ssh/etc options like before
+[x] implement ulimit/ssh/etc options like before
+
+[x] good error message on crash of the sage process...
+
+[ ] max_walltime -- doesnt' work
+
+[ ] secure mode -- check it works.
+
 [ ] start public demo server using ssh
 [ ] reimplement sphinx introspection. 
        * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
-
 [ ] hunt for bugs
 [ ] make an official spkg
 [ ] make patch to remove notebook from sage itself.
 
+[ ] DATA directory *can't* work if all computations remote.  Hmmm.
+
 -------------------------------------------------------------------
 
+[ ] change api for notebook command; in particular enable capability
+    to have different sage commadn on remote machine
+[ ] worksheet processes using named pipes
 [ ] code to benchmark notebook externally
 [ ] implement %cython mode outside sage (and as a full mode?)
 [ ] fix doctests

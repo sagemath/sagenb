@@ -33,11 +33,8 @@ from sagenb.misc.misc import (cython, load, save,
 from sagenb.misc.remote_file import get_remote_file
 
 from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
-                               WorksheetProcess_ReferenceImplementation)
-
-WorksheetProcess = WorksheetProcess_ExpectImplementation
-
-#WorksheetProcess = WorksheetProcess_ReferenceImplementation
+                               WorksheetProcess_ReferenceImplementation,
+                               WorksheetProcess_RemoteExpectImplementation)
 
                          
 from sagenb.misc.support import preparse_file
@@ -76,115 +73,16 @@ ARCHIVED = 0
 ACTIVE   = 1
 TRASH    = 2
 
-# The default is for there to be one sage session for each worksheet.
-# If this is False, then there is just one global Sage session, like
-# with Mathematica. The multisession variable gets possibly changed
-# when the notebook function in notebook.py is called.
+all_worksheet_processes = []
 
-multisession = True
+def update_worksheets():
+    """
+    Iterate through and "update" all the worksheets.  This is needed for things like
+    wall timeouts.
+    """
+    for S in all_worksheet_processes:
+        S.update()
 
-def initialized_sage(server, ulimit):
-    """
-    Return one copy of a Sage compute process that has initialization
-    code run.
-    
-    INPUT:
-    
-    
-    -  ``server`` - if sessions will be run via ssh on a
-       remote account then this string specifies that account (passed on
-       to the Sage pexpect interface).
-    
-    -  ``ulimit`` - string; passed to the ulimit command
-       before running the subprocess
-    
-    
-    OUTPUT: a pexpect interface to a local or remote copy of Sage
-    
-    EXAMPLES::
-    
-        sage: S = sagenb.notebook.worksheet.initialized_sage(None,None)
-        sage: S
-        Sage
-    """
-    # Create new pexpect interface to a Python instance
-    S = WorksheetProcess()
-    # Send some code to initialize it.
-    S.execute("""
-import base64
-import sagenb.misc.support as _support_
-import sagenb.notebook.interact  # for setting current cell id
-from sagenb.notebook.interact import interact
-
-# The following is Sage-specific -- this immediately bombs out if sage isn't installed.
-from sage.all_notebook import *
-sage.plot.plot.EMBEDDED_MODE=True
-sage.misc.latex.EMBEDDED_MODE=True
-# TODO: For now we take back sagenb interact; do this until the sage notebook
-# gets removed from the sage library.
-from sagenb.notebook.all import *
-""")
-    S.output_status()
-    # Return our new Sage instance.
-    return S
-
-_a_sage = None
-def init_sage_prestart(server, ulimit):
-    """
-    Set the module-scope variable _a_sage to an initialized sage
-    server.
-    
-    INPUT:
-    
-    
-    -  ``server, ulimit`` - strings that are passed to the
-       Sage pexpect interface constructor
-    
-    
-    EXAMPLES: The _a_sage variable is initially set to None::
-    
-        sage: sagenb.notebook.worksheet._a_sage
-    
-    We call init_sage_prestart and now _a_sage is a Sage instance::
-    
-        sage: sagenb.notebook.worksheet.init_sage_prestart(None,None)
-        sage: sagenb.notebook.worksheet._a_sage
-        Sage
-    """
-    global _a_sage
-    _a_sage = initialized_sage(server, ulimit)
-    
-def one_prestarted_sage(server, ulimit):
-    """
-    Return a Sage interface that has been initialized.
-    
-    INPUT:
-    
-    
-    -  ``server, ulimit`` - strings that are passed to the
-       Sage pexpect interface constructor
-    
-    
-    OUTPUT: an interface to a running copy of Sage
-    
-    If the global variable multisession is true, each call to
-    one_prestarted_sage returns a new Sage compute instance.
-    Otherwise it always returns the same instance.
-    
-    EXAMPLES::
-    
-        sage: sagenb.notebook.worksheet.one_prestarted_sage(None,None)
-        Sage
-        sage: sagenb.notebook.worksheet.multisession=False
-        sage: sagenb.notebook.worksheet.one_prestarted_sage(None,None) is sagenb.notebook.worksheet._a_sage
-        True
-        sage: sagenb.notebook.worksheet.multisession=True
-    """
-    global _a_sage
-    X = _a_sage
-    if multisession:
-        init_sage_prestart(server, ulimit)
-    return X
 
 import notebook as _notebook
 def worksheet_filename(name, owner):
@@ -2735,18 +2633,37 @@ class Worksheet:
 
     def initialize_sage(self):
         object_directory = os.path.abspath(self.notebook().object_directory())
-        S = self.sage()
+        S = self.__sage
         try:
-            # todo -- not windows safe
-            cmd = '__DIR__="%s/"; DIR=__DIR__; DATA="%s/"; '%(self.DIR(), os.path.abspath(self.data_directory()))
-            cmd += '_support_.init(None, globals()); '
+            dirs = '__DIR__="%s%s"; DIR=__DIR__; DATA="%s%s"; '%(
+                self.DIR(), os.path.sep, os.path.abspath(self.data_directory()),
+                os.path.sep)
+            dirs += '_support_.init(None, globals()); '
+            cmd = """
+import base64
+import sagenb.misc.support as _support_
+import sagenb.notebook.interact  # for setting current cell id
+from sagenb.notebook.interact import interact
+
+%s
+
+# The following is Sage-specific -- this immediately bombs out if sage isn't installed.
+from sage.all_notebook import *
+sage.plot.plot.EMBEDDED_MODE=True
+sage.misc.latex.EMBEDDED_MODE=True
+# TODO: For now we take back sagenb interact; do this until the sage notebook
+# gets removed from the sage library.
+from sagenb.notebook.all import *
+    """%dirs
             S.execute(cmd)
+            S.output_status()
             
         except Exception, msg:
             print "ERROR initializing compute process:\n"
             print msg
             del self.__sage
-            raise RuntimeError
+            raise RuntimeError, msg
+        
         A = self.attached_files()
         for F in A.iterkeys():
             A[F] = 0  # expire all
@@ -2769,8 +2686,8 @@ class Worksheet:
             if S.is_started(): return S
         except AttributeError:
             pass
-        self.__sage = one_prestarted_sage(server = self.notebook().get_server(),
-                                          ulimit = self.notebook().get_ulimit())
+        self.__sage = self.notebook().new_worksheet_process()
+        all_worksheet_processes.append(self.__sage)
         self.__next_block_id = 0
         self.initialize_sage()
         
@@ -3049,10 +2966,7 @@ class Worksheet:
         Restart Sage kernel.
         """
         self.quit()
-
-        self.__sage = initialized_sage(server = self.notebook().get_server(),
-                                       ulimit = self.notebook().get_ulimit())
-        self.initialize_sage()
+        self.sage()
         self.start_next_comp()
         
 

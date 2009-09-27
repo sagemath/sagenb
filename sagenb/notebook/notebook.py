@@ -882,6 +882,59 @@ class Notebook:
             i = 0
         return P[i]
 
+    def new_worksheet_process(self):
+        """
+        Return a new worksheet process object with parameters determined by
+        configuration of this notebook server.
+        """
+        from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
+                                       WorksheetProcess_ReferenceImplementation,
+                                       WorksheetProcess_RemoteExpectImplementation)
+
+        ulimit = self.get_ulimit()
+        from sagenb.interfaces import ProcessLimits
+        # We have to parse the ulimit format to our ProcessLimits.
+        # The typical format is. 
+        # '-u 400 -v 1000000 -t 3600'
+        # Despite -t being cputime for ulimit, we map it to walltime,
+        # since that is the only thing that really makes sense for a
+        # notebook server.
+        #    -u --> max_processes
+        #    -v --> max_vmem (but we divide by 1000)
+        #    -t -- > max_walltime
+
+        max_vmem = max_cputime = max_walltime = None
+        tbl = {'v':None, 'u':None, 't':None}
+        for x in ulimit.split('-'):
+            for k in tbl.keys():
+                if x.startswith(k): tbl[k] = int(x.split()[1].strip())
+        if tbl['v'] is not None:
+            tbl['v'] = tbl['v']/1000.0
+            
+                
+        process_limits = ProcessLimits(max_vmem=tbl['v'], max_walltime=tbl['t'],
+                                       max_processes=tbl['u'])
+        
+        server_pool = self.server_pool()
+        if len(server_pool) == 0:
+            return WorksheetProcess_ExpectImplementation(process_limits=process_limits)
+        else:
+            import random
+            user_at_host = random.choice(server_pool)
+            python_command = os.path.join(os.environ['SAGE_ROOT'], 'sage -python')
+            return WorksheetProcess_RemoteExpectImplementation(user_at_host=user_at_host,
+                             process_limits=process_limits,
+                             remote_python=python_command)
+        
+    
+    def _python_command(self):
+        """
+        """
+        try: return self.__python_command
+        except AttributeError: pass
+        
+            
+        
     ##########################################################
     # The default math software system for new worksheets for
     # a given user or the whole notebook (if username is None).
@@ -1357,6 +1410,9 @@ class Notebook:
     def quit(self):
         for W in self.__worksheets.itervalues():
             W.quit()
+
+    def update_worksheet_processes(self):
+        worksheet.update_worksheets()
 
     def quit_idle_worksheet_processes(self):
         timeout = self.conf()['idle_timeout']

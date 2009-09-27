@@ -105,6 +105,7 @@ def notebook_idle_check():
     global last_idle_time
     t = walltime()
     if t > last_idle_time + idle_interval:
+        notebook.update_worksheet_processes()
         notebook.quit_idle_worksheet_processes()
         last_idle_time = t
 

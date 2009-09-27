@@ -184,7 +184,6 @@ twist.OPEN_MODE = %s
 twist.SID_COOKIE = str(hash("%s"))
 twist.init_updates()
 import sagenb.notebook.worksheet as worksheet
-worksheet.init_sage_prestart(twist.notebook.get_server(), twist.notebook.get_ulimit())
 
 import signal, sys, random
 def save_notebook():

@@ -13,4 +13,7 @@ from worksheet_process import WorksheetProcess
 
 from reference import WorksheetProcess_ReferenceImplementation
 
-from expect import WorksheetProcess_ExpectImplementation
+from expect import (WorksheetProcess_ExpectImplementation,
+                    WorksheetProcess_RemoteExpectImplementation)
+
+from limits import ProcessLimits

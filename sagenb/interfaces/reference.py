@@ -12,10 +12,9 @@ class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
     A controlled Python process that executes code.  This is a
     reference implementation.
     """
-    def __init__(self):
-        """
-        Initialize this worksheet process.
-        """
+    def __init__(self, **kwds):
+        for key in kwds.keys():
+            print "WorksheetProcess_ReferenceImplementation: does not support '%s' option.  Ignored."%key
         self._output_status = OutputStatus('',[],True,None)
         self._state = {}
 
