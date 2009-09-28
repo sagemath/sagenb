@@ -22,12 +22,11 @@ Current TODO:
 [x] start public demo server using ssh
 [x] simple notebook stress test
 [x] trim list of alternative notebooks sessions when not run as part of sage.
-
 [x] secure mode with sage present -- fix it
-
-[ ] uploading: "rbeezer -- williamstein: I tried one URL, one on disk,
+[x] uploading: "rbeezer -- williamstein: I tried one URL, one on disk,
 both came back "internal server error" - I can try a few more.  Do you
 want bugs in Trac or Google group"
+
 
 [ ] make sure that the old notebook directory "just works" with the new notebook:
 problem -- old notebooks unpickle into the old notebook code!
@@ -36,12 +35,15 @@ problem -- old notebooks unpickle into the old notebook code!
 DATA directory permissions issue -- the whole design of the "DATA" directory needs to be redone, since I vastly improved the security model of how the two-user notebook works (now all computations are done by a user that does *not* have permission to view or change *anything* in the server's sage_notebook directory -- everything happens in /tmp -- this is a VAST improvement, but means that DATA directory just doesn't work anymore as implemented). 
 
 [ ] reimplement sphinx introspection. 
-       * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
-[ ] hunt for bugs
-[ ] make an official spkg
-[ ] make patch to remove notebook from sage itself.
+    * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
+
+[ ] make an official spkg for inclusion in sage-4.1.3.
 
 -------------------------------------------------------------------
+
+[ ] make patch to remove notebook from sage itself.
+
+[ ] make it so uploading a worksheet does not lock the server like it does now.
 
 [ ] secure mode outside of sage -- fix it to work with openssl, etc.
 

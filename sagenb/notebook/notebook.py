@@ -29,7 +29,7 @@ from cgi import escape
 
 # Sage libraries
 from   sagenb.misc.misc   import (pad_zeros, is_package_installed,
-                             sage_jsmath_macros, cputime)
+                             sage_jsmath_macros, cputime, tmp_dir)
 
 # Sage Notebook
 import css          # style
@@ -1228,65 +1228,70 @@ class Notebook:
             sage: nb.worksheet_names()
             ['admin/0', 'admin/2']
         """
-        # Decompress the worksheet to a temporary directory.
-        tmp = tmp_dir()
-        cmd = 'cd "%s"; tar -jxf "%s"'%(tmp, os.path.abspath(filename))
-        if verbose:
-            print cmd
-        e = os.system(cmd)
-        if e:
-            raise ValueError, "Error decompressing saved worksheet."
-
-        # Find the worksheet text representation and load it into memory.
         try:
-            D = os.listdir(tmp)[0]
-        except IndexError:
-            raise ValueError, "invalid worksheet"
-        text_filename = os.path.join(tmp,D,'worksheet.txt')
-        worksheet_txt = open(text_filename).read()
-        worksheet = self.new_worksheet_with_title_from_text(worksheet_txt, owner)
-        worksheet.set_owner(owner)
-        name = worksheet.filename_without_owner()
+            # TODO -- this locks the server -- not good.
+            # Is there a way to do this in a worksheet subprocess somehow?
+            # Decompress the worksheet to a temporary directory.
+            tmp = tmp_dir()
+            cmd = 'cd "%s"; tar -jxf "%s"'%(tmp, os.path.abspath(filename))
+            if verbose:
+                print cmd
+            e = os.system(cmd)
+            if e:
+                raise ValueError, "Error decompressing saved worksheet."
+
+            # Find the worksheet text representation and load it into memory.
+            try:
+                D = os.listdir(tmp)[0]
+            except IndexError:
+                raise ValueError, "invalid worksheet"
+            text_filename = os.path.join(tmp,D,'worksheet.txt')
+            worksheet_txt = open(text_filename).read()
+            worksheet = self.new_worksheet_with_title_from_text(worksheet_txt, owner)
+            worksheet.set_owner(owner)
+            name = worksheet.filename_without_owner()
+
+            # Change the filename of the worksheet, if necessary
+            names = [w.filename_without_owner() for w in self.get_worksheets_with_owner(owner)]
+            if name in names:
+                name = 0
+                while str(name) in names:
+                    name += 1
+                name = str(name)
+                worksheet.set_filename_without_owner(name)
+
+            # Change the display name of the worksheet if necessary
+            name = worksheet.name()
+            display_names = [w.name() for w in self.get_worksheets_with_owner(owner)]
+            if name in display_names:
+                j = name.rfind('(')
+                if j != -1:
+                    name = name[:j].rstrip()
+                i = 2
+                while name + " (%s)"%i in display_names:
+                    i += 1
+                name = name + " (%s)"%i
+                worksheet.set_name(name)
+
+
+            # Put the worksheet files in the target directory.
+            S = self.__worksheet_dir
+            target = os.path.join(os.path.abspath(S), worksheet.filename())
+            if not os.path.exists(target):
+                os.makedirs(target)
+
+            # TODO: scary!!  redo this to use shutil, etc. 
+            cmd = 'rm -rf "%s"/*; mv "%s/%s/"* "%s/"'%(target, tmp, D, target)
+            if os.system(cmd):
+                raise ValueError, "Error moving over files when loading worksheet."
+
+            worksheet.edit_save(worksheet_txt)
+
+            return worksheet
         
-        # Change the filename of the worksheet, if necessary
-        names = [w.filename_without_owner() for w in self.get_worksheets_with_owner(owner)]
-        if name in names:
-            name = 0
-            while str(name) in names:
-                name += 1
-            name = str(name)
-            worksheet.set_filename_without_owner(name)
-        
-        # Change the display name of the worksheet if necessary
-        name = worksheet.name()
-        display_names = [w.name() for w in self.get_worksheets_with_owner(owner)]
-        if name in display_names:
-            j = name.rfind('(')
-            if j != -1:
-                name = name[:j].rstrip()
-            i = 2
-            while name + " (%s)"%i in display_names:
-                i += 1
-            name = name + " (%s)"%i
-            worksheet.set_name(name)
+        finally:
 
-
-        # Put the worksheet files in the target directory.
-        S = self.__worksheet_dir
-        target = os.path.join(os.path.abspath(S), worksheet.filename())
-        if not os.path.exists(target):
-            os.makedirs(target)
-
-        # TODO: scary!!  redo this to use shutil, etc. 
-        cmd = 'rm -rf "%s"/*; mv "%s/%s/"* "%s/"'%(target, tmp, D, target)
-        if os.system(cmd):
-            raise ValueError, "Error moving over files when loading worksheet."
-
-        worksheet.edit_save(worksheet_txt)
-        
-        shutil.rmtree(tmp, ignore_errors=True)
-
-        return worksheet
+            shutil.rmtree(tmp, ignore_errors=True)
 
 
     ##########################################################
