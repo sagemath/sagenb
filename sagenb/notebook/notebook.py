@@ -1656,7 +1656,7 @@ class Notebook:
             sage: nb.html_download_or_delete_datafile(W, 'admin', 'bar')
             '\n<!D...ploaded to this worksheet.</p>\n\n<hr class="usercontrol" />\n\n\n\n\n    </body>\n</html>'
         """
-        path = os.path.join("home", ws.filename(), "data", filename)
+        path = "/home/%s/data/%s"%(ws.filename(), filename)
 
         worksheets = self.get_worksheets_with_viewer(username)
         active_worksheets = [worksheet for worksheet in worksheets if worksheet.is_active(username)]
