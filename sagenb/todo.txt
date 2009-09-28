@@ -30,6 +30,9 @@ want bugs in Trac or Google group"
 DATA directory permissions issue -- the whole design of the "DATA" directory needs to be redone, since I vastly improved the security model of how the two-user notebook works (now all computations are done by a user that does *not* have permission to view or change *anything* in the server's sage_notebook directory -- everything happens in /tmp -- this is a VAST improvement, but means that DATA directory just doesn't work anymore as implemented). 
 [x] "Upload or create data file attached to the worksheet '%s'"
 
+[ ] pure python mode now broken with expect implementation -- every input crashes worksheet
+[ ] notebook(...) command should *not* remember options from last run. that's just obnoxious.
+
 [ ] data dropdown doesn't list uploaded files
 
 [ ] notebook server should take ownership of all files it gets back
@@ -50,7 +53,11 @@ problem -- old notebooks unpickle into the old notebook code!
 
 [ ] make an official spkg for inclusion in sage-4.1.3.
 
+[ ] write an overview of how the sage notebook works.
+
 -------------------------------------------------------------------
+
+[ ] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
 
 [ ] automated testing -- "Windmill seems to be more popular now -- especially with Python stuff "
 

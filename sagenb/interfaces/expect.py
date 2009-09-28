@@ -62,12 +62,13 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
             self._max_walltime = process_limits.max_walltime
 
     def command(self):
-        if self._ulimit == '':
-            return self._python
+        return self._python
+        # TODO: The following simply doesn't work -- this is not a valid way to run
+        # ulimited.  Also we should check if ulimit is available before even
+        # doing this.   
         return '&&'.join([x for x in [self._ulimit, self._python] if x])
 
     def __del__(self):
-        print "cleaning up a worksheet process"
         try: self._cleanup_tempfiles()
         except: pass
         try: self._cleanup_data_dir()

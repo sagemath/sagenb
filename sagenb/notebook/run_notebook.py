@@ -59,7 +59,7 @@ def notebook_twisted(self,
              require_login = True, 
                      
              server_pool = None,
-             ulimit      = None,
+             ulimit      = '',
 
              timeout     = 0,
 
@@ -125,12 +125,8 @@ def notebook_twisted(self,
                 print "Login to the Sage notebook as admin with the password you specified above."
         #nb.del_user('root')  
             
-    if not server_pool is None:
-        nb.set_server_pool(server_pool)
-        
-    if not ulimit is None:
-        nb.set_ulimit(ulimit)
-
+    nb.set_server_pool(server_pool)
+    nb.set_ulimit(ulimit)
     nb.set_accounts(accounts)
     
     if os.path.exists('%s/nb-older-backup.sobj'%directory):
