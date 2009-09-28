@@ -59,6 +59,8 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
             self._max_walltime = process_limits.max_walltime
 
     def command(self):
+        if self._ulimit == '':
+            return self._python
         return '&&'.join([x for x in [self._ulimit, self._python] if x])
 
     def __del__(self):
@@ -344,7 +346,10 @@ class WorksheetProcess_RemoteExpectImplementation(WorksheetProcess_ExpectImpleme
         self._remote_python = remote_python
 
     def command(self):
-        c = '&&'.join([x for x in [self._ulimit, self._remote_python] if x])
+        if self._ulimit == '':
+            c = self._remote_python
+        else:
+            c = '&&'.join([x for x in [self._ulimit, self._remote_python] if x])
         return 'ssh -t %s "%s"'%(self._user_at_host, c)
         
     def get_tmpdir(self):
