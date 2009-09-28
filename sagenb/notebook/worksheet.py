@@ -729,6 +729,28 @@ class Worksheet:
             self.__system = 'sage'
             return 'sage'
 
+    def system_index(self):
+        """
+        Return the index of the current system into the Notebook's
+        list of systems.  If the current system isn't in the list,
+        then change to the default system.  This can happen if, e.g.,
+        the list changes, e.g., when changing from a notebook with
+        Sage installed to running a server from the same directory
+        without Sage installed.   We might as well support this.
+
+        OUTPUT:
+
+            - integer
+        """
+        S = self.system()
+        names = self.notebook().system_names()
+        if S not in names:
+            S = names[0]
+            self.set_system(S)
+            return 0
+        else:
+            return names.index(S)
+
     def set_system(self, system='sage'):
         """
         Set the math software system in which input is evaluated by
@@ -2230,7 +2252,7 @@ class Worksheet:
                         filename_ = self.filename(), data = self.attached_data_files().sort(),
                         systems_enumerated = enumerate(self.notebook().systems()),
                         system_names = self.notebook().system_names(),
-                        current_system_index = self.notebook().system_names().index(self.system()),
+                        current_system_index = self.system_index(),
                         pretty_print = self.pretty_print(),
                         doc_worksheet = self.is_doc_worksheet())
 

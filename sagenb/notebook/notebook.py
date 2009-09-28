@@ -43,8 +43,13 @@ import user         # users
 from   template import template
 
 
-# TODO: Move these to a config file?
-SYSTEMS = ['sage', 'gap', 'gp', 'jsmath', 'html', 'latex', 'maxima', 'python', 'r', 'sage', 'sh', 'singular', 'axiom (optional)', 'kash (optional)', 'macaulay2 (optional)', 'magma (optional)', 'maple (optional)', 'mathematica (optional)', 'matlab (optional)', 'mupad (optional)', 'octave (optional)']
+try:
+    # sage is installed
+    import sage.interfaces.all
+    SYSTEMS = ['sage', 'gap', 'gp', 'jsmath', 'html', 'latex', 'maxima', 'python', 'r', 'sage', 'sh', 'singular', 'axiom (optional)', 'kash (optional)', 'macaulay2 (optional)', 'magma (optional)', 'maple (optional)', 'mathematica (optional)', 'matlab (optional)', 'mupad (optional)', 'octave (optional)']
+except ImportError:
+    # sage is not installed
+    SYSTEMS = ['sage']    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
 
 
 # We also record the system names without (optional) since they are

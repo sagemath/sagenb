@@ -20,16 +20,20 @@ Current TODO:
 [x] max_walltime -- doesnt' work
 [x] push my hg repo somewhere
 [x] start public demo server using ssh
-[ ] simple notebook stress test
-[ ] old notebooks unpickle into the old notebook code!
-[ ] secure mode -- check it works.
+[x] simple notebook stress test
+[x] trim list of alternative notebooks sessions when not run as part of sage.
 
-[ ] make sure that the old notebook directory "just works" with the new notebook
+[ ] secure mode -- fix it
+
+[ ] uploading: "rbeezer -- williamstein: I tried one URL, one on disk,
+both came back "internal server error" - I can try a few more.  Do you
+want bugs in Trac or Google group"
+
+[ ] make sure that the old notebook directory "just works" with the new notebook:
+problem -- old notebooks unpickle into the old notebook code!
 
 [ ] open(DATA+'/foo.txt','w')
 DATA directory permissions issue -- the whole design of the "DATA" directory needs to be redone, since I vastly improved the security model of how the two-user notebook works (now all computations are done by a user that does *not* have permission to view or change *anything* in the server's sage_notebook directory -- everything happens in /tmp -- this is a VAST improvement, but means that DATA directory just doesn't work anymore as implemented). 
-
-[ ] trim list of alternative notebooks sessions when not run as part of sage.
 
 [ ] reimplement sphinx introspection. 
        * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
@@ -38,6 +42,8 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 [ ] make patch to remove notebook from sage itself.
 
 -------------------------------------------------------------------
+
+[ ] more stress testing, etc., using mechanize: http://wwwsearch.sourceforge.net/mechanize/
 
 [ ] worksheet process -- runs as another unix user.
 
@@ -53,7 +59,7 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 [ ] genuine infinite undo implemented not using stupid snapshots but a revision log
 [ ] @interact: make it so docstring of function is somehow nicely typeset and accessible
 [ ] @interact's that can be included with sage
-
+[ ] "browse your computer" field of upload is not editable.  fix that.
 [ ] improve tracebacks of % modes, e.g., %python then 1/0 is ugly.
 
 General TODO:
