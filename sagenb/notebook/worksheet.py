@@ -151,7 +151,6 @@ class Worksheet:
             sage: W
             [Cell 0; in=, out=]
         """
-        print "initializing a worksheet object"
         # Record the basic properties of the worksheet
         self.__system   = system
         self.__pretty_print = pretty_print

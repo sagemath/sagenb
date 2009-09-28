@@ -1973,7 +1973,7 @@ class Notebook:
             '\n<!D...orksheet_menu" value="Upload File" onClick="form.submit()...r />\n</div>\n\n\n    </body>\n</html>'
         """
         return template(os.path.join("notebook","upload_data_window.html"),
-                        worksheet = worksheet,
+                        worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username, JSMATH = JSMATH,
                         JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,

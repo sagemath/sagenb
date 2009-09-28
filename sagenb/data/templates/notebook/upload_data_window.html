@@ -15,7 +15,7 @@ INPUT:
 
 {% block body_addition %}
 <div class="upload_worksheet_menu" id="upload_worksheet_menu">
-    <h1><font size=+1>Upload or create data file attached to the worksheet '%s'</font></h1>
+    <h1><font size=+1>Upload or create data file attached to the worksheet '{{ worksheet.name() }}' </font></h1>
     <hr />
     <form method="POST" action="do_upload_data"
           name="upload" enctype="multipart/form-data">
