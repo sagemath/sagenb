@@ -40,7 +40,7 @@ INPUT
     <option title="Upload or create a data file in a wide range of formats" value="__upload_data_file__">Upload or create file...</option>
     <option value="">--------------------</option>
     {% for name in data %}
-    <option value="datafile?name={{ option }}">{{ option }}</option>
+    <option value="datafile?name={{ name }}">{{ option }}</option>
     {% endfor %}
 </select>
 

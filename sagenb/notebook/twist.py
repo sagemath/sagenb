@@ -539,6 +539,8 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
             name = os.path.split(url)[-1]
 
         dest = os.path.join(self.worksheet.data_directory(), name)
+        if os.path.exists(dest):
+            os.unlink(dest)
         response = http.RedirectResponse('/home/'+self.worksheet.filename() + '/datafile?name=%s'%name)
 
         if url != '':

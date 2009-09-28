@@ -2,6 +2,12 @@ This is the first release of the standalone Sage Notebook.
 
 INSTALLATION:
 
+Make sure to pull the latest changes!
+
+sage -hg pull http://sage.math.washington.edu:8100
+sage -hg update
+sage -python setup.py install
+
 QUICK: Install Sage, then type "sage -python setup.py install" in the
 current directory.   This is safe and won't mess anything up.  Then run
 the notebook by typing:
