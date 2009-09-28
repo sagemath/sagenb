@@ -51,7 +51,10 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
             if process_limits.max_processes is not None:
                 u += ' -u %s'%(int(process_limits.max_processes))            
             # prepend ulimit options
-            self._ulimit = 'ulimit %s'%u
+            if u == '':
+                self._ulimit = u
+            else:
+                self._ulimit = 'ulimit %s'%u
         else:
             self._ulimit = ''
 
