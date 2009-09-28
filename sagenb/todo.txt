@@ -23,7 +23,7 @@ Current TODO:
 [x] simple notebook stress test
 [x] trim list of alternative notebooks sessions when not run as part of sage.
 
-[ ] secure mode -- fix it
+[x] secure mode with sage present -- fix it
 
 [ ] uploading: "rbeezer -- williamstein: I tried one URL, one on disk,
 both came back "internal server error" - I can try a few more.  Do you
@@ -42,6 +42,8 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 [ ] make patch to remove notebook from sage itself.
 
 -------------------------------------------------------------------
+
+[ ] secure mode outside of sage -- fix it to work with openssl, etc.
 
 [ ] more stress testing, etc., using mechanize: http://wwwsearch.sourceforge.net/mechanize/
 

@@ -1,27 +1,28 @@
 """nodoctest
+Server the Sage Notebook.
 """
 
 #############################################################################
-#       Copyright (C) 2007 William Stein <wstein@gmail.com>
+#       Copyright (C) 2009 William Stein <wstein@gmail.com>
 #  Distributed under the terms of the GNU General Public License (GPL)
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
+try:
+    # If Sage is installed, then we have gnutls, etc., and GPL'd code,
+    # so we prefer GNUtls.
+    import sage.misc.misc
+    protocol = 'tls'
+except ImportError:
+    # We are not in the presence of Sage, so we probably have SSL,
+    # which is better anyways.
+    protocol = 'ssl'
 
-"""
-Server the Sage Notebook.
-"""
-
-import getpass
-
-##########################################################
-# This actually serves up the notebook.
-##########################################################
+# System libraries
+import getpass, os, shutil, socket
 
 from sagenb.misc.misc import (DOT_SAGENB, print_open_msg, find_next_available_port)
-
-import os, shutil, socket, pexpect
 
 import notebook
 
@@ -36,8 +37,9 @@ def notebook_setup(self=None):
 
     try:
         import dsage.all
+        import dsage.misc.constants
         print "Using dsage certificates."
-        path = os.path.join(DOT_SAGENB, 'dsage')
+        path = dsage.misc.constants.DSAGE_DIR
         dsage.all.dsage.setup()
         shutil.copyfile(path + '/cacert.pem', private_pem)
         shutil.copyfile(path + '/pubcert.pem', public_pem)
@@ -148,7 +150,7 @@ def notebook_twisted(self,
                 notebook_setup()
             if not os.path.exists(private_pem) or not os.path.exists(public_pem):
                 print "Failed to setup notebook.  Please try notebook.setup() again manually."
-            strport = 'tls:%s:interface=%s:privateKey=%s:certKey=%s'%(port, address, private_pem, public_pem)
+            strport = '%s:%s:interface=%s:privateKey=%s:certKey=%s'%(protocol, port, address, private_pem, public_pem)
         else:
             strport = 'tcp:%s:interface=%s'%(port, address)
 
@@ -256,6 +258,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
             print "quit the notebook and type notebook(reset=True)."
         cmd = 'twistd --pidfile="%s"/twistd.pid -ny "%s"/twistedconf.tac'%(directory, directory)
         if fork:
+            import pexpect
             return pexpect.spawn(cmd)
         else:
             e = os.system(cmd)
