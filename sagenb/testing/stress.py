@@ -129,7 +129,7 @@ class PubStressTest:
                 t0 = walltime()
                 self._geturl(X, use_alarm=False)
                 if self._verbose:
-                    print "Got %s [%s/%s] %.2f seconds"%(X,i,len(X), walltime(t0))
+                    print "Got %s [%s/%s] %.2f seconds"%(X,i+1,len(pub), walltime(t0))
             return walltime(tm)
         except KeyboardInterrupt:
             return TIMEOUT
