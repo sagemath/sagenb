@@ -15,6 +15,9 @@ AUTHORS:
 #
 #############################################################################
 
+# For debugging sometimes it is handy to use only the reference implementation.
+USE_REFERENCE_WORKSHEET_PROCESSES = False
+
 # System libraries
 import os
 import random
@@ -45,7 +48,7 @@ from   template import template
 
 try:
     # sage is installed
-    import sage.interfaces.all
+    import sage
     SYSTEMS = ['sage', 'gap', 'gp', 'jsmath', 'html', 'latex', 'maxima', 'python', 'r', 'sage', 'sh', 'singular', 'axiom (optional)', 'kash (optional)', 'macaulay2 (optional)', 'magma (optional)', 'maple (optional)', 'mathematica (optional)', 'matlab (optional)', 'mupad (optional)', 'octave (optional)']
 except ImportError:
     # sage is not installed
@@ -895,6 +898,9 @@ class Notebook:
         from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
                                        WorksheetProcess_ReferenceImplementation,
                                        WorksheetProcess_RemoteExpectImplementation)
+
+        if USE_REFERENCE_WORKSHEET_PROCESSES:
+            return WorksheetProcess_ReferenceImplementation()
 
         ulimit = self.get_ulimit()
         from sagenb.interfaces import ProcessLimits

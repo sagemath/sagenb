@@ -1,9 +1,11 @@
-import os, StringIO, sys, traceback, tempfile, random, shutil, stat
+import os, StringIO, sys, traceback, tempfile, random, shutil
 
 from status import OutputStatus
 from format import displayhook_hack
 from worksheet_process import WorksheetProcess
-from sagenb.misc.misc import walltime
+from sagenb.misc.misc import (walltime,
+                              set_restrictive_permissions, set_permissive_permissions)
+
 
 import pexpect
 
@@ -37,6 +39,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         self._process_limits = process_limits
         self._max_walltime = None
         self._start_walltime = None
+        self._data_dir = None
 
         if process_limits:
             u = ''
@@ -58,8 +61,15 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         return '&&'.join([x for x in [self._ulimit, self._python] if x])
 
     def __del__(self):
+        print "cleaning up a worksheet process"
         try: self._cleanup_tempfiles()
         except: pass
+        try: self._cleanup_data_dir()
+        except: pass
+
+    def _cleanup_data_dir(self):
+        if self._data_dir is not None:
+            set_restrictive_permissions(self._data_dir)
 
     def _cleanup_tempfiles(self):
         for X in self._all_tempdirs:
@@ -106,6 +116,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         self._is_computing = False
         self._start_walltime = None
         self._cleanup_tempfiles()
+        self._cleanup_data_dir()
 
     def start(self):
         """
@@ -181,19 +192,33 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         s = tempfile.mkdtemp()
         return (s, s)
     
-    def execute(self, string):
+    def execute(self, string, data=None):
         """
         Start executing the given string in this subprocess.
 
         INPUT:
 
-            ``string`` -- a string containing code to be executed.
+            - ``string`` -- a string containing code to be executed.
+
+            - ``data`` -- a string or None; if given, must specify an
+              absolute path on the server host filesystem.   This may
+              be ignored by some worksheet process implementations.
         """
         if self._expect is None:
             self.start()
         self._number += 1
 
         local, remote = self.get_tmpdir()
+
+        if data is not None:
+            # make a symbolic link from the data directory into local tmp directory
+            self._data = os.path.split(data)[1]
+            self._data_dir = data
+            set_permissive_permissions(data)
+            os.symlink(data, os.path.join(local, self._data))
+        else:
+            self._data = ''
+            
         self._tempdir = local
         sage_input = '_sage_input_%s.py'%self._number
         self._filename = os.path.join(self._tempdir, sage_input)
@@ -256,7 +281,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
 
         files = []
         if not self._is_computing and os.path.exists(self._tempdir):
-            files = [os.path.join(self._tempdir, x) for x in os.listdir(self._tempdir)]
+            files = [os.path.join(self._tempdir, x) for x in os.listdir(self._tempdir) if x != self._data]
             files = [x for x in files if x != self._filename]
             
         return OutputStatus(s, files, not self._is_computing)
@@ -334,6 +359,7 @@ class WorksheetProcess_RemoteExpectImplementation(WorksheetProcess_ExpectImpleme
         remote = os.path.join(self._remote_directory, local[len(self._local_directory):].lstrip(os.path.sep))
         # Make it so local is world read/writable -- so that the remote worksheet
         # process can write to it.
-        os.chmod(local, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH | \
-                 stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+        set_permissive_permissions(local)
         return (local, remote)
+
+

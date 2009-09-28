@@ -28,7 +28,8 @@ import base64, bz2, calendar, copy, crypt, os, re, shutil, string, time, traceba
 
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
-                              alarm, cancel_alarm, verbose, DOT_SAGENB, walltime)
+                              alarm, cancel_alarm, verbose, DOT_SAGENB, walltime,
+                              set_restrictive_permissions)
 
 from sagenb.misc.remote_file import get_remote_file
 
@@ -150,6 +151,7 @@ class Worksheet:
             sage: W
             [Cell 0; in=, out=]
         """
+        print "initializing a worksheet object"
         # Record the basic properties of the worksheet
         self.__system   = system
         self.__pretty_print = pretty_print
@@ -170,6 +172,15 @@ class Worksheet:
         filename = os.path.join(owner, dirname)
         self.__filename = filename
         self.__dir = os.path.join(notebook_worksheet_directory, filename)
+        if not os.path.exists(self.__dir):
+            os.makedirs(self.__dir)
+            set_restrictive_permissions(self.__dir, allow_execute=True)
+
+        set_restrictive_permissions(self.snapshot_directory())
+        # Create the worksheet file if it doesn't exist.
+        open(self.worksheet_txt_filename(), 'a').close()
+        set_restrictive_permissions(self.worksheet_txt_filename())
+        set_restrictive_permissions(self.cells_directory())
 
         self.clear()
         self.save_snapshot(owner)
@@ -242,6 +253,9 @@ class Worksheet:
             2
         """
         return len(self.cell_list())
+
+    def worksheet_txt_filename(self):
+        return os.path.join(self.__dir, 'worksheet.txt')
 
     def docbrowser(self):
         """
@@ -667,7 +681,10 @@ class Worksheet:
             sage: W.cells_directory()
             '.../worksheets/admin/0/cells/'
         """
-        return os.path.join(self.directory(), 'cells')
+        path = os.path.join(self.directory(), 'cells')
+        if not os.path.exists(path):
+            os.makedirs(path)
+        return path
 
     def notebook(self):
         """
@@ -1738,7 +1755,7 @@ class Worksheet:
         words appear in the text version of self.
         """
         # Load the worksheet data file from disk.
-        filename = os.path.join(self.__dir, 'worksheet.txt')
+        filename = self.worksheet_txt_filename()
         r = open(filename).read().lower()
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
@@ -1767,7 +1784,7 @@ class Worksheet:
         filename = os.path.join(path, '%s.bz2'%basename)
         if E is None:
             E = self.edit_text()
-        worksheet_txt = os.path.join(self.__dir, 'worksheet.txt')
+        worksheet_txt = self.worksheet_txt_filename()
         if os.path.exists(worksheet_txt) and open(worksheet_txt).read() == E:
             # we already wrote it out...
             return
@@ -1835,7 +1852,7 @@ class Worksheet:
             pass
 
     def revert_to_last_saved_state(self):
-        filename = os.path.join(self.__dir, 'worksheet.txt')
+        filename = self.worksheet_txt_filename()
         E = open(filename).read()
         self.edit_save(E)
 
@@ -2419,7 +2436,7 @@ class Worksheet:
         try:
             return self.__cells
         except AttributeError:
-            worksheet_txt = os.path.join(self.__dir, 'worksheet.txt')
+            worksheet_txt = self.worksheet_txt_filename()
             if not os.path.exists(worksheet_txt):
                 #print "Creating new worksheet file %s"%worksheet_txt
                 self.__cells = []
@@ -2825,7 +2842,7 @@ from sagenb.notebook.all import *
             input += 'print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__))\n'
         self.__comp_is_running = True
         'exec _support_.preparse(base64.b64decode("%s"))'%base64.b64encode(input)
-        self.sage().execute(input)
+        self.sage().execute(input, os.path.abspath(self.data_directory()))
                 
     def check_comp(self, wait=0.2):
         r"""

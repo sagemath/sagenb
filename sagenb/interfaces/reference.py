@@ -73,15 +73,19 @@ class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
     ###########################################################
     # Sending a string to be executed in the subprocess
     ###########################################################
-    def execute(self, string):
+    def execute(self, string, data=None):
         """
         Start executing the given string in this subprocess.
 
         INPUT:
 
             ``string`` -- a string containing code to be executed.
+
+            - ``data`` -- a string or None; if given, must specify an
+              absolute path on the server host filesystem.   This may
+              be ignored by some worksheet process implementations.
         """
-        out, files, tempdir = execute_code(string, self._state)
+        out, files, tempdir = execute_code(string, self._state, data)
         self._output_status = OutputStatus(out, files, True, tempdir)
 
     ###########################################################
@@ -105,7 +109,7 @@ class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
 
 
 
-def execute_code(string, state):
+def execute_code(string, state, data=None):
     # print "execute: '''%s'''"%string
     string = displayhook_hack(string)
 
@@ -113,6 +117,10 @@ def execute_code(string, state):
     # generated.
     back = os.path.abspath('.')
     tempdir = tempfile.mkdtemp()
+    if data is not None:
+        # make a symbolic link from the data directory into local tmp directory
+        os.symlink(data, os.path.join(tempdir, os.path.split(data)[1]))
+    
     s = StringIO.StringIO()
     saved_stream = sys.stdout
     sys.stdout = s

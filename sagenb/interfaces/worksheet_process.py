@@ -97,13 +97,18 @@ class WorksheetProcess:
     ###########################################################
     # Sending a string to be executed in the subprocess
     ###########################################################
-    def execute(self, string):
+    def execute(self, string, data=None):
         """
         Start executing the given string in this subprocess.
 
         INPUT:
 
-            ``string`` -- a string containing code to be executed.
+            - ``string`` -- a string containing code to be executed.
+
+            - ``data`` -- a string or None; if given, must specify an
+              absolute path on the server host filesystem.   This may
+              be ignored by some worksheet process implementations.
+            
         """
         raise NotImplementedError                        
 

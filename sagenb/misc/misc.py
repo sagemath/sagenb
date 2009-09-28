@@ -357,3 +357,22 @@ except ImportError:
     def cython(*args, **kwds):
         # TODO
         raise NotImplementedError, "Curently %cython mode requires Sage." 
+
+
+#############################################################
+# File permissions
+# May need some changes on Windows.
+#############################################################
+import stat
+
+def set_restrictive_permissions(filename, allow_execute=False):
+    print "making restrictive: ", filename
+    x = stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
+    if allow_execute:
+        x = x | stat.S_IXGRP |  stat.S_IXOTH
+    os.chmod(filename, x)
+    
+def set_permissive_permissions(filename):
+    os.chmod(filename, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH | \
+             stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | \
+             stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP)
