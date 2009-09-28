@@ -41,6 +41,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         self._start_walltime = None
         self._data_dir = None
         self._python = python
+        
 
         if process_limits:
             u = ''

@@ -927,7 +927,7 @@ class Notebook:
                                        max_processes=tbl['u'])
         
         server_pool = self.server_pool()
-        if len(server_pool) == 0:
+        if not server_pool or len(server_pool) == 0:
             return WorksheetProcess_ExpectImplementation(process_limits=process_limits)
         else:
             import random

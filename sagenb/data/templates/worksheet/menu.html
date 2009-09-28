@@ -34,13 +34,12 @@ INPUT
     <option title="Switch to single-cell mode" value="slide_mode();">One Cell Mode</option>
     <option title="Switch to multi-cell mode" value="cell_mode();">Multi Cell Mode</option> 
 </select>
-
 <select class="worksheet" onchange="handle_data_menu(this);" >
     <option title="Select an attached file" value="" selected>Data...</option>
     <option title="Upload or create a data file in a wide range of formats" value="__upload_data_file__">Upload or create file...</option>
     <option value="">--------------------</option>
     {% for name in data %}
-    <option value="datafile?name={{ name }}">{{ option }}</option>
+    <option value="datafile?name={{ name }}">{{ name }}</option>
     {% endfor %}
 </select>
 

@@ -2265,7 +2265,7 @@ class Worksheet:
         """
         return template(os.path.join("worksheet","menu.html"),
                         name = _notebook.clean_name(self.name()),
-                        filename_ = self.filename(), data = self.attached_data_files().sort(),
+                        filename_ = self.filename(), data = sorted(self.attached_data_files()),
                         systems_enumerated = enumerate(self.notebook().systems()),
                         system_names = self.notebook().system_names(),
                         current_system_index = self.system_index(),
