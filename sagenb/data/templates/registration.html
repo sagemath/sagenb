@@ -14,7 +14,9 @@
 <form method="POST" action="/register">
 <ol>
 <li><h2>Create a username</h2>
-<p>Your username must start with a letter and be between 4 and 32 characters long. You may only use letters, numbers, underscores, and one dot (.).</p>
+<p>Your username must start with a letter and be between 3 and 64
+characters long. You may only use letters, numbers, underscores, @,
+and dots.</p>
 <input type="text" name="username" value="{{ username }}" class="entry" />
 {% if username_missing %}
 <p><span class="error">Error:</span> No username given</p>
@@ -27,7 +29,7 @@
 {% endif %}
 </li>
 <li><h2>Create a good password</h2>
-<p>Your password must be between 6 and 32 characters long. Your password can not contain your username nor spaces.</p>
+<p>Your password must be between 4 and 32 characters long. Your password can not contain your username nor spaces.</p>
 <input type="password" name="password" class="entry" />
 {% if password_missing %}
 <p><span class="error">Error:</span> No password given</p>

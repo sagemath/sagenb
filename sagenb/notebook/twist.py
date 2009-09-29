@@ -1876,13 +1876,12 @@ server. Please <a href="/register">register</a> with the server.</p>
 # Registration page
 ############################
 import re
-re_valid_username = re.compile('[a-z|A-Z|0-9|_|.]*')
+re_valid_username = re.compile('[a-z|A-Z|0-9|_|.|@]*')
 def is_valid_username(username):
     r"""
-    Returns True if and only if ``username`` is valid,
-    i.e., starts with a letter, is between 4 and 32 characters long,
-    and contains only letters, numbers, underscores, and and one dot
-    (.).
+    Returns True if and only if ``username`` is valid, i.e., between 3
+    and 64 characters long. You may only use letters, numbers,
+    underscores, @, and dots.
 
     EXAMPLES::
 
@@ -1945,21 +1944,17 @@ def is_valid_username(username):
     """
     import string
 
-    if not (len(username) > 3 and len(username) < 33):
+    if not (len(username) > 2 and len(username) < 65):
         return False
     if not username[0] in string.letters:
         return False
-    if '.' in username:
-        if username.count('.') > 1:
-            return False
-
     m = re_valid_username.match(username)
     return m.start() == 0 and m.end() == len(username)
 
 def is_valid_password(password, username):
     r"""
     Return True if and only if ``password`` is valid, i.e.,
-    is between 6 and 32 characters long, doesn't contain space(s), and
+    is between 4 and 32 characters long, doesn't contain space(s), and
     doesn't contain ``username``.
 
     EXAMPLES::
@@ -1979,7 +1974,7 @@ def is_valid_password(password, username):
         False
     """
     import string
-    if len(password) < 6 or len(password) > 32 or ' ' in password:
+    if len(password) < 4 or len(password) > 32 or ' ' in password:
         return False
     if username:
         if string.lower(username) in string.lower(password):

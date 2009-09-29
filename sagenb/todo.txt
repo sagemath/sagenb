@@ -45,12 +45,16 @@ this is a problem unless we just switch back to using .sage directory in officia
     We *can't* do this, because if we do, then old notebooks can't be migrated.  Ouch.
 [x] make sure that the old notebook directory "just works" with the
 new notebook: problem -- old notebooks unpickle into the old notebook
-code!
+code.
+[x] discard and quit crashes weirdly with *this* worksheet:
+http://buzzard.ups.edu/private/Sample.sws (this was fixed by getting
+rid of the conf.sobj useless crap, which according to hg I = William
+Stein wrote! ouch)
+[x] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
+[x] make it so usernames can be shorter/more arbitrary (requested by tom boothby, and he has a point)
+
 
 [ ] show(plot(sin)); show(plot(cos))  only shows one plot
-
-[ ] discard and quit crashes weirdly with *this* worksheet: http://buzzard.ups.edu/private/Sample.sws
-
 
 [ ] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
@@ -61,22 +65,23 @@ code!
 
 [ ] implement base_url
 
-[ ] change notebooks so they use a 100% sobj free data format for storage.
-sobj's suck. 
+[ ] get rid of list of 'Sage Users' when publishing worksheets --
+that's not appropriate given how sage has grown.
+
+[ ] change notebooks so they use a 100% sobj free data format for
+storage.  sobj's suck.
 
 [ ] notebook(default_mode="python") way to make the notebook default
 to use python instead of sage.
 
-[ ] write an overview of how the sage notebook works.
+[ ] write an overview of how the sage notebook works: http://wiki.sagemath.org/SageNotebook
+
+[ ] move is_valid_username (etc.) out of twist.py, which is definitely *not* where it belongs
 
 [ ] ldap support (see, eg., http://math.univ-lyon1.fr/~tdumont/sage)  but make sure to first
     abstract away authentication first so it is much CLEARER.
 
-[ ] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
-
 [ ] automated testing -- "Windmill seems to be more popular now -- especially with Python stuff "
-
-[ ] make it so usernames can be shorter/more arbitrary
 
 [ ] make it so the set of worksheets for a given user is 100% determined by the filesystem, not the nb sobj
 
