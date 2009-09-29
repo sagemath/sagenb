@@ -54,9 +54,15 @@ Stein wrote! ouch)
 [x] make it so usernames can be shorter/more arbitrary (requested by tom boothby, and he has a point)
 [x] make an official spkg for inclusion in sage-4.1.2.
 [x] show(plot(sin)); show(plot(cos))  only shows one plot
-
-[ ] reimplement sphinx introspection. 
+[x] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
+
+[ ] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
+    see "ZZ" in the docstring, but should get a bold ZZ.
+[ ] sphinx: crazy insane whitespace -- see screenshot here:
+      http://sage.math.washington.edu/home/wstein/patches/whitespace.png
+    got from E = EllipticCurve([0,-39409298,0,5554231502,0]); 
+    E.Lambda(<tab>
 [ ] "Sign into the Sage Notebook v" <-- missing version number
 [ ] Copy your "a random test worksheet full of stuff". Go to
  "Data|foo.txt"; Change the text; Click "Save Changes" An error page appears.
