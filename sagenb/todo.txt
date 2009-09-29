@@ -57,7 +57,9 @@ Stein wrote! ouch)
 
 [ ] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
-
+[ ] "Sign into the Sage Notebook v" <-- missing version number
+[ ] Copy your "a random test worksheet full of stuff". Go to
+ "Data|foo.txt"; Change the text; Click "Save Changes" An error page appears.
 
 -------------------------------------------------------------------
 
