@@ -11,9 +11,7 @@ version = version_line[i+1:j]
 
 # Create the sdist
 
-if not os.system('./sdist'):
-    print "Error running sdist."
-    sys.exit(1)
+os.system('./sdist')
 
 # Create the spkg
 
