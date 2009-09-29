@@ -121,6 +121,11 @@ to use python instead of sage.
 Safari 4.0.3, and then the second time I click a save button it works
 fine.  This *always* happens." -- from kcrisman
 
+[ ] and small hint about google accounts: in gmail at the bottom is a
+"last account activity" line and if you click on details, you can see
+what has happened recently. login IPs, type and time. you can also
+invalidate all other sessions on other PCs where cookies are stored.
+
 General TODO:
 
 * component architecture: see Brickenstein sage-devel email 
