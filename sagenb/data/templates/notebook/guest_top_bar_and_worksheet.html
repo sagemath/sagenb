@@ -18,7 +18,7 @@ INPUT:
     {% set url       = "edit_published_page" %}
 {% endif %}
 
-{% set download_name = os.path.split(worksheet.name())[-1] %}
+{% set download_name = worksheet.download_name() %}
 
 <a class="usercontrol" href="{{ url }}">{{ edit_text }}</a>
 &nbsp;&nbsp;<a class="usercontrol" href="download/{{ download_name }}.sws">Download.</a>

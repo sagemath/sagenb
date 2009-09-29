@@ -34,13 +34,10 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 [x] Downloading a file from data doesn't work
 [x] data dropdown doesn't list uploaded files
 [x] publishing + automically republish crashes with internal server error (harald schilly reported)
-
+[x] "edit a copy" doesn't work [for published]
+[x] "download" from published doesn't work right.
 
 [ ] notebook(default_mode="python")  way to make the notebook default to use python instead of sage.
-
-[ ] "edit a copy" doesn't work [for published]
-
-[ ] "download" from published doesn't work right.
 
 [ ] permissions of .sagenb directory:
 drwxr-xr-x    5 wstein     staff    170 Sep 26 15:28 .sagenb

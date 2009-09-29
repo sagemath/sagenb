@@ -254,7 +254,17 @@ class Worksheet:
         return len(self.cell_list())
 
     def worksheet_txt_filename(self):
+        """
+        Return path to the underlying plane text file that defines the
+        worksheet.
+        """
         return os.path.join(self.__dir, 'worksheet.txt')
+
+    def download_name(self):
+        """
+        Return the download name of this worksheet.
+        """
+        return os.path.split(self.name())[-1]
 
     def docbrowser(self):
         """
