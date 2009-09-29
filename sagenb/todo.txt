@@ -40,15 +40,15 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 drwxr-xr-x    5 wstein     staff    170 Sep 26 15:28 .sagenb
 this is a problem unless we just switch back to using .sage directory in official release (which we will do!)
 [x] notebook server should take ownership of all files it gets back
+[x] Uploading file (button at bottom of page is misleading).
+
 
 [ ] notebook(default_mode="python") way to make the notebook default
 to use python instead of sage.
 
 [ ] show(plot(sin)); show(plot(cos))  only shows one plot
 
-[ ] Uploading file (button at bottom of page is misleading).
-
-[ ] make sure that the old notebook directory "just works" with the new notebook:
+[ ] (tim dumol is working on this) make sure that the old notebook directory "just works" with the new notebook:
 problem -- old notebooks unpickle into the old notebook code!
 
 [ ] reimplement sphinx introspection. 
