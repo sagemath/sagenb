@@ -17,7 +17,8 @@ from cgi import escape
 import re
 
 from   sagenb.misc.misc import (word_wrap, SAGE_DOC,
-                                strip_string_literals)
+                                strip_string_literals,
+                                set_restrictive_permissions)
 
 from   jsmath import math_parse
 
@@ -705,6 +706,7 @@ class Cell(Cell_generic):
         dir = self._directory_name()
         if not os.path.exists(dir):
             os.makedirs(dir)
+        set_restrictive_permissions(dir)
         return dir
 
     def _directory_name(self):

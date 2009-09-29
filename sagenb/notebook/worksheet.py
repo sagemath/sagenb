@@ -29,7 +29,8 @@ import base64, bz2, calendar, copy, crypt, os, re, shutil, string, time, traceba
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
                               alarm, cancel_alarm, verbose, DOT_SAGENB, walltime,
-                              set_restrictive_permissions)
+                              set_restrictive_permissions,
+                              set_permissive_permissions)
 
 from sagenb.misc.remote_file import get_remote_file
 
@@ -319,6 +320,10 @@ class Worksheet:
                 C = load(file)
             else:
                 C = worksheet_conf.WorksheetConfiguration()
+
+            # this is a generally good idea
+            set_restrictive_permissions(file)
+            
             self.__conf = C
             return C
         
@@ -2927,18 +2932,18 @@ from sagenb.notebook.all import *
         else:
             filenames = output_status.filenames
             if len(filenames) > 0:
-                # Copy files to the cell directory
+                # Move files to the cell directory
                 cell_dir = os.path.abspath(self.cell_directory(C))
                 if not os.path.exists(cell_dir):
                     os.makedirs(cell_dir)
                 for X in filenames:
                     target = os.path.join(cell_dir, os.path.split(X)[1])
                     try:
-                        shutil.move(X, target)
+                        shutil.copy(X, target)
+                        set_restrictive_permissions(target)
                     except Exception, msg:
-                        print msg
-
-                  
+                        print "Error copying file from worksheet process:", msg
+                        
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())

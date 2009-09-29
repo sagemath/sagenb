@@ -366,7 +366,6 @@ except ImportError:
 import stat
 
 def set_restrictive_permissions(filename, allow_execute=False):
-    print "making restrictive: ", filename
     x = stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
     if allow_execute:
         x = x | stat.S_IXGRP |  stat.S_IXOTH
