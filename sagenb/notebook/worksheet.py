@@ -2873,6 +2873,7 @@ from sagenb.notebook.all import *
             return 'w', C
 
         out = self.postprocess_output(output_status.output, C)
+            
         if not output_status.done:
             # Still computing
             if not C.introspect():
@@ -2890,7 +2891,29 @@ from sagenb.notebook.all import *
                         os.symlink(X, target)
                 ########################################################
             return 'w', C
+        
+        if C.introspect() and not C.is_no_output():
+            if C.introspection_status == 'working':
+                # Done processing the docstring.
+                C.set_introspect_html(output_status.output, raw=True)
+                C.introspection_status = 'done'
+            else:
+                before_prompt, after_prompt = C.introspect()
+                if len(before_prompt) == 0:
+                    return
+                if before_prompt[-1] != '?':
+                    # completions
+                    c = self.best_completion(out, C._word_being_completed)
+                    C.set_changed_input_text(before_prompt + c + after_prompt)
+                    out = self.completions_html(C.id(), out)
+                    C.set_introspect_html(out, completing=True)
+                else:
+                    C.set_introspect_html(out, completing=False)
 
+        # C.set_introspect_html may execute a process.
+        if not S.output_status().done:
+            return 'w', C
+        
         # Finished a computation.
         self.__comp_is_running = False
         del self.__queue[0]
@@ -2901,19 +2924,7 @@ from sagenb.notebook.all import *
             shutil.rmtree(self.cell_directory(C), ignore_errors=True)
             return 'd', C
         
-        if C.introspect():
-            before_prompt, after_prompt = C.introspect()
-            if len(before_prompt) == 0:
-                return
-            if before_prompt[-1] != '?':
-                # completions
-                c = self.best_completion(out, C._word_being_completed)
-                C.set_changed_input_text(before_prompt + c + after_prompt)
-                out = self.completions_html(C.id(), out)
-                C.set_introspect_html(out, completing=True)
-            else:
-                C.set_introspect_html(out, completing=False)
-        else:
+        if not C.introspect():
             filenames = output_status.filenames
             if len(filenames) > 0:
                 # Move files to the cell directory
@@ -2941,6 +2952,7 @@ from sagenb.notebook.all import *
             C.set_introspect_html('')
 
         return 'd', C
+
 
     def interrupt(self):
         r"""

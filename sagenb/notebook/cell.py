@@ -1574,7 +1574,7 @@ class Cell(Cell_generic):
     #################
     # Introspection #
     #################
-    def set_introspect_html(self, html, completing=False, verbose=False):
+    def set_introspect_html(self, html, completing=False, verbose=False, raw=False):
         """
         If ``verbose`` is True, print verbose output about notebook
         introspection to the command-line.  However, the argument
@@ -1600,11 +1600,11 @@ class Cell(Cell_generic):
             sage: C.introspect_html()
             '<div class="docstring">...<span class="math">foobar</span>...</div>'
         """
-        if html == "" or completing:
+        if html == "" or completing or raw:
             self.__introspect_html = html
             return
         # TODO -- get rid of this -- everything should be rest?
-        elif True: #"`" not in html and "::" not in html:
+        elif "`" not in html and "::" not in html:
             # html doesn't seem to be in ReST format so use docutils
             # to process the preamble ("**File:**" etc.)  and put
             # everything else in a <pre> block.
@@ -1619,193 +1619,23 @@ class Cell(Cell_generic):
             self.__introspect_html = '<div class="docstring">' + preamble + '<pre>' + html + '</pre></div>'
             return
         else:
-            # I AM disabling this beautiful rest stuff for now and
-            # will rewrite it first thing later.  The reason is
-            # because it is a massive security whole and is just wrong
-            # in many ways, and because of how it is written no longer
-            # works.  Some issues:
-            #
-            #     * it is run by the server, but it should be run by
-            #     the worksheet process, which has performance and
-            #     security implications.
-            #
-            #     * it calls produce_latex_macro which does
-            #           exec('from ' + module + ' import ' + real_name)
-            #       which scares the pants off me.
-            raise NotImplementedError
-            
-            # html is in ReST format, so use Sphinx to process it
-            #
-            # Set the location of the introspection cache, "permanent"
-            # or temporary.  The former, DOT_SAGENB/sage_notebook/doc,
-            # can pool queries from multiple worksheet processes.  The
-            # latter is exclusive to a worksheet's process.  The Sage
-            # cleaner should delete the temporary directory (or
-            # directories) after the notebook server exits.
-            global _SAGE_INTROSPECT
+            # HTML is ReST
+            self.worksheet().sage().execute('from sagenb.misc.sphinxify import sphinxify; print sphinxify(r"""%s""")' % html)
+            self.__introspection_status = 'working'
+            return
+        
+    def get_introspection_status(self):
+        try:
+            return self.__introspection_status
+        except AttributeError:
+            return None
 
-            if _SAGE_INTROSPECT is None:
-                from sagenb.misc.misc import DOT_SAGENB, tmp_dir
-                # It's important to use os.path.join, instead of +,
-                # because Sphinx counts on normalized paths.  It's also
-                # more portable.
+    def set_introspection_status(self, value):
+        self.__introspection_status = value
 
-                # TODO - this is horribly wrong -- it assumes that the notebook
-                # is always running in the sage_notebook directory on DOT_SAGENB,
-                # which is completely false. 
-                std_doc_dir = os.path.join(DOT_SAGENB, os.path.join('sage_notebook','doc'))
-                try:
-                    os.makedirs(std_doc_dir)
-                    _SAGE_INTROSPECT = std_doc_dir
-                except OSError, error:
-                    if error.errno == errno.EEXIST:
-                        if os.access(std_doc_dir, os.R_OK | os.W_OK | os.X_OK):
-                            _SAGE_INTROSPECT = std_doc_dir
-                        else:
-                            _SAGE_INTROSPECT = tmp_dir()
-                    else:
-                        _SAGE_INTROSPECT = tmp_dir()
-                if verbose:
-                    print 'Introspection cache: ', _SAGE_INTROSPECT
-                        
-            # We get a quick checksum of the input.  MD5 admits
-            # collisions, but we're not concerned about such security
-            # issues here.  Of course, if performance permits, we can
-            # choose a more robust hash function.
-            hash = hashlib.md5(html).hexdigest()
-            base_name = os.path.join(_SAGE_INTROSPECT, hash)
-            html_name = base_name + '.html'
-
-            # Multiple processes might try to read/write the target
-            # HTML file simultaneously.  We use a file-based lock.
-            # Since we care only about the target's contents, and
-            # we've configured Sphinx accordingly, we allow multiple
-            # simultaneous instances of Sphinx, as long as their
-            # targets are different.  Systems which don't properly
-            # implement os.O_EXCL may require coarser locking.
-
-            # The Pythonic cross-platform file lock below is adapted
-            # from
-            # http://www.evanfosmark.com/2009/01/cross-platform-file-locking-support-in-python/
-            lock_name = base_name + '.lock'
-
-            ###################
-            #
-            # ** TODO ** -- this is VERY BAD, given that the server
-            # must not block for any nontrivial amount of time!
-            # As is, somebody can probably trivially lock everybody out of the server
-            # by sending introspect requests.  This will have to change.
-            #
-            ###################            
-            
-            # Try to acquire the lock, periodically.  If we time out,
-            # we fall back to plainly formatted documentation.
-            
-            timeout = 0.5
-            delay = 0.05
-            start_time = time.time()
-
-            while True:
-                try:
-                    # This operation is atomic on platforms which
-                    # properly implement os.O_EXCL:
-                    fd_lock = os.open(lock_name, os.O_CREAT | os.O_EXCL | os.O_RDWR)
-                    break;
-                except OSError, err:
-                    if (err.errno != errno.EEXIST) or (time.time() - start_time >= timeout):
-                        plain_html = escape(html).strip()
-                        self.__introspect_html = '<pre class="introspection">' + plain_html + '</pre>'
-                        return
-                    time.sleep(delay)
-                    
-            # We've acquired the lock.  Use cached HTML or run Sphinx.
-            if not os.path.exists(html_name):
-                html = html.replace('\\\\', '\\')
-                rst_name = base_name + '.rst'
-                fd_rst = open(rst_name, 'w')
-                fd_rst.write(html)
-                fd_rst.close()
-
-                # Sphinx setup.  The constructor is Sphinx(srcdir,
-                # confdir, outdir, doctreedir, buildername,
-                # confoverrides, status, warning, freshenv).
-                srcdir = os.path.normpath(_SAGE_INTROSPECT)
-
-                # Note: It's crucial that confdir* contains a
-                # customized conf.py and layout.html.  In particular,
-                # we've disabled index generation and told Sphinx to
-                # output almost exactly the HTML we display.  Sphinx
-                # also pickles its environment in doctreedir, but we
-                # force Sphinx never to load this pickle with
-                # freshenv=True.
-                confdir = os.path.join(SAGE_DOC, os.path.join('en','introspect'))
-                doctreedir = os.path.normpath(base_name)
-                confoverrides = {'html_context' : {}, 'master_doc' : hash}
-
-                 # TODO: the below doesn't work when confdir does not really point to
-                 # a true Sphinx build directory, e.g., when this isn't in SAge.
-                 # This must be fixed for non-Sage.
-                if verbose:
-                    import sys
-                    sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, 'html', confoverrides, sys.stdout, sys.stderr, True)
-                else:
-                    sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, 'html', confoverrides, None, None, True)
-
-                # Run Sphinx. The first argument corresponds to
-                # sphinx-build's "write all files" -a flag, which we
-                # set to None.
-                sphinx_app.build(None, [rst_name])
-
-                # We delete .rst files, so future Sphinx runs don't
-                # keep track of them.  We also delete doctrees.
-                try:
-                    os.unlink(rst_name)
-                except OSError:
-                    pass
-                try:
-                    shutil.rmtree(doctreedir)
-                    os.unlink(doctreedir)
-                except OSError:
-                    pass
-                
-                if verbose:
-                    print 'Built: %s' % html_name
-
-
-            # Contents should be flushed on close().
-            if os.path.exists(html_name):
-                fd_html = open(html_name, 'r')
-                new_html = fd_html.read()
-                fd_html.close()
-
-                # We release the lock and delete the lock file.
-                os.close(fd_lock)
-                
-                new_html = new_html.replace('<pre>', '<pre class="literal-block">')
-                
-                # Translate URLs for media from something like
-                #    "../../media/...path.../blah.png"
-                # or
-                #    "/media/...path.../blah.png"
-                # to
-                #    "/doc/static/reference/media/...path.../blah.png"
-                new_html = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
-                                  'src="/doc/static/reference/media/\\2"',
-                                  new_html)
-
-            else:
-
-                print "BUG -- error constructing html"
-                # TODO -- this should never happen, but does in
-                # case that the Sage Spinx docs aren't installed,
-                # e.g., when running the notebook from outside of sage.
-                new_html = '<pre>%s</pre>'%html
-
-            os.unlink(lock_name)
-
-
-            self.__introspect_html = new_html
-
+    introspection_status = property(get_introspection_status, set_introspection_status)
+        
+        
     def introspect_html(self):
         """
         Returns HTML for introspection.
