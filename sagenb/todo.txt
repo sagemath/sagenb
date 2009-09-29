@@ -41,15 +41,16 @@ drwxr-xr-x    5 wstein     staff    170 Sep 26 15:28 .sagenb
 this is a problem unless we just switch back to using .sage directory in official release (which we will do!)
 [x] notebook server should take ownership of all files it gets back
 [x] Uploading file (button at bottom of page is misleading).
-
+[x] (invalid) make patch to remove notebook from sage itself.
+    We *can't* do this, because if we do, then old notebooks can't be migrated.  Ouch.
+[x] make sure that the old notebook directory "just works" with the
+new notebook: problem -- old notebooks unpickle into the old notebook
+code!
 
 [ ] show(plot(sin)); show(plot(cos))  only shows one plot
 
 [ ] discard and quit crashes weirdly with *this* worksheet: http://buzzard.ups.edu/private/Sample.sws
 
-[ ] (tim dumol is working on this) make sure that the old notebook
-directory "just works" with the new notebook: problem -- old notebooks
-unpickle into the old notebook code!
 
 [ ] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
@@ -57,6 +58,11 @@ unpickle into the old notebook code!
 [ ] make an official spkg for inclusion in sage-4.1.2.
 
 -------------------------------------------------------------------
+
+[ ] implement base_url
+
+[ ] change notebooks so they use a 100% sobj free data format for storage.
+sobj's suck. 
 
 [ ] notebook(default_mode="python") way to make the notebook default
 to use python instead of sage.
@@ -81,7 +87,6 @@ to use python instead of sage.
 
 [ ] control-c doesn't quite work for reference implementation quitting notebook server
 
-[ ] make patch to remove notebook from sage itself.
 
 [ ] make it so uploading a worksheet does not lock the server like it does now.
 
@@ -90,6 +95,8 @@ to use python instead of sage.
 [ ] more stress testing, etc., using mechanize: http://wwwsearch.sourceforge.net/mechanize/
 
 [ ] worksheet process -- runs as another unix user.
+
+[ ] deprecate the objects directory (see notebook.py) -- I think this is used nowhere
 
 [ ] change api for notebook command; in particular enable capability
     to have different sage commadn on remote machine

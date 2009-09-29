@@ -43,7 +43,6 @@ from sagenb.misc.support import preparse_file
 import sagenb.misc.support  as support
 
 # Imports specifically relevant to the sage notebook
-import worksheet_conf
 from   cell import Cell, TextCell
 from template import template
 
@@ -115,7 +114,8 @@ def worksheet_filename(name, owner):
 
 class Worksheet:
     def __init__(self, name, dirname, notebook_worksheet_directory, system, owner,
-                 docbrowser=False, pretty_print=False, auto_publish=False):
+                 docbrowser=False, pretty_print=False, auto_publish=False,
+                 create_directories=True):
         """
         Create and initialize a new worksheet.
         
@@ -143,6 +143,11 @@ class Worksheet:
         
         -  ``pretty_print`` - bool (default: False); whether
            all output is pretty printed by default.
+
+        - ``create_directories`` -- bool (default: True): if True,
+          creates various files and directories where data will be
+          stored.  This option is here only for the
+          migrate_old_notebook method in notebook.py
         
         
         EXAMPLES: We test the constructor via an indirect doctest::
@@ -172,18 +177,21 @@ class Worksheet:
         filename = os.path.join(owner, dirname)
         self.__filename = filename
         self.__dir = os.path.join(notebook_worksheet_directory, filename)
-        if not os.path.exists(self.__dir):
-            os.makedirs(self.__dir)
-            set_restrictive_permissions(self.__dir, allow_execute=True)
 
-        set_restrictive_permissions(self.snapshot_directory())
-        # Create the worksheet file if it doesn't exist.
-        open(self.worksheet_txt_filename(), 'a').close()
-        set_restrictive_permissions(self.worksheet_txt_filename())
-        set_restrictive_permissions(self.cells_directory())
+        if create_directories:
+            if not os.path.exists(self.__dir):
+                os.makedirs(self.__dir)
+                set_restrictive_permissions(self.__dir, allow_execute=True)
+
+            set_restrictive_permissions(self.snapshot_directory())
+            # Create the worksheet file if it doesn't exist.
+            open(self.worksheet_txt_filename(), 'a').close()
+            set_restrictive_permissions(self.worksheet_txt_filename())
+            set_restrictive_permissions(self.cells_directory())
+
+            self.save_snapshot(owner)
 
         self.clear()
-        self.save_snapshot(owner)
 
     def __cmp__(self, other):
         """
@@ -292,41 +300,6 @@ class Worksheet:
         except AttributeError:
             return False
 
-    ##########################################################
-    # Configuration
-    ##########################################################
-    def conf(self):
-        """
-        Return the configuration object for this worksheet, which is stored
-        in an sobj in the worksheet directory.
-        
-        OUTPUT: worksheet configuration object.
-        
-        EXAMPLES::
-        
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
-            sage: W = nb.create_new_worksheet('test1', 'admin')
-            sage: W.conf()
-            Configuration: {}
-        """
-        try:
-            # after unpickling the worksheet this __conf attribute
-            # will not be set because we explicitly delete it in
-            # the __getstate__ method.
-            return self.__conf
-        except AttributeError:
-            file = os.path.join(self.directory(), 'conf.sobj')
-            if os.path.exists(file):
-                C = load(file)
-            else:
-                C = worksheet_conf.WorksheetConfiguration()
-
-            # this is a generally good idea
-            set_restrictive_permissions(file)
-            
-            self.__conf = C
-            return C
-        
     ##########################################################
     # Basic properties
     ##########################################################
@@ -1789,7 +1762,6 @@ class Worksheet:
         path = self.__dir
         E = self.edit_text()
         self.save_snapshot(self.owner(), E)
-        save(self.conf(), os.path.join(path, 'conf.sobj'))
 
     def save_snapshot(self, user, E=None):
         self.uncache_snapshot_data()
@@ -3757,7 +3729,7 @@ from sagenb.notebook.all import *
             raise ValueError, "user '%s' not allowed to edit this worksheet"%username
         for C in self.cell_list():
             C.delete_output()
-            
+
 
 __internal_test1 = '''
 def foo(x):

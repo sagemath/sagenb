@@ -32,7 +32,7 @@ from cgi import escape
 
 # Sage libraries
 from   sagenb.misc.misc   import (pad_zeros, is_package_installed,
-                             sage_jsmath_macros, cputime, tmp_dir)
+                             sage_jsmath_macros, cputime, tmp_dir, load, save)
 
 # Sage Notebook
 import css          # style
@@ -86,7 +86,7 @@ class Notebook:
         self.set_system(system)
         self.set_pretty_print(pretty_print)
         self.__worksheets = {}
-        self.__filename      = os.path.join(dir, 'nb.sobj')
+        self.__filename      = os.path.join(dir, 'nb2.sobj')
         self.__worksheet_dir = os.path.join(dir, 'worksheets')
         self.__object_dir    = os.path.join(dir, 'objects')
         self.__makedirs()
@@ -106,6 +106,7 @@ class Notebook:
 
         # This must happen after twist.notebook is set. 
         self.save()
+
 
     def _migrate_worksheets(self):
         v = []
@@ -141,7 +142,7 @@ class Notebook:
             sage: tmp = tmp_dir()
             sage: nb = sagenb.notebook.notebook.Notebook(tmp) 
             sage: sorted(os.listdir(tmp)) 
-            ['backups', 'nb.sobj', 'objects', 'worksheets']
+            ['backups', 'nb2.sobj', 'objects', 'worksheets']
             sage: nb.delete()
         
         Now the directory is gone.
@@ -998,7 +999,7 @@ class Notebook:
         if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":   # todo -- need to fix
             dir = dir[:-1]
         self.__dir = dir
-        self.__filename = os.path.join(dir, 'nb.sobj')
+        self.__filename = os.path.join(dir, 'nb2.sobj')
         self.__worksheet_dir = os.path.join(dir, 'worksheets')
         self.__object_dir = os.path.join(dir, 'objects')
 
@@ -1756,7 +1757,7 @@ class Notebook:
         if filename is None:
             F = os.path.abspath(self.__filename)
             backup_dir = self.backup_directory()
-            backup = os.path.join(backup_dir, 'nb-backup-')
+            backup = os.path.join(backup_dir, 'nb2-backup-')
             for i in range(self.number_of_backups()-1,0,-1):
                 a = pad_zeros(i-1); b = pad_zeros(i)
                 try:
@@ -2131,33 +2132,52 @@ def load_notebook(dir, address=None, port=None, secure=None):
 
     - a Notebook instance
     """
-    sobj = '%s/nb.sobj'%dir
+    # The filename of the notebook Sage object:
+    sobj = os.path.join(dir, 'nb2.sobj')
     nb = None
+
+    # If the notebook directory exists at all, then try
+    # to load the notebook from it.
     if os.path.exists(dir):
-        try:
-            nb = cPickle.loads(open(sobj).read())
-        except Exception, msg:
-            print msg
-            backup = '%s/backups/'%dir
-            if os.path.exists(backup):
-                print "****************************************************************"
-                print "  * * * WARNING   * * * WARNING   * * * WARNING   * * * "
-                print "WARNING -- failed to load notebook object. Trying backup files."
-                print "****************************************************************"
-                for F in os.listdir(backup):
-                    file = backup + '/' + F
-                    try:
-                        nb = load(file, compress=False)
-                    except Exception, msg:
-                        print "Failed to load backup '%s'"%file
-                    else:
-                        print "Successfully loaded backup '%s'"%file
-                        break
-                if nb is None:
-                    print "Unable to restore notebook from *any* auto-saved backups."
-                    print "This is a serious problem."
+        # First check to see if the nb2.sobj is not there,
+        # but the old nb.sobj (up to sage-4.1.1) is there.
+        # In that case we migrate it.
+        old_sobj = os.path.join(dir, 'nb.sobj')
+        if not os.path.exists(sobj) and os.path.exists(old_sobj):
+            nb = cPickle.loads(open(old_sobj).read())
+            nb = migrate_old_notebook(nb, dir)
+        else:
+            # Otherwise try to load the notebook from nb2.sobj
+            # and if this fails try each backup.
+            try:
+                nb = cPickle.loads(open(sobj).read())
+            except Exception, msg:
+                print msg
+                backup = '%s/backups/'%dir
+                if os.path.exists(backup):
+                    print "****************************************************************"
+                    print "  * * * WARNING   * * * WARNING   * * * WARNING   * * * "
+                    print "WARNING -- failed to load notebook object. Trying backup files."
+                    print "****************************************************************"
+                    for F in os.listdir(backup):
+                        if F.startswith('notebook'):
+                            file = backup + '/' + F
+                            try:
+                                nb = load(file, compress=False)
+                            except Exception, msg:
+                                print "Failed to load backup '%s'"%file
+                            else:
+                                print "Successfully loaded backup '%s'"%file
+                                break
+                    if nb is None:
+                        print "Unable to restore notebook from *any* auto-saved backups."
+                        print "This is a serious problem."
+                        raise RuntimeError, "Error loading Sage notebook."
+        
     if nb is None:
+        print "Creating a brand new notebook."
         nb = Notebook(dir)
+        
     dir = make_path_relative(dir)
     nb.delete_doc_browser_worksheets()
     nb.set_directory(dir)
@@ -2165,9 +2185,136 @@ def load_notebook(dir, address=None, port=None, secure=None):
     nb.address = address
     nb.port = port
     nb.secure = secure
-    
+    nb.save()
     return nb
 
+def migrate_old_notebook(old_nb, dir):
+    """
+    Back up and migrates an old saved version of notebook to the new one (`sagenb`)
+    """
+
+    ######################################################################
+    # Tell user what is going on and make a backup
+    ######################################################################
+
+    print ""
+    print "*"*80
+    print ""    
+    print "The Sage notebook at '%s' needs to be upgraded."%os.path.abspath(dir)
+    print ""
+    print "*"*80
+    print ""
+    ans = raw_input("Would you like to make a backup tarball now? [yes or no] ")
+    if ans.lower() != 'no':
+        # Back it up.
+        backup_dir = os.path.join(dir, 'backups', 'upgrade')
+        if not os.path.exists(backup_dir):
+            os.makedirs(backup_dir)
+            
+        import tarfile, datetime
+        backup_tarball = os.path.join(backup_dir,
+                           datetime.datetime.now().isoformat('_') + '-backup.tar')
+        print "Creating tarball", os.path.abspath(backup_tarball)
+        print "This may take a few minutes (please note the location of this backup)."
+        backup_file = tarfile.open(backup_tarball, 'w')    # 'w:bz2')
+        backup_file.add(os.path.join(dir, 'nb.sobj'))
+        def exclude(s):
+            return 'snapshot' in s or '/cells/' in s or '/code/' in s or '/doc/' in s
+        backup_file.add(os.path.join(dir, 'worksheets'), exclude=exclude)
+        backup_file.close()
+        print "Done creating tarball."
+
+    print ""
+    print "Upgrading will do *exactly one thing*: create a new file nb2.sobj"
+    print "in your Sage notebook directory.  Nothing else in your Sage"
+    print "notebook will be changed in any way."
+    print ""
+    ans = raw_input("Would like to continue with this upgrade? [yes or no] ")
+    if ans.lower() != "yes":
+        raise RuntimeError, "User aborted upgrade."
+
+    # Create new notebook
+    new_nb = Notebook(dir)
+
+    # Define a function for transfering the attributes of one object to another. 
+    def transfer_attributes(old, new, attributes, prefix):
+        for attribute in attributes:
+            if hasattr(old, prefix + attribute):
+                setattr(new, prefix + attribute,  getattr(old, prefix + attribute))
+
+    # Transfer all the notebook attributes to our new notebook object
+    
+    transfer_attributes(old_nb, new_nb, ('__conf', '__admins', '__server_log', '__history',
+             '__history_count', '__filename', '__worksheet_dir',
+             '__object_dir', '__worksheets', '__server_pool',
+             '__backup_dir', '__users', '__scratch_worksheet',
+             '__ulimit', '__system', '__pretty_print', '__show_debug'), '_Notebook')
+    
+    # Now update the user data from the old notebook to the new one:
+    users = {}
+    for username, old_user in new_nb.users().iteritems():
+        new_user = user.User(old_user.username(), old_user.password(), old_user.get_email(),
+                    old_user.account_type())
+        transfer_attributes(old_user, new_user,
+                            ('__email_confirmed', '__conf',
+                            '__temporary_password', '__is_suspended', '__password'),
+                            '_User')
+        users[new_user.username()] = new_user
+    new_nb._Notebook__users = users
+
+    # Update the filename of the new notebook.
+    new_nb._Notebook__filename = old_nb._Notebook__filename.replace('nb.sobj','nb2.sobj')
+
+    ######################################################################
+    # Set the worksheets of the new notebook equal to the ones from
+    # the old one.
+    ######################################################################
+    
+    ######################################################################
+    
+    def migrate_old_worksheet(old_worksheet):
+        """
+        Migrates an old worksheet to the new format. 
+        """
+        old_ws_dirname = old_ws._Worksheet__filename.partition(os.path.sep)[2]
+        
+        new_ws = worksheet.Worksheet(name=old_ws.name(),
+                                     dirname=old_ws_dirname,
+                                     notebook_worksheet_directory=new_nb.worksheet_directory(),
+                                     system=old_ws.system(),
+                                     owner=old_ws.owner(),
+                                     docbrowser=old_ws._Worksheet__docbrowser,
+                                     pretty_print=old_ws.pretty_print(),
+                                     create_directories=False)
+
+        transfer_attributes(old_ws, new_ws, ('__viewers', '__collaborators',
+                                         '__autopublish', '__next_id', '__attached',
+                                         '__worksheet_came_from', '__published_version',
+                                         '__ratings', '__user_view', '__saved_by_info',
+                                         '__is_doc_worksheet',
+                                         '__last_edited', '__date_edited', '__next_block_id'),
+                            '_Worksheet')
+        new_ws.edit_save(open(os.path.join(dir, 'worksheets', old_ws.filename(), 'worksheet.txt')).read())
+        if hasattr(new_ws, '_Worksheet__worksheet_came_form'):
+            new_ws._Worksheet__worksheet_came_from = migrate_old_worksheet(new_ws._Worksheet__worksheet_came_from)
+        return new_ws
+    
+    worksheets = {}
+    num_worksheets = len(old_nb._Notebook__worksheets)
+    print "There are %s worksheets."%num_worksheets
+    i = 0
+    for ws_name, old_ws in old_nb._Notebook__worksheets.iteritems():
+        i += 1
+        if i%10==0:
+            print "Migrating worksheet %s of %s..."%(i,num_worksheets)
+        new_ws = migrate_old_worksheet(old_ws)
+        worksheets[new_ws.filename()] = new_ws
+    new_nb._Notebook__worksheets = worksheets
+
+    print "Worksheet migration completely."
+    print "Saving new notebook and starting new notebook server for the first time..."
+    
+    return new_nb
 
 def make_path_relative(dir):
     r"""
@@ -2176,7 +2323,7 @@ def make_path_relative(dir):
 
     INPUT:
 
-    - ``dir`` - a string containing, e.g., a directory name
+    - ``dir`` - a string containing, e.g., a directory name 
 
     OUTPUT:
 

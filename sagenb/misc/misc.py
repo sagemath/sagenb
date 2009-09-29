@@ -211,18 +211,17 @@ except ImportError:
     def browser():
         return "open"
 
-def load(filename):
-    return cPickle.loads(open(filename).read())
-
-def save(obj, filename):
-    s = cPickle.dumps(obj, protocol=2)
-    open(filename,'wb').write(s)
-
 try:
-    from sage.structure.sage_object import loads, dumps
+    from sage.structure.sage_object import loads, dumps, load, save
 except ImportError:
     loads = cPickle.loads
     dumps = cPickle.dumps
+    def load(filename):
+        return cPickle.loads(open(filename).read())
+    def save(obj, filename):
+        s = cPickle.dumps(obj, protocol=2)
+        open(filename,'wb').write(s)
+
 
 try:
     from sage.misc.misc import alarm, cancel_alarm, verbose
