@@ -11,25 +11,31 @@ version = version_line[i+1:j]
 
 # Create the sdist
 
-os.system('./sdist')
+os.system(os.path.join(os.path.curdir, 'sdist'))
 
 # Create the spkg
 
-path = os.path.join('sdist','sagenb-%s'%version)
+path = os.path.join('dist','sagenb-%s'%version)
 if os.path.exists(path):
     shutil.rmtree(path)
 
 os.makedirs(path)
 
-t = tarfile.open(os.path.join('dist', 'sagenb-%s.tar.gz'%version))
-t.extractall('path', 'src')
+file = 'sagenb-%s.tar.gz'%version
+print "Extracting %s"%file
+t = tarfile.open(os.path.join('dist', file))
 
-open(os.path.join(path, 'spkg-install'),'w').write("python setup.py install")
+t.extractall(path)
 
-shutil.copy('SPKG.txt', path)
+os.chdir(path)
+shutil.move('sagenb-%s'%version, 'src')
 
-os.system('sage -pkg %s'%path)
+open('spkg-install','w').write("cd src; python setup.py install")
 
+shutil.copy(os.path.join(os.path.pardir, os.path.pardir, 'SPKG.txt'),
+            os.path.curdir)
 
+os.chdir(os.path.pardir)
 
+os.system('sage -pkg sagenb-%s'%version)
 
