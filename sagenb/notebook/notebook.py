@@ -652,10 +652,16 @@ class Notebook:
         # Copy over images and other files
         data = src.data_directory()
         if os.path.exists(data):
-            shutil.copytree(data, os.path.join(W.directory(),'data'))
+            target = os.path.join(W.directory(),'data')
+            if os.path.exists(target):
+                shutil.rmtree(target, ignore_errors=True)
+            shutil.copytree(data, target)
         cells = src.cells_directory()
         if os.path.exists(cells):
-            shutil.copytree(cells, os.path.join(W.directory(),'cells'))
+            target = os.path.join(W.directory(),'cells')
+            if os.path.exists(target):
+                shutil.rmtree(target, ignore_errors=True)
+            shutil.copytree(cells, target)
         W.edit_save(src.edit_text())
 
     def publish_worksheet(self, worksheet, username):

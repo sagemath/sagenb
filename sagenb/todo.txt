@@ -33,11 +33,10 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 [x] notebook(...) command should *not* remember options from last run. that's just obnoxious.
 [x] Downloading a file from data doesn't work
 [x] data dropdown doesn't list uploaded files
+[x] publishing + automically republish crashes with internal server error (harald schilly reported)
+
 
 [ ] notebook(default_mode="python")  way to make the notebook default to use python instead of sage.
-
-[ ] publishing + automically republish crashes with internal server
-error (harald schilly reported)
 
 [ ] "edit a copy" doesn't work [for published]
 
