@@ -52,9 +52,9 @@ rid of the conf.sobj useless crap, which according to hg I = William
 Stein wrote! ouch)
 [x] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
 [x] make it so usernames can be shorter/more arbitrary (requested by tom boothby, and he has a point)
+[x] make an official spkg for inclusion in sage-4.1.2.
+[x] show(plot(sin)); show(plot(cos))  only shows one plot
 
-[ ] make an official spkg for inclusion in sage-4.1.2.
-[ ] show(plot(sin)); show(plot(cos))  only shows one plot
 [ ] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
 
@@ -71,6 +71,9 @@ storage.  sobj's suck.
 
 [ ] notebook(default_mode="python") way to make the notebook default
 to use python instead of sage.
+
+[ ] fulltext -- when output long, make it all available with a link
+even before computation finishes, and definitely if it is interrupted!
 
 [ ] write an overview of how the sage notebook works: http://wiki.sagemath.org/SageNotebook
 

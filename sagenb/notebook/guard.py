@@ -282,14 +282,14 @@ class MySessionWrapper(object):
         Also saved the credentials that the user used to log in
         to later associate these credentials with the users session.
         """
-        log.msg("=== _loginSuccess ===")
+        #log.msg("=== _loginSuccess ===")
         session.set_authCreds(creds)
         return rsrc, ()
     
     def _loginFailure(self, *x): #TODO
-        log.msg("=== _loginFailure ===")
-        
-        log.msg(str(x))
+        pass
+        #log.msg("=== _loginFailure ===")
+        #log.msg(str(x))
                  
     def incorrectLoginError(self, error, ctx, segments, loginFailure):
         pass
@@ -301,7 +301,7 @@ class MySessionWrapper(object):
         out of the sessions dict.  A new anonymous session
         is immediately created for this user.
         """
-        log.msg("=== logout ===")
+        #log.msg("=== logout ===")
         self.sessionManager.expiredSession(session)
         return self.requestAnonymousAuthentication(request, segments)
 

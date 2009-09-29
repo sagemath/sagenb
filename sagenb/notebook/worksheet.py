@@ -2877,6 +2877,18 @@ from sagenb.notebook.all import *
             # Still computing
             if not C.introspect():
                 C.set_output_text(out, '')
+
+                ########################################################
+                # Create temporary symlinks to output files seen so far
+                if len(output_status.filenames) > 0:
+                    cell_dir = os.path.abspath(self.cell_directory(C))
+                    if not os.path.exists(cell_dir):
+                        os.makedirs(cell_dir)                    
+                    for X in output_status.filenames:
+                        target = os.path.join(cell_dir, os.path.split(X)[1])
+                        if os.path.exists(target): os.unlink(target)
+                        os.symlink(X, target)
+                ########################################################
             return 'w', C
 
         # Finished a computation.
@@ -2911,7 +2923,15 @@ from sagenb.notebook.all import *
                 for X in filenames:
                     target = os.path.join(cell_dir, os.path.split(X)[1])
                     try:
-                        shutil.copy(X, target)
+                        if os.path.exists(target):
+                            if os.path.islink(target) or os.path.isfile(target):
+                                os.unlink(target)
+                            else:
+                                shutil.rmtree(target)
+                        if os.path.isdir(X):
+                            shutil.copytree(X, target)
+                        else:
+                            shutil.copy(X, target)
                         set_restrictive_permissions(target)
                     except Exception, msg:
                         print "Error copying file from worksheet process:", msg

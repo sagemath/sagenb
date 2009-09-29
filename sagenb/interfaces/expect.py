@@ -288,7 +288,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         s = s.strip().rstrip(self._prompt)
 
         files = []
-        if not self._is_computing and os.path.exists(self._tempdir):
+        if os.path.exists(self._tempdir):
             files = [os.path.join(self._tempdir, x) for x in os.listdir(self._tempdir) if x != self._data]
             files = [x for x in files if x != self._filename]
             
