@@ -43,20 +43,23 @@ this is a problem unless we just switch back to using .sage directory in officia
 [x] Uploading file (button at bottom of page is misleading).
 
 
-[ ] notebook(default_mode="python") way to make the notebook default
-to use python instead of sage.
-
 [ ] show(plot(sin)); show(plot(cos))  only shows one plot
 
-[ ] (tim dumol is working on this) make sure that the old notebook directory "just works" with the new notebook:
-problem -- old notebooks unpickle into the old notebook code!
+[ ] discard and quit crashes weirdly with *this* worksheet: http://buzzard.ups.edu/private/Sample.sws
+
+[ ] (tim dumol is working on this) make sure that the old notebook
+directory "just works" with the new notebook: problem -- old notebooks
+unpickle into the old notebook code!
 
 [ ] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
 
-[ ] make an official spkg for inclusion in sage-4.1.3.
+[ ] make an official spkg for inclusion in sage-4.1.2.
 
 -------------------------------------------------------------------
+
+[ ] notebook(default_mode="python") way to make the notebook default
+to use python instead of sage.
 
 [ ] write an overview of how the sage notebook works.
 

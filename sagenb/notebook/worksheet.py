@@ -2943,7 +2943,6 @@ from sagenb.notebook.all import *
                         set_restrictive_permissions(target)
                     except Exception, msg:
                         print "Error copying file from worksheet process:", msg
-                        
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())
