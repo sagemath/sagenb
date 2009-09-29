@@ -31,16 +31,23 @@ DATA directory permissions issue -- the whole design of the "DATA" directory nee
 [x] "Upload or create data file attached to the worksheet '%s'"
 [x] pure python mode now broken with expect implementation -- every input crashes worksheet
 [x] notebook(...) command should *not* remember options from last run. that's just obnoxious.
+[x] Downloading a file from data doesn't work
+[x] data dropdown doesn't list uploaded files
+
+[ ] notebook(default_mode="python")  way to make the notebook default to use python instead of sage.
+
+[ ] publishing + automically republish crashes with internal server
+error (harald schilly reported)
+
+[ ] "edit a copy" doesn't work [for published]
+
+[ ] "download" from published doesn't work right.
 
 [ ] permissions of .sagenb directory:
 drwxr-xr-x    5 wstein     staff    170 Sep 26 15:28 .sagenb
 this is a problem unless we just switch back to using .sage directory in official release
 
-[x] data dropdown doesn't list uploaded files
-
 [ ] notebook server should take ownership of all files it gets back
-
-[ ] Downloading a file from data doesn't work
 
 [ ] Uploading file (button at bottom of page is misleading).
 
@@ -52,9 +59,12 @@ problem -- old notebooks unpickle into the old notebook code!
 
 [ ] make an official spkg for inclusion in sage-4.1.3.
 
+-------------------------------------------------------------------
+
 [ ] write an overview of how the sage notebook works.
 
--------------------------------------------------------------------
+[ ] ldap support (see, eg., http://math.univ-lyon1.fr/~tdumont/sage)  but make sure to first
+    abstract away authentication first so it is much CLEARER.
 
 [ ] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
 
@@ -95,6 +105,9 @@ problem -- old notebooks unpickle into the old notebook code!
 [ ] @interact's that can be included with sage
 [ ] "browse your computer" field of upload is not editable.  fix that.
 [ ] improve tracebacks of % modes, e.g., %python then 1/0 is ugly.
+[ ] "When I try to save a worksheet on uw... I first get "undefined" in
+Safari 4.0.3, and then the second time I click a save button it works
+fine.  This *always* happens." -- from kcrisman
 
 General TODO:
 
