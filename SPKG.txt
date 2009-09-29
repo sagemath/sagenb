@@ -1,0 +1,30 @@
+= Sage Notebook =
+
+== Description ==
+
+The Sage Notebook is a web-based graphical user interface for
+mathematical software.
+
+== Website ==
+
+== License ==
+
+GPLv2+
+
+== SPKG Maintainers ==
+
+ * William Stein
+
+== Upstream Contact ==
+
+ * William Stein
+
+== Dependencies ==
+ * Python 2.6 (?) or later -- only tested with 2.6
+
+== Special Update/Build Instructions ==
+
+ * None
+
+== Changelog ==
+

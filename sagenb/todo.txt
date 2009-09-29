@@ -53,13 +53,11 @@ Stein wrote! ouch)
 [x] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
 [x] make it so usernames can be shorter/more arbitrary (requested by tom boothby, and he has a point)
 
-
+[ ] make an official spkg for inclusion in sage-4.1.2.
 [ ] show(plot(sin)); show(plot(cos))  only shows one plot
-
 [ ] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
 
-[ ] make an official spkg for inclusion in sage-4.1.2.
 
 -------------------------------------------------------------------
 
