@@ -113,7 +113,7 @@ Unfortunately, there is no argspec extractable from builtins::
 
 import inspect
 import os
-EMBEDDED_MODE = True
+EMBEDDED_MODE = False
 
 def isclassinstance(obj):
     r"""

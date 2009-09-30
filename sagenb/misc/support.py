@@ -49,7 +49,8 @@ def init(object_directory=None, globs={}):
     globals_at_init = globs.values()
     global_names_at_init = set(globs.keys())
     EMBEDDED_MODE = True
-
+    sageinspect.EMBEDDED_MODE = True
+    
     setup_systems(globs)
     session_init(globs)
 
