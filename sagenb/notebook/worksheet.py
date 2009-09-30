@@ -2750,6 +2750,7 @@ from sagenb.notebook.all import *
             # don't actually compute
             return
 
+        
         if cell_system == 'sage' and C.introspect():
             before_prompt, after_prompt = C.introspect()
             I = before_prompt
@@ -2891,12 +2892,11 @@ from sagenb.notebook.all import *
                         os.symlink(X, target)
                 ########################################################
             return 'w', C
-        
+
         if C.introspect() and not C.is_no_output():
             if C.introspection_status == 'working':
                 # Done processing the docstring.
                 C.set_introspect_html(output_status.output, raw=True)
-                C.introspection_status = 'done'
             else:
                 before_prompt, after_prompt = C.introspect()
                 if len(before_prompt) == 0:

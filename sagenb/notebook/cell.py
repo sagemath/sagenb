@@ -1602,6 +1602,7 @@ class Cell(Cell_generic):
         """
         if html == "" or completing or raw:
             self.__introspect_html = html
+            self.introspection_status = 'done'
             return
         # TODO -- get rid of this -- everything should be rest?
         elif "`" not in html and "::" not in html:
@@ -1617,11 +1618,12 @@ class Cell(Cell_generic):
             else:
                 preamble = ""
             self.__introspect_html = '<div class="docstring">' + preamble + '<pre>' + html + '</pre></div>'
+            self.introspection_status = 'done'
             return
         else:
             # HTML is ReST
             self.worksheet().sage().execute('from sagenb.misc.sphinxify import sphinxify; print sphinxify(r"""%s""")' % html)
-            self.__introspection_status = 'working'
+            self.introspection_status = 'working'
             return
         
     def get_introspection_status(self):

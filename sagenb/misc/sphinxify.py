@@ -1,4 +1,21 @@
 #!/usr/bin/python
+r"""
+Process docstrings with Sphinx
+
+Processes docstrings with Sphinx. Can also be used as a commandline script:
+
+$ python sphinxify.py <text>
+
+AUTHORS:
+
+- Tim Joseph Dumol (2009-09-29): initial version
+
+#**************************************************
+# Copyright (C) 2009 Tim Dumol <tim@timdumol.com>
+#
+# Distributed under the terms of the BSD License
+#**************************************************
+"""
 import os, hashlib, re
 from sphinx.application import Sphinx
 from tempfile import mkdtemp
@@ -31,6 +48,9 @@ def sphinxify(docstring):
     docstring_hash = hashlib.md5(docstring).hexdigest()
     base_name = os.path.join(tmpdir, docstring_hash)
     html_name = base_name + '.html'
+
+    # This is needed for jsMath to work
+    docstring = docstring.replace('\\\\', '\\')
 
     filed = open(base_name + '.rst', 'w')
     filed.write(docstring)
@@ -70,7 +90,7 @@ def sphinxify(docstring):
                                   new_html)
     else:
          print "BUG -- error constructing html"
-         new_html = '<pre>%s</pre>' % docstring
+         new_html = '<pre class="introspection">%s</pre>' % docstring
 
     return new_html
 
@@ -88,16 +108,9 @@ def generate_configuration(directory):
         '\nextensions =...templates_path...NestedClass\n    '
     """
     conf = r'''
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.jsmath']
-
-templates_path = ['templates']
-html_static_path = ['static']
-
-html_use_modindex = False
-html_use_index = False
-html_split_index = False
-html_copy_source = False
-
+###########################################################
+# Taken from  `$SAGE_ROOT$/devel/sage/doc/common/conf.py` #
+###########################################################
 import sys, os
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
@@ -111,10 +124,6 @@ import sys, os
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc']
 
-if 'SAGE_DOC_JSMATH' in os.environ:
-    extensions.append('sphinx.ext.jsmath')
-else:
-    extensions.append('sphinx.ext.pngmath')
 jsmath_path = 'easy/load.js'
 
 # The suffix of source filenames.
@@ -190,10 +199,6 @@ html_style = 'default.css'
 # pixels large.
 html_favicon = 'favicon.ico'
 
-# Add any paths that contain custom static files (such as style sheets) here,
-# relative to this directory. They are copied after the builtin static files,
-# so a file named "default.css" will overwrite the builtin "default.css".
-
 # If we're using jsMath, we prepend its location to the static path
 # array.  We can override / overwrite selected files by putting them
 # in the remaining paths.
@@ -221,9 +226,6 @@ if 'SAGE_DOC_JSMATH' in os.environ:
 
 # If false, no index is generated.
 #html_use_index = True
-
-# If true, the index is split into individual pages for each letter.
-html_split_index = True
 
 # If true, the reST sources are included in the HTML build as _sources/<name>.
 #html_copy_source = True
@@ -273,7 +275,6 @@ latex_preamble = '\usepackage{amsmath}\n\usepackage{amsfonts}\n'
 
 #####################################################
 # add LaTeX macros for Sage
-
 try:
     from sage.misc.latex_macros import sage_latex_macros
 except ImportError:
@@ -283,7 +284,7 @@ try:
     pngmath_latex_preamble  # check whether this is already defined
 except NameError:
     pngmath_latex_preamble = ""
-
+    
 for macro in sage_latex_macros:
     # used when building latex and pdf versions
     latex_preamble += macro + '\n'
@@ -362,8 +363,25 @@ def setup(app):
     app.connect('autodoc-process-docstring', process_directives)
     app.connect('autodoc-process-docstring', process_docstring_module_title)
     app.connect('autodoc-skip-member', skip_NestedClass)
+
+#################################################################
+# Taken from `$SAGE_ROOT$/devel/sage/doc/en/introspect/conf.py` #
+#################################################################
+
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.jsmath']
+
+templates_path = ['templates']
+html_static_path = ['static']
+
+html_use_modindex = False
+html_use_index = False
+html_split_index = False
+html_copy_source = False
     '''
 
+    ###############################################################################
+    # Taken from `$SAGE_ROOT$/devel/sage/doc/en/introspect/templates/layout.html` #
+    ###############################################################################
     layout = r"""
 <div class="docstring">
     {% block body %}{% endblock %}
