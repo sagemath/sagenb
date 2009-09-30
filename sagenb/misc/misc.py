@@ -177,6 +177,7 @@ except ImportError:
     SAGE_DOC = "stub"
     
 try:
+    import sage.all
     from sage.misc.latex_macros import sage_jsmath_macros
 except ImportError:
     sage_jsmath_macros = []
