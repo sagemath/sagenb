@@ -494,6 +494,7 @@ class Worksheet_savedatafile(WorksheetResource, resource.PostableResource):
             E = ctx.args['textfield'][0]
             filename = ctx.args['filename'][0]
             dest = os.path.join(self.worksheet.data_directory(), filename)
+            if os.path.exists(dest): os.unlink(dest)
             open(dest,'w').write(E)
         return http.RedirectResponse('/home/'+self.worksheet.filename())
 
@@ -559,6 +560,7 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
             d.addCallback(callback)
             return d
         elif newfield:
+            if os.path.exists(dest): os.unlink(dest)
             open(dest,'w').close()
             return response
         else:

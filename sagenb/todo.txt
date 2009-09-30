@@ -63,10 +63,12 @@ Stein wrote! ouch)
 [x] "Sign into the Sage Notebook v" <-- missing version number
 [x] version not listed in upper left corner of worksheet either
 
-[ ] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
+[x] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
     see "ZZ" in the docstring, but should get a bold ZZ.
-[ ] Copy your "a random test worksheet full of stuff". Go to
+[x] Copy your "a random test worksheet full of stuff". Go to
  "Data|foo.txt"; Change the text; Click "Save Changes" An error page appears.
+
+[ ] sphinx: factorial??
 
 -------------------------------------------------------------------
 
