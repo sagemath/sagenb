@@ -1600,31 +1600,8 @@ class Cell(Cell_generic):
             sage: C.introspect_html()
             '<div class="docstring">...<span class="math">foobar</span>...</div>'
         """
-        if html == "" or completing or raw:
-            self.__introspect_html = html
-            self.introspection_status = 'done'
-            return
-        # TODO -- get rid of this -- everything should be rest?
-        elif "`" not in html and "::" not in html:
-            # html doesn't seem to be in ReST format so use docutils
-            # to process the preamble ("**File:**" etc.)  and put
-            # everything else in a <pre> block.
-            i = html.find("**Docstring:**")
-            if i != -1:
-                preamble = html[:i+14]
-                from docutils.core import publish_parts
-                preamble = publish_parts(html[:i+14], writer_name='html')['body']
-                html = html[i+14:]
-            else:
-                preamble = ""
-            self.__introspect_html = '<div class="docstring">' + preamble + '<pre>' + html + '</pre></div>'
-            self.introspection_status = 'done'
-            return
-        else:
-            # HTML is ReST
-            self.worksheet().sage().execute('from sagenb.misc.sphinxify import sphinxify; print sphinxify(r"""%s""")' % html)
-            self.introspection_status = 'working'
-            return
+        self.__introspect_html = html
+        self.introspection_status = 'done'
         
     def get_introspection_status(self):
         try:

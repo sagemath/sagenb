@@ -16,14 +16,24 @@ AUTHORS:
 # Distributed under the terms of the BSD License
 #**************************************************
 """
-import os, hashlib, re
-from sphinx.application import Sphinx
+import os, hashlib, re, shutil
 from tempfile import mkdtemp
+
+from sphinx.application import Sphinx
+
 try:
     from sage.misc.misc import SAGE_DOC
 except ImportError:
     SAGE_DOC = None
     
+
+def is_sphinx_markup(docstring):
+    """
+    Return True if string is a string that contains Sphinx-style ReST markup.
+    """
+    # this could be made much more clever
+    return ("`" in docstring or "::" in docstring)
+
 def sphinxify(docstring):
     """
     Runs Sphinx on a docstring, and outputs the processed documentation.
@@ -91,6 +101,9 @@ def sphinxify(docstring):
     else:
          print "BUG -- error constructing html"
          new_html = '<pre class="introspection">%s</pre>' % docstring
+
+    shutil.rmtree(confdir, ignore_errors=True)
+    shutil.rmtree(tmpdir, ignore_errors=True)
 
     return new_html
 
@@ -292,7 +305,6 @@ for macro in sage_latex_macros:
     pngmath_latex_preamble += macro + '\n'
 
 #####################################################
-
 def process_docstring_aliases(app, what, name, obj, options, docstringlines):
     """
     Change the docstrings for aliases to point to the original object.

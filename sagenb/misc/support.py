@@ -27,6 +27,17 @@ except ImportError:
     def format_src(s, *args, **kwds):
         return s
 
+try:
+    from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
+except ImportError, msg:
+    print msg
+    print "Sphinx docstrings not available."
+    # Don't do any Sphinxifying if sphinx's dependencies aren't around
+    def sphinxify(s):
+        return s
+    def is_sphinx_markup(s):
+        return False
+
 ######################################################################
 # Initialization
 ######################################################################
@@ -233,7 +244,32 @@ def docstring(obj_name, globs, system='sage'):
     s += '**Docstring:**'
     s += newline
     s += sageinspect.sage_getdoc(obj, obj_name)
-    return s.rstrip()
+    s = s.rstrip()
+    return html_markup(s)
+
+def html_markup(s):
+    try:
+        from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
+    except ImportError, msg:
+        # sphinx not available
+        def is_sphinx_markup(s): return False
+
+    if is_sphinx_markup(s):
+        s = sphinxify(s)
+    else:
+        # Not in ReST format, so use docutils
+        # to process the preamble ("**File:**" etc.)  and put
+        # everything else in a <pre> block.
+        i = s.find("**Docstring:**")
+        if i != -1:
+            preamble = s[:i+14]
+            from docutils.core import publish_parts
+            preamble = publish_parts(s[:i+14], writer_name='html')['body']
+            s = s[i+14:]
+        else:
+            preamble = ""
+        s = '<div class="docstring">' + preamble + '<pre>' + s + '</pre></div>'
+    return s
 
 def source_code(s, globs, system='sage'):
     r"""
@@ -267,18 +303,21 @@ def source_code(s, globs, system='sage'):
     try:
         obj = eval(s, globs)
     except NameError:
-        return "No object %s"%s
+        return html_markup("No object %s"%s)
     
     try:
         try:
-            return obj._sage_src_()
+            return html_markup(obj._sage_src_())
         except:
             pass
         newline = "\n\n"  # blank line to start new paragraph
         indent = "    "   # indent source code to mark it as a code block
 
         filename = sageinspect.sage_getfile(obj)
-        lines, lineno = sageinspect.sage_getsourcelines(obj, is_binary=False)
+        try:
+            lines, lineno = sageinspect.sage_getsourcelines(obj, is_binary=False)
+        except IOError, msg:
+            return html_markup(str(msg))
         src = indent.join(lines)
         src = indent + format_src(src)
         if not lineno is None:
@@ -287,11 +326,10 @@ def source_code(s, globs, system='sage'):
             output += "**Source Code** (starting at line %s)::"%lineno
             output += newline
             output += src
-        return output
+        return html_markup(output)
     
     except (TypeError, IndexError), msg:
-        print msg
-        return "Source code for %s not available."%obj
+        return html_markup("Source code for %s not available."%obj)
     
 def tabulate(v, width=90, ncols=3):
     e = len(v)
