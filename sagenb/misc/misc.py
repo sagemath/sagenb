@@ -161,10 +161,10 @@ DATA = os.path.join(sys.prefix, 'lib', 'python', 'site-packages', 'sagenb', 'dat
 
 if os.environ.has_key('DOT_SAGENB'):
     DOT_SAGENB = os.environ['DOT_SAGENB']
+elif os.environ.has_key('DOT_SAGE'):
+    DOT_SAGENB = os.environ['DOT_SAGE']
 else:
     DOT_SAGENB = os.path.join(os.environ['HOME'], '.sagenb')
-
-print "Using DOT_SAGENB='%s'"%DOT_SAGENB
 
 try:
     from sage.misc.misc import SAGE_URL

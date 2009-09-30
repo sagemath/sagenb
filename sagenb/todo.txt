@@ -155,8 +155,8 @@ page) " prompts you with a pop-up for a name in the same way as
 "last account activity" line and if you click on details, you can see
 what has happened recently. login IPs, type and time. you can also
 invalidate all other sessions on other PCs where cookies are stored.
-
 [ ] somehow connect http://qwebirc.org with Sage?
+[ ] statistics of notebooks, e.g., how many per user, names of all users, how many users?
 
 General TODO:
 

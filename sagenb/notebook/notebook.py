@@ -2152,7 +2152,6 @@ def load_notebook(dir, address=None, port=None, secure=None):
             try:
                 nb = cPickle.loads(open(sobj).read())
             except Exception, msg:
-                print msg
                 backup = '%s/backups/'%dir
                 if os.path.exists(backup):
                     print "****************************************************************"
