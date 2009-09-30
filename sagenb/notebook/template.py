@@ -18,7 +18,7 @@ AUTHORS:
 import jinja
 import sys
 
-from sagenb.misc.misc import version, DATA
+from sagenb.misc.misc import SAGE_VERSION, DATA
 
 
 TEMPLATE_PATH = DATA + '/templates/'
@@ -54,7 +54,7 @@ env.tests['contained_in'] = contained_in
 #The values in this dictionary will be updated
 #by the 
 default_context = {'sitename': 'Sage Notebook',
-                   'sage_version': version}
+                   'sage_version': SAGE_VERSION}
 
 def template(filename, **user_context): 
     """

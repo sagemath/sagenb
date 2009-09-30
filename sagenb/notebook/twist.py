@@ -51,7 +51,7 @@ from sagenb.notebook.template import template
 HISTORY_MAX_OUTPUT = 92*5
 HISTORY_NCOLS = 90
 
-from sagenb.misc.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA
+from sagenb.misc.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA, SAGE_VERSION
 
 css_path        = os.path.join(DATA, "css")
 image_path      = os.path.join(DATA, "images")
@@ -2124,7 +2124,8 @@ class RegistrationPage(resource.PostableResource):
             template_dict = {'accounts': notebook.get_accounts(),
                              'default_user': notebook.default_user(),
                              'welcome': filled_in['username'],
-                             'recovery': notebook.conf()['email']}
+                             'recovery': notebook.conf()['email'],
+                             'sage_version':SAGE_VERSION}
             return HTMLResponse(stream=template('login.html', **template_dict))
 
 class ForgotPassPage(resource.Resource):
@@ -2271,7 +2272,8 @@ class Toplevel(resource.PostableResource):
     def render(self, ctx):
         template_dict = {'accounts': notebook.get_accounts(),
                          'default_user': notebook.default_user(),
-                         'recovery': notebook.conf()['email']}
+                         'recovery': notebook.conf()['email'],
+                         'sage_version':SAGE_VERSION}
         return HTMLResponse(stream=template('login.html', **template_dict))
 
     def userchildFactory(self, request, name):
@@ -2286,7 +2288,8 @@ class LoginResourceClass(resource.Resource):
     def render(self, ctx):
         template_dict = {'accounts': notebook.get_accounts(),
                          'default_user': notebook.default_user(),
-                         'recovery': notebook.conf()['email']}
+                         'recovery': notebook.conf()['email'],
+                         'sage_version':SAGE_VERSION}                         
         return HTMLResponse(stream=template('login.html', **template_dict))
 
     def childFactory(self, request, name):
@@ -2323,7 +2326,8 @@ class AnonymousToplevel(Toplevel):
     def render(self, ctx):
         template_dict = {'accounts': notebook.get_accounts(),
                          'default_user': notebook.default_user(),
-                         'recovery': notebook.conf()['email']}
+                         'recovery': notebook.conf()['email'],
+                         'sage_version':SAGE_VERSION}
         response = HTMLResponse(stream=template('login.html', **template_dict))
         response.headers.setHeader("set-cookie", [http_headers.Cookie('cookie_test', 'cookie_test')])
         return response
@@ -2342,13 +2346,15 @@ class FailedToplevel(Toplevel):
             template_dict = {'accounts': notebook.get_accounts(),
                              'default_user': notebook.default_user(),
                              'username_error': True,
-                             'recovery': notebook.conf()['email']}
+                             'recovery': notebook.conf()['email'],
+                             'sage_version':SAGE_VERSION}                             
             return HTMLResponse(stream=template('login.html', **template_dict))
         elif self.problem == 'password':
             template_dict = {'accounts': notebook.get_accounts(),
                              'default_user': self.username,
                              'password_error': True,
-                             'recovery': notebook.conf()['email']}
+                             'recovery': notebook.conf()['email'],
+                             'sage_version':SAGE_VERSION}                             
             return HTMLResponse(stream=template('login.html', **template_dict))
         elif self.problem == 'suspended':
             return HTMLResponse(stream = message("Your account is currently suspended."))

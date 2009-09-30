@@ -56,14 +56,15 @@ Stein wrote! ouch)
 [x] show(plot(sin)); show(plot(cos))  only shows one plot
 [x] reimplement sphinx introspection. 
     * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
-
-[ ] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
-    see "ZZ" in the docstring, but should get a bold ZZ.
-[ ] sphinx: crazy insane whitespace -- see screenshot here:
+[x] sphinx: crazy insane whitespace -- see screenshot here:
       http://sage.math.washington.edu/home/wstein/patches/whitespace.png
     got from E = EllipticCurve([0,-39409298,0,5554231502,0]); 
     E.Lambda(<tab>
-[ ] "Sign into the Sage Notebook v" <-- missing version number
+[x] "Sign into the Sage Notebook v" <-- missing version number
+[x] version not listed in upper left corner of worksheet either
+
+[ ] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
+    see "ZZ" in the docstring, but should get a bold ZZ.
 [ ] Copy your "a random test worksheet full of stuff". Go to
  "Data|foo.txt"; Change the text; Click "Save Changes" An error page appears.
 

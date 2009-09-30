@@ -289,11 +289,10 @@ except ImportError:
         return code
 
 try:
-    from sage.misc.banner import version
+    import sage.version
+    SAGE_VERSION=sage.version.version
 except ImportError:
-    @stub
-    def version():
-        return " alpha"
+    SAGE_VERSION=""
 
 try:
     from sage.plot.all import Color
