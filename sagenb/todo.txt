@@ -85,6 +85,18 @@ even before computation finishes, and definitely if it is interrupted!
 
 [ ] write an overview of how the sage notebook works: http://wiki.sagemath.org/SageNotebook
 
+[ ] switch from twisted.web2 to twisted.web.  Alex Clemesha says
+"Pretty easily actually... the Resource object is pretty similar, the
+main difference is that the Web2 Resource object has the "locateChild"
+method, where as the Web Resource has "getChild" - and even those are
+pretty similar.  Also, there's some subtle differences in the way you
+doing "rendering"... i.e. with Web2 you subclass
+Resource/PostableResource and then you use the "render" method, where
+are with Web you just subclass Resource and implemented either
+"render_GET" or "render_POST".  Probably just looking through the
+examples here: http://jcalderone.livejournal.com/tag/sixty+seconds
+would be good enough to do the switch."
+
 [ ] move is_valid_username (etc.) out of twist.py, which is definitely *not* where it belongs
 
 [ ] ldap support (see, eg., http://math.univ-lyon1.fr/~tdumont/sage)  but make sure to first
@@ -110,7 +122,11 @@ even before computation finishes, and definitely if it is interrupted!
 
 [ ] worksheet process -- runs as another unix user.
 
-[ ] deprecate the objects directory (see notebook.py) -- I think this is used nowhere
+[ ] have a worksheet export screen and the option to save just certain
+parts (e.e., images, DATA, etc.) with checkboxes.
+
+[ ] deprecate the objects directory (see notebook.py) -- I think this
+is used nowhere
 
 [ ] change api for notebook command; in particular enable capability
     to have different sage commadn on remote machine
@@ -129,7 +145,9 @@ even before computation finishes, and definitely if it is interrupted!
 [ ] "When I try to save a worksheet on uw... I first get "undefined" in
 Safari 4.0.3, and then the second time I click a save button it works
 fine.  This *always* happens." -- from kcrisman
-
+[ ] "Save as" option when downloading worksheets (requested by bill
+page) " prompts you with a pop-up for a name in the same way as
+'Rename worksheet' and then does a Save.
 [ ] and small hint about google accounts: in gmail at the bottom is a
 "last account activity" line and if you click on details, you can see
 what has happened recently. login IPs, type and time. you can also
