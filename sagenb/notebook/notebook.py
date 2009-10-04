@@ -2293,7 +2293,12 @@ def migrate_old_notebook(old_nb, dir):
                                          '__is_doc_worksheet',
                                          '__last_edited', '__date_edited', '__next_block_id'),
                             '_Worksheet')
-        new_ws.edit_save(open(os.path.join(dir, 'worksheets', old_ws.filename(), 'worksheet.txt')).read())
+        base = os.path.join(dir, 'worksheets', old_ws.filename())
+        if not os.path.exists(base):
+            os.makedirs(base)
+        worksheet_file = os.path.join(base, 'worksheet.txt')
+        if os.path.exists(worksheet_file):
+            new_ws.edit_save(open(worksheet_file).read())
         if hasattr(new_ws, '_Worksheet__worksheet_came_form'):
             new_ws._Worksheet__worksheet_came_from = migrate_old_worksheet(new_ws._Worksheet__worksheet_came_from)
         return new_ws
