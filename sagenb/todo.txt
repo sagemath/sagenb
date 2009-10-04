@@ -74,7 +74,21 @@ Stein wrote! ouch)
 
 -------------------------------------------------------------------
 
+See http://wiki.sagemath.org/SageTasks for a much more organized list...
+
+[ ] Review and incorporate http://trac.sagemath.org/sage_trac/ticket/7110
+
+[ ] "data" link appears in reference implementation in output of every cell
+
+[ ] filesize limit -- option so that any computation that produces a
+file that exceeds a certain size would get deleted and replaced by a
+message.  This would limit (though not prevent) damages.
+
 [ ] Jonathan Gutow -- redo how jmol works
+
+[ ] Get peter.jipsen's "canvas3d_lib.js + Pre3d does shaded surfaces" into Sage
+
+[ ] notebook docs -- something in "doc/en/sagenb"
 
 [ ] implement base_url
 
