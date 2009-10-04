@@ -70,7 +70,11 @@ Stein wrote! ouch)
 
 [x] sphinx: factorial?? hangs
 
+[x] bug search_doc(...) reported by victor miller
+
 -------------------------------------------------------------------
+
+[ ] Jonathan Gutow -- redo how jmol works
 
 [ ] implement base_url
 
@@ -157,6 +161,12 @@ what has happened recently. login IPs, type and time. you can also
 invalidate all other sessions on other PCs where cookies are stored.
 [ ] somehow connect http://qwebirc.org with Sage?
 [ ] statistics of notebooks, e.g., how many per user, names of all users, how many users?
+[ ] If a worksheet is still named "untitled" then perhaps the system
+should not just blindly save it with that pseudo-title when you click
+'Save' but rather automatically pop-up the rename box and invite the
+user to change it before saving.
+[ ] a way to put a code block between two text blocks that lie one
+right after the other.
 
 General TODO:
 
