@@ -67,7 +67,7 @@ JEDITABLE_TINYMCE  = True
 
 DOC_TIMEOUT = 120
 
-class Notebook:
+class Notebook(object):
     def __init__(self,
                  dir,
                  system=None,

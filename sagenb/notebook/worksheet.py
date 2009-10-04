@@ -112,7 +112,7 @@ def worksheet_filename(name, owner):
     """
     return os.path.join(owner, _notebook.clean_name(name))
 
-class Worksheet:
+class Worksheet(object):
     def __init__(self, name, dirname, notebook_worksheet_directory, system, owner,
                  docbrowser=False, pretty_print=False, auto_publish=False,
                  create_directories=True):
