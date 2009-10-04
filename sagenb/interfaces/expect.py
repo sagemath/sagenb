@@ -355,7 +355,7 @@ class WorksheetProcess_RemoteExpectImplementation(WorksheetProcess_ExpectImpleme
             c = self._remote_python
         else:
             c = '&&'.join([x for x in [self._ulimit, self._remote_python] if x])
-        return 'ssh -t %s "%s"'%(self._user_at_host, c)
+        return 'sage-native-execute ssh -t %s "%s"'%(self._user_at_host, c)
         
     def get_tmpdir(self):
         """
