@@ -98,6 +98,8 @@ def notebook_twisted(self,
         print '*'*70
 
     nb = notebook.load_notebook(directory)
+    if nb is None:
+        return
     nb.conf()['idle_timeout'] = int(timeout)
     
     if nb.user_exists('root') and not nb.user_exists('admin'):

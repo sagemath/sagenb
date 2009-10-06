@@ -112,8 +112,22 @@ def worksheet_filename(name, owner):
     """
     return os.path.join(owner, _notebook.clean_name(name))
 
+
+ws_from_basic_translate = {'auto_publish':'_Worksheet__auto_publish',
+             'pretty_print':'_Worksheet__pretty_print',
+             'worksheet_that_was_published':'_Worksheet__worksheet_came_from',
+             'published_id_number':'_Worksheet_published_version'}
+             
+def Worksheet_from_basic(obj, notebook_worksheet_directory):
+    W = Worksheet(create_directories=False)
+    for prop, val in obj['props']:
+        if val is not None:
+            setattr(W, ws_from_basic_translate[prop], val)
+    return W
+
 class Worksheet(object):
-    def __init__(self, name, dirname, notebook_worksheet_directory, system, owner,
+    def __init__(self, name=None, dirname=None, notebook_worksheet_directory=None,
+                 system=None, owner=None,
                  docbrowser=False, pretty_print=False, auto_publish=False,
                  create_directories=True):
         """
@@ -157,6 +171,7 @@ class Worksheet(object):
             sage: W
             [Cell 0; in=, out=]
         """
+        if name is None: return
         # Record the basic properties of the worksheet
         self.__system   = system
         self.__pretty_print = pretty_print
@@ -174,6 +189,7 @@ class Worksheet(object):
         # set the directory in which the worksheet files will be stored.
         # We also add the hash of the name, since the cleaned name loses info, e.g.,
         # it could be all _'s if all characters are funny.
+        self.__id_number = dirname
         filename = os.path.join(owner, dirname)
         self.__filename = filename
         self.__dir = os.path.join(notebook_worksheet_directory, filename)
@@ -192,6 +208,65 @@ class Worksheet(object):
             self.save_snapshot(owner)
 
         self.clear()
+
+    def id_number(self):
+        """
+        Return id number of this worksheet.
+        """
+        try:
+            return self.__id_number
+        except AttributeError:
+            self.__id_number = int(os.path.split(self.__filename)[1])
+            return self.__id_number
+
+    def basic(self):
+
+        if self.worksheet_that_was_published() is self:
+            ws_pub = None
+        else:
+            W = self.worksheet_that_was_published()
+            ws_pub = {'owner':W.owner(), 'id_number':W.id_number()}
+
+        try:
+            published_id_number = int(os.path.split(self.__published_version)[1])
+        except AttributeError:
+            published_id_number = None
+            
+        d = { # basic identification
+             'name':self.name(),
+             'id_number':self.id_number(),
+
+             # type of computation system that evaluates cells
+             'system':self.system(),
+
+             # permission: who can look at the worksheet
+             'owner':self.owner(),
+             'viewers':self.viewers(),
+             'collaborators':self.collaborators(),
+             
+             # publishing worksheets (am I published?); auto-publish me?
+             'auto_publish':self.is_auto_publish(),
+             'worksheet_that_was_published':ws_pub,
+             'published_id_number':published_id_number,
+
+             # appearance, e.g., whether to pretty print this worksheet by default
+             'pretty_print':self.pretty_print(),
+
+             # what people think of this worksheet: list of triples,
+             #    (username, rating, comment)
+             'ratings':self.ratings(),
+
+             # dictionary mapping usernames to list of tags that reflect what the
+             # tages are for that user.   A tag can be an integer:
+             # 0,1,2 (=ARCHIVED,ACTIVE,TRASH), or a string.
+             # This is used for now to fill in the __user_views.
+             'tags':self.user_tags(),
+
+             # information about when this worksheet was last changed, and by whom
+             # last_change = (time.time(), 'username')
+             'last_change':self.last_change(),
+             }
+        return d
 
     def __cmp__(self, other):
         """
@@ -1292,6 +1367,17 @@ class Worksheet(object):
         self.__user_view[user] = ACTIVE
         return ACTIVE
 
+    def user_tags(self):
+        """
+        A temporary trivial tags implementation.
+        """
+        if not hasattr(self, '__user_view'):
+            return {}
+        d = dict(self.__user_view)
+        for user, val in d.iteritems():
+            d[user] = [val]
+        return d
+
     def set_user_view(self, user, x):
         """
         Set the view on this worksheet for the given user.
@@ -2293,6 +2379,20 @@ class Worksheet(object):
     ##########################################################
     # Last edited
     ##########################################################
+    def last_change(self):
+        """
+        Return information about when this worksheet was last changed and by whom.
+
+        OUTPUT:
+
+            - ``float`` -- seconds since epoch of the time when this 
+              worksheet was last edited
+
+            - ``username`` -- string of username who last edited this
+              worksheet
+        """
+        return (time.mktime(self.date_edited()), self.last_to_edit())
+
     def last_edited(self):
         try:
             return self.__last_edited[0]
@@ -2326,6 +2426,7 @@ class Worksheet(object):
 
     def time_since_last_edited(self):
         return time.time() - self.last_edited()
+
 
     def warn_about_other_person_editing(self,username, threshold):
         r"""

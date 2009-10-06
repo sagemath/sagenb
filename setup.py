@@ -32,7 +32,8 @@ code = setup(name = 'sagenb',
                      'sagenb.misc',                                          
                      'sagenb.notebook',
                      'sagenb.notebook.compress',
-                     'sagenb.simple'
+                     'sagenb.simple',
+                     'sagenb.storage'
                      ],
       package_data = {'sagenb':all_files('sagenb/data', 'sagenb/')}
       )

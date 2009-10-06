@@ -1,6 +1,8 @@
 """nodoctest
 """
 
+import copy
+
 import conf
 
 defaults = {'cell_input_color':'#0000000',
@@ -17,6 +19,11 @@ defaults = {'cell_input_color':'#0000000',
             'doc_pool_size':128,
             'email':False 
            }
+
+def ServerConfiguration_from_basic(basic):
+    c = ServerConfiguration()
+    c.confs = copy.copy(basic)
+    return c
 
 class ServerConfiguration(conf.Configuration):
     def defaults(self):

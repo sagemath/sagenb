@@ -90,11 +90,6 @@ class Notebook(object):
         self.__worksheet_dir = os.path.join(dir, 'worksheets')
         self.__object_dir    = os.path.join(dir, 'objects')
         self.__makedirs()
-        self.__history = []
-        self.__history_count = 0
-        self.__server_log = [] #server log list
-        self.__show_debug = show_debug
-        self.__admins = []
         self.__conf = server_conf.ServerConfiguration()
 
         # Install this copy of the notebook in twist.py as *the*
@@ -1028,42 +1023,6 @@ class Notebook(object):
         while len(H) > maxlen:
             del H[0]
 
-    def add_to_history(self, input_text):
-        H = self.history()
-        H.append(input_text)
-        while len(H) > self.max_history_length():
-            del H[0]
-    
-    def history_count_inc(self):
-        self.__history_count += 1
-    
-    def history_count(self):
-        return self.__history_count
-
-    def history(self):
-        try:
-            s = self.__history
-        except AttributeError:
-            self.__history = []
-            s = self.__history
-        return s
-
-    def history_text(self):
-        return '\n\n'.join([H.strip() for H in self.history()])
-
-    def max_history_length(self):
-        try:
-            return self.conf()['max_history_length']
-        except KeyError:
-            return MAX_HISTORY_LENGTH
-        
-    def history_html(self):
-        return template("notebook/command_history.html", history_text = escape(self.history_text()))
-
-        
-    def history_with_start(self, start):
-        n = len(start)
-        return [x for x in self.history() if x[:n] == start]
 
     ##########################################################
     # Importing and exporting worksheets to files
@@ -1377,10 +1336,6 @@ class Notebook(object):
             C = server_conf.ServerConfiguration()
             self.__conf = C
             return C
-
-        
-    def set_debug(self,show_debug):
-        self.__show_debug = show_debug
 
     def number_of_backups(self):
         return self.conf()['number_of_backups']
@@ -2145,7 +2100,14 @@ def load_notebook(dir, address=None, port=None, secure=None):
         old_sobj = os.path.join(dir, 'nb.sobj')
         if not os.path.exists(sobj) and os.path.exists(old_sobj):
             nb = cPickle.loads(open(old_sobj).read())
-            nb = migrate_old_notebook(nb, dir)
+            try:
+                nb = migrate_old_notebook(nb, dir)
+            except Exception, msg:
+                print msg
+                print "Not loading or running notebook."
+                if os.path.exists(sobj):
+                    os.unlink(sobj)
+                return
         else:
             # Otherwise try to load the notebook from nb2.sobj
             # and if this fails try each backup.
@@ -2172,7 +2134,7 @@ def load_notebook(dir, address=None, port=None, secure=None):
                         print "Unable to restore notebook from *any* auto-saved backups."
                         print "This is a serious problem."
                         raise RuntimeError, "Error loading Sage notebook."
-        
+
     if nb is None:
         print "Creating a brand new notebook."
         nb = Notebook(dir)
@@ -2241,24 +2203,33 @@ def migrate_old_notebook(old_nb, dir):
             if hasattr(old, prefix + attribute):
                 setattr(new, prefix + attribute,  getattr(old, prefix + attribute))
 
+    def transfer_attributes2(old, new, attributes):
+        for attr_old, attr_new in attributes:
+            if hasattr(old, attr_old):
+                setattr(new, attr_new,  getattr(old, attr_old))
+                
     # Transfer all the notebook attributes to our new notebook object
     
-    transfer_attributes(old_nb, new_nb, ('__conf', '__admins', '__server_log', '__history',
-             '__history_count', '__filename', '__worksheet_dir',
-             '__object_dir', '__worksheets', '__server_pool',
-             '__backup_dir', '__users', '__scratch_worksheet',
-             '__ulimit', '__system', '__pretty_print', '__show_debug'), '_Notebook')
+    transfer_attributes(old_nb, new_nb, ('__filename',
+             '__worksheet_dir', '__object_dir', '__worksheets', '__server_pool',
+             '__backup_dir', '__users', 
+             '__ulimit', '__system', '__pretty_print'), '_Notebook')
+
+    new_nb.conf().confs = old_nb.conf().confs
     
     # Now update the user data from the old notebook to the new one:
     users = {}
     for username, old_user in new_nb.users().iteritems():
         new_user = user.User(old_user.username(), old_user.password(), old_user.get_email(),
                     old_user.account_type())
-        transfer_attributes(old_user, new_user,
-                            ('__email_confirmed', '__conf',
-                            '__temporary_password', '__is_suspended', '__password'),
-                            '_User')
+        transfer_attributes2(old_user, new_user,
+                             [('_User__email_confirmed', '_email_confirmed'),
+                             ('_User__temporary_password', '_temporary_password'),
+                             ('_User__is_suspended', '_is_suspended')])
+        # Fix the __conf field, which is also an instance of a class
+        new_user.conf().confs = old_user.conf().confs
         users[new_user.username()] = new_user
+        
     new_nb._Notebook__users = users
 
     # Update the filename of the new notebook.

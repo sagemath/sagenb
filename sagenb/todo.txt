@@ -72,9 +72,78 @@ Stein wrote! ouch)
 
 [x] bug search_doc(...) reported by victor miller
 
+[x] migration didn't update user's conf field.
+
+[ ] yikes: one run two notebook servers on the same directory at same time
+
+[ ] change notebooks so they use a 100% sobj free data format for
+storage, so that code refactoring is possible.  The plan is to do this
+little by little, until no sobjs are needed.  Subtodolist:
+
+TODO: 
+   * implement to/from basic for server data
+   * worksheet ratings
+   * add that to data store
+   * implement all worksheet data (except ratings) being stored in worksheet
+     in say a JSON or Python header?  Maybe even make this info programmatically 
+     accessible in worksheet?
+   * switch over to using new model
+   * when transitioning put new notebook in a directory with .sagenb extension:
+         sage_notebook.sagenb
+
+  [ ] worksheets -- the file worksheet.txt + filesystem
+  [ ] worksheet attributes:   
+      -- store all of this in a JSON at the top of worksheet.txt, except for ratings!
+          - viewers
+          - collaborators
+          - autopublish
+          - attached       
+          - came_from
+          - published_version
+          - ratings
+          - user_view
+          - saved_by_info
+          - is_doc_worksheet
+          - last_edited
+          - date_edited
+
+  [ ] list of worksheets -- determined by the filesytem
+
+  [ ] notebook:
+         - conf
+         - admins
+         - log
+         - history
+         - history_count
+         - server_pool
+         - users
+
+  [x] user:
+         - username
+         - password
+
+
+
+Format for these files:
+   * Windows INI config: http://docs.python.org/library/configparser.html
+   * shlex: ick
+   * xml -- ElementTree XML API looks nice: http://docs.python.org/library/xml.etree.elementtree.html
+
+Brainstorm:
+
+<?xml version="1.0" encoding="UTF-8"?>
+<user login_name="wstein" password="@#%$QWAFSD" />
+
+
+         
+
+
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a much more organized list...
+
+[ ] instructions about running a daemon sage server with conf scripts:
+http://groups.google.com/group/sage-support/browse_thread/thread/b0d15b82eea3d652
 
 [ ] Review and incorporate http://trac.sagemath.org/sage_trac/ticket/7110
 
@@ -94,9 +163,6 @@ message.  This would limit (though not prevent) damages.
 
 [ ] get rid of list of 'Sage Users' when publishing worksheets --
 that's not appropriate given how sage has grown.
-
-[ ] change notebooks so they use a 100% sobj free data format for
-storage.  sobj's suck.
 
 [ ] notebook(default_mode="python") way to make the notebook default
 to use python instead of sage.

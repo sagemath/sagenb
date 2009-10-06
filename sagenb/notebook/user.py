@@ -7,18 +7,27 @@ SALT = 'aa'
 
 import user_conf
 
-class User:
+def User_from_basic(basic):
+    """
+    Create a user from a basic data structure.
+    """
+    user = User(basic['_username'])
+    user.__dict__ = copy.copy(basic)
+    user._conf = user_conf.UserConfiguration_from_basic(user._conf)
+    return user
+
+class User(object):
     def __init__(self, username, password='', email='', account_type='admin'):
-        self.__username = username
-        self.__password = crypt.crypt(password, SALT)
-        self.__email = email
-        self.__email_confirmed = False
+        self._username = username
+        self._password = crypt.crypt(password, SALT)
+        self._email = email
+        self._email_confirmed = False
         if not account_type in ['admin', 'user', 'guest']:
             raise ValueError, "account type must be one of admin, user, or guest"
-        self.__account_type = account_type
-        self.__conf = user_conf.UserConfiguration()
-        self.__temporary_password = ''
-        self.__is_suspended = False
+        self._account_type = account_type
+        self._conf = user_conf.UserConfiguration()
+        self._temporary_password = ''
+        self._is_suspended = False
 
     def __getstate__(self):
         d = copy.copy(self.__dict__)
@@ -30,7 +39,17 @@ class User:
                 del d['history']
             except Exception, msg:
                 print msg
-                print "Unable to dump history of user %s to disk yet."%self.__username
+                print "Unable to dump history of user %s to disk yet."%self._username
+        return d
+
+    def basic(self):
+        """
+        Return a basic Python data structure from which self can be
+        reconstructed.
+        """
+        d = copy.copy(self.__dict__)
+        d['_conf'] = self._conf.basic()
+        d['version'] = 1
         return d
 
     def history_list(self):
@@ -39,12 +58,12 @@ class User:
         except AttributeError:
             import twist   # late import
             if twist.notebook is None: return []       
-            history_file = "%s/worksheets/%s/history.sobj"%(twist.notebook.directory(), self.__username)
+            history_file = "%s/worksheets/%s/history.sobj"%(twist.notebook.directory(), self._username)
             if os.path.exists(history_file):
                 try:
                     self.history = cPickle.load(open(history_file))
                 except:
-                    print "Error loading history for user %s"%self.__username
+                    print "Error loading history for user %s"%self._username
                     self.history = []
             else:
                 self.history = []
@@ -55,7 +74,7 @@ class User:
             return
         import twist   # late import
         if twist.notebook is None: return
-        history_file = "%s/worksheets/%s/history.sobj"%(twist.notebook.directory(), self.__username)
+        history_file = "%s/worksheets/%s/history.sobj"%(twist.notebook.directory(), self._username)
         try:
             #print "Dumping %s history to '%s'"%(self.__username, history_file)
             his = cPickle.dumps(self.history)
@@ -75,10 +94,10 @@ class User:
             sage: User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin').username()
             'bob'
         """
-        return self.__username
+        return self._username
 
     def __repr__(self):
-        return self.__username
+        return self._username
 
     def conf(self):
         """
@@ -96,13 +115,13 @@ class User:
             sage: config['default_pretty_print']
             False
         """
-        return self.__conf
+        return self._conf
 
     def __getitem__(self, *args):
-        return self.__conf.__getitem__(*args)
+        return self._conf.__getitem__(*args)
 
     def __setitem__(self, *args):
-        self.__conf.__setitem__(*args)
+        self._conf.__setitem__(*args)
 
     def password(self):
         """
@@ -113,7 +132,7 @@ class User:
             sage: user.password()
             'aamxw5LCYcWY.'
         """
-        return self.__password
+        return self._password
 
     def set_password(self, password):
         """
@@ -127,10 +146,10 @@ class User:
             True
         """
         if password == '':
-            self.__password = 'x'   # won't get as a password -- i.e., this account is closed.
+            self._password = 'x'   # won't get as a password -- i.e., this account is closed.
         else:
-            self.__password = crypt.crypt(password, SALT)
-            self.__temporary_password = ''
+            self._password = crypt.crypt(password, SALT)
+            self._temporary_password = ''
 
     def set_hashed_password(self, password):
         """
@@ -142,8 +161,8 @@ class User:
             sage: user.password()
             'Crrc!'
         """
-        self.__password = password
-        self.__temporary_password = ''
+        self._password = password
+        self._temporary_password = ''
 
     def get_email(self):
         """
@@ -154,7 +173,7 @@ class User:
             sage: user.get_email()
             'bob@sagemath.net'
         """
-        return self.__email
+        return self._email
 
     def set_email(self, email):
         """
@@ -168,7 +187,7 @@ class User:
             sage: user.get_email()
             'bob@gmail.gov'
         """
-        self.__email = email
+        self._email = email
         
     def set_email_confirmation(self, value):
         """
@@ -186,7 +205,7 @@ class User:
             False
         """
         value = bool(value)
-        self.__email_confirmed = value
+        self._email_confirmed = value
         
     def is_email_confirmed(self):
         """
@@ -198,9 +217,9 @@ class User:
             False
         """
         try:
-            return self.__email_confirmed
+            return self._email_confirmed
         except AttributeError:
-            self.__email_confirmed = False
+            self._email_confirmed = False
             return False
 
     def password_is(self, password):
@@ -214,9 +233,9 @@ class User:
             sage: user.password_is('Aisfa!!')
             True
         """
-        if self.__username == "pub":
+        if self._username == "pub":
             return False
-        return self.__password == crypt.crypt(password, SALT)
+        return self._password == crypt.crypt(password, SALT)
 
     def account_type(self):
         """
@@ -230,9 +249,9 @@ class User:
             sage: User('C', account_type='guest').account_type()
             'guest'
         """
-        if self.__username == 'admin':
+        if self._username == 'admin':
             return 'admin'
-        return self.__account_type
+        return self._account_type
     
     def is_admin(self):
         """
@@ -244,7 +263,7 @@ class User:
             sage: User('B', account_type='user').is_admin()
             False
         """
-        return self.__account_type == 'admin'
+        return self._account_type == 'admin'
 
     def is_guest(self):
         """
@@ -256,7 +275,7 @@ class User:
             sage: User('B', account_type='user').is_guest()
             False
         """
-        return self.__account_type == 'guest'
+        return self._account_type == 'guest'
         
     def is_suspended(self):
         """
@@ -268,7 +287,7 @@ class User:
             False
         """
         try:
-            return self.__is_suspended
+            return self._is_suspended
         except AttributeError:
             return False
         
@@ -288,6 +307,6 @@ class User:
             False
         """
         try:
-            self.__is_suspended = False if self.__is_suspended else True
+            self._is_suspended = False if self._is_suspended else True
         except AttributeError:
-            self.__is_suspended = True
+            self._is_suspended = True

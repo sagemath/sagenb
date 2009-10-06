@@ -26,7 +26,7 @@ MORE DETAILS:
       * Jinja-1.2-py2.6-macosx-10.3-i386.egg
       * Pygments-1.1.1-py2.6.egg
       * Sphinx-0.5.1-py2.6.egg
-      * Twisted-8.2.0-py2.6.egg-info
+      * Twisted-8.2.0-py2.6.egg-info + TwistedWeb2
       * docutils-0.5-py2.6.egg
       * zope.interface-3.3.0-py2.6.egg-info
 

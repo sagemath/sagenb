@@ -9,13 +9,16 @@ Configuration
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-class Configuration:
+class Configuration(object):
     
     def __init__(self):
         self.confs = {}
 
     def __repr__(self):
         return 'Configuration: %s'%self.confs
+
+    def basic(self):
+        return self.confs
 
     def defaults(self):
         raise NotImplementedError

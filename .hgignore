@@ -127,3 +127,4 @@ dotsage
 MANIFEST
 sagenb/data/java
 ~
+sage_notebook*
