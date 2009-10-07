@@ -48,7 +48,7 @@ Login to a new session::
 Run a command::
 
     sage: sleep(0.5)
-    sage: print get_url('http://localhost:%s/simple/compute?session=%s&code=2*2' % (port, session))
+    sage: print get_url('http://localhost:%s/simple/compute?session=%s&code=2*2&timeout=60' % (port, session))
     {
     "status": "done",
     "files": [],
