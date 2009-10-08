@@ -126,10 +126,10 @@ def Worksheet_from_basic(obj, notebook_worksheet_directory):
     return W
 
 class Worksheet(object):
-    def __init__(self, name=None, dirname=None, notebook_worksheet_directory=None,
-                 system=None, owner=None,
-                 docbrowser=False, pretty_print=False, auto_publish=False,
-                 create_directories=True):
+    def __init__(self, name=None, id_number=None,
+                 notebook_worksheet_directory=None, system=None,
+                 owner=None, docbrowser=False, pretty_print=False,
+                 auto_publish=False, create_directories=True):
         """
         Create and initialize a new worksheet.
         
@@ -138,8 +138,8 @@ class Worksheet(object):
         
         -  ``name`` - string; the name of this worksheet
         
-        -  ``dirname`` - string; name of the directory in which
-           the worksheet's data is stored
+        - ``id_number`` - Integer; name of the directory in which the
+           worksheet's data is stored
         
         -  ``notebook_worksheet_directory`` - string; the
            directory in which the notebook object that contains this worksheet
@@ -189,8 +189,8 @@ class Worksheet(object):
         # set the directory in which the worksheet files will be stored.
         # We also add the hash of the name, since the cleaned name loses info, e.g.,
         # it could be all _'s if all characters are funny.
-        self.__id_number = dirname
-        filename = os.path.join(owner, dirname)
+        self.__id_number = id_number
+        filename = os.path.join(owner, str(id_number))
         self.__filename = filename
         self.__dir = os.path.join(notebook_worksheet_directory, filename)
 
@@ -211,7 +211,10 @@ class Worksheet(object):
 
     def id_number(self):
         """
-        Return id number of this worksheet.
+        Return the id number of this worksheet, which is an integer.
+
+        EXAMPLES::
+        
         """
         try:
             return self.__id_number
@@ -220,51 +223,81 @@ class Worksheet(object):
             return self.__id_number
 
     def basic(self):
+        """
+        Output a dictionary of basic Python objects that defines
+        everything about this worksheet, except the data files in the
+        DATA directory and images and other data in the individual
+        cell directories.
+        
+        EXAMPLES::
 
+            sage: import sagenb.notebook.worksheet
+            sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, '', owner='sage')
+        """        
         if self.worksheet_that_was_published() is self:
             ws_pub = None
         else:
             W = self.worksheet_that_was_published()
-            ws_pub = {'owner':W.owner(), 'id_number':W.id_number()}
+            ws_pub = (W.owner(), W.id_number())
 
         try:
             published_id_number = int(os.path.split(self.__published_version)[1])
         except AttributeError:
             published_id_number = None
             
-        d = { # basic identification
+        d = {#############
+             # basic identification
              'name':self.name(),
-             'id_number':self.id_number(),
+             'id_number':int(self.id_number()),
 
-             # type of computation system that evaluates cells
+             #############
+             # default type of computation system that evaluates cells
              'system':self.system(),
 
+             #############
              # permission: who can look at the worksheet
              'owner':self.owner(),
              'viewers':self.viewers(),
              'collaborators':self.collaborators(),
-             
-             # publishing worksheets (am I published?); auto-publish me?
-             'auto_publish':self.is_auto_publish(),
-             'worksheet_that_was_published':ws_pub,
-             'published_id_number':published_id_number,
 
-             # appearance, e.g., whether to pretty print this worksheet by default
+             #############
+             # publishing worksheets (am I published?); auto-publish me?
+             # If this worksheet is published, then the published_id_number
+             # is the id of the published version of this worksheet. Otherwise,
+             # it is None.
+             'published_id_number':published_id_number,
+             # If this is a published worksheet, then ws_pub
+             # is a 2-tuple ('username', id_number) of a non-published
+             # worksheet.  Otherwise ws_pub is None.
+             'worksheet_that_was_published':ws_pub,
+             # Whether or not this worksheet should automatically be
+             # republished when changed. 
+             'auto_publish':self.is_auto_publish(),
+
+             # Appearance: e.g., whether to pretty print this
+             # worksheet by default
              'pretty_print':self.pretty_print(),
 
-             # what people think of this worksheet: list of triples,
-             #    (username, rating, comment)
+             # what other users think of this worksheet: list of
+             # triples
+             #       (username, rating, comment)
              'ratings':self.ratings(),
 
-             # dictionary mapping usernames to list of tags that reflect what the
-             # tages are for that user.   A tag can be an integer:
-             # 0,1,2 (=ARCHIVED,ACTIVE,TRASH), or a string.
+             # dictionary mapping usernames to list of tags that
+             # reflect what the tages are for that user.  A tag can be
+             # an integer:
+             #   0,1,2 (=ARCHIVED,ACTIVE,TRASH),
+             # or a string (not yet supported).
              # This is used for now to fill in the __user_views.
              'tags':self.user_tags(),
 
-             # information about when this worksheet was last changed, and by whom
-             # last_change = (time.time(), 'username')
+             # information about when this worksheet was last changed,
+             # and by whom:
+             #     last_change = ('username', time.time())
              'last_change':self.last_change(),
+
+             # the actual HTML/cell text content of the worksheet
+             'body':self.body()
              }
         return d
 
@@ -2064,6 +2097,19 @@ class Worksheet(object):
     ##########################################################
     # Editing the worksheet in plain text format (export and import)
     ##########################################################
+    def body(self):
+        """
+        OUTPUT:
+
+            -- ``string`` -- Plain text representation of the body of the worksheet. 
+        """
+        s = ''
+        for C in self.cell_list():
+            t = C.edit_text().strip()
+            if t: s += '\n\n' + t
+        return s
+        
+
     def edit_text(self):
         """
         Returns a plain-text version of the worksheet with {{{}}}
@@ -2071,12 +2117,7 @@ class Worksheet(object):
         """
         s = self.name() + '\n'
         s += 'system:%s'%self.system()
-        
-        for C in self.cell_list():
-            t = C.edit_text().strip()
-            if t != '':
-                s += '\n\n' + t
-        return s
+        return s + '\n' + self.body()
 
     def reset_interact_state(self):
         """
@@ -2391,7 +2432,7 @@ class Worksheet(object):
             - ``username`` -- string of username who last edited this
               worksheet
         """
-        return (time.mktime(self.date_edited()), self.last_to_edit())
+        return (self.last_to_edit(), time.mktime(self.date_edited()))
 
     def last_edited(self):
         try:

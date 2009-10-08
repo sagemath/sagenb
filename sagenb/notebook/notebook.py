@@ -737,16 +737,12 @@ class Notebook(object):
         i = 0
         dir = os.path.join(self.worksheet_directory(),username)
         if os.path.exists(dir):
-            D = os.listdir(dir)
-            D.sort()
-            dirname = str(i)
-            while dirname in D:
-                i += 1
-                dirname = str(i)
+            id_number = max([int(a) for a in os.listdir(dir)]+[-1]) + 1
         else:
-            dirname = '0'
+            id_number = 0
 
-        W = worksheet.Worksheet(worksheet_name, dirname, self.worksheet_directory(),
+        W = worksheet.Worksheet(worksheet_name, id_number,
+                                self.worksheet_directory(),
                                 system = self.system(username),
                                 owner=username,
                                 docbrowser = docbrowser,
@@ -2246,10 +2242,10 @@ def migrate_old_notebook(old_nb, dir):
         """
         Migrates an old worksheet to the new format. 
         """
-        old_ws_dirname = old_ws._Worksheet__filename.partition(os.path.sep)[2]
+        old_ws_dirname = old_ws._Worksheet__filename.partition(os.path.sep)[-1]
         
         new_ws = worksheet.Worksheet(name=old_ws.name(),
-                                     dirname=old_ws_dirname,
+                                     id_number=old_ws_dirname,
                                      notebook_worksheet_directory=new_nb.worksheet_directory(),
                                      system=old_ws.system(),
                                      owner=old_ws.owner(),

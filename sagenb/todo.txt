@@ -74,7 +74,10 @@ Stein wrote! ouch)
 
 [x] migration didn't update user's conf field.
 
-[ ] yikes: one run two notebook servers on the same directory at same time
+[ ] add message to the top of each *old* sage notebook .py file stating
+ that one should work on sagenb instead.
+
+[ ] yikes: one run two notebook servers on the same directory at same time (?)
 
 [ ] change notebooks so they use a 100% sobj free data format for
 storage, so that code refactoring is possible.  The plan is to do this
