@@ -130,7 +130,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         Start this worksheet process running.
         """
-        print "Starting worksheet with command: '%s'"%self.command()
+        #print "Starting worksheet with command: '%s'"%self.command()
         self._expect = pexpect.spawn(self.command())
         self._is_started = True
         self._is_computing = False

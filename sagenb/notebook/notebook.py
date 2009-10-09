@@ -737,7 +737,7 @@ class Notebook(object):
         i = 0
         dir = os.path.join(self.worksheet_directory(),username)
         if os.path.exists(dir):
-            id_number = max([int(a) for a in os.listdir(dir)]+[-1]) + 1
+            id_number = max([int(a) for a in os.listdir(dir) if not '.' in a]+[-1]) + 1
         else:
             id_number = 0
 

@@ -77,6 +77,18 @@ Stein wrote! ouch)
 [ ] add message to the top of each *old* sage notebook .py file stating
  that one should work on sagenb instead.
 
+[ ] fix all doctests in sagenb code and make a patch against core
+sage library that imports enough of sagenb by default so I can 
+run all these doctests.  
+
+[ ] get coverage to 100%.
+
+[ ] change to 100% html format for worksheets.
+
+[ ] docstring bug:
+import numpy
+numpy.load?
+
 [ ] yikes: one run two notebook servers on the same directory at same time (?)
 
 [ ] change notebooks so they use a 100% sobj free data format for
@@ -85,7 +97,6 @@ little by little, until no sobjs are needed.  Subtodolist:
 
 TODO: 
    * implement to/from basic for server data
-   * worksheet ratings
    * add that to data store
    * implement all worksheet data (except ratings) being stored in worksheet
      in say a JSON or Python header?  Maybe even make this info programmatically 

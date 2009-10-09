@@ -13,7 +13,7 @@ the file system (not in the notebook pickle sobj).
 
 AUTHORS:
 
-- William Stein
+ - William Stein
 """
 
 ###########################################################################
@@ -112,18 +112,33 @@ def worksheet_filename(name, owner):
     """
     return os.path.join(owner, _notebook.clean_name(name))
 
-
-ws_from_basic_translate = {'auto_publish':'_Worksheet__auto_publish',
-             'pretty_print':'_Worksheet__pretty_print',
-             'worksheet_that_was_published':'_Worksheet__worksheet_came_from',
-             'published_id_number':'_Worksheet_published_version'}
-             
 def Worksheet_from_basic(obj, notebook_worksheet_directory):
-    W = Worksheet(create_directories=False)
-    for prop, val in obj['props']:
-        if val is not None:
-            setattr(W, ws_from_basic_translate[prop], val)
+    """
+    INPUT:
+
+        - ``obj`` -- a dictionary (a basic Python objet) from which a
+                     worksheet can be reconstructed.
+
+        - ``notebook_worksheet_directory`` - string; the directory in
+           which the notebook object that contains this worksheet
+           stores worksheets, i.e., nb.worksheet_directory().
+
+    OUTPUT:
+    
+        - a worksheet
+
+    EXAMPLES::
+            sage: import sagenb.notebook.worksheet
+            sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, '', system='gap', owner='sageuser', pretty_print=True, auto_publish=True)
+            sage: _=W.new_cell_after(0); B = W.basic()
+            sage: W0 = sagenb.notebook.worksheet.Worksheet_from_basic(B, '')
+            sage: W0.basic() == B
+            True
+    """
+    W = Worksheet()
+    W.reconstruct_from_basic(obj, notebook_worksheet_directory)
     return W
+
 
 class Worksheet(object):
     def __init__(self, name=None, id_number=None,
@@ -169,7 +184,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W
-            [Cell 0; in=, out=]
+            admin/0: [Cell 0; in=, out=]
         """
         if name is None: return
         # Record the basic properties of the worksheet
@@ -189,32 +204,33 @@ class Worksheet(object):
         # set the directory in which the worksheet files will be stored.
         # We also add the hash of the name, since the cleaned name loses info, e.g.,
         # it could be all _'s if all characters are funny.
-        self.__id_number = id_number
+        self.__id_number = int(id_number)
         filename = os.path.join(owner, str(id_number))
         self.__filename = filename
         self.__dir = os.path.join(notebook_worksheet_directory, filename)
-
         if create_directories:
-            if not os.path.exists(self.__dir):
-                os.makedirs(self.__dir)
-                set_restrictive_permissions(self.__dir, allow_execute=True)
-
-            set_restrictive_permissions(self.snapshot_directory())
-            # Create the worksheet file if it doesn't exist.
-            open(self.worksheet_txt_filename(), 'a').close()
-            set_restrictive_permissions(self.worksheet_txt_filename())
-            set_restrictive_permissions(self.cells_directory())
-
-            self.save_snapshot(owner)
-
+            self.create_directories()
         self.clear()
+
+    def create_directories(self):
+        if not os.path.exists(self.__dir):
+            os.makedirs(self.__dir)
+            set_restrictive_permissions(self.__dir, allow_execute=True)
+            set_restrictive_permissions(self.snapshot_directory())
+            set_restrictive_permissions(self.cells_directory())
 
     def id_number(self):
         """
         Return the id number of this worksheet, which is an integer.
 
         EXAMPLES::
-        
+
+            sage: from sagenb.notebook.worksheet import Worksheet
+            sage: W = Worksheet('test', 2, '', owner='sageuser')
+            sage: W.id_number()
+            2
+            sage: type(W.id_number())
+            <type 'int'>
         """
         try:
             return self.__id_number
@@ -224,15 +240,29 @@ class Worksheet(object):
 
     def basic(self):
         """
-        Output a dictionary of basic Python objects that defines
-        everything about this worksheet, except the data files in the
-        DATA directory and images and other data in the individual
-        cell directories.
+        Output a dictionary of basic Python objects that defines the
+        configuration of this worksheet, except the actual cells and
+        the data files in the DATA directory and images and other data
+        in the individual cell directories.
         
         EXAMPLES::
 
             sage: import sagenb.notebook.worksheet
             sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, '', owner='sage')
+            sage: sorted((W.basic().items()))
+            [('auto_publish', False),
+             ('collaborators', []),
+             ('id_number', 0),
+             ('last_change', ('sage', ...)),
+             ('name', 'test'),
+             ('owner', 'sage'),
+             ('pretty_print', False),
+             ('published_id_number', None),
+             ('ratings', []),
+             ('system', None),
+             ('tags', {}),
+             ('viewers', []),
+             ('worksheet_that_was_published', None)]
         """        
         if self.worksheet_that_was_published() is self:
             ws_pub = None
@@ -295,11 +325,53 @@ class Worksheet(object):
              # and by whom:
              #     last_change = ('username', time.time())
              'last_change':self.last_change(),
-
-             # the actual HTML/cell text content of the worksheet
-             'body':self.body()
              }
         return d
+
+    def reconstruct_from_basic(self, obj, notebook_worksheet_directory):
+        """
+        Reconstruct as much of the worksheet's configuration as
+        possible from the properties that happen to be set in the
+        basic dictionary obj.
+
+        INPUT:
+
+            - `obj` -- a dictionary of basic Python objects
+
+        EXAMPLES::
+            sage: import sagenb.notebook.worksheet
+            sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, '', system='gap', owner='sageuser', pretty_print=True, auto_publish=True)
+            sage: W.new_cell_after(0)
+            Cell 1; in=, out=
+            sage: b = W.basic()
+            sage: W0 = sagenb.notebook.worksheet.Worksheet()
+            sage: W0.reconstruct_from_basic(b,'')
+            sage: W0.basic() == W.basic()
+            True
+        """
+        for key, value in obj.iteritems():
+            if key == 'name':
+                self.set_name(value)
+            elif key == 'id_number':
+                self.__id_number = value
+                if obj.has_key('owner'):
+                    owner = obj['owner']
+                    self.__owner = owner
+                    filename = os.path.join(owner, str(value))
+                    self.__filename = filename
+                    self.__dir = os.path.join(notebook_worksheet_directory, filename)
+            elif key in ['system', 'owner', 'viewers', 'collaborators',
+                         'pretty_print', 'ratings']:
+                # ugly
+                setattr(self, '_Worksheet__' + key, value)
+            elif key == 'auto_publish':
+                self.__autopublish = value
+            elif key == 'tags':
+                self.set_tags(value)
+            elif key == 'last_change':
+                self.set_last_change(value[0],value[1])
+
+        self.create_directories()
 
     def __cmp__(self, other):
         """
@@ -345,13 +417,12 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.__repr__()
-            '[Cell 0; in=, out=]'
+            'admin/0: [Cell 0; in=, out=]'
             sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
             sage: W.__repr__()
-            '[Cell 0; in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
+            'admin/0: [Cell 0; in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
         """
-        return str(self.cell_list())
-
+        return '%s/%s: %s'%(self.owner(), self.id_number(), str(self.cell_list()))
     def __len__(self):
         r"""
         Return the number of cells in this worksheet.
@@ -686,7 +757,7 @@ class Worksheet(object):
             sage: W.filename()
             'admin/0'
             sage: sorted(os.listdir(nb.directory() + '/worksheets/' + W.filename()))
-            ['snapshots', 'worksheet.txt']
+            ['cells', 'snapshots']
         """
         return self.__filename
 
@@ -733,7 +804,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.data_directory()
-            '.../worksheets/admin/0/data/'
+            '.../worksheets/admin/0/data'
         """
         d = os.path.join(self.directory(), 'data')
         if not os.path.exists(d):
@@ -774,7 +845,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.cells_directory()
-            '.../worksheets/admin/0/cells/'
+            '.../worksheets/admin/0/cells'
         """
         path = os.path.join(self.directory(), 'cells')
         if not os.path.exists(path):
@@ -795,7 +866,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.notebook()
-            <class 'sagenb.notebook.notebook.Notebook'>
+            <...sagenb.notebook.notebook.Notebook...>
             sage: W.notebook() is sagenb.notebook.twist.notebook
             True
         """
@@ -1411,6 +1482,22 @@ class Worksheet(object):
             d[user] = [val]
         return d
 
+    def set_tags(self, tags):
+        """
+        Set the tags -- for now we ignore everything except ACTIVE, ARCHIVED, TRASH.
+
+        INPUT:
+
+            - ``tags`` -- dictionary with keys usernames and values a
+              list of tags, where a tag is a string or ARCHIVED,
+              ACTIVE, TRASH.
+        """
+        d = {}
+        for user, v in tags:
+            if len(v) >= 1:
+                d[user] = v[0]  # must be a single int for now, until the tag system is implemented
+        self.__user_view = d
+
     def set_user_view(self, user, x):
         """
         Set the view on this worksheet for the given user.
@@ -1633,13 +1720,13 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('Sage\n{{{\n3^20\n}}}')
             sage: sorted(os.listdir(W.directory()))
-            ['snapshots', 'worksheet.txt']
+            ['cells', 'snapshots']
             sage: W.cell_list()[0].evaluate()
             sage: sorted(os.listdir(W.directory()))
-            ['cells', 'code', 'data', 'snapshots', 'worksheet.txt']
+            ['cells', 'data', 'snapshots']
             sage: W.delete_cells_directory()
             sage: sorted(os.listdir(W.directory()))
-            ['code', 'data', 'snapshots', 'worksheet.txt']
+            ['data', 'snapshots']
         """
         dir = self.cells_directory()
         if os.path.exists(dir):
@@ -2009,7 +2096,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test Edit Save', 'admin')
             sage: v = W.__getstate__().keys(); v.sort(); v
-            ['_Worksheet__autopublish', '_Worksheet__collaborators', '_Worksheet__comp_is_running', '_Worksheet__dir', '_Worksheet__docbrowser', '_Worksheet__filename', '_Worksheet__name', '_Worksheet__next_id', '_Worksheet__owner', '_Worksheet__pretty_print', '_Worksheet__queue', '_Worksheet__saved_by_info', '_Worksheet__system', '_Worksheet__viewers']
+            ['_Worksheet__autopublish', '_Worksheet__collaborators', '_Worksheet__comp_is_running', '_Worksheet__dir', '_Worksheet__docbrowser', '_Worksheet__filename', '_Worksheet__id_number', '_Worksheet__name', '_Worksheet__next_id', '_Worksheet__owner', '_Worksheet__pretty_print', '_Worksheet__queue', '_Worksheet__system', '_Worksheet__viewers']
         """
         d = copy.copy(self.__dict__)
 
@@ -2108,7 +2195,17 @@ class Worksheet(object):
             t = C.edit_text().strip()
             if t: s += '\n\n' + t
         return s
-        
+
+    def set_body(self, body):
+        # I could rewrite edit_save to avoid adding in the system and
+        # name, but instead I'm not, since for now edit_save is needed
+        # for migrating from the old notebook format.  That can be
+        # rewritten later.  What matters is that "set_body" provides a
+        # clean interface to the functionality we need.
+        s = self.name() + '\n'
+        s += 'system:%s'%self.system()
+        s += '\n' + body
+        self.edit_save(s)
 
     def edit_text(self):
         """
@@ -2163,7 +2260,7 @@ class Worksheet(object):
         
             sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{\n2+8\n///\n10\n}}}')
             sage: W
-            [Cell 0; in=2+3, out=
+            sage/0: [Cell 0; in=2+3, out=
             5, Cell 1; in=2+8, out=
             10]
             sage: W.name()
@@ -2198,7 +2295,8 @@ class Worksheet(object):
                 meta, input, output, i = extract_first_compute_cell(text)
                 data.append(('compute', (meta,input,output)))
             except EOFError, msg:
-                print msg
+                #print msg   # -- don't print msg, just outputs a blank line every time,
+                #                 which makes for an ugly and unprofessional log.
                 break
             text = text[i:]
 
@@ -2426,14 +2524,52 @@ class Worksheet(object):
 
         OUTPUT:
 
-            - ``float`` -- seconds since epoch of the time when this 
-              worksheet was last edited
-
             - ``username`` -- string of username who last edited this
               worksheet
+
+            - ``float`` -- seconds since epoch of the time when this 
+              worksheet was last edited
         """
         return (self.last_to_edit(), time.mktime(self.date_edited()))
 
+    def set_last_change(self, username, tm):
+        """
+        Set the time and who last changed this worksheet.
+        
+        INPUT:
+
+            - ``username`` -- (string) name of a user
+
+            - ``tm`` -- (float) seconds since epoch
+
+        EXAMPLES::
+        
+            sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, '', owner='sage')
+            sage: W.last_change()
+            ('sage', ...)
+            sage: W.set_last_change('john', 1255029800)
+            sage: W.last_change()
+            ('john', 1255029800.0)
+
+        We make sure these other functions have been correctly updated::
+
+            sage: W.last_edited()
+            1255029800.0
+            sage: W.last_to_edit()
+            'john'
+            sage: W.date_edited()
+            time.struct_time(tm_year=2009, tm_mon=10, tm_mday=8, tm_hour=12, tm_min=23, tm_sec=20, tm_wday=3, tm_yday=281, tm_isdst=1)
+            sage: t = W.time_since_last_edited() # just test that call works
+        """
+        username = str(username); tm = float(tm)
+        self.__date_edited = (time.localtime(tm), username)
+        self.__last_edited = (tm, username)
+        
+    # TODO: all code below needs to be re-organized, but without breaking
+    # old worksheet migration.  Do this after I wrote a "basic" method
+    # for the *old* sage notebook codebase.  At that point I'll be able
+    # to greatly simplify worksheet migration and totally refactor
+    # anything I want in the new sagenb code.
     def last_edited(self):
         try:
             return self.__last_edited[0]
@@ -2444,8 +2580,7 @@ class Worksheet(object):
     
     def date_edited(self):
         """
-        Returns the date the worksheet was last edited if already recorded
-        otherwise the current local time is recorded and returned.
+        Returns the date the worksheet was last edited.
         """
         try:
             return self.__date_edited[0]
@@ -2566,10 +2701,8 @@ class Worksheet(object):
         except AttributeError:
             worksheet_txt = self.worksheet_txt_filename()
             if not os.path.exists(worksheet_txt):
-                #print "Creating new worksheet file %s"%worksheet_txt
                 self.__cells = []
             else:
-                #print "Loading worksheet %s"%worksheet_txt                
                 txt = open(worksheet_txt).read()
                 self.edit_save(txt)
             return self.__cells
@@ -2585,9 +2718,9 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test Edit Save', 'admin')
             sage: W
-            [Cell 0; in=, out=]
+            admin/0: [Cell 0; in=, out=]
             sage: W.append_new_cell()
-            Cell 1; in=, out=
+            admin/0: [Cell 0; in=, out=, Cell 1; in=, out=]
             sage: W
             [Cell 0; in=, out=, Cell 1; in=, out=]
         """
