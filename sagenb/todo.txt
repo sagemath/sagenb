@@ -74,6 +74,45 @@ Stein wrote! ouch)
 
 [x] migration didn't update user's conf field.
 
+[X] loading of old worksheets -- need to deal with {{{ --> <pre>{{{ change.
+
+[ ] clean up the other abstract_storage layers (maybe get rid of them?)
+
+[ ] we can make it so that if worksheet.html file changes on disk but not currently
+open, then when reopen it uses the new version from disk.  This would be very useful
+
+[ ] delete worksheet __filename?
+
+[ ] move password over to new notebook.
+
+[ ] add info about when user last logged in to user.py (?)
+
+[ ] filestructure:
+
+sage_notebook.sagenb
+     conf.txt
+     users.txt
+     home/
+         username0/
+            history.txt
+            worksheets/
+                id_number0/
+                    worksheet.html
+                    worksheet_conf.txt
+                    cells/
+                    data/
+                    snapshots/
+                id_number1/
+                    worksheet.html
+                    worksheet_conf.txt
+                    cells/
+                    data/
+                    snapshots/
+                ...
+         username1/
+         ...
+
+
 [ ] add message to the top of each *old* sage notebook .py file stating
  that one should work on sagenb instead.
 
@@ -155,6 +194,8 @@ Brainstorm:
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a much more organized list...
+
+[ ] way to send all registered users an email
 
 [ ] instructions about running a daemon sage server with conf scripts:
 http://groups.google.com/group/sage-support/browse_thread/thread/b0d15b82eea3d652

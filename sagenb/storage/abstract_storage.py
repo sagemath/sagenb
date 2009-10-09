@@ -10,27 +10,6 @@ class Datastore(object):
     The Sage Notebook storage abstraction layer abstract base class.
     Each storage abstraction layer derives from this.
     """
-    def __init__(self, path):
-        """
-        INPUT:
-
-           - ``path`` -- string, path to this datastore
-
-        EXAMPLES::
-
-            sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds')
-            Abstract Datastore
-        """
-        path = os.path.abspath(path)
-        self._path = path
-        if not os.path.exists(path):
-            os.makedirs(path)
-        ws_path = os.path.join(self._path, 'worksheets')
-        if not os.path.exists(ws_path):
-            os.makedirs(ws_path)
-        self._worksheet_path = 'worksheets'
-
     def __repr__(self):
         """
         String representation of this abstract datastore.
@@ -43,78 +22,6 @@ class Datastore(object):
         """
         return "Abstract Datastore"
 
-    def path(self):
-        """
-        Return path where data for this datastore is located.
-
-        OUTPUT:
-
-            -- ``string``
-
-        EXAMPLES::
-
-            sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds').path()
-            '/tmp/ds'
-        """
-        return self._path
-
-    def worksheet_path(self):
-        """
-        Return the relative path to the worksheet file store, relative
-        to self.path().
-
-        OUTPUT:
-
-            - ``string``
-
-        EXAMPLES::
-
-            sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds').worksheet_path()
-            'worksheets'
-        """
-        return self._worksheet_path
-
-    def worksheet_filename_base(self, username, id_number):
-        """
-        Return base filename for data about the worksheet with given
-        id_number owned by the user with the given username.
-
-        INPUT::
-
-            - ``username`` -- string
-            
-            - ``id_number`` -- nonnegative integer
-
-        EXAMPLES::
-        
-            sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds').worksheet_filename_base('sage', 389)
-            'worksheets/sage/389/worksheet'        
-        """
-        base = os.path.join(self.worksheet_path(), username, str(id_number))
-        absbase = os.path.join(self.path(), base)
-        if not os.path.exists(absbase):
-            os.makedirs(absbase)
-        return os.path.join(base, 'worksheet')
-
-    def filename(self, file):
-        """
-        Return filename got by joining self.path() with the string file.
-
-        OUTPUT:
-
-            -- ``string``
-
-        EXAMPLES::
-
-            sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds').filename('foo.json')
-            '/tmp/ds/foo.json'
-        """
-        return os.path.join(self._path, file)
-    
     def load_user_data(self):
         """
         Return dictionary of 'username':user pairs, where the keys are the
@@ -144,6 +51,28 @@ class Datastore(object):
         INPUT:
 
             - ``users`` -- dictionary
+        """
+        raise NotImplementedError
+
+    def load_user_history(self, username):
+        """
+        Return the history of input commands for the given username.
+
+        INPUT:
+
+            - ``username`` -- string
+        """
+        raise NotImplementedError
+    
+    def save_user_history(self, username, history):
+        """
+        Save the given history of input commands for the given username.
+
+        INPUT:
+
+            - ``username`` -- string
+
+            - ``history`` -- ??? TODO ???
         """
         raise NotImplementedError
 

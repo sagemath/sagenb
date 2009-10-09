@@ -186,7 +186,11 @@ class Worksheet(object):
             sage: W
             admin/0: [Cell 0; in=, out=]
         """
-        if name is None: return
+        if name is None:
+            # A fresh worksheet
+            self.clear()
+            return
+        
         # Record the basic properties of the worksheet
         self.__system   = system
         self.__pretty_print = pretty_print
@@ -207,7 +211,7 @@ class Worksheet(object):
         self.__id_number = int(id_number)
         filename = os.path.join(owner, str(id_number))
         self.__filename = filename
-        self.__dir = os.path.join(notebook_worksheet_directory, filename)
+        self.__dir = os.path.join(notebook_worksheet_directory, str(id_number))
         if create_directories:
             self.create_directories()
         self.clear()
@@ -319,7 +323,7 @@ class Worksheet(object):
              #   0,1,2 (=ARCHIVED,ACTIVE,TRASH),
              # or a string (not yet supported).
              # This is used for now to fill in the __user_views.
-             'tags':self.user_tags(),
+             'tags':self.tags(),
 
              # information about when this worksheet was last changed,
              # and by whom:
@@ -328,7 +332,7 @@ class Worksheet(object):
              }
         return d
 
-    def reconstruct_from_basic(self, obj, notebook_worksheet_directory):
+    def reconstruct_from_basic(self, obj, notebook_worksheet_directory=None):
         """
         Reconstruct as much of the worksheet's configuration as
         possible from the properties that happen to be set in the
@@ -336,7 +340,10 @@ class Worksheet(object):
 
         INPUT:
 
-            - `obj` -- a dictionary of basic Python objects
+            - ``obj`` -- a dictionary of basic Python objects
+
+            - ``notebook_worksheet_directory`` -- must be given if
+              ``id_number`` is a key of obj; otherwise not.
 
         EXAMPLES::
             sage: import sagenb.notebook.worksheet
@@ -359,7 +366,7 @@ class Worksheet(object):
                     self.__owner = owner
                     filename = os.path.join(owner, str(value))
                     self.__filename = filename
-                    self.__dir = os.path.join(notebook_worksheet_directory, filename)
+                    self.__dir = os.path.join(notebook_worksheet_directory, str(value))
             elif key in ['system', 'owner', 'viewers', 'collaborators',
                          'pretty_print', 'ratings']:
                 # ugly
@@ -418,7 +425,7 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.__repr__()
             'admin/0: [Cell 0; in=, out=]'
-            sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n2+3\n///\n5\n}}}</pre>\n<pre>{{{id=10|\n2+8\n///\n10\n}}}</pre>')
             sage: W.__repr__()
             'admin/0: [Cell 0; in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
         """
@@ -435,7 +442,7 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: len(W)
             1
-            sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n2+3\n///\n5\n}}}</pre>\n<pre>{{{id=10|\n2+8\n///\n10\n}}}</pre>')
             sage: len(W)
             2
         """
@@ -872,22 +879,6 @@ class Worksheet(object):
         """
         import twist
         return twist.notebook
-
-    def DIR(self):
-        """
-        Return the absolute path to the directory that contains the Sage
-        Notebook directory for the notebook that contains this worksheet.
-        
-        OUTPUT: string
-        
-        EXAMPLES::
-        
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
-            sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
-            sage: W.DIR()   # random output
-            '/Users/was/.sage/temp/teragon_2.local/19129'
-        """
-        return self.notebook().DIR()
 
     def system(self):
         """
@@ -1471,7 +1462,7 @@ class Worksheet(object):
         self.__user_view[user] = ACTIVE
         return ACTIVE
 
-    def user_tags(self):
+    def tags(self):
         """
         A temporary trivial tags implementation.
         """
@@ -1493,7 +1484,7 @@ class Worksheet(object):
               ACTIVE, TRASH.
         """
         d = {}
-        for user, v in tags:
+        for user, v in tags.iteritems():
             if len(v) >= 1:
                 d[user] = v[0]  # must be a single int for now, until the tag system is implemented
         self.__user_view = d
@@ -1718,7 +1709,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\n{{{\n3^20\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n3^20\n}}}</pre>')
             sage: sorted(os.listdir(W.directory()))
             ['cells', 'snapshots']
             sage: W.cell_list()[0].evaluate()
@@ -2204,12 +2195,12 @@ class Worksheet(object):
         # clean interface to the functionality we need.
         s = self.name() + '\n'
         s += 'system:%s'%self.system()
-        s += '\n' + body
+        s = str(s) + '\n' + body
         self.edit_save(s)
 
     def edit_text(self):
         """
-        Returns a plain-text version of the worksheet with {{{}}}
+        Returns a plain-text version of the worksheet with <pre>{{{}}}</pre>
         wiki-formatting, suitable for hand editing.
         """
         s = self.name() + '\n'
@@ -2243,7 +2234,7 @@ class Worksheet(object):
         -  ``text`` - a string
         
         -  ``ignore_ids`` - bool (default: False); if True
-           ignore all the IDs in the {{{}}} code block.
+           ignore all the IDs in the <pre>{{{}}}</pre> code block.
         
         
         EXAMPLES: We create a new test notebook and a worksheet.
@@ -2258,7 +2249,7 @@ class Worksheet(object):
         
         ::
         
-            sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{\n2+8\n///\n10\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n2+3\n///\n5\n}}}</pre>\n<pre>{{{\n2+8\n///\n10\n}}}</pre>')
             sage: W
             sage/0: [Cell 0; in=2+3, out=
             5, Cell 1; in=2+8, out=
@@ -2283,7 +2274,11 @@ class Worksheet(object):
         if system == "None":
             system = "sage"
         self.set_system(system)
-        text = text[i:]        
+        text = text[i:]
+
+        # TODO: change to regexp }}}and whitespace</pre in any case>
+        if '<pre>{{{' not in text and '}}}</pre>' not in text:
+            text = text.replace('{{{','<pre>{{{').replace('}}}','}}}</pre>')
 
         data = []
         while True:
@@ -2658,7 +2653,7 @@ class Worksheet(object):
         
         ::
         
-            sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n2+3\n///\n5\n}}}</pre>\n<pre>{{{id=10|\n2+8\n///\n10\n}}}</pre>')
             sage: W.cell_id_list()
             [0, 10]
         """
@@ -2687,7 +2682,7 @@ class Worksheet(object):
         
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test Edit Save', 'admin')
-            sage: W.edit_save('Sage\n{{{\n2+3\n///\n5\n}}}\n{{{\n2+8\n///\n10\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n2+3\n///\n5\n}}}</pre>\n<pre>{{{\n2+8\n///\n10\n}}}</pre>')
             sage: v = W.cell_list(); v
             [Cell 0; in=2+3, out=
             5, Cell 1; in=2+8, out=
@@ -2932,12 +2927,9 @@ class Worksheet(object):
         return self.__sage.started()
 
     def initialize_sage(self):
-        object_directory = os.path.abspath(self.notebook().object_directory())
         S = self.__sage
         try:
-            dirs = '__DIR__="%s%s"; DIR=__DIR__; DATA="%s%s"; '%(
-                self.DIR(), os.path.sep, os.path.abspath(self.data_directory()),
-                os.path.sep)
+            dirs = 'DATA="%s";'%os.path.abspath(self.data_directory())
             dirs += '_support_.init(None, globals()); '
             cmd = """
 import base64
@@ -3122,7 +3114,7 @@ from sagenb.notebook.all import *
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\n{{{\n3^20\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\n3^20\n}}}</pre>')
             sage: W.cell_list()[0].evaluate()
             sage: W.check_comp()     # random output -- depends on computer speed
             ('d', Cell 0; in=3^20, out=
@@ -3247,7 +3239,7 @@ from sagenb.notebook.all import *
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\n{{{\nfactor(2^997-1)\n}}}')
+            sage: W.edit_save('Sage\n<pre>{{{\nfactor(2^997-1)\n}}}</pre>')
             sage: W.cell_list()[0].evaluate()
         
         It's running still
@@ -3397,12 +3389,19 @@ from sagenb.notebook.all import *
             if c.is_auto_cell():
                 self.enqueue(c)
 
+    def next_id(self):
+        try:
+            return self.__next_id
+        except AttributeError:
+            self.set_cell_counter()
+            return self.__next_id
+
     def set_cell_counter(self):
-        self.__next_id = 1 + max([C.id() for C in self.cell_list()])
+        self.__next_id = 1 + max([C.id() for C in self.cell_list()] + [-1])
 
     def _new_text_cell(self, plain_text, id=None):
         if id is None:
-            id = self.__next_id
+            id = self.next_id()
             self.__next_id += 1
         return TextCell(id, plain_text, self)
 
@@ -3420,7 +3419,7 @@ from sagenb.notebook.all import *
             if hidden:
                 id = self.next_hidden_id()
             else:
-                id = self.__next_id
+                id = self.next_id()
                 self.__next_id += 1
         return Cell(id, input, '', self)
 
@@ -3701,24 +3700,16 @@ from sagenb.notebook.all import *
         if i != -1:
             L = L[:i]
         a = []
-        OBJECTS = os.path.abspath(self.notebook().object_directory())
         for filename in L.split():
             filename = filename.strip('"').strip("'")
-            if os.path.exists(os.path.join(OBJECTS, filename)):
-                filename = os.path.join(OBJECTS, filename)
-            elif os.path.exists(os.path.join(OBJECTS, filename + '.sobj')):
-                filename = os.path.join(OBJECTS, filename + '.sobj')
-            else:
-                if len(filename) > 0 and not os.path.exists(filename):
-                    filename = os.path.join(self.DIR(), filename)
-                if not filename.endswith('.py') and not filename.endswith('.sage') and \
-                       not filename.endswith('.sobj') and not os.path.exists(filename):
-                    if os.path.exists(filename + '.sage'):
-                        filename = filename + '.sage'
-                    elif os.path.exists(filename + '.py'):
-                        filename = filename + '.py'
-                    elif os.path.exists(filename + '.sobj'):
-                        filename = filename + '.sobj'
+            if not filename.endswith('.py') and not filename.endswith('.sage') and \
+                   not filename.endswith('.sobj') and not os.path.exists(filename):
+                if os.path.exists(filename + '.sage'):
+                    filename = filename + '.sage'
+                elif os.path.exists(filename + '.py'):
+                    filename = filename + '.py'
+                elif os.path.exists(filename + '.sobj'):
+                    filename = filename + '.sobj'
             a.append(filename)
         return a
 
@@ -3837,13 +3828,13 @@ from sagenb.notebook.all import *
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\nsystem:sage\n{{{\n2+3\n}}}\n\n{{{\n%gap\nSymmetricGroup(5)\n}}}')
+            sage: W.edit_save('Sage\nsystem:sage\n<pre>{{{\n2+3\n}}}</pre>\n\n<pre>{{{\n%gap\nSymmetricGroup(5)\n}}}</pre>')
             sage: c0, c1 = W.cell_list()
             sage: W.get_cell_system(c0)
             'sage'
             sage: W.get_cell_system(c1)
             'gap'
-            sage: W.edit_save('Sage\nsystem:gap\n{{{\n%sage\n2+3\n}}}\n\n{{{\nSymmetricGroup(5)\n}}}')
+            sage: W.edit_save('Sage\nsystem:gap\n<pre>{{{\n%sage\n2+3\n}}}</pre>\n\n<pre>{{{\nSymmetricGroup(5)\n}}}</pre>')
             sage: c0, c1 = W.cell_list()
             sage: W.get_cell_system(c0)
             'sage'
@@ -3902,7 +3893,7 @@ from sagenb.notebook.all import *
         
         ::
         
-            sage: W.edit_save('Sage\nsystem:sage\n{{{\n2+3\n}}}\n\n{{{\n%gap\nSymmetricGroup(5)\n}}}')
+            sage: W.edit_save('Sage\nsystem:sage\n<pre>{{{\n2+3\n}}}</pre>\n\n<pre>{{{\n%gap\nSymmetricGroup(5)\n}}}</pre>')
             sage: c0, c1 = W.cell_list()
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, '2+3')
@@ -3927,7 +3918,7 @@ from sagenb.notebook.all import *
         
         ::
         
-            sage: W.edit_save('Sage\nsystem:gap\n{{{\n%sage\n2+3\n}}}\n\n{{{\nSymmetricGroup(5)\n}}}')
+            sage: W.edit_save('Sage\nsystem:gap\n<pre>{{{\n%sage\n2+3\n}}}</pre>\n\n<pre>{{{\nSymmetricGroup(5)\n}}}</pre>')
             sage: c0, c1 = W.cell_list()
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, '2+3')
@@ -3999,7 +3990,7 @@ from sagenb.notebook.all import *
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\nsystem:sage\n{{{\n2+3\n///\n5\n}}}')
+            sage: W.edit_save('Sage\nsystem:sage\n<pre>{{{\n2+3\n///\n5\n}}}</pre>')
         
         Notice that there is 1 cell with 5 in its output.
         
@@ -4091,9 +4082,9 @@ def ignore_prompts_and_output(aString):
 
 def extract_text_before_first_compute_cell(text):
     """
-    OUTPUT: Everything in text up to the first {{{.
+    OUTPUT: Everything in text up to the first <pre>{{{.
     """
-    i = text.find('{{{')
+    i = text.find('<pre>{{{')
     if i == -1:
         return text
     return text[:i]
@@ -4110,11 +4101,11 @@ def extract_first_compute_cell(text):
     
     -  ``output`` - string, the output text
     
-    -  ``end`` - integer, first position after }}} in
+    -  ``end`` - integer, first position after }}}</pre> in
        text.
     """
     # Find the input block
-    i = text.find('{{{')
+    i = text.find('<pre>{{{')
     if i == -1:
         raise EOFError
     j = text[i:].find('\n')
@@ -4131,7 +4122,7 @@ def extract_first_compute_cell(text):
         meta = {}
         i += 3
     
-    j = text[i:].find('\n}}}')
+    j = text[i:].find('\n}}}</pre>')
     if j == -1:
         j = len(text)
     else:

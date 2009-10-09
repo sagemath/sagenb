@@ -68,61 +68,38 @@ JEDITABLE_TINYMCE  = True
 DOC_TIMEOUT = 120
 
 class Notebook(object):
-    def __init__(self,
-                 dir,
-                 system=None,
-                 pretty_print=False,
-                 show_debug = False,
-                 address='localhost',
-                 port=8000, 
-                 secure=True,
-                 server_pool = []):
+    def __init__(self, dir):
+
         if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":
             dir = dir[:-1]
-        self.__dir = dir
-        self.__absdir = os.path.abspath(dir)
 
-        self.__server_pool = server_pool
-        self.set_system(system)
-        self.set_pretty_print(pretty_print)
-        self.__worksheets = {}
-        self.__filename      = os.path.join(dir, 'nb2.sobj')
-        self.__worksheet_dir = os.path.join(dir, 'worksheets')
-        self.__object_dir    = os.path.join(dir, 'objects')
-        self.__makedirs()
-        self.__conf = server_conf.ServerConfiguration()
+        if not dir.endswith('.sagenb'):
+            raise ValueError, "dir (=%s) must end with '.sagenb'"%dir
 
-        # Install this copy of the notebook in twist.py as *the*
-        # global notebook object used for computations.  This is
-        # mainly to avoid circular references, etc.  This also means
-        # only one notebook can actually be used at any point.
-        import sagenb.notebook.twist
-        sagenb.notebook.twist.notebook = self
+        # For now we only support the Simple File datastore storage
+        # backend.
+        from sagenb.storage import SimpleFileDatastore
+        S = SimpleFileDatastore(dir)
+        self.__storage = S
 
-        # This must happen after twist.notebook is set. 
-        self.save()
+        # Now set the configuration, loaded from the datastore.
+        try:
+            self.__conf = S.load_server_conf()
+        except IOError:
+            # Worksheet has never been saved.
+            return
 
+        # Set the list of users
+        self.__users = S.load_users()
 
-    def _migrate_worksheets(self):
-        v = []
-        for key, W in self.__worksheets.iteritems():
-            # TODO -- will have to fix for windows!
-            if not '/' in W.filename():
-                v.append((key, W))
-        if len(v) > 0:
-            print "Migrating from old to new worksheet format"
-            D = self.directory()
-            for key, W in v:
-                print W.name()
-                txt = W.edit_text()
-                N = self.create_new_worksheet(W.name(), 'pub')
-                N.edit_save(txt, ignore_ids=True)
-                del self.__worksheets[key]
-            print "Your old worksheets are all available by clicking the published link"
-            print "in the upper right corner."
-            print "If you want to save disk space, you could immediately remove"
-            print "the objects and worksheets directories in your Sage notebook, as"
-            print "they are no longer used.  Do this now or never."
+        # Set the list of worksheets
+        # TODO: Storing them this way -- all in memory -- is kind of
+        # silly, and will be refactored.
+        W = {}
+        for username in self.__users.keys():
+            for w in S.worksheets(username):
+                W['%s/%s'%(username, w.id_number())] = w
+        self.__worksheets = W
         
     def delete(self):
         """
@@ -149,15 +126,7 @@ class Notebook(object):
             ...
             OSError: [Errno 2] No such file or directory: '...
         """
-        try:
-            dir = self.__absdir
-        except AttributeError:
-            dir = self.__dir
-        import shutil
-        # We ignore_errors because in rare parallel doctesting
-        # situations sometimes the directory gets cleaned up too
-        # quickly, etc.
-        shutil.rmtree(dir, ignore_errors=True)
+        self.__storage.delete()
 
     def systems(self):
         return SYSTEMS
@@ -623,7 +592,7 @@ class Notebook(object):
             sage: config = nb.user_conf('admin')
             sage: config['max_history_length']
             1000
-            sage: config['default_system']
+            sage: config['system']
             'sage'
             sage: config['autosave_interval']
             3600
@@ -734,9 +703,11 @@ class Notebook(object):
         filename = worksheet.worksheet_filename(worksheet_name, username)
         if self.__worksheets.has_key(filename):
             return self.__worksheets[filename]
-        i = 0
         dir = os.path.join(self.worksheet_directory(),username)
         if os.path.exists(dir):
+            # TODO -- is recycling id_number's a good idea?
+            # It could lead to subtle issues when worksheets are deleted, then
+            # new worksheets are created.
             id_number = max([int(a) for a in os.listdir(dir) if not '.' in a]+[-1]) + 1
         else:
             id_number = 0
@@ -857,14 +828,10 @@ class Notebook(object):
     ##########################################################    
 
     def server_pool(self):
-        try:
-            return self.__server_pool
-        except AttributeError:
-            self.__server_pool = []
-            return []
+        return self.conf()['server_pool']
 
     def set_server_pool(self, servers):
-        self.__server_pool = servers
+        self.conf()['server_pool'] = servers
 
     def get_ulimit(self):
         try:
@@ -949,12 +916,8 @@ class Notebook(object):
     # a given user or the whole notebook (if username is None).
     ##########################################################
     
-    # TODO -- only implemented for the notebook right now
     def system(self, username=None):
-        return self.user(username).conf()['default_system']
-
-    def set_system(self, system):
-        self.__system = system
+        return self.user(username).conf()['system']
 
     ##########################################################
     # The default typeset setting for new worksheets for
@@ -982,24 +945,16 @@ class Notebook(object):
         self.__color = color
 
     ##########################################################
-    # The directory the notebook runs in.
-    ##########################################################
-    def set_directory(self, dir):
-        if dir == self.__dir:
-            return
-        if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":   # todo -- need to fix
-            dir = dir[:-1]
-        self.__dir = dir
-        self.__filename = os.path.join(dir, 'nb2.sobj')
-        self.__worksheet_dir = os.path.join(dir, 'worksheets')
-        self.__object_dir = os.path.join(dir, 'objects')
-
-    ##########################################################
     # The notebook history.
     ##########################################################
     def user_history(self, username):
-        U = self.user(username)
-        return U.history_list()
+        if not hasattr(self, '_user_history'):
+            self._user_history = {}
+        if self._user_history.has_key(username):
+            return self._user_history[username]
+        H = self.__storage.load_user_history(username)
+        self._user_history[username] = H
+        return H
 
     def create_new_worksheet_from_history(self, name, username, maxlen=None):
         W = self.create_new_worksheet(name, username)
@@ -1048,6 +1003,15 @@ class Notebook(object):
         e = os.system(cmd)
         if e:
             print "Failed to execute command to export worksheet:\n'%s'"%cmd
+
+    def worksheet(self, username, id_number):
+        """
+        Create a new worksheet with given id_number belonging to the
+        user with given username, or return an already existing
+        worksheet.
+        """
+        return self.__storage.load_worksheet(username, id_number)
+        
 
     def new_worksheet_with_title_from_text(self, text, owner):
         name, _ = worksheet.extract_name(text)
@@ -1288,41 +1252,6 @@ class Notebook(object):
                         worksheet_plain_text = text)
 
     ##########################################################
-    # Directories for worksheets, etc. 
-    ##########################################################
-    def directory(self):
-        if not os.path.exists(self.__dir):
-            # prevent "rm -rf" accidents.
-            os.makedirs(self.__dir)
-        return self.__dir
-
-    def DIR(self):
-        """
-        Return the absolute path to the parent of this Notebook
-        instance's home directory.
-
-        OUTPUT:
-
-        - a string
-        """
-        P = os.path.abspath(os.path.join(self.__dir, '..'))
-        if not os.path.exists(P):
-            # prevent "rm -rf" accidents.
-            os.makedirs(P)
-        return P
-
-    def worksheet_directory(self):
-        return self.__worksheet_dir
-
-    def __makedirs(self):
-        if not os.path.exists(self.__dir):
-            os.makedirs(self.__dir)
-        if not os.path.exists(self.__worksheet_dir):            
-            os.makedirs(self.__worksheet_dir)
-        if not os.path.exists(self.__object_dir):                        
-            os.makedirs(self.__object_dir)
-
-    ##########################################################
     # Server configuration
     ##########################################################
     def conf(self):
@@ -1332,44 +1261,6 @@ class Notebook(object):
             C = server_conf.ServerConfiguration()
             self.__conf = C
             return C
-
-    def number_of_backups(self):
-        return self.conf()['number_of_backups']
-
-    def backup_directory(self):
-        try:
-            D = self.__backup_dir
-        except AttributeError:
-            D = os.path.join(self.__dir, "backups")
-            self.__backup_dir = D 
-        if not os.path.exists(D):
-            os.makedirs(D)
-        return D
-
-
-    ##########################################################
-    # The object store for the notebook.
-    ##########################################################
-    # Todo: like with worksheets, objects should belong to
-    # users, some should be published, rateable, etc. 
-    def object_directory(self):
-        O = self.__object_dir
-        if not os.path.exists(O):
-            os.makedirs(O)
-        return O
-
-    def objects(self):
-        L = [x[:-5] for x in os.listdir(self.object_directory())]
-        L.sort()
-        return L
-
-    def object_list_html(self):
-        m = max([len(x) for x in self.objects()] + [30])
-        s = []
-        a = '<a href="/%s.sobj" class="object_name">\n'
-        for name in self.objects():
-            s.append(a%name + name + '</a>\n')  # '&nbsp;'*(m-len(name)) + 
-        return '<br>\n'.join(s)
 
     ##########################################################
     # Computing control
@@ -1703,46 +1594,20 @@ class Notebook(object):
     # Saving the whole notebook
     ###########################################################
 
-    def save(self, filename=None, verbose=False):
-        
-        if filename is None:
-            F = os.path.abspath(self.__filename)
-            backup_dir = self.backup_directory()
-            backup = os.path.join(backup_dir, 'nb2-backup-')
-            for i in range(self.number_of_backups()-1,0,-1):
-                a = pad_zeros(i-1); b = pad_zeros(i)
-                try:
-                    shutil.move(backup + '%s.sobj'%a, backup + '%s.sobj'%b)
-                except IOError, msg:
-                    pass
-            a = '%s.sobj'%pad_zeros(0)
-            try:
-                shutil.copy(F, backup + a)
-            except Exception, msg:
-                pass
-            F = os.path.abspath(self.__filename)
-        else:
-            F = os.path.abspath(filename)
-            
-        D, _ = os.path.split(F)
-        if not os.path.exists(D):
-            os.makedirs(D)
-
-        t = cputime()
-        try:
-            out = cPickle.dumps(self, 2)
-        except Exception, msg:
-            print msg
-            print "** VERY SERIOUS problem -- unable to pickle notebook object! **"
-            return
-        if verbose: print "Dumped notebook to pickle (%s seconds)"%cputime(t)
-
-        t = cputime()
-        # Assuming an exception wasn't raised during pickling we write to the file.
-        # This is vastly superior to writing to a file immediately, which can easily
-        # result in a poor empty file.
-        open(F,'w').write(out)
-        if verbose: print "Wrote notebook pickle to file '%s' (%s seconds)"%(F,cputime(t))
+    def save(self):
+        """
+        Save this notebook server to disk.
+        """
+        S = self.__storage
+        S.save_users(self.users())
+        S.save_server_conf(self.conf())
+        # Save the non-doc-browser worksheets.
+        for n, W in self.__worksheets.iteritems():
+            if not n.startswith('doc_browser'):
+                S.save_worksheet(W)
+        if hasattr(self, '_user_history'):
+            for username, H in self._user_history.iteritems():
+                S.save_user_history(username, H)
 
     def delete_doc_browser_worksheets(self):
         names = self.worksheet_names()
@@ -2083,115 +1948,58 @@ def load_notebook(dir, address=None, port=None, secure=None):
 
     - a Notebook instance
     """
-    # The filename of the notebook Sage object:
-    sobj = os.path.join(dir, 'nb2.sobj')
-    nb = None
-
-    # If the notebook directory exists at all, then try
-    # to load the notebook from it.
-    if os.path.exists(dir):
-        # First check to see if the nb2.sobj is not there,
-        # but the old nb.sobj (up to sage-4.1.1) is there.
-        # In that case we migrate it.
-        old_sobj = os.path.join(dir, 'nb.sobj')
-        if not os.path.exists(sobj) and os.path.exists(old_sobj):
-            nb = cPickle.loads(open(old_sobj).read())
-            try:
-                nb = migrate_old_notebook(nb, dir)
-            except Exception, msg:
-                print msg
-                print "Not loading or running notebook."
-                if os.path.exists(sobj):
-                    os.unlink(sobj)
-                return
-        else:
-            # Otherwise try to load the notebook from nb2.sobj
-            # and if this fails try each backup.
-            try:
-                nb = cPickle.loads(open(sobj).read())
-            except Exception, msg:
-                backup = '%s/backups/'%dir
-                if os.path.exists(backup):
-                    print "****************************************************************"
-                    print "  * * * WARNING   * * * WARNING   * * * WARNING   * * * "
-                    print "WARNING -- failed to load notebook object. Trying backup files."
-                    print "****************************************************************"
-                    for F in os.listdir(backup):
-                        if F.startswith('notebook'):
-                            file = backup + '/' + F
-                            try:
-                                nb = load(file, compress=False)
-                            except Exception, msg:
-                                print "Failed to load backup '%s'"%file
-                            else:
-                                print "Successfully loaded backup '%s'"%file
-                                break
-                    if nb is None:
-                        print "Unable to restore notebook from *any* auto-saved backups."
-                        print "This is a serious problem."
-                        raise RuntimeError, "Error loading Sage notebook."
-
-    if nb is None:
-        print "Creating a brand new notebook."
-        nb = Notebook(dir)
+    if not dir.endswith('.sagenb'):
+        if not os.path.exists(dir + '.sagenb') and os.path.exists(os.path.join(dir, 'nb.sobj')):
+            migrate_old_notebook_v1(dir)
+        dir += '.sagenb'
         
     dir = make_path_relative(dir)
-    nb.delete_doc_browser_worksheets()
-    nb.set_directory(dir)
-    nb.set_not_computing()
+    nb = Notebook(dir)
     nb.address = address
     nb.port = port
     nb.secure = secure
-    nb.save()
+
+    # Install this copy of the notebook in twist.py as *the*
+    # global notebook object used for computations.  This is
+    # mainly to avoid circular references, etc.  This also means
+    # only one notebook can actually be used at any point.
+    import sagenb.notebook.twist
+    sagenb.notebook.twist.notebook = nb
+
     return nb
 
-def migrate_old_notebook(old_nb, dir):
+def migrate_old_notebook_v1(dir):
     """
     Back up and migrates an old saved version of notebook to the new one (`sagenb`)
     """
-
+    nb_sobj = os.path.join(dir, 'nb.sobj')
+    old_nb = cPickle.loads(open(nb_sobj).read())
+    
     ######################################################################
     # Tell user what is going on and make a backup
     ######################################################################
 
     print ""
     print "*"*80
-    print ""    
-    print "The Sage notebook at '%s' needs to be upgraded."%os.path.abspath(dir)
-    print ""
+    print "*"    
+    print "* The Sage notebook at"
+    print "*"    
+    print "*      '%s'"%os.path.abspath(dir)
+    print "*"    
+    print "* will be upgraded to a new format and stored in"
+    print "*"
+    print "*      '%s.sagenb'."%os.path.abspath(dir)
+    print "*"
+    print "* Your existing notebook will not be modified in any way."
+    print "*"
     print "*"*80
     print ""
-    ans = raw_input("Would you like to make a backup tarball now? [yes or no] ")
-    if ans.lower() != 'no':
-        # Back it up.
-        backup_dir = os.path.join(dir, 'backups', 'upgrade')
-        if not os.path.exists(backup_dir):
-            os.makedirs(backup_dir)
-            
-        import tarfile, datetime
-        backup_tarball = os.path.join(backup_dir,
-                           datetime.datetime.now().isoformat('_') + '-backup.tar')
-        print "Creating tarball", os.path.abspath(backup_tarball)
-        print "This may take a few minutes (please note the location of this backup)."
-        backup_file = tarfile.open(backup_tarball, 'w')    # 'w:bz2')
-        backup_file.add(os.path.join(dir, 'nb.sobj'))
-        def exclude(s):
-            return 'snapshot' in s or '/cells/' in s or '/code/' in s or '/doc/' in s
-        backup_file.add(os.path.join(dir, 'worksheets'), exclude=exclude)
-        backup_file.close()
-        print "Done creating tarball."
-
-    print ""
-    print "Upgrading will do *exactly one thing*: create a new file nb2.sobj"
-    print "in your Sage notebook directory.  Nothing else in your Sage"
-    print "notebook will be changed in any way."
-    print ""
-    ans = raw_input("Would like to continue with this upgrade? [yes or no] ")
-    if ans.lower() != "yes":
+    ans = raw_input("Would like to continue? [YES or no] ").lower()
+    if ans not in ['', 'y', 'yes']:
         raise RuntimeError, "User aborted upgrade."
 
     # Create new notebook
-    new_nb = Notebook(dir)
+    new_nb = Notebook(dir+'.sagenb')
 
     # Define a function for transfering the attributes of one object to another. 
     def transfer_attributes(old, new, attributes, prefix):
@@ -2206,12 +2014,10 @@ def migrate_old_notebook(old_nb, dir):
                 
     # Transfer all the notebook attributes to our new notebook object
     
-    transfer_attributes(old_nb, new_nb, ('__filename',
-             '__worksheet_dir', '__object_dir', '__worksheets', '__server_pool',
-             '__backup_dir', '__users', 
-             '__ulimit', '__system', '__pretty_print'), '_Notebook')
-
     new_nb.conf().confs = old_nb.conf().confs
+    for t in ['pretty_print', 'server_pool', 'ulimit', 'system']:
+        if hasattr(old_nb, '_Notebook__' + t):
+            new_nb.conf().confs[t] = getattr(old_nb, '_Notebook__' + t)
     
     # Now update the user data from the old notebook to the new one:
     users = {}
@@ -2243,31 +2049,34 @@ def migrate_old_notebook(old_nb, dir):
         Migrates an old worksheet to the new format. 
         """
         old_ws_dirname = old_ws._Worksheet__filename.partition(os.path.sep)[-1]
-        
-        new_ws = worksheet.Worksheet(name=old_ws.name(),
-                                     id_number=old_ws_dirname,
-                                     notebook_worksheet_directory=new_nb.worksheet_directory(),
-                                     system=old_ws.system(),
-                                     owner=old_ws.owner(),
-                                     docbrowser=old_ws._Worksheet__docbrowser,
-                                     pretty_print=old_ws.pretty_print(),
-                                     create_directories=False)
+        new_ws = new_nb.worksheet(old_ws.owner(), old_ws_dirname)
 
-        transfer_attributes(old_ws, new_ws, ('__viewers', '__collaborators',
-                                         '__autopublish', '__next_id', '__attached',
-                                         '__worksheet_came_from', '__published_version',
-                                         '__ratings', '__user_view', '__saved_by_info',
-                                         '__is_doc_worksheet',
-                                         '__last_edited', '__date_edited', '__next_block_id'),
-                            '_Worksheet')
+        # some ugly creation of new attributes from what used to be stored
+        tags = dict(old_ws._Worksheet__user_view)
+        for user, val in tags.iteritems():
+            tags[user] = [val]
+        import time
+        last_change = (old_ws.last_to_edit(), time.mktime(old_ws.date_edited()))
+        try:
+            published_id_number = int(os.path.split(old_ws._Worksheet__published_version)[1])
+        except AttributeError:
+            published_id_number = None
+
+        obj = {'name':old_ws.name(), 'system':old_ws.system(),
+               'viewers':old_ws.viewers(), 'collaborators':old_ws.collaborators(),
+               'pretty_print':old_ws.pretty_print(), 'ratings':old_ws.ratings(),
+               'auto_publish':old_ws.is_auto_publish(), 'tags':tags,
+               'last_change':last_change,
+               'published_id_number':published_id_number
+               }
+       
+        new_ws.reconstruct_from_basic(obj)
+        
         base = os.path.join(dir, 'worksheets', old_ws.filename())
-        if not os.path.exists(base):
-            os.makedirs(base)
         worksheet_file = os.path.join(base, 'worksheet.txt')
         if os.path.exists(worksheet_file):
             new_ws.edit_save(open(worksheet_file).read())
-        if hasattr(new_ws, '_Worksheet__worksheet_came_form'):
-            new_ws._Worksheet__worksheet_came_from = migrate_old_worksheet(new_ws._Worksheet__worksheet_came_from)
+
         return new_ws
     
     worksheets = {}
@@ -2275,17 +2084,27 @@ def migrate_old_notebook(old_nb, dir):
     print "There are %s worksheets."%num_worksheets
     i = 0
     for ws_name, old_ws in old_nb._Notebook__worksheets.iteritems():
+        if old_ws.is_doc_worksheet(): continue
         i += 1
-        if i%10==0:
+        if i%50==0:
             print "Migrating worksheet %s of %s..."%(i,num_worksheets)
         new_ws = migrate_old_worksheet(old_ws)
         worksheets[new_ws.filename()] = new_ws
     new_nb._Notebook__worksheets = worksheets
 
-    print "Worksheet migration completely."
-    print "Saving new notebook and starting new notebook server for the first time..."
+    # Migrating history
+    new_nb._user_history = {}
+    for username in old_nb.users().keys():
+        history_file = os.path.join(dir, 'worksheets', username, 'history.sobj')
+        if os.path.exists(history_file):
+            new_nb._user_history[username] = cPickle.loads(open(history_file).read())
+
+    # Save our newly migrated notebook to disk
+    new_nb.save()
+
+
     
-    return new_nb
+    print "Worksheet migration completed."
 
 def make_path_relative(dir):
     r"""

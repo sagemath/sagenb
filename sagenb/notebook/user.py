@@ -11,8 +11,8 @@ def User_from_basic(basic):
     """
     Create a user from a basic data structure.
     """
-    user = User(basic['_username'])
-    user.__dict__ = copy.copy(basic)
+    user = User(basic['username'])
+    user.__dict__ = dict([('_' + x, y) for x, y in basic.iteritems()])
     user._conf = user_conf.UserConfiguration_from_basic(user._conf)
     return user
 
@@ -47,9 +47,8 @@ class User(object):
         Return a basic Python data structure from which self can be
         reconstructed.
         """
-        d = copy.copy(self.__dict__)
-        d['_conf'] = self._conf.basic()
-        d['version'] = 1
+        d = dict([ (x[1:],y) for x,y in self.__dict__.iteritems()])
+        d['conf'] = self._conf.basic()
         return d
 
     def history_list(self):

@@ -214,6 +214,10 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         if self._expect is None:
             self.start()
+
+        if self._expect is None:
+            raise RuntimeError, "unable to start subprocess using command '%s'"%self.command()
+        
         self._number += 1
 
         local, remote = self.get_tmpdir()
@@ -250,6 +254,8 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         try:
             self._expect.expect(pexpect.EOF, self._timeout)
             # got EOF subprocess must have crashed; cleanup
+            print "got EOF subprocess must have crashed..."
+            print self._expect.before
             self.quit()
         except:
             pass
