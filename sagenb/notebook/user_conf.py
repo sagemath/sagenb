@@ -7,7 +7,8 @@ import conf
 defaults = {'max_history_length':1000,
             'default_system':'sage',
             'autosave_interval':60*60,   # 1 hour in seconds
-            'default_pretty_print': False
+            'default_pretty_print': False,
+            'next_worksheet_id_number': -1,  # not yet initialized
             }
 
 def UserConfiguration_from_basic(basic):

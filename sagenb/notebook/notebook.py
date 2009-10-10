@@ -76,6 +76,8 @@ class Notebook(object):
         if not dir.endswith('.sagenb'):
             raise ValueError, "dir (=%s) must end with '.sagenb'"%dir
 
+        self._dir = dir
+
         # For now we only support the Simple File datastore storage
         # backend.
         from sagenb.storage import SimpleFileDatastore
@@ -696,28 +698,16 @@ class Notebook(object):
             self.__scratch_worksheet = W
             return W
 
-    def create_new_worksheet(self, worksheet_name, username, docbrowser=False, add_to_list=True):
+    def create_new_worksheet(self, worksheet_name, username,
+                             docbrowser=False, add_to_list=True):
         if username!='pub' and self.user_is_guest(username):
             raise ValueError, "guests cannot create new worksheets"
-            
-        filename = worksheet.worksheet_filename(worksheet_name, username)
-        if self.__worksheets.has_key(filename):
-            return self.__worksheets[filename]
-        dir = os.path.join(self.worksheet_directory(),username)
-        if os.path.exists(dir):
-            # TODO -- is recycling id_number's a good idea?
-            # It could lead to subtle issues when worksheets are deleted, then
-            # new worksheets are created.
-            id_number = max([int(a) for a in os.listdir(dir) if not '.' in a]+[-1]) + 1
-        else:
-            id_number = 0
 
-        W = worksheet.Worksheet(worksheet_name, id_number,
-                                self.worksheet_directory(),
-                                system = self.system(username),
-                                owner=username,
-                                docbrowser = docbrowser,
-                                auto_publish = False)
+        W = self.worksheet(username)
+
+        W.set_system(self.system(username))
+        W.set_docbrowser(docbrowser)
+        W.set_name(worksheet_name)
 
         if add_to_list:
             self.__worksheets[W.filename()] = W
@@ -917,7 +907,7 @@ class Notebook(object):
     ##########################################################
     
     def system(self, username=None):
-        return self.user(username).conf()['system']
+        return self.user(username).conf()['default_system']
 
     ##########################################################
     # The default typeset setting for new worksheets for
@@ -1004,13 +994,28 @@ class Notebook(object):
         if e:
             print "Failed to execute command to export worksheet:\n'%s'"%cmd
 
-    def worksheet(self, username, id_number):
+    def worksheet(self, username, id_number=None):
         """
         Create a new worksheet with given id_number belonging to the
         user with given username, or return an already existing
-        worksheet.
+        worksheet.  If id_number is None, creates a new worksheet
+        using the next available new id_number for the given user.
+
+        INPUT:
+
+            - ``username`` -- string
+
+            - ``id_number`` - nonnegative integer or None (default)
         """
-        return self.__storage.load_worksheet(username, id_number)
+        S = self.__storage
+        if id_number is None:
+            # Find the next worksheet id for the given user.
+            u = self.user(username).conf()
+            id_number = u['next_worksheet_id_number']
+            if id_number == -1:  # need to initialize
+                id_number = max([w.id_number() for w in S.worksheets(username)] + [-1]) + 1
+            u['next_worksheet_id_number'] = id_number + 1
+        return S.load_worksheet(username, id_number)
         
 
     def new_worksheet_with_title_from_text(self, text, owner):
@@ -2020,10 +2025,10 @@ def migrate_old_notebook_v1(dir):
             new_nb.conf().confs[t] = getattr(old_nb, '_Notebook__' + t)
     
     # Now update the user data from the old notebook to the new one:
-    users = {}
-    for username, old_user in new_nb.users().iteritems():
-        new_user = user.User(old_user.username(), old_user.password(), old_user.get_email(),
-                    old_user.account_type())
+    users = new_nb.users()
+    for username, old_user in old_nb.users().iteritems():
+        new_user = user.User(old_user.username(), old_user.password(),
+                             old_user.get_email(), old_user.account_type())
         transfer_attributes2(old_user, new_user,
                              [('_User__email_confirmed', '_email_confirmed'),
                              ('_User__temporary_password', '_temporary_password'),
@@ -2032,11 +2037,6 @@ def migrate_old_notebook_v1(dir):
         new_user.conf().confs = old_user.conf().confs
         users[new_user.username()] = new_user
         
-    new_nb._Notebook__users = users
-
-    # Update the filename of the new notebook.
-    new_nb._Notebook__filename = old_nb._Notebook__filename.replace('nb.sobj','nb2.sobj')
-
     ######################################################################
     # Set the worksheets of the new notebook equal to the ones from
     # the old one.
@@ -2102,8 +2102,6 @@ def migrate_old_notebook_v1(dir):
     # Save our newly migrated notebook to disk
     new_nb.save()
 
-
-    
     print "Worksheet migration completed."
 
 def make_path_relative(dir):

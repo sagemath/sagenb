@@ -448,12 +448,12 @@ class Worksheet(object):
         """
         return len(self.cell_list())
 
-    def worksheet_txt_filename(self):
+    def worksheet_html_filename(self):
         """
         Return path to the underlying plane text file that defines the
         worksheet.
         """
-        return os.path.join(self.__dir, 'worksheet.txt')
+        return os.path.join(self.__dir, 'worksheet.html')
 
     def download_name(self):
         """
@@ -485,6 +485,9 @@ class Worksheet(object):
             return self.__docbrowser
         except AttributeError:
             return False
+
+    def set_docbrowser(self, x):
+        self.__docbrowser = x
 
     ##########################################################
     # Basic properties
@@ -679,7 +682,11 @@ class Worksheet(object):
             sage: W.name()
             'A Test Worksheet'
         """
-        return self.__name
+        try:
+            return self.__name
+        except AttributeError:
+            self.__name = "Untitled"
+            return self.__name
 
     def set_name(self, name):
         """
@@ -1014,9 +1021,7 @@ class Worksheet(object):
     ##########################################################
     def is_auto_publish(self):
         """
-        Returns boolean of "Is this worksheet set to be published
-        automatically when saved?" if private variable "autopublish" is set
-        otherwise False is returned and the variable is set to False.
+        Returns True if this worksheet should be automatically published. 
         """
         try: 
             return self.__autopublish
@@ -1024,16 +1029,8 @@ class Worksheet(object):
             self.__autopublish = False
             return False
     
-    def set_auto_publish(self):
-        """
-        Sets the worksheet to be published automatically when the worksheet
-        is saved if the worksheet isn't already set to this otherwise it is
-        set not to.
-        """
-        try:
-            self.__autopublish = False if self.__autopublish else True
-        except AttributeError:
-            self.__autopublish = True
+    def set_auto_publish(self, x):
+        self.__autopublish = x
     
     def is_published(self):
         """
@@ -1939,7 +1936,7 @@ class Worksheet(object):
         words appear in the text version of self.
         """
         # Load the worksheet data file from disk.
-        filename = self.worksheet_txt_filename()
+        filename = self.worksheet_html_filename()
         r = open(filename).read().lower()
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
@@ -1967,12 +1964,12 @@ class Worksheet(object):
         filename = os.path.join(path, '%s.bz2'%basename)
         if E is None:
             E = self.edit_text()
-        worksheet_txt = self.worksheet_txt_filename()
-        if os.path.exists(worksheet_txt) and open(worksheet_txt).read() == E:
+        worksheet_html = self.worksheet_html_filename()
+        if os.path.exists(worksheet_html) and open(worksheet_html).read() == E:
             # we already wrote it out...
             return
         open(filename, 'w').write(bz2.compress(E))
-        open(worksheet_txt, 'w').write(E)
+        open(worksheet_html, 'w').write(self.body())
         self.limit_snapshots()
         try:
             X = self.__saved_by_info
@@ -2035,7 +2032,7 @@ class Worksheet(object):
             pass
 
     def revert_to_last_saved_state(self):
-        filename = self.worksheet_txt_filename()
+        filename = self.worksheet_html_filename()
         E = open(filename).read()
         self.edit_save(E)
 
@@ -2100,7 +2097,7 @@ class Worksheet(object):
         if d.has_key('_Worksheet__cells'):
             try:
                 #print "Saving ", self.directory()  
-                self.save()  # make sure the worksheet.txt file is up to date.
+                self.save()  # make sure the worksheet.html file is up to date.
                 del d['_Worksheet__cells']
             except:
                 # It is important to catch all exceptions.  If
@@ -2197,6 +2194,17 @@ class Worksheet(object):
         s += 'system:%s'%self.system()
         s = str(s) + '\n' + body
         self.edit_save(s)
+
+    def body_is_loaded(self):
+        """
+        Return True if the body if this worksheet has been loaded from disk.
+        """
+        try:
+            self.__cells
+            return True
+        except AttributeError:
+            return False
+
 
     def edit_text(self):
         """
@@ -2676,7 +2684,7 @@ class Worksheet(object):
         .. note::
 
            This function loads the cell list from disk (the file
-           worksheet.txt) if it isn't available in memory.
+           worksheet.html) if it isn't available in memory.
         
         EXAMPLES::
         
@@ -2694,12 +2702,11 @@ class Worksheet(object):
         try:
             return self.__cells
         except AttributeError:
-            worksheet_txt = self.worksheet_txt_filename()
-            if not os.path.exists(worksheet_txt):
+            worksheet_html = self.worksheet_html_filename()
+            if not os.path.exists(worksheet_html):
                 self.__cells = []
             else:
-                txt = open(worksheet_txt).read()
-                self.edit_save(txt)
+                self.set_body(open(worksheet_html).read())
             return self.__cells
 
     def append_new_cell(self):

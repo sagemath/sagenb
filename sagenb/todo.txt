@@ -76,16 +76,27 @@ Stein wrote! ouch)
 
 [X] loading of old worksheets -- need to deal with {{{ --> <pre>{{{ change.
 
+[x] move password over to new notebook.
+
+[ ] last cell: "exceptions.AttributeError: TextCell instance has no attribute 'evaluate'"
+
 [ ] clean up the other abstract_storage layers (maybe get rid of them?)
 
-[ ] we can make it so that if worksheet.html file changes on disk but not currently
-open, then when reopen it uses the new version from disk.  This would be very useful
+[ ] we can make it so that if worksheet.html file changes on disk but
+not currently open, then when reopen it uses the new version from
+disk.  This would be very useful
 
 [ ] delete worksheet __filename?
 
-[ ] move password over to new notebook.
+[ ] server_pool -- keeps getting set to null in server conf?
 
 [ ] add info about when user last logged in to user.py (?)
+
+[ ] id's for a given user must never repeat -- store id with username
+
+[ ] additional user conf data beyond just username/password could just
+be stored in the user's home directory -- that would make the only
+slow power of save/load faster.
 
 [ ] filestructure:
 
@@ -112,9 +123,14 @@ sage_notebook.sagenb
          username1/
          ...
 
+[ ] running worksheets not explicitly listed as running in /home/ display
 
-[ ] add message to the top of each *old* sage notebook .py file stating
- that one should work on sagenb instead.
+[ ] check that autopublish activating and deactiving didn't get
+totally broken.  That code was very confusing.
+
+[ ] add message to the top of each *old* sage notebook .py file
+ stating that one should work on sagenb instead.  This is a patch to
+ the core Sage library.
 
 [ ] fix all doctests in sagenb code and make a patch against core
 sage library that imports enough of sagenb by default so I can 

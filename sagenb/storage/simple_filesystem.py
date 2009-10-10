@@ -243,8 +243,9 @@ class SimpleFileDatastore(object):
         username = worksheet.owner(); id_number = worksheet.id_number()
         self._save(self._worksheet_to_basic(worksheet),
                    self._worksheet_conf_filename(username, id_number))
-        filename = self._worksheet_html_filename(username, id_number)
-        open(self._abspath(filename),'w').write(worksheet.body())
+        if worksheet.body_is_loaded():
+            filename = self._worksheet_html_filename(username, id_number)
+            open(self._abspath(filename),'w').write(worksheet.body())
 
     def load_worksheet(self, username, id_number):
         """
@@ -270,10 +271,7 @@ class SimpleFileDatastore(object):
             W = self._basic_to_worksheet({'owner':username, 'id_number':id_number})
             W.clear()
             return W
-        W = self._basic_to_worksheet(self._load(self._worksheet_conf_filename(username, id_number)))
-        worksheet_html = open(html_file).read()
-        W.set_body(worksheet_html)
-        return W
+        return self._basic_to_worksheet(self._load(self._worksheet_conf_filename(username, id_number)))
 
     def worksheets(self, username):
         """

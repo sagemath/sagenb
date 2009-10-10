@@ -1230,7 +1230,7 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
         # Publishes worksheet and also sets worksheet to be published automatically when saved
         if 'yes' in ctx.args and 'auto' in ctx.args:
             notebook.publish_worksheet(self.worksheet, self.username)
-            self.worksheet.set_auto_publish()
+            self.worksheet.set_auto_publish(True)
             return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Just publishes worksheet
         elif 'yes' in ctx.args:
@@ -1246,7 +1246,7 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
             return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Sets worksheet to be published automatically when saved
         elif 'auto' in ctx.args:
-            self.worksheet.set_auto_publish()
+            self.worksheet.set_auto_publish(not self.worksheet.is_auto_publish())
             return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Returns boolean of "Is this worksheet set to be published automatically when saved?"
         elif 'is_auto' in ctx.args:

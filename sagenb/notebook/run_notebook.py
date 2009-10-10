@@ -76,16 +76,10 @@ def notebook_twisted(self,
         if isinstance(directory, basestring) and len(directory) > 0 and directory[-1] == "/":
             directory = directory[:-1]
             
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    if not quiet:
-        print "The notebook files are stored in:", directory
     # First change to the directory that contains the notebook directory
     wd = os.path.split(directory)
     if wd[0]: os.chdir(wd[0])
     directory = wd[1]
-
 
     port = int(port)
     conf = '%s/twistedconf.tac'%directory
@@ -100,6 +94,9 @@ def notebook_twisted(self,
     nb = notebook.load_notebook(directory)
     if nb is None:
         return
+    if not quiet:
+        print "The notebook files are stored in:", nb._dir
+
     nb.conf()['idle_timeout'] = int(timeout)
     
     if nb.user_exists('root') and not nb.user_exists('admin'):
@@ -108,7 +105,7 @@ def notebook_twisted(self,
         s = nb.create_user_with_same_password('admin', 'root')
         # It would be a security risk to leave an escalated account around. 
 
-    if not nb.user_exists('admin'):    
+    if not nb.user_exists('admin'):
         reset = True
         
     if reset:  
