@@ -26,7 +26,10 @@ defaults = {'cell_input_color':'#0000000',
 
             'ulimit':'',
 
-            'email':''
+            'email':'',
+
+            'accounts':False,
+
            }
 
 def ServerConfiguration_from_basic(basic):

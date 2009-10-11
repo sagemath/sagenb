@@ -432,7 +432,9 @@ class Notebook(object):
 
     def set_accounts(self, value):
         r"""
-        Set the attribute ``__accounts`` to ``value``.
+        Set the accounts attribute of the server configuration to
+        ``value``.  This property determines whether users can create
+        new accounts.
         
         INPUT:
         
@@ -450,11 +452,11 @@ class Notebook(object):
             sage: nb.get_accounts()
             False
         """
-        self.__accounts = value
+        self.conf()['accounts'] = bool(value)
 
     def get_accounts(self):
         r"""
-        Return ``__accounts``.
+        Return whether or not users can create new accounts. 
         
         OUTPUT:
 
@@ -469,11 +471,7 @@ class Notebook(object):
             sage: nb.get_accounts()
             True
         """
-        try:
-            return self.__accounts
-        except AttributeError:
-            self.__accounts = False
-            return False
+        return self.conf()['accounts']
 
     def add_user(self, username, password, email, account_type="user", force=False):
         """

@@ -3,6 +3,7 @@ TODO:
 [ ] implement loading of old-format worksheets:
    reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
 [ ] after migration last modified times wrong?
+
 [ ] server_pool -- keeps getting set to null in server conf?
 
 -------------------------------------------------------------------
@@ -22,7 +23,6 @@ run all these doctests.
 [ ] get coverage to 100%.
 
 [ ] change to 100% html format for worksheets.
-
 
 [ ] we can make it so that if worksheet.html file changes on disk but
 not currently open, then when reopen it uses the new version from
@@ -338,3 +338,4 @@ clarify to me how to improve a lot of other things.
 [x] add the new sagenb icon from here somehow:
 http://groups.google.com/group/sage-notebook/pendmsg?hl=en
 
+[x] accounts=True is broken
