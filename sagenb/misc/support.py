@@ -264,21 +264,22 @@ def html_markup(s):
         def is_sphinx_markup(s): return False
 
     if is_sphinx_markup(s):
-        s = sphinxify(s)
+        try:
+            return sphinxify(s)
+        except:
+            pass
+    # Not in ReST format, so use docutils
+    # to process the preamble ("**File:**" etc.)  and put
+    # everything else in a <pre> block.
+    i = s.find("**Docstring:**")
+    if i != -1:
+        preamble = s[:i+14]
+        from docutils.core import publish_parts
+        preamble = publish_parts(s[:i+14], writer_name='html')['body']
+        s = s[i+14:]
     else:
-        # Not in ReST format, so use docutils
-        # to process the preamble ("**File:**" etc.)  and put
-        # everything else in a <pre> block.
-        i = s.find("**Docstring:**")
-        if i != -1:
-            preamble = s[:i+14]
-            from docutils.core import publish_parts
-            preamble = publish_parts(s[:i+14], writer_name='html')['body']
-            s = s[i+14:]
-        else:
-            preamble = ""
-        s = '<div class="docstring">' + preamble + '<pre>' + s + '</pre></div>'
-    return s
+        preamble = ""
+    return '<div class="docstring">' + preamble + '<pre>' + s + '</pre></div>'
 
 def source_code(s, globs, system='sage'):
     r"""

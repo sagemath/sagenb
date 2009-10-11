@@ -239,7 +239,13 @@ return(value);
         t = self.__text
         if do_math_parse:
             # Do dollar sign math parsing
-            t = math_parse(t)
+            try:
+                t = math_parse(t)
+            except Exception, msg:
+                # Since there is no guarantee the user's input/output
+                # is in any way valid, and we don't want to stop the
+                # server process (which is doing this work).
+                pass
         s = """%s"""%t
 
         return s
@@ -418,7 +424,7 @@ class Cell(Cell_generic):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\n<pre>{{{\n2+3\n///\n20\n}}}</pre>')
+            sage: W.edit_save('Sage\n{{{\n2+3\n///\n20\n}}}')
             sage: C = W.cell_list()[0]
             sage: C
             Cell 0; in=2+3, out=
@@ -874,10 +880,10 @@ class Cell(Cell_generic):
         
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.edit_text()
-            '<pre>{{{id=0|\n2+3\n///\n5\n}}}</pre>'
+            '{{{id=0|\n2+3\n///\n5\n}}}'
         """
         s = self.plain_text(ncols, prompts, max_out)
-        return '<pre>{{{id=%s|\n%s\n}}}</pre>'%(self.id(), s)
+        return '{{{id=%s|\n%s\n}}}'%(self.id(), s)
 
     def is_last(self):
         """
@@ -1721,7 +1727,7 @@ class Cell(Cell_generic):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('Sage\n<pre>{{{\n3^5\n}}}</pre>')
+            sage: W.edit_save('Sage\n{{{\n3^5\n}}}')
             sage: C = W.cell_list()[0]; C
             Cell 0; in=3^5, out=
             sage: C.evaluate(username='sage')

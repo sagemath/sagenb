@@ -1,25 +1,28 @@
 """
 A Simple Filesystem-based Sage Notebook Datastore
 
-Here is the filesystem layout for this datastore. 
+Here is the filesystem layout for this datastore.  Note that the all
+of the pickles are pickles of basic Python objects, so can be
+unpickled in any version of Python with or without Sage or the Sage
+notebook installed.
 
 ::
 
     sage_notebook.sagenb
-         conf.txt
-         users.txt
+         conf.pickle
+         users.pickle
          home/
              username0/
-                history.txt
+                history.pickle
                 id_number0/
                     worksheet.html
-                    worksheet_conf.txt
+                    worksheet_conf.pickle
                     cells/
                     data/
                     snapshots/
                 id_number1/
                     worksheet.html
-                    worksheet_conf.txt
+                    worksheet_conf.pickle
                     cells/
                     data/
                     snapshots/
@@ -29,7 +32,49 @@ Here is the filesystem layout for this datastore.
              
 """
 
-import json, os
+import copy, cPickle, shutil, tarfile
+
+# import json, yaml
+# I experimented with using these, but they are 10-100 times slower, and there is
+# no real benefit.   More precisely, the time for dumping/loading a worksheet basic
+# datastructure in each:
+#
+#     cPickle
+#     pickle
+#     json
+#     yaml
+#     yaml + C
+#
+# This is all on OS X 10.6 64-bit.  Here b = w.basic() for any worksheet w.
+#
+# sage: import cPickle
+# sage: timeit('cPickle.loads(cPickle.dumps(b))')
+# 625 loops, best of 3: 51.9 us (microseconds) per loop
+# sage: import pickle
+# sage: timeit('pickle.loads(pickle.dumps(b))')
+# 625 loops, best of 3: 464 us  (microseconds) per loop
+# sage: import json
+# sage: timeit('json.loads(json.dumps(b))')
+# 625 loops, best of 3: 449 us  (microseconds) per loop
+# sage: timeit('json.loads(json.dumps(b,indent=4))')
+# 625 loops, best of 3: 625 us  (microseconds) per loop
+# sage: import yaml
+# sage: timeit('yaml.load(yaml.dump(b))')
+# 25 loops, best of 3: 13.5 ms per loop
+# sage: from yaml import load, dump
+# sage: from yaml import CLoader as Loader
+# sage: from yaml import CDumper as Dumper
+# sage: timeit('yaml.load(yaml.dump(b,Dumper=Dumper),Loader=Loader)')   # c++ yaml
+# 125 loops, best of 3: 1.77 ms per loop
+#
+# Other problems: json.load(json.dump(b)) != b, because of unicode and
+# all kinds of weirdness
+# Yaml C library is hard to install; and yaml itself is not included in python (json is).
+# Anyway, the difference between 2-13ms and 52 microseconds is significant.
+# At 2ms, 100,000 worksheets takes 200 seconds, versus only 5 seconds
+# at 52 microseconds.  cPickle just can't be beat.
+
+import os
 
 from abstract_storage import Datastore
 
@@ -50,8 +95,8 @@ class SimpleFileDatastore(object):
         self._path = path
         self._makepath(os.path.join(self._path, 'home'))
         self._home_path = 'home'
-        self._conf_filename = 'conf.txt'
-        self._users_filename = 'users.txt'
+        self._conf_filename = 'conf.pickle'
+        self._users_filename = 'users.pickle'
 
     def __repr__(self):
         return "Simple Filesystem-based Sage Notebook Datastore at %s"%self._path
@@ -67,19 +112,22 @@ class SimpleFileDatastore(object):
     def _user_path(self, username):
         return self._makepath(os.path.join(self._home_path, username))
 
+    def _worksheet_pathname(self, username, id_number):
+        return os.path.join(self._user_path(username), str(id_number))
+    
     def _worksheet_path(self, username, id_number=None):
         if id_number is None:
             return self._makepath(self._user_path(username))
-        return self._makepath(os.path.join(self._user_path(username), str(id_number)))
+        return self._makepath(self._worksheet_pathname(username, id_number))
 
     def _worksheet_conf_filename(self, username, id_number):
-        return os.path.join(self._worksheet_path(username, id_number), 'worksheet_conf.txt')
+        return os.path.join(self._worksheet_path(username, id_number), 'worksheet_conf.pickle')
 
     def _worksheet_html_filename(self, username, id_number):
         return os.path.join(self._worksheet_path(username, id_number), 'worksheet.html')
 
     def _history_filename(self, username):
-        return os.path.join(self._user_path(username), 'history.txt')
+        return os.path.join(self._user_path(username), 'history.pickle')
 
     def _abspath(self, file):
         """
@@ -92,8 +140,8 @@ class SimpleFileDatastore(object):
         EXAMPLES::
 
             sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore(tmp_dir())._abspath('foo.txt')
-            '...foo.txt'
+            sage: Datastore(tmp_dir())._abspath('foo.pickle')
+            '...foo.pickle'
         """
         return os.path.join(self._path, file)
     
@@ -102,10 +150,16 @@ class SimpleFileDatastore(object):
     # The input filename is always relative to self._path.
     ##################################################################################
     def _load(self, filename):
-        return json.load(open(self._abspath(filename)))
+        return cPickle.load(open(self._abspath(filename)))
+        #return json.load(open(self._abspath(filename)))
+        #return yaml.load(open(self._abspath(filename)))
 
     def _save(self, obj, filename):
-        json.dump(obj, open(self._abspath(filename),'w'), indent=4)
+        s = cPickle.dumps(obj)
+        open(self._abspath(filename), 'w').write(s)
+        #s = yaml.dump(obj)
+        #s = json.dumps(obj, indent=4)
+        #json.dump(obj, open(self._abspath(filename),'w'), indent=4)
 
     ##################################################################################
     # Conversions to and from basic Python database (so that json storage will work).
@@ -115,7 +169,7 @@ class SimpleFileDatastore(object):
         return dict([(name, User_from_basic(basic)) for name, basic in obj])
 
     def _users_to_basic(self, users):
-        return list(sorted([(name, U.basic()) for name, U in users.iteritems()]))
+        return list(sorted([[name, U.basic()] for name, U in users.iteritems()]))
 
     def _basic_to_server_conf(self, obj):
         from sagenb.notebook.server_conf import ServerConfiguration_from_basic
@@ -144,7 +198,7 @@ class SimpleFileDatastore(object):
     ##################################################################################
     
     def load_server_conf(self):
-        return self._basic_to_server_conf(self._load('conf.txt'))
+        return self._basic_to_server_conf(self._load('conf.pickle'))
     
     def save_server_conf(self, server_conf):
         """
@@ -152,7 +206,8 @@ class SimpleFileDatastore(object):
 
             - ``server`` --
         """
-        self._save(self._server_conf_to_basic(server_conf), 'conf.txt')
+        basic = self._server_conf_to_basic(server_conf)
+        self._save(basic, 'conf.pickle')
 
     def load_users(self):
         """
@@ -172,7 +227,7 @@ class SimpleFileDatastore(object):
             sage: ds.load_user_data()
             {u'admin': admin, u'wstein': wstein}
         """
-        return self._basic_to_users(self._load('users.txt'))
+        return self._basic_to_users(self._load('users.pickle'))
     
     def save_users(self, users):
         """
@@ -195,7 +250,7 @@ class SimpleFileDatastore(object):
 
             - ``users`` -- dictionary mapping user names to users
         """
-        self._save(self._users_to_basic(users), 'users.txt')
+        self._save(self._users_to_basic(users), 'users.pickle')
 
     def load_user_history(self, username):
         """
@@ -241,9 +296,14 @@ class SimpleFileDatastore(object):
             sage: DS.save_worksheet(W)
         """
         username = worksheet.owner(); id_number = worksheet.id_number()
-        self._save(self._worksheet_to_basic(worksheet),
-                   self._worksheet_conf_filename(username, id_number))
+        basic = self._worksheet_to_basic(worksheet)
+        if not hasattr(worksheet, '_last_basic') or worksheet._last_basic != basic:
+            # only save if changed
+            self._save(basic, self._worksheet_conf_filename(username, id_number))
+            worksheet._last_basic = basic
         if worksheet.body_is_loaded():
+            # only save if loaded
+            # todo -- add check if changed
             filename = self._worksheet_html_filename(username, id_number)
             open(self._abspath(filename),'w').write(worksheet.body())
 
@@ -261,8 +321,6 @@ class SimpleFileDatastore(object):
         OUTPUT:
 
             - a worksheet
-
-        EXAMPLES::
         """
         filename = self._worksheet_html_filename(username, id_number)
         html_file = self._abspath(filename)
@@ -271,8 +329,107 @@ class SimpleFileDatastore(object):
             W = self._basic_to_worksheet({'owner':username, 'id_number':id_number})
             W.clear()
             return W
-        return self._basic_to_worksheet(self._load(self._worksheet_conf_filename(username, id_number)))
+        basic = self._load(self._worksheet_conf_filename(username, id_number))
+        basic['owner'] = username
+        basic['id_number'] = id_number
+        W = self._basic_to_worksheet(basic)
+        W._last_basic = basic   # cache
+        return W
 
+
+    def export_worksheet(self, username, id_number, filename, title):
+        """
+        Export the worksheet with given username and id_number to the
+        given filename (e.g., 'worksheet.sws').
+
+        INPUT:
+
+    
+            - ``title`` - title to use for the exported worksheet (if
+               None, just use current title)
+        """
+        T = tarfile.open(filename, 'w:bz2')
+        worksheet = self.load_worksheet(username, id_number)
+        basic = copy.deepcopy(self._worksheet_to_basic(worksheet))
+        if title:
+            # change the title
+            basic['name'] = title
+
+        # Remove metainformation that perhaps shouldn't be distributed
+        for k in ['owner', 'ratings', 'worksheet_that_was_published', 'viewers', 'tags', 'published_id_number',
+                  'collaborators', 'auto_publish']:
+            if basic.has_key(k):
+                del basic[k]
+                
+        self._save(basic, self._worksheet_conf_filename(username, id_number) + '2')
+        tmp = self._abspath(self._worksheet_conf_filename(username, id_number) + '2')
+        T.add(tmp, os.path.join('sage_worksheet','worksheet_conf.pickle'))
+        os.unlink(tmp)
+        
+        T.add(self._abspath(self._worksheet_html_filename(username, id_number)),
+              os.path.join('sage_worksheet','worksheet.html'))
+
+        path = self._abspath(self._worksheet_pathname(username, id_number))
+
+        # Add the contents of the DATA directory
+        data = os.path.join(path, 'DATA')
+        if os.path.exists(data):
+            for X in os.listdir(data):
+                T.add(os.path.join(data, X), os.path.join('sage_worksheet','DATA',X))
+                    
+        # Add the contents of each of the cell directories.
+        cells = os.path.join(path, 'cells')
+        if os.path.exists(cells):
+            for X in os.listdir(cells):
+                T.add(os.path.join(cells, X), os.path.join('sage_worksheet','cells',X))
+
+        # NOTE: We do not export the snapshot/undo data.  People
+        # frequently *complain* about Sage exporting a record of their
+        # mistakes anyways.
+        T.close()
+
+    def import_worksheet(self, username, id_number, filename):
+        """
+        Input the worksheet username/id_number from the file with
+        given filename.
+        """
+        path = self._abspath(self._worksheet_pathname(username, id_number))
+        if os.path.exists(path):
+            shutil.rmtree(path, ignore_errors=True)
+        os.makedirs(path)
+        T = tarfile.open(filename, 'r:bz2')
+        open(self._abspath(self._worksheet_conf_filename(username, id_number)),'w').write(
+            T.extractfile(os.path.join('sage_worksheet','worksheet_conf.pickle')).read())
+        open(self._abspath(self._worksheet_html_filename(username, id_number)),'w').write(
+            T.extractfile(os.path.join('sage_worksheet','worksheet.html')).read())
+
+        # Import contents of the DATA directory
+        def is_safe(a):
+            # We define this function to avoid the possibility of a user crafting
+            # fake sws file such that extracting it creates files outside where
+            # we want, e.g., by including .. or / in the path of some file
+            return '..' not in a and not a.startswith('/')
+
+        # Windows port -- I'm worried about whether a.name will have / or \ on windows.
+        # The code below assume \.
+        base = os.path.join('sage_worksheet','DATA')
+        members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
+        if len(members) > 0:
+            T.extractall(path, members)
+            shutil.move(os.path.join(path,base), path)
+        
+        base = os.path.join('sage_worksheet','cells')
+        members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
+        if len(members) > 0:
+            T.extractall(path, members)
+            shutil.move(os.path.join(path, base), path)
+
+        tmp = os.path.join(path, 'sage_worksheet')
+        if os.path.exists(tmp):
+            shutil.rmtree(tmp)
+        
+        return self.load_worksheet(username, id_number)
+        
     def worksheets(self, username):
         """
         Return list of all the worksheets belonging to the user with
@@ -298,8 +455,14 @@ class SimpleFileDatastore(object):
         """
         path = self._abspath(self._user_path(username))
         if not os.path.exists(path): return []
-        return [self.load_worksheet(username, int(id_number)) for id_number
-                in os.listdir(path) if id_number.isdigit()]
+        v = []
+        for id_number in os.listdir(path):
+            if id_number.isdigit():
+                try:
+                    v.append(self.load_worksheet(username, int(id_number)))
+                except Exception, msg:
+                    print "Warning: problem loading %s/%s: %s"%(username, id_number, msg)
+        return v
 
     def delete(self):
         """

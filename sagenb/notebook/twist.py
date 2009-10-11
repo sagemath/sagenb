@@ -1308,11 +1308,11 @@ class Worksheet_rate(WorksheetResource, resource.Resource):
 
 
 class Worksheet_download(WorksheetResource, resource.Resource):
-    def childFactory(self, request, name):
+    def childFactory(self, request, tmp_title):
         worksheet_name = self.name
         filename = tmp_filename() + '.sws'
         try:
-            notebook.export_worksheet(worksheet_name, filename)
+            notebook.export_worksheet(worksheet_name, filename, tmp_title.rstrip('.sws'))
         except KeyError:
             return HTMLResponse(stream=message('No such worksheet.'))
         r = open(filename, 'rb').read()
@@ -2361,7 +2361,7 @@ class FailedToplevel(Toplevel):
         elif self.problem == 'suspended':
             return HTMLResponse(stream = message("Your account is currently suspended."))
         else:
-            return HTMLResponse(stream = message("Please enable cookies and try again."))
+            return HTMLResponse(stream = message("Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again."))
 
 
 class UserToplevel(Toplevel):

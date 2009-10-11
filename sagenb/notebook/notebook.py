@@ -968,31 +968,24 @@ class Notebook(object):
     ##########################################################
     # Importing and exporting worksheets to files
     ##########################################################
-    def export_worksheet(self, worksheet_filename, output_filename, verbose=True):
+    def export_worksheet(self, worksheet_filename, output_filename, title=None):
         """
         Export a worksheet, creating a sws file on the file system.
         
         INPUT:
         
-        -  ``worksheet_filename`` - a string
+            -  ``worksheet_filename`` - a string e.g., 'username/id_number'
         
-        -  ``output_filename`` - a string
-        
-        - ``verbose`` - a bool (default: True); if True, print the tar
-           command used to create the sws file.
+            -  ``output_filename`` - a string, e.g., 'worksheet.sws'
+
+            - ``title`` - title to use for the exported worksheet (if
+               None, just use current title)
         """
+        S = self.__storage
         W = self.get_worksheet_with_filename(worksheet_filename)
-        W.save()
-        path = W.filename_without_owner()
-        # TODO: obviously this won't work on windows
-        cmd = 'cd "%s/%s/" && tar -jcf "%s" "%s"'%(
-            self.__worksheet_dir, W.owner(),
-            os.path.abspath(output_filename), path)
-        if verbose:
-            print cmd
-        e = os.system(cmd)
-        if e:
-            print "Failed to execute command to export worksheet:\n'%s'"%cmd
+        S.save_worksheet(W)
+        username = W.owner(); id_number = W.id_number()
+        S.export_worksheet(username, id_number, output_filename, title=title)
 
     def worksheet(self, username, id_number=None):
         """
@@ -1008,15 +1001,20 @@ class Notebook(object):
             - ``id_number`` - nonnegative integer or None (default)
         """
         S = self.__storage
-        if id_number is None:
-            # Find the next worksheet id for the given user.
-            u = self.user(username).conf()
-            id_number = u['next_worksheet_id_number']
-            if id_number == -1:  # need to initialize
-                id_number = max([w.id_number() for w in S.worksheets(username)] + [-1]) + 1
-            u['next_worksheet_id_number'] = id_number + 1
+        if id_number is None:        
+            id_number = self.new_id_number(username)
         return S.load_worksheet(username, id_number)
         
+    def new_id_number(self, username):
+        """
+        Find the next worksheet id for the given user.
+        """
+        u = self.user(username).conf()
+        id_number = u['next_worksheet_id_number']
+        if id_number == -1:  # need to initialize
+            id_number = max([w.id_number() for w in S.worksheets(username)] + [-1]) + 1
+        u['next_worksheet_id_number'] = id_number + 1
+        return id_number
 
     def new_worksheet_with_title_from_text(self, text, owner):
         name, _ = worksheet.extract_name(text)
@@ -1071,14 +1069,16 @@ class Notebook(object):
         ext = os.path.splitext(filename)[1]
         if ext.lower() == '.txt':
             # A plain text file with {{{'s that defines a worksheet (not graphics).
-            return self._import_worksheet_txt(filename, owner)
+            W = self._import_worksheet_txt(filename, owner)
         elif ext.lower() == '.sws':
             # An sws file (really a tar.bz2) which defines a worksheet with graphics,
             # revisions, etc. 
-            return self._import_worksheet_sws(filename, owner)
+            W = self._import_worksheet_sws(filename, owner)
         else:
             # We only support txt or sws files.
             raise ValueError, "unknown extension '%s'"%ext
+        self.__worksheets[W.filename()] = W
+        return W
             
     def _import_worksheet_txt(self, filename, owner):
         r"""
@@ -1115,7 +1115,7 @@ class Notebook(object):
         worksheet.edit_save(worksheet_txt)
         return worksheet
     
-    def _import_worksheet_sws(self, filename, owner, verbose=True):
+    def _import_worksheet_sws(self, filename, username, verbose=True):
         r"""
         Import an sws format worksheet into this notebook as a new
         worksheet.  If the worksheet cannot be read, raise a
@@ -1126,7 +1126,7 @@ class Notebook(object):
         - ``filename`` - a string; a filename that ends in .sws;
            internally it must be a tar'd bz2'd file.
         
-        - ``owner`` - a string
+        - ``username`` - a string
         
         - ``verbose`` - a bool (default: True) if True print some the
            tar command used to extract the sws file.
@@ -1165,71 +1165,29 @@ class Notebook(object):
             sage: nb.worksheet_names()
             ['admin/0', 'admin/2']
         """
-        try:
-            # TODO -- this locks the server -- not good.
-            # Is there a way to do this in a worksheet subprocess somehow?
-            # Decompress the worksheet to a temporary directory.
-            tmp = tmp_dir()
-            cmd = 'cd "%s"; tar -jxf "%s"'%(tmp, os.path.abspath(filename))
-            if verbose:
-                print cmd
-            e = os.system(cmd)
-            if e:
-                raise ValueError, "Error decompressing saved worksheet."
-
-            # Find the worksheet text representation and load it into memory.
-            try:
-                D = os.listdir(tmp)[0]
-            except IndexError:
-                raise ValueError, "invalid worksheet"
-            text_filename = os.path.join(tmp,D,'worksheet.txt')
-            worksheet_txt = open(text_filename).read()
-            worksheet = self.new_worksheet_with_title_from_text(worksheet_txt, owner)
-            worksheet.set_owner(owner)
-            name = worksheet.filename_without_owner()
-
-            # Change the filename of the worksheet, if necessary
-            names = [w.filename_without_owner() for w in self.get_worksheets_with_owner(owner)]
-            if name in names:
-                name = 0
-                while str(name) in names:
-                    name += 1
-                name = str(name)
-                worksheet.set_filename_without_owner(name)
-
-            # Change the display name of the worksheet if necessary
-            name = worksheet.name()
-            display_names = [w.name() for w in self.get_worksheets_with_owner(owner)]
-            if name in display_names:
-                j = name.rfind('(')
-                if j != -1:
-                    name = name[:j].rstrip()
-                i = 2
-                while name + " (%s)"%i in display_names:
-                    i += 1
-                name = name + " (%s)"%i
-                worksheet.set_name(name)
-
-
-            # Put the worksheet files in the target directory.
-            S = self.__worksheet_dir
-            target = os.path.join(os.path.abspath(S), worksheet.filename())
-            if not os.path.exists(target):
-                os.makedirs(target)
-
-            # TODO: scary!!  redo this to use shutil, etc. 
-            cmd = 'rm -rf "%s"/*; mv "%s/%s/"* "%s/"'%(target, tmp, D, target)
-            if os.system(cmd):
-                raise ValueError, "Error moving over files when loading worksheet."
-
-            worksheet.edit_save(worksheet_txt)
-
-            return worksheet
+        id_number = self.new_id_number(username)
+        worksheet = self.__storage.import_worksheet(username, id_number, filename)
+        self.change_worksheet_name_to_avoid_collision(worksheet)
         
-        finally:
+        return worksheet
 
-            shutil.rmtree(tmp, ignore_errors=True)
-
+    def change_worksheet_name_to_avoid_collision(self, worksheet):
+        """
+        Change the display name of the worksheet if there is already a
+        worksheet with the same name as this one.
+        """
+        name = worksheet.name()
+        display_names = [w.name() for w in self.get_worksheets_with_owner(worksheet.owner())]
+        if name in display_names:
+            j = name.rfind('(')
+            if j != -1:
+                name = name[:j].rstrip()
+            i = 2
+            while name + " (%s)"%i in display_names:
+                i += 1
+            name = name + " (%s)"%i
+            worksheet.set_name(name)
+            
 
     ##########################################################
     # Importing and exporting worksheets to a plain text format
@@ -1956,6 +1914,9 @@ def load_notebook(dir, address=None, port=None, secure=None):
     if not dir.endswith('.sagenb'):
         if not os.path.exists(dir + '.sagenb') and os.path.exists(os.path.join(dir, 'nb.sobj')):
             migrate_old_notebook_v1(dir)
+            print ""
+            #print "Please type notebook('%s') to run the new notebook."%(dir + '.sagenb')
+            return
         dir += '.sagenb'
         
     dir = make_path_relative(dir)
@@ -2075,8 +2036,13 @@ def migrate_old_notebook_v1(dir):
         base = os.path.join(dir, 'worksheets', old_ws.filename())
         worksheet_file = os.path.join(base, 'worksheet.txt')
         if os.path.exists(worksheet_file):
-            new_ws.edit_save(open(worksheet_file).read())
-
+            text = open(worksheet_file).read()
+            # delete first two lines -- we don't embed the title or
+            # system in the worksheet text anymore.
+            i = text.find('\n'); text=text[i+1:]
+            i = text.find('\n'); text=text[i+1:]            
+            new_ws.edit_save(text)
+        #new_ws.save()
         return new_ws
     
     worksheets = {}

@@ -1,84 +1,18 @@
-Current TODO:
-[x] preparser
-[x] make sure all "/" is replaced by os.path.join, so will work on windows eventually.
-[x] worksheet_process.py -- make it so graphics work, i.e., files created
-[x] jsmath
-[x] static documentation
-[x] jmol
-[x] tinymce
-[x] @interact -- need to properly preparse and base64 encode maybe?
-[x] live documentation
-[x] introspection
-[x] fill in not implemented stuff
-[x] %cython
-[x] control-c to stop notebook
-[x] write pexpect based worksheet process system using the filesystem as before.
-[x] reference should have restart reset state
-[x] one user running another user's sage install on OS X -- Abort!
-[x] implement ulimit/ssh/etc options like before
-[x] good error message on crash of the sage process...
-[x] max_walltime -- doesnt' work
-[x] push my hg repo somewhere
-[x] start public demo server using ssh
-[x] simple notebook stress test
-[x] trim list of alternative notebooks sessions when not run as part of sage.
-[x] secure mode with sage present -- fix it
-[x] uploading: "rbeezer -- williamstein: I tried one URL, one on disk,
-both came back "internal server error" - I can try a few more.  Do you
-want bugs in Trac or Google group"
-[x] open(DATA+'/foo.txt','w')
-DATA directory permissions issue -- the whole design of the "DATA" directory needs to be redone, since I vastly improved the security model of how the two-user notebook works (now all computations are done by a user that does *not* have permission to view or change *anything* in the server's sage_notebook directory -- everything happens in /tmp -- this is a VAST improvement, but means that DATA directory just doesn't work anymore as implemented). 
-[x] "Upload or create data file attached to the worksheet '%s'"
-[x] pure python mode now broken with expect implementation -- every input crashes worksheet
-[x] notebook(...) command should *not* remember options from last run. that's just obnoxious.
-[x] Downloading a file from data doesn't work
-[x] data dropdown doesn't list uploaded files
-[x] publishing + automically republish crashes with internal server error (harald schilly reported)
-[x] "edit a copy" doesn't work [for published]
-[x] "download" from published doesn't work right.
-[x] (invalid) permissions of .sagenb directory:
-drwxr-xr-x    5 wstein     staff    170 Sep 26 15:28 .sagenb
-this is a problem unless we just switch back to using .sage directory in official release (which we will do!)
-[x] notebook server should take ownership of all files it gets back
-[x] Uploading file (button at bottom of page is misleading).
-[x] (invalid) make patch to remove notebook from sage itself.
-    We *can't* do this, because if we do, then old notebooks can't be migrated.  Ouch.
-[x] make sure that the old notebook directory "just works" with the
-new notebook: problem -- old notebooks unpickle into the old notebook
-code.
-[x] discard and quit crashes weirdly with *this* worksheet:
-http://buzzard.ups.edu/private/Sample.sws (this was fixed by getting
-rid of the conf.sobj useless crap, which according to hg I = William
-Stein wrote! ouch)
-[x] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
-[x] make it so usernames can be shorter/more arbitrary (requested by tom boothby, and he has a point)
-[x] make an official spkg for inclusion in sage-4.1.2.
-[x] show(plot(sin)); show(plot(cos))  only shows one plot
-[x] reimplement sphinx introspection. 
-    * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
-[x] sphinx: crazy insane whitespace -- see screenshot here:
-      http://sage.math.washington.edu/home/wstein/patches/whitespace.png
-    got from E = EllipticCurve([0,-39409298,0,5554231502,0]); 
-    E.Lambda(<tab>
-[x] "Sign into the Sage Notebook v" <-- missing version number
-[x] version not listed in upper left corner of worksheet either
+TODO:
+[ ] delete worksheet doesn't work, in sense that delete, quit notebook
+    server, restart, then worksheets are back!
 
-[x] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
-    see "ZZ" in the docstring, but should get a bold ZZ.
-[x] Copy your "a random test worksheet full of stuff". Go to
- "Data|foo.txt"; Change the text; Click "Save Changes" An error page appears.
+[ ] after migration last modified times are wrong.
 
-[x] sphinx: factorial?? hangs
+[ ] rewrite file upload, noting a remark in the python docs (!)
+Warning: Never extract archives from untrusted sources without prior
+inspection. It is possible that files are created outside of path,
+e.g. members that have absolute filenames starting with "/" or
+filenames with two dots "..".
 
-[x] bug search_doc(...) reported by victor miller
-
-[x] migration didn't update user's conf field.
-
-[X] loading of old worksheets -- need to deal with {{{ --> <pre>{{{ change.
-
-[x] move password over to new notebook.
-
-[ ] last cell: "exceptions.AttributeError: TextCell instance has no attribute 'evaluate'"
+Incidentally, this implies somebody could hack the Sage notebook
+server by uploading a foo.sws that overwrites key information, e.g.,
+nb.sobj or worksheet source code (!)
 
 [ ] clean up the other abstract_storage layers (maybe get rid of them?)
 
@@ -86,44 +20,17 @@ Stein wrote! ouch)
 not currently open, then when reopen it uses the new version from
 disk.  This would be very useful
 
-[ ] delete worksheet __filename?
+[ ] reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
 
 [ ] server_pool -- keeps getting set to null in server conf?
-
-[ ] add info about when user last logged in to user.py (?)
-
-[ ] id's for a given user must never repeat -- store id with username
 
 [ ] additional user conf data beyond just username/password could just
 be stored in the user's home directory -- that would make the only
 slow power of save/load faster.
 
-[ ] filestructure:
-
-sage_notebook.sagenb
-     conf.txt
-     users.txt
-     home/
-         username0/
-            history.txt
-            worksheets/
-                id_number0/
-                    worksheet.html
-                    worksheet_conf.txt
-                    cells/
-                    data/
-                    snapshots/
-                id_number1/
-                    worksheet.html
-                    worksheet_conf.txt
-                    cells/
-                    data/
-                    snapshots/
-                ...
-         username1/
-         ...
-
 [ ] running worksheets not explicitly listed as running in /home/ display
+
+[ ] delete "class PublicWorksheetsHome(resource.Resource):" since it is not used.
 
 [ ] check that autopublish activating and deactiving didn't get
 totally broken.  That code was very confusing.
@@ -146,70 +53,18 @@ numpy.load?
 
 [ ] yikes: one run two notebook servers on the same directory at same time (?)
 
-[ ] change notebooks so they use a 100% sobj free data format for
-storage, so that code refactoring is possible.  The plan is to do this
-little by little, until no sobjs are needed.  Subtodolist:
-
-TODO: 
-   * implement to/from basic for server data
-   * add that to data store
-   * implement all worksheet data (except ratings) being stored in worksheet
-     in say a JSON or Python header?  Maybe even make this info programmatically 
-     accessible in worksheet?
-   * switch over to using new model
-   * when transitioning put new notebook in a directory with .sagenb extension:
-         sage_notebook.sagenb
-
-  [ ] worksheets -- the file worksheet.txt + filesystem
-  [ ] worksheet attributes:   
-      -- store all of this in a JSON at the top of worksheet.txt, except for ratings!
-          - viewers
-          - collaborators
-          - autopublish
-          - attached       
-          - came_from
-          - published_version
-          - ratings
-          - user_view
-          - saved_by_info
-          - is_doc_worksheet
-          - last_edited
-          - date_edited
-
-  [ ] list of worksheets -- determined by the filesytem
-
-  [ ] notebook:
-         - conf
-         - admins
-         - log
-         - history
-         - history_count
-         - server_pool
-         - users
-
-  [x] user:
-         - username
-         - password
-
-
-
-Format for these files:
-   * Windows INI config: http://docs.python.org/library/configparser.html
-   * shlex: ick
-   * xml -- ElementTree XML API looks nice: http://docs.python.org/library/xml.etree.elementtree.html
-
-Brainstorm:
-
-<?xml version="1.0" encoding="UTF-8"?>
-<user login_name="wstein" password="@#%$QWAFSD" />
-
-
-         
-
 
 -------------------------------------------------------------------
 
-See http://wiki.sagemath.org/SageTasks for a much more organized list...
+See http://wiki.sagemath.org/SageTasks for a related list.
+
+[ ] do something about this in worksheet.py
+    def autosave(self, username):
+        return
+[ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
+when there are 50,000 worksheets!
+
+[ ] add info about when user last logged in to user.py.
 
 [ ] way to send all registered users an email
 
@@ -326,3 +181,130 @@ General TODO:
 
 * use memory mapped files for worksheet processes?
   http://docs.python.org/library/mmap.html
+
+
+
+
+============
+
+
+DONE:
+[x] preparser
+[x] make sure all "/" is replaced by os.path.join, so will work on windows eventually.
+[x] worksheet_process.py -- make it so graphics work, i.e., files created
+[x] jsmath
+[x] static documentation
+[x] jmol
+[x] tinymce
+[x] @interact -- need to properly preparse and base64 encode maybe?
+[x] live documentation
+[x] introspection
+[x] fill in not implemented stuff
+[x] %cython
+[x] control-c to stop notebook
+[x] write pexpect based worksheet process system using the filesystem as before.
+[x] reference should have restart reset state
+[x] one user running another user's sage install on OS X -- Abort!
+[x] implement ulimit/ssh/etc options like before
+[x] good error message on crash of the sage process...
+[x] max_walltime -- doesnt' work
+[x] push my hg repo somewhere
+[x] start public demo server using ssh
+[x] simple notebook stress test
+[x] trim list of alternative notebooks sessions when not run as part of sage.
+[x] secure mode with sage present -- fix it
+[x] uploading: "rbeezer -- williamstein: I tried one URL, one on disk,
+both came back "internal server error" - I can try a few more.  Do you
+want bugs in Trac or Google group"
+[x] open(DATA+'/foo.txt','w')
+DATA directory permissions issue -- the whole design of the "DATA" directory needs to be redone, since I vastly improved the security model of how the two-user notebook works (now all computations are done by a user that does *not* have permission to view or change *anything* in the server's sage_notebook directory -- everything happens in /tmp -- this is a VAST improvement, but means that DATA directory just doesn't work anymore as implemented). 
+[x] "Upload or create data file attached to the worksheet '%s'"
+[x] pure python mode now broken with expect implementation -- every input crashes worksheet
+[x] notebook(...) command should *not* remember options from last run. that's just obnoxious.
+[x] Downloading a file from data doesn't work
+[x] data dropdown doesn't list uploaded files
+[x] publishing + automically republish crashes with internal server error (harald schilly reported)
+[x] "edit a copy" doesn't work [for published]
+[x] "download" from published doesn't work right.
+[x] (invalid) permissions of .sagenb directory:
+drwxr-xr-x    5 wstein     staff    170 Sep 26 15:28 .sagenb
+this is a problem unless we just switch back to using .sage directory in official release (which we will do!)
+[x] notebook server should take ownership of all files it gets back
+[x] Uploading file (button at bottom of page is misleading).
+[x] (invalid) make patch to remove notebook from sage itself.
+    We *can't* do this, because if we do, then old notebooks can't be migrated.  Ouch.
+[x] make sure that the old notebook directory "just works" with the
+new notebook: problem -- old notebooks unpickle into the old notebook
+code.
+[x] discard and quit crashes weirdly with *this* worksheet:
+http://buzzard.ups.edu/private/Sample.sws (this was fixed by getting
+rid of the conf.sobj useless crap, which according to hg I = William
+Stein wrote! ouch)
+[x] expect-based worksheet process without ssh and with ulimit -- see todo in interfaces/expect.py
+[x] make it so usernames can be shorter/more arbitrary (requested by tom boothby, and he has a point)
+[x] make an official spkg for inclusion in sage-4.1.2.
+[x] show(plot(sin)); show(plot(cos))  only shows one plot
+[x] reimplement sphinx introspection. 
+    * confdir in cell.py won't work without a trivial Sphinx directory, when not in Sage. make it.
+[x] sphinx: crazy insane whitespace -- see screenshot here:
+      http://sage.math.washington.edu/home/wstein/patches/whitespace.png
+    got from E = EllipticCurve([0,-39409298,0,5554231502,0]); 
+    E.Lambda(<tab>
+[x] "Sign into the Sage Notebook v" <-- missing version number
+[x] version not listed in upper left corner of worksheet either
+
+[x] sphinx: get math macros working on sphinx mode, e.g., if you do "ZZ?" you
+    see "ZZ" in the docstring, but should get a bold ZZ.
+[x] Copy your "a random test worksheet full of stuff". Go to
+ "Data|foo.txt"; Change the text; Click "Save Changes" An error page appears.
+
+[x] sphinx: factorial?? hangs
+
+[x] bug search_doc(...) reported by victor miller
+
+[x] migration didn't update user's conf field.
+
+[X] loading of old worksheets -- need to deal with {{{ --> <pre>{{{ change.
+
+[x] move password over to new notebook.
+
+[x] new filestructure
+
+
+[x] sagenb.org itself currently has about 50,000 worksheets.  Loading them all on
+startup -- even there conf info, isn't a good idea.  At 10ms each, which is what it
+would take given using YAML, that would be 100/second or 500 seconds to load!
+And that's just the metadata.  Another option would be to "load" a very lightweight
+version of the worksheets, with no metadata exception owner and id_number.
+Then the first time any additional metadata is needed about a specific worksheet,
+load it from disk. E.g., for our 50000 on sagenb.org, it's very rare any particular
+one is needed. ...   I'm just using pickle, which works fine for 50000 worksheets...
+
+[x] rewrite this in notebook.py:     
+     def export_worksheet(self, worksheet_filename, output_filename, verbose=True):
+
+[x] make sure latest worksheet state is what is dumped when saving
+worksheet, including the name
+
+[x] id_number: for a given user must never repeat -- store id with username
+[x] change notebooks so they use a 100% sobj free data format for
+storage, so that code refactoring is possible.  The plan is to do this
+little by little, until no sobjs are needed.  Subtodolist:
+
+TODO: 
+   * implement to/from basic for server data
+   * add that to data store
+   * implement all worksheet data (except ratings) being stored in worksheet
+     in say a JSON or Python header?  Maybe even make this info programmatically 
+     accessible in worksheet?
+   * switch over to using new model
+   * when transitioning put new notebook in a directory with .sagenb extension:
+         sage_notebook.sagenb
+
+  [x] worksheets -- the file worksheet.txt + filesystem
+  [x] worksheet attributes:   
+  [x] list of worksheets -- determined by the filesytem
+  [x] notebook:
+  [x] user:
+[x] last cell: "exceptions.AttributeError: TextCell instance has no attribute 'evaluate'"
+

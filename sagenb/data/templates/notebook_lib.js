@@ -1121,14 +1121,17 @@ function rate_worksheet(rating) {
     window.location.replace(worksheet_command("rate?rating="+rating + "&comment="+escape0(comment)));
 }
 
-function download_worksheet(base_filename) {
+function download_worksheet() {
     /*
     Download the current worksheet to the file with given name.
 
     INPUT:
         base_filename
     */
-    open(worksheet_command("download/" + base_filename + '.sws'));
+    var title = prompt("Save as...", get_element("worksheet_title").innerHTML);
+    if (title != null) {
+        var winref = open(worksheet_command("download/" + title + '.sws'));
+    }
 }
 
 function worksheet_settings() {
