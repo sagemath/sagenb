@@ -1,38 +1,23 @@
 TODO:
-[ ] after migration last modified times are wrong.
-
-[ ] rewrite file upload, noting a remark in the python docs (!)
-Warning: Never extract archives from untrusted sources without prior
-inspection. It is possible that files are created outside of path,
-e.g. members that have absolute filenames starting with "/" or
-filenames with two dots "..".
-
-Incidentally, this implies somebody could hack the Sage notebook
-server by uploading a foo.sws that overwrites key information, e.g.,
-nb.sobj or worksheet source code (!)
-
-[ ] clean up the other abstract_storage layers (maybe get rid of them?)
-
-[ ] we can make it so that if worksheet.html file changes on disk but
-not currently open, then when reopen it uses the new version from
-disk.  This would be very useful
-
-[ ] implement loading of old-format worksheets
-
-[ ] reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
-
-[ ] server_pool -- keeps getting set to null in server conf?
-
-[ ] additional user conf data beyond just username/password could just
-be stored in the user's home directory -- that would make the only
-slow power of save/load faster.
-
 [ ] running worksheets not explicitly listed as running in /home/ display
 
-[ ] delete "class PublicWorksheetsHome(resource.Resource):" since it is not used.
+[ ] clean up the other abstract_storage layers (maybe get rid of them?):
+     1. delete all of the others (ouch!)
+     2. rename simple_filesystem.py --> filesystem_storage.py
+
+[ ] implement loading of old-format worksheets:
+   reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
+
+[ ] after migration last modified times wrong?
 
 [ ] check that autopublish activating and deactiving didn't get
 totally broken.  That code was very confusing.
+
+[ ] server_pool -- keeps getting set to null in server conf?
+
+-------------------------------------------------------------------
+
+See http://wiki.sagemath.org/SageTasks for a related list.
 
 [ ] add message to the top of each *old* sage notebook .py file
  stating that one should work on sagenb instead.  This is a patch to
@@ -46,14 +31,12 @@ run all these doctests.
 
 [ ] change to 100% html format for worksheets.
 
-[ ] docstring bug:
-import numpy
-numpy.load?
 
-
--------------------------------------------------------------------
-
-See http://wiki.sagemath.org/SageTasks for a related list.
+[ ] we can make it so that if worksheet.html file changes on disk but
+not currently open, then when reopen it uses the new version from
+disk.  More precisely, make it so "save and quit" deletes body of
+worksheet, so if user opens that worksheet again it'll grab the
+content from disk.
 
 [ ] page through list of worksheets (don't show hundreds at once)
 
@@ -311,4 +294,24 @@ TODO:
 
 [x] delete worksheet doesn't work, in sense that delete, quit notebook
     server, restart, then worksheets are back!
+
+[x] rewrite file upload, noting a remark in the python docs (!)
+Warning: Never extract archives from untrusted sources without prior
+inspection. It is possible that files are created outside of path,
+e.g. members that have absolute filenames starting with "/" or
+filenames with two dots "..".
+
+Incidentally, this implies somebody could hack the Sage notebook
+server by uploading a foo.sws that overwrites key information, e.g.,
+nb.sobj or worksheet source code (!)
+
+[x] docstring bug:
+import numpy
+numpy.load?
+
+[x] (wontfix) additional user conf data beyond just username/password could just
+be stored in the user's home directory -- that would make the only
+slow power of save/load faster.
+
+[x] delete "class PublicWorksheetsHome(resource.Resource):" since it is not used.
 

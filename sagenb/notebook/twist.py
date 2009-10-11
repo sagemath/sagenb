@@ -1651,15 +1651,6 @@ class PublicWorksheets(resource.Resource):
     def childFactory(self, request, name):
         return Worksheet('pub/' + name, username=self.username)
 
-class PublicWorksheetsHome(resource.Resource):
-    addSlash = True
-
-    def __init__(self, username):
-        self.username = username
-
-    def childFactor(self, request, name):
-        if name == 'pub':
-            return PublicWorksheets(self.username)
 
 ############################
 # Resource that gives access to worksheets
