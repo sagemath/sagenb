@@ -2,9 +2,11 @@ TODO:
 
 [ ] implement loading of old-format worksheets:
    reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
-[ ] after migration last modified times wrong?
-
 [ ] server_pool -- keeps getting set to null in server conf?
+
+[ ] after migration that a worksheet was published is lost
+
+[ ] DATA directory not copied over during migration.
 
 -------------------------------------------------------------------
 
@@ -339,3 +341,6 @@ clarify to me how to improve a lot of other things.
 http://groups.google.com/group/sage-notebook/pendmsg?hl=en
 
 [x] accounts=True is broken
+[x] after migration last modified times wrong?
+[x] login doesn't work anymore, but does if you make a new account
+

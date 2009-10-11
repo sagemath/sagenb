@@ -24,7 +24,7 @@ AUTHORS:
 ###########################################################################
 
 # Import standard Python libraries that we will use below
-import base64, bz2, calendar, copy, crypt, os, re, shutil, string, time, traceback
+import base64, bz2, calendar, copy, os, re, shutil, string, time, traceback
 
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
@@ -1949,7 +1949,8 @@ class Worksheet(object):
         """
         # Load the worksheet data file from disk.
         filename = self.worksheet_html_filename()
-        r = self.name().lower() + ' ' + open(filename).read().lower()
+        r = (self.owner().lower() + ' ' + self.name().lower() + ' '
+             + open(filename).read().lower())
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
             if W.lower() not in r:
@@ -2466,7 +2467,7 @@ class Worksheet(object):
             - ``float`` -- seconds since epoch of the time when this 
               worksheet was last edited
         """
-        return [self.last_to_edit(), time.mktime(self.date_edited())]
+        return (self.last_to_edit(), self.last_edited())
 
     def set_last_change(self, username, tm):
         """

@@ -91,11 +91,12 @@ def notebook_twisted(self,
         print '*'*70
 
     nb = notebook.load_notebook(directory)
+    if nb is None:
+        return
+    
     directory = nb._dir
     conf = os.path.join(directory, 'twistedconf.tac')
     
-    if nb is None:
-        return
     if not quiet:
         print "The notebook files are stored in:", nb._dir
 

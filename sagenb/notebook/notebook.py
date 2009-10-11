@@ -515,6 +515,10 @@ class Notebook(object):
         U = user.User(username, password, email, account_type)
         us[username] = U
 
+        # Save the user database
+        self.__storage.save_users(self.users())
+        
+
     def change_password(self, username, password):
         """
         Change a user's password.
@@ -1995,8 +1999,9 @@ def migrate_old_notebook_v1(dir):
     # Now update the user data from the old notebook to the new one:
     users = new_nb.users()
     for username, old_user in old_nb.users().iteritems():
-        new_user = user.User(old_user.username(), old_user.password(),
+        new_user = user.User(old_user.username(), '',
                              old_user.get_email(), old_user.account_type())
+        new_user.set_hashed_password(old_user.password())
         transfer_attributes2(old_user, new_user,
                              [('_User__email_confirmed', '_email_confirmed'),
                              ('_User__temporary_password', '_temporary_password'),
