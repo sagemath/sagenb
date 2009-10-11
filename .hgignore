@@ -128,3 +128,4 @@ MANIFEST
 sagenb/data/java
 ~
 sage_notebook*
+.sagenb

@@ -1,8 +1,5 @@
 TODO:
 
-[ ] force choice of title
-
-
 [ ] implement loading of old-format worksheets:
    reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
 
@@ -332,3 +329,6 @@ totally broken.  That code was very confusing.
 
 [x] fix DownloadWorksheets object to be truly async, since that will
 clarify to me how to improve a lot of other things.
+[x] force choice of title
+[x] make it so new notebooks work
+

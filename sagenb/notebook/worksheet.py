@@ -2041,7 +2041,11 @@ class Worksheet(object):
 
     def revert_to_last_saved_state(self):
         filename = self.worksheet_html_filename()
-        E = open(filename).read()
+        if os.path.exists(filename):
+            E = open(filename).read()
+        else:
+            # nothing was ever saved!
+            E = ''
         self.edit_save(E)
 
     def snapshot_directory(self):

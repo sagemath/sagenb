@@ -82,7 +82,6 @@ def notebook_twisted(self,
     directory = wd[1]
 
     port = int(port)
-    conf = '%s/twistedconf.tac'%directory
 
     if not secure and address != 'localhost':
         print '*'*70
@@ -92,6 +91,9 @@ def notebook_twisted(self,
         print '*'*70
 
     nb = notebook.load_notebook(directory)
+    directory = nb._dir
+    conf = os.path.join(directory, 'twistedconf.tac')
+    
     if nb is None:
         return
     if not quiet:

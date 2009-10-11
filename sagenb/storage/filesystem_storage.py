@@ -479,4 +479,7 @@ class FilesystemDatastore(Datastore):
 # At 2ms, 100,000 worksheets takes 200 seconds, versus only 5 seconds
 # at 52 microseconds.  cPickle just can't be beat.
 #
+# NOTE!  Actually simplejson does just as well at cPickle for this benchmark.
+#        Thanks to Mitesh Patel for pointing this out. 
+#
 ###################################################################################

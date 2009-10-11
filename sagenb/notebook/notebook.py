@@ -88,19 +88,21 @@ class Notebook(object):
         try:
             self.__conf = S.load_server_conf()
         except IOError:
-            # Worksheet has never been saved.
-            return
+            # Worksheet has never been saved before, so the server conf doesn't exist.
+            self.__worksheets = {}
 
         # Set the list of users
-        self.__users = S.load_users()
+        try:
+            self.__users = S.load_users()
+        except IOError:
+            self.__users = {}
 
         # Set the list of worksheets
-        # TODO: Storing them this way -- all in memory -- is kind of
-        # silly, and will be refactored.
         W = {}
         for username in self.__users.keys():
             for w in S.worksheets(username):
                 W['%s/%s'%(username, w.id_number())] = w
+                
         self.__worksheets = W
         
     def delete(self):

@@ -12,7 +12,10 @@ INPUT:
 {% if do_print %}
 <script language="javascript">jsMath.ProcessBeforeShowing();</script>
 {% else %}
-<script type="text/javascript">cell_id_list={{ cell_id_list }};</script>
+<script type="text/javascript">
+   cell_id_list={{ cell_id_list }};
+   if(worksheet_name == "Untitled") rename_worksheet();
+</script>
 {% endif %}
 
 {% if not do_print and confirm_before_leave %}
