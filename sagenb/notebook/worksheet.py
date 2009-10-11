@@ -2256,11 +2256,12 @@ class Worksheet(object):
                     ids.add(id)
                     html = False
                 used_ids.add(id)
-                if hasattr(self, '__cells'):
+                try:
+                    self.__cells
                     C = self.get_cell_with_id(id = id)
                     if isinstance(C, TextCell):
                         C = self._new_cell(id)
-                else:
+                except AttributeError:
                     C = self._new_cell(id)
                 C.set_input_text(input)
                 C.set_output_text(output, '')
@@ -2856,9 +2857,10 @@ class Worksheet(object):
         irregardless of whether or not it is currently churning away on a
         computation.
         """
-        if not hasattr(self, '__sage'):
+        try:
+            return self.__sage.is_started()
+        except AttributeError:
             return False
-        return self.__sage.started()
 
     def initialize_sage(self):
         S = self.__sage

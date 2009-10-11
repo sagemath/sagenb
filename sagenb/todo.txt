@@ -1,5 +1,5 @@
 TODO:
-[ ] running worksheets not explicitly listed as running in /home/ display
+[ ] stop button in home screen should save worksheet.
 
 [ ] clean up the other abstract_storage layers (maybe get rid of them?):
      1. delete all of the others (ouch!)
@@ -314,4 +314,6 @@ be stored in the user's home directory -- that would make the only
 slow power of save/load faster.
 
 [x] delete "class PublicWorksheetsHome(resource.Resource):" since it is not used.
+
+[x] running worksheets not explicitly listed as running in /home/ display
 
