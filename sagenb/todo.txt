@@ -6,8 +6,6 @@ TODO:
 
 [ ] after migration that a worksheet was published is lost
 
-[ ] DATA directory not copied over during migration.
-
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a related list.
@@ -343,4 +341,6 @@ http://groups.google.com/group/sage-notebook/pendmsg?hl=en
 [x] accounts=True is broken
 [x] after migration last modified times wrong?
 [x] login doesn't work anymore, but does if you make a new account
+
+[x] DATA directory not copied over during migration.
 

@@ -333,10 +333,10 @@ class FilesystemDatastore(Datastore):
         path = self._abspath(self._worksheet_pathname(username, id_number))
 
         # Add the contents of the DATA directory
-        data = os.path.join(path, 'DATA')
+        data = os.path.join(path, 'data')
         if os.path.exists(data):
             for X in os.listdir(data):
-                T.add(os.path.join(data, X), os.path.join('sage_worksheet','DATA',X))
+                T.add(os.path.join(data, X), os.path.join('sage_worksheet','data',X))
                     
         # Add the contents of each of the cell directories.
         cells = os.path.join(path, 'cells')
@@ -364,7 +364,7 @@ class FilesystemDatastore(Datastore):
         open(self._abspath(self._worksheet_html_filename(username, id_number)),'w').write(
             T.extractfile(os.path.join('sage_worksheet','worksheet.html')).read())
 
-        # Import contents of the DATA directory
+        # Import contents of the data directory
         def is_safe(a):
             # We define this function to avoid the possibility of a user crafting
             # fake sws file such that extracting it creates files outside where
@@ -373,7 +373,7 @@ class FilesystemDatastore(Datastore):
 
         # Windows port -- I'm worried about whether a.name will have / or \ on windows.
         # The code below assume \.
-        base = os.path.join('sage_worksheet','DATA')
+        base = os.path.join('sage_worksheet','data')
         members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
         if len(members) > 0:
             T.extractall(path, members)

@@ -2054,7 +2054,24 @@ def migrate_old_notebook_v1(dir):
             i = text.find('\n'); text=text[i+1:]
             i = text.find('\n'); text=text[i+1:]            
             new_ws.edit_save(text)
-        #new_ws.save()
+
+        # copy over the DATA directory and cells directories
+        try:
+            dest = new_ws.data_directory()
+            if os.path.exists(dest): shutil.rmtree(dest)
+            shutil.copytree(old_ws.data_directory(), dest)
+        except Exception, msg:
+            print msg
+
+        try:
+            if os.path.exists(old_ws.cells_directory()):
+                dest = new_ws.cells_directory()
+                if os.path.exists(dest): shutil.rmtree(dest)
+                shutil.copytree(old_ws.cells_directory(), dest)
+        except Exception, msg:
+            print msg
+                
+
         return new_ws
     
     worksheets = {}
