@@ -5,11 +5,19 @@ TODO:
 [ ] after migration last modified times wrong?
 [ ] server_pool -- keeps getting set to null in server conf?
 
+[ ] Starting w/o an existing .sage, I get exceptions.KeyError: "No key
+ 'email' and no default for this key" with the latest
+  sagenb, if I click on "Settings" as admin.
+  Actually, simply clicking "Sign out" triggers the 'email' KeyError, 
+
+[ ] add the new sagenb icon from here somehow:
+http://groups.google.com/group/sage-notebook/pendmsg?hl=en
+
+[ ] http://trac.sagemath.org/sage_trac/ticket/7110
+
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a related list.
-
-[ ] http://trac.sagemath.org/sage_trac/ticket/7110
 
 [ ] insert new cell *below*
 
