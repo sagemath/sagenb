@@ -2,15 +2,14 @@ TODO:
 
 [ ] implement loading of old-format worksheets:
    reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
-
 [ ] after migration last modified times wrong?
-
 [ ] server_pool -- keeps getting set to null in server conf?
-
 
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a related list.
+
+[ ] http://trac.sagemath.org/sage_trac/ticket/7110
 
 [ ] insert new cell *below*
 
