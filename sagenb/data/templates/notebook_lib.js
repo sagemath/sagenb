@@ -1123,7 +1123,8 @@ function rate_worksheet(rating) {
 
 function download_worksheet() {
     /*
-    Download the current worksheet to the file with given name.
+    Download the current worksheet to the file with name select by the user.
+    The title of the worksheet is also changed to match the filename. 
 
     INPUT:
         base_filename

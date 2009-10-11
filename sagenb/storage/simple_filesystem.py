@@ -281,11 +281,14 @@ class SimpleFileDatastore(object):
         """
         self._save(history, self._history_filename(username))
         
-    def save_worksheet(self, worksheet):
+    def save_worksheet(self, worksheet, conf_only=False):
         """
         INPUT:
 
             - ``worksheet`` -- a Sage worksheet
+
+            - ``conf_only`` -- default: False; if True, only save
+              the config file, not the actual body of the worksheet      
 
         EXAMPLES::
         
@@ -301,7 +304,7 @@ class SimpleFileDatastore(object):
             # only save if changed
             self._save(basic, self._worksheet_conf_filename(username, id_number))
             worksheet._last_basic = basic
-        if worksheet.body_is_loaded():
+        if not conf_only and worksheet.body_is_loaded():
             # only save if loaded
             # todo -- add check if changed
             filename = self._worksheet_html_filename(username, id_number)

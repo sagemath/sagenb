@@ -889,6 +889,9 @@ class Worksheet(object):
         import twist
         return twist.notebook
 
+    def save(self, conf_only=False):
+        self.notebook().save_worksheet(self, conf_only=conf_only)
+
     def system(self):
         """
         Return the math software system in which by default all input to
@@ -1465,9 +1468,11 @@ class Worksheet(object):
         """
         A temporary trivial tags implementation.
         """
-        if not hasattr(self, '__user_view'):
-            return {}
-        d = dict(self.__user_view)
+        try:
+            d = dict(self.__user_view)
+        except AttributeError:
+            self.user_view(self.owner())
+            d = self.__user_view
         for user, val in d.iteritems():
             d[user] = [val]
         return d
@@ -1514,6 +1519,11 @@ class Worksheet(object):
         except (KeyError, AttributeError):
             self.user_view(user)
             self.__user_view[user] = x
+
+        # it is important to save the configuration and changing the
+        # views, e.g., moving to trash, etc., since the user can't
+        # easily click save without changing the view back.
+        self.save(conf_only=True)
 
     def user_view_is(self, user, x):
         """

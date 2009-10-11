@@ -1,7 +1,4 @@
 TODO:
-[ ] delete worksheet doesn't work, in sense that delete, quit notebook
-    server, restart, then worksheets are back!
-
 [ ] after migration last modified times are wrong.
 
 [ ] rewrite file upload, noting a remark in the python docs (!)
@@ -19,6 +16,8 @@ nb.sobj or worksheet source code (!)
 [ ] we can make it so that if worksheet.html file changes on disk but
 not currently open, then when reopen it uses the new version from
 disk.  This would be very useful
+
+[ ] implement loading of old-format worksheets
 
 [ ] reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
 
@@ -51,12 +50,12 @@ run all these doctests.
 import numpy
 numpy.load?
 
-[ ] yikes: one run two notebook servers on the same directory at same time (?)
-
 
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a related list.
+
+[ ] page through list of worksheets (don't show hundreds at once)
 
 [ ] do something about this in worksheet.py
     def autosave(self, username):
@@ -307,4 +306,9 @@ TODO:
   [x] notebook:
   [x] user:
 [x] last cell: "exceptions.AttributeError: TextCell instance has no attribute 'evaluate'"
+
+[x] yikes: one run two notebook servers on the same directory at same time (?)
+
+[x] delete worksheet doesn't work, in sense that delete, quit notebook
+    server, restart, then worksheets are back!
 

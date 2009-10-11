@@ -1572,6 +1572,9 @@ class Notebook(object):
             for username, H in self._user_history.iteritems():
                 S.save_user_history(username, H)
 
+    def save_worksheet(self, W, conf_only=False):
+        self.__storage.save_worksheet(W, conf_only=conf_only)
+
     def delete_doc_browser_worksheets(self):
         names = self.worksheet_names()
         for n in self.__worksheets.keys():

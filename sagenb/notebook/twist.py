@@ -1329,7 +1329,9 @@ class DownloadWorksheets(resource.Resource):
         worksheet_names = set()
         if ctx.args.has_key('filenames'):
             sep = ctx.args['sep'][0]
-            worksheets = [notebook.get_worksheet_with_filename(x.strip()) for x in ctx.args['filenames'][0].split(sep) if len(x.strip()) > 0]
+            worksheets = [notebook.get_worksheet_with_filename(x.strip())
+                          for x in ctx.args['filenames'][0].split(sep)
+                          if len(x.strip()) > 0]
         else:
             worksheets = notebook.worksheet_list_for_user(self.username)
         zip_filename = tmp_filename() + ".zip"
