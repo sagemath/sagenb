@@ -1012,7 +1012,7 @@ class Notebook(object):
         u = self.user(username).conf()
         id_number = u['next_worksheet_id_number']
         if id_number == -1:  # need to initialize
-            id_number = max([w.id_number() for w in S.worksheets(username)] + [-1]) + 1
+            id_number = max([w.id_number() for w in self.worksheet_list_for_user(username)] + [-1]) + 1
         u['next_worksheet_id_number'] = id_number + 1
         return id_number
 

@@ -135,7 +135,9 @@
 	{% else %}
 	
 	<input type=checkbox unchecked id="{{ name }}">
-	<select onchange="go_option(this);" class="worksheet_edit">
+{# I'm removing this select since it is a massive performance killer and these 
+   serve no real purpose at all.  Plus google docs got rid of the analogous menu.
+         <select onchange="go_option(this);" class="worksheet_edit">
 	  <option value="" title="File options" selected>File</option>
 	  <option value="list_rename_worksheet('{{ name }}','{{ worksheet.name() }}');" title="Change the name of this worksheet.">
 	    Rename...
@@ -146,7 +148,7 @@
 	  <option value="list_publish_worksheet('{{ name }}');" title="Publish this worksheet on the internet">Publish</option>
 	  <option value="list_revisions_of_worksheet('{{ name }}');" title="See all revisions of this worksheet">Revisions</option>
 	</select>
-        
+  #}      
         {% endif %}
       </td>
 

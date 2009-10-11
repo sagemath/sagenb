@@ -1949,7 +1949,7 @@ class Worksheet(object):
         """
         # Load the worksheet data file from disk.
         filename = self.worksheet_html_filename()
-        r = open(filename).read().lower()
+        r = self.name().lower() + ' ' + open(filename).read().lower()
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
             if W.lower() not in r:
@@ -2838,7 +2838,8 @@ class Worksheet(object):
 
         del self.__sage
 
-        # We do this to avoid getting a stale Sage that uses old code. 
+        # We do this to avoid getting a stale Sage that uses old code.
+        self.save()
         self.clear_queue()
         del self.__cells
 

@@ -1,5 +1,4 @@
 TODO:
-[ ] stop button in home screen should save worksheet.
 
 [ ] clean up the other abstract_storage layers (maybe get rid of them?):
      1. delete all of the others (ouch!)
@@ -9,9 +8,6 @@ TODO:
    reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
 
 [ ] after migration last modified times wrong?
-
-[ ] check that autopublish activating and deactiving didn't get
-totally broken.  That code was very confusing.
 
 [ ] server_pool -- keeps getting set to null in server conf?
 
@@ -316,4 +312,15 @@ slow power of save/load faster.
 [x] delete "class PublicWorksheetsHome(resource.Resource):" since it is not used.
 
 [x] running worksheets not explicitly listed as running in /home/ display
+
+[x] stop button in home screen should save worksheet.
+
+[x] search worksheets should include title
+
+[x] get rid of file menu in big worksheet list -- it is probably
+massively slowing things down, and serves no real purpose (and google
+docs got rid of it).   Also make the worksheet titles bolder and black.
+
+[x] check that autopublish activating and deactiving didn't get
+totally broken.  That code was very confusing.
 

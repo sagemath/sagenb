@@ -1352,6 +1352,12 @@ span.red{
 
 a.worksheetname{
    text-decoration: none;
+   font-weight: bold; 
+   font-size:14px;
+   color:#222222;
+}
+a.worksheetname:visited{
+   color:#222222;
 }
 
 a.worksheetname_moved{
