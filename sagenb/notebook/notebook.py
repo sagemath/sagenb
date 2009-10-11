@@ -78,10 +78,10 @@ class Notebook(object):
 
         self._dir = dir
 
-        # For now we only support the Simple File datastore storage
+        # For now we only support the FilesystemDatastore storage
         # backend.
-        from sagenb.storage import SimpleFileDatastore
-        S = SimpleFileDatastore(dir)
+        from sagenb.storage import FilesystemDatastore
+        S = FilesystemDatastore(dir)
         self.__storage = S
 
         # Now set the configuration, loaded from the datastore.
@@ -135,6 +135,7 @@ class Notebook(object):
 
     def system_names(self):
         return SYSTEM_NAMES
+    
     ##########################################################
     # Users
     ##########################################################

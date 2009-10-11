@@ -1,12 +1,14 @@
 """
-A Simple Filesystem-based Sage Notebook Datastore
+A Filesystem-based Sage Notebook Datastore
 
 Here is the filesystem layout for this datastore.  Note that the all
 of the pickles are pickles of basic Python objects, so can be
 unpickled in any version of Python with or without Sage or the Sage
-notebook installed.
+notebook installed.  They are also not compressed, so are reasonably
+easy to read ASCII.
 
-::
+The filesystem layout is as follows.  It mirrors the URL's used by the
+Sage notebook server::
 
     sage_notebook.sagenb
          conf.pickle
@@ -34,51 +36,11 @@ notebook installed.
 
 import copy, cPickle, shutil, tarfile
 
-# import json, yaml
-# I experimented with using these, but they are 10-100 times slower, and there is
-# no real benefit.   More precisely, the time for dumping/loading a worksheet basic
-# datastructure in each:
-#
-#     cPickle
-#     pickle
-#     json
-#     yaml
-#     yaml + C
-#
-# This is all on OS X 10.6 64-bit.  Here b = w.basic() for any worksheet w.
-#
-# sage: import cPickle
-# sage: timeit('cPickle.loads(cPickle.dumps(b))')
-# 625 loops, best of 3: 51.9 us (microseconds) per loop
-# sage: import pickle
-# sage: timeit('pickle.loads(pickle.dumps(b))')
-# 625 loops, best of 3: 464 us  (microseconds) per loop
-# sage: import json
-# sage: timeit('json.loads(json.dumps(b))')
-# 625 loops, best of 3: 449 us  (microseconds) per loop
-# sage: timeit('json.loads(json.dumps(b,indent=4))')
-# 625 loops, best of 3: 625 us  (microseconds) per loop
-# sage: import yaml
-# sage: timeit('yaml.load(yaml.dump(b))')
-# 25 loops, best of 3: 13.5 ms per loop
-# sage: from yaml import load, dump
-# sage: from yaml import CLoader as Loader
-# sage: from yaml import CDumper as Dumper
-# sage: timeit('yaml.load(yaml.dump(b,Dumper=Dumper),Loader=Loader)')   # c++ yaml
-# 125 loops, best of 3: 1.77 ms per loop
-#
-# Other problems: json.load(json.dump(b)) != b, because of unicode and
-# all kinds of weirdness
-# Yaml C library is hard to install; and yaml itself is not included in python (json is).
-# Anyway, the difference between 2-13ms and 52 microseconds is significant.
-# At 2ms, 100,000 worksheets takes 200 seconds, versus only 5 seconds
-# at 52 microseconds.  cPickle just can't be beat.
-
 import os
 
 from abstract_storage import Datastore
 
-class SimpleFileDatastore(object):
+class FilesystemDatastore(Datastore):
     def __init__(self, path):
         """
         INPUT:
@@ -99,7 +61,7 @@ class SimpleFileDatastore(object):
         self._users_filename = 'users.pickle'
 
     def __repr__(self):
-        return "Simple Filesystem-based Sage Notebook Datastore at %s"%self._path
+        return "Filesystem Sage Notebook Datastore at %s"%self._path
 
     ##################################################################################
     # Paths
@@ -233,7 +195,7 @@ class SimpleFileDatastore(object):
         """
         INPUT:
 
-            - ``users`` -- user dictionary object
+            - ``users`` -- dictionary mapping user names to users
         
         EXAMPLES::
         
@@ -246,9 +208,6 @@ class SimpleFileDatastore(object):
             sage: ds.load_user_data()
             {u'admin': admin, u'xyz': xyz}
         
-        INPUT:
-
-            - ``users`` -- dictionary mapping user names to users
         """
         self._save(self._users_to_basic(users), 'users.pickle')
 
@@ -294,8 +253,8 @@ class SimpleFileDatastore(object):
         
             sage: from sagenb.notebook.worksheet import Worksheet
             sage: W = Worksheet('test', 2, '', system='gap', owner='sageuser')
-            sage: from sagenb.storage import SimpleFileDatastore
-            sage: DS = SimpleFileDatastore(tmp_dir())
+            sage: from sagenb.storage import FilesystemDatastore
+            sage: DS = FilesystemDatastore(tmp_dir())
             sage: DS.save_worksheet(W)
         """
         username = worksheet.owner(); id_number = worksheet.id_number()
@@ -346,7 +305,6 @@ class SimpleFileDatastore(object):
         given filename (e.g., 'worksheet.sws').
 
         INPUT:
-
     
             - ``title`` - title to use for the exported worksheet (if
                None, just use current title)
@@ -450,8 +408,8 @@ class SimpleFileDatastore(object):
             sage: from sagenb.notebook.worksheet import Worksheet
             sage: W = Worksheet('test', 2, '', system='gap', owner='sageuser')
             sage: from sagenb.storage import JSONDatastore
-            sage: from sagenb.storage import SimpleFileDatastore
-            sage: DS = SimpleFileDatastore(tmp_dir())
+            sage: from sagenb.storage import FilesystemDatastore
+            sage: DS = FilesystemDatastore(tmp_dir())
             sage: DS.save_worksheet(W)
             sage: DS.worksheets('sageuser')
             [sageuser/2: [Cell 0; in=, out=]]
@@ -470,6 +428,55 @@ class SimpleFileDatastore(object):
     def delete(self):
         """
         Delete all files associated with this datastore.  Dangerous!
+        This is only here because it is useful for doctesting.
         """
         import shutil
         shutil.rmtree(self._path, ignore_errors=True)
+
+
+
+###################################################################################
+# 
+# Why not use JSON, YAML, or XML??
+#
+# I experimented with using these, but they are 10-100 times slower, and there is
+# no real benefit.   More precisely, the time for dumping/loading a worksheet basic
+# datastructure in each of the following is given below.  XML is also very bad
+# compared to cPickle. 
+#
+#     cPickle, 
+#     pickle
+#     json
+#     yaml
+#     yaml + C
+#
+# This is all on OS X 10.6 64-bit.  Here b = w.basic() for any worksheet w.
+#
+# sage: import cPickle
+# sage: timeit('cPickle.loads(cPickle.dumps(b))')
+# 625 loops, best of 3: 51.9 us (microseconds) per loop
+# sage: import pickle
+# sage: timeit('pickle.loads(pickle.dumps(b))')
+# 625 loops, best of 3: 464 us  (microseconds) per loop
+# sage: import json
+# sage: timeit('json.loads(json.dumps(b))')
+# 625 loops, best of 3: 449 us  (microseconds) per loop
+# sage: timeit('json.loads(json.dumps(b,indent=4))')
+# 625 loops, best of 3: 625 us  (microseconds) per loop
+# sage: import yaml
+# sage: timeit('yaml.load(yaml.dump(b))')
+# 25 loops, best of 3: 13.5 ms per loop
+# sage: from yaml import load, dump
+# sage: from yaml import CLoader as Loader
+# sage: from yaml import CDumper as Dumper
+# sage: timeit('yaml.load(yaml.dump(b,Dumper=Dumper),Loader=Loader)')   # c++ yaml
+# 125 loops, best of 3: 1.77 ms per loop
+#
+# Other problems: json.load(json.dump(b)) != b, because of unicode and
+# all kinds of weirdness
+# Yaml C library is hard to install; and yaml itself is not included in python (json is).
+# Anyway, the difference between 2-13ms and 52 microseconds is significant.
+# At 2ms, 100,000 worksheets takes 200 seconds, versus only 5 seconds
+# at 52 microseconds.  cPickle just can't be beat.
+#
+###################################################################################
