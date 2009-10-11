@@ -2141,7 +2141,7 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
             sage: C.html_out()
-            '\n...<table class="cell_output_box">...</table>'
+            '\n...<div class="cell_output_div">\n...</div>'
         """
         if do_print and self.cell_output_type() == 'hidden':
             return '<pre>\n</pre>'
@@ -2182,11 +2182,12 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
         r = ''
         r += '&nbsp;'*(7-len(r))
         tbl = """
+               <div class="cell_output_div">
                <table class="cell_output_box"><tr>
                <td class="cell_number" id="cell_number_%s" onClick="cycle_cell_output_type(%s);">
                  %s
                </td>
-               <td class="output_cell">%s</td></tr></table>"""%(
+               <td class="output_cell">%s</td></tr></table></div>"""%(
                    self.__id, self.__id, r, s)
 
         return tbl

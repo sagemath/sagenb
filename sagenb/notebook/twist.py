@@ -175,6 +175,9 @@ class WorksheetFile(resource.Resource):
 
     def render(self, ctx=None):
         # Create a live Sage worksheet out of self.path and render it.
+        if not os.path.exists(self.docpath):
+            return HTMLResponse(stream = message('Document does not exist.'))
+
         doc_page_html = open(self.docpath).read()
         from docHTMLProcessor import SphinxHTMLProcessor
         doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
@@ -195,12 +198,34 @@ class WorksheetFile(resource.Resource):
 
         return HTMLResponse(stream=s)
 
-    def childFactory(self, request, name):
-        path = os.path.join(self.docpath, name)
-        if name.endswith('.html'):
-            return WorksheetFile(path, self.username)
-        else:
-            return static.File(path)
+    # This earlier code does not convert all reference manual pages into live
+    # worksheets, apparently:
+    #    def childFactory(self, request, name):
+    #        path = self.docpath + '/' + name
+    #        if name.endswith('.html'):
+    #            return WorksheetFile(path, self.username)
+    #        else:
+    #            return static.File(path)
+
+    # Instead, we reimplement a lower-level method to detect, convert,
+    # and render live doc worksheets.  We also return appropriate
+    # paths for "special" directories accessed via ../'s.  See, e.g.,
+    # http://twistedmatrix.com/trac/browser/trunk/doc/web2/howto/
+    # about resources and object traversal.
+    def locateChild(self, request, segments):
+        path = os.path.join(self.docpath, *segments)
+
+        if segments[-1].endswith('.html'):
+            return WorksheetFile(path, self.username), ()
+
+        for special in ['_static', '_sources', '_images']:
+            if special in segments:
+                ind = segments.index(special)
+                path = os.path.join(self.docpath, *segments[ind:])
+                break
+
+        return static.File(path), ()
+
 
 ############################
 # The documentation browsers
@@ -1754,7 +1779,7 @@ class Main_css(resource.Resource):
 
 class Reset_css(resource.Resource):
     def render(self, ctx):
-        s = css.reset
+        s = template('css/reset.css')
         gzip_handler(ctx)
         return http.Response(stream=s)
 
