@@ -1325,32 +1325,41 @@ class DownloadWorksheets(resource.Resource):
         self.username = username
 
     def render(self, ctx):
-        print type(ctx)
-        worksheet_names = set()
-        if ctx.args.has_key('filenames'):
-            sep = ctx.args['sep'][0]
-            worksheets = [notebook.get_worksheet_with_filename(x.strip())
-                          for x in ctx.args['filenames'][0].split(sep)
-                          if len(x.strip()) > 0]
-        else:
-            worksheets = notebook.worksheet_list_for_user(self.username)
-        zip_filename = tmp_filename() + ".zip"
-        zip = zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_STORED)
-        for worksheet in worksheets:
-            sws_filename = tmp_filename() + '.sws'
-            notebook.export_worksheet(worksheet.filename(), sws_filename)
-            entry_name = worksheet.name()
-            if entry_name in worksheet_names:
-                i = 2
-                while ("%s_%s" % (entry_name, i)) in worksheet_names:
-                    i += 1
-                entry_name = "%s_%s" % (entry_name, i)
-            zip.write(sws_filename, entry_name + ".sws")
-            os.unlink(sws_filename)
-        zip.close()
-        r = open(zip_filename, 'rb').read()
-        os.unlink(zip_filename)
-        return static.Data(r, 'application/zip')
+        def f():
+            from sagenb.misc.misc import walltime
+            t = walltime()
+            print "Starting zipping a group of worksheets in a separate thread..."
+            zip_filename = tmp_filename() + ".zip"
+            # child
+            worksheet_names = set()
+            if ctx.args.has_key('filenames'):
+                sep = ctx.args['sep'][0]
+                worksheets = [notebook.get_worksheet_with_filename(x.strip())
+                              for x in ctx.args['filenames'][0].split(sep)
+                              if len(x.strip()) > 0]
+            else:
+                worksheets = notebook.worksheet_list_for_user(self.username)
+
+            zip = zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_STORED)
+            for worksheet in worksheets:
+                sws_filename = tmp_filename() + '.sws'
+                notebook.export_worksheet(worksheet.filename(), sws_filename)
+                entry_name = worksheet.name()
+                if entry_name in worksheet_names:
+                    i = 2
+                    while ("%s_%s" % (entry_name, i)) in worksheet_names:
+                        i += 1
+                    entry_name = "%s_%s" % (entry_name, i)
+                zip.write(sws_filename, entry_name + ".sws")
+                os.unlink(sws_filename)
+            zip.close()
+            r = open(zip_filename, 'rb').read()
+            os.unlink(zip_filename)
+            print "Finished zipping %s worksheets (%s seconds)"%(len(worksheets), walltime(t))
+            return static.Data(r, 'application/zip')
+
+        from twisted.internet import threads
+        return threads.deferToThread(f)
 
 class Worksheet_rename(WorksheetResource, resource.PostableResource):
     def render(self, ctx):
@@ -2397,7 +2406,6 @@ class UserToplevel(Toplevel):
     userchild_settings = SettingsPage
     userchild_pub = PublicWorksheets
     userchild_upload = Upload
-    userchild_download_worksheets = DownloadWorksheets
 
     userchild_send_to_trash = SendWorksheetToTrash
     userchild_send_to_archive = SendWorksheetToArchive
@@ -2423,6 +2431,7 @@ class UserToplevel(Toplevel):
             response.headers.setHeader("set-cookie", [http_headers.Cookie('nb_session', self.cookie), http_headers.Cookie('cookie_test', self.cookie, expires=1)])
         return response
 
+setattr(UserToplevel, 'userchild_download_worksheets.zip', DownloadWorksheets)
 
 class AdminToplevel(UserToplevel):
     addSlash = True

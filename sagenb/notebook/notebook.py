@@ -1069,11 +1069,10 @@ class Notebook(object):
         # Figure out the file extension
         ext = os.path.splitext(filename)[1]
         if ext.lower() == '.txt':
-            # A plain text file with {{{'s that defines a worksheet (not graphics).
+            # A plain text file with {{{'s that defines a worksheet (no graphics).
             W = self._import_worksheet_txt(filename, owner)
         elif ext.lower() == '.sws':
-            # An sws file (really a tar.bz2) which defines a worksheet with graphics,
-            # revisions, etc. 
+            # An sws file (really a tar.bz2) which defines a worksheet with graphics, etc.
             W = self._import_worksheet_sws(filename, owner)
         else:
             # We only support txt or sws files.
@@ -1168,7 +1167,11 @@ class Notebook(object):
         """
         id_number = self.new_id_number(username)
         worksheet = self.__storage.import_worksheet(username, id_number, filename)
-        self.change_worksheet_name_to_avoid_collision(worksheet)
+
+        # I'm not at all convinced this is a good idea, since we
+        # support multiple worksheets with the same title very well
+        # already.  So it's commented out.
+        # self.change_worksheet_name_to_avoid_collision(worksheet)
         
         return worksheet
 

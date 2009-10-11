@@ -1,5 +1,8 @@
 TODO:
 
+[ ] force choice of title
+
+
 [ ] implement loading of old-format worksheets:
    reading old worksheet format (see "def edit_save_old_format(self, text):" in worksheet.py)
 
@@ -7,11 +10,12 @@ TODO:
 
 [ ] server_pool -- keeps getting set to null in server conf?
 
-[ ] insert new cell *below*
 
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a related list.
+
+[ ] insert new cell *below*
 
 [ ] add message to the top of each *old* sage notebook .py file
  stating that one should work on sagenb instead.  This is a patch to
@@ -326,3 +330,5 @@ totally broken.  That code was very confusing.
      1. delete all of the others (ouch!)
      2. rename simple_filesystem.py --> filesystem_storage.py
 
+[x] fix DownloadWorksheets object to be truly async, since that will
+clarify to me how to improve a lot of other things.
