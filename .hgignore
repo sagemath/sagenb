@@ -125,7 +125,7 @@ doc/en/reference/utils/*
 doc/en/reference/sage/*
 dotsage
 MANIFEST
-sagenb/data/java
+sagenb/data/jmol
 ~
 sage_notebook*
 .sagenb
