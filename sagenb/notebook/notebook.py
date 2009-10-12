@@ -805,18 +805,6 @@ class Notebook(object):
         W.sort()
         return W
 
-    def migrate_old(self):
-        """
-        Migrate all old worksheets, i.e., those with no owner, to
-        ``/pub``.  Currently, this always raises a
-        NotImplementedError.
-        """
-        raise NotImplementedError
-        for w in self.__worksheets.itervalues():
-            if not '/' in w.filename():    # todo -- need to fix for windows
-                print "Moving worksheet ", w.name()
-                w.set_owner('old')
-                self.rename_worksheet_filename(w, w.filename())
 
     ##########################################################
     # Information about the pool of worksheet compute servers
@@ -1924,10 +1912,11 @@ def load_notebook(dir, address=None, port=None, secure=None):
     """
     if not dir.endswith('.sagenb'):
         if not os.path.exists(dir + '.sagenb') and os.path.exists(os.path.join(dir, 'nb.sobj')):
-            migrate_old_notebook_v1(dir)
-            print ""
-            #print "Please type notebook('%s') to run the new notebook."%(dir + '.sagenb')
-            return
+            try:
+                nb = migrate_old_notebook_v1(dir)
+            except KeyboardInterrupt:
+                raise KeyboardInterrupt, "Interrupted notebook migration.  Delete the directory '%s' and try again."%(os.path.abspath(dir+'.sagenb'))
+            return nb
         dir += '.sagenb'
         
     dir = make_path_relative(dir)
@@ -1979,12 +1968,7 @@ def migrate_old_notebook_v1(dir):
     new_nb = Notebook(dir+'.sagenb')
 
     # Define a function for transfering the attributes of one object to another. 
-    def transfer_attributes(old, new, attributes, prefix):
-        for attribute in attributes:
-            if hasattr(old, prefix + attribute):
-                setattr(new, prefix + attribute,  getattr(old, prefix + attribute))
-
-    def transfer_attributes2(old, new, attributes):
+    def transfer_attributes(old, new, attributes):
         for attr_old, attr_new in attributes:
             if hasattr(old, attr_old):
                 setattr(new, attr_new,  getattr(old, attr_old))
@@ -1997,12 +1981,13 @@ def migrate_old_notebook_v1(dir):
             new_nb.conf().confs[t] = getattr(old_nb, '_Notebook__' + t)
     
     # Now update the user data from the old notebook to the new one:
+    print "Migrating %s user accounts..."%len(old_nb.users())
     users = new_nb.users()
     for username, old_user in old_nb.users().iteritems():
         new_user = user.User(old_user.username(), '',
                              old_user.get_email(), old_user.account_type())
         new_user.set_hashed_password(old_user.password())
-        transfer_attributes2(old_user, new_user,
+        transfer_attributes(old_user, new_user,
                              [('_User__email_confirmed', '_email_confirmed'),
                              ('_User__temporary_password', '_temporary_password'),
                              ('_User__is_suspended', '_is_suspended')])
@@ -2025,24 +2010,32 @@ def migrate_old_notebook_v1(dir):
         new_ws = new_nb.worksheet(old_ws.owner(), old_ws_dirname)
 
         # some ugly creation of new attributes from what used to be stored
-        tags = dict(old_ws._Worksheet__user_view)
-        for user, val in tags.iteritems():
-            tags[user] = [val]
+        tags = {}
+        for user, val in old_ws._Worksheet__user_view.iteritems():
+            if isinstance(user,str):
+                # There was a bug in the old notebook where sometimes the
+                # user was the *module* "user", so we don't include that
+                # invalid data. 
+                tags[user] = [val]
         import time
-        last_change = (old_ws.last_to_edit(), time.mktime(old_ws.date_edited()))
+        last_change = (old_ws.last_to_edit(), old_ws.last_edited())
         try:
             published_id_number = int(os.path.split(old_ws._Worksheet__published_version)[1])
         except AttributeError:
             published_id_number = None
 
+        ws_pub = old_ws.worksheet_that_was_published().filename().split('/')
+        ws_pub = (ws_pub[0],int(ws_pub[1]))
+            
         obj = {'name':old_ws.name(), 'system':old_ws.system(),
                'viewers':old_ws.viewers(), 'collaborators':old_ws.collaborators(),
                'pretty_print':old_ws.pretty_print(), 'ratings':old_ws.ratings(),
                'auto_publish':old_ws.is_auto_publish(), 'tags':tags,
                'last_change':last_change,
-               'published_id_number':published_id_number
+               'published_id_number':published_id_number,
+               'worksheet_that_was_published':ws_pub
                }
-       
+
         new_ws.reconstruct_from_basic(obj)
         
         base = os.path.join(dir, 'worksheets', old_ws.filename())
@@ -2052,7 +2045,7 @@ def migrate_old_notebook_v1(dir):
             # delete first two lines -- we don't embed the title or
             # system in the worksheet text anymore.
             i = text.find('\n'); text=text[i+1:]
-            i = text.find('\n'); text=text[i+1:]            
+            i = text.find('\n'); text=text[i+1:]
             new_ws.edit_save(text)
 
         # copy over the DATA directory and cells directories
@@ -2076,13 +2069,19 @@ def migrate_old_notebook_v1(dir):
     
     worksheets = {}
     num_worksheets = len(old_nb._Notebook__worksheets)
-    print "There are %s worksheets."%num_worksheets
+    print "Migrating %s worksheets..."%num_worksheets
+    from sage.misc.misc import walltime
+    tm = walltime()
     i = 0
     for ws_name, old_ws in old_nb._Notebook__worksheets.iteritems():
         if old_ws.is_doc_worksheet(): continue
         i += 1
-        if i%50==0:
-            print "Migrating worksheet %s of %s..."%(i,num_worksheets)
+        if i%25==0:
+            percent = i/float(num_worksheets)
+            # total_time * percent = time_so_far, so
+            # remaining_time = total_time - time_so_far = time_so_far*(1/percent - 1)
+            print "    Migrated %s (of %s) worksheets (about %.0f seconds remaining)"%(
+                i, num_worksheets, walltime(tm)*(1/percent-1))
         new_ws = migrate_old_worksheet(old_ws)
         worksheets[new_ws.filename()] = new_ws
     new_nb._Notebook__worksheets = worksheets
@@ -2098,6 +2097,7 @@ def migrate_old_notebook_v1(dir):
     new_nb.save()
 
     print "Worksheet migration completed."
+    return new_nb
 
 def make_path_relative(dir):
     r"""

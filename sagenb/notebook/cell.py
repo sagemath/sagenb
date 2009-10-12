@@ -193,6 +193,14 @@ class TextCell(Cell_generic):
         s = """<div class="text_cell" id="cell_text_%s">%s</div>"""%(self.__id,self.html_inner(ncols=ncols, do_print=do_print, do_math_parse=do_math_parse, editing=editing))
 
         if JEDITABLE_TINYMCE and hasattr(self.worksheet(),'is_published') and not self.worksheet().is_published() and not self.worksheet().docbrowser():
+
+            try:
+                z = ((self.__text).decode('utf-8')).encode('ascii', 'xmlcharrefreplace')
+            except Exception, msg:
+                print msg
+                # better to get the worksheet at all than to get a blank screen and nothing.
+                z = self.__text
+            
             s += """<script>$("#cell_text_%s").unbind('dblclick').editable(function(value,settings) {
 evaluate_text_cell_input(%s,value,settings);
 return(value);
@@ -209,7 +217,7 @@ return(value);
       style  : "inherit",
       data   : %r
   });
-</script>"""%(self.__id,self.__id,((self.__text).decode('utf-8')).encode('ascii', 'xmlcharrefreplace'))
+</script>"""%(self.__id,self.__id, z)
 
 
         if editing:

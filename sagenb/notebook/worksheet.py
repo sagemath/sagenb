@@ -267,17 +267,16 @@ class Worksheet(object):
              ('tags', {}),
              ('viewers', []),
              ('worksheet_that_was_published', None)]
-        """        
-        if self.worksheet_that_was_published() is self:
-            ws_pub = None
-        else:
-            W = self.worksheet_that_was_published()
-            ws_pub = (W.owner(), W.id_number())
-
+        """
         try:
             published_id_number = int(os.path.split(self.__published_version)[1])
         except AttributeError:
             published_id_number = None
+
+        try:
+            ws_pub = self.__worksheet_came_from
+        except AttributeError:
+            ws_pub = (self.owner(), self.id_number())
             
         d = {#############
              # basic identification
@@ -379,7 +378,10 @@ class Worksheet(object):
                 self.set_tags(value)
             elif key == 'last_change':
                 self.set_last_change(value[0],value[1])
-
+            elif key == 'published_id_number' and value is not None:
+                self.set_published_version('pub/%s'%value)
+            elif key == 'worksheet_that_was_published':
+                self.set_worksheet_that_was_published(value)
         self.create_directories()
 
     def __cmp__(self, other):
@@ -1061,9 +1063,9 @@ class Worksheet(object):
 
     def worksheet_that_was_published(self):
         """
-        Return the worksheet that was published to get this worksheet, if
-        this worksheet was published. Otherwise just return this
-        worksheet.
+        Return owner and id_number of the worksheet that was published
+        to get this worksheet, if this worksheet was
+        published. Otherwise just return this worksheet.
         
         OUTPUT: Worksheet
         
@@ -1083,7 +1085,7 @@ class Worksheet(object):
             True
         """
         try:
-            return self.__worksheet_came_from
+            return self.notebook().get_worksheet_with_filename('%s/%s'%self.__worksheet_came_from)
         except AttributeError:
             return self
 
@@ -1198,13 +1200,13 @@ class Worksheet(object):
                               
     def set_worksheet_that_was_published(self, W):
         """
-        Set the worksheet that was published to get self to W.
+        Set the owner and id_number of the worksheet that was
+        published to get self.
         
         INPUT:
-        
-        
-        -  ``W`` - a Worksheet
-        
+
+            - ``W`` -- worksheet or 2-tuple ('owner', id_number)
+
         
         EXAMPLES::
         
@@ -1220,9 +1222,10 @@ class Worksheet(object):
             sage: P.worksheet_that_was_published() is P
             True
         """
-        if not isinstance(W, Worksheet):
-            raise TypeError, "W must be a worksheet"
-        self.__worksheet_came_from = W
+        if isinstance(W, tuple):
+            self.__worksheet_came_from = W
+        else:
+            self.__worksheet_came_from = (W.owner(), W.id_number())
 
     def rate(self, x, comment, username):
         """
@@ -1514,6 +1517,8 @@ class Worksheet(object):
             sage: W.user_view('admin') == sagenb.notebook.worksheet.ARCHIVED
             True
         """
+        if not isinstance(user, str):
+            raise TypeError, "user (=%s) must be a string"%user
         try:
             self.__user_view[user] = x
         except (KeyError, AttributeError):
