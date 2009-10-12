@@ -1,5 +1,4 @@
-
-{% extends "base.html" %}
+{% extends "html/base.html" %}
 
 {% block title %}Upload File{% endblock %}
 
@@ -7,7 +6,7 @@
 
 {% block body %}
 <div class="upload_worksheet_menu" id="upload_worksheet_menu">
-{% include "top_bar.html" %}
+{% include "html/top_bar.html" %}
 <h1><font size=+1>Upload worksheet (an sws or txt file) to the Sage Notebook</font></h1>
 <hr>
 <form method="POST" action="upload_worksheet"

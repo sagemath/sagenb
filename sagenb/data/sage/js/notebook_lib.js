@@ -3895,12 +3895,11 @@ function jsmath_init() {
 ///////////////////////////////////////////////////////////////////
 
 
-
 {{ KEY_CODES }}
 
 
-{% include "jmol_lib.js" %}
+{% include "js/jmol_lib.js" %}
 
-{% include "canvas3d_lib.js" %}
+{% include "js/canvas3d_lib.js" %}
 
-{% include "async_lib.js" %}
+{% include "js/async_lib.js" %}

@@ -1,5 +1,4 @@
-
-{% extends "base.html" %}
+{% extends "html/base.html" %}
 
 {% block title %}Sage: History for {{username}} {% endblock %}
 
@@ -7,7 +6,7 @@
 
 {% block body %}
 
-{% include 'list_top.html' %}
+{% include "html/list_top.html" %}
 
     <pre>
       {{ text | escape }}

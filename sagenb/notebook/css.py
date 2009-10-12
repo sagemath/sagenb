@@ -41,7 +41,8 @@ def css(color='default'):
     else:
         raise ValueError, "unknown color scheme %s"%color
 
-    main_css = template('css/main.css', color1 = color1, color2 = color2,
+    main_css = template(os.path.join('css', 'main.css'),
+                        color1 = color1, color2 = color2,
                         color_theme = color)
 
     user_css_path = os.path.join(DOT_SAGENB, 'notebook.css')

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "html/base.html" %}
 {#
 INPUT:
 - worksheet - an instance of Worksheet
@@ -21,9 +21,9 @@ INPUT:
     {% set backwards = false %}
 {% endif %}
     
-{% include "notebook/head.tmpl" %}
-{% include "notebook/worksheet_top.tmpl" %}
-{% include "notebook/worksheet_topbar.tmpl" %}
+{% include "html/notebook/head.tmpl" %}
+{% include "html/notebook/worksheet_top.tmpl" %}
+{% include "html/notebook/worksheet_topbar.tmpl" %}
 
 {% block title %}
 {{ common_title(worksheet_filename, worksheet) }}

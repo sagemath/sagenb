@@ -1,4 +1,3 @@
-
 {#
 INPUT:
 - username - a string containing a username
@@ -6,8 +5,8 @@ INPUT:
 - worksheet_html - a string containing the html for a worksheet
 - show_debug - a boolean stating whether to show debug information
   #}
-{% include "notebook/user_controls.tmpl" %}
-{% include "notebook/worksheet_topbar.tmpl" %}
+{% include "html/notebook/user_controls.tmpl" %}
+{% include "html/notebook/worksheet_topbar.tmpl" %}
 {% set entries = [("$('#topbar').toggle()", 'Toggle', 'Toggle the top bar'),
                        ('/', 'Home', 'Back to your personal worksheet list'),
                        ('/pub', 'Published', 'Browse the published worksheets'),
@@ -18,7 +17,7 @@ INPUT:
                        ('/logout', 'Sign out', 'Log out of the Sage notebook')] %}
 <table width="100%">
     <tr>
-        <td>{% include "banner.html" %}</td>
+        <td>{% include "html/banner.html" %}</td>
         <td align="right">{{ user_controls(username, entries) }}</td>
     </tr>
 </table>
@@ -26,7 +25,7 @@ INPUT:
 {{ worksheet_topbar(worksheet, "use", username) }}
 {% endif %}
 {% if show_debug %}
-{% include "notebook/debug_window.html" %}
+{% include "html/notebook/debug_window.html" %}
 {% endif %}
 
 <div class="worksheet" id="worksheet">

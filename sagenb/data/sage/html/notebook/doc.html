@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "html/base.html" %}
 {#
 INPUT:
 - worksheet - an instance of Worksheet
@@ -10,7 +10,7 @@ INPUT:
 - sage_jsmath_macros - an array containing strings of Javascript of Sage macros for jsMath
 #}
 
-{% include "notebook/head.tmpl" %}
+{% include "html/notebook/head.tmpl" %}
 
 {% block title %}
 {{ common_title(worksheet_filename, worksheet) }}

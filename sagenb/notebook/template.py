@@ -16,12 +16,12 @@ AUTHORS:
 #############################################################################
 
 import jinja
-import sys
+import os, sys
 
 from sagenb.misc.misc import SAGE_VERSION, DATA
 
 
-TEMPLATE_PATH = DATA + '/templates/'
+TEMPLATE_PATH = os.path.join(DATA, 'sage')
 env = jinja.Environment(loader=jinja.FileSystemLoader(TEMPLATE_PATH))
 
 def contained_in(container):
@@ -76,14 +76,14 @@ def template(filename, **user_context):
     EXAMPLES::
 
         sage: from sagenb.notebook.template import template
-        sage: s = template('yes_no.html'); type(s)
+        sage: s = template(os.path.join('html', 'yes_no.html')); type(s)
         <type 'str'>
         sage: 'Yes' in s
         True
 
         sage: from sagenb.notebook.template import template
         sage: u = unicode('Are Gröbner bases awesome?','utf-8')
-        sage: s = template('yes_no.html',message=u)
+        sage: s = template(os.path.join('html', 'yes_no.html'), message=u)
         sage: 'Gr\xc3\xb6bner' in s
         True
     """

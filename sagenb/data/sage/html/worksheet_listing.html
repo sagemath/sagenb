@@ -1,5 +1,4 @@
-
-{% extends "base.html" %}
+{% extends "html/base.html" %}
 
 {% if pub %}
   {% set worksheet_heading='Published Worksheets' %}
@@ -34,7 +33,7 @@
 
 {% block body %}
 
-{% include "list_top.html" %}
+{% include "html/list_top.html" %}
 
 
 {% if not pub %}

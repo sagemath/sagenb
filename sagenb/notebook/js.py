@@ -9,11 +9,13 @@ AUTHORS:
 
 - Alex Clemesha
 
-This file contains some minimal code to generate the Javascript code 
-which is inserted to the head of the notebook web page.  All of the 
-interesting Javascript code is contained under ``data/templates/notebook_lib.js``.
+This file contains some minimal code to generate the Javascript code
+which is inserted to the head of the notebook web page.  All of the
+interesting Javascript code is contained under
+``data/sage/js/notebook_lib.js``.
 """
 
+import os
 from sagenb.misc.misc import SAGE_URL 
 from compress.JavaScriptCompressor import JavaScriptCompressor
 import keyboards
@@ -59,7 +61,7 @@ def javascript():
         return _cache_javascript
 
     from template import template
-    s = template('notebook_lib.js',
+    s = template(os.path.join('js', 'notebook_lib.js'),
                  SAGE_URL=SAGE_URL,
                  KEY_CODES=keyhandler.all_tests())
 

@@ -1206,7 +1206,7 @@ class Notebook(object):
         """
         worksheet = self.get_worksheet_with_filename(filename)
         text = escape(worksheet.plain_text(prompts = prompts))
-        return template(os.path.join("notebook", "plain_text_worksheet.html"),
+        return template(os.path.join("html", "notebook", "plain_text_worksheet.html"),
                         worksheet_name = worksheet.name(),
                         worksheet_plain_text = text)
 
@@ -1257,8 +1257,8 @@ class Notebook(object):
     ##########################################################
     def list_window_javascript(self, worksheet_filenames):
         s = """
-           <script type="text/javascript" src="/javascript/jquery/jquery.js"></script>
-           <script type="text/javascript" src="/javascript/main.js"></script>        
+           <script type="text/javascript" src="/data/jquery/jquery.js"></script>
+           <script type="text/javascript" src="/data/sage/js/main.js"></script>        
            <script type="text/javascript">
            var worksheet_filenames = %s; 
            </script>
@@ -1289,7 +1289,7 @@ class Notebook(object):
             '\n<!D...ript type="text/javascript">cell_id_list=[0];</script>\n\n\n\n\n\n    </body>\n</html>'
         """
         worksheet = self.get_worksheet_with_filename(filename)
-        return template(os.path.join("notebook","worksheet.html"),
+        return template(os.path.join("html", "notebook", "worksheet.html"),
                         worksheet_name = worksheet.name(),
                  worksheet_html = worksheet.html(include_title=False, do_print=do_print),
                         do_print = do_print)
@@ -1344,7 +1344,7 @@ class Notebook(object):
         """
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
 
-        return template(os.path.join("notebook","worksheet_revision_list.html"),
+        return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
                         data = data,
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
@@ -1392,7 +1392,7 @@ class Notebook(object):
                     next_rev = data[i+1][1]
                 break
             
-        return template(os.path.join("notebook","specific_revision.html"),
+        return template(os.path.join("html", "notebook", "specific_revision.html"),
                         worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username, rev = rev,
@@ -1430,7 +1430,7 @@ class Notebook(object):
         other_users = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
         other_users.sort(lambda x,y: cmp(x.lower(), y.lower()))
 
-        return template(os.path.join("notebook","worksheet_share.html"),
+        return template(os.path.join("html", "notebook", "worksheet_share.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, other_users = other_users,
@@ -1480,7 +1480,7 @@ class Notebook(object):
             file_is_text = True
             text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
 
-        return template(os.path.join("notebook","download_or_delete_datafile.html"),
+        return template(os.path.join("html", "notebook", "download_or_delete_datafile.html"),
                         worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username,
@@ -1594,7 +1594,7 @@ class Notebook(object):
             sage: nb.html_debug_window()
             "\n<div class='debug_window'>...</div>"
         """
-        return template(os.path.join("notebook","debug_window.html"))
+        return template(os.path.join("html", "notebook", "debug_window.html"))
 
     
     def html_plain_text_window(self, worksheet, username):
@@ -1622,7 +1622,8 @@ class Notebook(object):
         plain_text = worksheet.plain_text(prompts=True, banner=False)
         plain_text = escape(plain_text).strip()
           
-        return template(os.path.join("notebook","plain_text_window.html"), worksheet = worksheet,
+        return template(os.path.join("html", "notebook", "plain_text_window.html"),
+                        worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username,
                         plain_text = plain_text, JSMATH = JSMATH,
@@ -1655,7 +1656,8 @@ class Notebook(object):
         text = escape(text)
         n_lines = text.count("\n")+1
           
-        return template(os.path.join("notebook","edit_window.html"), worksheet = worksheet,
+        return template(os.path.join("html", "notebook", "edit_window.html"),
+                        worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, text = text,
                         n_lines = n_lines, JSMATH = JSMATH,
@@ -1695,7 +1697,7 @@ class Notebook(object):
         <input type="checkbox" name="auto" style="margin-left:13px" /> Automatically re-publish when changes are made
         </form>
         """
-        return template(os.path.join("notebook","beforepublish_window.html"),
+        return template(os.path.join("html", "notebook", "beforepublish_window.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, JSMATH = JSMATH,
@@ -1727,7 +1729,7 @@ class Notebook(object):
         from time import strftime
         time = strftime("%B %d, %Y %I:%M %p", dtime)
         
-        return template(os.path.join("notebook","afterpublish_window.html"),
+        return template(os.path.join("html", "notebook", "afterpublish_window.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
                         username = username, url = url,
@@ -1757,7 +1759,7 @@ class Notebook(object):
             sage: nb.html_upload_data_window(W, 'admin')
             '\n<!D...orksheet_menu" value="Upload File" onClick="form.submit()...r />\n</div>\n\n\n    </body>\n</html>'
         """
-        return template(os.path.join("notebook","upload_data_window.html"),
+        return template(os.path.join("html", "notebook", "upload_data_window.html"),
                         worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username, JSMATH = JSMATH,
@@ -1800,9 +1802,9 @@ class Notebook(object):
             except KeyError:
                 W = None
 
-        template_page = os.path.join("notebook","index.html")
+        template_page = os.path.join("html", "notebook", "index.html")
         if W.docbrowser():
-            template_page = os.path.join("notebook","doc_page.html")
+            template_page = os.path.join("html", "notebook", "doc_page.html")
             
         return template(template_page, worksheet = W,
                         worksheet_filename = W.filename(),
@@ -1842,7 +1844,8 @@ class Notebook(object):
             sage: nb.html_worksheet_settings(W, 'admin')
             '\n<!D...lue="Cancel" name="button_cancel"/></span>\n<br /><br /><br />\n\n</form>\n\n\n    </body>\n</html>'
         """
-        return template(os.path.join("notebook","worksheet_settings.html"), worksheet = ws,
+        return template(os.path.join("html", "notebook", "worksheet_settings.html"),
+                        worksheet = ws,
                         worksheet_filename = ws.filename(),
                         username = username, JSMATH = JSMATH,
                         JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
@@ -1882,8 +1885,8 @@ class Notebook(object):
             sage: nb.html_doc('admin')
             '\n<!D...c Documentation</a><br /><br />\n        <a href="/help/">Sage Notebook Howto...   </body>\n</html>'
         """
-        return template("notebook/doc.html", username = username,
-                        JSMATH = JSMATH,
+        return template(os.path.join("html", "notebook", "doc.html"),
+                        username = username, JSMATH = JSMATH,
                         JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
                         JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
                         sage_jsmath_macros = sage_jsmath_macros)

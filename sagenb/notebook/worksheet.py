@@ -2329,14 +2329,14 @@ class Worksheet(object):
             except AttributeError:
                 for cell in self.cell_list():
                     cells_html += cell.html(ncols, do_print=True) + '\n'
-                s = template(os.path.join('worksheet', 'published_worksheet.html'),
+                s = template(os.path.join('html', 'worksheet', 'published_worksheet.html'),
                              ncols = ncols, cells_html = cells_html)
                 self.__html = s
                 return s
         for cell in self.cell_list():
             cells_html += cell.html(ncols, do_print=do_print) + '\n'
             
-        return template(os.path.join("worksheet", "worksheet.html"),
+        return template(os.path.join("html", "worksheet", "worksheet.html"),
                         published = self.is_published(),
                         do_print = do_print, confirm_before_leave = confirm_before_leave,
                         cells_html = cells_html,
@@ -2353,7 +2353,7 @@ class Worksheet(object):
         name = self.truncated_name()
         warn = self.warn_about_other_person_editing(username, WARN_THRESHOLD)
         
-        return template(os.path.join("worksheet","title.html"),
+        return template(os.path.join("html", "worksheet", "title.html"),
                         worksheet = self,
                         name = cgi.escape(self.truncated_name()),
                         warn = warn, doc_worksheet = self.is_doc_worksheet(),
@@ -2381,7 +2381,7 @@ class Worksheet(object):
             sage: W.html_save_discard_buttons()
             '\n\n<button name="button_save" title="Save changes" onClick="save_worksheet();">Save<...'
         """
-        return template(os.path.join("worksheet","save_discard_buttons.html"),
+        return template(os.path.join("html", "worksheet", "save_discard_buttons.html"),
                         doc_worksheet = self.is_doc_worksheet())
         
     def html_share_publish_buttons(self, select=None, backwards=False):
@@ -2403,7 +2403,7 @@ class Worksheet(object):
             sage: W.html_share_publish_buttons()
             '\n\n\n\n\n<a title="Print this worksheet" class="usercontrol" onClick="print_worksheet()">...'
         """
-        return template(os.path.join("worksheet","share_publish_buttons.html"),
+        return template(os.path.join("html", "worksheet", "share_publish_buttons.html"),
                         worksheet = self, select = select, backwards = backwards)
         
     def html_menu(self):
@@ -2419,7 +2419,7 @@ class Worksheet(object):
             sage: W.html_menu()
             '\n&nbsp;&nbsp;&nbsp;<select class="worksheet"  onchange="go_option(this);">\n    ...'
         """
-        return template(os.path.join("worksheet","menu.html"),
+        return template(os.path.join("html", "worksheet", "menu.html"),
                         name = _notebook.clean_name(self.name()),
                         filename_ = self.filename(), data = sorted(self.attached_data_files()),
                         systems_enumerated = enumerate(self.notebook().systems()),
@@ -2453,7 +2453,7 @@ class Worksheet(object):
         for cell in self.cell_list():
             cells_html += cell.html(ncols, do_print=do_print) + '\n'
         
-        return template(os.path.join("worksheet","worksheet_body.html"),
+        return template(os.path.join("html", "worksheet", "worksheet_body.html"),
                         cells_html = cells_html,
                         published = published,
                         do_print = do_print)
@@ -2572,12 +2572,12 @@ class Worksheet(object):
     def html_time_since_last_edited(self):
         t = self.time_since_last_edited()
         tm = convert_seconds_to_meaningful_time_span(t)
-        return template(os.path.join("worksheet","time_since_last_edited.html"),
+        return template(os.path.join("html", "worksheet", "time_since_last_edited.html"),
                         last_editor = self.last_to_edit(),
                         time = tm)
 
     def html_time_last_edited(self):
-        return template(os.path.join("worksheet","time_last_edited.html"),
+        return template(os.path.join("html", "worksheet", "time_last_edited.html"),
                         time = convert_time_to_string(self.last_edited()),
                         last_editor = self.last_to_edit())
 
@@ -3891,7 +3891,7 @@ from sagenb.notebook.all import *
     # List of attached files.
     ##########################################################
     def attached_html(self):
-        return template(os.path.join("worksheet","attached.html"),
+        return template(os.path.join("html", "worksheet", "attached.html"),
                         attached_files = self.attached_files())
 
     ##########################################################
@@ -4141,7 +4141,7 @@ def format_completions_as_html(cell_id, completions):
     if len(completions) == 0:
         return ''
 
-    return template(os.path.join("worksheet","completions.html"),
+    return template(os.path.join("html", "worksheet", "completions.html"),
                     cell_id = cell_id,
                     # Transpose and enumerate completions to column-major
                     completions_enumerated = enumerate(map(list, zip(*completions))))
