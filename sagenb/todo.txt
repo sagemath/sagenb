@@ -1,11 +1,5 @@
 TODO:
 
-[ ] implement loading of old-format worksheets: reading old worksheet
-   format (see "def edit_save_old_format(self, text):" in
-   worksheet.py)
-
-[ ] server_pool -- keeps getting set to null in server conf?
-
 -------------------------------------------------------------------
 
 See http://wiki.sagemath.org/SageTasks for a related list.
@@ -345,4 +339,10 @@ http://groups.google.com/group/sage-notebook/pendmsg?hl=en
 [x] DATA directory not copied over during migration.
 
 [x] after migration the fact that a worksheet was published is lost
+
+[x] implement loading of old-format worksheets: reading old worksheet
+   format (see "def edit_save_old_format(self, text):" in
+   worksheet.py)
+
+[x] (seems fixed, but need to test more later) server_pool -- keeps getting set to null in server conf?
 

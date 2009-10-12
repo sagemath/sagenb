@@ -1103,7 +1103,7 @@ class Notebook(object):
         worksheet_txt = open(filename).read()
         # Create a new worksheet with the write title and owner.
         worksheet = self.new_worksheet_with_title_from_text(worksheet_txt, owner)
-        # Set the new worksheet to have the contents specified by that file. 
+        # Set the new worksheet to have the contents specified by that file.
         worksheet.edit_save(worksheet_txt)
         return worksheet
     

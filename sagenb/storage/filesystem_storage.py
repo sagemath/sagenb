@@ -40,6 +40,19 @@ import os
 
 from abstract_storage import Datastore
 
+def is_safe(a):
+    """
+    Used when importing contents of various directories from Sage
+    worksheet files.  We define this function to avoid the possibility
+    of a user crafting fake sws file such that extracting it creates
+    files outside where we want, e.g., by including .. or / in the
+    path of some file.
+    """
+    # NOTE: Windows port -- I'm worried about whether a.name will have / or \ on windows.
+    # The code below assume \.
+    return '..' not in a and not a.startswith('/')
+
+
 class FilesystemDatastore(Datastore):
     def __init__(self, path):
         """
@@ -349,9 +362,48 @@ class FilesystemDatastore(Datastore):
         # mistakes anyways.
         T.close()
 
+    def _import_old_worksheet(self, username, id_number, filename):
+        """
+        Import a worksheet from an old version of Sage. 
+        """
+        T = tarfile.open(filename, 'r:bz2')
+        members = [a for a in T.getmembers() if 'worksheet.txt' in a.name and is_safe(a.name)]
+        if len(members) == 0:
+            raise RuntimeError, "unable to import worksheet"
+
+        worksheet_txt = members[0].name
+        W = self.load_worksheet(username, id_number)
+        W.edit_save_old_format(T.extractfile(worksheet_txt).read())
+        dir = worksheet_txt.split('/')[0]  # '/' is right, since old worksheets always unix
+            
+        path = self._abspath(self._worksheet_pathname(username, id_number))
+
+        base = os.path.join(dir,'data')
+        members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
+        if len(members) > 0:
+            T.extractall(path, members)
+            dest = os.path.join(path, 'data')
+            if os.path.exists(dest): shutil.rmtree(dest)
+            shutil.move(os.path.join(path,base), path)
+        
+        base = os.path.join(dir,'cells')
+        members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
+        if len(members) > 0:
+            T.extractall(path, members)
+            dest = os.path.join(path, 'cells')
+            if os.path.exists(dest): shutil.rmtree(dest)
+            shutil.move(os.path.join(path, base), path)
+            
+        tmp = os.path.join(path, dir)
+        if os.path.exists(tmp):
+            shutil.rmtree(tmp)
+
+        return W
+            
+
     def import_worksheet(self, username, id_number, filename):
         """
-        Input the worksheet username/id_number from the file with
+        Import the worksheet username/id_number from the file with
         given filename.
         """
         path = self._abspath(self._worksheet_pathname(username, id_number))
@@ -359,20 +411,17 @@ class FilesystemDatastore(Datastore):
             shutil.rmtree(path, ignore_errors=True)
         os.makedirs(path)
         T = tarfile.open(filename, 'r:bz2')
-        open(self._abspath(self._worksheet_conf_filename(username, id_number)),'w').write(
-            T.extractfile(os.path.join('sage_worksheet','worksheet_conf.pickle')).read())
+        try:
+            open(self._abspath(self._worksheet_conf_filename(username, id_number)),'w').write(
+                T.extractfile(os.path.join('sage_worksheet','worksheet_conf.pickle')).read())
+        except KeyError:
+            # Not a valid worksheet.  This might mean it is an old
+            # worksheet from a previous version of Sage.
+            return self._import_old_worksheet(username, id_number, filename)
+            
         open(self._abspath(self._worksheet_html_filename(username, id_number)),'w').write(
             T.extractfile(os.path.join('sage_worksheet','worksheet.html')).read())
 
-        # Import contents of the data directory
-        def is_safe(a):
-            # We define this function to avoid the possibility of a user crafting
-            # fake sws file such that extracting it creates files outside where
-            # we want, e.g., by including .. or / in the path of some file
-            return '..' not in a and not a.startswith('/')
-
-        # Windows port -- I'm worried about whether a.name will have / or \ on windows.
-        # The code below assume \.
         base = os.path.join('sage_worksheet','data')
         members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
         if len(members) > 0:
