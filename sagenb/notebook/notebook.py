@@ -2011,12 +2011,15 @@ def migrate_old_notebook_v1(dir):
 
         # some ugly creation of new attributes from what used to be stored
         tags = {}
-        for user, val in old_ws._Worksheet__user_view.iteritems():
-            if isinstance(user,str):
-                # There was a bug in the old notebook where sometimes the
-                # user was the *module* "user", so we don't include that
-                # invalid data. 
-                tags[user] = [val]
+        try:
+            for user, val in old_ws._Worksheet__user_view.iteritems():
+                if isinstance(user,str):
+                    # There was a bug in the old notebook where sometimes the
+                    # user was the *module* "user", so we don't include that
+                    # invalid data. 
+                    tags[user] = [val]
+        except AttributeError:
+            pass
         import time
         last_change = (old_ws.last_to_edit(), old_ws.last_edited())
         try:
