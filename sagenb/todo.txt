@@ -4,6 +4,10 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] Incorporate "parenthesis matching introduced in trac #3646"
+
+[ ] easy way for admin to change people's password
+
 [ ] insert new cell *below*
 
 [ ] add message to the top of each *old* sage notebook .py file
@@ -345,4 +349,20 @@ http://groups.google.com/group/sage-notebook/pendmsg?hl=en
    worksheet.py)
 
 [x] (seems fixed, but need to test more later) server_pool -- keeps getting set to null in server conf?
+
+[x] I could make DATA be of the form: DATA = ...' + os.path.sep which
+ on UNIX would still have / at the end and on Windows would end in \.
+ Should I do that?
+
+[X] Jason Grout: "I don't like that the icon takes up a lot of vertical space that is not
+used otherwise.  On a computer projector at 800x600 or 1024x768,
+especially with a mac where you can't make the browser go full-screen,
+the vertical real-estate is premium.  Ideally, when you "Toggle" the
+header, there would be only one line at the top of the notebook before
+the cells start.
+
+At the very least, maybe putting the version number right under "Sage
+Notebook" would justify the extra vertical space.  I think it would be
+better if the icon were only one line high, and the toggle collapsed
+everything to one line."
 

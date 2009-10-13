@@ -2876,7 +2876,7 @@ class Worksheet(object):
     def initialize_sage(self):
         S = self.__sage
         try:
-            dirs = 'DATA="%s";'%os.path.abspath(self.data_directory())
+            dirs = 'DATA="%s%s";'%(os.path.abspath(self.data_directory()), os.path.sep)
             dirs += '_support_.init(None, globals()); '
             cmd = """
 import base64
