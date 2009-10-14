@@ -1816,55 +1816,6 @@ class Notebook(object):
                         JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
                         sage_jsmath_macros = sage_jsmath_macros)
 
-    ####################################################################
-    # Configuration html.
-    # In each case the settings html is a form that when submitted
-    # pulls up another web page and sets the corresponding options. 
-    ####################################################################
-
-
-    def html_worksheet_settings(self, ws, username):
-        r"""
-        Return the HTML for a worksheet's settings page.
-        
-        INPUT:
-        
-        - ``ws`` - an instance of Worksheet
-        
-        - ``username`` - a string
-
-        OUTPUT:
-
-        - a string - HTML representation of the settings page
-
-        EXAMPLES::
-        
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_worksheet_settings(W, 'admin')
-            '\n<!D...lue="Cancel" name="button_cancel"/></span>\n<br /><br /><br />\n\n</form>\n\n\n    </body>\n</html>'
-        """
-        return template(os.path.join("html", "notebook", "worksheet_settings.html"),
-                        worksheet = ws,
-                        worksheet_filename = ws.filename(),
-                        username = username, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
-
-    def html_settings(self):
-        s = """
-        <h1>Settings</h1>
-        """
-        return s
-        
-    def html_user_settings(self, username):
-        s = self.html_settings()
-        return s
-
-    def html_notebook_settings(self):
-        s = self.html_settings()
-        return s
 
     def html_doc(self, username):
         r"""

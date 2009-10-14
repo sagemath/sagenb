@@ -910,71 +910,8 @@ class Worksheet_revisions(WorksheetResource, resource.PostableResource):
 
 
 ########################################################
-# Worksheet/User/Notebooks settings and configuration
+# User Settings and Notebook Configuration
 ########################################################
-
-class Worksheet_input_settings(WorksheetResource, resource.PostableResource):
-    def render(self, ctx):
-        if ctx.args.has_key('button_cancel'):
-            return http.RedirectResponse('/home/'+self.worksheet.filename())
-        if user_type(self.username) == 'admin' or \
-               self.worksheet.owner() == self.username \
-               or self.worksheet.user_is_collaborator(self.username):
-            system = ctx.args['system'][0].strip().lower()
-            self.worksheet.set_system(system)
-            if system != 'sage':
-                post = ' (%s)'%system
-                n = self.worksheet.name()
-                i = n.rfind('(')
-                if i != -1:
-                    j = n.rfind(')')
-                    if j != -1:
-                        n = n[:i]
-                n = n.strip() + post
-                self.worksheet.set_name(n)
-            return http.RedirectResponse('/home/'+ self.worksheet.filename())
-        else:
-            s = 'You must be the owner of this worksheet to configure it.'
-            return HTMLResponse(stream = message(s))
-
-class Worksheet_settings(WorksheetResource, resource.Resource):
-    def render(self, ctx):
-        if self.worksheet.owner() != self.username:
-            s = message('You must be the owner of this worksheet to configure it.')
-        else:
-            s = notebook.html_worksheet_settings(self.worksheet, self.username)
-        return HTMLResponse(stream = s)
-
-class ProcessUserSettings(resource.PostableResource):
-    def render(self, ctx):
-        pass
-
-#class UserSettings(resource.Resource):
-#    child_process = ProcessUserSettings()
-#
-#    def __init__(self, username):
-#        self.username = username
-#
-#    def render(self, ctx):
-#        s = notebook.html_user_settings(self.username)
-#        return HTMLResponse(stream = s)
-
-class ProcessNotebookSettings(resource.PostableResource):
-    def render(self, ctx):
-        pass
-
-class NotebookSettings(resource.Resource):
-    child_process = ProcessNotebookSettings()
-
-    def __init__(self, username):
-        self.username = username
-
-    def render(self, ctx):
-        if user_type(self.username) != 'admin':
-            s = message('You must an admin to configure the notebook.')
-        else:
-            s = notebook.html_notebook_settings()
-        return HTMLResponse(stream = s)
 
 class SettingsPage(resource.PostableResource):
     def __init__(self, username):
@@ -1026,6 +963,23 @@ class SettingsPage(resource.PostableResource):
             template_dict['email_confirmed'] = 'Not confirmed' if not notebook.user(self.username).is_email_confirmed() else 'Confirmed'
         template_dict['admin'] = user_type(self.username) == 'admin'
         return HTMLResponse(stream=template(os.path.join('html', 'account_settings.html'), **template_dict))
+
+
+class NotebookSettingsPage(resource.PostableResource):
+    def __init__(self, username):
+        self.username = username
+
+    def render(self, request):
+        updated = {}
+        if 'form' in request.args:
+            updated = notebook.conf().update_from_form(request.args)
+
+        template_dict = {}
+        template_dict['auto_table'] = notebook.conf().html_table(updated)
+        s = template(os.path.join('html', 'notebook_settings.html'),
+                     **template_dict)
+        return http.Response(stream = s)
+
 
 ########################################################
 # Set output type of a cell
@@ -1709,16 +1663,6 @@ class WorksheetsByUserAdmin(WorksheetsByUser):
 class WorksheetsAdmin(Worksheets):
     def childFactory(self, request, name):
         return WorksheetsByUserAdmin(name, username=self.username)
-
-############################
-# Notebook configuration
-############################
-
-class NotebookConf(Worksheets):
-    def render(self, ctx):
-        s = '<html>' + notebook.conf().html_conf_form('submit') + '</html>'
-        return HTMLResponse(stream = s)
-
 
 
 ############################
@@ -2469,7 +2413,6 @@ class UserToplevel(Toplevel):
     userchild_home = Worksheets
     userchild_live_history = LiveHistory
     userchild_new_worksheet = NewWorksheet
-    userchild_notebook_settings = NotebookSettings
     userchild_settings = SettingsPage
     userchild_pub = PublicWorksheets
     userchild_upload = Upload
@@ -2506,6 +2449,7 @@ class AdminToplevel(UserToplevel):
     userchild_home = WorksheetsAdmin
     child_users = ListOfUsers
     child_adduser = AdminAddUser
+    child_notebooksettings = NotebookSettingsPage
 
 def user_type(username):
     # one of admin, guest, user

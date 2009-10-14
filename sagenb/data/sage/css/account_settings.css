@@ -1,43 +1,60 @@
 @import url('/css/reset.css');
 
 html {
-font-size:100.1%
+    font-size:100.1%
 }
 
 body {
-font:100%/1.4 Arial, Helvetica, sans-serif
+    font:100%/1.4 Arial, Helvetica, sans-serif
 }
 
 h1 {
-background:#DCDCDC;
-border-bottom:1px solid #CCC;
-font-size:2em;
-padding:0 5px
+    background:#DCDCDC;
+    border-bottom:1px solid #CCC;
+    font-size:2em;
+    padding:0 5px
 }
 
 #buttons {
-background:#DCDCDC;
-padding:5px
+    background:#DCDCDC;
+    padding:5px
 }
 
 h2 {
-font-size:1.5em
+    font-size:1.5em
 }
 
 .section {
-border-bottom:1px solid #CCC;
-padding:5px
+    border-bottom:1px solid #CCC;
+    padding:5px
 }
 
 .section > div {
-max-width:350px;
-text-align:right
+    max-width:350px;
+    text-align:right
+}
+
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+tr {
+    height: 2.0em;
 }
 
 td {
-padding-left:5px
+    padding-left:5px
+}
+
+td.error {
+    color: red;
+}
+
+td.updated {
+    color: green;
 }
 
 input.c1 {
-width:200px
+    width:200px
 }

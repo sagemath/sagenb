@@ -5,7 +5,7 @@
 
 {% block body %}
 <h1>Account Settings</h1>
-<div class="section">{% if admin %}<a href="/users">Manage Users</a> | {% endif %}<a href="/">My Worksheets</a> | <a href="/logout">Sign Out</a></div>
+<div class="section">{% if admin %}<a href="/users">Manage Users</a> | <a href="/notebooksettings">Notebook Settings</a> | {% endif %}<a href="/">My Worksheets</a> | <a href="/logout">Sign Out</a></div>
 
   <form method="post" action="/settings">
     
@@ -43,7 +43,7 @@
 	{% endif %}
     <div id="buttons">
     <input type="submit" value="Save">
-    <input type="button" value="Cancel" style="margin-left:5px" onClick="parent.location='/home/{{ username }}'">   
+    <input type="button" value="Cancel" style="margin-left:5px" onClick="parent.location='/'">
     </div>
   </form>
 {% endblock %}
