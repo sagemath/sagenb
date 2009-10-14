@@ -2072,7 +2072,7 @@ def migrate_old_notebook_v1(dir):
     
     worksheets = {}
     num_worksheets = len(old_nb._Notebook__worksheets)
-    print "Migrating %s worksheets..."%num_worksheets
+    print "Migrating (at most) %s worksheets..."%num_worksheets
     from sage.misc.misc import walltime
     tm = walltime()
     i = 0
