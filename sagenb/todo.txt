@@ -4,6 +4,9 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] rate a worksheet -- note that the top of the browser (title) says
+error, though in fact there is no error.
+
 [ ] Incorporate "parenthesis matching introduced in trac #3646"
 
 [ ] easy way for admin to change people's password

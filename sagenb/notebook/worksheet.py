@@ -1086,7 +1086,9 @@ class Worksheet(object):
         """
         try:
             return self.notebook().get_worksheet_with_filename('%s/%s'%self.__worksheet_came_from)
-        except AttributeError:
+        except Exception:  # things can go wrong (especially with old migrated
+                           # Sage notebook servers!), but we don't want such
+                           # problems to crash the notebook server.  
             return self
 
     def publisher(self):
