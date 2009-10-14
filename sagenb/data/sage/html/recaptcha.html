@@ -1,0 +1,30 @@
+<script type="text/javascript">
+var RecaptchaOptions = {
+    // en, nl, fr, de, pt, ru, es, tr
+    lang: '{{ lang }}',
+    // red, white, blackglass, clean, custom
+    theme : 'clean',
+    tabindex: 5
+};
+</script>
+
+<script type="text/javascript" src="{{ api_server }}/challenge?k={{ public_key }}{{ error_param }}"></script>
+
+<noscript>
+  <iframe src="{{ api_server }}/noscript?k={{ public_key }}{{ error_param }}" height="300" width="500" frameborder="0"></iframe>
+  <br />
+  <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+  <input type='hidden' name='recaptcha_response_field' value='manual_challenge' />
+</noscript>
+<p></p>
+<p id="recaptcha_error_message"></p>
+
+<script type="text/javascript">
+var err = RecaptchaState.error_message;
+
+if (err !== '') {
+    var ele = document.getElementById('recaptcha_error_message');
+    ele.innerHTML = '<span class="error">Error:</span> ' +
+        err.replace(/class="\w*"/, '');
+}
+</script>

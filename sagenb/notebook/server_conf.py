@@ -30,7 +30,11 @@ defaults = {'cell_input_color':'#0000000',
 
             'accounts':False,
 
-           }
+            'challenge':False,
+            'challenge_type':'simple',
+            'recaptcha_public_key':'',
+            'recaptcha_private_key':'',
+            }
 
 def ServerConfiguration_from_basic(basic):
     c = ServerConfiguration()

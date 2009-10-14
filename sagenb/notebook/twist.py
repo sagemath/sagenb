@@ -42,7 +42,7 @@ from twisted.web2 import static, http_headers, responsecode
 from twisted.web2.filter import gzip
 import zipfile
 
-import css, js, keyboards
+import css, js, keyboards, challenge
 
 import notebook as _notebook
 
@@ -2048,118 +2048,156 @@ class RegistrationPage(resource.PostableResource):
         self.userdb = userdb
 
     def render(self, request):
-        input_boxes = ['username', 'password', 'retype_password']
-        if notebook.conf()['email']:
-            input_boxes.append('email')
-        is_valid_dict = {'username': is_valid_username, 'password': is_valid_password,
-                         'retype_password': do_passwords_match, 'email': is_valid_email}
+        # VALIDATORS: is_valid_username, is_valid_password,
+        # do_passwords_match, is_valid_email,
+        # challenge.is_valid_response
+        # INPUT NAMES: username, password, retype_password, email +
+        # challenge fields
 
-        missing = [False] * len(input_boxes)
-        filled_in = {}
+        # TEMPLATE VARIABLES: error, username, username_missing,
+        # username_taken, username_invalid, password_missing,
+        # password_invalid, passwords_dont_match,
+        # retype_password_missing, email, email_missing,
+        # email_invalid, email_address, challenge, challenge_html,
+        # challenge_missing, challenge_invalid
+
+        # PRE-VALIDATION setup and hooks.
+        required = set(['username', 'password'])
+        empty = set()
+        validated = set()
+
+        # Template variables.  We use empty_form_dict for empty forms.
+        empty_form_dict = {}
         template_dict = {}
 
-        def errors_found():
-            for key, value in filled_in.iteritems():
-                template_dict[key] = value
-            minus = 1 if 'email' in template_dict else 0
-            size = len(template_dict) - minus
-            count = 0
-            boxes = []
-            if size == 1:
-                return ('',)
-            for i in template_dict:
-                if '_' in i:
-                    count += 1
-            plural = True if count > 1 else False
-            template_dict['error'] = 'Es ' if plural else 'E '
-
         if notebook.conf()['email']:
-            template_dict['email'] = True
+            required.add('email')
+            empty_form_dict['email'] = True
 
-        if set(input_boxes) <= set(request.args):
-            for i, box in enumerate(input_boxes):
-                filled_in[box] = request.args[box][0]
-                if box == 'retype_password':
-                    if not is_valid_dict[box](filled_in[box], filled_in['password']):
-                        template_dict['passwords_dont_match'] = True
-                elif box == 'password':
-                    if 'username' in filled_in:
-                        u = filled_in['username']
-                    else:
-                        u = None
-                    if not is_valid_dict[box](filled_in[box], u):
-                        template_dict['password_invalid'] = True
-                else:
-                    if not is_valid_dict[box](filled_in[box]):
-                        template_dict[box + '_invalid'] = True
-        else:
-            for i, box in enumerate(input_boxes):
-                if not box in request.args:
-                    missing[i] = True
+        if notebook.conf()['challenge']:
+            required.add('challenge')
+            empty_form_dict['challenge'] = True
+            chal = challenge.challenge(notebook.conf(),
+                                       is_secure = notebook.secure,
+                                       remote_ip = request.remoteAddr.host)
+            empty_form_dict['challenge_html'] = chal.html()
 
-            if set(missing) == set([True]):
-                return HTMLResponse(stream=template(os.path.join('html', 'registration.html'), **template_dict))
-            elif set(missing) == set([False]):
-                for i, box in enumerate(input_boxes):
-                    filled_in[box] = request.args[box][0]
-                    if box == 'retype_password':
-                        if not is_valid_dict[box](filled_in[box], filled_in['password']):
-                            template_dict['passwords_dont_match'] = True
-                    elif box == 'password':
-                        if 'username' in filled_in:
-                            u = filled_in['username']
-                        else:
-                            u = None
-                        if not is_valid_dict[box](filled_in[box], u):
-                            template_dict['password_invalid'] = True
-                    else:
-                        if not is_valid_dict[box](filled_in[box]):
-                            template_dict[box + '_invalid'] = True
+        template_dict.update(empty_form_dict)
+
+        # VALIDATE FIELDS.
+
+        # Username.  Later, we check if a user with this username
+        # already exists.
+        username = request.args.get('username', [None])[0]
+        if username:
+            if not is_valid_username(username):
+                template_dict['username_invalid'] = True
             else:
-                for i, value in enumerate(missing):
-                    if value:
-                        template_dict[input_boxes[i] + '_missing'] = True
-                    elif not value:
-                        filled_in[input_boxes[i]] = request.args[input_boxes[i]][0]
-
-        if template_dict and set(template_dict) != set(['email']):
-            errors_found()
-            return HTMLResponse(stream=template(os.path.join('html', 'registration.html'), **template_dict))
+                template_dict['username'] = username
+                validated.add('username')
         else:
+            template_dict['username_missing'] = True
+            empty.add('username')
+
+        # Password.
+        password = request.args.get('password', [None])[0]
+        retype_password = request.args.get('retype_password', [None])[0]
+        if password:
+            if not is_valid_password(password, username):
+                template_dict['password_invalid'] = True
+            elif not do_passwords_match(password, retype_password):
+                template_dict['passwords_dont_match'] = True
+            else:
+                validated.add('password')
+        else:
+            template_dict['password_missing'] = True
+            empty.add('password')
+
+        # Email address.
+        email_address = ''
+        if notebook.conf()['email']:
+            email_address = request.args.get('email', [None])[0]
+            if email_address:
+                if not is_valid_email(email_address):
+                    template_dict['email_invalid'] = True
+                else:
+                    template_dict['email_address'] = email_address
+                    validated.add('email')
+            else:
+                template_dict['email_missing'] = True
+                empty.add('email')
+
+        # Challenge (e.g., reCAPTCHA).
+        if notebook.conf()['challenge']:
+            status = chal.is_valid_response(req_args = request.args)
+            if status.is_valid is True:
+                validated.add('challenge')
+            elif status.is_valid is False:
+                err_code = status.error_code
+                if err_code:
+                    template_dict['challenge_html'] = chal.html(error_code = err_code)
+                else:
+                    template_dict['challenge_invalid'] = True
+            else:
+                template_dict['challenge_missing'] = True
+                empty.add('challenge')
+
+        # VALIDATE OVERALL.
+        if empty == required:
+            # All required fields are empty.  Not really an error.
+            form = template(os.path.join('html', 'registration.html'),
+                            **empty_form_dict)
+            return HTMLResponse(stream = form)
+        elif validated != required:
+            # Error(s)!
+            errors = len(required) - len(validated)
+            template_dict['error'] = 'E ' if errors == 1 else 'Es '
+
+            form = template(os.path.join('html', 'registration.html'),
+                            **template_dict)
+            return HTMLResponse(stream = form)
+
+        # Create an account, if username is unique.
+        try:
+            self.userdb.add_user(username, password, email_address)
+        except ValueError:
+            template_dict['username_taken'] = True
+            template_dict['error'] = 'E '
+
+            form = template(os.path.join('html', 'registration.html'),
+                            **template_dict)
+            return HTMLResponse(stream = form)
+
+        # POST-VALIDATION hooks.  All required fields should be valid.
+        if notebook.conf()['email']:
+            from sagenb.notebook.smtpsend import send_mail
+            from sagenb.notebook.register import make_key, build_msg
+
+            # TODO: make this come from the server settings
+            key = make_key()
+            listenaddr = notebook.address
+            port = notebook.port
+            fromaddr = 'no-reply@%s' % listenaddr
+            body = build_msg(key, username, listenaddr, port, notebook.secure)
+
+            # Send a confirmation message to the user.
             try:
-                e = filled_in['email'] if notebook.conf()['email'] else ''
-                self.userdb.add_user(filled_in['username'], request.args['password'][0],
-                                     e)
+                send_mail(fromaddr, email_address,
+                          "Sage Notebook Registration", body)
+                waiting[key] = username
             except ValueError:
-                template_dict['username_taken'] = True
-                errors_found()
-                return HTMLResponse(stream=template(os.path.join('html', 'registration.html'), **template_dict))
+                pass
 
-            if notebook.conf()['email']:
-                destaddr = filled_in['email']
-                from sagenb.notebook.smtpsend import send_mail
-                from sagenb.notebook.register import make_key, build_msg
-                # TODO: make this come from the server settings
-                key = make_key()
-                listenaddr = notebook.address
-                port = notebook.port
-                fromaddr = 'no-reply@%s' % listenaddr
-                body = build_msg(key, filled_in['username'], listenaddr, port,
-                                 notebook.secure)
+        # Go to the login page.
+        template_dict = {'accounts': notebook.get_accounts(),
+                         'default_user': notebook.default_user(),
+                         'welcome': username,
+                         'recovery': notebook.conf()['email'],
+                         'sage_version': SAGE_VERSION}
 
-                # Send a confirmation message to the user.
-                try:
-                    send_mail(fromaddr, destaddr, "Sage Notebook Registration",body)
-                    waiting[key] = filled_in['username']
-                except ValueError:
-                    pass
+        form = template(os.path.join('html', 'login.html'), **template_dict)
+        return HTMLResponse(stream = form)
 
-            template_dict = {'accounts': notebook.get_accounts(),
-                             'default_user': notebook.default_user(),
-                             'welcome': filled_in['username'],
-                             'recovery': notebook.conf()['email'],
-                             'sage_version':SAGE_VERSION}
-            return HTMLResponse(stream=template(os.path.join('html', 'login.html'), **template_dict))
 
 class ForgotPassPage(resource.Resource):
 
