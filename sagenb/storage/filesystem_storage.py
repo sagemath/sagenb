@@ -85,7 +85,10 @@ class FilesystemDatastore(Datastore):
         return path
 
     def _user_path(self, username):
-        return self._makepath(os.path.join(self._home_path, username))
+        # There are weird cases, e.g., old notebook server migration
+        # where username is None, and if we don't string it here,
+        # saving can be broken (at a bad moment!).
+        return self._makepath(os.path.join(self._home_path, str(username)))
 
     def _worksheet_pathname(self, username, id_number):
         return os.path.join(self._user_path(username), str(id_number))
