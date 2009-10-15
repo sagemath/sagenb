@@ -1,8 +1,20 @@
 TODO:
 
--------------------------------------------------------------------
-
 See http://wiki.sagemath.org/SageTasks for a related list.
+
+[ ] jsmath image fonts spkg (especially on sagenb.org!):
+
+[ ] When saving a worksheet, the default filename has "..." in it. 
+
+[ ] Clicking publish should update the "last changed" time.  E.g.,
+take an old worksheet and publish it -- should always make it new.
+
+[ ] permissions issues -- since the DATA directory must be readable,
+currently by default all the directories are *readable*, including
+history, output etc.  Definitely history should be made readable only
+by the server, and the conf files (including user accounts) should be
+forced to be only readable by the server on startup (no matter what
+the user sets up).
 
 [ ] rate a worksheet -- note that the top of the browser (title) says
 error, though in fact there is no error.
