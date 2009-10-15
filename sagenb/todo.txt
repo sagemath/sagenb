@@ -2,6 +2,9 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] "untitled renaming".  Make it an option in the user confs, which
+is on by default, by you can turn it off.
+
 [ ] jsmath image fonts spkg (especially on sagenb.org!):
 
 [ ] When saving a worksheet, the default filename has "..." in it. 
