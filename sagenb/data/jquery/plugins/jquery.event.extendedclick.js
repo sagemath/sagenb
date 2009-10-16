@@ -11,7 +11,6 @@
  */
 
 // jquery methods
-$.fn.plainclick         = function(fn) { return this[fn ? "bind" : "trigger"]("plainclick", fn); };
 $.fn.ctrlclick         = function(fn) { return this[fn ? "bind" : "trigger"]("ctrlclick", fn); };
 $.fn.shiftclick        = function(fn) { return this[fn ? "bind" : "trigger"]("shiftclick", fn); };
 $.fn.altclick          = function(fn) { return this[fn ? "bind" : "trigger"]("altclick", fn); };
@@ -21,7 +20,6 @@ $.fn.altshiftclick     = function(fn) { return this[fn ? "bind" : "trigger"]("al
 $.fn.ctrlaltshiftclick = function(fn) { return this[fn ? "bind" : "trigger"]("ctrlaltshiftclick", fn); };
 
 // all event clicks share the same config
-$.event.special.plainclick         =
 $.event.special.ctrlclick         =
 $.event.special.altclick          =
 $.event.special.shiftclick        =
@@ -72,10 +70,6 @@ function extendedClickHandler(event){
 	else if (event.shiftKey)
 	{
 		event.type = "shiftclick"; // set to trigger
-	}
-	else
-	{
-		event.type = "plainclick"; // set to trigger
 	}
 	return $.event.handle.call(this, event);
 }
