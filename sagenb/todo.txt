@@ -2,6 +2,24 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] I saw this traceback: "	    ).addCallback(lambda res: self.render(request))
+	  File "/Users/wstein/sage/build/64bit/sage/local/lib/python2.6/site-packages/sagenb/notebook/twist.py", line 1146, in render
+	    worksheet.check_comp()
+	  File "/Users/wstein/sage/build/64bit/sage/local/lib/python2.6/site-packages/sagenb/notebook/worksheet.py", line 3122, in check_comp
+	    c = self.best_completion(out, C._word_being_completed)
+	exceptions.AttributeError: Cell instance has no attribute '_word_being_completed'"
+
+[ ] when printing to pdf the output is shown twice. 
+
+[ ] make it possible to set the default font in tinymce
+
+[ ] The startup of the notebook involves reading all the directories
+and creating worksheets.  This takes anywhere from 5 minutes to an
+*hour* with sagenb.org.  So this *must* be fixed to be massively
+faster.  This is the top priority.
+
+[ ] download just the text version of the worksheet
+
 [ ] "untitled renaming".  Make it an option in the user confs, which
 is on by default, by you can turn it off.
 
