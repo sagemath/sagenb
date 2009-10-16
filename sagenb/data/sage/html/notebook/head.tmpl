@@ -16,16 +16,20 @@ INPUT:
     {% endif %}
 {% endmacro %}
 
+
 {% macro common_css %}
+<!-- Sage notebook stylesheet -->
 <link rel=stylesheet href="/css/main.css" type="text/css" />
 {% endmacro %}
 
 {% macro common_javascript(worksheet, worksheet_filename, username, JSMATH, JSMATH_IMAGE_FONTS, JEDITABLE_TINYMCE, sage_jsmath_macros) %}
-<!-- Load the Sage javascript library. -->
-<script type="text/javascript" src="/javascript/jquery/jquery.js"></script>
+<!-- jQuery - general-purpose functions -->
+<script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
+<!-- Sage Notebook library -->
 <script type="text/javascript" src="/javascript/main.js"></script>
   
 {% if JSMATH %}
+<!-- jsMath - typeset mathematics -->
     <!-- Turn off font warning. -->
     <style>
         #jsMath_Warning {display: none}
@@ -63,49 +67,33 @@ INPUT:
         jsMath.Extension.Require("AMSmath");
         jsMath.Extension.Require("AMSsymbols");
     </script>
-{% endif %}
-<!-- Import LaTeX macros -->
-{% for m in sage_jsmath_macros %}
-<script> {{ m }} </script>
-{% endfor %}
 
-<!-- Load the jquery and ui-jquery javascript library.
-     This is used for interact functionality in the notebook, and will be used
-     to enable drag and drop, image zoom, etc. -->
-<script type="text/javascript" src="/javascript/jqueryui/jquery.ui.all.min.js"></script>
-<script type="text/javascript" src="/javascript/jquery/plugins/farbtastic/farbtastic.min.js"></script>
-<script type="text/javascript" src="/javascript/jquery/plugins/dimensions/jquery.dimensions.min.js"></script>
+    {% for m in sage_jsmath_macros %}
+    <script> {{ m }} </script>
+    {% endfor %}
+{% endif %}
+
+<!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
+<link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.7.2.custom.css" />
+<script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.7.2.custom.min.js"></script>
+
+<!-- jQuery plugins - color picker, shift-click -->
+<link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />
+<script type="text/javascript" src="/javascript/jquery/plugins/farbtastic/farbtastic.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/jquery.event.extendedclick.js"></script>
 
-<link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />  
-<link rel="stylesheet" href="/javascript/jqueryui/themes/flora/flora.all.css" />
-
-<!-- TODO: get the lazy loading plugin -->
-
-<!-- TODO: Load individual ui plugins, not the whole package:
-     <script type="text/javascript" src="/javascript/jqueryui/ui.mouse.min.js"></script>
-     <script type="text/javascript" src="/javascript/jqueryui/ui.slider.min.js"></script>
-     <script type="text/javascript" src="/javascript/jqueryui/ui.draggable.min.js"></script>
-     <script type="text/javascript" src="/javascript/jqueryui/ui.draggable.ext.min.js"></script>
-     <script type="text/javascript" src="/javascript/jqueryui/ui.resizable.min.js"></script>
-     <script type="text/javascript" src="/javascript/jqueryui/ui.dialog.min.js"></script>
--->
-
-<!-- This was for syntax highlighting
-     <script type="text/javascript" src="/javascript/highlight/prettify.js"></script>
-     <link rel=stylesheet href="/javascript/highlight/prettify.css" type="text/css" />
--->
-
+<!-- Sage3d - accelerated 3D graphics -->
 <script type="text/javascript" src="/javascript/sage3d/sage3d.js"></script>
 
 <!-- Jmol - embedded 3D graphics -->
 <script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
-<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script> <!-- This must stay in <head> -->
+<!-- This must stay in <head> -->
+<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
 
+{% if JEDITABLE_TINYMCE and not worksheet.docbrowser() and not worksheet.is_published() %}
 <!-- TinyMCE and jEditable - in-place editing of text cells -->
-{% if JEDITABLE_TINYMCE %}
     <script type="text/javascript" src="/javascript/tiny_mce/tiny_mce.js"></script>
-    <script src="/javascript/jquery/plugins/jquery.jeditable.mini.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="/javascript/jquery/plugins/jeditable/jquery.jeditable.mini.js" charset="utf-8"></script>
     <script type="text/javascript" src="/javascript/sage/js/tinymce.js"></script>
 {% endif %}
 
@@ -117,8 +105,5 @@ INPUT:
     server_ping_while_alive();
 </script>
 {% endif %}
-<!-- Uncomment this to force rename when the worksheet is opened (annoying!)
-     if W and
-        W.name() == "Untitled":
-        <script  type="text/javascript">setTimeout("rename_worksheet()",1)</script> -->
+
 {% endmacro %}

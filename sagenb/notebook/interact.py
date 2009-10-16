@@ -251,7 +251,7 @@ def html_slider(id, values, callback, steps, default=0, margin=0):
         <html>...</html>
     """
     s = """<table><tr><td>
-        <div id='%s' class='ui-slider ui-slider-3' style='margin:%spx;'><span class='ui-slider-handle'></span></div>
+        <div id='%s' style='margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 15.0em;'></div>
         </td>"""%(id,int(margin))
     if values != "null":
         s += "<td><font color='black' id='%s-lbl'></font></td>"%id
@@ -262,7 +262,7 @@ def html_slider(id, values, callback, steps, default=0, margin=0):
     # below which gets passed an anonymous function.
     s += """<script>(function(){ var values = %(values)s; setTimeout(function() {
     $('#%(id)s').slider({
-        stepping: 1, min: 0, max: %(maxvalue)s, startValue: %(startvalue)s,
+        step: 1, min: 0, max: %(maxvalue)s, value: %(startvalue)s,
         change: function (e,ui) { var position = ui.value; if(values!=null) $('#%(id)s-lbl').text(values[position]); %(callback)s; },
         slide: function(e,ui) { if(values!=null) $('#%(id)s-lbl').text(values[ui.value]); }
     });
@@ -314,10 +314,9 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, marg
         sage: html(html_rangeslider('slider-007', 'null', 'alert(pos[0]+", "+pos[1])', steps=5, default_l=2, default_r=3, margin=5))
         <html>...</html>
     """
-    s = """<table>
-    <tr><td><div id='%s' class='ui-slider ui-slider-3' style='margin:%spx;'>
-    <span class='ui-slider-handle'></span><span class='ui-slider-handle'></span>
-    </div></td></tr>"""%(id,int(margin))
+    s = """<table><tr><td>
+        <div id='%s' style='margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 20.0em;'></div>
+        </td></tr>"""%(id,int(margin))
     if values != "null":
         s += "<tr><td><font color='black' id='%s-lbl'></font></td></tr>"%id
     s += "</table>"
@@ -332,8 +331,8 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, marg
         var sel = '#%s';
         var updatePos = function()
         {
-            pos[0]=$(sel).slider('value', 0);
-            pos[1]=$(sel).slider('value', 1);
+            pos[0]=$(sel).slider('values', 0);
+            pos[1]=$(sel).slider('values', 1);
             if(values!=null) $(sel+'-lbl').text("("+values[pos[0]]+", "+values[pos[1]]+")");
         };
         setTimeout(function()
@@ -341,10 +340,10 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, marg
             $(sel).slider(
             {
                 range: true,
-                stepping: 1,                    
+                step: 1,
                 min: 0,
                 max: %s,
-                handles: [{start: %s},{start:%s}],
+                values: [%s, %s],
                 change: function(e,ui){ updatePos(); %s; },
                 slide: updatePos
             });

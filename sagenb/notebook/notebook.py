@@ -1257,8 +1257,8 @@ class Notebook(object):
     ##########################################################
     def list_window_javascript(self, worksheet_filenames):
         s = """
-           <script type="text/javascript" src="/data/jquery/jquery.js"></script>
-           <script type="text/javascript" src="/data/sage/js/main.js"></script>        
+           <script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
+           <script type="text/javascript" src="/javascript/main.js"></script>
            <script type="text/javascript">
            var worksheet_filenames = %s; 
            </script>

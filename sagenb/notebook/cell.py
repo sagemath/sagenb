@@ -192,7 +192,7 @@ class TextCell(Cell_generic):
 
         s = """<div class="text_cell" id="cell_text_%s">%s</div>"""%(self.__id,self.html_inner(ncols=ncols, do_print=do_print, do_math_parse=do_math_parse, editing=editing))
 
-        if JEDITABLE_TINYMCE and hasattr(self.worksheet(),'is_published') and not self.worksheet().is_published() and not self.worksheet().docbrowser():
+        if JEDITABLE_TINYMCE and hasattr(self.worksheet(),'is_published') and not self.worksheet().is_published() and not self.worksheet().docbrowser() and not do_print:
 
             try:
                 z = ((self.__text).decode('utf-8')).encode('ascii', 'xmlcharrefreplace')
