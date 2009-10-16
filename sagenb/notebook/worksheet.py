@@ -51,6 +51,7 @@ from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
                                WorksheetProcess_RemoteExpectImplementation)
 
 import sagenb.misc.support  as support
+from sagenb.misc.format import relocate_future_imports
 
 # Imports specifically relevant to the sage notebook
 from cell import Cell, TextCell
@@ -2899,10 +2900,10 @@ from sagenb.notebook.all import *
         input += self.preparse_input(I, C)
 
         try:
-            compile(input, '', 'exec')
-        except SyntaxError, msg:
+            input = relocate_future_imports(input)
+        except SyntaxError as msg:
             t = traceback.format_exc()
-            s = 'File "<string>",'
+            s = 'File "<unknown>",'
             i = t.find(s)
             if i != -1:
                 t = t[i+len(s):]

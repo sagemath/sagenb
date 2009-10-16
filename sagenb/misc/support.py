@@ -694,7 +694,7 @@ try:
 except ImportError:
     pass
 
-from sagenb.interfaces.format import displayhook_hack
+from sagenb.misc.format import displayhook_hack
 
 def preparse_worksheet_cell(s, globals):
     """

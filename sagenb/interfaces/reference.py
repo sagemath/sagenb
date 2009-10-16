@@ -1,7 +1,7 @@
 import os, StringIO, sys, traceback, tempfile
 
 from status import OutputStatus
-from format import displayhook_hack
+from sagenb.misc.format import displayhook_hack
 from worksheet_process import WorksheetProcess
 
 ###################################################################
