@@ -40,8 +40,6 @@ the user sets up).
 [ ] rate a worksheet -- note that the top of the browser (title) says
 error, though in fact there is no error.
 
-[ ] Incorporate "parenthesis matching introduced in trac #3646"
-
 [ ] easy way for admin to change people's password
 
 [ ] insert new cell *below*
@@ -401,4 +399,6 @@ At the very least, maybe putting the version number right under "Sage
 Notebook" would justify the extra vertical space.  I think it would be
 better if the icon were only one line high, and the toggle collapsed
 everything to one line."
+
+[x] Incorporate "parenthesis matching introduced in trac #3646"
 
