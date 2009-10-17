@@ -88,8 +88,11 @@ class Configuration(object):
                 else:
                     val = False
 
-            elif typ == T_INTEGER or typ == T_REAL:
+            elif typ == T_INTEGER:
                 val = int(val)
+
+            elif typ == T_REAL:
+                val = float(val)
 
             elif typ == T_LIST:
                 val = val.strip()
