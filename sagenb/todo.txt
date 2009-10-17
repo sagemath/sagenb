@@ -2,6 +2,17 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] Deprecate "Number of backups" from server settings, since backups
+aren't made anymore.  Or use this somehow.
+
+[ ] Also remove 'cell_input_color':'#000000',
+'cell_output_color':'#0000EE', since I think they are used nowhere.
+Also, server confs is a weird place to put such things.
+Alternatively, actually use these.
+
+[ ] change number word wrap columns in notebook settings has no immediate impact, though it
+does after restarting the server. 
+
 [ ] I saw this traceback: "	    ).addCallback(lambda res: self.render(request))
 	  File "/Users/wstein/sage/build/64bit/sage/local/lib/python2.6/site-packages/sagenb/notebook/twist.py", line 1146, in render
 	    worksheet.check_comp()
