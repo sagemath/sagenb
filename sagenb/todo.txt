@@ -2,6 +2,9 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] shift-enter to save tinymce cell save on safari goes "beep", which
+is annoying
+
 [ ] Deprecate "Number of backups" from server settings, since backups
 aren't made anymore.  Or use this somehow.
 
