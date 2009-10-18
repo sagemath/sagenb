@@ -220,7 +220,7 @@ return(value);
 </script>"""%(self.__id,self.__id, z)
 
 
-        if editing:
+        if editing and not do_print:
             s += """<script>$("#cell_text_%s").trigger('dblclick');</script>"""%self.__id
             
         return s
@@ -255,7 +255,6 @@ return(value);
                 # server process (which is doing this work).
                 pass
         s = """%s"""%t
-
         return s
         
 
@@ -1839,7 +1838,7 @@ class Cell(Cell_generic):
 
         INPUT:
 
-        - ``wrap`` - a boolean stating whether to wrap lines. Defaults to
+        - ``wrap`` - None or an integer stating column position to wrap lines. Defaults to
           configuration if not given.
 
         - ``div_wrap`` - a boolean stating whether to wrap ``div``.
@@ -2179,12 +2178,17 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
 
         out_wrap   = '<div class="cell_output_%s%s" id="cell_output_%s">%s</div>'%(
             prnt, typ,self.__id, out_wrap)
-        out_nowrap = '<div class="cell_output_%snowrap_%s" id="cell_output_nowrap_%s">%s</div>'%(
-            prnt, typ, self.__id, out_nowrap)
+        if not do_print:
+            out_nowrap = '<div class="cell_output_%snowrap_%s" id="cell_output_nowrap_%s">%s</div>'%(
+                prnt, typ, self.__id, out_nowrap)
         out_html   = '<div class="cell_output_html_%s" id="cell_output_html_%s">%s </div>'%(
             typ, self.__id, out_html)
 
-        out = "%s%s%s"%(out_wrap, out_nowrap, out_html)
+        if do_print:
+            out = out_wrap + out_html
+        else:
+            out = out_wrap + out_nowrap + out_html
+            
         s = top + out + '</div>'
 
         r = ''

@@ -2,8 +2,6 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
-[ ] when printing to pdf the output is shown twice. 
-
 [ ] permissions issues -- since the DATA directory must be readable,
 currently by default all the directories are *readable*, including
 history, output etc.  Definitely history should be made readable only
@@ -475,4 +473,6 @@ should not just blindly save it with that pseudo-title when you click
 'Save' but rather automatically pop-up the rename box and invite the
 user to change it before saving.
 [x] BUG "$D<1$ is good." renders without leaving the $-environment
+
+[x] when printing to pdf the output is shown twice. 
 
