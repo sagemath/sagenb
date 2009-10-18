@@ -2334,7 +2334,16 @@ class Worksheet(object):
                 self.__html = s
                 return s
         for cell in self.cell_list():
-            cells_html += cell.html(ncols, do_print=do_print) + '\n'
+            try:
+                cells_html += cell.html(ncols, do_print=do_print) + '\n'
+            except Exception, msg:
+                # catch any exception, since this exception is raised sometimes, at least
+                # for some worksheets:
+                # exceptions.UnicodeDecodeError: 'ascii' codec can't decode byte
+                #         0xc2 in position 825: ordinal not in range(128)
+                # and this causes the entire worksheet to fail to save/render, which is
+                # obviously *not* good (much worse than a weird issue with one cell).
+                print msg
             
         return template(os.path.join("html", "worksheet", "worksheet.html"),
                         published = self.is_published(),
