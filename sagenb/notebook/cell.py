@@ -2177,7 +2177,7 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
             prnt = ""
 
         out_wrap   = '<div class="cell_output_%s%s" id="cell_output_%s">%s</div>'%(
-            prnt, typ,self.__id, out_wrap)
+            prnt, typ, self.__id, out_wrap)
         if not do_print:
             out_nowrap = '<div class="cell_output_%snowrap_%s" id="cell_output_nowrap_%s">%s</div>'%(
                 prnt, typ, self.__id, out_nowrap)
@@ -2196,11 +2196,13 @@ $("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(
         tbl = """
                <div class="cell_output_div">
                <table class="cell_output_box"><tr>
-               <td class="cell_number" id="cell_number_%s" onClick="cycle_cell_output_type(%s);">
+               <td class="cell_number" id="cell_number_%s" %s>
                  %s
                </td>
                <td class="output_cell">%s</td></tr></table></div>"""%(
-                   self.__id, self.__id, r, s)
+                   self.__id,
+                   '' if do_print else 'onClick="cycle_cell_output_type(%s);"'%self.__id,
+                   r, s)
 
         return tbl
     
