@@ -1750,11 +1750,11 @@ function evaluate_text_cell_callback(status, response_text) {
     }
     id = X[0];
     text = X[1];
-    text_cell = get_element('cell_text_'+id);
+    text_cell = get_element('cell_outer_'+id);
     var new_html =separate_script_tags(text);
     $(text_cell).replaceWith(new_html[0]);
     // Need to get the new text cell.
-    text_cell = get_element('cell_text_'+id);
+    text_cell = get_element('cell_outer_'+id);
     setTimeout(new_html[1], 50);
 
     if (contains_jsmath(text)) {
@@ -3094,7 +3094,7 @@ function CellWriter() {
 // The global cell_writer target.
 cell_writer = document;
 
-function eval_script_tags(text) {
+function x_eval_script_tags(text) {
     /*
     Find all the tags in the given script and eval them, where
     tags are javascript code in <script>...</script> tags.
@@ -3106,7 +3106,7 @@ function eval_script_tags(text) {
     OUTPUT
         string -- like text, but with all script tags removed.
     */
-    var s = text; //text.replaceAll('\n','');
+    var s = text; 
     var i = s.indexOf('<'+'script>');
     while (i != -1) {
         var j = s.indexOf('<'+'/script>');
@@ -3123,6 +3123,40 @@ function eval_script_tags(text) {
     return s;
 }
 
+function eval_script_tags(text) {
+    /*
+    Find all the tags in the given script and eval them, where
+    tags are javascript code in <script>...</script> tags.
+    This allows us put javascript in the output of computations
+    and have it evaluated.
+
+    INPUT:
+        text -- a string
+    OUTPUT
+        string -- like text, but with all script tags removed.
+    */
+    var left_tag = new RegExp(/<(\s)*script.*?>/i);
+    var right_tag = new RegExp(/<(\s*)\/(\s*)script(\s)*>/i);
+
+    var script = '';
+    var s = text;
+    var i = s.search(left_tag);
+    while (i != -1) {
+        var j = s.search(right_tag);
+	var k = i + (s.match(left_tag)[0]+'').length;
+        if (j == -1 || j < k) { break; }
+        try {
+            cell_writer = new CellWriter();
+            window.eval(s.slice(k,j));
+        } catch(e) {
+            alert(e);
+        }
+        s = s.slice(0,i) + s.slice(j + (s.match(right_tag)[0]+'').length);
+        var i = s.search(left_tag);
+    }
+    return s;
+}
+
 function separate_script_tags(text) {
     /*
     Find all the tags in the given script and return a list of two strings.  The first
@@ -3134,16 +3168,21 @@ function separate_script_tags(text) {
         a list of two strings.  The first is the text without script tags,
         the second is the contents of the script tags.
     */
+    var left_tag = new RegExp(/<(\s)*script.*?>/i);
+    var right_tag = new RegExp(/<(\s*)\/(\s*)script(\s)*>/i);
 
     var script = '';
-    var s = text; //text.replaceAll('\n','');
-    var i = s.indexOf('<'+'script>');
+    var s = text;
+    var i = s.search(left_tag);
     while (i != -1) {
-        var j = s.indexOf('<'+'/script>');
-        script += s.slice(8+i,j);
-
-        s = s.slice(0,i) + s.slice(j+9);
-        i = s.indexOf('<'+'script>');
+        var j = s.search(right_tag);
+	var k = i + (s.match(left_tag)[0]+'').length;
+        if (j == -1 || j < k) {
+             break;
+	}
+        script += s.slice(k,j);
+        s = s.slice(0,i) + s.slice(j + (s.match(right_tag)[0]+'').length);
+        var i = s.search(left_tag);
     }
     return [s, script];
 }

@@ -81,6 +81,40 @@ class Cell_generic:
         """
         raise NotImplementedError
 
+    def html_new_cell_before(self):
+        """
+        Returns the HTML code for inserting a new cell before self.
+        
+        EXAMPLES::
+        
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
+            sage: print C.html_new_cell_before()
+            <div class="insert_new_cell" id="insert_new_cell_0">...
+        """
+        return """<div class="insert_new_cell" id="insert_new_cell_before%(id)s">
+                 </div>
+<script type="text/javascript">
+$("#insert_new_cell_before%(id)s").plainclick(function(e) {insert_new_cell_before(%(id)s);});
+$("#insert_new_cell_before%(id)s").shiftclick(function(e) {insert_new_text_cell_before(%(id)s);});
+</script>"""%{'id': self.id()}
+
+    def html_new_cell_after(self):
+        """
+        Returns the HTML code for inserting a new cell after self.
+        
+        EXAMPLES::
+        
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
+            sage: print C.html_new_cell_after()
+            <div class="insert_new_cell" id="insert_new_cell_0">...
+        """
+        return """<div class="insert_new_cell" id="insert_new_cell_after%(id)s">
+                 </div>
+<script type="text/javascript">
+$("#insert_new_cell_after%(id)s").plainclick(function(e) {insert_new_cell_after(%(id)s);});
+$("#insert_new_cell_after%(id)s").shiftclick(function(e) {insert_new_text_cell_after(%(id)s);});
+</script>"""%{'id': self.id()}
+
 
 class TextCell(Cell_generic):
     def __init__(self, id, text, worksheet):
@@ -189,8 +223,14 @@ class TextCell(Cell_generic):
             sage: C.html(do_math_parse=True)
             '<div class="text_cell" id="cell_text_0"><span class="math">2+3</span>...'
         """
+        s = '<span id="cell_outer_%s">'%self.__id
 
-        s = """<div class="text_cell" id="cell_text_%s">%s</div>"""%(self.__id,self.html_inner(ncols=ncols, do_print=do_print, do_math_parse=do_math_parse, editing=editing))
+        if not do_print:
+            s += self.html_new_cell_before()
+
+        s += """<div class="text_cell" id="cell_text_%s">%s</div>"""%(
+            self.__id, 
+            self.html_inner(ncols=ncols, do_print=do_print, do_math_parse=do_math_parse, editing=editing))
 
         if JEDITABLE_TINYMCE and hasattr(self.worksheet(),'is_published') and not self.worksheet().is_published() and not self.worksheet().docbrowser() and not do_print:
 
@@ -222,7 +262,8 @@ return(value);
 
         if editing and not do_print:
             s += """<script>$("#cell_text_%s").trigger('dblclick');</script>"""%self.__id
-            
+
+        s += '</span>'
         return s
 
     def html_inner(self,ncols=0, do_print=False, do_math_parse=True, editing=False):
@@ -1928,39 +1969,6 @@ class Cell(Cell_generic):
         t = escape(t)+" "
         
         return s
-
-    def html_new_cell_before(self):
-        """
-        Returns the HTML code for inserting a new cell before self.
-        
-        EXAMPLES::
-        
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: print C.html_new_cell_before()
-            <div class="insert_new_cell" id="insert_new_cell_0">...
-        """
-        return """<div class="insert_new_cell" id="insert_new_cell_%(id)s">
-                 </div>
-<script type="text/javascript">
-$("#insert_new_cell_%(id)s").plainclick(function(e) {insert_new_cell_before(%(id)s);});
-$("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_before(%(id)s);});
-</script>"""%{'id': self.id()}
-    def html_new_cell_after(self):
-        """
-        Returns the HTML code for inserting a new cell after self.
-        
-        EXAMPLES::
-        
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: print C.html_new_cell_after()
-            <div class="insert_new_cell" id="insert_new_cell_0">...
-        """
-        return """<div class="insert_new_cell" id="insert_new_cell_%(id)s">
-                 </div>
-<script type="text/javascript">
-$("#insert_new_cell_%(id)s").plainclick(function(e) {insert_new_cell_after(%(id)s);});
-$("#insert_new_cell_%(id)s").shiftclick(function(e) {insert_new_text_cell_after(%(id)s);});
-</script>"""%{'id': self.id()}
 
 
     def url_to_self(self):
