@@ -2618,7 +2618,10 @@ class Worksheet(object):
         return [C.id() for C in self.cell_list()]
 
     def compute_cell_id_list(self):
-        return [C.id() for C in self.cell_list() if isinstance(C, Cell)]
+        """
+        Return list of id's of all cells.
+        """
+        return [C.id() for C in self.cell_list()]
 
     def cell_list(self):
         r"""

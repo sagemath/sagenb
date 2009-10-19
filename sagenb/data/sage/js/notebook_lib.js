@@ -2128,7 +2128,17 @@ function cell_input_key_event(id, e) {
     return true;
 }
 
-function id_of_cell_delta(id, delta) {
+function is_compute_cell(id) {
+    /* 
+    Return true precisely if the input id is the id of a compute cell. 
+
+    INPUT:
+        id -- integer
+    */
+    return (get_element('cell_input_'+id) != null);
+}
+
+function id_of_cell_delta(id, delta, all_cells) {
     /*
     Return the id of the cell that is delta positions from the cell
     with given id, where delta is an integer, either positive,
@@ -2137,17 +2147,31 @@ function id_of_cell_delta(id, delta) {
     INPUT:
         id -- integer
         delta -- integer
+        all_cells -- true or false; if true do not ignore non-compute cells
     */
     if (cell_id_list.length == 0) {
         /* alert("bug -- no cells."); */
         return;
     }
+    if (delta == 0) return id;
+
     var i = cell_id_list.indexOf(eval(id));
     var new_id;
     if (i == -1) {
         return(id); /* Better not to move. */
     } else {
-        i = i + delta;
+        var s;
+        if (delta < 0) { 
+            delta = -delta; 
+            s = -1; 
+        } else { s = 1; }
+        for(var j=0; j < delta; j ++) {
+            i = i + s;
+            while (!all_cells && i >= 0 && i < cell_id_list.length && 
+                           !is_compute_cell(cell_id_list[i]))  {
+                i = i + s;
+            }
+        }
         if (i < 0) {
             i = 0;
         } else if (i >= cell_id_list.length) {
@@ -3436,6 +3460,9 @@ function do_insert_new_text_cell_before(id, new_id, new_html) {
     */
     var new_cell = make_new_text_cell(new_id, new_html);
     $('#cell_outer_'+id).before(new_cell)
+
+    var i = cell_id_list.indexOf(eval(id));
+    cell_id_list = insert_into_array(cell_id_list, i, eval(new_id));
 }
 
 

@@ -9,6 +9,9 @@ by the server, and the conf files (including user accounts) should be
 forced to be only readable by the server on startup (no matter what
 the user sets up).
 
+[ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
+when there are 50,000 worksheets!
+
 [ ] Clicking publish should update the "last changed" time.  E.g.,
 take an old worksheet and publish it -- should always make it new.
 
@@ -31,8 +34,6 @@ Alternatively, actually use these.
 does after restarting the server. 
 
 [ ] implement base_url
-
-[ ] insert new cell *below*
 
 
 --------------------
@@ -111,9 +112,6 @@ content from disk.
 [ ] do something about this in worksheet.py
     def autosave(self, username):
         return
-
-[ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
-when there are 50,000 worksheets!
 
 [ ] add info about when user last logged in to user.py.
 
@@ -475,4 +473,7 @@ user to change it before saving.
 [x] BUG "$D<1$ is good." renders without leaving the $-environment
 
 [x] when printing to pdf the output is shown twice. 
+
+[x] insert new cell above text cells (finish fixing bug)
+
 
