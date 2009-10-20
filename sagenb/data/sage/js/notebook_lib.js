@@ -39,6 +39,9 @@ OUTPUT:
 // The active cell list.
 var active_cell_list = [];
 
+// The worksheet state number
+var state_number = 0;
+
 //Browser & OS identification
 var browser_op, browser_saf, browser_konq, browser_moz, browser_ie, browser_ie5, browser_iphone;
 var os_mac, os_lin, os_win;
@@ -60,8 +63,8 @@ var keypress_resize_delay = 250; // don't resize the cell too often! without thi
 var last_keypress_resize = 0;
 var will_resize_soon = false;
 
-var server_ping_time = 30000;  /* Is once very 30 seconds way too fast?  Is it just right?  */
-
+// We ping every 2 seconds by default to see if the worksheet has been changed.
+var server_ping_time = 2000; 
 
 var SEP = '___S_A_G_E___';   // this had better be the same as in the server
 var current_cell = -1;       // gets set on focus / blur
@@ -533,6 +536,32 @@ function refresh() {
     */
     window.location.replace(location.href);
 }
+
+function refresh_cell_list() {
+    /*
+    This function refreshes all the cells in the worksheet using an
+    async call back to the server.
+    */
+    async_request(worksheet_command('cell_list'), refresh_cell_list_callback);
+}
+
+function refresh_cell_list_callback(status, response_text) {
+    /*
+    In conjunction with refresh_cell_list, this function does the actual
+    update of the HTML of the list of cells.   Here response_text is
+    a pair consisting of the updated state_number and the new HTML 
+    for the worksheet_cell_list div DOM element.
+    */
+    if (status == 'success') {
+         var X = response_text.split(SEP);
+         state_number = X[0];
+         var y = get_element("worksheet_cell_list");
+         if (y) {
+             y.innerHTML = X[1];
+         }
+    }
+}
+
 
 String.prototype.replaceAll = function(strTarget, strSubString ) {
     /*
@@ -1620,12 +1649,25 @@ function server_ping_while_alive_callback(status, response_text) {
     /*
     Whenever the server ping callback occurs, this function runs, and
     if the server didn't respond it calls server_down(); otherwise it
-    calls server_up().
+    calls server_up().  
+
+    Also, each time the server is up and responds, the server includes
+    the worksheet state_number is the response.  If this number is out
+    of sync with our view of the worksheet state, then we force a
+    refresh of the list of cells.  This is very useful in case the
+    user uses the back button and the browser cache displays an
+    invalid worksheet list (which can cause massive confusion), or the
+    user open the same worksheet in multiple browsers, or multiple
+    users open the same shared worksheet.
     */
     if (status == "failure") {
         server_down();
     } else {
         server_up();
+        if(response_text != state_number) {
+             /* force a refresh of just the cells in the body */
+	    refresh_cell_list();
+        }
     }
 }
 
@@ -2478,6 +2520,9 @@ function worksheet_command(cmd) {
     OUTPUT:
         a string
     */
+    if (cmd == 'eval' || cmd == 'new_cell_before') {
+        state_number += 1;
+    }
     return ('/home/' + worksheet_filename + '/' + cmd);
 }
 

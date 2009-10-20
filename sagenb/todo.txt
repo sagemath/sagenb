@@ -2,6 +2,9 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] make communication between twist.py and notebook_lib.js use JSON
+instead of encode_list and response_text.split.
+
 [ ] permissions issues -- since the DATA directory must be readable,
 currently by default all the directories are *readable*, including
 history, output etc.  Definitely history should be made readable only
@@ -476,4 +479,6 @@ user to change it before saving.
 
 [x] insert new cell above text cells (finish fixing bug)
 
+
+[x] synchronization between the browser and server. 
 

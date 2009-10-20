@@ -6,6 +6,7 @@ INPUT:
   dialog before leaving
 - cells_html - string of cells HTML
 - published - a boolean stating whether the worksheet is published
+- state_number - worksheet.state_number()
 #}
 {% include "html/worksheet/worksheet_body.html" %}
 
@@ -14,6 +15,7 @@ INPUT:
 {% else %}
 <script type="text/javascript">
    cell_id_list={{ cell_id_list }};
+   state_number={{ state_number }};
    if(worksheet_name == "Untitled") rename_worksheet();
 </script>
 {% endif %}

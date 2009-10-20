@@ -171,7 +171,7 @@ class TextCell(Cell_generic):
             TextCell 0: 3+2
         """
         self.__text = input_text
-
+        
     def set_worksheet(self, worksheet, id=None):
         """
         Sets the worksheet object of self to be worksheet and optionally
@@ -400,7 +400,7 @@ class Cell(Cell_generic):
         self.__asap = False
         self.__version = -1
         self.set_input_text(str(input).replace('\r',''))
-
+        
     def set_asap(self, asap):
         """
         Set whether this cell is evaluated as soon as possible.

@@ -661,9 +661,7 @@ class Worksheet_cells(WorksheetResource, resource.Resource):
 
 class Worksheet_alive(WorksheetResource, resource.Resource):
     def render(self, ctx):
-        #self.worksheet.ping(self.username)
-        self.worksheet.ping(username=None)  # None so doesn't save a revision
-        return HTMLResponse(stream = '')
+        return HTMLResponse(stream = str(self.worksheet.state_number()))
 
 ########################################################
 # Worksheet configuration.
@@ -982,6 +980,20 @@ class NotebookSettingsPage(resource.PostableResource):
 
 
 ########################################################
+# Used in refreshing the cell list
+########################################################
+class Worksheet_cell_list(WorksheetResource, resource.PostableResource):
+    """
+    Return the state number and the HTML for the main body of the
+    worksheet, which consists of a list of cells.
+    """
+    def render(self, ctx):
+        W = self.worksheet
+        v = encode_list([W.state_number(), W.html_cell_list()])
+        return HTMLResponse(stream=v)
+
+
+########################################################
 # Set output type of a cell
 ########################################################
 class Worksheet_set_cell_output_type(WorksheetResource, resource.PostableResource):
@@ -1013,6 +1025,7 @@ class Worksheet_new_cell_before(WorksheetResource, resource.PostableResource):
             input = ctx.args['input'][0]
 
         cell = self.worksheet.new_cell_before(id, input=input)
+        self.worksheet.increase_state_number()
         s = encode_list([cell.id(), cell.html(div_wrap=False), id])
         return HTMLResponse(stream = s)
 
@@ -1160,6 +1173,7 @@ class Worksheet_eval(WorksheetResource, resource.PostableResource):
             input_text = input_text.replace('\r\n', '\n')   # DOS
 
         W = self.worksheet
+        W.increase_state_number()
         owner = W.owner()
         if owner != '_sage_':
             if W.owner() != self.username and not (self.username in W.collaborators()):

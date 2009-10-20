@@ -190,7 +190,7 @@ class Worksheet(object):
             # A fresh worksheet
             self.clear()
             return
-        
+
         # Record the basic properties of the worksheet
         self.__system   = system
         self.__pretty_print = pretty_print
@@ -200,6 +200,9 @@ class Worksheet(object):
         self.__docbrowser = docbrowser
         self.__autopublish = auto_publish
 
+        # state sequence number, used for sync
+        self.__state_number = 0
+        
         # Initialize the cell id counter.
         self.__next_id = 0
 
@@ -215,6 +218,20 @@ class Worksheet(object):
         if create_directories:
             self.create_directories()
         self.clear()
+
+    def increase_state_number(self):
+        try:
+            self.__state_number += 1
+        except AttributeError:
+            self.__state_number = 0
+
+    def state_number(self):
+        if self.is_published(): return 0
+        try:
+            return self.__state_number
+        except AttributeError:
+            self.__state_number = 0
+            return 0
 
     def create_directories(self):
         if not os.path.exists(self.__dir):
@@ -2301,25 +2318,15 @@ class Worksheet(object):
     ##########################################################
     # HTML rendering of the whole worksheet
     ##########################################################
-    def html(self, include_title=True, do_print=False,
-             confirm_before_leave=False, read_only=False):
-        r"""
+    def html_cell_list(self, do_print=False):
+        """
         INPUT:
         
-        - publish - a boolean stating whether the worksheet is published
-        
-        - do_print - a boolean
+            - do_print - a boolean
 
         OUTPUT:
         
-        - string -- the HTML for the worksheet
-        
-        EXAMPLES::
-        
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.html()
-            '\n\n\n<div class="cell_input_active" id="cell_resizer"></div>\n\n<div class="worksheet_cell_list" id...'
+            - string -- the HTML for the list of cells
         """
         ncols = self.notebook().conf()['word_wrap_cols']
         cells_html = ""
@@ -2344,12 +2351,34 @@ class Worksheet(object):
                 # and this causes the entire worksheet to fail to save/render, which is
                 # obviously *not* good (much worse than a weird issue with one cell).
                 print msg
-            
+        return cells_html
+                       
+    def html(self, include_title=True, do_print=False,
+             confirm_before_leave=False, read_only=False):
+        r"""
+        INPUT:
+        
+        - publish - a boolean stating whether the worksheet is published
+        
+        - do_print - a boolean
+
+        OUTPUT:
+        
+        - string -- the HTML for the worksheet
+        
+        EXAMPLES::
+        
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
+            sage: W = nb.create_new_worksheet('Test', 'admin')
+            sage: W.html()
+            '\n\n\n<div class="cell_input_active" id="cell_resizer"></div>\n\n<div class="worksheet_cell_list" id...'
+        """
         return template(os.path.join("html", "worksheet", "worksheet.html"),
                         published = self.is_published(),
                         do_print = do_print, confirm_before_leave = confirm_before_leave,
-                        cells_html = cells_html,
-                        cell_id_list = self.compute_cell_id_list())
+                        cells_html = self.html_cell_list(do_print=do_print),
+                        cell_id_list = self.compute_cell_id_list(),
+                        state_number = self.state_number())
 
     def truncated_name(self, max=30):
         name = self.name()
