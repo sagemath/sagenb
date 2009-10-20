@@ -3084,7 +3084,7 @@ function set_output_text(id, text, wrapped_text, output_html,
             if (cell_interact) {
                  // This is the first time that the underlying Python interact function is
                  // actually called!
-                interact(id, 'sagenb.notebook.interact.recompute(' + id + ')');
+                interact(id, '_interact_.recompute(' + id + ')');
             }
         }
     }

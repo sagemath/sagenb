@@ -2924,7 +2924,7 @@ class Worksheet(object):
             cmd = """
 import base64
 import sagenb.misc.support as _support_
-import sagenb.notebook.interact  # for setting current cell id
+import sagenb.notebook.interact as _interact_ # for setting current cell id
 from sagenb.notebook.interact import interact
 
 %s
@@ -3035,7 +3035,7 @@ from sagenb.notebook.all import *
 
         # This is useful mainly for interact -- it allows
         # a cell to know it's ID.
-        input += 'sagenb.notebook.interact.SAGE_CELL_ID=%s\n'%(C.id()) 
+        input += '_interact_.SAGE_CELL_ID=%s\n'%(C.id()) 
         
         if C.time():
             input += '__SAGE_t__=cputime()\n__SAGE_w__=walltime()\n'
