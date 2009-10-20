@@ -2377,7 +2377,7 @@ class Worksheet(object):
                         published = self.is_published(),
                         do_print = do_print, confirm_before_leave = confirm_before_leave,
                         cells_html = self.html_cell_list(do_print=do_print),
-                        cell_id_list = self.compute_cell_id_list(),
+                        cell_id_list = self.cell_id_list(),
                         state_number = self.state_number())
 
     def truncated_name(self, max=30):
@@ -2650,7 +2650,7 @@ class Worksheet(object):
         """
         Return list of id's of all cells.
         """
-        return [C.id() for C in self.cell_list()]
+        return [C.id() for C in self.cell_list() if isinstance(C, Cell)]
 
     def cell_list(self):
         r"""

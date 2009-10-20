@@ -153,7 +153,6 @@ var title_spinner = ['/ ', '\\ '];
 var title_spinner_i = 0;
 
 var evaluating_all = false;
-var evaluating_all_cursor = 0;
 
 ///////////////////////////////////////////////////////////////////
 //
@@ -650,6 +649,9 @@ function resize_all_cells() {
     for(i=0;i<cell_id_list.length;i++) {
         // Get the id of the cell to resize
         id = cell_id_list[i];
+	if (!is_compute_cell(id)) {
+	    continue;
+	}
         // Make sure it is not hidden, and if not resize it.
         if (get_cell(id).className != "cell_input_hide") {
            cell_input_resize(id);
@@ -2177,7 +2179,37 @@ function is_compute_cell(id) {
     INPUT:
         id -- integer
     */
-    return (get_element('cell_input_'+id) != null);
+    return (get_element('cell_input_'+id) !== null);
+}
+
+function extreme_compute_cell(dir) {
+    /*
+    Return the id of the first or last compute cell.
+
+    INPUT:
+        dir -- integer; the direction: if 1 (not 1) return the first
+            (last) compute cell's id
+
+    OUTPUT:
+        id -- integer; the first or last compute cell's id
+    */
+    var i, id;
+    if (dir === 1) {
+	for (i = 0; i < cell_id_list.length; i += 1) {
+	    id = cell_id_list[i];
+	    if (is_compute_cell(id)) {
+		break;
+	    }
+	}
+    } else {
+	for (i = cell_id_list.length - 1; i > -1; i -= 1) {
+	    id = cell_id_list[i];
+	    if (is_compute_cell(id)) {
+		break;
+	    }
+	}
+    }
+    return id;
 }
 
 function id_of_cell_delta(id, delta, all_cells) {
@@ -2191,23 +2223,25 @@ function id_of_cell_delta(id, delta, all_cells) {
         delta -- integer
         all_cells -- true or false; if true do not ignore non-compute cells
     */
-    if (cell_id_list.length == 0) {
+    var i, j, new_id, s;
+
+    if (cell_id_list.length === 0) {
         /* alert("bug -- no cells."); */
         return;
     }
     if (delta == 0) return id;
 
-    var i = cell_id_list.indexOf(eval(id));
-    var new_id;
-    if (i == -1) {
+    i = cell_id_list.indexOf(eval(id));
+    if (i === -1) {
         return(id); /* Better not to move. */
     } else {
-        var s;
         if (delta < 0) { 
             delta = -delta; 
             s = -1; 
-        } else { s = 1; }
-        for(var j=0; j < delta; j ++) {
+        } else {
+	    s = 1;
+	}
+        for(j = 0; j < delta; j += 1) {
             i = i + s;
             while (!all_cells && i >= 0 && i < cell_id_list.length && 
                            !is_compute_cell(cell_id_list[i]))  {
@@ -2219,6 +2253,9 @@ function id_of_cell_delta(id, delta, all_cells) {
         } else if (i >= cell_id_list.length) {
             i = cell_id_list.length - 1;
         }
+	if (!all_cells && !is_compute_cell(cell_id_list[i])) {
+	    return id;
+	}
         return(cell_id_list[i]);
     }
 }
@@ -2634,6 +2671,7 @@ function evaluate_cell_callback(status, response_text) {
              new_cell_id -- optional (if command is 'insert_cell')
                             string (integer); id of new cell to create
     */
+    var next_id;
     if (status == "failure") {
         // Failure evaluating a cell.
         return;
@@ -2646,12 +2684,16 @@ function evaluate_cell_callback(status, response_text) {
     }
 
     if (evaluating_all) {
-        if(evaluating_all_cursor >= cell_id_list.length) {
-            evaluating_all = false;
-        } else {
-            evaluate_cell(cell_id_list[evaluating_all_cursor], false);
-            evaluating_all_cursor++;
-        }
+	if (is_compute_cell(X[0])) {
+            evaluate_cell(X[0], false);
+	} else {
+	    next_id = id_of_cell_delta(X[0], 1);
+	    if (is_compute_cell(next_id)) {
+		evaluate_cell(next_id, false);
+	    } else {
+		evaluating_all = false;
+	    }
+	}
     } else if (X[1] == 'append_new_cell') {
         // add a new cell to the very end
         append_new_cell(X[0],X[2]);
@@ -3266,14 +3308,18 @@ function slide_mode() {
     Switch into single cell mode.
     This involves changing a bunch of CSS and some global variables.
     */
+    var id;
     in_slide_mode = true;
     set_class('left_pane', 'hidden');
     set_class('cell_controls', 'hidden');
     set_class('slide_controls', 'slide_control_commands');
     set_class('left_pane_bar', 'hidden');
 
-    for(i = 0; i < cell_id_list.length ; i++) {
-        set_class('cell_outer_'+cell_id_list[i], 'hidden');
+    for(i = 0; i < cell_id_list.length; i += 1) {
+	id = cell_id_list[i];
+        if (is_compute_cell(id)) {
+	    set_class('cell_outer_' + id, 'hidden');
+	}
     }
     slide_show();
 }
@@ -3284,6 +3330,7 @@ function cell_mode() {
     Switch from single cell mode back to normal worksheet mode.
     This involves changing CSS and global variables.
     */
+    var id;
     in_slide_mode = false;
     set_class('left_pane', 'pane');
     set_class('cell_controls', 'control_commands');
@@ -3291,8 +3338,11 @@ function cell_mode() {
     set_class('worksheet', 'worksheet');
     set_class('left_pane_bar', 'left_pane_bar');
 
-    for(i = 0; i < cell_id_list.length ; i++) {
-        set_class('cell_outer_'+cell_id_list[i], 'cell_visible');
+    for(i = 0; i < cell_id_list.length; i += 1) {
+	id = cell_id_list[i];
+        if (is_compute_cell(id)) {
+            set_class('cell_outer_' + id, 'cell_visible');
+	}
     }
 }
 
@@ -3314,7 +3364,7 @@ function slide_show() {
         set_class('cell_outer_' + current_cell, 'cell_visible');
     } else {
         if(cell_id_list.length>0)
-            current_cell = cell_id_list[0];
+            current_cell = extreme_compute_cell(1);
         set_class('cell_outer_' + current_cell, 'cell_visible');
     }
     if(current_cell != -1) {
@@ -3338,7 +3388,7 @@ function slide_first() {
     GLOBAL INPUT:
         the first cell is the first entry in the cell_id_list.
     */
-    jump_to_slide(cell_id_list[0]);
+    jump_to_slide(extreme_compute_cell(1));
 }
 
 function slide_last() {
@@ -3347,7 +3397,7 @@ function slide_last() {
     GLOBAL INPUT:
         the last cell is the last entry in the cell_id_list.
     */
-    jump_to_slide(cell_id_list[cell_id_list.length-1]);
+    jump_to_slide(extreme_compute_cell(-1));
 }
 
 
@@ -3762,6 +3812,7 @@ function append_new_text_cell(id, html) {
     */
     var new_cell = make_new_text_cell(id, html);
     $('#worksheet_cell_list').append(new_cell)
+    cell_id_list = cell_id_list.concat([eval(id)]);
 }
 
 
@@ -3811,10 +3862,8 @@ function evaluate_all() {
     acknowledges that it has received the previous request.
 
     */
-
     evaluating_all = true;
-    evaluating_all_cursor = 1; //start at 1 since we kick-off with zero
-    evaluate_cell(cell_id_list[0],false);
+    evaluate_cell(extreme_compute_cell(1), false);
 }
 
 function hide_all() {
@@ -3867,6 +3916,9 @@ function delete_all_output() {
     /* Iterate over each cell in the worksheet. */
     for(i=0; i<n; i++) {
         id = v[i];
+	if (!is_compute_cell(id)) {
+	    continue;
+	}
         /* First delete the actual test from the output of each cell. */
         get_element('cell_output_' + id).innerHTML = "";
         get_element('cell_output_nowrap_' + id).innerHTML = "";

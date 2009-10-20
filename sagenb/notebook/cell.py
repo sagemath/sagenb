@@ -89,7 +89,7 @@ class Cell_generic:
         
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: print C.html_new_cell_before()
-            <div class="insert_new_cell" id="insert_new_cell_0">...
+            <div class="insert_new_cell" id="insert_new_cell_before0">...
         """
         return """<div class="insert_new_cell" id="insert_new_cell_before%(id)s">
                  </div>
@@ -106,7 +106,7 @@ $("#insert_new_cell_before%(id)s").shiftclick(function(e) {insert_new_text_cell_
         
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: print C.html_new_cell_after()
-            <div class="insert_new_cell" id="insert_new_cell_0">...
+            <div class="insert_new_cell" id="insert_new_cell_after0">...
         """
         return """<div class="insert_new_cell" id="insert_new_cell_after%(id)s">
                  </div>
