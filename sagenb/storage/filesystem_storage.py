@@ -34,7 +34,7 @@ Sage notebook server::
              
 """
 
-import copy, cPickle, shutil, tarfile
+import copy, cPickle, shutil, tarfile, tempfile
 
 import os
 
@@ -347,13 +347,23 @@ class FilesystemDatastore(Datastore):
         tmp = self._abspath(self._worksheet_conf_filename(username, id_number) + '2')
         T.add(tmp, os.path.join('sage_worksheet','worksheet_conf.pickle'))
         os.unlink(tmp)
-        
-        T.add(self._abspath(self._worksheet_html_filename(username, id_number)),
-              os.path.join('sage_worksheet','worksheet.html'))
 
-        path = self._abspath(self._worksheet_pathname(username, id_number))
+        worksheet_html = self._abspath(self._worksheet_html_filename(username, id_number))
+        T.add(worksheet_html, os.path.join('sage_worksheet','worksheet.html'))
+
+        # The following is purely for backwards compatibility with old notebook servers
+        # prior to sage-4.1.2.
+        worksheet_txt =  tempfile.mkstemp()[1]
+        old_heading = "%s\nsystem:%s\n"%(basic['name'], basic['system'])
+        open(worksheet_txt,'w').write(old_heading + open(worksheet_html).read())
+        T.add(worksheet_txt,
+              os.path.join('sage_worksheet','worksheet.txt'))
+        os.unlink(worksheet_txt)
+        # end backwards compat block.
+
 
         # Add the contents of the DATA directory
+        path = self._abspath(self._worksheet_pathname(username, id_number))
         data = os.path.join(path, 'data')
         if os.path.exists(data):
             for X in os.listdir(data):
@@ -369,6 +379,7 @@ class FilesystemDatastore(Datastore):
         # frequently *complain* about Sage exporting a record of their
         # mistakes anyways.
         T.close()
+
 
     def _import_old_worksheet(self, username, id_number, filename):
         """
