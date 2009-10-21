@@ -2,9 +2,6 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
-[ ] make communication between twist.py and notebook_lib.js use JSON
-instead of encode_list and response_text.split.
-
 [ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
 when there are 50,000 worksheets!
 
@@ -31,8 +28,10 @@ does after restarting the server.
 
 [ ] implement base_url
 
-
 --------------------
+
+[ ] make communication between twist.py and notebook_lib.js use JSON
+instead of encode_list and response_text.split.
 
 [ ] Get peter.jipsen's "canvas3d_lib.js + Pre3d does shaded surfaces" into Sage
 
