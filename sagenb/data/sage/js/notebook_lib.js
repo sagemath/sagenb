@@ -1294,7 +1294,7 @@ function download_worksheet() {
     INPUT:
         base_filename
     */
-    var title = prompt("Save as...", get_element("worksheet_title").innerHTML);
+    var title = prompt("Title of saved worksheet", worksheet_name);
     if (title != null) {
         var winref = open(worksheet_command("download/" + title + '.sws'));
     }

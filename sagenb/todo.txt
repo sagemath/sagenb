@@ -2,6 +2,9 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] rate a worksheet -- note that the top of the browser (title) says
+error, though in fact there is no error.
+
 [ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
 when there are 50,000 worksheets!
 
@@ -12,8 +15,6 @@ take an old worksheet and publish it -- should always make it new.
 does after restarting the server. 
 
 [ ] implement base_url
-
---------------------
 
 [ ] make communication between twist.py and notebook_lib.js use JSON
 instead of encode_list and response_text.split.
@@ -63,11 +64,6 @@ faster.  This is a top optimization priority.
 
 [ ] "untitled renaming".  Make it an option in the user confs, which
 is on by default, by you can turn it off.
-
-[ ] When saving a worksheet, the default filename has "..." in it. 
-
-[ ] rate a worksheet -- note that the top of the browser (title) says
-error, though in fact there is no error.
 
 [ ] add message to the top of each *old* sage notebook .py file
  stating that one should work on sagenb instead.  This is a patch to
@@ -479,4 +475,6 @@ Alternatively, actually use these.
 
 [x] Deprecate "Number of backups" from server settings, since backups
 aren't made anymore.  Or use this somehow.
+
+[x] When saving a worksheet, the default filename has "..." in it. 
 
