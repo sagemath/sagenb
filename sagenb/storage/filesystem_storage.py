@@ -39,6 +39,7 @@ import copy, cPickle, shutil, tarfile
 import os
 
 from abstract_storage import Datastore
+from sagenb.misc.misc import set_restrictive_permissions
 
 def is_safe(a):
     """
@@ -129,15 +130,15 @@ class FilesystemDatastore(Datastore):
     ##################################################################################
     def _load(self, filename):
         return cPickle.load(open(self._abspath(filename)))
-        #return json.load(open(self._abspath(filename)))
-        #return yaml.load(open(self._abspath(filename)))
 
-    def _save(self, obj, filename):
+    def _save(self, obj, filename, ):
         s = cPickle.dumps(obj)
         open(self._abspath(filename), 'w').write(s)
-        #s = yaml.dump(obj)
-        #s = json.dumps(obj, indent=4)
-        #json.dump(obj, open(self._abspath(filename),'w'), indent=4)
+
+    def _permissions(self, filename):
+        f = self._abspath(filename)
+        if os.path.exists(f):
+            set_restrictive_permissions(f, allow_execute=False)
 
     ##################################################################################
     # Conversions to and from basic Python database (so that json storage will work).
@@ -186,6 +187,7 @@ class FilesystemDatastore(Datastore):
         """
         basic = self._server_conf_to_basic(server_conf)
         self._save(basic, 'conf.pickle')
+        self._permissions('conf.pickle')
 
     def load_users(self):
         """
@@ -226,7 +228,8 @@ class FilesystemDatastore(Datastore):
         
         """
         self._save(self._users_to_basic(users), 'users.pickle')
-
+        self._permissions('users.pickle')
+        
     def load_user_history(self, username):
         """
         Return the history log for the given user.
@@ -254,7 +257,9 @@ class FilesystemDatastore(Datastore):
 
             - ``history`` -- list of strings
         """
-        self._save(history, self._history_filename(username))
+        filename = self._history_filename(username)
+        self._save(history, filename)
+        self._permissions(filename)
         
     def save_worksheet(self, worksheet, conf_only=False):
         """

@@ -5,13 +5,6 @@ See http://wiki.sagemath.org/SageTasks for a related list.
 [ ] make communication between twist.py and notebook_lib.js use JSON
 instead of encode_list and response_text.split.
 
-[ ] permissions issues -- since the DATA directory must be readable,
-currently by default all the directories are *readable*, including
-history, output etc.  Definitely history should be made readable only
-by the server, and the conf files (including user accounts) should be
-forced to be only readable by the server on startup (no matter what
-the user sets up).
-
 [ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
 when there are 50,000 worksheets!
 
@@ -481,4 +474,11 @@ user to change it before saving.
 
 
 [x] synchronization between the browser and server. 
+
+[x] permissions issues -- since the DATA directory must be readable,
+currently by default all the directories are *readable*, including
+history, output etc.  Definitely history should be made readable only
+by the server, and the conf files (including user accounts) should be
+forced to be only readable by the server on startup (no matter what
+the user sets up).
 
