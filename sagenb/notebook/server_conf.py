@@ -7,11 +7,8 @@ import conf
 from conf import (DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
                   T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST)
 
-defaults = {'cell_input_color':'#000000',
-            'cell_output_color':'#0000EE',
-            'word_wrap_cols':72,
+defaults = {'word_wrap_cols':72,
             'max_history_length':250,
-            'number_of_backups':3,
             
             'idle_timeout':120,        # 2 minutes
             'idle_check_interval':360,
@@ -43,17 +40,6 @@ G_AUTH = 'Authentication'
 G_SERVER = 'Server'
 
 defaults_descriptions = {
-    'cell_input_color': {
-        DESC : 'Input cell color',
-        GROUP : G_APPEARANCE,
-        TYPE : T_COLOR,
-        },
-
-    'cell_output_color': {
-        DESC : 'Output cell color',
-        GROUP : G_APPEARANCE,
-        TYPE : T_COLOR,
-        },
 
     'word_wrap_cols': {
         DESC : 'Number of word-wrap columns',
@@ -63,12 +49,6 @@ defaults_descriptions = {
 
     'max_history_length': {
         DESC : 'Maximum history length',
-        GROUP : G_SERVER,
-        TYPE : T_INTEGER,
-        },
-
-    'number_of_backups': {
-        DESC : 'Number of backups',
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },

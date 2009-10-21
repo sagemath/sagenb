@@ -8,15 +8,6 @@ when there are 50,000 worksheets!
 [ ] Clicking publish should update the "last changed" time.  E.g.,
 take an old worksheet and publish it -- should always make it new.
 
-
-[ ] Deprecate "Number of backups" from server settings, since backups
-aren't made anymore.  Or use this somehow.
-
-[ ] Also remove 'cell_input_color':'#000000',
-'cell_output_color':'#0000EE', since I think they are used nowhere.
-Also, server confs is a weird place to put such things.
-Alternatively, actually use these.
-
 [ ] change number word wrap columns in notebook settings has no immediate impact, though it
 does after restarting the server. 
 
@@ -481,3 +472,11 @@ the user sets up).
 	  File "/Users/wstein/sage/build/64bit/sage/local/lib/python2.6/site-packages/sagenb/notebook/worksheet.py", line 3122, in check_comp
 	    c = self.best_completion(out, C._word_being_completed)
 	exceptions.AttributeError: Cell instance has no attribute '_word_being_completed'"
+[x] Also remove 'cell_input_color':'#000000',
+'cell_output_color':'#0000EE', since I think they are used nowhere.
+Also, server confs is a weird place to put such things.
+Alternatively, actually use these.
+
+[x] Deprecate "Number of backups" from server settings, since backups
+aren't made anymore.  Or use this somehow.
+
