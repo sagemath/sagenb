@@ -3160,7 +3160,10 @@ from sagenb.notebook.all import *
                     return
                 if before_prompt[-1] != '?':
                     # completions
-                    c = self.best_completion(out, C._word_being_completed)
+                    if hasattr(C, '_word_being_completed'):
+                        c = self.best_completion(out, C._word_being_completed)
+                    else:
+                        c = ''
                     C.set_changed_input_text(before_prompt + c + after_prompt)
                     out = self.completions_html(C.id(), out)
                     C.set_introspect_html(out, completing=True)
