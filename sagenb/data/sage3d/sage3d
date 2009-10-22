@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#DIR=`pwd`
+#cd `dirname "$0"`
+#java -classpath lib/sage3d.jar:sun-libs/j3dcore.jar:sun-libs/gluegen-rt.jar:sun-libs/vecmath.jar:sun-libs/j3dutils.jar:sun-libs/jogl.jar \
+#    org.sagemath.sage3d.ObjectViewerApp "$DIR/$1"
+
+# See $SAGE3D_HOME/README.txt
+SAGE3D_HOME="$SAGE_LOCAL/lib/python/site-packages/sagenb/data/sage3d"
+cd $SAGE3D_HOME
+export LD_LIBRARY_PATH="$SAGE3D_HOME/lib/amd64"
+java -classpath lib/sage3d.jar:lib/ext/j3dcore.jar:lib/ext/vecmath.jar:lib/ext/j3dutils.jar \
+    org.sagemath.sage3d.ObjectViewerApp "$1"

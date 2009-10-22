@@ -35,8 +35,8 @@ code = setup(name = 'sagenb',
                      'sagenb.simple',
                      'sagenb.storage'
                      ],
+      scripts      = ['sagenb/data/jmol/jmol',
+                      'sagenb/data/sage3d/sage3d',
+                     ],
       package_data = {'sagenb':all_files('sagenb/data', 'sagenb/')}
       )
-
-
-
