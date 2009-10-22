@@ -2,6 +2,11 @@ TODO:
 
 See http://wiki.sagemath.org/SageTasks for a related list.
 
+[ ] Fix this:
+    sage: pwd --> '/some/random/directory'
+    sage: notebook()  # then let the notebook start up, then hit ctrl-c
+    sage: pwd -->  '/Users/palmieri/.sage'  
+
 [ ] rate a worksheet -- note that the top of the browser (title) says
 error, though in fact there is no error.
 

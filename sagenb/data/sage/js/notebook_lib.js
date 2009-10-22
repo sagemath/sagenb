@@ -551,13 +551,25 @@ function refresh_cell_list_callback(status, response_text) {
     a pair consisting of the updated state_number and the new HTML 
     for the worksheet_cell_list div DOM element.
     */
+    var X, y, z, s;
     if (status == 'success') {
-         var X = response_text.split(SEP);
+         X = response_text.split(SEP);
          state_number = X[0];
-         var y = get_element("worksheet_cell_list");
-         if (y) {
-             y.innerHTML = X[1];
-         }
+         /* Now we replace the HTML for every cell *except* the active cell
+            by the contents of X[1]. */
+       //   y = get_element("worksheet_cell_list");
+       //  if (y) {
+             z = get_element(current_cell);
+             if (z) { s = z.innerHTML; }
+             refresh();
+      //         y.innerHTML = X[1];
+	     if (z) { 
+		 z = get_element(current_cell); 
+		 z.innerHTML = s; 
+		 cell_input_resize(current_cell);
+		 jump_to_cell(current_cell, 0);
+	     }
+   //   }
     }
 }
 
