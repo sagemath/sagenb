@@ -31,8 +31,7 @@ from cgi import escape
 
 
 # Sage libraries
-from   sagenb.misc.misc   import (pad_zeros, is_package_installed,
-                             sage_jsmath_macros, cputime, tmp_dir, load, save)
+from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save)
 
 # Sage Notebook
 import css          # style
@@ -60,8 +59,6 @@ except ImportError:
 SYSTEM_NAMES = [v.split()[0] for v in SYSTEMS]
 
 JSMATH = True
-
-JSMATH_IMAGE_FONTS = is_package_installed("jsmath-image-fonts")
 
 JEDITABLE_TINYMCE  = True
 
@@ -1336,14 +1333,10 @@ class Notebook(object):
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
 
         return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
-                        data = data,
-                        worksheet = worksheet,
+                        data = data, worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
-                        username = username,
-                        JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
+                        username = username, JSMATH = JSMATH,
+                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
 
     def html_specific_revision(self, username, ws, rev):
@@ -1384,17 +1377,11 @@ class Notebook(object):
                 break
             
         return template(os.path.join("html", "notebook", "specific_revision.html"),
-                        worksheet = ws,
-                        worksheet_filename = ws.filename(),
-                        username = username, rev = rev,
-                        prev_rev = prev_rev, next_rev = next_rev,
-                        time_ago = time_ago,
+                        worksheet = ws, worksheet_filename = ws.filename(),
+                        username = username, rev = rev, prev_rev = prev_rev,
+                        next_rev = next_rev, time_ago = time_ago,
                         body_worksheet_html = body_worksheet_html,
-                        JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
-        
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
     def html_share(self, worksheet, username):
         r"""
@@ -1426,11 +1413,7 @@ class Notebook(object):
                         worksheet_filename = worksheet.filename(),
                         username = username, other_users = other_users,
                         user_is_admin = self.user(username).is_admin(),
-                        JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
-
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
     def html_download_or_delete_datafile(self, ws, username, filename):
         r"""
@@ -1472,21 +1455,14 @@ class Notebook(object):
             text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
 
         return template(os.path.join("html", "notebook", "download_or_delete_datafile.html"),
-                        worksheet = ws,
-                        worksheet_filename = ws.filename(),
+                        worksheet = ws, worksheet_filename = ws.filename(),
                         username = username,
                         active_worksheets = active_worksheets,
-                        filename_ = filename,
-                        path = path,
+                        filename_ = filename, path = path,
                         file_is_image = file_is_image,
                         file_is_text = file_is_text,
                         text_file_content = text_file_content,
-                        JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
-
-
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
 
     ##########################################################
@@ -1616,11 +1592,8 @@ class Notebook(object):
         return template(os.path.join("html", "notebook", "plain_text_window.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
-                        username = username,
-                        plain_text = plain_text, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
+                        username = username, plain_text = plain_text,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
                         
     def html_edit_window(self, worksheet, username):
         r"""
@@ -1650,11 +1623,8 @@ class Notebook(object):
         return template(os.path.join("html", "notebook", "edit_window.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
-                        username = username, text = text,
-                        n_lines = n_lines, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
+                        username = username, text = text, n_lines = n_lines,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
     
     def html_beforepublish_window(self, worksheet, username):
         r"""
@@ -1691,10 +1661,8 @@ class Notebook(object):
         return template(os.path.join("html", "notebook", "beforepublish_window.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
-                        username = username, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
+                        username = username,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
         
     def html_afterpublish_window(self, worksheet, username, url, dtime):
         r"""
@@ -1723,11 +1691,8 @@ class Notebook(object):
         return template(os.path.join("html", "notebook", "afterpublish_window.html"),
                         worksheet = worksheet,
                         worksheet_filename = worksheet.filename(),
-                        username = username, url = url,
-                        time = time, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
+                        username = username, url = url, time = time,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
     def html_upload_data_window(self, ws, username):
         r"""
@@ -1751,13 +1716,9 @@ class Notebook(object):
             '\n<!D...orksheet_menu" value="Upload File" onClick="form.submit()...r />\n</div>\n\n\n    </body>\n</html>'
         """
         return template(os.path.join("html", "notebook", "upload_data_window.html"),
-                        worksheet = ws,
-                        worksheet_filename = ws.filename(),
-                        username = username, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
-    
+                        worksheet = ws, worksheet_filename = ws.filename(),
+                        username = username,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
     def html(self, worksheet_filename=None, username='guest', show_debug=False, admin=False):
         r"""
@@ -1799,14 +1760,9 @@ class Notebook(object):
             
         return template(template_page, worksheet = W,
                         worksheet_filename = W.filename(),
-                        worksheet_html = W.html(),
-                        notebook = self, username = username,
-                        show_debug = show_debug,
-                        JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
-
+                        worksheet_html = W.html(), notebook = self,
+                        username = username, show_debug = show_debug,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
     def html_doc(self, username):
         r"""
@@ -1828,10 +1784,8 @@ class Notebook(object):
             '\n<!D...c Documentation</a><br /><br />\n        <a href="/help/">Sage Notebook Howto...   </body>\n</html>'
         """
         return template(os.path.join("html", "notebook", "doc.html"),
-                        username = username, JSMATH = JSMATH,
-                        JSMATH_IMAGE_FONTS = JSMATH_IMAGE_FONTS,
-                        JEDITABLE_TINYMCE = JEDITABLE_TINYMCE,
-                        sage_jsmath_macros = sage_jsmath_macros)
+                        username = username,
+                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
         
 
 ####################################################################

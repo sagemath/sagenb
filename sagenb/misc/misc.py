@@ -176,30 +176,32 @@ try:
 except ImportError:
     SAGE_DOC = "stub"
     
+# TODO: Get macros from server and user settings.
 try:
     import sage.all
-    from sage.misc.latex_macros import sage_jsmath_macros
+    from sage.misc.latex_macros import sage_jsmath_macros_easy
 except ImportError:
 #    sage_jsmath_macros = []
-    sage_jsmath_macros = [
-        "jsMath.Macro('ZZ','\\\\Bold{Z}');",
-        "jsMath.Macro('RR','\\\\Bold{R}');",
-        "jsMath.Macro('CC','\\\\Bold{C}');",
-        "jsMath.Macro('QQ','\\\\Bold{Q}');",
-        "jsMath.Macro('QQbar','\\\\overline{\\\\QQ}');",
-        "jsMath.Macro('GF','\\\\Bold{F}_{#1}',1);",
-        "jsMath.Macro('Zp','\\\\ZZ_{#1}',1);",
-        "jsMath.Macro('Qp','\\\\QQ_{#1}',1);",
-        "jsMath.Macro('Zmod','\\\\ZZ/#1\\\\ZZ',1);",
-        "jsMath.Macro('CDF','\\\\texttt{Complex Double Field}');",
-        "jsMath.Macro('CIF','\\\\Bold{C}');",
-        "jsMath.Macro('CLF','\\\\Bold{C}');",
-        "jsMath.Macro('RDF','\\\\Bold{R}');",
-        "jsMath.Macro('RIF','\\\\Bold{I} \\\\Bold{R}');",
-        "jsMath.Macro('RLF','\\\\Bold{R}');",
-        "jsMath.Macro('CFF','\\\\Bold{CFF}');",
-        "jsMath.Macro('Bold','\\\\mathbf{#1}',1);"
+    sage_jsmath_macros_easy = [
+        "ZZ : '{\\\\Bold{Z}}'",
+        "RR : '{\\\\Bold{R}}'",
+        "CC : '{\\\\Bold{C}}'",
+        "QQ : '{\\\\Bold{Q}}'",
+        "QQbar : '{\\\\overline{\\\\QQ}}'",
+        "GF : ['{\\\\Bold{F}_{#1}}', 1]",
+        "Zp : ['{\\\\ZZ_{#1}}', 1]",
+        "Qp : ['{\\\\QQ_{#1}}', 1]",
+        "Zmod : ['{\\\\ZZ/#1\\\\ZZ}', 1]",
+        "CIF : '{\\\\Bold{C}}'",
+        "CLF : '{\\\\Bold{C}}'",
+        "RDF : '{\\\\Bold{R}}'",
+        "RIF : '{\\\\Bold{I} \\\\Bold{R}}'",
+        "RLF : '{\\\\Bold{R}}'",
+        "CFF : '{\\\\Bold{CFF}}'",
+        "Bold : ['{\\\\mathbf{#1}}', 1]"
         ]
+finally:
+    jsmath_macros = ',\n'.join(sage_jsmath_macros_easy)
 
 try:
     from sage.misc.session import init as session_init
@@ -208,7 +210,6 @@ except ImportError:
     def session_init(*args, **kwds):
         pass
     
-
 try:
     from sage.misc.sage_eval import sage_eval
 except ImportError:
@@ -218,11 +219,10 @@ except ImportError:
         return eval(value, globs)
 
 try:
-    from sage.misc.all import is_package_installed
+    from sage.misc.package import is_package_installed
 except ImportError:
     def is_package_installed(name, *args, **kwds):
         return False
-
 
 try:
     from sage.misc.viewer import browser
@@ -241,7 +241,6 @@ except ImportError:
     def save(obj, filename):
         s = cPickle.dumps(obj, protocol=2)
         open(filename,'wb').write(s)
-
 
 try:
     from sage.misc.misc import alarm, cancel_alarm, verbose
@@ -315,7 +314,7 @@ except ImportError:
     SAGE_VERSION=""
 
 try:
-    from sage.plot.all import Color
+    from sage.plot.colors import Color
 except ImportError:
     class Color:
         def __init__(self, *args, **kwds):

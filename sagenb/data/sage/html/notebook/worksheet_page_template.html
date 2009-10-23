@@ -8,9 +8,7 @@ INPUT:
 - select    - a string containing the control that is selected
 - backwards - a boolean
 - JSMATH - a boolean stating whether to include jsMath
-- JSMATH_IMAGE_FONTS - a boolean stating whether to include jsMath iamage fonts
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
-- sage_jsmath_macros - an array containing strings of Javascript of Sage macros for jsMath
 #}
 
 {% if not select %}
@@ -32,7 +30,7 @@ INPUT:
 {% block css %}main{% endblock %}
 
 {% block javascript %}
-{{ common_javascript(worksheet, worksheet_filename, username, JSMATH, JSMATH_IMAGE_FONTS, JEDITABLE_TINYMCE, sage_jsmath_macros) }}
+{{ common_javascript(worksheet, worksheet_filename, username, JSMATH, JEDITABLE_TINYMCE) }}
 {% endblock %}
 
 {% block body %}

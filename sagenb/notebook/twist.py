@@ -52,13 +52,17 @@ from sagenb.notebook.template import template
 HISTORY_MAX_OUTPUT = 92*5
 HISTORY_NCOLS = 90
 
-from sagenb.misc.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA, SAGE_VERSION
+from sagenb.misc.misc import (SAGE_DOC, DATA, SAGE_VERSION, walltime,
+                              tmp_filename, tmp_dir, is_package_installed,
+                              jsmath_macros)
 
 css_path             = os.path.join(DATA, "sage", "css")
 image_path           = os.path.join(DATA, "sage", "images")
 javascript_path      = os.path.join(DATA)
 sage_javascript_path = os.path.join(DATA, 'sage', 'js')
 java_path            = os.path.join(DATA)
+
+jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
 
 # the list of users waiting to register
 waiting = {}
@@ -1795,6 +1799,16 @@ setattr(CSS, 'child_reset.css', Reset_css())
 # Javascript resources
 ############################
 
+class JSMath_js(resource.Resource):
+    def render(self, ctx):
+        gzip_handler(ctx)
+
+        s = template(os.path.join('js', 'jsmath.js'),
+                     jsmath_macros = jsmath_macros,
+                     jsmath_image_fonts = jsmath_image_fonts)
+        
+        return http.Response(stream=s)
+
 class Main_js(resource.Resource):
     def render(self, ctx):
         gzip_handler(ctx)
@@ -1827,6 +1841,7 @@ class SageJavascript(resource.Resource):
         return static.File(path)
 
 setattr(SageJavascript, 'child_main.js', Main_js())
+setattr(SageJavascript, 'child_jsmath.js', JSMath_js())
 
 class Javascript(resource.Resource):
     addSlash = True

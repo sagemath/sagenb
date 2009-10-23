@@ -4,9 +4,7 @@ INPUT:
 - worksheet_filename - a string containing a worksheet's filename
 - username - a string containing a user's name
 - JSMATH - a boolean stating whether to include jsMath
-- JSMATH_IMAGE_FONTS - a boolean stating whether to include jsMath iamage fonts
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
-- sage_jsmath_macros - an array containing strings of Javascript of Sage macros for jsMath
   #}
 {% macro common_title(worksheet_filename, worksheet) %}
     {% if worksheet_filename %}
@@ -16,13 +14,13 @@ INPUT:
     {% endif %}
 {% endmacro %}
 
-
 {% macro common_css %}
 <!-- Sage notebook stylesheet -->
 <link rel=stylesheet href="/css/main.css" type="text/css" />
 {% endmacro %}
 
-{% macro common_javascript(worksheet, worksheet_filename, username, JSMATH, JSMATH_IMAGE_FONTS, JEDITABLE_TINYMCE, sage_jsmath_macros) %}
+{% macro common_javascript(worksheet, worksheet_filename, username, JSMATH, JEDITABLE_TINYMCE) %}
+
 <!-- jQuery - general-purpose functions -->
 <script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
 
@@ -42,47 +40,7 @@ INPUT:
   
 {% if JSMATH %}
 <!-- jsMath - typeset mathematics -->
-    <!-- Turn off font warning. -->
-    <style>
-        #jsMath_Warning {display: none}
-    </style>
-    <script type="text/javascript">
-        jsMath = {Controls: {cookie: {scale: 115}}}
-    </script>
-    {% if not JSMATH_IMAGE_FONTS %}
-        <script type="text/javascript" src="/javascript/jsmath/plugins/noImageFonts.js"></script>
-    {% endif %}
-    <!-- Move the jsMath button 20 pixels from the right edge
-         (apparently in some browsers, it covers up the scroll
-         bar) -->
-    <script type="text/javascript">
-        jsMath.styles = {
-            '#jsMath_button':
-                'position:fixed; bottom:1px; right:20px; background-color:white;'
-                    + 'border: solid 1px #959595; margin:0px; padding: 0px 3px 1px 3px; '
-                    + 'z-index:102; color:black; text-decoration:none; font-size:x-small; '
-                    + 'width:auto; cursor:hand;',
-        };
-    </script>
-    <script type="text/javascript" src="/javascript/jsmath/jsMath.js"></script>
-    <script type="text/javascript">
-        /* The extensions here do the following:
-            - verb implements the \verb command: 
-              see http://www.math.union.edu/~dpvc/jsMath/authors/verb.html
-            - moreArrows implements \xrightarrow, among other things:
-              see http://www.math.union.edu/~dpvc/jsMath/authors//moreArrows.html
-            - AMSmath implements a number of AMS math commands:
-              see http://www.math.union.edu/~dpvc/jsMath/authors/AMSmath.html
-        */
-        jsMath.Extension.Require("verb");
-        jsMath.Extension.Require("moreArrows");
-        jsMath.Extension.Require("AMSmath");
-        jsMath.Extension.Require("AMSsymbols");
-    </script>
-
-    {% for m in sage_jsmath_macros %}
-    <script> {{ m }} </script>
-    {% endfor %}
+<script type="text/javascript" src="/javascript/sage/jsmath.js"></script>
 {% endif %}
 
 <!-- Sage3d - accelerated 3D graphics -->
@@ -90,22 +48,22 @@ INPUT:
 
 <!-- Jmol - embedded 3D graphics -->
 <script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
-<!-- This must stay in <head> -->
+<!-- This must stay in head -->
 <script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
 
 {% if JEDITABLE_TINYMCE and not worksheet.docbrowser() and not worksheet.is_published() %}
 <!-- TinyMCE and jEditable - in-place editing of text cells -->
-    <script type="text/javascript" src="/javascript/tiny_mce/tiny_mce.js"></script>
-    <script type="text/javascript" src="/javascript/jquery/plugins/jeditable/jquery.jeditable.mini.js" charset="utf-8"></script>
-    <script type="text/javascript" src="/javascript/sage/tinymce.js"></script>
+<script type="text/javascript" src="/javascript/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/javascript/jquery/plugins/jeditable/jquery.jeditable.mini.js" charset="utf-8"></script>
+<script type="text/javascript" src="/javascript/sage/tinymce.js"></script>
 {% endif %}
 
 <script type="text/javascript">user_name= "{{ username }}";</script>
 {% if worksheet_filename %}
 <script  type="text/javascript">
-    worksheet_filename="{{ worksheet_filename }}";
-    worksheet_name="{{ worksheet.name() }}";
-    server_ping_while_alive();
+  worksheet_filename="{{ worksheet_filename }}";
+  worksheet_name="{{ worksheet.name() }}";
+  server_ping_while_alive();
 </script>
 {% endif %}
 
