@@ -180,7 +180,26 @@ try:
     import sage.all
     from sage.misc.latex_macros import sage_jsmath_macros
 except ImportError:
-    sage_jsmath_macros = []
+#    sage_jsmath_macros = []
+    sage_jsmath_macros = [
+        "jsMath.Macro('ZZ','\\\\Bold{Z}');",
+        "jsMath.Macro('RR','\\\\Bold{R}');",
+        "jsMath.Macro('CC','\\\\Bold{C}');",
+        "jsMath.Macro('QQ','\\\\Bold{Q}');",
+        "jsMath.Macro('QQbar','\\\\overline{\\\\QQ}');",
+        "jsMath.Macro('GF','\\\\Bold{F}_{#1}',1);",
+        "jsMath.Macro('Zp','\\\\ZZ_{#1}',1);",
+        "jsMath.Macro('Qp','\\\\QQ_{#1}',1);",
+        "jsMath.Macro('Zmod','\\\\ZZ/#1\\\\ZZ',1);",
+        "jsMath.Macro('CDF','\\\\texttt{Complex Double Field}');",
+        "jsMath.Macro('CIF','\\\\Bold{C}');",
+        "jsMath.Macro('CLF','\\\\Bold{C}');",
+        "jsMath.Macro('RDF','\\\\Bold{R}');",
+        "jsMath.Macro('RIF','\\\\Bold{I} \\\\Bold{R}');",
+        "jsMath.Macro('RLF','\\\\Bold{R}');",
+        "jsMath.Macro('CFF','\\\\Bold{CFF}');",
+        "jsMath.Macro('Bold','\\\\mathbf{#1}',1);"
+        ]
 
 try:
     from sage.misc.session import init as session_init
