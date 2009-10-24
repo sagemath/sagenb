@@ -10,10 +10,13 @@ INPUT:
     - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
 
-{% set title = "Share this document" %}
+{% block sharebar_title %}
+Share this document
+{% endblock %}
+
 {% set select = "share" %}
 
-{% block body_addition %}
+{% block after_sharebar %}
 {% if not (user_is_admin or username == worksheet.owner()) %}
     Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href="copy">make your own copy</a>.
 {% else %}

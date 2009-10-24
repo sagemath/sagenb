@@ -1778,19 +1778,19 @@ class Worksheet(object):
         if not owner in self.__collaborators:
             self.__collaborators.append(owner)
 
-    def user_is_only_viewer(self, user):
+    def is_only_viewer(self, user):
         try:
             return user in self.__viewers
         except AttributeError:
             return False
 
-    def user_is_viewer(self, user):
+    def is_viewer(self, user):
         try:
             return user in self.__viewers or user in self.__collaborators or user == self.publisher()
         except AttributeError:
             return True
 
-    def user_is_collaborator(self, user):
+    def is_collaborator(self, user):
         try:
             return user in self.__collaborators
         except AttributeError:
@@ -1838,7 +1838,7 @@ class Worksheet(object):
         
             sage: nb.delete()
         """
-        return self.user_is_collaborator(user) or self.is_owner(user)
+        return self.is_collaborator(user) or self.is_owner(user)
         
     def delete_user(self, user):
         """
@@ -2388,17 +2388,6 @@ class Worksheet(object):
             name = name[:max] + ' ...'
         return name
 
-    def html_title(self, username='guest'):
-        import cgi
-        name = self.truncated_name()
-        warn = self.warn_about_other_person_editing(username, WARN_THRESHOLD)
-        
-        return template(os.path.join("html", "worksheet", "title.html"),
-                        worksheet = self,
-                        name = cgi.escape(self.truncated_name()),
-                        warn = warn, doc_worksheet = self.is_doc_worksheet(),
-                        username = username)
-
     def is_doc_worksheet(self):
         try:
             return self.__is_doc_worksheet
@@ -2441,7 +2430,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.html_share_publish_buttons()
-            '\n\n\n\n\n<a title="Print this worksheet" class="usercontrol" onClick="print_worksheet()">...'
+            '...Print...Worksheet...Edit...Undo...Share...Publish...'
         """
         return template(os.path.join("html", "worksheet", "share_publish_buttons.html"),
                         worksheet = self, select = select, backwards = backwards)
@@ -2457,7 +2446,7 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.html_menu()
-            '\n&nbsp;&nbsp;&nbsp;<select class="worksheet"  onchange="go_option(this);">\n    ...'
+            '...File...Action...Data...pretty_print...'
         """
         return template(os.path.join("html", "worksheet", "menu.html"),
                         name = _notebook.clean_name(self.name()),
@@ -2588,7 +2577,7 @@ class Worksheet(object):
         return time.time() - self.last_edited()
 
 
-    def warn_about_other_person_editing(self,username, threshold):
+    def warn_about_other_person_editing(self,username, threshold = WARN_THRESHOLD):
         r"""
         Check to see if another user besides username was the last to edit
         this worksheet during the last ``threshold`` seconds.

@@ -9,7 +9,7 @@ INPUT
 - pretty_print - a boolean stating whether to typeset as default
 - doc_worksheet - a boolean stating whether the worksheet is the doc worksheet
 #}
-&nbsp;&nbsp;&nbsp;<select class="worksheet"  onchange="go_option(this);">
+<select class="worksheet"  onchange="go_option(this);" id="file-menu">
     <option title="Select a file related function" value=""  selected>File...</option>
     <option title="Load a new worksheet stored in a file" value="upload_worksheet_button();">Load worksheet from a file...</option>
     <option title="Create a new worksheet" value="new_worksheet();">New worksheet</option>
@@ -20,7 +20,7 @@ INPUT
     <option title="Move this worksheet to the trash" value="delete_worksheet('{{ filename_ }}');">Delete worksheet</option>
 </select>
 
-<select class="worksheet"  onchange="go_option(this);" >
+<select class="worksheet"  onchange="go_option(this);"  id="action-menu">
     <option title="Select a worksheet function" value="" selected>Action...</option>
     <option title="Interrupt currently running calculations, if possible" value="interrupt();">Interrupt</option>
     <option title="Restart the worksheet process" value="restart_sage();">Restart worksheet</option>
@@ -34,7 +34,7 @@ INPUT
     <option title="Switch to single-cell mode" value="slide_mode();">One Cell Mode</option>
     <option title="Switch to multi-cell mode" value="cell_mode();">Multi Cell Mode</option> 
 </select>
-<select class="worksheet" onchange="handle_data_menu(this);" >
+<select class="worksheet" onchange="handle_data_menu(this);" id="data-menu">
     <option title="Select an attached file" value="" selected>Data...</option>
     <option title="Upload or create a data file in a wide range of formats" value="__upload_data_file__">Upload or create file...</option>
     <option value="">--------------------</option>
@@ -44,7 +44,7 @@ INPUT
 </select>
 
 {% if not doc_worksheet %}
-<select onchange="go_system_select(this, {{ current_system_index }});" class="worksheet">
+<select onchange="go_system_select(this, {{ current_system_index }});" class="worksheet" id="systems-menu">
     {% for system_index, system_name in systems_enumerated %}
         <option title="Evaluate all input cells using {{ system_names[system_index] }}"
             {{ "selected" if current_system_index == system_index else "" }} value="{{ system_names[system_index] }}">

@@ -408,7 +408,7 @@ class UploadWorksheet(resource.PostableResource):
     def render(self, ctx):
         backlinks = """ Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>."""
 
-        url = ctx.args['urlField'][0].strip()
+        url = ctx.args['url'][0].strip()
         dir = ''  # we will delete the directory below if it is used
         if url != '':
             # downloading a file from the internet
@@ -416,14 +416,14 @@ class UploadWorksheet(resource.PostableResource):
         else:
             # uploading a file from the user's computer
             dir = tmp_dir()
-            filename = ctx.files['fileField'][0][0]
+            filename = ctx.files['file'][0][0]
             if filename == '':
                 return HTMLResponse(stream=message("Please specify a worksheet to load.%s" % backlinks))
             # Make tmp file in Sage temp directory
             filename = os.path.join(dir, filename)
             f = file(filename,'wb')
             # Then download to that file.
-            f.write(ctx.files['fileField'][0][2].read())
+            f.write(ctx.files['file'][0][2].read())
             # TODO: Server blocking issues (?!)
             f.close()
 
@@ -432,8 +432,8 @@ class UploadWorksheet(resource.PostableResource):
         # while allowing the server to still serve requests.
         def callback(result):
 
-            if ctx.args.has_key('nameField'):
-                new_name = ctx.args['nameField'][0].strip()
+            if ctx.args.has_key('name'):
+                new_name = ctx.args['name'][0].strip()
             else:
                 new_name = None
 
@@ -547,7 +547,7 @@ class Worksheet_link_datafile(WorksheetResource, resource.Resource):
         target_ws =  notebook.get_worksheet_with_filename(target_worksheet_filename)
         target = os.path.abspath(os.path.join(
             target_ws.data_directory(), data_filename))
-        if target_ws.owner() != self.username and not target_ws.user_is_collaborator(self.username):
+        if target_ws.owner() != self.username and not target_ws.is_collaborator(self.username):
             return HTMLResponse(stream=message("illegal link attempt!"))
         os.system('ln "%s" "%s"'%(src, target))
         return http.RedirectResponse('/home/'+target_ws.filename() + '/datafile?name=%s'%data_filename)
@@ -565,20 +565,20 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
         backlinks = """ Return to <a href="%s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%s" title="Interactively use the worksheet"><strong>%s</strong></a>.""" % (upload_url, worksheet_url, self.worksheet.name())
 
         # Check for the form's fields.  They need not be filled.
-        if not ctx.files.has_key('fileField'):
+        if not ctx.files.has_key('file'):
             return HTMLResponse(stream=message('Error uploading file (missing fileField file).%s' % backlinks, worksheet_url))
 
-        text_fields = ['urlField', 'newField', 'nameField']
+        text_fields = ['url', 'new', 'name']
         for field in text_fields:
             if not ctx.args.has_key(field):
                 return HTMLResponse(stream=message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url))
 
         # Get the fields.
-        newfield = ctx.args.get('newField', [''])[0].strip()
-        name = ctx.args.get('nameField', [''])[0].strip()
-        url = ctx.args.get('urlField', [''])[0].strip()
+        newfield = ctx.args.get('new', [''])[0].strip()
+        name = ctx.args.get('name', [''])[0].strip()
+        url = ctx.args.get('url', [''])[0].strip()
 
-        name = name or ctx.files['fileField'][0][0] or newfield
+        name = name or ctx.files['file'][0][0] or newfield
         if url and not name:
             name = url.split('/')[-1]
 
@@ -622,7 +622,7 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
             return response
         else:
             f = file(dest, 'wb')
-            f.write(ctx.files['fileField'][0][2].read())
+            f.write(ctx.files['file'][0][2].read())
             f.close()
             return response
 
@@ -958,9 +958,9 @@ class SettingsPage(resource.PostableResource):
             nu['autosave_interval'] = autosave
             redirect_to_home = True            
 
-        old = request.args.get('Oldpass', [None])[0]
-        new = request.args.get('Newpass', [None])[0]
-        two = request.args.get('RetypePass', [None])[0]
+        old = request.args.get('old-pass', [None])[0]
+        new = request.args.get('new-pass', [None])[0]
+        two = request.args.get('retype-pass', [None])[0]
         if new or two:
             if not old:
                 error = 'Old password not given'
@@ -980,7 +980,7 @@ class SettingsPage(resource.PostableResource):
                 redirect_to_logout = True
 
         if notebook.conf()['email']:
-            newemail = request.args.get('Newemail', [None])[0]
+            newemail = request.args.get('new-email', [None])[0]
             if newemail:
                 nu.set_email(newemail)
 #                nu.set_email_confirmation(False)

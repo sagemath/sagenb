@@ -1,27 +1,27 @@
-<table width="100%%">
-  <tr>
-    <td>
-      {% include "html/banner.html" %}
-    </td>
-    <td align=right id=controls>
-      <span class="username">{{ username }}</span>
-
+<div id="top-bar">
+  {% include "html/banner.html" %}
+  <div id="controls">
+    <ul>
+      <li class="username">{{ username }}</li>
       {% if username == 'guest' %}
-        <span class="vbar"></span><a title="Please log in to the Sage notebook" class="usercontrol" href="/">Log in</a>
+      <li><a title="Please log in to the Sage notebook" class="usercontrol" href="/">Log in</a></li>
       {% else %}
-        <span class="vbar"></span><a title="Back to your personal worksheet list" class="usercontrol" href="/home/{{ username }}">Home</a>
-        {% if pub %}
-          <span class="vbar"></span><span class="usercontrol">Published</span>
-        {% else %}
-          <span class="vbar"></span><a title="Browse the published worksheets" class="usercontrol" href="/pub">Published</a>
-          <span class="vbar"></span><a title="View a log of recent computations" class="usercontrol" onClick="history_window()">Log</a>
-        {% endif %}
-
-        <span class="vbar"></span><a title="Documentation" class="usercontrol" onClick="help()">Help</a>
-        <span class="vbar"></span><a title="Change account settings including password" class="usercontrol" href="/settings">Settings</a>
-        <span class="vbar"></span><a title="Log out of the Sage notebook" class="usercontrol" href="/logout">Sign out</a>
+      {# TODO: Hack-ish. Remove on template cleanup. #}
+      {% if toggle %}
+      <li><a title="Toggle the top bar" class="usercontrol" onClick="$('#worksheet-bar').toggle()">Toggle</a></li>
       {% endif %}
-    </td>
-  </tr>
-</table>
-<hr class="usercontrol">
+      <li><a title="Back to your personal worksheet list" class="usercontrol" href="/home/{{ username }}">Home</a></li>
+      {% if pub %}
+      <li><span class="usercontrol">Published</span></li>
+      {% else %}
+      <li><a title="Browse the published worksheets" class="usercontrol" href="/pub">Published</a></li>
+      <li><a title="View a log of recent computations" class="usercontrol" href="#" onClick="history_window()">Log</a></li>
+      {% endif %}
+      <li><a title="Change account settings including password" class="usercontrol" href="/settings">Settings</a></li>
+      <li><a title="Documentation" class="usercontrol" href="#" onClick="help()">Help</a></li>
+      <li><a title="Report a problem or submit a bug to improve Sage" class="usercontrol" href="#" onClick="bugreport()">Report a Problem</a></li>
+      <li><a title="Log out of the Sage notebook" class="usercontrol" href="/logout">Sign out</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>

@@ -174,13 +174,15 @@ class NotebookTestCase(unittest.TestCase):
         This assumes that you're at the login page.
         """
         sel = self.selenium
-        sel.click("//a/b[contains(text(), 'Sign up')]")
+        sel.click("id=register-link")
+        sel.wait_for_page_to_load(30000)
         self.wait_for_title("Sign up")
-        
+
         sel.type("username", username)
         sel.type("password", password)
         sel.type("retype_password", password)
-        sel.click("//input[@value='Create account']")
+        sel.click("id=create-account-button")
+        sel.wait_for_page_to_load(30000)
         self.wait_for_title('Sign in')
         self.assertTrue(sel.is_text_present('regexp:Congratulations '))
 
@@ -195,7 +197,7 @@ class NotebookTestCase(unittest.TestCase):
         sel = self.selenium
         sel.type("email", self.username)
         sel.type("password", self.password)
-        sel.click("//input[@value='Sign In']")
+        sel.click("//button[text()='Sign in']")
         sel.wait_for_page_to_load("30000")
 
     def logout(self):
@@ -222,7 +224,7 @@ class NotebookTestCase(unittest.TestCase):
         sel = self.selenium
         sel.open('/new_worksheet')
         sel.wait_for_page_to_load("30000")
-        self.assert_(sel.is_element_present('//a[@id="worksheet_title" and text()="Untitled"]'))
+        self.assert_(sel.is_element_present('//a[@id="worksheet_title" and contains(text(),"Untitled")]'))
         sel.type('//div[contains(@class,"modal-prompt")]//input[@type="text"]', title)
         sel.click('//div[contains(@class, "modal-prompt")]/form/div[@class="button-div"]/button[@type="submit"]')
         sel.wait_for_condition('selenium.browserbot.getCurrentWindow().$("#worksheet_title").text() == "%s"' % title, 5000)
@@ -327,5 +329,8 @@ class NotebookTestCase(unittest.TestCase):
         Stops the notebook and cleans up.
         """
         self.stop_notebook()
-        shutil.rmtree(self.temp_dir + '.sagenb')
+        try:
+            shutil.rmtree(self.temp_dir + '.sagenb')
+        except OSError:
+            pass
         self.selenium.stop()

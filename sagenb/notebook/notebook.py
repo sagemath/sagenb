@@ -934,9 +934,13 @@ class Notebook(object):
             self._user_history = {}
         if self._user_history.has_key(username):
             return self._user_history[username]
-        H = self.__storage.load_user_history(username)
-        self._user_history[username] = H
-        return H
+        history = []
+        for hunk in self.__storage.load_user_history(username):
+            if isinstance(hunk, str):
+                hunk = unicode(hunk.decode('utf-8', 'ignore'))
+            history.append(hunk)
+        self._user_history[username] = history
+        return history
 
     def create_new_worksheet_from_history(self, name, username, maxlen=None):
         W = self.create_new_worksheet(name, username)
@@ -944,17 +948,17 @@ class Notebook(object):
         return W
         
     def user_history_text(self, username, maxlen=None):
-        H = self.user_history(username)
+        history = self.user_history(username)
         if maxlen:
-            H = H[-maxlen:]
-        return '\n\n'.join([L.strip() for L in H])
+            history = history[-maxlen:]
+        return '\n\n'.join([hunk.strip() for hunk in history])
 
     def add_to_user_history(self, entry, username):
-        H = self.user_history(username)
-        H.append(entry)
+        history = self.user_history(username)
+        history.append(entry)
         maxlen = self.user_conf(username)['max_history_length']
-        while len(H) > maxlen:
-            del H[0]
+        while len(history) > maxlen:
+            del history[0]
 
 
     ##########################################################
@@ -1274,7 +1278,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.worksheet_html(W.filename())
-            '\n<!D...ript type="text/javascript">cell_id_list=[0];</script>\n\n\n\n\n\n    </body>\n</html>'
+            '...<!D...Test...cell_id_list=[1]...</body>...</html>'
         """
         worksheet = self.get_worksheet_with_filename(filename)
         return template(os.path.join("html", "notebook", "worksheet.html"),
@@ -1328,7 +1332,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_worksheet_revision_list('admin', W)
-            '\n<!D...seconds ago</span></td>\n    </tr>\n\n</table>\n\n\n    </body>\n</html>'
+            '...Revision...Last Edited...seconds...ago...'
         """
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
 
@@ -1402,7 +1406,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_share(W, 'admin')
-            '\n<!D...span class="username">Sage Users:</span>\n<span class="users">\n    \n</span>\n\n\n\n    </body>\n</html>'
+            '...currently shared...add or remove collaborators...'
         """
         U = self.users()
         other_users = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
@@ -1436,7 +1440,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_download_or_delete_datafile(W, 'admin', 'bar')
-            '\n<!D...ploaded to this worksheet.</p>\n\n<hr class="usercontrol" />\n\n\n\n\n    </body>\n</html>'
+            '...Data file: bar...DATA is a special variable...uploaded...'
         """
         path = "/home/%s/data/%s"%(ws.filename(), filename)
 
@@ -1473,7 +1477,7 @@ class Notebook(object):
     
     def get_worksheets_with_collaborator(self, user):
         if self.user_is_admin(user): return self.get_all_worksheets()        
-        return [w for w in self.__worksheets.itervalues() if w.user_is_collaborator(user)]
+        return [w for w in self.__worksheets.itervalues() if w.is_collaborator(user)]
 
     def get_worksheet_names_with_collaborator(self, user):
         if self.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
@@ -1481,13 +1485,13 @@ class Notebook(object):
 
     def get_worksheets_with_viewer(self, user):
         if self.user_is_admin(user): return self.get_all_worksheets()
-        return [w for w in self.__worksheets.itervalues() if w.user_is_viewer(user)]
+        return [w for w in self.__worksheets.itervalues() if w.is_viewer(user)]
 
     def get_worksheets_with_owner(self, owner):
         return [w for w in self.__worksheets.itervalues() if w.owner() == owner]
 
     def get_worksheets_with_owner_that_are_viewable_by_user(self, owner, user):
-        return [w for w in self.get_worksheets_with_owner(owner) if w.user_is_viewer(user)]
+        return [w for w in self.get_worksheets_with_owner(owner) if w.is_viewer(user)]
 
     def get_worksheet_names_with_viewer(self, user):
         if self.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]        
@@ -1584,7 +1588,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_plain_text_window(W, 'admin')
-            '\n<!D...>\n\n<pre class="plaintext" id="cell_intext" name="textfield"></pre>\n\n\n    </body>\n</html>'
+            '...pre class="plaintext"...cell_intext...textfield...'
         """
         plain_text = worksheet.plain_text(prompts=True, banner=False)
         plain_text = escape(plain_text).strip()
@@ -1614,7 +1618,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_edit_window(W, 'admin')
-            '\n<!D...Test\nsystem:sage\n\n{{{id=0|\n\n///\n}}}</textarea>\n</form>\n\n\n    </body>\n</html>'
+            '...textarea class="plaintextedit"...{{{id=1|...//...}}}...'
         """
         text = worksheet.edit_text()
         text = escape(text)
@@ -1646,7 +1650,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_beforepublish_window(W, 'admin')
-            '\n<!D...publish when changes are made</form></span>\n<br /><br /><br />\n\n\n    </body>\n</html>'
+            '...want to publish this worksheet?...re-publish when changes...'
         """
         msg = """You can publish your worksheet to the Internet, where anyone will be able to access and view it online.
         Your worksheet will be assigned a unique address (URL) that you can send to your friends and colleagues.<br/><br/>
@@ -1713,7 +1717,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_upload_data_window(W, 'admin')
-            '\n<!D...orksheet_menu" value="Upload File" onClick="form.submit()...r />\n</div>\n\n\n    </body>\n</html>'
+            '...Upload or Create Data File...Browse...url...name of a new...'
         """
         return template(os.path.join("html", "notebook", "upload_data_window.html"),
                         worksheet = ws, worksheet_filename = ws.filename(),
@@ -1743,7 +1747,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html(W.filename(), 'admin')
-            '\n<!D...ipt type="text/javascript">worksheet_locked=false;</script>\n\n\n\n    </body>\n</html>'
+            '...Test...cell_input...plainclick...state_number...worksheet_locked=false...'
         """
         if worksheet_filename is None or worksheet_filename == '':
             worksheet_filename = None
@@ -1763,30 +1767,6 @@ class Notebook(object):
                         worksheet_html = W.html(), notebook = self,
                         username = username, show_debug = show_debug,
                         JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
-
-    def html_doc(self, username):
-        r"""
-        Return the HTML for the a documentation page.
-        
-        INPUT:
-        
-        - ``username`` - a string
-        
-        OUTPUT:
-
-        - a string - the doc page rendered as HTML
-
-        EXAMPLES::
-        
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_doc('admin')
-            '\n<!D...c Documentation</a><br /><br />\n        <a href="/help/">Sage Notebook Howto...   </body>\n</html>'
-        """
-        return template(os.path.join("html", "notebook", "doc.html"),
-                        username = username,
-                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
-        
 
 ####################################################################
 

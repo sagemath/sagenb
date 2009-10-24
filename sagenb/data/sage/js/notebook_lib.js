@@ -1585,34 +1585,6 @@ function rename_worksheet() {
     });
 }
 
-function search_worksheets_enter_pressed(event, typ) {
-    /*
-    Full text search through the worksheets after pressing enter in
-    the search input box.
-
-    INPUT:
-        event -- keyboard event; checked if it is return
-        typ -- the type of worksheets to search through (active, archived, trashed, etc.)
-    */
-    if (event && event.which == 13)
-        search_worksheets(typ);
-    else
-        return true;
-}
-
-
-function search_worksheets(typ) {
-    /*
-    Send a request back to the server and open in the current window the results
-    of doing a full-text search through all worksheets of a given type.
-
-    INPUT:
-        typ -- the type of worksheets (active, archived, etc.)
-    */
-    X = get_element('search_worksheets');
-    url = '?typ=' + typ + '&search=' + escape0(X.value);
-    window.location.replace(url);
-}
 
 function go_system_select(theform, original_system) {
     /*

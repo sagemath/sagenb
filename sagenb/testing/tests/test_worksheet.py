@@ -114,7 +114,6 @@ print(13)
         self.rename_worksheet("Test Worksheet")
         self.save_and_quit()
 
-
         #Delete the worksheet
         sel.click("//input[@id='admin-0' and @type='checkbox']")
         sel.click("//button[@onclick='delete_button();']")
@@ -141,12 +140,14 @@ print(13)
 
         self.assert_(sel.is_text_present('Test Worksheet'), 'worksheet was not in trash')
 
-
         #Empty the trash
         sel.click("link=(Empty Trash)")
         self.failUnless(re.search(r"^Emptying the trash will permanently delete all items in the trash\. Continue[\s\S]$", sel.get_confirmation()))
 
+        self.wait_for_title('Deleted Worksheets')
+        sel.wait_for_page_to_load("30000")
         #Leave and make sure that the file was actually deleted
+
         sel.click("link=Active")
         sel.wait_for_page_to_load("30000")
         sel.click("link=Trash")
@@ -183,7 +184,6 @@ print(13)
         self.assert_(sel.is_text_present('Archive Worksheet'), 'worksheet was not in the archive')
 
 
-
     def test_simple_evaluation(self):
         """
         Check to see that we can perform some simple computations and get the
@@ -209,8 +209,7 @@ print(13)
         out = self.eval_cell(5, "expr2")
         self.assertEqual(out, u'-a*b + c*d')
 
-        sel.select("//table[@id='topbar']/tbody/tr[2]/td[1]/select[2]", "label=Action...")
-        sel.select("//table[@id='topbar']/tbody/tr[2]/td[1]/select[2]", "label=Action...")
+        sel.select("id=action-menu", "label=Action...")
         sel.click("//option[@value='evaluate_all();']")
 
 

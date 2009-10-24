@@ -12,6 +12,17 @@ INPUT:
 
 {% set checked = 'checked="true"' if worksheet.is_auto_publish() else '' %}
 
-{% set title = 'Worksheet is publicly viewable at <a href="%s" style="color:#FFF" target="_blank">%s</a><br />Published on %s<br/><br /><input type="button" value="Re-publish worksheet" onClick="parent.location=\'?re\'"><input type="button" value="Stop publishing" style="margin-left:5px" onClick="parent.location=\'?stop\'"><br /><br /><input type="checkbox" name="auto" %s onchange="parent.location=\'?auto\'"/> Automatically re-publish when changes are made'|format(url, url, time, checked) %}
+{% block sharebar_title %}
+Worksheet is publicly viewable at <a href="{{ url }}" style="color:#FFF" target="_blank">{{ url }}</a>
+<br />
+Published on {{ time }}
+<br />
+<br />
+<input type="button" value="Re-publish worksheet" onClick="parent.location='?re'" />
+<input type="button" value="Stop publishing" style="margin-left:5px" onClick="parent.location='?stop'" />
+<br /><br />
+<input type="checkbox" name="auto" {{ checked }} onchange="parent.location='?auto'"/> <label for="auto">Automatically re-publish when changes are made</label>
+{% endblock %}
 {% set select = "publish" %}
 {% set backwards = true %}
+

@@ -3,83 +3,92 @@
 {% block title %}Sign in{% endblock %}
 
 {% block body %}
-        <span class="banner">
-        <a class="banner" href="http://nb.sagemath.org/"><img align="top" src="/images/sagenb.png" alt="Sage"> The Sage Notebook</a>: Welcome!
-        </span>
-        
-<br><br>
-<table>
-<tr><td width=50%>
+{% include "html/banner.html" %}        
+
 {% if welcome %}
 <h2>Congratulations {{ welcome }}! You can now sign into the Sage Notebook.</h2>
 {% endif %}
 
-<span class="addtext">
-<b>Sage</b> is a different approach to mathematics software.<br><br>
+<div id="desc">
+    <h2>Welcome!</h2>
+    <p><strong>Sage</strong> is a different approach to mathematics software.</p>
 
-<b>The Sage Notebook</b><br>
-With the Sage Notebook
-anyone can create, collaborate on, and publish interactive
-worksheets. In a worksheet, one can write code using Sage, Python,
-and other software included in Sage.
-<br><br>
+    <h2>The Sage Notebook</h2>
+    <p>With the Sage Notebook
+    anyone can create, collaborate on, and publish interactive
+    worksheets. In a worksheet, one can write code using Sage, Python,
+    and other software included in Sage.
+    </p>
 
-<b>General and Advanced Pure and Applied Mathematics</b><br>
-Use Sage for studying 
-calculus, elementary to very advanced
-number theory, cryptography, 
-commutative algebra, group theory, 
-graph theory, numerical and exact linear algebra, and more.
-<br><br>
+    <h2>General and Advanced Pure and Applied Mathematics</h2>
+    <p>Use Sage for studying 
+    calculus, elementary to very advanced
+    number theory, cryptography, 
+    commutative algebra, group theory, 
+    graph theory, numerical and exact linear algebra, and more.
+    </p>
 
-<b>Use an Open Source Alternative</b><br>
-By using Sage you help to support a viable open source
-alternative to 
-Magma, Maple, Mathematica, and MATLAB.
-Sage includes many 
-high-quality open source math packages.
-<br><br>
+    <h2>Use an Open Source Alternative</h2>
+    <p>By using Sage you help to support a viable open source
+    alternative to 
+    Magma, Maple, Mathematica, and MATLAB.
+    Sage includes many 
+    high-quality open source math packages.
+    </p>
 
-<b>Use Most Mathematics Software from Within Sage</b><br>
-Sage makes it easy for you
-to use most mathematics software together. 
-Sage includes GAP, GP/PARI, Maxima, and Singular, and
-dozens of other open packages.
-<br><br>
+    <h2>Use Most Mathematics Software from Within Sage</h2>
+    <p>Sage makes it easy for you
+    to use most mathematics software together. 
+    Sage includes GAP, GP/PARI, Maxima, and Singular, and
+    dozens of other open packages.
+    </p>
 
-<b>Use a Mainstream Programming Language</b><br>
-You work with Sage using the highly regarded 
-scripting language Python.
-You can write programs that combine serious mathematics with
-anything else.   
-</span>
-</td>
-<td bgcolor="#efefff" align=center>
-<span class="addtext">Sign into the Sage Notebook v{{ sage_version }}<br><br>
-<form method="POST" action="/login">
-<table>
-<tr><td align=right>Username:</td><td><input type="text" name="email" value="{{ default_user }}" size="15"></td></tr>
-{% if username_error %}
-<tr><td align=right><span style="color:red">Error:</span></td><td>Username is not in the system</td></tr>
-{% endif %}
-<tr><td align=right>Password:</td><td><input type="password" name="password" size="15"></td></tr>
-{% if password_error %}
-<tr><td align=right><span style="color:red">Error:</span></td><td>Wrong password</td></tr>
-{% endif %}
-<tr><td align=right><input type="checkbox" name="remember" /></td><td>Remember me</td></tr>
-<tr><td>&nbsp</td><td><input type="submit" value="Sign In"></td></tr>
-</table>
-<br><br><br>
-{% if accounts %}
-<a href='/register'><b>Sign up for a new Sage Notebook account</b></a>
-{% endif %}
-<br><br><br>
-<a href='/pub'><b>Browse published Sage worksheets<br>(no login required)</b></a><br /><br/><br/>
-{% if recovery %}
-<a href='/forgotpass'><b>Forgot password</b></a>
-{% endif %}
-</span>
-</td>
-</tr>
-</table>
+    <h2>Use a Mainstream Programming Language</h2>
+    <p>You work with Sage using the highly regarded 
+    scripting language Python.
+    You can write programs that combine serious mathematics with
+    anything else.   
+    </p>
+</div>
+
+<div id="sign-in-box">
+    <h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
+    <form method="POST" action="/login">
+        <div>
+            <label for="email">Username</label>
+            <input type="text" name="email" value="{{ default_user }}" size="15" />
+            {% if username_error %}
+            <span style="color:red">Error:</span>Username is not in the system
+            {% endif %}
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" name="password" size="15" />
+            {% if password_error %}
+            <span style="color:red">Error:</span>Wrong password
+            {% endif %}
+        </div>
+        <div>
+            <input type="checkbox" name="remember" />Remember me
+        </div>
+        <div>
+            <button type="submit">Sign in</button>
+        </div>
+    </form>
+    <div>
+        {% if accounts %}
+        <a href="/register" id="register-link"><strong>Sign up for a new Sage Notebook account</strong></a>
+        {% endif %}
+    </div>
+    <div>
+        <a href="/pub"><strong>Browse published Sage worksheets<br>(no login required)</strong></a>
+    </div>
+    <div>
+        {% if recovery %}
+        <a href="/forgotpass"><strong>Forgot password</strong></a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
+
+

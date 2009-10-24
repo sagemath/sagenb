@@ -1,14 +1,21 @@
 {% extends "html/base.html" %}
-{#
-INPUT:
-- worksheet - an instance of Worksheet
-- worksheet_filename - a string containing a worksheet's filename
-- worksheet_html - a string containing the html for the worksheet
-- notebook - an instance of Notebook which contains worksheet
-- username - a string containing a username
-- show_debug - a boolean stating whether to show debug information
-- JSMATH - a boolean stating whether to include jsMath
-- JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
+ {#
+ INPUT:
+ - worksheet - an instance of Worksheet
+ - worksheet_filename - a string containing a worksheet's filename
+ - notebook - an instance of Notebook which contains worksheet
+ - username  - a string containing a username
+ - show_debug - a boolean stating whether to show debug information
+ - JSMATH - a boolean stating whether to include jsMath
+ - JSMATH_IMAGE_FONTS - a boolean stating whether to include jsMath iamage fonts
+ - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
+ - sage_jsmath_macros - an array containing strings of Javascript of Sage macros for jsMath
+ - do_print - a boolean stating whether the file is for print mode
+ - worksheet_html - a string containing the html for a worksheet
+ - select    - a string containing the control that is selected
+ - backwards - a boolean
+ - warn - boolean stating whether to warn that another user is viewing
+          the worksheet
 #}
 
 {% if not select %}
@@ -19,7 +26,7 @@ INPUT:
     {% set backwards = false %}
 {% endif %}
     
-{% include "html/notebook/head.tmpl" %}
+{% include "html/notebook/head.tmpl"%}
 
 {% block title %}
 {{ common_title(worksheet_filename, worksheet) }}
@@ -51,7 +58,7 @@ INPUT:
 {% if not worksheet %}
     </td></tr></table></span>
 {% endif %}
-{% if worksheet.user_is_only_viewer(username) %}
+{% if worksheet.is_only_viewer(username) %}
     <script type="text/javascript">worksheet_locked=true;</script>
 {% else %}
     <script type="text/javascript">worksheet_locked=false;</script>

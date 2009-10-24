@@ -67,8 +67,8 @@
       </li>
       {% endif %}
     </ol>
-    <input type="submit" value="Create account" class="button" tabindex="100" />
-    <input type="button" value="Cancel" style="margin-left:10px" onClick="parent.location='/'" class="button" tabindex="101" />
+    <button type="submit" tabindex="100" id="create-account-button">Create account</button>
+    <a href="/"><button tabindex="101">Cancel</button></a>
   </form>
 </div> 
 {% endblock %}

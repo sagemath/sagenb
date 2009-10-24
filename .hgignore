@@ -132,3 +132,5 @@ sage_notebook*
 .sagenb
 .*~$
 sagenb/data/java/jmol
+^sass/src/.sass-cache
+^sagenb.egg-info

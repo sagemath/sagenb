@@ -1,69 +1,28 @@
-/***** Global Settings *****/
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, ol, ul, li, table, caption, tbody, tfoot, thead, tr, th, td { border: 0; font-family: inherit; font-size: 100%; font-style: inherit; font-weight: inherit; margin: 0; outline: 0; padding: 0; text-decoration: none; vertical-align: baseline; }
 
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,dl,dt,dd,ol,ul,li,table,caption,tbody,tfoot,thead,tr,th,td {
-border:0;
-font-family:inherit;
-font-size:100%;
-font-style:inherit;
-font-weight:inherit;
-margin:0;
-outline:0;
-padding:0;
-text-decoration:none;
-vertical-align:baseline
-}
+html { font-size: 100.1%; }
 
-html {
-font-size:100.1%
-}
+body { font: 0.88em/1.4 Arial, Helvetica, sans-serif; }
 
-body {
-font:0.88em/1.4 Arial, Helvetica, sans-serif;
-}
+#wrapper { margin: 0 auto; max-width: 600px; }
 
-#wrapper {
-margin:0 auto;
-max-width:600px
-}
+h1, h2, h3, h4, h5 { font-wieght: normal; }
 
-/***** Headings *****/
+h1 { border-bottom: 1px solid #696969; font-size: 2em; padding: 10px 0; }
 
-h1,h2,h3,h4,h5 {
-font-wieght:normal
-}
+h2 { font-weight: bold; }
 
-h1 {
-border-bottom:1px solid #696969;
-font-size:2em;
-padding:10px 0
-}
+h1, h2, p, li { margin-bottom: 10px; }
 
-h2 {
-font-weight:bold
-}
+.entry { margin-bottom: 10px; border: 1px solid #999; padding: 3px; width: 200; }
 
-h1, h2, p, li, .entry {
-margin-bottom:10px
-}
+li { border-bottom: 1px solid #CCC; }
 
-.entry {
-border:1px solid #999;
-padding:3px;
-width:200
-}
+.error { color: red; }
 
-li {
-border-bottom:1px solid #CCC
-}
+.error_found { color: red; font-size: 1.5em; }
 
-.error, .error_found {
-color:red
-}
+button { margin-right: 1em; }
 
-.error_found {
-font-size:1.5em 
-}
-
-.button {
-font-size:1.2em
-}
+form label { display: block; }
+form div { margin-bottom: 1em; }

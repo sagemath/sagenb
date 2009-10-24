@@ -8,12 +8,14 @@ INPUT:
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
 
-{% set title = 'Worksheet Settings &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button name="button_save">Save Settings</button>  <input type="submit" value="Cancel" name="button_cancel"/>' %}
+{% block sharebar_title %}
+Worksheet Settings &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button name="button_save">Save Settings</button>  <input type="submit" value="Cancel" name="button_cancel"/>
+{% endblock %}
 
 {% block before_sharebar %}
-<form width=70%% method="post" action="input_settings"  enctype="multipart/form-data">
+<form width=70% method="post" action="input_settings"  enctype="multipart/form-data">
 {% endblock %}
-{% block body_addition %}
+{% block after_sharebar %}
 </form>
 {% endblock %}
 

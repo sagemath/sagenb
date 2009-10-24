@@ -9,9 +9,12 @@ INPUT:
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
 
-{% set title = "View plain text" %}
+{% block sharebar_title %}
+View plain text
+{% endblock %}
+
 {% set select = "text" %}
 
-{% block body_addition %}
+{% block after_sharebar %}
 <pre class="plaintext" id="cell_intext" name="textfield">{{ plain_text }}</pre>
 {% endblock %}

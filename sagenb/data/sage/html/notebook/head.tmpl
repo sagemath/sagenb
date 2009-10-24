@@ -14,16 +14,7 @@ INPUT:
     {% endif %}
 {% endmacro %}
 
-{% macro common_css %}
-<!-- Sage notebook stylesheet -->
-<link rel=stylesheet href="/css/main.css" type="text/css" />
-{% endmacro %}
-
 {% macro common_javascript(worksheet, worksheet_filename, username, JSMATH, JEDITABLE_TINYMCE) %}
-
-<!-- jQuery - general-purpose functions -->
-<script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
-
 <!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
 <link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.7.2.custom.css" />
 <script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.7.2.custom.min.js"></script>
@@ -39,7 +30,6 @@ INPUT:
 <link rel="stylesheet" media="screen" type="text/css" href="/javascript/jquery/plugins/colorpicker/css/colorpicker.css" />
 <script type="text/javascript" src="/javascript/jquery/plugins/colorpicker/js/colorpicker.min.js"></script>
 
-<!-- Sage Notebook library -->
 <script type="text/javascript" src="/javascript/sage/main.js"></script>
   
 {% if JSMATH %}

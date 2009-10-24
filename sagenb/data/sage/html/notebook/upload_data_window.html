@@ -8,36 +8,34 @@ INPUT:
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
 
-{% set title = 'Upload or Create Data File' %}
+{% block page_id %}upload-data-page{% endblock %}
 
-{% block body_addition %}
-<div class="upload_worksheet_menu" id="upload_worksheet_menu">
-    <h1><font size=+1>Upload or create data file attached to the worksheet '{{ worksheet.name() }}' </font></h1>
-    <hr />
+{% block sharebar_title %}
+Upload or Create Data File to attach to worksheet "{{ worksheet.name() }}"
+{% endblock %}
+
+{% block after_sharebar %}
+<div>
     <form method="POST" action="do_upload_data"
           name="upload" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <td>
-                    Browse your computer to select a file to upload:<br />
-                    <input class="upload_worksheet_menu" size="50" type="file" name="fileField" value="" id="upload_filename"></input><br /><br />
-                    Or enter the url of a file on the web:<br />
-                    
-                    <input class="upload_worksheet_menu" size="50" type="text" name="urlField" value="" id="upload_url"></input><br />
-                    <br /><br />
-                    Or enter the name of a new file, which will be created:<br />
-                    <input class="upload_worksheet_menu" size="50" type="text" name="newField" value="" id="upload_filename"></input><br /><br />
-                    
-                    What do you want to call it? (if different than the original name)<br />
-                    <input class="upload_worksheet_menu" size="50" type="text" name="nameField" value="" id="upload_name"></input><br />
-                </td>
-            </tr>
-            <tr>
-                <td><br /><input type="button" class="upload_worksheet_menu" value="Upload or Create Data File" onClick="form.submit();" /></td>
-            </tr>
-        </table>
+        <div>
+            <label for="file">Browse your computer to select a worksheet file to upload:</label>
+            <input size="50" type="file" name="file"></input>
+        </div>
+        <div>
+            <label for="url">Or enter the url of a worksheet file on the web:</label>
+            <input size="50" type="text" name="url"></input>
+        </div>
+        <div>
+            <label for="new">Or enter the name of a new file, which will be created:</label>
+            <input size="50" type="text" name="new"></input>
+        </div>
+        <div>
+            <label for="name">What do you want to call it? (if different than the original name)</label>
+            <input size="50" type="text" name="name"></input>
+        </div>
+        <button type="submit">Upload or Create Data File</button>
     </form>
-    <br />
 </div>
 {% endblock %}
         

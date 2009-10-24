@@ -14,31 +14,34 @@ INPUT:
 #}
 
 {% set select = "revisions" %}
-{% set title = "Revision from %s ago&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>Revision List</a>"|format(time_ago) %}
-    
-{% macro actions %}
+{% block sharebar_title %}
+Revision from {{ time_ago }} ago&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>Revision List</a>
+{% endblock %}
+
+{% block page_id %}specific-revision-page{% endblock %}
+
+{% macro actions() %}
 {% if prev_rev %}
-    <a class="listcontrol" href="revisions?rev={{ prev_rev }}">Older</a>&nbsp;&nbsp;
+    <a class="listcontrol" href="revisions?rev={{ prev_rev }}">Older</a>
 {% else %}
     Oldest
 {% endif %}
 
 {% if next_rev %}
-    <a class="listcontrol" href="revisions?rev={{ next_rev }}">Newer</a>&nbsp;&nbsp;
+    <a class="listcontrol" href="revisions?rev={{ next_rev }}">Newer</a>
 {% else %}
     Newest
 {% endif %}
 
 <a class="listcontrol" href="revisions?rev={{ rev }}&action=revert">Revert to this one</a> <span class="lastedit">(note that images are not recorded)</span>&nbsp;&nbsp;
-<a class="listcontrol" href="revisions?rev={{ rev }}&action=publish">Publish this one</a>&nbsp;&nbsp;
+<a class="listcontrol" href="revisions?rev={{ rev }}&action=publish">Publish this one</a>
 {% endmacro %}
 
-{% block body_addition %}
+{% block after_sharebar %}
 {{ actions() }}
-<hr class="usercontrol" />        
-<table width="100%%">
-{{ body_worksheet_html }}
-<hr class="usercontrol" />
+<div id="revision-data">
+    {{ body_worksheet_html }}
+</div>
 {{ actions() }}
 <script type="text/javascript">
   $(document).ready(function () {

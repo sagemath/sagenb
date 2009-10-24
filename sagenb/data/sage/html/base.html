@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
     <head>
@@ -7,9 +6,14 @@
         {% block pre_main_css %}{% endblock %}
         <link type="text/css" rel="stylesheet" href="/css/{% block css %}master{% endblock %}.css" media="screen" />
         {% block more_css %}{% endblock %}
-        {% block javascript %}{% endblock %}
+	<!-- jQuery - general-purpose functions -->
+        <script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
+        {% block javascript %}
+	<!-- Worksheet list functions -->
+        <script type="text/javascript" src="/javascript/sage/ws_list.js"></script>
+        {% endblock %}
     </head>
-    <body {% block body_attrs %}{% endblock %}>
+    <body {% block body_attrs %}{% endblock %} id="{% block page_id %}{% endblock %}">
         {% block body %}{% endblock %}
     </body>
 </html>

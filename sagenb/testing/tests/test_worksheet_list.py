@@ -49,9 +49,9 @@ class TestWorksheetList(NotebookTestCase):
         Searches for a phrase.
         """
         sel = self.selenium
-        self.wait_in_window('return this.$("#search_worksheets").length > 0;', 30000)
-        sel.type('id=search_worksheets', phrase)
-        sel.click('//button[text()="Search Worksheets"]') # TODO: Fix for l18n
+        self.wait_in_window('return this.$("#search-worksheets").length > 0;', 30000)
+        sel.type('id=search-worksheets', phrase)
+        sel.click('id=search-worksheets-button') # TODO: Fix for l18n
         sel.wait_for_page_to_load("30000")
             
     def test_searching_for_worksheets(self):

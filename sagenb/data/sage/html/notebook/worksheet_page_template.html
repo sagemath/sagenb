@@ -3,7 +3,7 @@
 INPUT:
 - worksheet - an instance of Worksheet
 - worksheet_filename - a string containing a worksheet's filename
-- username - a string containing a username
+- username  - a string containing a username
 - title - a string
 - select    - a string containing the control that is selected
 - backwards - a boolean
@@ -20,7 +20,6 @@ INPUT:
 {% endif %}
     
 {% include "html/notebook/head.tmpl" %}
-{% include "html/notebook/worksheet_top.tmpl" %}
 {% include "html/notebook/worksheet_topbar.tmpl" %}
 
 {% block title %}
@@ -34,11 +33,13 @@ INPUT:
 {% endblock %}
 
 {% block body %}
-{{ worksheet_top(username) }}
+{% set toggle=true %}
+{% include "html/top_bar.html" %}
 {{ worksheet_topbar(worksheet, select, username, backwards) }}
 <hr class="usercontrol" />
 {% block before_sharebar %}{% endblock %}
-<span class="sharebar">{{ title }}</span>
+<span class="sharebar">{% block sharebar_title %}{% endblock %}</span>
 <br /><br /><br />
-{% block body_addition %}{% endblock %}
+{% block after_sharebar %}{% endblock %}
 {% endblock %}
+

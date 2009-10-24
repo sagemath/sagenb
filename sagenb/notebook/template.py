@@ -16,6 +16,7 @@ AUTHORS:
 #############################################################################
 
 import jinja
+
 from jinja.filters import stringfilter
 
 import os, re, sys
@@ -52,6 +53,21 @@ def css_escape(string):
         my-invalid-identifier
         sage: print(escaper(env, {}, r'quotes"mustbe!escaped'))
         quotes-mustbe-escaped
+
+    The following doctests originally accompanied #7269's support for
+    Jinja2.
+
+        sage: from sagenb.notebook.template import css_escape # not tested
+        sage: css_escape('abcd')                              # not tested
+        'abcd'
+        sage: css_escape('12abcd')                            # not tested
+        '12abcd'
+        sage: css_escape(r'\'"abcd\'"')                       # not tested
+        '---abcd---'
+        sage: css_escape('my-invalid/identifier')             # not tested
+        'my-invalid-identifier'
+        sage: css_escape(r'quotes"mustbe!escaped')            # not tested
+        'quotes-mustbe-escaped'
     """
     return css_illegal_re.sub('-', string)
 
@@ -85,11 +101,11 @@ env.tests['contained_in'] = contained_in
 
 #A dictionary containing the default context
 #The values in this dictionary will be updated
-#by the 
+#by the
 default_context = {'sitename': 'Sage Notebook',
                    'sage_version': SAGE_VERSION}
 
-def template(filename, **user_context): 
+def template(filename, **user_context):
     """
     Returns HTML, CSS, etc., for a template file rendered in the given
     context.
@@ -103,7 +119,7 @@ def template(filename, **user_context):
       the file's template variables
 
     OUTPUT:
-      
+    
     - a string - the rendered HTML, CSS, etc.
 
     EXAMPLES::
@@ -126,5 +142,5 @@ def template(filename, **user_context):
         return "Notebook Bug -- missing template %s"%filename
     context = dict(default_context)
     context.update(user_context)
-    r = tmpl.render(**context) 
+    r = tmpl.render(**context)
     return r.encode('utf-8')

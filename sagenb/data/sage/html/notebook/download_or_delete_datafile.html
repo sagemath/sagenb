@@ -13,9 +13,12 @@ INPUT:
 - JSMATH - a boolean stating whether to include jsMath
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
-{% set title = "Data file: %s"|format(filename_) %}
 
-{% block body_addition %}
+{% block sharebar_title %}
+Data file: {{ filename_ }}
+{% endblock %}
+
+{% block after_sharebar %}
 <p>You may download <a href="{{ path }}">{{ filename_ }}</a> or create a linked copy to the worksheet <select onchange="go_option(this);" class="worksheet">
 <option selected>select worksheet</option>
 {% for worksheet in active_worksheets %}

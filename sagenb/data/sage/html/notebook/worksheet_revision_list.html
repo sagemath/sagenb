@@ -7,27 +7,31 @@ INPUT:
 - username - a string containing a username
 - JSMATH - a boolean stating whether to include jsMath
 - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
-  #}
+#}
 
+{% block page_id %}revision-list-page{% endblock %}
 
-{% set title  = "Revision History" %}
+{% block sharebar_title %}
+Revision History
+{% endblock %}
+
 {% set select = "revisions" %}
 
-{% block body_addition %}
-<hr class="usercontrol">
-<table width="100%%">
-    <tr>
-        <td width="1%%"></td>
-        <td width="20%%"><b>Revision</b></td>
-        <td width="20%%"><b>Last Edited</b></td>
-        <td width="30%%"></td>
-    </tr>
-{% for desc, key in data|reverse %}
-    <tr>
-        <td></td>
-        <td><a href="revisions?rev={{ key }}">Revision {{ loop.revindex0 }}</a></td>
-        <td><span class="revs">{{ desc }}</span></td>
-    </tr>
-{% endfor %}
+{% block after_sharebar %}
+<table id="revision-list">
+    <thead>
+        <tr>
+            <td class="revision-title">Revision</td>
+            <td class="edit-time">Last Edited</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for desc, key in data|reverse %}
+        <tr>
+            <td><a href="revisions?rev={{ key }}">Revision {{ loop.revindex0 }}</a></td>
+            <td><span class="revs">{{ desc }}</span></td>
+        </tr>
+        {% endfor %}
+    </body>
 </table>
 {% endblock %}
