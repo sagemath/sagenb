@@ -63,8 +63,8 @@ var keypress_resize_delay = 250; // don't resize the cell too often! without thi
 var last_keypress_resize = 0;
 var will_resize_soon = false;
 
-// We ping every 2 seconds by default to see if the worksheet has been changed.
-var server_ping_time = 2000; 
+// We ping every 10 seconds by default to see if the worksheet has been changed on the server side.
+var server_ping_time = 10000; 
 
 var SEP = '___S_A_G_E___';   // this had better be the same as in the server
 var current_cell = -1;       // gets set on focus / blur
