@@ -40,7 +40,7 @@ OUTPUT:
 var active_cell_list = [];
 
 // The worksheet state number
-var state_number = 0;
+var state_number = -1;
 
 //Browser & OS identification
 var browser_op, browser_saf, browser_konq, browser_moz, browser_ie, browser_ie5, browser_iphone;
@@ -1678,7 +1678,7 @@ function server_ping_while_alive_callback(status, response_text) {
         server_down();
     } else {
         server_up();
-        if(response_text != state_number) {
+        if(state_number >= 0 && response_text != state_number) {
              /* force a refresh of just the cells in the body */
 	    refresh_cell_list();
         }
