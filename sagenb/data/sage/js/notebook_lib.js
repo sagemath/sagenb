@@ -554,7 +554,7 @@ function refresh_cell_list_callback(status, response_text) {
     var X, y, z, s;
     if (status == 'success') {
          X = response_text.split(SEP);
-         state_number = X[0];
+        state_number = parseInt(X[0]);
          /* Now we replace the HTML for every cell *except* the active cell
             by the contents of X[1]. */
        //   y = get_element("worksheet_cell_list");
@@ -1678,7 +1678,7 @@ function server_ping_while_alive_callback(status, response_text) {
         server_down();
     } else {
         server_up();
-        if(state_number >= 0 && response_text != state_number) {
+        if(state_number >= 0 && parseInt(response_text) > state_number) {
              /* force a refresh of just the cells in the body */
 	    refresh_cell_list();
         }
@@ -2570,7 +2570,7 @@ function worksheet_command(cmd) {
         a string
     */
     if (cmd == 'eval' || cmd == 'new_cell_before') {
-        state_number += 1;
+        state_number = parseInt(state_number) + 1;
     }
     return ('/home/' + worksheet_filename + '/' + cmd);
 }
