@@ -3217,7 +3217,7 @@ function CellWriter() {
 // The global cell_writer target.
 cell_writer = document;
 
-function x_eval_script_tags(text) {
+function xxx_eval_script_tags(text) {  /* safe to delete this */
     /*
     Find all the tags in the given script and eval them, where
     tags are javascript code in <script>...</script> tags.
@@ -3251,7 +3251,10 @@ function eval_script_tags(text) {
     Find all the tags in the given script and eval them, where
     tags are javascript code in <script>...</script> tags.
     This allows us put javascript in the output of computations
-    and have it evaluated.
+    and have it evaluated.   Moreover, if the javascript writes to
+    the global cell_writer object (with cell_write.write(string)),
+    then that output is textually substituted in place of the
+    <script>...</script>.
 
     INPUT:
         text -- a string
@@ -3268,13 +3271,14 @@ function eval_script_tags(text) {
         var j = s.search(right_tag);
 	var k = i + (s.match(left_tag)[0]+'').length;
         if (j == -1 || j < k) { break; }
+        var code = s.slice(k,j);
         try {
             cell_writer = new CellWriter();
-            window.eval(s.slice(k,j));
+            window.eval(code);
         } catch(e) {
             alert(e);
         }
-        s = s.slice(0,i) + s.slice(j + (s.match(right_tag)[0]+'').length);
+        s = s.slice(0,i) + cell_writer.buffer + s.slice(j + (s.match(right_tag)[0]+'').length);
         var i = s.search(left_tag);
     }
     return s;
