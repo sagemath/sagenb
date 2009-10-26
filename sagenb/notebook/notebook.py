@@ -1255,17 +1255,6 @@ class Notebook(object):
     ##########################################################
     # Worksheet HTML generation
     ##########################################################
-    def list_window_javascript(self, worksheet_filenames):
-        s = """
-           <script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
-           <script type="text/javascript" src="/javascript/main.js"></script>
-           <script type="text/javascript">
-           var worksheet_filenames = %s; 
-           </script>
-        """%(worksheet_filenames)
-               
-        return s
-
     def worksheet_html(self, filename, do_print=False):
         r"""
         Return the HTML for a given worksheet.

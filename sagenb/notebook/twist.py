@@ -53,10 +53,11 @@ HISTORY_NCOLS = 90
 
 from sagenb.misc.misc import SAGE_DOC, walltime, tmp_filename, tmp_dir, DATA, SAGE_VERSION
 
-css_path        = os.path.join(DATA, "sage", "css")
-image_path      = os.path.join(DATA, "sage", "images")
-javascript_path = os.path.join(DATA)
-java_path       = os.path.join(DATA)
+css_path             = os.path.join(DATA, "sage", "css")
+image_path           = os.path.join(DATA, "sage", "images")
+javascript_path      = os.path.join(DATA)
+sage_javascript_path = os.path.join(DATA, 'sage', 'js')
+java_path            = os.path.join(DATA)
 
 # the list of users waiting to register
 waiting = {}
@@ -1771,7 +1772,6 @@ class Main_js(resource.Resource):
         s = js.javascript()
         return http.Response(stream=s)
 
-
 class Keyboard_js_specific(resource.Resource):
     def __init__(self, browser_os):
         self.s = keyboards.get_keyboard(browser_os)
@@ -1780,26 +1780,37 @@ class Keyboard_js_specific(resource.Resource):
         gzip_handler(ctx)
         return http.Response(stream = self.s)
 
-
 class Keyboard_js(resource.Resource):
     def childFactory(self, request, browser_os):
         gzip_handler(request)
         return Keyboard_js_specific(browser_os)
 
-class Javascript(resource.Resource):
+class SageJavascript(resource.Resource):
     addSlash = True
     child_keyboard = Keyboard_js()
+
+    def render(self, ctx):
+        return static.File(sage_javascript_path)
+
+    def childFactory(self, request, name):
+        gzip_handler(request)
+        path = os.path.join(sage_javascript_path, name)
+        return static.File(path)
+
+setattr(SageJavascript, 'child_main.js', Main_js())
+
+class Javascript(resource.Resource):
+    addSlash = True
 
     def render(self, ctx):
         return static.File(javascript_path)
 
     def childFactory(self, request, name):
         gzip_handler(request)
+        if name == 'sage':
+            return SageJavascript()
         path = os.path.join(javascript_path, name)
         return static.File(path)
-
-setattr(Javascript, 'child_main.js', Main_js())
-
 
 
 ############################

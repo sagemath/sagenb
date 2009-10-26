@@ -33,9 +33,15 @@ INPUT:
 {{ common_javascript(worksheet, worksheet_filename, username, JSMATH, JSMATH_IMAGE_FONTS, JEDITABLE_TINYMCE, sage_jsmath_macros) }}
 {% endblock %}
 
+{# TODO: Hack until the template restructuring #}
 {% block body_attrs %}
-class="worksheet-online" onLoad="initialize_the_notebook();"
+{% if worksheet.is_published() or notebook.user_is_guest(username) %}
+        class="worksheet-online" onLoad="initialize_the_notebook();"
+    {% else %}
+        class="worksheet-online" onLoad="initialize_the_notebook();" id="user-worksheet-index"
+{% endif %}
 {% endblock %}
+
 
 {% block body %}
 {% if worksheet.is_published() or notebook.user_is_guest(username) %}

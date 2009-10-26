@@ -265,7 +265,7 @@ function get_keyboard() {
         alert("Your browser / OS combination is not supported.  \nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.")
     }
 
-    async_request('/javascript/keyboard/'+b+o, get_keyboard_callback);
+    async_request('/javascript/sage/keyboard/'+b+o, get_keyboard_callback);
 }
 
 
@@ -576,7 +576,7 @@ function refresh_cell_list_callback(status, response_text) {
 
 String.prototype.replaceAll = function(strTarget, strSubString ) {
     /*
-    Replace all instances of the given substring by another string>
+    Replace all instances of the given substring by another string.
 
     From http://www.bennadel.com/blog/142-Ask-Ben-Javascript-String-Replace-Method.htm
 
@@ -673,7 +673,7 @@ function resize_all_cells() {
 
 function input_keyup(id, event) {
     /*
-    Resize the cell once and a while.  Not too often.
+    Resize the cell once in a while.  Not too often.
     INPUT:
         id -- an integer
         event -- a keyup event
@@ -701,7 +701,7 @@ function input_keyup(id, event) {
     if (e==null) return;
     if (key_enter(e)) {
         var cell = get_cell(id)
-        //warning!  very subtle regular expression (for nonjaphs)
+        // warning!  very subtle regular expression (for nonjaphs)
         // (?:\n|^)        -- starting from the last line ending (or beginning of the cell), (don't capture contents)
         // ( *)            -- as many spaces as we can find (capture this, we'll find it in RegExp.$1)
         // (?:.*?)         -- everything else in the string, but save room for the following terms (don't capture contents)
