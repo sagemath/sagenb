@@ -154,6 +154,19 @@ var title_spinner_i = 0;
 
 var evaluating_all = false;
 
+var modal_prompt_element =
+    '<div class="modal-prompt" style="display: none;">' +
+    '    <form>' +
+    '        <div class="message"></div>' +
+    '        <div class="field">' +
+    '            <input type="text" />' +
+    '        </div>' +
+    '        <div class="button-div">' +
+    '            <button type="submit">OK</submit>' +
+    '        </div>' +
+    '    </form>' +
+    '</div>';
+
 ///////////////////////////////////////////////////////////////////
 //
 // Cross-Browser Stuff
@@ -527,6 +540,145 @@ function set_cursor_position(cell, n) {
 //
 ///////////////////////////////////////////////////////////////////
 
+function modal_prompt(form_options, options, modal_options) {
+    /*
+      Displays a prompt with a modal dialog. Use this instead of ``prompt()``.
+
+      INPUT:
+
+        - ``form_options`` -- options passed to jQuery.Form. All
+          options have the same behavior as jQuery.Form's except
+          ``success``, which is passed the form and prompt as
+          arguments. Please refer to the jQuery.Form `documentation
+          <http://jquery.malsup.com/form/#options-object>` for more
+          information.
+        
+           - ``success`` -- function to be called when the form is
+             submitted. It is passed the generated form and prompt as
+             arguments.
+
+     OR, for convenience:
+
+        - ``form_options`` -- function to be called when the form is
+          submitted. It is passed the generated form and prompt as
+          arguments.
+
+        - ``options`` -- an object with any of the following attributes:
+
+           - ``title`` -- the title of the modal prompt.
+
+           - ``message`` -- the message to be displayed in the prompt.
+
+           - ``default`` -- the default value of the prompt.
+
+           - ``submit`` -- the value of the submit button. Defaults to "OK".
+
+           - ``overlay_close`` -- whether to close the dialog if the
+             overlay is clicked. Defaults to ``true``.
+
+           - ``id`` -- id for the modal prompt.
+
+           - ``form_id`` -- id for the form.
+
+           - ``css`` -- CSS to be applied to the prompt. Consider
+             editing the stylesheet files instead of using this option.
+
+           - ``post_submit_behavior`` -- any of ``"close"``,
+             ``"destroy"``, which also removes the dialog code
+             or a custom function to be called after
+             submitting the form. Defaults to ``"destroy"``
+        
+        - ``modal_options`` -- options passed to jQuery UI
+           Dialog. Refer to the jQuery UI Dialog `documentation
+           <http://jqueryui.com/demos/dialog/#default>`_ for more
+           options. Default options are:
+           
+           - ``autoOpen``: ``true`` -- automatically opens the
+             dialog. If set to false, open the dialog with <prompt>.dialog('open').
+           
+           - ``modal``: ``true`` -- makes the dialog modal, i.e., UI blocking.
+
+           - ``bgiframe``: ``true`` -- a fix for an IE issue regarding
+             ``<select>`` elements. Not recommended for disabling.
+
+           - ``width``: ``"20em"`` -- width of the dialog box.
+
+      OUTPUT:
+
+      - returns the generated prompt
+
+     */
+    var title, message, default_value, submit_value, css, new_prompt,
+        new_form, overlay_close, close_behavior, close_dialog, input,
+        old_success_function;
+
+    /* Options setup */
+    options = options || {};
+    title = options.title || '';
+    message = options.message || '';
+    default_value = options['default'] || '';
+    submit_value = options.submit || 'OK';
+    css = options.css || {};
+
+    modal_options = $.extend({
+        autoOpen: true,
+        bgiframe: true,
+        modal: true,
+        width: '20em'
+    }, modal_options);
+
+    new_prompt = $(modal_prompt_element);
+    $('body').append(new_prompt);
+    new_prompt.css(css);
+    
+    new_form = new_prompt.find('form');
+    if (options.id) {
+        new_prompt.attr('id', options.id);
+    }
+    if (options.form_id) {
+        new_form.attr('id', options.form_id);
+    }
+
+    overlay_close = options.overlay_close;
+    if (options.overlay_close === undefined) {
+        overlay_close = true;
+    }
+     
+    close_behavior = options.close_behavior || 'destroy';
+    close_dialog = function () {
+        if (close_behavior === 'destroy') {
+            new_prompt.dialog('destroy');
+            new_prompt.remove();
+        } else if (close_behavior === 'close') {
+            new_prompt.dialog('close');
+        } else if (typeof close_behavior === 'function') {
+            close_behavior();
+        } 
+    };
+
+    /* Prompt setup */
+    new_prompt.find('div.message').html(message);
+    input = new_prompt.find('input', 'div.field').attr('value', default_value)
+	.css('width', '100%');
+    new_prompt.find('button[type="submit"]').html(submit_value);
+    
+    modal_options.title = modal_options.title || title;
+
+    if (overlay_close) {
+        $('div.ui-widget-overlay').live('click', close_dialog);
+    }
+    
+    /* Form setup */
+    old_success_function = form_options.success;
+    form_options.success = function () {
+        old_success_function(new_form, new_prompt);
+        close_dialog();
+    };
+
+    new_form.ajaxForm(form_options);
+    new_prompt.dialog(modal_options);
+    input.select();
+}
 
 function refresh() {
     /*
@@ -569,7 +721,7 @@ function refresh_cell_list_callback(status, response_text) {
 		 cell_input_resize(current_cell);
 		 jump_to_cell(current_cell, 0);
 	     }
-   //   }
+   //   
     }
 }
 
@@ -1402,21 +1554,30 @@ function rename_worksheet() {
     sends a message back to the server stating that the worksheet has
     been renamed.
     */
-    var new_worksheet_name = prompt('Enter new worksheet name:',worksheet_name);
-    if (new_worksheet_name == null || new_worksheet_name == "") return;
-    var T = get_element("worksheet_title");
-    var set_name;
-    if (new_worksheet_name.length >= 30) {
-        set_name = new_worksheet_name.slice(0,30) + ' ...';
-    } else {
-        set_name = new_worksheet_name;
-    }
-    T.innerHTML = set_name;
-    worksheet_name = new_worksheet_name;
-    original_title = worksheet_name + ' (Sage)';
-    document.title = original_title;
-    async_request(worksheet_command('rename'), null,
-                  {name: new_worksheet_name});
+    var callback = function (new_worksheet_name) {
+        var title = $('#worksheet_title'), set_name;
+        if (new_worksheet_name.length >= 30) {
+            set_name = new_worksheet_name.slice(0, 30) + ' ...';
+        } else {
+            set_name = new_worksheet_name;
+        }
+        title.html(set_name);
+        worksheet_name = new_worksheet_name;
+        original_title = worksheet_name + ' (Sage)';
+        document.title = original_title;
+        async_request(worksheet_command('rename'), null,
+                      {name: new_worksheet_name});
+    };
+    modal_prompt({
+        success: function (form, prompt) {
+            callback($(':text', form).attr('value'));
+        }
+    }, {
+        title: 'Rename worksheet',
+        message: 'Please enter a name for this worksheet.',
+        'default': worksheet_name,
+        submit: 'Rename'
+    });
 }
 
 function search_worksheets_enter_pressed(event, typ) {
@@ -1578,9 +1739,18 @@ function list_rename_worksheet(filename, curname) {
         filename -- string; the filename of this worksheet to rename
         curname -- string; the current name of this worksheet
     */
-    var new_name = prompt('Enter new worksheet name:', curname);
-    async_request('/home/' + filename + '/' + 'rename',
-        refresh, {name: new_name});
+    var callback = function (new_name) {
+        async_request('/home/' + filename + '/' + 'rename',
+                      refresh, {name: new_name});
+    };
+    modal_prompt(function (form, prompt) {
+        callback($(':text', form).attr('value'));
+    }, {
+        title: 'Rename worksheet',
+        message: 'Please enter a name for this worksheet.',
+        'default': curname,
+        submit: 'Rename'
+    });
 }
 
 

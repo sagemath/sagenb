@@ -16,6 +16,7 @@ AUTHORS:
 #############################################################################
 
 import jinja
+
 import os, sys
 
 from sagenb.misc.misc import SAGE_VERSION, DATA
@@ -47,7 +48,7 @@ def contained_in(container):
     def wrapped(env, context, value):
         return value in container
     return wrapped
-    
+
 env.tests['contained_in'] = contained_in
 
 #A dictionary containing the default context

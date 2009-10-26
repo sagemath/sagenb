@@ -577,6 +577,18 @@ span.X {
    cursor:pointer;    
 }
 
+.modal-prompt form {
+    font-size: 0.9em;
+}
+
+.modal-prompt div.message, .modal-prompt div.field {
+    margin-bottom: 0.25em;
+}
+
+.modal-prompt div.button-div {
+    text-align: center;
+}
+
 span.pane div.add_new_worksheet_menu {
    position:relative;
    color:black;
