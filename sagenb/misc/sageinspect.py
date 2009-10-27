@@ -12,7 +12,7 @@ AUTHORS:
 
 EXAMPLES::
 
-    sage: from sage.misc.sageinspect import *
+    sage: from sagenb.misc.sageinspect import *
 
 Test introspection of modules defined in Python and Cython files:
 
@@ -29,13 +29,14 @@ Cython modules::
 
 Python modules::
 
-    sage: sage_getfile(sage.misc.sageinspect)
+    sage: import sagenb.misc.sageinspect
+    sage: sage_getfile(sagenb.misc.sageinspect)
     '.../sageinspect.py'
 
-    sage: print sage_getdoc(sage.misc.sageinspect).lstrip()[:40]
+    sage: print sage_getdoc(sagenb.misc.sageinspect).lstrip()[:40]
     Inspect Python, Sage, and Cython objects
 
-    sage: sage_getsource(sage.misc.sageinspect).lstrip()[5:-1]
+    sage: sage_getsource(sagenb.misc.sageinspect).lstrip()[5:-1]
     'Inspect Python, Sage, and Cython objects...'
 
 Test introspection of classes defined in Python and Cython files:
@@ -90,16 +91,16 @@ Cython functions::
 
 Python functions::
 
-    sage: sage_getdef(sage.misc.sageinspect.sage_getfile, obj_name='sage_getfile')
+    sage: sage_getdef(sagenb.misc.sageinspect.sage_getfile, obj_name='sage_getfile')
     'sage_getfile(obj)'
 
-    sage: sage_getfile(sage.misc.sageinspect.sage_getfile)
+    sage: sage_getfile(sagenb.misc.sageinspect.sage_getfile)
     '.../sageinspect.py'
 
-    sage: sage_getdoc(sage.misc.sageinspect.sage_getfile).lstrip()
+    sage: sage_getdoc(sagenb.misc.sageinspect.sage_getfile).lstrip()
     "Get the full file name associated to ``obj`` as a string..."
 
-    sage: sage_getsource(sage.misc.sageinspect.sage_getfile)[4:]
+    sage: sage_getsource(sagenb.misc.sageinspect.sage_getfile)[4:]
     'sage_getfile(obj):...'
 
 Unfortunately, there is no argspec extractable from builtins::
@@ -123,7 +124,7 @@ def isclassinstance(obj):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import isclassinstance
+        sage: from sagenb.misc.sageinspect import isclassinstance
         sage: isclassinstance(int)
         False
         sage: isclassinstance(FreeModule)
@@ -159,7 +160,7 @@ def _extract_embedded_position(docstring):
 
     EXAMPLES::
 
-       sage: from sage.misc.sageinspect import _extract_embedded_position
+       sage: from sagenb.misc.sageinspect import _extract_embedded_position
        sage: import inspect
        sage: _extract_embedded_position(inspect.getdoc(var))[1][-21:]
        'sage/calculus/var.pyx'
@@ -192,7 +193,7 @@ def _extract_source(lines, lineno):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import _extract_source
+        sage: from sagenb.misc.sageinspect import _extract_source
         sage: s2 = "#hello\n\n  class f():\n    pass\n\n#goodbye"
         sage: _extract_source(s2, 3)
         ['  class f():\n', '    pass\n']
@@ -222,11 +223,11 @@ def _sage_getargspec_cython(source):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import _sage_getargspec_cython
+        sage: from sagenb.misc.sageinspect import _sage_getargspec_cython
         sage: _sage_getargspec_cython("def init(self, x=None, base=0):")
-        (['self', 'x', 'base'], None, None, ('None', '0'))
+        (['self', 'x', 'base'], None, None, (None, 0))
         sage: _sage_getargspec_cython("def __init__(self, x=None, unsigned int base=0):")
-        (['self', 'x', 'base'], None, None, ('None', '0'))
+        (['self', 'x', 'base'], None, None, (None, 0))
 
     AUTHOR:
     
@@ -266,9 +267,8 @@ def _sage_getargspec_cython(source):
             argnames.append(argname)
             if len(s) > 1:
                 defvalue = s[1]
-                # Remove quotes around strings
-                defvalue = defvalue.strip('"').strip("'")
-                argdefs.append(defvalue)
+                # eval defvalue so we aren't just returning strings
+                argdefs.append(eval(defvalue))
 
         if len(argdefs) > 0:
             argdefs = tuple(argdefs)
@@ -287,7 +287,7 @@ def sage_getfile(obj):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import sage_getfile
+        sage: from sagenb.misc.sageinspect import sage_getfile
         sage: sage_getfile(sage.rings.rational)[-23:]
         'sage/rings/rational.pyx'
         sage: sage_getfile(Sq)[-41:]
@@ -308,7 +308,7 @@ def sage_getfile(obj):
     if isclassinstance(obj):
         return inspect.getabsfile(obj.__class__)
     # No go? fall back to inspect.
-    return inspect.getabsfile(obj)    
+    return inspect.getabsfile(obj)
 
 def sage_getargspec(obj):
     r"""
@@ -324,7 +324,7 @@ def sage_getargspec(obj):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import sage_getargspec
+        sage: from sagenb.misc.sageinspect import sage_getargspec
         sage: sage_getargspec(identity_matrix)
         (['ring', 'n', 'sparse'], None, None, (0, False))
         sage: sage_getargspec(Poset)
@@ -384,11 +384,16 @@ def sage_getdef(obj, obj_name=''):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import sage_getdef
+        sage: from sagenb.misc.sageinspect import sage_getdef
         sage: sage_getdef(identity_matrix)
         '(ring, n=0, sparse=False)'
         sage: sage_getdef(identity_matrix, 'identity_matrix')
         'identity_matrix(ring, n=0, sparse=False)'
+
+    Check that trac ticket #6848 has been fixed::
+
+        sage: sage_getdef(RDF.random_element)
+        '(min=-1, max=1)'
 
     If an exception is generated, None is returned instead and the
     exception is suppressed.
@@ -447,7 +452,7 @@ def sage_getdoc(obj, obj_name=''):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import sage_getdoc
+        sage: from sagenb.misc.sageinspect import sage_getdoc
         sage: sage_getdoc(identity_matrix)[5:39]
         'Return the `n x n` identity matrix'
 
@@ -505,7 +510,7 @@ def sage_getsource(obj, is_binary=False):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import sage_getsource
+        sage: from sagenb.misc.sageinspect import sage_getsource
         sage: sage_getsource(identity_matrix, True)[4:45]
         'identity_matrix(ring, n=0, sparse=False):'
         sage: sage_getsource(identity_matrix, False)[4:45]
@@ -549,7 +554,7 @@ def sage_getsourcelines(obj, is_binary=False):
 
     EXAMPLES::
 
-        sage: from sage.misc.sageinspect import sage_getsourcelines
+        sage: from sagenb.misc.sageinspect import sage_getsourcelines
         sage: sage_getsourcelines(matrix, True)[1]
         33
         sage: sage_getsourcelines(matrix, False)[0][0][4:]
@@ -608,8 +613,8 @@ def __internal_tests():
 
     EXAMPLES::
     
-        sage: from sage.misc.sageinspect import *
-        sage: from sage.misc.sageinspect import _extract_source, _extract_embedded_position, _sage_getargspec_cython, __internal_teststring
+        sage: from sagenb.misc.sageinspect import *
+        sage: from sagenb.misc.sageinspect import _extract_source, _extract_embedded_position, _sage_getargspec_cython, __internal_teststring
 
     If docstring is None, nothing bad happens::
     
@@ -619,10 +624,10 @@ def __internal_tests():
         sage: sage_getsource(sage)
         "...all..."
 
-    A cython function with default arguments::
+    A cython function with default arguments (one of which is a string)::
     
         sage: sage_getdef(sage.rings.integer.Integer.factor, obj_name='factor')
-        "factor(algorithm='pari', proof='True', limit='None')"
+        "factor(algorithm='pari', proof=True, limit=None)"
 
     A cython method without an embedded position can lead to surprising errors::
     
@@ -658,11 +663,11 @@ def __internal_tests():
     Test _sage_getargspec_cython with multiple default arguments and a type::
     
         sage: _sage_getargspec_cython("def init(self, x=None, base=0):")
-        (['self', 'x', 'base'], None, None, ('None', '0'))
+        (['self', 'x', 'base'], None, None, (None, 0))
         sage: _sage_getargspec_cython("def __init__(self, x=None, base=0):")
-        (['self', 'x', 'base'], None, None, ('None', '0'))
+        (['self', 'x', 'base'], None, None, (None, 0))
         sage: _sage_getargspec_cython("def __init__(self, x=None, unsigned int base=0):")
-        (['self', 'x', 'base'], None, None, ('None', '0'))
+        (['self', 'x', 'base'], None, None, (None, 0))
     
     Test _extract_embedded_position:
     
