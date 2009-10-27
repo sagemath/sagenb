@@ -70,12 +70,15 @@ def sphinxify(docstring):
     # confdir, outdir, doctreedir, buildername,
     # confoverrides, status, warning, freshenv)
     srcdir = tmpdir
+
+    temp_confdir = False
     if SAGE_DOC and os.path.exists(os.path.join(SAGE_DOC, 'en', 'introspect')):
         confdir = os.path.join(SAGE_DOC, 'en', 'introspect')
     else:
         # This may be inefficient.
         # TODO: Find a faster way to do this
         confdir = mkdtemp()
+        temp_confdir = True
         generate_configuration(confdir)
         
     doctreedir = os.path.join(srcdir, docstring_hash)
@@ -102,7 +105,8 @@ def sphinxify(docstring):
          print "BUG -- error constructing html"
          new_html = '<pre class="introspection">%s</pre>' % docstring
 
-    shutil.rmtree(confdir, ignore_errors=True)
+    if temp_confdir:
+        shutil.rmtree(confdir, ignore_errors=True)
     shutil.rmtree(tmpdir, ignore_errors=True)
 
     return new_html
