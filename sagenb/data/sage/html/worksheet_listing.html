@@ -139,7 +139,7 @@
 	
 	{% else %}
 	
-	<input type=checkbox unchecked id="{{ name }}">
+	<input type=checkbox unchecked id="{{ name|css_escape }}">
 {# I'm removing this select since it is a massive performance killer and these 
    serve no real purpose at all.  Plus google docs got rid of the analogous menu.
          <select onchange="go_option(this);" class="worksheet_edit">
@@ -158,7 +158,7 @@
       </td>
 
       <td class="worksheet_link">
-	<a title="{{ worksheet.name() | escape }}" id="name/{{ name }}" class="worksheetname" href="/home/{{ name }}">
+	<a title="{{ worksheet.name() | escape }}" id="name-{{ name|css_escape }}" class="worksheetname" href="/home/{{ name }}">
 	{% if worksheet.compute_process_has_been_started() %}(running) {% endif %}
 	{{ worksheet.truncated_name(50) | escape}}
 	</a>

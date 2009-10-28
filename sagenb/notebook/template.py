@@ -16,14 +16,44 @@ AUTHORS:
 #############################################################################
 
 import jinja
+from jinja.filters import stringfilter
 
-import os, sys
+import os, re, sys
 
 from sagenb.misc.misc import SAGE_VERSION, DATA
 
 
 TEMPLATE_PATH = os.path.join(DATA, 'sage')
 env = jinja.Environment(loader=jinja.FileSystemLoader(TEMPLATE_PATH))
+
+css_illegal_re = re.compile(r'[^-A-Za-z_0-9]')
+
+@stringfilter
+def css_escape(string):
+    r"""
+    Returns a string with all characters not legal in a css name
+    replaced with hyphens (-).
+
+    INPUT:
+
+    - ``string`` -- the string to be escaped.
+
+    EXAMPLES::
+
+        sage: from sagenb.notebook.template import contained_in, env, css_escape
+        sage: escaper = css_escape()
+        sage: print(escaper(env, {}, '12abcd'))
+        12abcd
+        sage: print(escaper(env, {}, 'abcd'))
+        abcd
+        sage: print(escaper(env, {}, r'\'"abcd\'"'))
+        ---abcd---
+        sage: print(escaper(env, {}, 'my-invalid/identifier'))
+        my-invalid-identifier
+        sage: print(escaper(env, {}, r'quotes"mustbe!escaped'))
+        quotes-mustbe-escaped
+    """
+    return css_illegal_re.sub('-', string)
 
 def contained_in(container):
     """
@@ -49,6 +79,8 @@ def contained_in(container):
         return value in container
     return wrapped
 
+
+env.filters['css_escape'] = css_escape
 env.tests['contained_in'] = contained_in
 
 #A dictionary containing the default context
