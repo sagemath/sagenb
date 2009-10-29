@@ -3517,7 +3517,7 @@ from sagenb.notebook.all import *
                     cell = completions[r + l*c]
                     row.append(cell)
                 except:
-                    pass
+                    row.append('')
             rows.append(row)
         return format_completions_as_html(id, rows)
 
