@@ -703,25 +703,23 @@ function refresh_cell_list_callback(status, response_text) {
     a pair consisting of the updated state_number and the new HTML 
     for the worksheet_cell_list div DOM element.
     */
-    var X, y, z, s;
-    if (status == 'success') {
-         X = response_text.split(SEP);
+    var X, z, s;
+    if (status === 'success') {
+        X = response_text.split(SEP);
         state_number = parseInt(X[0]);
-         /* Now we replace the HTML for every cell *except* the active cell
-            by the contents of X[1]. */
-       //   y = get_element("worksheet_cell_list");
-       //  if (y) {
-             z = get_element(current_cell);
-             if (z) { s = z.innerHTML; }
-             refresh();
-      //         y.innerHTML = X[1];
-	     if (z) { 
-		 z = get_element(current_cell); 
-		 z.innerHTML = s; 
-		 cell_input_resize(current_cell);
-		 jump_to_cell(current_cell, 0);
-	     }
-   //   
+        /* Now we replace the HTML for every cell *except* the active
+           cell by the contents of X[1]. */
+        z = get_element(current_cell);
+        if (z) {
+	    s = z.innerHTML;
+	}
+        refresh();
+	if (z) {
+	    z = get_element(current_cell);
+	    z.innerHTML = s;
+	    cell_input_resize(current_cell);
+	    jump_to_cell(current_cell, 0);
+	}
     }
 }
 
@@ -809,13 +807,13 @@ function resize_all_cells() {
     GLOBAL INPUT:
         cell_id_list -- a list of integers
     */
-    var i,id;
-    for(i=0;i<cell_id_list.length;i++) {
+    var i, id, len = cell_id_list.length;
+    for(i = 0; i < len; i += 1) {
         // Get the id of the cell to resize
         id = cell_id_list[i];
-	if (!is_compute_cell(id)) {
-	    continue;
-	}
+        if (!is_compute_cell(id)) {
+            continue;
+        }
         // Make sure it is not hidden, and if not resize it.
         if (get_cell(id).className != "cell_input_hide") {
            cell_input_resize(id);
@@ -1849,8 +1847,8 @@ function server_ping_while_alive_callback(status, response_text) {
     } else {
         server_up();
         if(state_number >= 0 && parseInt(response_text) > state_number) {
-             /* force a refresh of just the cells in the body */
-	    refresh_cell_list();
+            /* force a refresh of just the cells in the body */
+            refresh_cell_list();
         }
     }
 }
@@ -2186,7 +2184,7 @@ function debug_input_key_event(e) {
         var after = text_cursor_split(debug_input)[1];
         var i = after.indexOf('\n');
         if (i == -1 || after == '') {
-            jump_to_cell(cell_id_list[0],0)
+            jump_to_cell(extreme_compute_cell(1), 0);
             return false;
         } else {
             return true;
@@ -2375,21 +2373,21 @@ function extreme_compute_cell(dir) {
     OUTPUT:
         id -- integer; the first or last compute cell's id
     */
-    var i, id;
+    var i, id, len = cell_id_list.length;
     if (dir === 1) {
-	for (i = 0; i < cell_id_list.length; i += 1) {
-	    id = cell_id_list[i];
-	    if (is_compute_cell(id)) {
-		break;
-	    }
-	}
+        for (i = 0; i < len; i += 1) {
+            id = cell_id_list[i];
+            if (is_compute_cell(id)) {
+                break;
+            }
+        }
     } else {
-	for (i = cell_id_list.length - 1; i > -1; i -= 1) {
-	    id = cell_id_list[i];
-	    if (is_compute_cell(id)) {
-		break;
-	    }
-	}
+        for (i = len - 1; i > -1; i -= 1) {
+            id = cell_id_list[i];
+            if (is_compute_cell(id)) {
+                break;
+            }
+        }
     }
     return id;
 }
@@ -2405,13 +2403,15 @@ function id_of_cell_delta(id, delta, all_cells) {
         delta -- integer
         all_cells -- true or false; if true do not ignore non-compute cells
     */
-    var i, j, new_id, s;
+    var i, j, len = cell_id_list.length, s;
 
-    if (cell_id_list.length === 0) {
+    if (len === 0) {
         /* alert("bug -- no cells."); */
         return;
     }
-    if (delta == 0) return id;
+    if (!delta || delta === 0) {
+        return id;
+    }
 
     i = cell_id_list.indexOf(eval(id));
     if (i === -1) {
@@ -2421,23 +2421,23 @@ function id_of_cell_delta(id, delta, all_cells) {
             delta = -delta; 
             s = -1; 
         } else {
-	    s = 1;
-	}
+            s = 1;
+        }
         for(j = 0; j < delta; j += 1) {
             i = i + s;
-            while (!all_cells && i >= 0 && i < cell_id_list.length && 
+            while (!all_cells && i >= 0 && i < len &&
                            !is_compute_cell(cell_id_list[i]))  {
                 i = i + s;
             }
         }
         if (i < 0) {
             i = 0;
-        } else if (i >= cell_id_list.length) {
-            i = cell_id_list.length - 1;
+        } else if (i >= len) {
+            i = len - 1;
         }
-	if (!all_cells && !is_compute_cell(cell_id_list[i])) {
-	    return id;
-	}
+        if (!all_cells && !is_compute_cell(cell_id_list[i])) {
+            return id;
+        }
         return(cell_id_list[i]);
     }
 }
@@ -2489,13 +2489,16 @@ function jump_to_cell(id, delta, bottom) {
          Changes the focused cell.  Does not send any information
          back to the server.
      */
-     if (ignore_next_jump) {
-          ignore_next_jump = false;
-          return;
-     }
-     if(delta != 0)
-        id = id_of_cell_delta(id, delta)
-    if(in_slide_mode) {
+    if (ignore_next_jump) {
+        ignore_next_jump = false;
+        return;
+    }
+
+    if (delta && delta !== 0) {
+        id = id_of_cell_delta(id, delta);
+    }
+
+    if (in_slide_mode) {
         jump_to_slide(id);
     } else {
         cell_focus(id, bottom);
@@ -2854,28 +2857,28 @@ function evaluate_cell_callback(status, response_text) {
                             string (integer); id of new cell to create
     */
     var next_id;
-    if (status == "failure") {
+    if (status === "failure") {
         // Failure evaluating a cell.
         return;
     }
     var X = response_text.split(SEP);
-    if (X[0] == '-1') {
+    if (X[0] === '-1') {
         // something went wrong -- i.e., the requested cell doesn't exist.
         alert("You requested to evaluate a cell that, for some reason, the server is unaware of.");
         return;
     }
 
     if (evaluating_all) {
-	if (is_compute_cell(X[0])) {
+        if (is_compute_cell(X[0])) {
             evaluate_cell(X[0], false);
-	} else {
-	    next_id = id_of_cell_delta(X[0], 1);
-	    if (is_compute_cell(next_id)) {
-		evaluate_cell(next_id, false);
-	    } else {
-		evaluating_all = false;
-	    }
-	}
+        } else {
+            next_id = id_of_cell_delta(X[0], 1);
+            if (is_compute_cell(next_id)) {
+                evaluate_cell(next_id, false);
+            } else {
+                evaluating_all = false;
+            }
+        }
     } else if (X[1] == 'append_new_cell') {
         // add a new cell to the very end
         append_new_cell(X[0],X[2]);
@@ -2884,10 +2887,9 @@ function evaluate_cell_callback(status, response_text) {
         do_insert_new_cell_after(X[3], X[0], X[2]);
         jump_to_cell(X[0],0);
     } else if (X[1] != 'introspect' && !in_slide_mode && !doing_split_eval) {
-        // move to the next cell after the one that we just evaluated.
-        if (is_interacting_cell(current_cell)) {
-            jump_to_cell(current_cell);
-        } else {
+        // move to the next cell after the one that we just evaluated,
+        // unless it's an interact
+        if (!is_interacting_cell(current_cell)) {
             jump_to_cell(current_cell, 1);
         }
     }
@@ -3439,7 +3441,7 @@ function eval_script_tags(text) {
     var i = s.search(left_tag);
     while (i != -1) {
         var j = s.search(right_tag);
-	var k = i + (s.match(left_tag)[0]+'').length;
+        var k = i + (s.match(left_tag)[0]+'').length;
         if (j == -1 || j < k) { break; }
         var code = s.slice(k,j);
         try {
@@ -3473,10 +3475,10 @@ function separate_script_tags(text) {
     var i = s.search(left_tag);
     while (i != -1) {
         var j = s.search(right_tag);
-	var k = i + (s.match(left_tag)[0]+'').length;
+        var k = i + (s.match(left_tag)[0]+'').length;
         if (j == -1 || j < k) {
              break;
-	}
+        }
         script += s.slice(k,j);
         s = s.slice(0,i) + s.slice(j + (s.match(right_tag)[0]+'').length);
         var i = s.search(left_tag);
@@ -3494,18 +3496,18 @@ function slide_mode() {
     Switch into single cell mode.
     This involves changing a bunch of CSS and some global variables.
     */
-    var id;
+    var i, id, len = cell_id_list.length;
     in_slide_mode = true;
     set_class('left_pane', 'hidden');
     set_class('cell_controls', 'hidden');
     set_class('slide_controls', 'slide_control_commands');
     set_class('left_pane_bar', 'hidden');
 
-    for(i = 0; i < cell_id_list.length; i += 1) {
-	id = cell_id_list[i];
+    for (i = 0; i < len; i += 1) {
+        id = cell_id_list[i];
         if (is_compute_cell(id)) {
-	    set_class('cell_outer_' + id, 'hidden');
-	}
+            set_class('cell_outer_' + id, 'hidden');
+        }
     }
     slide_show();
 }
@@ -3516,7 +3518,7 @@ function cell_mode() {
     Switch from single cell mode back to normal worksheet mode.
     This involves changing CSS and global variables.
     */
-    var id;
+    var i, id, len = cell_id_list.length;
     in_slide_mode = false;
     set_class('left_pane', 'pane');
     set_class('cell_controls', 'control_commands');
@@ -3524,11 +3526,11 @@ function cell_mode() {
     set_class('worksheet', 'worksheet');
     set_class('left_pane_bar', 'left_pane_bar');
 
-    for(i = 0; i < cell_id_list.length; i += 1) {
-	id = cell_id_list[i];
+    for (i = 0; i < len; i += 1) {
+        id = cell_id_list[i];
         if (is_compute_cell(id)) {
             set_class('cell_outer_' + id, 'cell_visible');
-	}
+        }
     }
 }
 
@@ -3546,17 +3548,19 @@ function slide_show() {
     Switch into slide show mode.
     This involves changing a lot of CSS in the DOM.
     */
-    if(current_cell != -1) {
+    var input, s;
+    if (current_cell != -1) {
         set_class('cell_outer_' + current_cell, 'cell_visible');
     } else {
-        if(cell_id_list.length>0)
+        if (cell_id_list.length > 0) {
             current_cell = extreme_compute_cell(1);
+        }
         set_class('cell_outer_' + current_cell, 'cell_visible');
     }
-    if(current_cell != -1) {
+    if (current_cell != -1) {
         input = get_cell(current_cell);
-        if(input != null) {
-            s = lstrip(input.value).slice(0,5)
+        if (input != null) {
+            s = lstrip(input.value).slice(0,5);
             cell_focus(current_cell, false);
             if (s == '%hide') {
                 slide_hidden = true;
@@ -3624,12 +3628,14 @@ function update_slideshow_progress() {
     */
     var i = cell_id_list.indexOf(current_cell) + 1;
     var n = cell_id_list.length;
-    var bar = get_element("slideshow_progress_bar")
-    if(bar != null)
+    var bar = get_element("slideshow_progress_bar");
+    if (bar != null) {
         bar.style.width = "" + 100*i/n + "%";
-    text = get_element("slideshow_progress_text")
-    if(text != null)
+    }
+    text = get_element("slideshow_progress_text");
+    if (text != null) {
         text.innerHTML = i + " / " + n;
+    }
 }
 
 
@@ -4059,11 +4065,12 @@ function hide_all() {
     we refresh the browser or visit the page with another browser,
     etc., the cells are still hidden.
     */
-    var v = cell_id_list;
-    var n = v.length;
-    var i;
-    for(i=0; i<n; i++) {
-        cell_output_set_type(v[i],'hidden', false);
+    var i, id, len = cell_id_list.length;
+    for(i = 0; i < len; i += 1) {
+        id = cell_id_list[i];
+        if (is_compute_cell(id)) {
+            cell_output_set_type(id, 'hidden', false);
+        }
     }
     async_request(worksheet_command('hide_all'));
 }
@@ -4073,11 +4080,12 @@ function show_all() {
     Show ever output cell in the worksheet, and send a message to the
     server reporting that we showed every cell.
     */
-    var v = cell_id_list;
-    var n = v.length;
-    var i;
-    for(i=0; i<n; i++) {
-        cell_output_set_type(v[i],'wrap', false);
+    var i, id, len = cell_id_list.length;
+    for(i = 0; i < len; i += 1) {
+        id = cell_id_list[i];
+        if (is_compute_cell(id)) {
+            cell_output_set_type(id, 'wrap', false);
+        }
     }
     async_request(worksheet_command('show_all'));
 }
@@ -4096,15 +4104,14 @@ function delete_all_output() {
             Not so bad, since we save a revision right before the delete all, so
             they can easily go back to the previous version.
     */
-    var v = cell_id_list;
-    var n = v.length;
-    var i, id;
+    var i, id, len = cell_id_list.length;
     /* Iterate over each cell in the worksheet. */
-    for(i=0; i<n; i++) {
-        id = v[i];
-	if (!is_compute_cell(id)) {
-	    continue;
-	}
+    for(i = 0; i < len; i += 1) {
+        id = cell_id_list[i];
+        if (!is_compute_cell(id)) {
+            continue;
+        }
+
         /* First delete the actual test from the output of each cell. */
         get_element('cell_output_' + id).innerHTML = "";
         get_element('cell_output_nowrap_' + id).innerHTML = "";
@@ -4124,9 +4131,11 @@ function halt_active_cells() {
     queued up for evaluation, and empty the list of active cells from
     the global active_cell_list variable.
     */
-    for(i = 0; i < active_cell_list.length; i++)
+    var i;
+    for(i = 0; i < active_cell_list.length; i++) {
         cell_set_not_evaluated(active_cell_list[i]);
-    active_cell_list = []
+    }
+    active_cell_list = [];
 }
 
 function set_all_cells_to_be_not_evaluated() {
@@ -4134,8 +4143,13 @@ function set_all_cells_to_be_not_evaluated() {
     Change the CSS so that all cells are displayed as
     having not been evaluated.
     */
-    for(i = 0; i < cell_id_list.length; i++)
-        cell_set_not_evaluated(cell_id_list[i]);
+    var i, id, len = cell_id_list.length;
+    for(i = 0; i < len; i += 1) {
+        id = cell_id_list[i];
+        if (is_compute_cell(id)) {
+            cell_set_not_evaluated(id);
+        }
+    }
 }
 
 function restart_sage() {
