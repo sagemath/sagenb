@@ -129,3 +129,4 @@ sagenb/data/jmol
 ~
 sage_notebook*
 .sagenb
+.*~$

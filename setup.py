@@ -29,14 +29,19 @@ code = setup(name = 'sagenb',
       url         = 'http://www.sagemath.org',
       packages    = ['sagenb',
                      'sagenb.interfaces',
-                     'sagenb.misc',                                          
+                     'sagenb.misc',                                 
                      'sagenb.notebook',
                      'sagenb.notebook.compress',
                      'sagenb.simple',
-                     'sagenb.storage'
+                     'sagenb.storage',
+                     'sagenb.testing',
+                     'sagenb.testing.tests',
+                     'sagenb.testing.selenium'
                      ],
       scripts      = ['sagenb/data/jmol/jmol',
                       'sagenb/data/sage3d/sage3d',
                      ],
-      package_data = {'sagenb':all_files('sagenb/data', 'sagenb/')}
+      package_data = {'sagenb':
+                          all_files('sagenb/data', 'sagenb/')
+                      }
       )
