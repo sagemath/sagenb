@@ -42,4 +42,9 @@ INPUT:
 {{ body_worksheet_html }}
 <hr class="usercontrol" />
 {{ actions() }}
+<script type="text/javascript">
+  $(document).ready(function () {
+    jsMath.Process();
+  });
+</script>
 {% endblock %}
