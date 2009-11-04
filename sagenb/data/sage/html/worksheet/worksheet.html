@@ -17,7 +17,7 @@ INPUT:
 $(document).ready(function() {                              
    cell_id_list={{ cell_id_list }};
    state_number={{ state_number }};
-   if(worksheet_name == "Untitled") rename_worksheet();
+   {% if not published %}if(worksheet_name == "Untitled") rename_worksheet();{% endif %}
 });                     
 </script>
 {% endif %}
