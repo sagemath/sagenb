@@ -9,6 +9,7 @@ Miscellaneous Notebook Functions
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
+from pkg_resources import resource_filename
 
 def stub(f):
     def g(*args, **kwds):
@@ -156,8 +157,7 @@ def pad_zeros(s, size=3):
     """    
     return "0"*(size-len(str(s))) + str(s)
 
-
-DATA = os.path.join(sys.prefix, 'lib', 'python', 'site-packages', 'sagenb', 'data')
+DATA = os.path.join(os.path.split(resource_filename(__name__, ''))[0], 'data')
 
 if os.environ.has_key('DOT_SAGENB'):
     DOT_SAGENB = os.environ['DOT_SAGENB']
