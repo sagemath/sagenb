@@ -1208,18 +1208,20 @@ class Cell(Cell_generic):
         
         """
         self._system = None
-        text = self.input_text().split('\n')
+        text = self.input_text().splitlines()
         directives = []
+        i = -1
         for i, line in enumerate(text):
+            line = line.strip()
             if not line.startswith('%'):
                 #Handle the #auto case here for now
                 if line == "#auto":
                     pass
                 else:
                     break
-            elif line in ['%auto', '%hide', '%hideall', '%save_server', "%time", "%timeit"]:
-                #We do not consider any of the above percent
-                #directives as specifying a system.
+            elif line in ['%auto', '%hide', '%hideall', '%save_server', '%time', '%timeit']:
+                # We do not consider any of the above percent
+                # directives as specifying a system.
                 pass
             else:
                 self._system = line[1:]
