@@ -1210,7 +1210,7 @@ class Cell(Cell_generic):
         self._system = None
         text = self.input_text().splitlines()
         directives = []
-        i = -1
+        i = 0
         for i, line in enumerate(text):
             line = line.strip()
             if not line.startswith('%'):
