@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>{{ title }}</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+    {{ stylesheet }}
+    {{ javascript }}
+    <script type="text/javascript">
+$(document).ready(function () {
+    // Top bar events.
+    $('.out_trace_hide').bind('click', function () {
+	$('.out_trace').hide();
+    });
+    $('.out_trace_show').bind('click', function () {
+	$('.out_trace').show();
+    });
+    $('.out_trace_toggle').bind('click', function () {
+	$('.out_trace').toggle();
+    });
+
+    // Header and footer events.
+    $('.pass_header').bind('click', function (ev) {
+	$('.test_pass').toggle();
+    });
+    $('.fail_header').bind('click', function (ev) {
+	$('.test_fail').toggle();
+    });
+    $('.error_header').bind('click', function (ev) {
+	$('.test_error').toggle();
+    });
+    $('.hide_all').bind('click', function (ev) {
+	$('tr.test').hide();
+    });
+    $('.show_all').bind('click', function (ev) {
+	$('tr.test').show();
+    });
+    $('.toggle_all').bind('click', function (ev) {
+	$('tr.test').toggle();
+    });
+
+    // Case and test events.
+    $('.pass').bind('click', function (ev) {
+	$('.' + $(this).parent().attr('id') + '.test_pass').toggle();
+    });
+    $('.fail').bind('click', function (ev) {
+	$('.' + $(this).parent().attr('id') + '.test_fail').toggle();
+    });
+    $('.error').bind('click', function (ev) {
+	$('.' + $(this).parent().attr('id') + '.test_error').toggle();
+    });
+    $('.hide').bind('click', function (ev) {
+	$('.' + $(this).parent().attr('id')).hide();
+    });
+    $('.show').bind('click', function (ev) {
+	$('.' + $(this).parent().attr('id')).show();
+    });
+    $('.toggle').bind('click', function (ev) {
+	$('.' + $(this).parent().attr('id')).toggle();
+    });
+
+    // Test output and traceback events.
+    $('.spanner').bind('click', function (ev) {
+	$(this).parent().find('.out_trace').toggle();
+    });
+});
+  </script>
+  </head>
+  <body>
+    <div class="heading">
+      <h2>{{ title }}</h2>
+      <p class="description">
+	{{ description }}
+      </p>
+      <table id="statistics1" class="statistics">
+	{%- if sagenb_version %}
+	<tr>
+	  <td class="label">Sage Notebook version</td>
+	  <td class="value">{{ sagenb_version }}</td>
+	</tr>
+	{% endif %}
+	{%- if sage_version %}
+	<tr>
+	  <td class="label">Sage version</td>
+	  <td class="value">{{ sage_version }}</td>
+	</tr>
+	{% endif %}
+	<tr>
+	  <td class="label">Start</td>
+	  <td class="value">{{ start_time }}</td>
+	</tr>
+	<tr>
+	  <td class="label">Stop</td>
+	  <td class="value">{{ stop_time }}</td>
+	</tr>
+	<tr>
+	  <td class="label">Elapsed</td>
+	  <td class="value">{{ elapsed_time }}</td>
+	</tr>
+	<tr>
+	  <td class="label">Status</td>
+	  <td class="value">
+	    <span class="txt_pass">Pass {{ pass_total }}</span>
+	    &nbsp;<span class="txt_fail">Fail {{ fail_total }}</span>	
+	    &nbsp;<span class="txt_error">Error {{ error_total }}</span>
+	    &nbsp;<span class="txt_total">Total {{ count_total }}</span>
+	  </td>
+	</tr>
+      </table>
+    </div>
+
+    <div id="top_bar1" class="top_bar">
+      Output / Tracebacks:
+      &nbsp;<div class="out_trace_hide top_bar_item">Hide</div>
+      &nbsp;<div class="out_trace_show top_bar_item">Show</div>
+      &nbsp;<div class="out_trace_toggle top_bar_item">Toggle</div>
+    </div>
+
+    <table id="results1" class="results">
+      <tr id="headers1" class="headers">
+	<td class="test_case_header left">Cases / Tests</td>
+	<td class="pass_header">Pass</td>
+	<td class="fail_header">Fail</td>
+	<td class="error_header">Error</td>
+	<td class="count_header">Count</td>
+	<td class="hide_all">H</td>
+	<td class="show_all">S</td>
+	<td class="toggle_all">T</td>
+      </tr>
+
+      {{ test_cases_and_tests }}
+
+      <tr id="totals1" class="totals">
+	<td class="test_case_total left">Totals</td>
+	<td class="pass_total">{{ pass_total }}</td>
+	<td class="fail_total">{{ fail_total }}</td>
+	<td class="error_total">{{ error_total }}</td>
+	<td class="count_total">{{ count_total }}</td>
+	<td class="hide_all">H</td>
+	<td class="show_all">S</td>
+	<td class="toggle_all">T</td>
+      </tr>
+    </table>
+
+    {%- if ending %}
+    <div id="ending">
+      {{ ending }}
+    </div>
+    {%- endif %}
+  </body>
+</html>

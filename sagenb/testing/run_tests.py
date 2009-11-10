@@ -26,6 +26,8 @@ TODO:
 from subprocess import Popen
 import unittest, os
 
+from sagenb.misc.misc import browser
+
 from tests import test_accounts, test_worksheet, test_worksheet_list
 
 all_tests = unittest.TestSuite((test_accounts.suite,
@@ -44,6 +46,47 @@ def run_test(suite):
     """
     unittest.TextTestRunner(verbosity=2).run(suite)
     
+def run_and_report(suite=all_tests, verbosity=2, report_filename='report.html',
+                   title='Sage Notebook Tests',
+                   description='Selenium test results',
+                   open_viewer=True):
+    """
+    Runs a test suite and generates a HTML report with the outcome
+    (pass, fail, or error) and output, including any tracebacks, for
+    each test, plus overall statistics.  This assumes that a Selenium
+    server is running on port 4444.
+
+    INPUT:
+
+    - ``suite`` - a TestSuite instance (default: all_tests); the test
+      suite to run
+
+    - ``verbosity`` - an integer (default: 2); how verbosely to report
+      instantaneous test results
+
+    - ``report_filename`` - a string (default: 'report.html'); the
+      report's filename
+
+    - ``title`` - a string (default: 'Sage Notebook Tests'); the
+      report's title
+
+    - ``description`` - a string (default: 'Selenium test results'); a
+      description included near the beginning of the report
+
+    - ``open_viewer`` - a boolean (default: True); whether to open
+      the report in a web browser
+    """
+    from HTMLTestRunner import HTMLTestRunner
+
+    report_fd = open(report_filename, 'w')
+    runner = HTMLTestRunner(verbosity = verbosity, stream = report_fd,
+                            title = title, description = description)
+    runner.run(suite)
+
+    if open_viewer:
+        Popen(browser() + ' ' + os.path.abspath(report_filename), shell=True)
+
+
 if __name__ == '__main__':
     run_tests()
 
