@@ -353,12 +353,13 @@ class FilesystemDatastore(Datastore):
 
         # The following is purely for backwards compatibility with old notebook servers
         # prior to sage-4.1.2.
-        worksheet_txt =  tempfile.mkstemp()[1]
+        fd, worksheet_txt =  tempfile.mkstemp()
         old_heading = "%s\nsystem:%s\n"%(basic['name'], basic['system'])
         open(worksheet_txt,'w').write(old_heading + open(worksheet_html).read())
         T.add(worksheet_txt,
               os.path.join('sage_worksheet','worksheet.txt'))
         os.unlink(worksheet_txt)
+        os.fdopen(fd,'w').close()  # important, so we don't leave an open file handle!
         # end backwards compat block.
 
 

@@ -353,8 +353,11 @@ try:
     from sage.misc.misc import tmp_filename, tmp_dir
 except ImportError:
     def tmp_filename(name='tmp'):
+        # We use mktemp instead of mkstemp since the semantics of the
+        # tmp_filename function simply don't allow for what mkstemp
+        # provides.
         import tempfile
-        return tempfile.mkstemp()[1]
+        return tempfile.mktemp()
 
     def tmp_dir(name='dir'):
         import tempfile
