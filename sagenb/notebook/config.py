@@ -42,7 +42,7 @@ notebook:
 
 ..
 
-- *Parenthesis matching:* To fix unmatched or mis-matched parentheses, braces or brackets, press **ctrl-0**.  Parentheses, brackets or braces to the left of or above the cursor will be matched, minding strings and comments.  Note, only python comments are recognized, so this won\'t work for c-style multiline comments, etc.
+- *Parenthesis matching:* To fix unmatched or mis-matched parentheses, braces or brackets, press **ctrl-0**.  Parentheses, brackets or braces to the left of or above the cursor will be matched, minding strings and comments.  Note, only Python comments are recognized, so this won\'t work for c-style multiline comments, etc.
 
 """
 
