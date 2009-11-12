@@ -108,6 +108,20 @@ class TestWorksheetList(NotebookTestCase):
         self.save_and_quit()
         check_pub(ws_titles[0], prefix='Re')
 
+    def test_7444(self):
+        """
+        #7444: Searching published worksheets after publishing a
+        worksheet for the first time should not raise an error.
+        """
+        sel = self.selenium
+        self.create_new_worksheet('banana')
+        self.publish_worksheet()
+        self.save_and_quit()
+        self.goto_published_worksheets()
+        self._search('anything')
+        self.failIf(sel.is_text_present('Internal Server Error'), 
+                    'Published worksheet search caused a server error')
+ 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestWorksheetList)
 

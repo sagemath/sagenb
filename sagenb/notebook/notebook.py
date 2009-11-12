@@ -635,6 +635,7 @@ class Notebook(object):
                 shutil.rmtree(target, ignore_errors=True)
             shutil.copytree(cells, target)
         W.edit_save(src.edit_text())
+        W.save()
 
     def publish_worksheet(self, worksheet, username):
         r"""
