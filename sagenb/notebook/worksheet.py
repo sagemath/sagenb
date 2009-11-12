@@ -1973,8 +1973,8 @@ class Worksheet(object):
         """
         # Load the worksheet data file from disk.
         filename = self.worksheet_html_filename()
-        r = (self.owner().lower() + ' ' + self.name().lower() + ' '
-             + open(filename).read().lower())
+        r = (self.owner().lower() + ' ' + self.publisher().lower() + ' '
+             + self.name().lower() + ' ' + open(filename).read().lower())
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
             if W.lower() not in r:
