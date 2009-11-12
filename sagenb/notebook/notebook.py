@@ -689,6 +689,7 @@ class Notebook(object):
         W.set_worksheet_that_was_published(worksheet)
         W.move_to_archive(username)
         worksheet.set_published_version(W.filename())
+        W.record_edit(username)
         return W
 
     ##########################################################

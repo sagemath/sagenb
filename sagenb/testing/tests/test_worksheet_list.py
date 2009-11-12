@@ -79,6 +79,36 @@ class TestWorksheetList(NotebookTestCase):
             self.failIf(sel.is_element_present('//a[@class="worksheetname" and contains(text(), "Not a search target")]'),
                         'Non-matching search results found on %s' % page)
 
+    def test_7428(self):
+        """
+        #7428: Newly/Re-published worksheets should be at the top of the
+        "Published Worksheets" list and their "Last Edited" fields
+        should contain the username, not 'pub' (assuming it's not
+        shared).
+        """
+        sel = self.selenium
+        ws_titles = ['apple', 'orange']
+
+        def check_pub(title, prefix='Newly'):
+            self.goto_published_worksheets()
+            self.assertEqual(sel.get_text('css=td.worksheet_link'), title,
+                             '%s-published worksheet %s not listed first' % (prefix, title))
+            lastedit = sel.get_text('css=span.lastedit')
+            self.assert_(self.username in lastedit,
+                         '%s-published worksheet has wrong last edited field %s' % (prefix, lastedit))
+
+        for w in ws_titles:
+            self.create_new_worksheet(w)
+            self.publish_worksheet()
+            self.save_and_quit()
+            check_pub(w)
+
+        self.open_worksheet_with_title(ws_titles[0])
+        self.republish_worksheet()
+        self.save_and_quit()
+        check_pub(ws_titles[0], prefix='Re')
+
+
 suite = unittest.TestLoader().loadTestsFromTestCase(TestWorksheetList)
 
 if __name__ == '__main__':

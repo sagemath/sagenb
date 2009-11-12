@@ -167,7 +167,6 @@ class NotebookTestCase(unittest.TestCase):
         sel.click('//div[contains(@class, "modal-prompt")]/form/div[@class="button-div"]/button[@type="submit"]')
         sel.wait_for_condition('selenium.browserbot.getCurrentWindow().$("#worksheet_title").text() == "%s"' % new_title, 5000)
 
-
     def register_user(self, username, password='asdfasdf'):
         """
         Registers a new user for the Sage notebook.
@@ -189,11 +188,13 @@ class NotebookTestCase(unittest.TestCase):
         """
         Login as user username.  This assumes that you're at
         the login page.
-        
         """
+        self.username = username
+        self.password = password
+
         sel = self.selenium
-        sel.type("email", username)
-        sel.type("password", password)
+        sel.type("email", self.username)
+        sel.type("password", self.password)
         sel.click("//input[@value='Sign In']")
         sel.wait_for_page_to_load("30000")
 
@@ -201,10 +202,21 @@ class NotebookTestCase(unittest.TestCase):
         """
         This logs the user out by clicking the 'Sign out' link.
         """
+        self.username = None
+        self.password = None
+
         sel = self.selenium
         sel.click("//a[@href='/logout']")
         sel.wait_for_page_to_load("30000")
-    
+
+    def go_home(self):
+        """
+        Open the currently logged-in user's home page (i.e., active
+        worksheet list).
+        """
+        sel = self.selenium
+        sel.open('/home/' + self.username)
+        sel.wait_for_page_to_load("30000")
 
     def create_new_worksheet(self, title = "My New Worksheet"):
         sel = self.selenium
@@ -214,6 +226,16 @@ class NotebookTestCase(unittest.TestCase):
         sel.type('//div[contains(@class,"modal-prompt")]//input[@type="text"]', title)
         sel.click('//div[contains(@class, "modal-prompt")]/form/div[@class="button-div"]/button[@type="submit"]')
         sel.wait_for_condition('selenium.browserbot.getCurrentWindow().$("#worksheet_title").text() == "%s"' % title, 5000)
+
+    def open_worksheet_with_title(self, title):
+        """
+        Open the worksheet with the given title, starting at 
+        worksheet list.  This assumes the list contains the title.
+        """
+        self.go_home()
+        sel = self.selenium
+        sel.click('link=%s' % title)
+        sel.wait_for_page_to_load("30000")
 
     def publish_worksheet(self):
         """
@@ -229,6 +251,27 @@ class NotebookTestCase(unittest.TestCase):
         sel.click("link=Worksheet")
         sel.wait_for_page_to_load("30000")
 
+    def republish_worksheet(self):
+        """
+        Re-publish the current worksheet.  Begins and ends at the main
+        worksheet page.
+        """
+        sel = self.selenium
+        sel.click("link=Publish")
+        sel.wait_for_page_to_load("30000")
+        sel.click("//input[@value='Re-publish worksheet']")
+        sel.wait_for_page_to_load("30000")
+        sel.click("link=Worksheet")
+        sel.wait_for_page_to_load("30000")
+
+    def goto_published_worksheets(self):
+        """
+        Go to the "Published Worksheets" page.
+        """
+        sel = self.selenium
+        sel.open('/pub')
+        sel.wait_for_page_to_load("30000")        
+
     def goto_published_worksheet(self, id):
         """
         Goto the publishes worksheet with specified id.
@@ -239,7 +282,6 @@ class NotebookTestCase(unittest.TestCase):
         sel.wait_for_page_to_load("30000")
         sel.click("name-pub-"+id)
         sel.wait_for_condition('selenium.browserbot.getCurrentWindow().worksheet_filename == "%s"'%('pub/'+id), 30000)        
-
 
     def share_worksheet(self, collaborators):
         """
@@ -261,7 +303,6 @@ class NotebookTestCase(unittest.TestCase):
         self.selenium.wait_for_condition('(function(){ %s }).apply(selenium.browserbot.getCurrentWindow())'
                                          % string,
                                          timeout)
-        
 
     def stop_notebook(self):
         """
