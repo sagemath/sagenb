@@ -26,7 +26,7 @@ class TestWorksheetList(NotebookTestCase):
         self.save_and_quit()
         sel.click("//a[@class='worksheetname']")
         sel.wait_for_page_to_load("30000")
-        
+
 
     def test_creating_worksheet(self):
         """
@@ -42,6 +42,7 @@ class TestWorksheetList(NotebookTestCase):
                     '//button[@name="button_save"]')
         for element in elements:
             self.assert_(sel.is_element_present(element))
+        
 
     def _search(self, phrase):
         """

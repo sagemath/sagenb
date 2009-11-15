@@ -78,7 +78,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 TODO
 
- * Stabilize table width with "overflow: auto;".
+ * Add timings.
  * Support multiple results tables (e.g., for doctests).
  * Use a backend server to select, run, and monitor live tests.
 
@@ -236,7 +236,7 @@ class _TestResult(unittest.TestResult):
         Set up output capture.
 
         Called when the test case test is about to be run.  The
-        default implementation simply increments the instance’s
+        default implementation simply increments the instance's
         testsRun counter.
         """
         unittest.TestResult.startTest(self, test)
@@ -299,7 +299,7 @@ class _TestResult(unittest.TestResult):
         value, traceback).
 
         The default implementation appends a tuple (test,
-        formatted_err) to the instance’s errors attribute, where
+        formatted_err) to the instance's errors attribute, where
         formatted_err is a formatted traceback derived from err.
         """
         self.error_count += 1
@@ -322,7 +322,7 @@ class _TestResult(unittest.TestResult):
         traceback).
 
         The default implementation appends a tuple (test,
-        formatted_err) to the instance’s failures attribute, where
+        formatted_err) to the instance's failures attribute, where
         formatted_err is a formatted traceback derived from err.
         """
         self.failure_count += 1

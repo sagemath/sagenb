@@ -1,12 +1,16 @@
+/*
+!FOREST_GREEN: #004123
+!WEB_LIME_GREEN: #32cd32
+!FIRE_ENGINE_RED: #ce2029
+!PALE_AMARANTH_PINK: #ddbec3
+!AMBER: #ffbf00
+*/
 body, table {
-    background-color: #000;
-    color: #ccc;
+    background-color: #fff;
+    color: #111;
     font-family: sans-serif;
     -moz-border-radius: 0.25em;
     -webkit-border-radius: 0.25em;
-}
-
-table {
 }
 
 pre {
@@ -18,11 +22,11 @@ pre {
 /* -- heading -- */
 
 .heading h2 {
-    color: #fff;
+    color: #000;
 }
 
 .description {
-    color: #eee;
+    color: #111;
 }
 
 .statistics {
@@ -37,25 +41,25 @@ pre {
 }
 
 .statistics .value {
-    color: #fff;
+    color: #000;
     padding-left: 1.0em;
     text-align: left;
 }
 
 .txt_pass {
-    color: #0f0;
+    color: #004123;
 }
 
 .txt_fail {
-    color: #f00;
+    color: #ce2029;
 }
 
 .txt_error {
-    color: #ff0;
+    color: #ffbf00;
 }
 
 .txt_total {
-    color: #fff;
+    color: #000;
 }
 
 /* -- report -- */
@@ -66,19 +70,19 @@ pre {
 }
 
 .top_bar_item {
-    color: #6666ff;
+    color: #000080;
     display: inline;
     font-weight: bold;
 }
 
 .top_bar_item:hover {
-    color: #aaf;
+    color: #00009c;
     cursor: pointer;
 }
 
 .pass_header:hover, .fail_header:hover, .error_header:hover, .hide_all:hover, .show_all:hover, .toggle_all:hover {
     background-color: #fff;
-    color: #00f;
+    color: #004123;
     cursor: pointer;
 }
 
@@ -95,8 +99,8 @@ pre {
 }
 
 .headers, .totals {
-    background-color: #00f;
-    color: #eee;
+    background-color: #eee;
+    color: #000;
     font-weight: bold;
 }
 
@@ -110,7 +114,7 @@ pre {
 
 .results td {
     border: 1px solid #000;
-    padding: 0.1em;
+    padding: 0.5em;
 }
 
 td.left {
@@ -139,27 +143,27 @@ td.case {
 }
 
 .case_pass {
-    background-color: #0f0;
+    background-color: #32cd32;
 }
 
 .case_fail {
-    background-color: #f00;
+    background-color: #ddbec3;
 }
 
 .case_error {
-    background-color: #ff0;
+    background-color: #ffbf40;
 }
 
 .test_pass {
-    background-color: #afa;
+    background-color: #52ed52;
 }
 
 .test_fail {
-    background-color: #faa;
+    background-color: #edced3;
 }
 
 .test_error {
-    background-color: #ffa;
+    background-color: #ffdf60;
 }
 
 td.test {
