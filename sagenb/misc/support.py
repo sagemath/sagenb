@@ -520,9 +520,41 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
 ###################################################
 try:
     from sage.misc.preparser import preparse, preparse_file
+    def do_preparse():
+        """
+        Return True if the preparser is set to on, and False otherwise.
+        """
+        import sage.misc.interpreter
+        return sage.misc.interpreter.do_preparse
+    
 except ImportError:
     def preparse(line, *args, **kwds):
         return line
     def preparse_file(contents, *args, **kwds):
         return contents
+    def do_preparse():
+        """
+        Return True if the preparser is set to on, and False otherwise.
+        """
+        return False
 
+from sagenb.interfaces.format import displayhook_hack
+def preparse_worksheet_cell(s):
+    """
+    Preparse the contents of a worksheet cell in the notebook,
+    respecting the user using ``preparser(False)`` to turn off the
+    preparser.  This function calls ``preparse_file`` which also
+    reloads attached files.  It also does displayhook formatting by
+    calling the format.displayhook_hack function.
+
+    INPUT:
+
+        - `s` -- string containing code
+
+    OUTPUT:
+
+        - string
+    """
+    if do_preparse(): 
+        s = preparse_file(s, magic=True, do_time=True, ignore_prompts=False, reload_attached=True)
+    return displayhook_hack(s)

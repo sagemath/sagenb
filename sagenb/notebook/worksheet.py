@@ -3085,7 +3085,6 @@ from sagenb.notebook.all import *
         if C.time() and not C.introspect():
             input += 'print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__))\n'
         self.__comp_is_running = True
-        'exec _support_.preparse(base64.b64decode("%s"))'%base64.b64encode(input)
         self.sage().execute(input, os.path.abspath(self.data_directory()))
                 
     def check_comp(self, wait=0.2):
@@ -3576,8 +3575,6 @@ from sagenb.notebook.all import *
         """
         input = ignore_prompts_and_output(input).rstrip()
         input = self.preparse(input)
-        input = self.load_any_changed_attached_files(input)
-        input = self.do_sage_extensions_preparsing(input)
         return input
         
     def _strip_synchro_from_start_of_output(self, s):
@@ -3626,8 +3623,8 @@ from sagenb.notebook.all import *
         return support.get_rightmost_identifier(s)
 
     def preparse(self, s):
-        return preparse_file(s, magic=False, do_time=True,
-                          ignore_prompts=False)
+        return 'exec _support_.preparse_worksheet_cell(base64.b64decode("%s"))'%base64.b64encode(s)
+    #return 'exec _support_.displayhook_hack(_support_.preparse_file(base64.b64decode("%s"),magic=True,do_time=True,ignore_prompts=False,reload_attached=True))'%base64.b64encode(s)
 
     ##########################################################
     # Loading and attaching files
@@ -3759,39 +3756,6 @@ from sagenb.notebook.all import *
         return ';'.join(['save(%s,"%s")'%(x,x) for x in v])
         
 
-    def do_sage_extensions_preparsing(self, s, files_seen_so_far=[], this_file=''):
-        u = []
-        for t in s.split('\n'):
-            if t.startswith('load '):
-                z = ''
-                for filename in self._normalized_filenames(after_first_word(t)):
-                    filename = self.hunt_file(filename)
-                    z += self._load_file(filename, files_seen_so_far, this_file) + '\n'
-                t = z
-                
-            elif t.startswith('attach '):
-                z = ''
-                for filename in self._normalized_filenames(after_first_word(t)):
-                    filename = self.hunt_file(filename)                    
-                    if not os.path.exists(filename):
-                        z += "print 'Error attaching %s -- file not found'\n"%filename
-                    else:
-                        self.attach(filename)
-                        z += self._load_file(filename, files_seen_so_far, this_file) + '\n'
-                t = z
-                    
-            elif t.startswith('detach '):
-                filename = self.hunt_file(filename)                                    
-                for filename in self._normalized_filenames(after_first_word(t)):
-                    self.detach(filename)
-                t = ''
-
-            elif t.startswith('save '):
-                t = self._save_objects(after_first_word(t))
-                
-            u.append(t)
-            
-        return '\n'.join(u)
 
     def _eval_cmd(self, system, cmd, dir):
         cmd = cmd.replace("'", "\\u0027")
