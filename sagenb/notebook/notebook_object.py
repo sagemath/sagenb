@@ -27,52 +27,53 @@ Sage installation guide, in the "Running the Sage Notebook Securely"
 chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
 
     INPUT:
-        directory     -- directory that contains the Sage notebook files;
-                         the default is .sage/sage_notebook, in your home
-                         directory.
-        port          -- (default: 8000), port to serve the notebook on.
-        address       -- (default: 'localhost'), address of network
-                         interface to listen on; give '' to listen on all
-                         interfaces.
-        port_tries    -- (default: 0), number of additional ports to try if
-                         the first one doesn't work (*not* implemented).
-        secure        -- (default: False) if True use https so all
-                         communication, e.g., logins and passwords, between
-                         web browsers and the Sage notebook is encrypted
-                         via GNU TLS.  *Highly recommended!*
-        require_login -- (default: True) if True login is required else web
-                         user is automatically logged in as user admin.
-        reset         -- (default: False) if True allows you to set the
-                         admin password.  Use this if you forget your admin
-                         password.
-        accounts      -- (default: False) if True, any visitor to the
-                         website will be able to create a new account.  If
-                         False, only the admin can create accounts
-                         (currently, this can only be done by running with
-                         accounts=True for a few minutes, or on the command
-                         line with, e.g., 
-                             nb = load('./sage/sage_notebook/nb.sobj')
-                             nb.set_accounts(True)
-                             nb.add_user("username", "password",
-                                 "email@place", "user")
-                             nb.save()
-        open_viewer   -- (default: True) whether to pop up a web browser.
-                         You can override the default browser by setting the
-                         SAGE_BROWSER environment variable, e.g., by putting
-                             export SAGE_BROWSER="firefox"
-                         in the file .bashrc in your home directory.
-        timeout       -- (default: 0) seconds until idle worksheet
-                         sessions automatically timeout, i.e., the
-                         corresponding Sage session terminates. 0 means
-                         `never timeout'. If your server is running out
-                         of memory, setting a timeout can be useful as
-                         this will free the memory used by idle
-                         sessions.
-        server_pool   -- (default: None) list; this option specifies that
-                         worksheet processes run as a separate user (chosen
-                         from the list in the server_pool -- see below). 
+    
+        - directory     -- directory that contains the Sage notebook files;
+          the default is .sage/sage_notebook, in your home directory.
+        - port          -- (default: 8000), port to serve the notebook on.
+        - address       -- (default: 'localhost'), address of network
+          interface to listen on; give '' to listen on all interfaces.
+        - port_tries    -- (default: 0), number of additional ports to try if
+          the first one doesn't work (*not* implemented).
+        - secure        -- (default: False) if True use https so all
+          communication, e.g., logins and passwords, between
+          web browsers and the Sage notebook is encrypted
+          via GNU TLS.  *Highly recommended!*
+        - require_login -- (default: True) if True login is required else web
+          user is automatically logged in as user admin.
+        - reset         -- (default: False) if True allows you to set the
+          admin password.  Use this if you forget your admin
+          password.
+        - accounts      -- (default: False) if True, any visitor to the
+          website will be able to create a new account.  If
+          False, only the admin can create accounts
+          (currently, this can only be done by running with
+          accounts=True for a few minutes, or on the command
+          line with, e.g., 
+
+              nb = load('./sage/sage_notebook/nb.sobj')
+              
+              nb.set_accounts(True)
+              
+              nb.add_user("username", "password", "email@place", "user")
+              
+              nb.save()
+              
+        - open_viewer   -- (default: True) whether to pop up a web browser.
+          You can override the default browser by setting the
+          SAGE_BROWSER environment variable, e.g., by putting
+              export SAGE_BROWSER="firefox"
+          in the file .bashrc in your home directory.
+        - timeout       -- (default: 0) seconds until idle worksheet
+          sessions automatically timeout, i.e., the
+          corresponding Sage session terminates. 0 means
+          `never timeout'. If your server is running out
+          of memory, setting a timeout can be useful as
+          this will free the memory used by idle sessions.
+        - server_pool   -- (default: None) list; this option specifies that
+          worksheet processes run as a separate user (chosen
+          from the list in the server_pool -- see below). 
                       
-    \begin{verbatim}
 
     NOTE: If you have problems with the server certificate hostname not
     matching, do \code{notebook.setup()}.
@@ -132,31 +133,43 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
     NOTE: The values of these two properties default to what they were last
     time the notebook command was called.
 
-        server_pool -- (initial default: None), if given, should be a list
-                       like ['sage1@localhost', 'sage2@localhost'], where
-                       you have setup ssh keys so that typing
-                           ssh sage1@localhost
-                       logs in without requiring a password, e.g., by typing
-                       `ssh-keygen' as the notebook server user, then
-                       putting ~/.ssh/id_rsa.pub as the file
-                       .ssh/authorized_keys. Note: you have to get the
-                       permissions of files and directories just right --
-                       see the above wiki page for more details.
+        - server_pool -- (initial default: None), if given, should be a list
+          like ['sage1@localhost', 'sage2@localhost'], where
+          you have setup ssh keys so that typing
+              ssh sage1@localhost
+          logs in without requiring a password, e.g., by typing
+          `ssh-keygen' as the notebook server user, then
+          putting ~/.ssh/id_rsa.pub as the file
+          .ssh/authorized_keys. Note: you have to get the
+          permissions of files and directories just right --
+          see the above wiki page for more details.  Also, every user
+          in the serverpool must share the same /tmp/ directory right
+          now, so if the machines are separate the server machine must
+          NSF export /tmp.
 
-        ulimit      -- (initial default: None -- leave as is), if given and
-                       server_pool is also given, the worksheet processes
-                       are run with these constraints. See the ulimit
-                       documentation. Common options include:
-                           -t   The maximum amount of cpu time in seconds.
-                                NOTE: For Sage, -t is the wall time, not cpu time.
-                           -u   The maximum number of processes available to
-                                a single user. 
-                           -v   The maximum amount of virtual memory
-                                available to the process.
-                       Values are in 1024-byte increments, except for `-t',
-                       which is in seconds, and `-u' which is a positive
-                       integer. Example:  ulimit="-v 400000 -t 30"
-    \end{verbatim}
+        - ulimit      -- (initial default: None -- leave as is), if given and
+          server_pool is also given, the worksheet processes
+          are run with these constraints. See the ulimit
+          documentation. Common options include:
+
+              - ``-t``   The maximum amount of cpu time in seconds.
+                NOTE: For Sage, -t is the wall time, not cpu time.
+                
+              - ``-u``   The maximum number of processes available to a single user.
+              
+              - ``-v``   The maximum amount of virtual memory available to the process.
+
+          Values are in 1024-byte increments, except for `-t',
+          which is in seconds, and `-u' which is a positive
+          integer. Example:  ulimit="-v 400000 -t 30"
+
+    OTHER NOTES:
+    
+       - If you create a file ``$DOT_SAGE/notebook.css`` then it will
+         get applied when rendering the notebook HTML.  This allows
+         notebook administrators to customize the look of the
+         notebook.  Note that by default ``$DOT_SAGE`` is
+         ``$HOME/.sage``.
     """
     def __call__(self, *args, **kwds):
         return self.notebook(*args, **kwds)

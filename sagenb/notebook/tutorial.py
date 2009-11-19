@@ -424,5 +424,7 @@ notebook_help = [
        'Use "save obj1 obj2 ..." and "load obj1 obj2 ...".  This allows for easy moving of objects from one worksheet to another, and saving of objects for later use.'),
       ('Loading and Saving Sessions',
        'Use "save_session(\'name\')" to save all variables to an object.  Use "load_session(\'name\')" to <i>merge</i> in all variables from a saved session.'),
+      ('Customizing the Notebook CSS',
+       'If you create a file <tt>$HOME/.sage/notebook.css</tt> then it will get applied when rendering the notebook.   See ')
     ])
     ]
