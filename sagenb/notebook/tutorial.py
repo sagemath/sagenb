@@ -421,7 +421,7 @@ notebook_help = [
       ('DIR Variable',
        'The variable DIR contains the directory from which you started the SAGE notebook.  For example, to open a file in that directory, do "open(DIR+\'filename\')".'),
       ('DATA Variable',
-       'The variable DATA contains the directory with data files that you upload into the worksheet.  For example, to open a file in that directory, do "open(DATA+\'filename\')".'),
+       'Use the Data menu to upload images and other files, and create new files that can be shared between worksheets.  The DATA variable contains the path to the data files.  For example, to open a file in that directory, do "open(DATA+\'filename\')".  If foo.sage is a Sage file that you uploaded, type "load foo.sage"; if foo.py is a Python file, you can import it by typing "import foo".'),
       ('Loading and Saving Objects',
        'Use "save obj1 obj2 ..." and "load obj1 obj2 ...".  This allows for easy moving of objects from one worksheet to another, and saving of objects for later use.'),
       ('Loading and Saving Sessions',

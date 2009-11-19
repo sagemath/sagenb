@@ -2778,6 +2778,7 @@ from sagenb.notebook.interact import interact
 
 DATA = %r
 DIR = %r
+import sys; sys.path.append(DATA)
 _support_.init(None, globals())
 
 # The following is Sage-specific -- this immediately bombs out if sage isn't installed.
