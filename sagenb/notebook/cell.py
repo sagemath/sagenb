@@ -2239,7 +2239,7 @@ def format_exception(s0, ncols):
     EXAMPLES::
     
         sage: sagenb.notebook.cell.format_exception(sagenb.notebook.cell.TRACEBACK,80)
-        '\nTraceback (click to the left for traceback)\n...\nTraceback (most recent call last):'
+        '\nTraceback (click to the left of this block for traceback)\n...\nTraceback (most recent call last):'
         sage: sagenb.notebook.cell.format_exception(sagenb.notebook.cell.TRACEBACK + "notracebacks",80)
         'Traceback (most recent call last):notracebacks'
     """
@@ -2254,7 +2254,7 @@ def format_exception(s0, ncols):
         for k in range(len(w)):
             if TRACEBACK in w[k]:
                 break
-        s = '\n'.join(w[:k]) + '\nTraceback (click to the left for traceback)' + '\n...\n' + w[-1]
+        s = '\n'.join(w[:k]) + '\nTraceback (click to the left of this block for traceback)' + '\n...\n' + w[-1]
     else:
         s = s.replace("exec compile(ur'","")
         s = s.replace("' + '\\n', '', 'single')", "")
