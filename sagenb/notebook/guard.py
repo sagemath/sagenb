@@ -114,16 +114,10 @@ class SessionsManager(object):
         if not self.sessions and self.tick.running:
             self.tick.stop()
 
-class MindManager(object):
-    """Might want to use this"""
-    def __init__(self, uid): 
-        self.uid = uid #uid is the session id (the cookie)
-
 class MySessionWrapper(object):
     implements(iweb.IResource)
     
     cookieManager = None
-    mindFactory = MindManager
     sessionManager = SessionsManager()
 
     # The interface to cred for when logging into the portal
@@ -189,7 +183,6 @@ class MySessionWrapper(object):
         def _success(avatar, request, segments):
             iface, rsrc, logout = avatar
             return rsrc, segments
-        #mind = self.mindFactory(request, creds)
         mind = [session.get_uid(), request.args, segments]
         d = self.portal.login(creds, mind, self.credInterface)
         d.addCallback(_success, request, segments)
@@ -222,8 +215,9 @@ class MySessionWrapper(object):
         #log.msg("=== requestPasswordAuthentication ===")
         creds = self.getCredentials(request)
         session, newCookie = self.sessionManager.createSession()
-        mind = [newCookie, request.args, segments] 
+        mind = [newCookie, request.args, segments]
         d = self.portal.login(creds, mind, self.credInterface)
+        # TODO: Note that self._loginSuccess gets called even if the login fails.  
         d.addCallback(self._loginSuccess, session, creds, segments)
         return d 
 
@@ -286,11 +280,6 @@ class MySessionWrapper(object):
         session.set_authCreds(creds)
         return rsrc, ()
     
-    def _loginFailure(self, *x): #TODO
-        pass
-        #log.msg("=== _loginFailure ===")
-        #log.msg(str(x))
-                 
     def incorrectLoginError(self, error, ctx, segments, loginFailure):
         pass
 

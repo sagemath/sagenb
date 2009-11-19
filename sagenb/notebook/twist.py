@@ -37,6 +37,7 @@ import os, shutil, time
 import bz2
 from cgi import escape
 
+from twisted.python import log
 from twisted.web2 import server, http, resource, channel
 from twisted.web2 import static, http_headers, responsecode
 from twisted.web2.filter import gzip
@@ -2153,6 +2154,8 @@ class RegistrationPage(resource.PostableResource):
             form = template(os.path.join('html', 'registration.html'),
                             **template_dict)
             return HTMLResponse(stream = form)
+
+        log.msg("Created new user '%s'"%username)
 
         # POST-VALIDATION hooks.  All required fields should be valid.
         if notebook.conf()['email']:
