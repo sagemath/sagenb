@@ -127,7 +127,7 @@ def gzip_handler(request):
 ############################
 # An error message
 ############################
-def message(msg, cont=None):
+def message(msg, cont='/'):
     template_dict = {'msg': msg, 'cont': cont}
     return template(os.path.join('html', 'error_message.html'),
                     **template_dict)
@@ -546,52 +546,69 @@ class Worksheet_upload_data(WorksheetResource, resource.Resource):
 
 class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
     def render(self, ctx):
-        name = ''
-        if ctx.args.has_key('newField'):
-            newfield = ctx.args['newField'][0].strip()
-        else:
-            newfield = None
+        # Backlinks.
+        worksheet_url = '/home/' + self.worksheet.filename()
+        upload_url = worksheet_url + '/upload_data'
+        backlinks = """ Return to <a href="%s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%s" title="Interactively use the worksheet"><strong>%s</strong></a>.""" % (upload_url, worksheet_url, self.worksheet.name())
 
-        if ctx.args.has_key('nameField'):
-            name = ctx.args['nameField'][0].strip()
+        # Check for the form's fields.  They need not be filled.
+        if not ctx.files.has_key('fileField'):
+            return HTMLResponse(stream=message('Error uploading file (missing fileField file).%s' % backlinks, worksheet_url))
 
-        url = ctx.args['urlField'][0].strip()
+        text_fields = ['urlField', 'newField', 'nameField']
+        for field in text_fields:
+            if not ctx.args.has_key(field):
+                return HTMLResponse(stream=message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url))
 
-        if not name:
-            name = ctx.files['fileField'][0][0]
+        # Get the fields.
+        newfield = ctx.args.get('newField', [''])[0].strip()
+        name = ctx.args.get('nameField', [''])[0].strip()
+        url = ctx.args.get('urlField', [''])[0].strip()
 
-        if not name:
-            name = newfield
-
+        name = name or ctx.files['fileField'][0][0] or newfield
         if url and not name:
-            name = os.path.split(url)[-1]
+            name = url.split('/')[-1]
 
+        # The next line makes sure that name is plain filename, so
+        # that dest below is a file in the data directory.  See trac
+        # 7495 for why this is critically important.
+        name = os.path.split(name)[-1]
+
+        if not name:
+            return HTMLResponse(stream=message('Error uploading file (missing filename).%s' % backlinks, worksheet_url))
         dest = os.path.join(self.worksheet.data_directory(), name)
         if os.path.exists(dest):
+            if not os.path.isfile(dest):
+                return HTMLResponse(stream=message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url))
             os.unlink(dest)
-        response = http.RedirectResponse('/home/'+self.worksheet.filename() + '/datafile?name=%s'%name)
+            
+        response = http.RedirectResponse(worksheet_url + '/datafile?name=%s' % name)
 
         if url != '':
-            #Here we use twisted's downloadPage function which
-            #returns a deferred object.  We return the deferred to the server,
-            #and it will wait until the download has finished while
-            #still serving other requests.  At the end of the deferred
-            #callback chain should be the response that we wanted to return.
+            # Here we use twisted's downloadPage function which
+            # returns a deferred object.  We return the deferred to
+            # the server, and it will wait until the download has
+            # finished while still serving other requests.  At the end
+            # of the deferred callback chain should be the response
+            # that we wanted to return.
             from twisted.web.client import downloadPage
 
-            #The callback just returns the response
+            # The callback just returns the response
             def callback(result):
                 return response
+            def errback(result):
+                msg = "There was an error uploading '%s' (please recheck the URL).%s" % (url, backlinks)
+                return HTMLResponse(stream=message(msg, worksheet_url))
 
             d = downloadPage(url, dest)
             d.addCallback(callback)
+            d.addErrback(errback)
             return d
         elif newfield:
-            if os.path.exists(dest): os.unlink(dest)
-            open(dest,'w').close()
+            open(dest, 'w').close()
             return response
         else:
-            f = file(dest,'wb')
+            f = file(dest, 'wb')
             f.write(ctx.files['fileField'][0][2].read())
             f.close()
             return response
