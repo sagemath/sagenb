@@ -402,6 +402,8 @@ class UploadWorksheet(resource.PostableResource):
         self.username = username
 
     def render(self, ctx):
+        backlinks = """ Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>."""
+
         url = ctx.args['urlField'][0].strip()
         dir = ''  # we will delete the directory below if it is used
         if url != '':
@@ -411,6 +413,8 @@ class UploadWorksheet(resource.PostableResource):
             # uploading a file from the user's computer
             dir = tmp_dir()
             filename = ctx.files['fileField'][0][0]
+            if filename == '':
+                return HTMLResponse(stream=message("Please specify a worksheet to load.%s" % backlinks))
             # Make tmp file in Sage temp directory
             filename = os.path.join(dir, filename)
             f = file(filename,'wb')
@@ -420,8 +424,8 @@ class UploadWorksheet(resource.PostableResource):
             f.close()
 
 
-        #We make a callback so that we can download a file remotely
-        #while allowing the server to still serve requests.
+        # We make a callback so that we can download a file remotely
+        # while allowing the server to still serve requests.
         def callback(result):
 
             if ctx.args.has_key('nameField'):
@@ -447,9 +451,9 @@ class UploadWorksheet(resource.PostableResource):
                     else:
                         W = notebook.import_worksheet(filename, self.username)
 
-                except IOError, msg:
-                    print msg
-                    raise ValueError, "Unfortunately, there was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the Google group sage-support and post a link to your worksheet.  Alternatively, an sws file is just a bzip2'd tarball; take a look inside!"
+                except Exception, msg:
+                    s = 'There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s' % backlinks
+                    return HTMLResponse(stream=message(s,'/'))
                 finally:
                     # Clean up the temporarily uploaded filename.
                     os.unlink(filename)
@@ -458,7 +462,7 @@ class UploadWorksheet(resource.PostableResource):
                         shutil.rmtree(dir)
 
             except ValueError, msg:
-                s = "Error uploading worksheet '%s'."%msg
+                s = "Error uploading worksheet '%s'.%s" % (msg, backlinks)
                 return HTMLResponse(stream = message(s, '/'))
 
             # If the user requested in the form a specific title for
@@ -469,18 +473,22 @@ class UploadWorksheet(resource.PostableResource):
             return http.RedirectResponse('/home/'+W.filename())
 
         if url != '':
-            #We use the downloadPage function which returns a
-            #deferred which we are allowed to return to the server.
-            #The server waits until the download is finished and then runs
-            #the callback function specified.
+            # We use the downloadPage function which returns a
+            # deferred which we are allowed to return to the server.
+            # The server waits until the download is finished and then runs
+            # the callback function specified.
             from twisted.web.client import downloadPage
             d = downloadPage(url, filename)
             d.addCallback(callback)
+            def errback(result):
+                msg = "There was an error uploading '%s' (please recheck the URL).%s" % (url, backlinks)
+                return HTMLResponse(stream=message(msg,'/'))
+            d.addErrback(errback)
             return d
         else:
-            #If we already have the file, then we
-            #can just return the result of callback which will
-            #give us the HTMLResponse.
+            # If we already have the file, then we
+            # can just return the result of callback which will
+            # give us the HTMLResponse.
             return callback(None)
 
 
