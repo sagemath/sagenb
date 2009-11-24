@@ -1149,6 +1149,18 @@ class Worksheet_delete_cell(WorksheetResource, resource.PostableResource):
             s = encode_list(['delete', id, prev_id, W.cell_id_list()])
         return HTMLResponse(stream = s)
 
+##############################################################################
+# The delete cell output command: /home/worksheet/delete_cell_output?id=number
+##############################################################################
+class Worksheet_delete_cell_output(WorksheetResource, resource.PostableResource):
+    """
+    Deletes a cell's output.
+    """
+    def render(self, ctx):
+        id = self.id(ctx)
+        self.worksheet.get_cell_with_id(id).delete_output()
+        return HTMLResponse(stream = encode_list(['delete_output', id]))
+
 
 ############################
 # Get the latest update on output appearing

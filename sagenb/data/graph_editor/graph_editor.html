@@ -1,0 +1,85 @@
+<html>
+  <head>
+    <title>Graph Editor</title> 
+    <style type="text/css">
+      body {
+          font-size: 10pt;
+      }
+      canvas {
+          border: 1px solid;
+          height: 350px;
+          width: 350px;
+          margin: 20px;
+          float: left;
+      }
+      tr.live_slider {
+          height: 1.75em;
+      }
+      div.slider {
+          width : 150px;
+      }
+      #help {
+          display: hidden;
+      }
+      h3 {
+          color: #aa0;
+          margin: 10px;
+      }
+    </style>  
+    <script type="text/javascript" src="/javascript/jquery/jquery-1.3.2.min.js"></script>
+    <link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.7.2.custom.css" />
+    <script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.7.2.custom.min.js"></script>
+    <script type="text/javascript" src="/javascript/graph_editor/processing.editor.min.js"></script>
+    <script type="text/javascript" src="/javascript/graph_editor/graph_editor.js"></script>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <table>
+      <tbody>
+	<tr>
+	  <td>
+	    live:
+	  </td>
+	  <td>
+	    <input type="checkbox" id="live" value="true" />
+	  </td>
+	</tr>
+	<tr>
+	  <td>
+	    variable name:
+	  </td>
+	  <td>
+	    <input type="text" id="graph_name" size="20" />
+	  </td>
+	</tr>
+	<tr class="live_slider">
+	  <td>
+	    strength:
+	  </td>
+	  <td>
+	    <input type="hidden" id="val_edge" name="val_edge" value="50" />
+	    <div class="slider" id="slider_edge"></div>
+	  </td>
+	</tr>
+	<tr class="live_slider">
+	  <td>
+	    length:
+	  </td>
+	  <td>
+	    <input type="hidden" id="val_fixed_length" name="val_fixed_length" value="100" />
+	    <div class="slider" id="slider_fixed_length"></div>
+	  </td>
+	</tr>
+      </tbody>
+    </table>
+    <input type="button" id="help_button" value="help"> 
+    <ul id="help">
+      <li><h3>move vertex</h3>Vertices are draggable.
+      <li><h3>create vertex</h3>Click on empty space not too close to existing vertices.
+      <li><h3>select a vertex</h3>Click on existing vertex.
+      <li><h3>create/erase edge</h3>Select the first vertex. Click on another vertex (different than the selected one) to turn on/off (toggle) the edge between them.
+      <li><h3>keep the selected vertex</h3>Hold 'SHIFT' to perserve the selected vertex after creating/erasing an edge.
+      <li><h3>delete vertex</h3>Double click on vertex or drag to the edge for the frame (be careful, there is no UNDO yet!).
+    </ul>
+  </body>
+</html>
