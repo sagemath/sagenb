@@ -75,11 +75,17 @@ class Configuration(object):
         D = self.defaults()
         DS = self.defaults_descriptions()
         C = self.confs
-        K = list(set(self.confs.keys() + D.keys()))
+        K = list(set(C.keys() + D.keys()))
 
         updated = {}
         for key in K:
-            typ = DS[key][TYPE]
+            try:
+                typ = DS[key][TYPE]
+            except KeyError:
+                # We skip this setting.  Perhaps defaults_descriptions
+                # is not in sync with defaults, someone has tampered
+                # with the request arguments, etc.
+                continue
             val = req_args.get(key, [None])[0]
 
             if typ == T_BOOL:
@@ -118,9 +124,18 @@ class Configuration(object):
         # Make groups
         for key in K:
             try:
-                G[DS[key][GROUP]].append(key)
+                gp = DS[key][GROUP]
+                DS[key][DESC]
+                DS[key][TYPE]
             except KeyError:
-                G[DS[key][GROUP]] = [key]
+                # We skip this setting.  It's obsolete and/or
+                # defaults_descriptions is not up to date.  See
+                # *_conf.py for details.
+                continue
+            try:
+                G[gp].append(key)
+            except KeyError:
+                G[gp] = [key]
 
         s = ''
         color_picker = 0
