@@ -89,9 +89,9 @@ class JSKeyHandler:
     def set(self, name, key='', alt=False, ctrl=False, shift=False):
         """
         Add a named keycode to the handler.  When built by
-        \code{all_tests()}, it can be called in javascript by
-        \code{key_<key_name>(event_object)}.  The function returns
-        true if the keycode numbered by the \code{key} parameter was
+        ``all_tests()``, it can be called in javascript by
+        ``key_<key_name>(event_object)``.  The function returns
+        true if the keycode numbered by the ``key`` parameter was
         pressed with the appropriate modifier keys, false otherwise.
         """
         self.key_codes.setdefault(name,[])
@@ -99,7 +99,7 @@ class JSKeyHandler:
 
     def add(self, name, key='', alt=False, ctrl=False, shift=False):
         """
-        Similar to \code{set_key(...)}, but this instead checks if
+        Similar to ``set_key(...)``, but this instead checks if
         there is an existing keycode by the specified name, and
         associates the specified key combination to that name in
         addition.  This way, if different browsers don't catch one
