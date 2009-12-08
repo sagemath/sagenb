@@ -1609,8 +1609,11 @@ class EmptyTrash(resource.Resource):
             []
             sage: n.delete()
         """
-        notebook.empty_trash(self.username)
-        return HTMLResponse(stream = message("Trash emptied."))
+        if ctx.headers.hasHeader('referer'):
+            notebook.empty_trash(self.username)
+            return http.RedirectResponse(ctx.headers.getHeader('referer'))
+        else:
+            return http.StatusResponse(403, 'No referer found. Forbidden.')
 
 class SendWorksheetToFolder(resource.PostableResource):
     def __init__(self, username):

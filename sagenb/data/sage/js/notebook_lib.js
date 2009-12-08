@@ -4371,7 +4371,6 @@ function empty_trash() {
     */
     if(confirm('Emptying the trash will permanently delete all items in the trash. Continue?')) {
         window.location.replace("/emptytrash");
-        window.location.replace("/?typ=trash");
     }
 }
 
