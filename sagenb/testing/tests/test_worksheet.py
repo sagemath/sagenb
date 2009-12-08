@@ -20,6 +20,35 @@ class TestWorksheet(NotebookTestCase):
         self.login_as('admin', 'asdfasdf')
         self.create_new_worksheet()
 
+    def test_7433(self):
+        """
+        Tests that #7433 notebook: changing title of worksheet changes
+        #title of corresponding published worksheet has been fixed.
+        """
+        sel = self.selenium
+        self.rename_worksheet('To be published')
+        self.publish_worksheet()
+        self.save_and_quit()
+
+        sel.click('link=Published')
+        sel.wait_for_page_to_load(30000)
+        self.open_worksheet_with_name('To be published')
+        self.assert_(sel.is_element_present('//h1[contains(@class, "title") and contains(text(), "To be published")]'))
+
+        sel.open('/home/admin')
+        sel.wait_for_page_to_load(30000)
+        self.open_worksheet_with_name('To be published')
+        self.rename_worksheet('This has been published')
+        self.save_and_quit()
+
+        sel.click('link=Published')
+        sel.wait_for_page_to_load(30000)
+        self.open_worksheet_with_name('To be published')
+        self.assert_(sel.is_element_present('//h1[contains(@class, "title") and contains(text(), "To be published")]'))
+
+        sel.open('/home/admin')
+        
+        
     def test_edit(self):
         sel = self.selenium
         sel.click('//a[@href="edit"]')
