@@ -945,37 +945,49 @@ class Worksheet_revisions(WorksheetResource, resource.PostableResource):
 class SettingsPage(resource.PostableResource):
     def __init__(self, username):
         self.username = username
+        self.nb_user = notebook.user(username)
 
     def render(self, request):
         error = None
         redirect_to_home = None
         redirect_to_logout  = None
-        if 'autosave' in request.args:
-            notebook.user(self.username)['autosave_interval'] = int(request.args['autosave'][0]) * 60
-            redirect_to_home = True
+        nu = self.nb_user
 
-        if 'Newpass' in request.args or 'RetypePass' in request.args:
-            if not 'Oldpass' in request.args:
+        autosave = int(request.args.get('autosave', [0])[0]) * 60
+        if autosave:
+            nu['autosave_interval'] = autosave
+            redirect_to_home = True            
+
+        old = request.args.get('Oldpass', [None])[0]
+        new = request.args.get('Newpass', [None])[0]
+        two = request.args.get('RetypePass', [None])[0]
+        if new or two:
+            if not old:
                 error = 'Old password not given'
-            elif not notebook.user(self.username).password_is(request.args['Oldpass'][0]):
+            elif not nu.password_is(old):
                 error = 'Incorrect password given'
-            elif not 'Newpass' in request.args:
+            elif not new:
                 error = 'New password not given'
-            elif not 'RetypePass' in request.args:
+            elif not two:
                 error = 'Please type in new password again.'
-            elif request.args['Newpass'][0] != request.args['RetypePass'][0]:
+            elif new != two:
                 error = 'The passwords you entered do not match.'
 
-            if not error: #webbrowser may auto fill in "old password" even though the user may not want to change her password
-                notebook.change_password(self.username, request.args['Newpass'][0])
+            if not error:
+                # The browser may auto-fill in "old password," even
+                # though the user may not want to change her password.
+                notebook.change_password(self.username, new)
                 redirect_to_logout = True
+
         if notebook.conf()['email']:
-            if 'Newemail' in request.args:
-                notebook.user(self.username).set_email(request.args['Newemail'][0])
+            newemail = request.args.get('Newemail', [None])[0]
+            if newemail:
+                nu.set_email(newemail)
+#                nu.set_email_confirmation(False)
                 redirect_to_home = True
 
         if error:
-            return HTMLResponse(stream=message(error, '/settings'))
+            return HTMLResponse(stream = message(error, '/settings'))
 
         if redirect_to_logout:
             return http.RedirectResponse('/logout')
@@ -983,15 +995,23 @@ class SettingsPage(resource.PostableResource):
         if redirect_to_home:
             return http.RedirectResponse('/home/%s' % self.username)
 
-        template_dict = {}
-        template_dict['username'] = self.username
-        template_dict['autosave_intervals'] = ((i, ' selected') if notebook.user(self.username)['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))
-        template_dict['email'] = notebook.conf()['email']
-        if template_dict['email']:
-            template_dict['email_address'] = 'None' if not notebook.user(self.username)._User__email else notebook.user(self.username)._User__email
-            template_dict['email_confirmed'] = 'Not confirmed' if not notebook.user(self.username).is_email_confirmed() else 'Confirmed'
-        template_dict['admin'] = user_type(self.username) == 'admin'
-        return HTMLResponse(stream=template(os.path.join('html', 'account_settings.html'), **template_dict))
+        td = {}
+        td['username'] = self.username
+
+        td['autosave_intervals'] = ((i, ' selected') if nu['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))
+
+        td['email'] = notebook.conf()['email']
+        if td['email']:
+            td['email_address'] = nu.get_email() or 'None'
+            if nu.is_email_confirmed():
+                td['email_confirmed'] = 'Confirmed'
+            else:
+                td['email_confirmed'] = 'Not confirmed'
+
+        td['admin'] = nu.is_admin()
+
+        s = template(os.path.join('html', 'account_settings.html'), **td)
+        return HTMLResponse(stream = s)
 
 
 class NotebookSettingsPage(resource.PostableResource):
