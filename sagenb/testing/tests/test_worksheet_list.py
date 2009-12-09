@@ -49,6 +49,7 @@ class TestWorksheetList(NotebookTestCase):
         Searches for a phrase.
         """
         sel = self.selenium
+        self.wait_in_window('return this.$("#search_worksheets").length > 0;', 30000)
         sel.type('id=search_worksheets', phrase)
         sel.click('//button[text()="Search Worksheets"]') # TODO: Fix for l18n
         sel.wait_for_page_to_load("30000")
@@ -70,7 +71,7 @@ class TestWorksheetList(NotebookTestCase):
             self.publish_worksheet()
             self.save_and_quit()
 
-        pages = ('/home/admin/', '/pub', '/history')
+        pages = ('/home/admin/', '/pub')
 
         for page in pages:
             sel.open(page)

@@ -6,7 +6,7 @@
 
 {% block body %}
 
-{% include "html/list_top.html" %}
+{% include "html/top_bar.html" %}
 
     <pre>
       {{ text | escape }}
@@ -14,6 +14,6 @@
     <hr class="usercontrol">
     <a title="Click here to turn the above into a Sage worksheet" href="/live_history">Create a new Sage worksheet version of the last 100 commands in the above log.</a>
     <a name="bottom"></a>
-    <script type="text/javascript"> window.location="#bottom"</script>
+    <script type="text/javascript">$(document).load(function(){window.location="#bottom"});</script>
 
 {% endblock %}
