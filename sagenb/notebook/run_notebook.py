@@ -68,7 +68,9 @@ def notebook_twisted(self,
              sagetex_path = "",
              start_path = "",
              fork = False,
-             quiet = False):
+             quiet = False,
+
+             subnets = None):
              
     if directory is None:
         directory = '%s/sage_notebook'%DOT_SAGENB
@@ -136,7 +138,7 @@ def notebook_twisted(self,
     nb.save()
     del nb
 
-    def run(port):
+    def run(port, subnets):
         ## Create the config file
         if secure:
             if not os.path.exists(private_pem) or not os.path.exists(public_pem):
@@ -162,6 +164,27 @@ def notebook_twisted(self,
             open_page = ''
         
         config = open(conf, 'w')
+
+        if subnets is None:
+            factory = "factory = channel.HTTPFactory(site)"
+        else:
+            if not isinstance(subnets, (list, tuple)):
+                subnets = [subnets]
+            factory = """
+# See http://stackoverflow.com/questions/1273297/python-twisted-restricting-access-by-ip-address
+from sagenb.misc.ipaddr import IPNetwork
+subnets = eval(r"%s")
+subnets = [IPNetwork(x) for x in subnets]
+class RestrictedIPFactory(channel.HTTPFactory):
+    def buildProtocol(self, addr):
+        a = str(addr.host)
+        for X in subnets:
+            if a in X:
+                return channel.HTTPFactory.buildProtocol(self, addr)
+        print 'Ignoring all requests from IP address '+str(addr.host)
+        
+factory = RestrictedIPFactory(site)
+"""%tuple([subnets])
 
         config.write("""
 ####################################################################        
@@ -230,8 +253,7 @@ p.registerChecker(checkers.AllowAnonymousAccess())
 rsrc = guard.MySessionWrapper(p)
 log.DefaultCommonAccessLoggingObserver().start()
 site = server.Site(rsrc)
-factory = channel.HTTPFactory(site)
-
+%s
 from twisted.web2 import channel
 from twisted.application import service, strports
 application = service.Application("SAGE Notebook")
@@ -242,7 +264,8 @@ s.setServiceParent(application)
 reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
 
 """%(notebook_opts, sagetex_path, not require_login,
-     os.path.abspath(directory), strport, open_page))
+     os.path.abspath(directory), factory,
+     strport, open_page))
 
 
         config.close()                     
@@ -276,7 +299,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
     #    open_page(address, port, secure, pause=PAUSE)
     if open_viewer:
         "Open viewer automatically isn't fully implemented.  You have to manually open your web browser to the above URL."
-    return run(port)
+    return run(port, subnets)
 
 
 
