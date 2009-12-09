@@ -112,7 +112,7 @@ CHANGES
 import datetime, os, StringIO, sys, unittest
 
 import jinja2
-from sagenb.misc.misc import DATA
+from sagenb.misc.misc import DATA, SAGENB_VERSION
 from sagenb.notebook.template import template
 
 from pygments import highlight
@@ -404,7 +404,7 @@ class HTMLTestRunner(object):
 
         template_dict['title'] = jinja2.escape(self.title)
         template_dict['description'] = jinja2.escape(self.description)
-        template_dict['sagenb_version'] = None
+        template_dict['sagenb_version'] = SAGENB_VERSION
         template_dict['start_time'] = str(self.start_time)[:19]
         template_dict['stop_time'] = str(self.stop_time)[:19]
         template_dict['elapsed_time'] = self.elapsed_time

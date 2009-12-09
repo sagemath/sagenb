@@ -308,6 +308,12 @@ except ImportError:
         return code
 
 try:
+    from pkg_resources import Requirement, working_set
+    SAGENB_VERSION = working_set.find(Requirement.parse('sagenb')).version
+except AttributeError:
+    SAGENB_VERSION = ""
+
+try:
     import sage.version
     SAGE_VERSION=sage.version.version
 except ImportError:
