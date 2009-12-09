@@ -174,6 +174,8 @@ def notebook_twisted(self,
 # See http://stackoverflow.com/questions/1273297/python-twisted-restricting-access-by-ip-address
 from sagenb.misc.ipaddr import IPNetwork
 subnets = eval(r"%s")
+if '127.0.0.1' not in subnets:
+    subnets.insert(0, '127.0.0.1')
 subnets = [IPNetwork(x) for x in subnets]
 class RestrictedIPFactory(channel.HTTPFactory):
     def buildProtocol(self, addr):

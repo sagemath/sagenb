@@ -80,7 +80,8 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
           which accepts any address of the form ``192.168.1.*`` or of the
           form ``216.34.*.*``.  For serious use, you may want to instead
           use your operating system's firewall, which is probably more
-          robust and reduces the load on the server. 
+          robust and reduces the load on the server.  Note that '127.0.0.1'
+          is always allowed no matter what.
 
     NOTE: If you have problems with the server certificate hostname not
     matching, do \code{notebook.setup()}.
