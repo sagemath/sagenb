@@ -28,49 +28,48 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
 
     INPUT:
     
-        - directory     -- directory that contains the Sage notebook files;
+        - ``directory``     -- directory that contains the Sage notebook files;
           the default is .sage/sage_notebook, in your home directory.
-        - port          -- (default: 8000), port to serve the notebook on.
-        - address       -- (default: 'localhost'), address of network
+        - ``port``          -- (default: 8000), port to serve the notebook on.
+        - ``address``       -- (default: 'localhost'), address of network
           interface to listen on; give '' to listen on all interfaces.
-        - port_tries    -- (default: 0), number of additional ports to try if
+        - ``port_tries``    -- (default: 0), number of additional ports to try if
           the first one doesn't work (*not* implemented).
-        - secure        -- (default: False) if True use https so all
+        - ``secure``        -- (default: False) if True use https so all
           communication, e.g., logins and passwords, between
           web browsers and the Sage notebook is encrypted
           via GNU TLS.  *Highly recommended!*
-        - require_login -- (default: True) if True login is required else web
+        - ``require_login`` -- (default: True) if True login is required else web
           user is automatically logged in as user admin.
-        - reset         -- (default: False) if True allows you to set the
+        - ``reset``         -- (default: False) if True allows you to set the
           admin password.  Use this if you forget your admin
           password.
-        - accounts      -- (default: False) if True, any visitor to the
+        - ``accounts``      -- (default: False) if True, any visitor to the
           website will be able to create a new account.  If
           False, only the admin can create accounts
           (currently, this can only be done by running with
           accounts=True for a few minutes, or on the command
-          line with, e.g., 
+          line with, e.g.,
+
+          ::
 
               nb = load('./sage/sage_notebook/nb.sobj')
-              
               nb.set_accounts(True)
-              
               nb.add_user("username", "password", "email@place", "user")
-              
               nb.save()
               
-        - open_viewer   -- (default: True) whether to pop up a web browser.
+        - ``open_viewer``   -- (default: True) whether to pop up a web browser.
           You can override the default browser by setting the
           SAGE_BROWSER environment variable, e.g., by putting
               export SAGE_BROWSER="firefox"
           in the file .bashrc in your home directory.
-        - timeout       -- (default: 0) seconds until idle worksheet
+        - ``timeout``       -- (default: 0) seconds until idle worksheet
           sessions automatically timeout, i.e., the
           corresponding Sage session terminates. 0 means
           `never timeout'. If your server is running out
           of memory, setting a timeout can be useful as
           this will free the memory used by idle sessions.
-        - server_pool   -- (default: None) list; this option specifies that
+        - ``server_pool``   -- (default: None) list; this option specifies that
           worksheet processes run as a separate user (chosen
           from the list in the server_pool -- see below). 
                       
@@ -80,12 +79,12 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
     
     EXAMPLES:
 
-    1. I just want to run the Sage notebook.  Type
+    1. I just want to run the Sage notebook.  Type::
 
            notebook()
 
     2. I want to run the Sage notebook server on a remote machine and be the
-       only person allowed to log in.  Type
+       only person allowed to log in.  Type::
 
            notebook(address='', secure=True)
 
@@ -94,7 +93,7 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
        notebook.setup() again and change the hostname.
 
     3. I just want to run the server locally on my laptop and do not want to
-       be bothered with having to log in:
+       be bothered with having to log in::
  
            notebook(require_login=False)
 
@@ -106,7 +105,7 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
        the world to create new accounts. To run the Sage notebook publicly
        (1) at a minimum run it from a chroot jail or inside a virtual
        machine (see wiki.sagemath.org/StartingTheNotebook and the Sage
-       install guide) and (2) use a command like
+       install guide) and (2) use a command like::
     
            notebook(address='', server_pool=['sage1@localhost'],
            ulimit='-v 500000', accounts=True)
@@ -133,7 +132,7 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
     NOTE: The values of these two properties default to what they were last
     time the notebook command was called.
 
-        - server_pool -- (initial default: None), if given, should be a list
+        - ``server_pool`` -- (initial default: None), if given, should be a list
           like ['sage1@localhost', 'sage2@localhost'], where
           you have setup ssh keys so that typing
               ssh sage1@localhost
@@ -147,7 +146,7 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
           now, so if the machines are separate the server machine must
           NSF export /tmp.
 
-        - ulimit      -- (initial default: None -- leave as is), if given and
+        - ``ulimit``      -- (initial default: None -- leave as is), if given and
           server_pool is also given, the worksheet processes
           are run with these constraints. See the ulimit
           documentation. Common options include:
