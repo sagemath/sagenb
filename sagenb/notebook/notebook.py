@@ -1790,7 +1790,7 @@ class Notebook(object):
 
 ####################################################################
 
-def load_notebook(dir, address=None, port=None, secure=None):
+def load_notebook(dir, interface=None, port=None, secure=None):
     """
     Load and return a notebook from a given directory.  Create a new
     one in that directory, if one isn't already there.
@@ -1799,7 +1799,7 @@ def load_notebook(dir, address=None, port=None, secure=None):
     
     -  ``dir`` - a string that defines a directory name
     
-    -  ``address`` - the address the server listens at
+    -  ``interface`` - the address of the interface the server listens at
     
     -  ``port`` - the port the server listens on
     
@@ -1820,7 +1820,7 @@ def load_notebook(dir, address=None, port=None, secure=None):
         
     dir = make_path_relative(dir)
     nb = Notebook(dir)
-    nb.address = address
+    nb.interface = interface
     nb.port = port
     nb.secure = secure
 

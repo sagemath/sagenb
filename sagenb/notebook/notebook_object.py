@@ -31,8 +31,10 @@ chapter, and at http://wiki.sagemath.org/StartingTheNotebook.
         - ``directory``     -- directory that contains the Sage notebook files;
           the default is .sage/sage_notebook, in your home directory.
         - ``port``          -- (default: 8000), port to serve the notebook on.
-        - ``address``       -- (default: 'localhost'), address of network
+        - ``interface``     -- (default: 'localhost'), address of network
           interface to listen on; give '' to listen on all interfaces.
+          You may use ``address`` here for backwards compatibility, but this
+          is deprecated and will be removed in the future.
         - ``port_tries``    -- (default: 0), number of additional ports to try if
           the first one doesn't work (*not* implemented).
         - ``secure``        -- (default: False) if True use https so all
