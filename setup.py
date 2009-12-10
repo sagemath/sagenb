@@ -3,7 +3,7 @@
 ##########################################################
 
 import os, sys, time
-from distutils.core import setup
+from setuptools import setup
 
 def all_files(dir, lstrip):
     """
@@ -27,6 +27,8 @@ code = setup(name = 'sagenb',
       author      = 'William Stein et al.',
       author_email= 'http://groups.google.com/group/sage-support',
       url         = 'http://www.sagemath.org',
+      install_requires = ['twisted>=8.2'],
+      test_suite = 'sagenb.testing.run_tests.all_tests',
       packages    = ['sagenb',
                      'sagenb.interfaces',
                      'sagenb.misc',                                 
@@ -43,5 +45,5 @@ code = setup(name = 'sagenb',
                      ],
       package_data = {'sagenb':
                           all_files('sagenb/data', 'sagenb/')
-                      }
+                      },
       )

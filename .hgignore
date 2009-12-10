@@ -4,6 +4,7 @@ push
 pull
 .cython_hash$
 .cython_deps$
+sagenb\.egg-info/
 \.git$
 \.hi$
 \.mtl$
