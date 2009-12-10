@@ -885,7 +885,7 @@ class Cell(Cell_generic):
                 out = self.output_text(ncols, raw=True, html=False)
         else:
             out = self.output_text(ncols, raw=True, html=False, allow_interact=False)
-            out = '///\n' + out.strip()
+            out = '///\n' + out.strip('\n')
 
         if not max_out is None and len(out) > max_out:
             out = out[:max_out] + '...'
