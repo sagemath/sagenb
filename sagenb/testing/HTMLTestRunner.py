@@ -183,7 +183,9 @@ class OutputRedirector(object):
     logging.basicConfig).  To capture that output, we use the
     redirectors for the cached stream.  For example,
 
-    >>> logging.basicConfig(stream=HTMLTestRunner.stdout_redirector)
+    sage: import logging, sagenb.testing.HTMLTestRunner
+    sage: s = sagenb.testing.HTMLTestRunner.stdout_redirector
+    sage: logging.basicConfig(stream = s)
     """
     def __init__(self, fp):
         self.fp = fp

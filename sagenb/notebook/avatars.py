@@ -44,7 +44,7 @@ def user_type(avatarId):
         Traceback (most recent call last):
         ...
         AttributeError: 'NoneType' object has no attribute 'user_is_admin'
-        sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir())
+        sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
         sage: nb.create_default_users('password')
         Creating default users.
         sage: sagenb.notebook.twist.notebook = nb

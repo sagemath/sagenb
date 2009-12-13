@@ -16,7 +16,7 @@ class Datastore(object):
         EXAMPLES::
 
             sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds').__repr__()
+            sage: Datastore().__repr__()
             'Abstract Datastore'        
         """
         return "Abstract Datastore"
@@ -124,22 +124,14 @@ class Datastore(object):
         given name.  If the given user does not exists, an empty list
         is returned.
 
-        EXAMPLES::
-
-        The load_user_data function must be defined in the derived class::
+        EXAMPLES: The load_user_data function must be defined in the
+        derived class::
         
             sage: from sagenb.storage.abstract_storage import Datastore
-            sage: Datastore('/tmp/ds').worksheets('foobar')
-            []
-
-            sage: from sagenb.notebook.worksheet import Worksheet
-            sage: W = Worksheet('test', 2, '', system='gap', owner='sageuser')
-            sage: from sagenb.storage import JSONDatastore
-            sage: from sagenb.storage import SimpleFileDatastore
-            sage: DS = SimpleFileDatastore(tmp_dir())
-            sage: DS.save_worksheet(W)
-            sage: DS.worksheets('sageuser')
-            [sageuser/2: [Cell 0; in=, out=]]
+            sage: Datastore().worksheets('foobar')
+            Traceback (most recent call last):
+            ...
+            NotImplementedError
         """
         raise NotImplementedError        
 

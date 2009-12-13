@@ -207,7 +207,7 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address
         sage: passwd = str(randint(1,1<<128))
         sage: nb = test_notebook(passwd, address='localhost', port=8060)
         sage: import urllib
-        sage: h = urllib.urlopen('https://localhost:8060')
+        sage: h = urllib.urlopen('http://localhost:8060')
         sage: homepage = h.read()
         sage: h.close()
         sage: 'html' in homepage
@@ -238,7 +238,7 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address
         except pexpect.EOF:
             pass
         p.close(force=True)
-        shutil.rmtree(nb.directory())
+        shutil.rmtree(nb._dir)
     p.dispose = dispose
     if verbose:
         print "Notebook started."

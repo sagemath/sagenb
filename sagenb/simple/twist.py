@@ -1,4 +1,4 @@
-r"""
+r"""nodoctest
 Simple Sage Server API
 
 This module provides a very simple API for interacting with a Sage session
@@ -15,9 +15,7 @@ TESTS:
 Here's a usage example which demonstrates all the features of this
 server/API.
 
-Start the notebook server.
-
-::
+Start the notebook server.::
 
     sage: from sage.server.misc import find_next_available_port
     sage: port = find_next_available_port(9000, verbose=False)
@@ -114,7 +112,6 @@ When you are done, log out::
     very easy to create an unintentional denial-of-service attack by
     having the server accumulate a large number of idle worksheets which
     consume a lot of memory and make the server unresponsive!
-
 """
 
 #############################################################################
@@ -218,6 +215,7 @@ class LoginResource(resource.Resource):
         session = SessionObject(session_id, username, worksheet)
         sessions[session_id] = session
         status = session.get_status()
+        print ctx.args
         return http.Response(stream = "%s\n%s\n" % (simple_jsonize(status), SEP))
 
 class LogoutResource(resource.Resource):
@@ -288,6 +286,7 @@ class CellResource(resource.Resource):
 class ComputeResource(CellResource):
     
     def render(self, ctx):
+        print ctx.args
         try:
             session = sessions[ctx.args['session'][0]]
         except KeyError:
@@ -299,6 +298,7 @@ class ComputeResource(CellResource):
         cell = session.worksheet.append_new_cell()
         cell.set_input_text(ctx.args['code'][0])
         cell.evaluate(username = session.username)
+        print cell
         return self.start_comp(cell, timeout)
                     
 

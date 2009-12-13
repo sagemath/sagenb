@@ -944,7 +944,7 @@ class InputBox(InteractControl):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InputBox('theta', Color('red'), type=Color)._adaptor('#aaaaaa',globals())
-            RGB color (0.6640625, 0.6640625, 0.6640625)
+            RGB color (0.66666666666666663, 0.66666666666666663, 0.66666666666666663)
         """
         if self.__type is None:
             return sage_eval(value, globs)
@@ -1044,7 +1044,7 @@ class ColorInput(InputBox):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.ColorInput('c', Color('red')).render()
-            '<table>...'
+            '...<table>...'
             """
         return html_color_selector('color-selector-%s-%s'%(self.var(),
                                                            self.cell_id()),
@@ -2421,7 +2421,7 @@ def interact(f):
 
         sage: v = []
         sage: html('<h2>Quadratic Root Etch-a-sketch</h2>')
-        <html><h2>Quadratic Root Etch-a-sketch</h2></html>
+        <html>...<h2>Quadratic Root Etch-a-sketch</h2>...</html>
         sage: @interact
         ... def _(a=[-10..10], b=[-10..10], c=[-10..10]):
         ...       f = a*x^2 + b*x + c == 0; show(f)
@@ -2723,7 +2723,7 @@ class color_selector(input_box):
             ...
             ValueError: unknown color 'crayon'
             sage: color_selector('#abcdef', label='height', widget='jpicker')
-            Interact color selector labeled 'height', with default RGB color (0.66796875, 0.80078125, 0.93359375), widget 'jpicker', and visible input box
+            Interact color selector labeled 'height', with default RGB color (0.6705882352941176, 0.80392156862745101, 0.93725490196078431), widget 'jpicker', and visible input box
             sage: color_selector('abcdef', label='height', widget='jpicker')
             Traceback (most recent call last):
             ...
@@ -3588,7 +3588,9 @@ def list_of_first_n(v,n):
 
     EXAMPLES::
 
-        sage: sagenb.notebook.interact.list_of_first_n(Primes(), 10)
+        sage: from itertools import takewhile
+        sage: p100 = takewhile(lambda x: x < 100, Primes())
+        sage: sagenb.notebook.interact.list_of_first_n(p100, 10)
         [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
         sage: sagenb.notebook.interact.list_of_first_n((1..5), 10)
         [1, 2, 3, 4, 5]

@@ -15,3 +15,6 @@ from sage_email import email
 from notebook_object import notebook, inotebook
 
 from interact import interact, input_box, slider, range_slider, selector, checkbox, input_grid, text_control, color_selector
+
+# For doctesting.
+import sagenb

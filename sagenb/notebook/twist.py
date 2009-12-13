@@ -6,9 +6,7 @@ TESTS:
 It is important that this file never be imported by default on
 startup by Sage, since it is very expensive, since importing Twisted
 is expensive. This doctest verifies that twist.py isn't imported on
-startup.
-
-::
+startup.::
 
     sage: os.system("sage -startuptime | grep twisted\.web2 1>/dev/null") != 0  # !=0 means not found
     True
@@ -594,7 +592,7 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
             if not os.path.isfile(dest):
                 return HTMLResponse(stream=message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url))
             os.unlink(dest)
-            
+
         response = http.RedirectResponse(worksheet_url + '/datafile?name=%s' % name)
 
         if url != '':
@@ -956,7 +954,7 @@ class SettingsPage(resource.PostableResource):
         autosave = int(request.args.get('autosave', [0])[0]) * 60
         if autosave:
             nu['autosave_interval'] = autosave
-            redirect_to_home = True            
+            redirect_to_home = True
 
         old = request.args.get('old-pass', [None])[0]
         new = request.args.get('new-pass', [None])[0]
@@ -1526,7 +1524,7 @@ def render_worksheet_list(args, pub, username):
     -  ``username`` - the user whose worksheets we are
        listing
 
-    OUTPUT: 
+    OUTPUT:
 
     a string
     """
@@ -1602,11 +1600,9 @@ class EmptyTrash(resource.Resource):
         This twisted resource empties the trash of the current user when it
         is rendered.
 
-        EXAMPLES: 
+        EXAMPLES:
 
-        We create an instance of this resource.
-
-        ::
+        We create an instance of this resource.::
 
             sage: import sagenb.notebook.twist
             sage: E = sagenb.notebook.twist.EmptyTrash('sage'); E
@@ -1619,15 +1615,13 @@ class EmptyTrash(resource.Resource):
         Rendering this resource (1) empties the trash, and (2) returns a
         message.
 
-        EXAMPLES: 
+        EXAMPLES:
 
         We create a notebook with a worksheet, put it in the
         trash, then empty the trash by creating and rendering this
-        worksheet.
+        worksheet.::
 
-        ::
-
-            sage: n = sagenb.notebook.notebook.Notebook('notebook-test')
+            sage: n = sagenb.notebook.notebook.load_notebook('notebook-test.sagenb')
             sage: n.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = n.new_worksheet_with_title_from_text('Sage', owner='sage')
             sage: W.move_to_trash('sage')
@@ -1636,8 +1630,11 @@ class EmptyTrash(resource.Resource):
             sage: sagenb.notebook.twist.notebook = n
             sage: E = sagenb.notebook.twist.EmptyTrash('sage'); E
             <sagenb.notebook.twist.EmptyTrash object at ...>
-            sage: E.render(None)
-            <twisted.web2.http.Response code=200, streamlen=...>
+            sage: from sagenb.notebook.twist import HTMLResponse
+            sage: ctx = HTMLResponse(stream = 'foo')
+            sage: ctx.headers.addRawHeader('referer', 'over there')
+            sage: E.render(ctx)
+            <RedirectResponse 301 Document moved to over there.>
 
         Finally we verify that the trashed worksheet is gone::
 
@@ -1838,7 +1835,7 @@ class JSMath_js(resource.Resource):
         s = template(os.path.join('js', 'jsmath.js'),
                      jsmath_macros = jsmath_macros,
                      jsmath_image_fonts = jsmath_image_fonts)
-        
+
         return http.Response(stream=s)
 
 class Main_js(resource.Resource):
@@ -1957,68 +1954,41 @@ import re
 re_valid_username = re.compile('[a-z|A-Z|0-9|_|.|@]*')
 def is_valid_username(username):
     r"""
-    Returns True if and only if ``username`` is valid, i.e., between 3
-    and 64 characters long. You may only use letters, numbers,
-    underscores, @, and dots.
+    Returns whether a candidate username is valid.  It must contain
+    between 3 and 65 of these characters: letters, numbers,
+    underscores, @, and/or dots ('.').
+
+    INPUT:
+
+    - ``username`` - a string; the candidate username
+
+    OUTPUT:
+
+    - a boolean
 
     EXAMPLES::
 
         sage: from sagenb.notebook.twist import is_valid_username
-
-    ``username`` must start with a letter
-
-    ::
-
         sage: is_valid_username('mark10')
         True
         sage: is_valid_username('10mark')
         False
-
-    ``username`` must be between 4 and 32 characters long
-
-    ::
-
-        sage: is_valid_username('bob')
+        sage: is_valid_username('me')
         False
-        sage: is_valid_username('I_love_computer_science_and_maths') #33 characters long
+        sage: is_valid_username('abcde' * 13)
         False
-
-    ``username`` must not have more than one dot (.)
-
-    ::
-
-        sage: is_valid_username('david.andrews')
-        True
-        sage: is_valid_username('david.m.andrews')
-        False
-        sage: is_valid_username('math125.TA.5')
-        False
-
-    ``username`` must not have any spaces
-
-    ::
-
         sage: is_valid_username('David Andrews')
         False
         sage: is_valid_username('David M. Andrews')
         False
-
-    ::
-
         sage: is_valid_username('sarah_andrews')
         True
-
-    ::
-
         sage: is_valid_username('TA-1')
         False
         sage: is_valid_username('math125-TA')
         False
-
-    ::
-
         sage: is_valid_username('dandrews@sagemath.org')
-        False
+        True
     """
     import string
 
@@ -2407,7 +2377,7 @@ class LoginResourceClass(resource.Resource):
         template_dict = {'accounts': notebook.get_accounts(),
                          'default_user': notebook.default_user(),
                          'recovery': notebook.conf()['email'],
-                         'sage_version':SAGE_VERSION}                         
+                         'sage_version':SAGE_VERSION}
         return HTMLResponse(stream=template(os.path.join('html', 'login.html'), **template_dict))
 
     def childFactory(self, request, name):
@@ -2472,7 +2442,7 @@ class FailedToplevel(Toplevel):
                              'default_user': self.username,
                              'password_error': True,
                              'recovery': notebook.conf()['email'],
-                             'sage_version':SAGE_VERSION}                             
+                             'sage_version':SAGE_VERSION}
             return HTMLResponse(stream=template(os.path.join('html', 'login.html'), **template_dict))
         elif self.problem == 'suspended':
             return HTMLResponse(stream = message("Your account is currently suspended."))
