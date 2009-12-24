@@ -859,14 +859,22 @@ function input_keyup(id, event) {
         // [ \t\r\v\f]*\n$ -- ignore whitespace at the end of the line
         re = /(?:\n|^)( *)(?:.*?)(:?)[ \t\r\v\f]*\n$/;
 
+	// TODO: Really fix auto-indentation in IE.
         var position = get_cursor_position(cell);
         var text = text_cursor_split(cell);
-        re.test(text[0])
-        var indent = RegExp.$1
-        var colon = RegExp.$2
-        if (colon == ':') { indent = indent + "    " }
-        get_cell(id).value = text[0] + indent + text[1];
-        set_cursor_position(cell, position + indent.length)
+
+        // We use exec instead of test, since the latter does not
+        // populate RegExp.$1, etc., with captured groups in IE.
+        var m = /(?:\n|^)( *)(?:.*?)(:?)[ \t\r\v\f]*\n$/.exec(text[0]);
+        if (m) {
+            var indent = m[1];
+            if (m[2] === ':') {
+                indent = indent + "    ";
+            }
+
+            cell.value = text[0] + indent + text[1];
+            set_cursor_position(cell, position + indent.length);
+        }
     }
 }
 
