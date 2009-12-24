@@ -851,22 +851,29 @@ function input_keyup(id, event) {
     if (e==null) return;
     if (key_enter(e)) {
         var cell = get_cell(id)
-        // warning!  very subtle regular expression (for nonjaphs)
+        // warning!  very subtle regular expression below (for nonjaphs)
         // (?:\n|^)        -- starting from the last line ending (or beginning of the cell), (don't capture contents)
         // ( *)            -- as many spaces as we can find (capture this, we'll find it in RegExp.$1)
         // (?:.*?)         -- everything else in the string, but save room for the following terms (don't capture contents)
         // (:?)            -- optionally, capture a colon before the following term (find it in RegExp.$2)
         // [ \t\r\v\f]*\n$ -- ignore whitespace at the end of the line
-        re = /(?:\n|^)( *)(?:.*?)(:?)[ \t\r\v\f]*\n$/;
 
+	// TODO: Really fix auto-indentation in IE.
         var position = get_cursor_position(cell);
         var text = text_cursor_split(cell);
-        re.test(text[0])
-        var indent = RegExp.$1
-        var colon = RegExp.$2
-        if (colon == ':') { indent = indent + "    " }
-        get_cell(id).value = text[0] + indent + text[1];
-        set_cursor_position(cell, position + indent.length)
+
+        // We use exec instead of test, since the latter does not
+        // populate RegExp.$1, etc., with captured groups in IE.
+        var m = /(?:\n|^)( *)(?:.*?)(:?)[ \t\r\v\f]*\n$/.exec(text[0]);
+        if (m) {
+            var indent = m[1];
+            if (m[2] === ':') {
+                indent = indent + "    ";
+            }
+
+            cell.value = text[0] + indent + text[1];
+            set_cursor_position(cell, position + indent.length);
+        }
     }
 }
 
