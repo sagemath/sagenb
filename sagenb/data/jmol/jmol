@@ -1,6 +1,6 @@
 #!/bin/sh
 #JMOL_HOME=`dirname "$0"`
-JMOL_HOME="$SAGE_LOCAL/lib/python/site-packages/sagenb/data/jmol"
+JMOL_HOME="`"$SAGE_LOCAL"/bin/sage-pypkg-location sagenb`""/sagenb/data/jmol"
 
 # Collect -D & -m options as java arguments
 command=java

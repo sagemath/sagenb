@@ -6,7 +6,7 @@
 #    org.sagemath.sage3d.ObjectViewerApp "$DIR/$1"
 
 # See $SAGE3D_HOME/README.txt
-SAGE3D_HOME="$SAGE_LOCAL/lib/python/site-packages/sagenb/data/sage3d"
+SAGE3D_HOME="`"$SAGE_LOCAL"/bin/sage-pypkg-location sagenb`""/sagenb/data/sage3d"
 cd $SAGE3D_HOME
 export LD_LIBRARY_PATH="$SAGE3D_HOME/lib/amd64"
 java -classpath lib/sage3d.jar:lib/ext/j3dcore.jar:lib/ext/vecmath.jar:lib/ext/j3dutils.jar \
