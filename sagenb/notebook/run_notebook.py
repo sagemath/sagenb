@@ -185,6 +185,8 @@ import sagenb.notebook.worksheet as worksheet
 import signal, sys, random
 def save_notebook():
     from twisted.internet.error import ReactorNotRunning
+    print "Quitting all running worksheets..."
+    twist.notebook.quit()
     print "Saving notebook..."
     twist.notebook.save()
     try:

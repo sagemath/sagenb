@@ -49,6 +49,9 @@ from template import template
 whitespace = re.compile('\s')  # Match any whitespace character
 non_whitespace = re.compile('\S')
 
+# The file to which the Sage code that will be evaluated is written.
+CODE_PY = "___code___.py"
+
 # Constants that control the behavior of the worksheet.
 INTERRUPT_TRIES = 3    # number of times to send control-c to subprocess before giving up
 INITIAL_NUM_CELLS = 1  # number of empty cells in new worksheets
@@ -3179,7 +3182,15 @@ from sagenb.notebook.all import *
         if C.is_no_output():
             # Clean up the temp directories associated to C, and do not set any output
             # text that C might have got.
-            shutil.rmtree(self.cell_directory(C), ignore_errors=True)
+            d = self.cell_directory(C)
+            for X in os.path.listdir(d):
+                if os.path.split(X)[-1] != CODE_PY:
+                    Y = os.path.join(d, X)
+                    if os.path.isfile(Y):
+                        try: os.unlink(Y)
+                        except: pass
+                    else:
+                        shutil.rmtree(Y, ignore_errors=True)
             return 'd', C
         
         if not C.introspect():
@@ -3190,6 +3201,7 @@ from sagenb.notebook.all import *
                 if not os.path.exists(cell_dir):
                     os.makedirs(cell_dir)
                 for X in filenames:
+                    if os.path.split(X)[-1] == CODE_PY: continue
                     target = os.path.join(cell_dir, os.path.split(X)[1])
                     try:
                         if os.path.exists(target):
@@ -3202,6 +3214,11 @@ from sagenb.notebook.all import *
                         else:
                             shutil.copy(X, target)
                         set_restrictive_permissions(target)
+                        if os.path.isfile(X):
+                            try: os.unlink(X)
+                            except: pass
+                        else:
+                            shutil.rmtree(X, ignore_errors=True)
                     except Exception, msg:
                         print "Error copying file from worksheet process:", msg
             # Generate html, etc.
@@ -3622,7 +3639,7 @@ from sagenb.notebook.all import *
         return support.get_rightmost_identifier(s)
 
     def preparse(self, s):
-        return 'exec _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())'%base64.b64encode(s)
+        return 'open("%s","w").write(_support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s), CODE_PY)
 
     ##########################################################
     # Loading and attaching files
