@@ -539,7 +539,7 @@ except ImportError:
         return False
 
 from sagenb.interfaces.format import displayhook_hack
-def preparse_worksheet_cell(s):
+def preparse_worksheet_cell(s, globals):
     """
     Preparse the contents of a worksheet cell in the notebook,
     respecting the user using ``preparser(False)`` to turn off the
@@ -556,5 +556,5 @@ def preparse_worksheet_cell(s):
         - string
     """
     if do_preparse(): 
-        s = preparse_file(s, magic=True, do_time=True, ignore_prompts=False, reload_attached=True)
+        s = preparse_file(s, globals=globals)
     return displayhook_hack(s)

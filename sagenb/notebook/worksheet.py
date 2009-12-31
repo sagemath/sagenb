@@ -39,7 +39,6 @@ from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
                                WorksheetProcess_RemoteExpectImplementation)
 
                          
-from sagenb.misc.support import preparse_file
 import sagenb.misc.support  as support
 
 # Imports specifically relevant to the sage notebook
@@ -3623,8 +3622,7 @@ from sagenb.notebook.all import *
         return support.get_rightmost_identifier(s)
 
     def preparse(self, s):
-        return 'exec _support_.preparse_worksheet_cell(base64.b64decode("%s"))'%base64.b64encode(s)
-    #return 'exec _support_.displayhook_hack(_support_.preparse_file(base64.b64decode("%s"),magic=True,do_time=True,ignore_prompts=False,reload_attached=True))'%base64.b64encode(s)
+        return 'exec _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())'%base64.b64encode(s)
 
     ##########################################################
     # Loading and attaching files
