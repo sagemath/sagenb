@@ -3639,7 +3639,22 @@ from sagenb.notebook.all import *
         return support.get_rightmost_identifier(s)
 
     def preparse(self, s):
-        return 'open("%s","w").write(_support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s), CODE_PY)
+        """
+        Return preparsed version of input code ``s``, ready to be sent
+        to the Sage process for evaluation.  The output is a "safe
+        string" (no funny characters).
+
+        INPUT:
+
+            - ``s`` -- a string
+
+        OUTPUT:
+
+            - a string
+        """
+        # The extra newline below is necessary, since otherwise source
+        # code introspection doesn't include the last line.
+        return 'open("%s","w").write(_support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s), CODE_PY)
 
     ##########################################################
     # Loading and attaching files

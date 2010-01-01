@@ -2082,11 +2082,13 @@ class Cell(Cell_generic):
             return ''
         images = []
         files  = []
+
+        from worksheet import CODE_PY
         # The question mark trick here is so that images will be reloaded when
         # the async request requests the output text for a computation.
         # This is inspired by http://www.irt.org/script/416.htm/.
         for F in D:
-            if 'cell://%s'%F in out:
+            if os.path.split(F)[-1] == CODE_PY or 'cell://%s'%F in out:
                 continue
             url = os.path.join(self.url_to_self(), F)
             if F.endswith('.png') or F.endswith('.bmp') or \
