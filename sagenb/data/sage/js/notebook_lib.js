@@ -1306,7 +1306,7 @@ function set_worksheet_list_checks() {
     var C, i, id, X;
     C = get_element("controlbox");
     for(i=0; i<worksheet_filenames.length; i++) {
-        id = worksheet_filenames[i].replace('/', '-');
+        id = worksheet_filenames[i].replace(/[^-A-Za-z_0-9]/g, '-');
         X  = get_element(id);
         X.checked = C.checked;
     }
@@ -1331,7 +1331,7 @@ function checked_worksheet_filenames() {
     // Concatenate the list of all worksheet filenames that are checked
     // together separated by the separator string.
     for(i=0; i<worksheet_filenames.length; i++) {
-        id = worksheet_filenames[i].replace('/', '-');
+        id = worksheet_filenames[i].replace(/[^-A-Za-z_0-9]/g, '-');
         X  = get_element(id);
         if (X.checked) {
             filenames = filenames + worksheet_filenames[i] + SEP;
