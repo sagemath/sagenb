@@ -1313,7 +1313,7 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
             # Page for when worksheet already published
             if self.worksheet.has_published_version():
                 addr = 'http%s://' % ('' if not notebook.secure else 's')
-                addr += notebook.address
+                addr += notebook.interface
                 addr += ':%s' % notebook.port
                 addr += '/home/' + self.worksheet.published_version().filename()
                 dtime = self.worksheet.published_version().date_edited()
@@ -2222,7 +2222,7 @@ class RegistrationPage(resource.PostableResource):
 
             # TODO: make this come from the server settings
             key = make_key()
-            listenaddr = notebook.address
+            listenaddr = notebook.interface
             port = notebook.port
             fromaddr = 'no-reply@%s' % listenaddr
             body = build_msg(key, username, listenaddr, port, notebook.secure)
@@ -2276,7 +2276,7 @@ class ForgotPassPage(resource.Resource):
             from sagenb.notebook.register import build_password_msg
             # TODO: make this come from the server settings
 
-            listenaddr = notebook.address
+            listenaddr = notebook.interface
             port = notebook.port
             fromaddr = 'no-reply@%s' % listenaddr
             body = build_password_msg(password, request.args[string.strip('username')][0], listenaddr, port, notebook.secure)
