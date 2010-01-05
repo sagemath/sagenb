@@ -28,7 +28,8 @@ import base64, bz2, calendar, copy, os, re, shutil, string, time, traceback
 
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
-                              alarm, cancel_alarm, verbose, DOT_SAGENB, walltime,
+                              alarm, cancel_alarm, verbose, DOT_SAGENB,
+                              walltime, ignore_nonexistent_files,
                               set_restrictive_permissions,
                               set_permissive_permissions)
 
@@ -3134,6 +3135,8 @@ from sagenb.notebook.all import *
                     if not os.path.exists(cell_dir):
                         os.makedirs(cell_dir)                    
                     for X in output_status.filenames:
+                        if os.path.split(X)[1] == CODE_PY:
+                            continue
                         target = os.path.join(cell_dir, os.path.split(X)[1])
                         if os.path.exists(target): os.unlink(target)
                         os.symlink(X, target)
@@ -3199,7 +3202,8 @@ from sagenb.notebook.all import *
                             else:
                                 shutil.rmtree(target)
                         if os.path.isdir(X):
-                            shutil.copytree(X, target)
+                            shutil.copytree(X, target,
+                                            ignore=ignore_nonexistent_files)
                         else:
                             shutil.copy(X, target)
                         set_restrictive_permissions(target)

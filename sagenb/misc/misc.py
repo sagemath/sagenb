@@ -401,3 +401,56 @@ def set_permissive_permissions(filename):
     os.chmod(filename, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH | \
              stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | \
              stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP)
+
+
+def ignore_nonexistent_files(curdir, dirlist):
+    """
+    Returns a list of non-existent files, given a directory and its
+    contents.  The returned list includes broken symbolic links.  Use
+    this, e.g., with :func:`shutil.copytree`, as shown below.
+
+    INPUT:
+
+    - ``curdir`` - a string; the name of the current directory
+
+    - ``dirlist`` - a list of strings; names of ``curdir``'s contents
+
+    OUTPUT:
+
+    - a list of strings; names of ``curdir``'s non-existent files
+
+    EXAMPLES::
+
+        sage: import os, shutil
+        sage: from sagenb.misc.misc import ignore_nonexistent_files
+        sage: opj = os.path.join; ope = os.path.exists; t = tmp_dir()
+        sage: s = opj(t, 'src'); t = opj(t, 'trg'); hi = opj(s, 'hi.txt');
+        sage: os.makedirs(s)
+        sage: f = open(hi, 'w'); f.write('hi'); f.close()
+        sage: os.symlink(hi, opj(s, 'good.txt'))
+        sage: os.symlink(opj(s, 'bad'), opj(s, 'bad.txt'))
+        sage: slist = sorted(os.listdir(s)); slist
+        ['bad.txt', 'good.txt', 'hi.txt']
+        sage: map(lambda x: ope(opj(s, x)), slist)
+        [False, True, True]
+        sage: map(lambda x: os.path.islink(opj(s, x)), slist)
+        [True, True, False]
+        sage: shutil.copytree(s, t)
+        Traceback (most recent call last):
+        ...
+        Error: [('.../src/bad.txt', '.../trg/bad.txt', "[Errno 2] No such file or directory: '.../src/bad.txt'")]
+        sage: shutil.rmtree(t); ope(t)
+        False
+        sage: shutil.copytree(s, t, ignore = ignore_nonexistent_files)
+        sage: tlist = sorted(os.listdir(t)); tlist
+        ['good.txt', 'hi.txt']
+        sage: map(lambda x: ope(opj(t, x)), tlist)
+        [True, True]
+        sage: map(lambda x: os.path.islink(opj(t, x)), tlist)  # Note!
+        [False, False]
+    """
+    ignore = []
+    for x in dirlist:
+        if not os.path.exists(os.path.join(curdir, x)):
+            ignore.append(x)
+    return ignore

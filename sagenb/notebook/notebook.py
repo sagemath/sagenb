@@ -31,7 +31,8 @@ from cgi import escape
 
 
 # Sage libraries
-from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save)
+from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
+                              ignore_nonexistent_files)
 
 # Sage Notebook
 import css          # style
@@ -624,13 +625,13 @@ class Notebook(object):
             target = os.path.join(W.directory(),'data')
             if os.path.exists(target):
                 shutil.rmtree(target, ignore_errors=True)
-            shutil.copytree(data, target)
+            shutil.copytree(data, target, ignore=ignore_nonexistent_files)
         cells = src.cells_directory()
         if os.path.exists(cells):
             target = os.path.join(W.directory(),'cells')
             if os.path.exists(target):
                 shutil.rmtree(target, ignore_errors=True)
-            shutil.copytree(cells, target)
+            shutil.copytree(cells, target, ignore=ignore_nonexistent_files)
         W.edit_save(src.edit_text())
         W.save()
 
