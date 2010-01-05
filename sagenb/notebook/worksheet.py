@@ -3172,7 +3172,7 @@ from sagenb.notebook.all import *
             # Clean up the temp directories associated to C, and do not set any output
             # text that C might have got.
             d = self.cell_directory(C)
-            for X in os.path.listdir(d):
+            for X in os.listdir(d):
                 if os.path.split(X)[-1] != CODE_PY:
                     Y = os.path.join(d, X)
                     if os.path.isfile(Y):
