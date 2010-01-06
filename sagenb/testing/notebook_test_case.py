@@ -380,9 +380,9 @@ class NotebookTestCase(unittest.TestCase):
         is at list page.
         """
         sel = self.selenium
-        self.wait_in_window('return this.$("a.worksheetname").attr("title").indexOf("{0}") != -1'.format(name),
+        self.wait_in_window(u'return this.$("a.worksheetname").attr("title").indexOf("{0}") != -1'.format(name),
                            30000)
-        sel.click('//a[contains(@class, "worksheetname") and contains(@title, "{0}")]'.format(name))
+        sel.click(u'//a[contains(@class, "worksheetname") and contains(@title, "{0}")]'.format(name))
         sel.wait_for_page_to_load(30000)
 
     def share_worksheet(self, collaborators):

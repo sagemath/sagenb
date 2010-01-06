@@ -241,11 +241,11 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         # The magic comment at the very start of the file allows utf8 characters.
         open(self._filename,'w').write(
             '# -*- coding: utf_8 -*-\nimport sys;sys.ps1="%s";print "START%s"\n'%(
-            self._prompt, self._number) + displayhook_hack(string))
+            self._prompt, self._number) + displayhook_hack(string).encode('utf-8', 'ignore'))
         try:
             self._expect.sendline('\nimport os;os.chdir("%s");\nexecfile("%s")'%(
                               remote, sage_input))
-        except OSError, msg:
+        except OSError as msg:
             self._is_computing = False
             self._so_far = str(msg)
 

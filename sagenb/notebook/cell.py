@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 A Cell.
 
@@ -19,7 +20,8 @@ from cgi import escape
 
 from jsmath import math_parse
 from sagenb.misc.misc import (word_wrap, SAGE_DOC, strip_string_literals,
-                              set_restrictive_permissions)
+                              set_restrictive_permissions, unicode_str,
+                              encoded_str)
 
 # Maximum number of characters allowed in output.  This is needed
 # avoid overloading web browser.  For example, it should be possible
@@ -113,6 +115,7 @@ class TextCell(Cell_generic):
             sage: C == loads(dumps(C))
             True
         """
+        text = unicode_str(text)
         try:
             self.__id = int(id)
         except ValueError:
@@ -135,7 +138,7 @@ class TextCell(Cell_generic):
             sage: C.__repr__()
             'TextCell 0: 2+3'
         """
-        return "TextCell %s: %s"%(self.__id, self.__text)
+        return "TextCell %s: %s"%(self.__id, encoded_str(self.__text))
 
     def delete_output(self):
         """
@@ -170,6 +173,7 @@ class TextCell(Cell_generic):
             sage: C
             TextCell 0: 3+2
         """
+        input_text = unicode_str(input_text)
         self.__text = input_text
 
     def set_worksheet(self, worksheet, id=None):
@@ -248,7 +252,10 @@ class TextCell(Cell_generic):
 
         EXAMPLES::
 
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', W)
             sage: C.html()
             u'...text_cell...2+3...'
             sage: C.set_input_text("$2+3$")
@@ -262,7 +269,7 @@ class TextCell(Cell_generic):
                         div_wrap=div_wrap)
 
     def plain_text(self, prompts=False):
-        """
+        u"""
         Returns a plain text version of this ext cell.
 
         INPUT:
@@ -278,7 +285,10 @@ class TextCell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
             sage: C.plain_text()
-            '2+3'
+            u'2+3'
+            sage: C = sagenb.notebook.cell.TextCell(0, u'ΫäĻƾṀБ', None)
+            sage: C.plain_text()
+            u'\xce\xab\xc3\xa4\xc4\xbb\xc6\xbe\xe1\xb9\x80\xd0\x91'
         """
         return self.__text
 
@@ -295,7 +305,7 @@ class TextCell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
             sage: C.edit_text()
-            '2+3'
+            u'2+3'
         """
         return self.__text
 
@@ -402,12 +412,14 @@ class Cell(Cell_generic):
             sage: C == loads(dumps(C))
             True
         """
+        out = unicode_str(out)
+        input = unicode_str(input)
         try:
             self.__id = int(id)
         except ValueError:
             self.__id = id
 
-        self.__out   = str(out).replace('\r','')
+        self.__out   = out.replace('\r','')
         self.__worksheet = worksheet
         self.__interrupted = False
         self.__completions = False
@@ -415,7 +427,7 @@ class Cell(Cell_generic):
         self.__no_output_cell = False
         self.__asap = False
         self.__version = -1
-        self.set_input_text(str(input).replace('\r',''))
+        self.set_input_text(input.replace('\r',''))
 
     def set_asap(self, asap):
         """
@@ -473,8 +485,8 @@ class Cell(Cell_generic):
             sage: C
             Cell 0; in=2+3, out=
         """
-        self.__out = ''
-        self.__out_html = ''
+        self.__out = u''
+        self.__out_html = u''
         self.__evaluated = False
 
     def evaluated(self):
@@ -705,7 +717,7 @@ class Cell(Cell_generic):
             sage: nb.delete()
         """
         if self.is_interactive_cell():
-            self.__out_html = ""
+            self.__out_html = u""
         else:
             self.__out_html = self.files_html(output)
 
@@ -887,7 +899,7 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None); C
             Cell 0; in=2+3, out=5
         """
-        return 'Cell %s; in=%s, out=%s'%(self.__id, self.__in, self.__out)
+        return 'Cell %s; in=%s, out=%s'%(self.__id, encoded_str(self.__in), encoded_str(self.__out))
 
     def word_wrap_cols(self):
         """
@@ -944,9 +956,12 @@ class Cell(Cell_generic):
         """
         if ncols == 0:
             ncols = self.word_wrap_cols()
-        s = ''
+        s = u''
+
+        self.__in = unicode_str(self.__in)
 
         input_lines = self.__in
+
         pr = 'sage: '
 
         if prompts:
@@ -1035,10 +1050,13 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.edit_text()
-            '{{{id=0|\n2+3\n///\n5\n}}}'
+            u'{{{id=0|\n2+3\n///\n5\n}}}'
+            sage: C = sagenb.notebook.cell.Cell(0, u'ΫäĻƾṀБ', u'ΫäĻƾṀБ', None)
+            sage: C.edit_text()
+            u'{{{id=0|\n\xce\xab\xc3\xa4\xc4\xbb\xc6...\xb9\x80\xd0\x91\n}}}'
         """
         s = self.plain_text(ncols, prompts, max_out)
-        return '{{{id=%s|\n%s\n}}}'%(self.id(), s)
+        return u'{{{id=%s|\n%s\n}}}'%(self.id(), s)
 
     def is_last(self):
         """
@@ -1248,7 +1266,7 @@ class Cell(Cell_generic):
             0
             sage: C.set_input_text('3+3')
             sage: C.input_text()
-            '3+3'
+            u'3+3'
             sage: C.evaluated()
             False
             sage: C.version()
@@ -1257,6 +1275,8 @@ class Cell(Cell_generic):
             sage: nb.delete()
         """
         # Stuff to deal with interact
+        input = unicode_str(input)
+
         if input.startswith('%__sage_interact__'):
             self.interact = input[len('%__sage_interact__')+1:]
             self.__version = self.version() + 1
@@ -1292,7 +1312,7 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.input_text()
-            '2+3'
+            u'2+3'
         """
         return self.__in
 
@@ -1310,7 +1330,7 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
             sage: C.cleaned_input_text()
-            '2+3'
+            u'2+3'
         """
         if self.is_interacting():
             return self.interact
@@ -1330,9 +1350,9 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
             sage: C.parse_percent_directives()
-            '2+3'
+            u'2+3'
             sage: C.percent_directives()
-            ['hide', 'maxima']
+            [u'hide', u'maxima']
         """
         self._system = None
         text = self.input_text().splitlines()
@@ -1370,7 +1390,7 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
             sage: C.percent_directives()
-            ['hide', 'maxima']
+            [u'hide', u'maxima']
         """
         return self._percent_directives
 
@@ -1392,7 +1412,7 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, '%maxima\n2+3', '5', None)
             sage: C.system()
-            'maxima'
+            u'maxima'
             sage: prefixes = ['%hide', '%time', '']
             sage: cells = [sagenb.notebook.cell.Cell(0, '%s\n2+3'%prefix, '5', None) for prefix in prefixes]
             sage: [(C, C.system()) for C in cells if C.system() is not None]
@@ -1438,9 +1458,9 @@ class Cell(Cell_generic):
             ''
             sage: C.set_changed_input_text('3+3')
             sage: C.input_text()
-            '3+3'
+            u'3+3'
             sage: C.changed_input_text()
-            '3+3'
+            u'3+3'
             sage: C.changed_input_text()
             ''
             sage: C.version()
@@ -1468,10 +1488,12 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.set_changed_input_text('3+3')
             sage: C.input_text()
-            '3+3'
+            u'3+3'
             sage: C.changed_input_text()
-            '3+3'
+            u'3+3'
         """
+        new_text = unicode_str(new_text)
+
         self.__changed_input = new_text
         self.__in = new_text
 
@@ -1497,9 +1519,11 @@ class Cell(Cell_generic):
             sage: len(C.plain_text())
             12
         """
+        output = unicode_str(output)
+        html = unicode_str(html)
         if output.count('<?__SAGE__TEXT>') > 1:
-            html = '<h3><font color="red">WARNING: multiple @interacts in one cell disabled (not yet implemented).</font></h3>'
-            output = ''
+            html = u'<h3><font color="red">WARNING: multiple @interacts in one cell disabled (not yet implemented).</font></h3>'
+            output = u''
 
         # In interacting mode, we just save the computed output
         # (do not overwrite).
@@ -1519,7 +1543,7 @@ class Cell(Cell_generic):
             url = ""
             if not self.computing():
                 file = os.path.join(self.directory(), "full_output.txt")
-                open(file,"w").write(output)
+                open(file,"w").write(output.encode('utf-8', 'ignore'))
                 url = "<a target='_new' href='%s/full_output.txt' class='file_link'>full_output.txt</a>"%(
                     self.url_to_self())
                 html+="<br>" + url
@@ -1570,7 +1594,7 @@ class Cell(Cell_generic):
             ''
             sage: C.set_output_text('5', '<strong>5</strong>')
             sage: C.output_html()
-            '<strong>5</strong>'
+            u'<strong>5</strong>'
         """
         try:
             return self.__out_html
@@ -1608,7 +1632,7 @@ class Cell(Cell_generic):
         return urls
 
     def output_text(self, ncols=0, html=True, raw=False, allow_interact=True):
-        """
+        u"""
         Returns this compute cell's output text.
 
         INPUT:
@@ -1635,11 +1659,16 @@ class Cell(Cell_generic):
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
             sage: C.output_text()
-            '<pre class="shrunk">5</pre>'
+            u'<pre class="shrunk">5</pre>'
             sage: C.output_text(html=False)
-            '<pre class="shrunk">5</pre>'
+            u'<pre class="shrunk">5</pre>'
             sage: C.output_text(raw=True)
-            '5'
+            u'5'
+            sage: C = sagenb.notebook.cell.Cell(0, u'ΫäĻƾṀБ', u'ΫäĻƾṀБ', W)
+            sage: C.output_text()
+            u'<pre class="shrunk">\xce\xab\xc3\xa4\xc4\xbb\xc6\xbe\xe1\xb9\x80\xd0\x91</pre>'
+            sage: C.output_text(raw=True)
+            u'\xce\xab\xc3\xa4\xc4\xbb\xc6\xbe\xe1\xb9\x80\xd0\x91'
         """
         if allow_interact and hasattr(self, '_interact_output'):
             # Get the input template
@@ -1663,13 +1692,15 @@ class Cell(Cell_generic):
                 # wrong output location during interact.
                 return ''
 
+        self.__out = unicode_str(self.__out)
+
         is_interact = self.is_interactive_cell()
         if is_interact and ncols == 0:
             if 'Traceback (most recent call last)' in self.__out:
                 s = self.__out.replace('cell-interact','')
                 is_interact=False
             else:
-                return '<h2>Click to the left again to hide and once more to show the dynamic interactive window</h2>'
+                return u'<h2>Click to the left again to hide and once more to show the dynamic interactive window</h2>'
         else:
             s = self.__out
 
@@ -1776,7 +1807,7 @@ class Cell(Cell_generic):
 
             sage: C = sagenb.notebook.cell.Cell(0, "%html\nTest HTML", None, None)
             sage: C.system()
-            'html'
+            u'html'
             sage: C.is_html()
             True
             sage: C = sagenb.notebook.cell.Cell(0, "Test HTML", None, None)
@@ -1811,7 +1842,7 @@ class Cell(Cell_generic):
     # Introspection #
     #################
     def set_introspect_html(self, html, completing=False, raw=False):
-        """
+        u"""
         Sets this compute cell's introspection text.
 
         INPUT:
@@ -1836,13 +1867,18 @@ class Cell(Cell_generic):
             ('d', Cell 0; in=sage?, out=)
             sage: C.set_introspect_html('foobar')
             sage: C.introspect_html()
-            'foobar'
+            u'foobar'
             sage: C.set_introspect_html('`foobar`')
             sage: C.introspect_html()
-            '`foobar`'
+            u'`foobar`'
+            sage: C.set_introspect_html(u'ΫäĻƾṀБ')
+            sage: C.introspect_html()
+            u'\xce\xab\xc3\xa4\xc4\xbb\xc6\xbe\xe1\xb9\x80\xd0\x91'
             sage: W.quit()
             sage: nb.delete()
         """
+        html = unicode_str(html)
+
         self.__introspect_html = html
         self.introspection_status = 'done'
 
@@ -1887,8 +1923,8 @@ class Cell(Cell_generic):
         try:
             return self.__introspect_html
         except AttributeError:
-            self.__introspect_html = ''
-            return ''
+            self.__introspect_html = u''
+            return u''
 
     def introspect(self):
         """
@@ -1911,7 +1947,7 @@ class Cell(Cell_generic):
             sage: W.check_comp(9999)     # random output -- depends on computer speed
             ('d', Cell 0; in=sage?, out=)
             sage: C.introspect()
-            ['sage?', '']
+            [u'sage?', '']
             sage: W.quit()
             sage: nb.delete()
         """
@@ -1936,7 +1972,7 @@ class Cell(Cell_generic):
             sage: W.check_comp(9999)     # random output -- depends on computer speed
             ('d', Cell 0; in=sage?, out=)
             sage: C.introspect()
-            ['sage?', '']
+            [u'sage?', '']
             sage: C.unset_introspect()
             sage: C.introspect()
             False
@@ -2311,6 +2347,10 @@ class Cell(Cell_generic):
             files  = ''
         else:
             files  = ('&nbsp'*3).join(files)
+
+        files = unicode_str(files)
+        images = unicode_str(images)
+
         return images + files
 
 

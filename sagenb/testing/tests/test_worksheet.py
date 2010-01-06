@@ -26,18 +26,18 @@ class TestWorksheet(NotebookTestCase):
         title of corresponding published worksheet has been fixed.
         """
         sel = self.selenium
-        self.rename_worksheet('To be published')
+        self.rename_worksheet(u'To be publishedЋĉƸḾ﹢Յй')
         self.publish_worksheet()
         self.save_and_quit()
 
         sel.click('link=Published')
         sel.wait_for_page_to_load(30000)
-        self.open_worksheet_with_name('To be published')
-        self.assert_(sel.is_element_present('//h1[contains(@class, "title") and contains(text(), "To be published")]'))
+        self.open_worksheet_with_name(u'To be publishedЋĉƸḾ﹢Յй')
+        self.assert_(sel.is_element_present(u'//h1[contains(@class, "title") and contains(text(), "To be publishedЋĉƸḾ﹢Յй")]'))
 
         sel.open('/home/admin')
         sel.wait_for_page_to_load(30000)
-        self.open_worksheet_with_name('To be published')
+        self.open_worksheet_with_name(u'To be publishedЋĉƸḾ﹢Յй')
         self.rename_worksheet('This has been published')
         self.save_and_quit()
 
@@ -54,11 +54,13 @@ class TestWorksheet(NotebookTestCase):
         sel.wait_for_page_to_load("30000")
 
         sel.type('//textarea[@id="cell_intext"]',
-                 '''
+                 u'''
 {{{id=1|
 print(5 + 5)
+print(u'ЋĉƸḾ﹢Յй')
 ///
 15
+ЋĉƸḾ﹢Յй
 }}}
 
 {{{id=2|
@@ -69,10 +71,12 @@ print(13)
         sel.click('id=button_save')
         sel.wait_for_page_to_load(30000)
 
-        self.assert_(sel.is_element_present('//textarea[@id="cell_input_1" and contains(text(),"print(5 + 5)")]'))
+        self.assert_(sel.is_element_present(u'//textarea[@id="cell_input_1" and '
+                                            u'contains(text(),"print(5 + 5)") and '
+                                            u'contains(text(), "ЋĉƸḾ﹢Յй")]'))
         self.assert_(sel.is_element_present('//textarea[@id="cell_input_2" and contains(text(),"print(13)")]'))
 
-        self.assertEqual(self.get_cell_output(1), u'15')
+        self.assertEqual(self.get_cell_output(1), u'15\nЋĉƸḾ﹢Յй')
 
     def test_7341(self):
         sel = self.selenium

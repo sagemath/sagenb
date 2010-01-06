@@ -32,7 +32,7 @@ from cgi import escape
 
 # Sage libraries
 from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
-                              ignore_nonexistent_files)
+                              ignore_nonexistent_files, unicode_str)
 
 # Sage Notebook
 import css          # style
@@ -934,8 +934,7 @@ class Notebook(object):
             return self._user_history[username]
         history = []
         for hunk in self.__storage.load_user_history(username):
-            if isinstance(hunk, str):
-                hunk = unicode(hunk.decode('utf-8', 'ignore'))
+            hunk = unicode_str(hunk)
             history.append(hunk)
         self._user_history[username] = history
         return history
@@ -1052,7 +1051,7 @@ class Notebook(object):
         W is our newly-created worksheet, with the 2+3 cell in it::
 
             sage: W.name()
-            'foo'
+            u'foo'
             sage: W.cell_list()
             [TextCell 0: foo, Cell 1; in=2+3, out=]
         """
@@ -1266,7 +1265,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.body()
-            '\n\n{{{id=1|\n\n///\n}}}'
+            u'\n\n{{{id=1|\n\n///\n}}}'
             sage: W.save_snapshot('admin')
             sage: nb.html_worksheet_revision_list('admin', W)
             u'...Revision...Last Edited...ago...'
@@ -1275,7 +1274,7 @@ class Notebook(object):
 
         return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
                         data = data, worksheet = worksheet,
-                        worksheet_filename = worksheet.filename(),
+                        notebook = self,
                         username = username)
 
 
@@ -1347,7 +1346,7 @@ class Notebook(object):
 
         return template(os.path.join("html", "notebook", "worksheet_share.html"),
                         worksheet = worksheet,
-                        worksheet_filename = worksheet.filename(),
+                        notebook = self,
                         username = username, other_users = other_users)
     
     def html_download_or_delete_datafile(self, ws, username, filename):
@@ -1384,7 +1383,7 @@ class Notebook(object):
             text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
 
         return template(os.path.join("html", "notebook", "download_or_delete_datafile.html"),
-                        worksheet = ws, worksheet_filename = ws.filename(),
+                        worksheet = ws, notebook = self,
                         username = username,
                         filename_ = filename,
                         file_is_image = file_is_image,
@@ -1504,7 +1503,7 @@ class Notebook(object):
 
         return template(os.path.join("html", "notebook", "plain_text_window.html"),
                         worksheet = worksheet,
-                        worksheet_filename = worksheet.filename(),
+                        notebook = self,
                         username = username, plain_text = plain_text,
                         JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
@@ -1532,7 +1531,7 @@ class Notebook(object):
 
         return template(os.path.join("html", "notebook", "edit_window.html"),
                         worksheet = worksheet,
-                        worksheet_filename = worksheet.filename(),
+                        notebook = self,
                         username = username)
 
     def html_beforepublish_window(self, worksheet, username):
@@ -1569,9 +1568,8 @@ class Notebook(object):
         """
         return template(os.path.join("html", "notebook", "beforepublish_window.html"),
                         worksheet = worksheet,
-                        worksheet_filename = worksheet.filename(),
-                        username = username,
-                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
+                        notebook = self,
+                        username = username)
 
     def html_afterpublish_window(self, worksheet, username, url, dtime):
         r"""
@@ -1598,9 +1596,8 @@ class Notebook(object):
 
         return template(os.path.join("html", "notebook", "afterpublish_window.html"),
                         worksheet = worksheet,
-                        worksheet_filename = worksheet.filename(),
-                        username = username, url = url, time = time,
-                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
+                        notebook = self,
+                        username = username, url = url, time = time)
 
     def html_upload_data_window(self, ws, username):
         r"""

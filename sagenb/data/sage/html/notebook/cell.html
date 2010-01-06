@@ -12,12 +12,15 @@ INPUT:
         print or not.
 #}
 {% if do_print %}
-    {% set wrap = 68 %}
-    {% set div_wrap = true %}
+    {% set wrap_ = 68 %}
+    {% set div_wrap_ = true %}
+{% else %}
+    {% set wrap_ = wrap %}
+    {% set div_wrap_ = div_wrap %}
 {% endif %}
 {% set cell_cls = "cell_evaluated" if cell.evaluated() or do_print else "cell_not_evaluated" %}
 
-{% if div_wrap %}
+{% if div_wrap_ %}
 <div id="cell_outer_{{ cell.id() }}" class="cell_visible">
     <div id="cell_{{ cell.id() }}" class="{{ cell_cls }}">
 {% endif %}
@@ -56,7 +59,7 @@ INPUT:
                           onFocus="cell_focused(this, {{ '%r'|format(cell.id()) }}); return true;">{{ cell.input_text().rstrip() }}</textarea>
                 <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
                    class="eval_button"
-                   id="eval_button{{ cell.id() }}"
+                   id="eval_button{{ cell.id() }}" 
                    alt="Click here or press shift-return to evaluate">
                     evaluate
                 </a>
@@ -85,7 +88,7 @@ INPUT:
                                 {% if cell.introspect() %}
                                     {{ cell.output_text(0, html=true) }}
                                 {% else %}
-                                    {{ cell.output_text(wrap, html=true) }}
+                                    {{ cell.output_text(wrap_, html=true) }}
                                 {% endif %}
                             </div>
                             {% if not do_print %}
@@ -105,7 +108,7 @@ INPUT:
         </div>
         {% endif %}
 
-{% if div_wrap %}
+{% if div_wrap_ %}
     </div>
 </div>
 {% endif %}

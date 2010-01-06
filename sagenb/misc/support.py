@@ -331,7 +331,7 @@ def source_code(s, globs, system='sage'):
         filename = sageinspect.sage_getfile(obj)
         try:
             lines, lineno = sageinspect.sage_getsourcelines(obj, is_binary=False)
-        except IOError, msg:
+        except IOError as msg:
             return html_markup(str(msg))
         src = indent.join(lines)
         src = indent + format_src(src)
@@ -467,6 +467,8 @@ def syseval(system, cmd, dir=None):
     if dir:
         if hasattr(system.__class__, 'chdir'):
             system.chdir(dir)
+    if isinstance(cmd, unicode):
+        cmd = cmd.encode('utf-8', 'ignore')
     return system.eval(cmd, sage_globals, locals = sage_globals)
 
 ######################################################################

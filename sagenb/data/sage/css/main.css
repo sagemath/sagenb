@@ -37,8 +37,8 @@ body div#banner div.version { float: left; clear: left; font-size: xx-small; tex
 
 hr.usercontrol { clear: both; float: left; }
 
-div#user-controls { overflow: hidden; display: inline-block; clear: both; border-bottom: 1px solid #c9d7f1; padding: 10px; }
-div#user-controls { display: block; }
+div#user-main-controls { overflow: hidden; display: inline-block; clear: both; border-bottom: 1px solid #c9d7f1; padding: 10px; }
+div#user-main-controls { display: block; }
 div#worksheet-list-controls { padding: 10px; clear: both; overflow: hidden; display: inline-block; }
 div#worksheet-list-controls { display: block; }
 div#worksheet-list-controls div.action-buttons { float: left; }
@@ -305,9 +305,12 @@ a.worksheetname_moved { color: #888888; text-decoration: none; font-weight: norm
 
 span.worksheet_buttons { position: relative; top: -20ex; right: 0ex; }
 
+
 .thin-right { position: absolute; top: auto; right: 0; width: 70%; }
 
 /* *********** User Home (Worksheet listing) ************************* */
+#worksheet-listing-page #welcome-message { text-align: center; padding: 1em; }
+
 .ratingmsg { color: #112abb; padding: 0.3em; font-size: 14px; }
 
 .pubmsg { font-family: sans-serif; color: #112abb; padding: 0.3em; font-size: 12px; }

@@ -39,7 +39,7 @@ import copy, cPickle, shutil, tarfile, tempfile
 import os
 
 from abstract_storage import Datastore
-from sagenb.misc.misc import set_restrictive_permissions
+from sagenb.misc.misc import set_restrictive_permissions, encoded_str
 
 def is_safe(a):
     """
@@ -291,7 +291,7 @@ class FilesystemDatastore(Datastore):
             # only save if loaded
             # todo -- add check if changed
             filename = self._worksheet_html_filename(username, id_number)
-            open(self._abspath(filename),'w').write(worksheet.body())
+            open(self._abspath(filename),'w').write(worksheet.body().encode('utf-8', 'ignore'))
 
     def load_worksheet(self, username, id_number):
         """
@@ -339,7 +339,7 @@ class FilesystemDatastore(Datastore):
         if title:
             # change the title
             basic['name'] = title
-
+        basic['name'] = encoded_str(basic['name'])
         # Remove metainformation that perhaps shouldn't be distributed
         for k in ['owner', 'ratings', 'worksheet_that_was_published', 'viewers', 'tags', 'published_id_number',
                   'collaborators', 'auto_publish']:
@@ -397,7 +397,7 @@ class FilesystemDatastore(Datastore):
 
         worksheet_txt = members[0].name
         W = self.load_worksheet(username, id_number)
-        W.edit_save_old_format(T.extractfile(worksheet_txt).read())
+        W.edit_save_old_format(T.extractfile(worksheet_txt).read().decode('utf-8', 'ignore'))
         # '/' is right, since old worksheets always unix
         dir = worksheet_txt.split('/')[0]
             

@@ -115,6 +115,7 @@ Unfortunately, there is no argspec extractable from builtins::
 
 import inspect
 import os
+from .misc import encoded_str
 EMBEDDED_MODE = False
 
 def isclassinstance(obj):
@@ -483,8 +484,9 @@ def sage_getdoc(obj, obj_name=''):
 
     if r is None:
         return ''
+    r = encoded_str(r)
 
-    s = format(str(r), embedded=EMBEDDED_MODE)
+    s = format(r, embedded=EMBEDDED_MODE)
 
     # If there is a Cython embedded position, it needs to be stripped
     pos = _extract_embedded_position(s)

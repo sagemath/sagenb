@@ -47,7 +47,7 @@ INPUT:
             cancel : 'Cancel changes',
             event  : "dblclick",
             style  : "inherit",
-	    data   : {{ '%r'|format(cell.plain_text()) }}
+	    data   : {{ cell.plain_text()|repr_str }}
         });
     </script>
 {% endif %}

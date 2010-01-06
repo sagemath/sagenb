@@ -31,7 +31,7 @@ class TestWorksheetList(NotebookTestCase):
         Tests worksheet creation.
         """
         sel = self.selenium
-        self.create_new_worksheet('Creating a Worksheet')
+        self.create_new_worksheet(u'Worksheet Creation - ΫäĻƾṀБ')
 
         # Verify that the page has all the requisite elements.
         elements = ('link=Home', 'link=Help', 'link=Worksheet', 'link=Sign out',
@@ -59,8 +59,8 @@ class TestWorksheetList(NotebookTestCase):
         sel = self.selenium
 
         worksheet_names = [
-            'Did you just say wondeeerful?',
-            'My wonderful search phrase',
+            u'Did you just say ЋĉƸḾ﹢Յй?',
+            u'My ЋĉƸḾ﹢Յй search phrase',
             'Not a search target'
             ]
 
@@ -70,11 +70,10 @@ class TestWorksheetList(NotebookTestCase):
             self.save_and_quit()
 
         pages = ('/home/admin/', '/pub')
-
         for page in pages:
             sel.open(page)
-            self._search('wonderful')
-            self.assert_(sel.is_element_present('//a[@class="worksheetname" and contains(text(), "My wonderful search phrase")]'),
+            self._search(u'ЋĉƸḾ﹢Յй')
+            self.assert_(sel.is_element_present(u'//a[@class="worksheetname" and contains(text(), "My ЋĉƸḾ﹢Յй search phrase")]'),
                          'Search phrase not found on %s' % page)
             self.failIf(sel.is_element_present('//a[@class="worksheetname" and contains(text(), "Not a search target")]'),
                         'Non-matching search results found on %s' % page)

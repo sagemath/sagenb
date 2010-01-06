@@ -15,23 +15,20 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-import jinja
-
-from jinja.filters import stringfilter, simplefilter
+import jinja2
 
 import os, re, sys
 
-from sagenb.misc.misc import SAGE_VERSION, DATA
+from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
 from sagenb.notebook.jsmath import math_parse
 
 
 TEMPLATE_PATH = os.path.join(DATA, 'sage')
-env = jinja.Environment(loader=jinja.FileSystemLoader(TEMPLATE_PATH))
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_PATH))
 
 css_illegal_re = re.compile(r'[^-A-Za-z_0-9]')
 
-@stringfilter
 def css_escape(string):
     r"""
     Returns a string with all characters not legal in a css name
@@ -43,32 +40,16 @@ def css_escape(string):
 
     EXAMPLES::
 
-        sage: from sagenb.notebook.template import env, css_escape
-        sage: escaper = css_escape()
-        sage: print(escaper(env, {}, '12abcd'))
-        12abcd
-        sage: print(escaper(env, {}, 'abcd'))
-        abcd
-        sage: print(escaper(env, {}, r'\'"abcd\'"'))
-        ---abcd---
-        sage: print(escaper(env, {}, 'my-invalid/identifier'))
-        my-invalid-identifier
-        sage: print(escaper(env, {}, r'quotes"mustbe!escaped'))
-        quotes-mustbe-escaped
-
-    The following doctests originally accompanied #7269's support for
-    Jinja2.
-
-        sage: from sagenb.notebook.template import css_escape # not tested
-        sage: css_escape('abcd')                              # not tested
+        sage: from sagenb.notebook.template import css_escape
+        sage: css_escape('abcd')
         'abcd'
-        sage: css_escape('12abcd')                            # not tested
+        sage: css_escape('12abcd')
         '12abcd'
-        sage: css_escape(r'\'"abcd\'"')                       # not tested
+        sage: css_escape(r'\'"abcd\'"')
         '---abcd---'
-        sage: css_escape('my-invalid/identifier')             # not tested
+        sage: css_escape('my-invalid/identifier')
         'my-invalid-identifier'
-        sage: css_escape(r'quotes"mustbe!escaped')            # not tested
+        sage: css_escape(r'quotes"mustbe!escaped')
         'quotes-mustbe-escaped'
     """
     return css_illegal_re.sub('-', string)
@@ -119,11 +100,12 @@ def clean_name(name):
     return ''.join([x if x.isalnum() else '_' for x in name])
 
 env.filters['css_escape'] = css_escape
-env.filters['number_of_rows'] = simplefilter(number_of_rows)
-env.filters['clean_name'] = stringfilter(clean_name)
-env.filters['prettify_time_ago'] = simplefilter(prettify_time_ago)
-env.filters['math_parse'] = stringfilter(math_parse)
-env.filters['max'] = simplefilter(max)
+env.filters['number_of_rows'] = number_of_rows
+env.filters['clean_name'] = clean_name
+env.filters['prettify_time_ago'] = prettify_time_ago
+env.filters['math_parse'] = math_parse
+env.filters['max'] = max
+env.filters['repr_str'] = lambda x: repr(unicode_str(x))[1:]
 
 def template(filename, **user_context):
     """
@@ -139,7 +121,7 @@ def template(filename, **user_context):
       the file's template variables
 
     OUTPUT:
-    
+
     - a string - the rendered HTML, CSS, etc.
 
     EXAMPLES::
@@ -164,7 +146,7 @@ def template(filename, **user_context):
                        'conf': notebook.conf() if notebook else None}
     try:
         tmpl = env.get_template(filename)
-    except jinja.exceptions.TemplateNotFound:
+    except jinja2.exceptions.TemplateNotFound:
         return "Notebook Bug -- missing template %s"%filename
     context = dict(default_context)
     context.update(user_context)

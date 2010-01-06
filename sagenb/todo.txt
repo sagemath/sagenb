@@ -7,9 +7,6 @@ See http://wiki.sagemath.org/SageTasks for a related list.
     sage: notebook()  # then let the notebook start up, then hit ctrl-c
     sage: pwd -->  '/Users/palmieri/.sage'  
 
-[ ] rate a worksheet -- note that the top of the browser (title) says
-error, though in fact there is no error.
-
 [ ] admin should *NOT* see all users worksheets.  This is not good, e.g., 
 when there are 50,000 worksheets!
 
@@ -70,17 +67,9 @@ faster.  This is a top optimization priority.
 [ ] "untitled renaming".  Make it an option in the user confs, which
 is on by default, by you can turn it off.
 
-[ ] add message to the top of each *old* sage notebook .py file
- stating that one should work on sagenb instead.  This is a patch to
- the core Sage library.
-
-[ ] fix all doctests in sagenb code and make a patch against core
-sage library that imports enough of sagenb by default so I can 
-run all these doctests.  
 
 [ ] get coverage to 100%.
 
-[ ] change to 100% html format for worksheets.
 
 [ ] we can make it so that if worksheet.html file changes on disk but
 not currently open, then when reopen it uses the new version from
@@ -109,7 +98,7 @@ message.  This would limit (though not prevent) damages.
 
 [ ] Jonathan Gutow -- redo how jmol works
 
-[ ] notebook docs -- something in "doc/en/sagenb"
+
 
 [ ] maybe get rid of list of 'Sage Users' when publishing worksheets --
 that's not appropriate given how sage has grown.
@@ -139,7 +128,6 @@ would be good enough to do the switch."
 [ ] ldap support (see, eg., http://math.univ-lyon1.fr/~tdumont/sage)  but make sure to first
     abstract away authentication first so it is much CLEARER.
 
-[ ] automated testing -- "Windmill seems to be more popular now -- especially with Python stuff "
 
 [ ] find a way to provide same info as data directory but without making it super-permissive.
     Maybe I can make an api for getting files from a data location or something...
@@ -483,3 +471,19 @@ aren't made anymore.  Or use this somehow.
 
 [x] When saving a worksheet, the default filename has "..." in it. 
 
+[x] add message to the top of each *old* sage notebook .py file
+ stating that one should work on sagenb instead.  This is a patch to
+ the core Sage library.
+
+[x] fix all doctests in sagenb code and make a patch against core
+sage library that imports enough of sagenb by default so I can 
+run all these doctests.  
+
+[x] rate a worksheet -- note that the top of the browser (title) says
+error, though in fact there is no error.
+
+[x] change to 100% html format for worksheets.
+
+[x] notebook docs -- something in "doc/en/sagenb"
+
+[x] automated testing -- "Windmill seems to be more popular now -- especially with Python stuff "

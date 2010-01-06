@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 r"""
 A Worksheet.
 
@@ -40,7 +41,8 @@ from sagenb.misc.misc import (cython, load, save,
                               alarm, cancel_alarm, verbose, DOT_SAGENB,
                               walltime, ignore_nonexistent_files,
                               set_restrictive_permissions,
-                              set_permissive_permissions)
+                              set_permissive_permissions,
+                              encoded_str, unicode_str)
 
 from sagenb.misc.remote_file import get_remote_file
 
@@ -155,7 +157,7 @@ class Worksheet(object):
                  notebook_worksheet_directory=None, system=None,
                  owner=None, docbrowser=False, pretty_print=False,
                  auto_publish=False, create_directories=True):
-        """
+        u"""
         Create and initialize a new worksheet.
 
         INPUT:
@@ -190,9 +192,10 @@ class Worksheet(object):
         EXAMPLES: We test the constructor via an indirect doctest::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
+            sage: W = nb.create_new_worksheet('Test with unicode ΫäĻƾṀБ', 'admin')
             sage: W
             admin/0: [Cell 1; in=, out=]
+
         """
         if name is None:
             # A fresh worksheet
@@ -279,19 +282,7 @@ class Worksheet(object):
             sage: import sagenb.notebook.worksheet
             sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, tmp_dir(), owner='sage')
             sage: sorted((W.basic().items()))
-            [('auto_publish', False),
-              ('collaborators', []),
-              ('id_number', 0),
-              ('last_change', ('sage', ...)),
-              ('name', 'test'),
-              ('owner', 'sage'),
-              ('pretty_print', False),
-              ('published_id_number', None),
-              ('ratings', []),
-              ('system', None),
-              ('tags', {'sage': [1]}),
-              ('viewers', []),
-              ('worksheet_that_was_published', ('sage', 0))]
+            [('auto_publish', False), ('collaborators', []), ('id_number', 0), ('last_change', ('sage', ...)), ('name', u'test'), ('owner', 'sage'), ('pretty_print', False), ('published_id_number', None), ('ratings', []), ('system', None), ('tags', {'sage': [1]}), ('viewers', []), ('worksheet_that_was_published', ('sage', 0))]
         """
         try:
             published_id_number = int(os.path.split(self.__published_version)[1])
@@ -455,7 +446,7 @@ class Worksheet(object):
             sage: W.__repr__()
             'admin/0: [Cell 0; in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
         """
-        return '%s/%s: %s'%(self.owner(), self.id_number(), str(self.cell_list()))
+        return '%s/%s: %s' % (self.owner(), self.id_number(), self.cell_list())
     def __len__(self):
         r"""
         Return the number of cells in this worksheet.
@@ -688,7 +679,7 @@ class Worksheet(object):
         self.__viewers = []
 
     def name(self):
-        """
+        u"""
         Return the name of this worksheet.
 
         OUTPUT: string
@@ -698,12 +689,18 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.name()
-            'A Test Worksheet'
+            u'A Test Worksheet'
+            sage: W = nb.create_new_worksheet('ΫäĻƾṀБ', 'admin')
+            sage: W.name()
+            u'\u03ab\xe4\u013b\u01be\u1e40\u0411'
+            sage: W = nb.create_new_worksheet('Теория чисел', 'admin')
+            sage: W.name()
+            u'\u0422\u0435\u043e\u0440\u0438\u044f \u0447\u0438\u0441\u0435\u043b'
         """
         try:
             return self.__name
         except AttributeError:
-            self.__name = "Untitled"
+            self.__name = u"Untitled"
             return self.__name
 
     def set_name(self, name):
@@ -720,10 +717,11 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.set_name('A renamed worksheet')
             sage: W.name()
-            'A renamed worksheet'
+            u'A renamed worksheet'
         """
         if len(name.strip()) == 0:
-            name = 'Untitled'
+            name = u'Untitled'
+        name = unicode_str(name)
         self.__name = name
 
     def set_filename_without_owner(self, nm):
@@ -1908,10 +1906,11 @@ class Worksheet(object):
         """
         # Load the worksheet data file from disk.
         filename = self.worksheet_html_filename()
-        r = (self.owner().lower() + ' ' + self.publisher().lower() + ' '
-             + self.name().lower() + ' ' + open(filename).read().lower())
+        r = (self.owner().lower() + ' ' + self.publisher().lower() + ' ' +
+             self.name().lower() + ' ' + open(filename).read().decode('utf-8', 'ignore').lower())
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
+            W = unicode_str(W)
             if W.lower() not in r:
                 # Some word from the text is not in the search list, so
                 # we return False.
@@ -1934,8 +1933,8 @@ class Worksheet(object):
         if os.path.exists(worksheet_html) and open(worksheet_html).read() == E:
             # we already wrote it out...
             return
-        open(filename, 'w').write(bz2.compress(E))
-        open(worksheet_html, 'w').write(self.body())
+        open(filename, 'w').write(bz2.compress(E.encode('utf-8', 'ignore')))
+        open(worksheet_html, 'w').write(self.body().encode('utf-8', 'ignore'))
         self.limit_snapshots()
         try:
             X = self.__saved_by_info
@@ -2167,7 +2166,7 @@ class Worksheet(object):
             5, Cell 1; in=2+8, out=
             10]
             sage: W.name()
-            'Test Edit Save'
+            u'Test Edit Save'
         """
         # Clear any caching.
         try:
@@ -3485,7 +3484,7 @@ from sagenb.notebook.all import *
         """
         # The extra newline below is necessary, since otherwise source
         # code introspection doesn't include the last line.
-        return 'open("%s","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s), CODE_PY)
+        return 'open("%s","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s.encode('utf-8', 'ignore')), CODE_PY)
 
     ##########################################################
     # Loading and attaching files
@@ -3639,12 +3638,12 @@ from sagenb.notebook.all import *
             sage: W.get_cell_system(c0)
             'sage'
             sage: W.get_cell_system(c1)
-            'gap'
+            u'gap'
             sage: W.edit_save('{{{\n%sage\n2+3\n}}}\n\n{{{\nSymmetricGroup(5)\n}}}')
             sage: W.set_system('gap')
             sage: c0, c1 = W.cell_list()
             sage: W.get_cell_system(c0)
-            'sage'
+            u'sage'
             sage: W.get_cell_system(c1)
             'gap'
         """
@@ -3671,7 +3670,7 @@ from sagenb.notebook.all import *
             os.makedirs(code)
         spyx = os.path.abspath(os.path.join(code, 'sage%s.spyx'%id))
         if not (os.path.exists(spyx) and open(spyx).read() == cmd):
-            open(spyx,'w').write(cmd)
+            open(spyx,'w').write(cmd.encode('utf-8', 'ignore'))
         return '_support_.cython_import_all("%s", globals())'%spyx
 
     def check_for_system_switching(self, input, cell):
@@ -3702,9 +3701,9 @@ from sagenb.notebook.all import *
             sage: W.edit_save('{{{\n2+3\n}}}\n\n{{{\n%gap\nSymmetricGroup(5)\n}}}')
             sage: c0, c1 = W.cell_list()
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
-            (False, '2+3')
+            (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, "print _support_.syseval(gap, ur'''SymmetricGroup(5)''', '...')")
+            (True, u"print _support_.syseval(gap, ur'''SymmetricGroup(5)''', '...')")
 
         ::
 
@@ -3728,10 +3727,9 @@ from sagenb.notebook.all import *
             sage: W.set_system('gap')
             sage: c0, c1 = W.cell_list()
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
-            (False, '2+3')
+            (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True,
-             "print _support_.syseval(gap, ur'''SymmetricGroup(5)''', '...')")
+            (True, u"print _support_.syseval(gap, ur'''SymmetricGroup(5)''', '...')")
             sage: c0.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
             ('d', Cell 0; in=%sage

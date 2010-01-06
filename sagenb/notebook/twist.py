@@ -52,7 +52,7 @@ HISTORY_NCOLS = 90
 
 from sagenb.misc.misc import (SAGE_DOC, DATA, SAGE_VERSION, walltime,
                               tmp_filename, tmp_dir, is_package_installed,
-                              jsmath_macros)
+                              jsmath_macros, encoded_str, unicode_str)
 
 css_path             = os.path.join(DATA, "sage", "css")
 image_path           = os.path.join(DATA, "sage", "images")
@@ -82,7 +82,11 @@ def word_wrap_cols():
 SEP = '___S_A_G_E___'
 
 def encode_list(v):
-    return SEP.join([str(x) for x in v])
+    seq = []
+    for x in v:
+        x = encoded_str(x)
+        seq.append(x)
+    return SEP.join(seq)
 
 
 
@@ -150,8 +154,7 @@ class Response(http.Response):
     """
     def __init__(self, code=None, headers=None, stream=None):
         if stream is not None:
-            if isinstance(stream, unicode):
-                stream = stream.encode('utf-8', 'ignore')
+            stream = encoded_str(stream)
         super(Response, self).__init__(code, headers, stream)
 
 def HTMLResponse(*args, **kwds):
@@ -1097,9 +1100,10 @@ class Worksheet_new_cell_before(WorksheetResource, resource.PostableResource):
     def render(self, ctx):
         id = self.id(ctx)
         if not ctx.args.has_key('input'):
-            input = ''
+            input = u''
         else:
             input = ctx.args['input'][0]
+            input = unicode_str(input)
 
         cell = self.worksheet.new_cell_before(id, input=input)
         self.worksheet.increase_state_number()
@@ -1116,6 +1120,7 @@ class Worksheet_new_text_cell_before(WorksheetResource, resource.PostableResourc
             input = ''
         else:
             input = ctx.args['input'][0]
+            input = unicode_str(input)
 
         cell = self.worksheet.new_text_cell_before(id, input=input)
         s = encode_list([cell.id(), cell.html(editing=True), id])
@@ -1132,6 +1137,8 @@ class Worksheet_new_cell_after(WorksheetResource, resource.PostableResource):
             input = ''
         else:
             input = ctx.args['input'][0]
+            input = unicode_str(input)
+
         cell = self.worksheet.new_cell_after(id, input=input)
         s = encode_list([cell.id(), cell.html(div_wrap=False), id])
         return HTMLResponse(stream = s)
@@ -1146,6 +1153,7 @@ class Worksheet_new_text_cell_after(WorksheetResource, resource.PostableResource
             input = ''
         else:
             input = ctx.args['input'][0]
+            input = unicode_str(input)
 
         cell = self.worksheet.new_text_cell_after(id, input=input)
         s = encode_list([cell.id(), cell.html(editing=True), id])
@@ -1207,13 +1215,10 @@ class Worksheet_cell_update(WorksheetResource, resource.PostableResource):
         if status == 'd':
             new_input = cell.changed_input_text()
             out_html = cell.output_html()
-            try:
-                H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
-                H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
-                                    max_out=HISTORY_MAX_OUTPUT)
-                notebook.add_to_user_history(H, self.username)
-            except UnicodeDecodeError:
-                pass
+            H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
+            H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
+                                max_out=HISTORY_MAX_OUTPUT)
+            notebook.add_to_user_history(H, self.username)
         else:
             new_input = ''
             out_html = ''
@@ -1259,10 +1264,11 @@ class Worksheet_eval(WorksheetResource, resource.PostableResource):
     def render(self, ctx):
         id = self.id(ctx)
         if not ctx.args.has_key('input'):
-            input_text = ''
+            input_text = u''
         else:
             input_text = ctx.args['input'][0]
             input_text = input_text.replace('\r\n', '\n')   # DOS
+            input_text = unicode_str(input_text)
 
         W = self.worksheet
         W.increase_state_number()
@@ -1546,7 +1552,7 @@ def render_worksheet_list(args, pub, username):
     """
     from sagenb.notebook.notebook import sort_worksheet_list
     typ = args['typ'][0] if 'typ' in args else 'active'
-    search = args['search'][0] if 'search' in args else None
+    search = unicode_str(args['search'][0]) if 'search' in args else None
     sort = args['sort'][0] if 'sort' in args else 'last_edited'
     reverse = (args['reverse'][0] == 'True') if 'reverse' in args else False
 

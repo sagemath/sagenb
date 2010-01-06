@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Miscellaneous Notebook Functions
 """
@@ -384,7 +385,6 @@ except ImportError:
         # TODO
         raise NotImplementedError, "Curently %cython mode requires Sage." 
 
-
 #############################################################
 # File permissions
 # May need some changes on Windows.
@@ -401,6 +401,47 @@ def set_permissive_permissions(filename):
     os.chmod(filename, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH | \
              stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | \
              stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP)
+
+def encoded_str(obj, encoding='utf-8'):
+    """
+    Takes an object and returns an encoded str human-readable representation.
+
+    EXAMPLES::
+
+        sage: from sagenb.misc.misc import encoded_str
+        sage: encoded_str(u'ĀƂḉПΣ')
+        '\xc3\x84\xc2\x80\xc3\x86\xc2\x82\xc3\xa1\xc2\xb8\xc2\x89\xc3\x90\xc2\x9f\xc3\x8e\xc2\xa3'
+        sage: encoded_str(u'abc')
+        'abc'
+        sage: encoded_str(123)
+        '123'
+    """
+    if isinstance(obj, unicode):
+        return obj.encode(encoding, 'ignore')
+    return str(obj)
+
+def unicode_str(obj, encoding='utf-8'):
+    """
+    Takes an object and returns a unicode human-readable representation.
+
+    EXAMPLES::
+
+        sage: from sagenb.misc.misc import unicode_str
+        sage: unicode_str('\xc3\x84\xc2\x80\xc3\x86\xc2\x82\xc3\xa1\xc2\xb8\xc2\x89\xc3\x90\xc2\x9f\xc3\x8e\xc2\xa3')
+        u'\xc4\x80\xc6\x82\xe1\xb8\x89\xd0\x9f\xce\xa3'
+        sage: unicode_str('\xc3\x84\xc2\x80\xc3\x86\xc2\x82\xc3\xa1\xc2\xb8\xc2\x89\xc3\x90\xc2\x9f\xc3\x8e\xc2\xa3') == u'ĀƂḉПΣ'
+        True
+        sage: unicode_str('abc')
+        u'abc'
+        sage: unicode_str(123)
+        u'123'
+    """
+    if isinstance(obj, str):
+        return obj.decode(encoding, 'ignore')
+    elif isinstance(obj, unicode):
+        return obj
+    return unicode(obj)
+        
 
 
 def ignore_nonexistent_files(curdir, dirlist):
