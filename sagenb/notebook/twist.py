@@ -1840,13 +1840,20 @@ class JSMath_js(resource.Resource):
                      jsmath_macros = jsmath_macros,
                      jsmath_image_fonts = jsmath_image_fonts)
 
-        return Response(stream=s)
+        response = Response(stream=s)
+        response.headers.addRawHeader('Content-Type',
+                                      'text/javascript; charset=utf-8')
+        return response
 
 class Main_js(resource.Resource):
     def render(self, ctx):
         gzip_handler(ctx)
         s = js.javascript()
-        return Response(stream=s)
+
+        response = Response(stream=s)
+        response.headers.addRawHeader('Content-Type',
+                                      'text/javascript; charset=utf-8')
+        return response
 
 class Keyboard_js_specific(resource.Resource):
     def __init__(self, browser_os):
@@ -1854,7 +1861,11 @@ class Keyboard_js_specific(resource.Resource):
 
     def render(self, ctx):
         gzip_handler(ctx)
-        return Response(stream = self.s)
+
+        response = Response(stream=self.s)
+        response.headers.addRawHeader('Content-Type',
+                                      'text/javascript; charset=utf-8')
+        return response
 
 class Keyboard_js(resource.Resource):
     def childFactory(self, request, browser_os):

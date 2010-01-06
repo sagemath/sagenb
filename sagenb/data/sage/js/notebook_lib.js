@@ -278,19 +278,7 @@ function get_keyboard() {
         alert("Your browser / OS combination is not supported.  \nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.")
     }
 
-    async_request('/javascript/sage/keyboard/'+b+o, get_keyboard_callback);
-}
-
-
-function get_keyboard_callback(status, response_text) {
-    /*
-    This is called right after we get the list of keycodes for our
-    browser back from the server. We eval them hence setting a bunch of
-    (global) variables that define platform-specific keycodes.
-    */
-    if(status == 'success') {
-        eval(response_text);
-    }
+    $.getScript('/javascript/sage/keyboard/' + b + o);
 }
 
 
