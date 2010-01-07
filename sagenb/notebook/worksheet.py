@@ -3485,7 +3485,7 @@ from sagenb.notebook.all import *
         """
         # The extra newline below is necessary, since otherwise source
         # code introspection doesn't include the last line.
-        return 'open("%s","w").write(_support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s), CODE_PY)
+        return 'open("%s","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s), CODE_PY)
 
     ##########################################################
     # Loading and attaching files

@@ -1207,10 +1207,13 @@ class Worksheet_cell_update(WorksheetResource, resource.PostableResource):
         if status == 'd':
             new_input = cell.changed_input_text()
             out_html = cell.output_html()
-            H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
-            H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
-                                max_out=HISTORY_MAX_OUTPUT)
-            notebook.add_to_user_history(H, self.username)
+            try:
+                H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
+                H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
+                                    max_out=HISTORY_MAX_OUTPUT)
+                notebook.add_to_user_history(H, self.username)
+            except UnicodeDecodeError:
+                pass
         else:
             new_input = ''
             out_html = ''
