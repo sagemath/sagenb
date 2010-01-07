@@ -1,6 +1,6 @@
-//"use strict";
 /*global window, $, worksheet_filenames */
 /*jslint browser: true, white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
+//"use strict";
 
 /*
   INDENTATION:
@@ -66,7 +66,7 @@ function set_worksheet_list_checks() {
     cbox_checked = $('#controlbox')[0].checked;
     ws_len = worksheet_filenames.length;
     for (i = 0; i < ws_len; i += 1) {
-	ws_name = worksheet_filenames[i].replace(/[\/@.]/g, '-');
+        ws_name = worksheet_filenames[i].replace(/[\/@.]/g, '-');
         $('#' + ws_name)[0].checked = cbox_checked;
     }
 }
@@ -206,7 +206,7 @@ function delete_worksheet(name) {
       name -- string
     */
     async_request('/send_to_trash', delete_worksheet_callback,
-		  {filename: name});
+                  {filename: name});
 }
 
 function history_window() {

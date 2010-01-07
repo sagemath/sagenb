@@ -1,3 +1,7 @@
+/*global document, jsMath, window */
+/*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
+//"use strict";
+
 /**********************************************************************
  *
  *   Customize the values given below to suit your needs.
@@ -17,16 +21,18 @@
  *
  **********************************************************************/
 
-if (!window.jsMath) {window.jsMath = {}}
+if (!window.jsMath) {
+    window.jsMath = {};
+}
 
 //  Move the jsMath button 20 pixels from the right edge (apparently
 //  in some browsers, it covers up the scroll bar)
 jsMath.styles = {
-    '#jsMath_button' : 'position:fixed; bottom:1px; right:20px; '
-	+ 'background-color:white; border: solid 1px #959595; margin:0px; '
-	+ 'padding: 0px 3px 1px 3px; z-index:102; color:black; '
-	+ 'text-decoration:none; font-size:x-small; width:auto; cursor:hand;'
-}
+    '#jsMath_button' : 'position:fixed; bottom:1px; right:20px; ' +
+        'background-color:white; border: solid 1px #959595; margin:0px; ' +
+        'padding: 0px 3px 1px 3px; z-index:102; color:black; ' +
+        'text-decoration:none; font-size:x-small; width:auto; cursor:hand;'
+};
 
 jsMath.Easy = {
     //
@@ -117,10 +123,10 @@ jsMath.Easy = {
     // See http://www.math.union.edu/~dpvc/jsMath/authors/
     //
     loadFiles: [
-	"extensions/verb.js",
-	"extensions/moreArrows.js",
-	"extensions/AMSmath.js",
-	"extensions/AMSsymbols.js"
+        "extensions/verb.js",
+        "extensions/moreArrows.js",
+        "extensions/AMSmath.js",
+        "extensions/AMSsymbols.js"
     ],
 
     //
@@ -144,7 +150,7 @@ jsMath.Easy = {
     //
     // Sage-specific jsMath macros.
     macros: {
-	{{ jsmath_macros }}
+        {{ jsmath_macros }}
     },
 
     //
@@ -172,15 +178,17 @@ jsMath.Easy = {
 /****************************************************************/
 /****************************************************************/
 
-if (jsMath.Easy.root == "") {
-  jsMath.Easy.root = document.getElementsByTagName("script");
-  jsMath.Easy.root = jsMath.Easy.root[jsMath.Easy.root.length-1].src
-  if (jsMath.Easy.root.match(/\/easy\/[^\/]*$/)) {
-    jsMath.Easy.root = jsMath.Easy.root.replace(/\/easy\/[^\/]*$/,"");
-  } else {
-    jsMath.Easy.root = jsMath.Easy.root.replace(/\/(jsMath\/(easy\/)?)?[^\/]*$/,"/jsMath");
-  }
+if (jsMath.Easy.root === "") {
+    jsMath.Easy.root = document.getElementsByTagName("script");
+    jsMath.Easy.root = jsMath.Easy.root[jsMath.Easy.root.length - 1].src;
+    if (jsMath.Easy.root.match(/\/easy\/[^\/]*$/)) {
+        jsMath.Easy.root = jsMath.Easy.root.replace(/\/easy\/[^\/]*$/, "");
+    } else {
+        jsMath.Easy.root = jsMath.Easy.root.replace(/\/(jsMath\/(easy\/)?)?[^\/]*$/, "/jsMath");
+    }
 }
-jsMath.Easy.root = jsMath.Easy.root.replace(/\/$/,""); // trim trailing "/" if any
+// trim trailing "/" if any
+jsMath.Easy.root = jsMath.Easy.root.replace(/\/$/, "");
 
-document.write('<SCRIPT SRC="'+jsMath.Easy.root+'/jsMath-easy-load.js"><'+'/SCRIPT>');
+document.write('<SCRIPT SRC="' + jsMath.Easy.root +
+	       '/jsMath-easy-load.js"><' + '/SCRIPT>');

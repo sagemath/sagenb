@@ -1,3 +1,8 @@
+/*global $, tinymce, tinyMCE */
+/*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
+//"use strict";
+
+
 var toggleEditor = function (id) {
     if (!tinyMCE.get(id)) {
         tinyMCE.execCommand('mceAddControl', false, id);
@@ -32,29 +37,28 @@ tinyMCE.init({
         // browsers and on some platforms, ctrl-enter may work
         // anyway.
         ed.onKeyDown.add(function (ed, e) {
-	    if (e.keyCode == 13 && e.shiftKey && e.ctrlKey) {
-                var dom = ed.dom, s = ed.selection, r = s.getRng(), br;
-		var p, y, h, vp;
+            if (e.keyCode === 13 && e.shiftKey && e.ctrlKey) {
+                var dom = ed.dom, s = ed.selection, r = s.getRng(), br, p, y, h, vp;
 
                 if (tinymce.isIE) {
-		    // Adapted from tiny_mce.js.
-		    s.setContent('<br id="__"/>', {format : 'raw'});
-		    br = ed.dom.get('__');
-		    br.removeAttribute('id');
-		    s.select(br);
-		    s.collapse();
+                    // Adapted from tiny_mce.js.
+                    s.setContent('<br id="__"/>', {format : 'raw'});
+                    br = ed.dom.get('__');
+                    br.removeAttribute('id');
+                    s.select(br);
+                    s.collapse();
                 } else {
-		    // Adapted from the TinyMCE Safari plug-in.
-		    r.deleteContents();
-		    br = dom.create('br');
-		    r.insertNode(br);
-		    r.setStartAfter(br);
-		    r.setEndAfter(br);
-		    s.setRng(r);
-		    if (s.getSel().focusNode == br.previousSibling) {
+                    // Adapted from the TinyMCE Safari plug-in.
+                    r.deleteContents();
+                    br = dom.create('br');
+                    r.insertNode(br);
+                    r.setStartAfter(br);
+                    r.setEndAfter(br);
+                    s.setRng(r);
+                    if (s.getSel().focusNode === br.previousSibling) {
                         s.select(dom.insertAfter(dom.doc.createTextNode('\u00a0'), br));
                         s.collapse(1);
-		    }
+                    }
                 }
 
                 // Insert a temporary 'p' to get the position and height.
@@ -67,19 +71,20 @@ tinyMCE.init({
                 dom.remove(p);
                 vp = dom.getViewPort(ed.getWin());
 
-                // Bring the caret into view, if necessary.  Adapted from tiny_mce.js.
+                // Bring the caret into view, if necessary.  Adapted
+                // from tiny_mce.js.
                 if (y < vp.y || y + h > vp.y + vp.h) {
-		    ed.getWin().scrollTo(0, y < vp.y ? y : y + h - vp.h);
+                    ed.getWin().scrollTo(0, y < vp.y ? y : y + h - vp.h);
                 }
                 tinymce.dom.Event.cancel(e);
-	    }
+            }
         });  // ed.onKeyDown.add
 
         // Make shift-enter quit editing.
         ed.onKeyDown.add(function (ed, e) {
-	    if (key_enter_shift(key_event(e))) {
+            if (key_enter_shift(key_event(e))) {
                 $(ed.formElement).submit();
-	    }
+            }
         });  // ed.onKeyDown.add
     }  // setup
 });  // tinyMCE.init
@@ -87,8 +92,8 @@ tinyMCE.init({
 
 $.editable.addInputType('mce', {
     element : function (settings, original) {
-        var textarea = $('<textarea id="' + $(original).attr("id")
-			 + '_mce"/>');
+        var textarea = $('<textarea id="' + $(original).attr("id") +
+                         '_mce"/>');
         if (settings.rows) {
             textarea.attr('rows', settings.rows);
         } else {
@@ -100,23 +105,23 @@ $.editable.addInputType('mce', {
             textarea.width(settings.width);
         }
         $(this).append(textarea);
-        return(textarea);
+        return textarea;
     },
 
     plugin : function (settings, original) {
         tinyMCE.execCommand("mceAddControl", true,
-			    $(original).attr("id") + '_mce');
+                            $(original).attr("id") + '_mce');
     },
 
     submit : function (settings, original) {
         tinyMCE.triggerSave();
         tinyMCE.execCommand("mceRemoveControl", true,
-			    $(original).attr("id") + '_mce');
+                            $(original).attr("id") + '_mce');
     },
 
     reset : function (settings, original) {
         tinyMCE.execCommand("mceRemoveControl", true,
-			    $(original).attr("id") + '_mce');
+                            $(original).attr("id") + '_mce');
         original.reset();
     }
 });
