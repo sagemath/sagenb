@@ -1,0 +1,108 @@
+body div#banner
+  :font-size 1.2em
+  :float left
+  :margin 0
+  :max-width 35%
+
+  a.banner
+    :text-decoration none
+    :border none
+    :margin-top 2px
+    :float left
+    :position relative
+    &:visited
+      :color #1950c8
+    img
+      :border none
+    span
+      :margin-left 0.2em
+      :margin-top -0.25em
+  #ping
+    :float left
+
+  div.version
+    :float left
+    :clear left
+    :font-size xx-small
+    :text-indent 13px
+    :color black
+
+#main-controls
+  :float right
+  :width 65%
+
+  ul
+    :list-style none
+    :margin 0
+    :padding 0
+    :text-align right
+
+    li
+      :border-right 1px solid #000
+      :color #112abb
+      :display inline
+      :font-size 14px
+      :margin 0
+      :padding 0 0.5em
+      &:last-child
+        :border-right 0
+
+    li.username
+      :border 0
+      :color #000
+      :font-family sans-serif
+      :font-weight bold
+      :padding 0
+
+    a
+      :text-decoration underline
+      :white-space nowrap
+      &:hover
+        :cursor pointer
+
+    #toggle-link
+      :display none
+
+.worksheet-online
+  #main-controls
+    ul
+      #toggle-link
+        :display inline
+
+#top-bar
+  :position relative
+  :padding 10px 5px
+  :border-bottom 1px solid #c9d7f1
+  :min-height 40px
+  :margin-bottom 0.5em
+  +clearfix
+
+#search-area
+  :float right
+  :clear right
+
+hr.usercontrol
+  :clear both
+  :float left
+
+
+div
+  &#user-controls
+    +clearfix
+    :clear both
+    :border-bottom 1px solid #c9d7f1
+    :padding 10px
+
+  &#worksheet-list-controls
+    :padding 10px
+    :clear both
+    +clearfix
+
+    div
+      &.action-buttons
+        :float left
+
+      &.folders
+        :float left
+        :clear right
+        :margin-left 100px

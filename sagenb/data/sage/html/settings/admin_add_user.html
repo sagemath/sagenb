@@ -1,0 +1,31 @@
+{% extends "html/settings/base.html" %}
+{% block title %}Add New User{% endblock %}
+{% block page_id %}add-user-page{% endblock %}
+
+{% block main %}
+<h1>Add New User</h1>
+{% if error %}
+<h2 class="error_found">Username Error</h2>
+{% endif %}
+<form method="POST" action="/adduser">
+  <ol>
+    <li><h2>Pick a username</h2>
+      <p>The username must start with a letter and be between 4 and 32 characters long. It can only consist of letters, numbers, underscores, and one dot (.).</p>
+      <input type="text" name="username" value="{{ username_input if username_input else '' }}" />
+      {% if username_error %}
+      {% if username_error == 'invalid' %}
+      <p><span class="error">Error:</span> Invalid username</p>
+      {% else %}
+      <p><span class="error">Error:</span> Username taken</p>
+      {% endif %}
+      {% endif %}
+    </li>
+  </ol>
+  <div id="buttons">
+    <button type="submit">Create Account</buttoN>
+    <a href="/users"><button>Cancel</button></a>
+  </div>
+</form>
+</div>
+{% endblock %}
+

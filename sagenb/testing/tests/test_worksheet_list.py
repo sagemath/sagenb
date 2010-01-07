@@ -13,10 +13,9 @@ from sagenb.testing.notebook_test_case import NotebookTestCase
 
 class TestWorksheetList(NotebookTestCase):
     def setUp(self):
-        super(TestWorksheetList,self).setUp()
-        sel = self.selenium
+        super(TestWorksheetList, self).setUp()
         self.login_as('admin', 'asdfasdf')
-    
+
     def test_opening_worksheet(self):
         """
         Makes sure that opening a worksheet works.
@@ -27,14 +26,13 @@ class TestWorksheetList(NotebookTestCase):
         sel.click("//a[@class='worksheetname']")
         sel.wait_for_page_to_load("30000")
 
-
     def test_creating_worksheet(self):
         """
         Tests worksheet creation.
         """
         sel = self.selenium
         self.create_new_worksheet('Creating a Worksheet')
-        
+
         # Verify that the page has all the requisite elements.
         elements = ('link=Home', 'link=Help', 'link=Worksheet', 'link=Sign out',
                     'link=Toggle', 'link=Settings', 'link=Report a Problem',
@@ -42,18 +40,18 @@ class TestWorksheetList(NotebookTestCase):
                     '//button[@name="button_save"]')
         for element in elements:
             self.assert_(sel.is_element_present(element))
-        
 
     def _search(self, phrase):
         """
         Searches for a phrase.
         """
         sel = self.selenium
-        self.wait_in_window('return this.$("#search-worksheets").length > 0;', 30000)
+        self.wait_in_window('return this.$("#search-worksheets").length > 0;',
+                            30000)
         sel.type('id=search-worksheets', phrase)
         sel.click('id=search-worksheets-button') # TODO: Fix for l18n
         sel.wait_for_page_to_load("30000")
-            
+
     def test_searching_for_worksheets(self):
         """
         Tests search function.
@@ -95,7 +93,7 @@ class TestWorksheetList(NotebookTestCase):
             self.goto_published_worksheets()
             self.assertEqual(sel.get_text('css=td.worksheet_link'), title,
                              '%s-published worksheet %s not listed first' % (prefix, title))
-            lastedit = sel.get_text('css=span.lastedit')
+            lastedit = sel.get_text('css=.lastedit')
             self.assert_(self.username in lastedit,
                          '%s-published worksheet has wrong last edited field %s' % (prefix, lastedit))
 
@@ -121,9 +119,13 @@ class TestWorksheetList(NotebookTestCase):
         self.save_and_quit()
         self.goto_published_worksheets()
         self._search('anything')
-        self.failIf(sel.is_text_present('Internal Server Error'), 
+        self.failIf(sel.is_text_present('Internal Server Error'),
                     'Published worksheet search caused a server error')
- 
+
+    def tearDown(self):
+        self.logout()
+        super(TestWorksheetList, self).tearDown()
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestWorksheetList)
 

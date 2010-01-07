@@ -1,0 +1,21 @@
+{% extends "html/accounts/base.html" %}
+
+{% block title %}Account Recovery{% endblock %}
+{% block page_id %}account-recovery-page{% endblock %}
+
+{% block body %}
+<div id="wrapper">
+    <h1>Account Recovery</h1>
+    <p>A new password will be emailed to the email address connected to your account. However if you didn't confirm your email address you will be unable to recover your account.</p>  
+
+    <form method="GET" action="/forgotpass">
+        <div>
+            <label for="username">Username</label>
+            <input type="text" name="username" size="15" />
+        </div>
+        <div>
+            <button type="submit">Submit</button> <a href="/"><button >Cancel</button></a>
+        </div>
+</form>
+</div>
+{% endblock %}

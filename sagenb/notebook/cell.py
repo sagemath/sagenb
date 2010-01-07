@@ -39,6 +39,8 @@ TRACEBACK = 'Traceback (most recent call last):'
 # we don't get several of these combined in one.
 re_cell = re.compile('"cell://.*?"')
 re_cell_2 = re.compile("'cell://.*?'")   # same, but with single quotes
+# Matches script blocks
+re_script = re.compile(r'<script[^>]*?>.*?</script>', re.DOTALL | re.I)
 
 JEDITABLE_TINYMCE = True
 
@@ -47,6 +49,7 @@ JEDITABLE_TINYMCE = True
 import errno, hashlib, time
 from sphinx.application import Sphinx
 _SAGE_INTROSPECT = None
+
 
 class Cell_generic:
     def is_interactive_cell(self):
@@ -82,41 +85,6 @@ class Cell_generic:
             NotImplementedError
         """
         raise NotImplementedError
-
-    def html_new_cell_before(self):
-        """
-        Returns the HTML code for inserting a new cell before self.
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: print C.html_new_cell_before()
-            <div class="insert_new_cell" id="insert_new_cell_before0">...
-        """
-        return """<div class="insert_new_cell" id="insert_new_cell_before%(id)s">
-                 </div>
-<script type="text/javascript">
-$("#insert_new_cell_before%(id)s").plainclick(function(e) {insert_new_cell_before(%(id)s);});
-$("#insert_new_cell_before%(id)s").shiftclick(function(e) {insert_new_text_cell_before(%(id)s);});
-</script>"""%{'id': self.id()}
-
-    def html_new_cell_after(self):
-        """
-        Returns the HTML code for inserting a new cell after self.
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: print C.html_new_cell_after()
-            <div class="insert_new_cell" id="insert_new_cell_after0">...
-        """
-        return """<div class="insert_new_cell" id="insert_new_cell_after%(id)s">
-                 </div>
-<script type="text/javascript">
-$("#insert_new_cell_after%(id)s").plainclick(function(e) {insert_new_cell_after(%(id)s);});
-$("#insert_new_cell_after%(id)s").shiftclick(function(e) {insert_new_text_cell_after(%(id)s);});
-</script>"""%{'id': self.id()}
-
 
 class TextCell(Cell_generic):
     def __init__(self, id, text, worksheet):
@@ -206,99 +174,40 @@ class TextCell(Cell_generic):
         """
         return self.__worksheet
 
-    def html(self, ncols=0, do_print=False, do_math_parse=True, editing=False):
+    def html(self, wrap=None, div_wrap=True, do_print=False, do_math_parse=True, editing=False):
         """
         Returns an HTML version of self as a string.
 
         INPUT:
 
+        - ``wrap`` -- number of columns to wrap at (not used)
+
+        - ``div_wrap`` -- whether to wrap in a div (not used)
+        
         - ``do_math_parse`` - bool (default: True)
           If True, call math_parse (defined in cell.py)
           on the html.
+
+        - ``do_print`` - bool (default: False)
+          If True, display for printing
+
+        - ``editing`` - bool (default: False)
+          If True, # TODO: figure out what this does
 
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
             sage: C.html()
-            '...<div class="text_cell" id="cell_text_0">2+3...'
+            u'...text_cell...2+3...'
             sage: C.set_input_text("$2+3$")
             sage: C.html(do_math_parse=True)
-            '...<div class="text_cell" id="cell_text_0"><span class="math">2+3</span>...'
+            u'...text_cell...class="math"...2+3...'
         """
-        s = '<span id="cell_outer_%s">'%self.__id
-
-        if not do_print:
-            s += self.html_new_cell_before()
-
-        s += """<div class="text_cell" id="cell_text_%s">%s</div>"""%(
-            self.__id,
-            self.html_inner(ncols=ncols, do_print=do_print, do_math_parse=do_math_parse, editing=editing))
-
-        if JEDITABLE_TINYMCE and hasattr(self.worksheet(),'is_published') and not self.worksheet().is_published() and not self.worksheet().docbrowser() and not do_print:
-
-            try:
-                z = ((self.__text).decode('utf-8')).encode('ascii', 'xmlcharrefreplace')
-            except Exception, msg:
-                print msg
-                # better to get the worksheet at all than to get a blank screen and nothing.
-                z = self.__text
-
-            s += """<script>$("#cell_text_%s").unbind('dblclick').editable(function(value,settings) {
-evaluate_text_cell_input(%s,value,settings);
-return(value);
-}, {
-      tooltip   : "",
-      placeholder : "",
-//      type   : 'textarea',
-      type   : 'mce',
-      onblur : 'ignore',
-      select : false,
-      submit : 'Save changes',
-      cancel : 'Cancel changes',
-      event  : "dblclick",
-      style  : "inherit",
-      data   : %r
-  });
-</script>"""%(self.__id,self.__id, z)
-
-
-        if editing and not do_print:
-            s += """<script>$("#cell_text_%s").trigger('dblclick');</script>"""%self.__id
-
-        s += '</span>'
-        return s
-
-    def html_inner(self,ncols=0, do_print=False, do_math_parse=True, editing=False):
-        """
-        Returns an HTML version of the content of self as a string.
-
-        INPUT:
-
-        - ``do_math_parse`` - bool (default: True)
-          If True, call math_parse (defined in cell.py)
-          on the html.
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
-            sage: C.html_inner()
-            '2+3...'
-            sage: C.set_input_text("$2+3$")
-            sage: C.html_inner(do_math_parse=True)
-            '<span class="math">2+3</span>...'
-        """
-        t = self.__text
-        if do_math_parse:
-            # Do dollar sign math parsing
-            try:
-                t = math_parse(t)
-            except Exception, msg:
-                # Since there is no guarantee the user's input/output
-                # is in any way valid, and we don't want to stop the
-                # server process (which is doing this work).
-                pass
-        s = """%s"""%t
-        return s
+        from template import template
+        return template(os.path.join('html', 'notebook', 'text_cell.html'),
+                        cell = self, wrap = wrap, do_print = do_print,
+                        do_math_parse = do_math_parse, editing = editing,
+                        div_wrap=div_wrap)
 
 
     def plain_text(self, prompts=False):
@@ -1387,9 +1296,9 @@ class Cell(Cell_generic):
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
             sage: C.process_cell_urls('"cell://foobar"')
-            '/home/sage/0/cells/0/foobar?0"'
+            '/home/sage/0/cells/0/foobar?0'
         """
-        end = '?%d"'%self.version()
+        end = '?%d' % self.version()
         begin = self.url_to_self()
         for s in re_cell.findall(urls) + re_cell_2.findall(urls):
             urls = urls.replace(s,begin + s[7:-1] + end)
@@ -1499,6 +1408,7 @@ class Cell(Cell_generic):
         # Everything not wrapped in <html> ... </html> should be
         # escaped and word wrapped.
         t = ''
+
         while len(s) > 0:
             i = s.find('<html>')
             if i == -1:
@@ -1516,13 +1426,7 @@ class Cell(Cell_generic):
         # be evaluated twice.  They are only evaluated in the wrapped
         # version of the output.
         if ncols == 0:
-            while True:
-                i = t.lower().find('<script>')
-                if i == -1: break
-                j = t[i:].lower().find('</script>')
-                if j == -1: break
-                t = t[:i] + t[i+j+len('</script>'):]
-
+            t = re_script.sub('', t)
         return t
 
 
@@ -1808,22 +1712,7 @@ class Cell(Cell_generic):
         TODO: Remove this hack (:meth:`doc_html`)
         """
         self.evaluate()
-        if wrap is None:
-            wrap = self.notebook().conf()['word_wrap_cols']
-        evaluated = self.evaluated()
-        if evaluated:
-            cls = 'cell_evaluated'
-        else:
-            cls = 'cell_not_evaluated'
-
-        html_in  = self.html_in(do_print=do_print)
-        introspect = "<div id='introspect_div_%s' class='introspection'></div>"%self.id()
-        #html_out = self.html_out(wrap, do_print=do_print)
-        html_out = self.html()
-        s = html_out
-        if div_wrap:
-            s = '\n\n<div id="cell_outer_%s" class="cell_visible"><div id="cell_%s" class="%s">'%(self.id(), self.id(), cls) + s + '</div></div>'
-        return s
+        return self.html(wrap, div_wrap, do_print)
 
     def html(self, wrap=None, div_wrap=True, do_print=False):
         r"""
@@ -1831,8 +1720,8 @@ class Cell(Cell_generic):
 
         INPUT:
 
-        - ``wrap`` - None or an integer stating column position to wrap lines. Defaults to
-          configuration if not given.
+        - ``wrap`` - None or an integer stating column position to
+          wrap lines. Defaults to configuration if not given.
 
         - ``div_wrap`` - a boolean stating whether to wrap ``div``.
 
@@ -1841,87 +1730,21 @@ class Cell(Cell_generic):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
             sage: C.html()
-            '\n\n<div id="cell_outer_0" cl...</div>'
+            u'...cell_outer_0...2+3...5...'
         """
-        if do_print:
-            wrap = 68
-            div_wrap = 68
-        key = (wrap,div_wrap,do_print)
+        from template import template
 
         if wrap is None:
             wrap = self.notebook().conf()['word_wrap_cols']
-        evaluated = self.evaluated()
-        if evaluated or do_print:
-            cls = 'cell_evaluated'
-        else:
-            cls = 'cell_not_evaluated'
-
-        html_in  = self.html_in(do_print=do_print)
-        introspect = "<div id='introspect_div_%s' class='introspection'></div>"%self.id()
-        html_out = self.html_out(wrap, do_print=do_print)
-
-        if 'hideall' in self.percent_directives():
-            s = html_out
-        else:
-            s = html_in + introspect + html_out
-
-        if div_wrap:
-            s = '\n\n<div id="cell_outer_%s" class="cell_visible"><div id="cell_%s" class="%s">'%(self.id(), self.id(), cls) + s + '</div></div>'
-
-        #self._html_cache[key] = s
-        return s
-
-    def html_in(self, do_print=False, ncols=80):
-        """
-        Returns the HTML code for the input of this cell.
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: print C.html_in()
-            <div class="insert_new_cell" id="insert_new_cell_before0"...</a>
-        """
-        s = ''
-        id = self.__id
-        t = self.__in.rstrip()
-
-        cls = "cell_input_hide" if 'hide' in self.percent_directives() else "cell_input"
-
-        if not do_print:
-            s += self.html_new_cell_before()
-
-        r = max(1, number_of_rows(t.strip(), ncols))
-
-        if do_print:
-            if 'hide' in self.percent_directives():
-                return ''
-
-            tt = escape(t).replace('\n','<br>').replace('  ',' &nbsp;') + '&nbsp;'
-            s += '<div class="cell_input_print">%s</div>'%tt
-        else:
-            s += """
-               <textarea class="%s" rows=%s cols=%s
-                  id         = 'cell_input_%s'
-                  onKeyPress = 'return input_keypress(%s,event);'
-                  onKeyDown  = 'return input_keydown(%s,event);'
-                  onKeyUp    = 'return input_keyup(%s, event);'
-                  onBlur     = 'cell_blur(%s); return true;'
-                  onFocus    = 'cell_focused(this,%s); return true;'
-               >%s</textarea>
-            """%(cls, r, ncols, id, id, id, id, id, id, t)
-
-        if not do_print:
-           s+= '<a href="javascript:evaluate_cell(%s,0)" class="eval_button" id="eval_button%s" alt="Click here or press shift-return to evaluate">evaluate</a>'%(id,id)
-
-        t = escape(t)+" "
-
-        return s
-
+            
+        return template(os.path.join('html', 'notebook', 'cell.html'),
+                        cell=self, wrap=wrap,
+                        div_wrap=div_wrap, do_print=do_print)
 
     def url_to_self(self):
         """
@@ -2092,84 +1915,6 @@ class Cell(Cell_generic):
         else:
             files  = ('&nbsp'*3).join(files)
         return images + files
-
-    def html_out(self, ncols=0, do_print=False):
-        r"""
-        Returns the HTML for self's output.
-
-        INPUT:
-
-        - ``do_print`` -- a boolean stating whether to output HTML
-          for print
-
-        - ``ncols`` -- the number of columns
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
-            sage: C.html_out()
-            '\n...<div class="cell_output_div">\n...</div>'
-        """
-        if do_print and self.cell_output_type() == 'hidden':
-            return '<pre>\n</pre>'
-
-        out_nowrap = self.output_text(0, html=True)
-
-        out_html = self.output_html()
-        if self.introspect():
-            out_wrap = out_nowrap
-        else:
-            out_wrap = self.output_text(ncols, html=True)
-
-        typ = self.cell_output_type()
-
-        if self.computing():
-            cls = "cell_div_output_running"
-        else:
-            cls = 'cell_div_output_' + typ
-
-        top = '<div class="%s" id="cell_div_output_%s">'%(
-                         cls, self.__id)
-
-        if do_print:
-            prnt = "print_"
-        else:
-            prnt = ""
-
-        out_wrap   = '<div class="cell_output_%s%s" id="cell_output_%s">%s</div>'%(
-            prnt, typ, self.__id, out_wrap)
-        if not do_print:
-            out_nowrap = '<div class="cell_output_%snowrap_%s" id="cell_output_nowrap_%s">%s</div>'%(
-                prnt, typ, self.__id, out_nowrap)
-        out_html   = '<div class="cell_output_html_%s" id="cell_output_html_%s">%s </div>'%(
-            typ, self.__id, out_html)
-
-        if do_print:
-            out = out_wrap + out_html
-        else:
-            out = out_wrap + out_nowrap + out_html
-
-        s = top + out + '</div>'
-
-        r = ''
-        r += '&nbsp;'*(7-len(r))
-        tbl = """
-               <div class="cell_output_div">
-               <table class="cell_output_box"><tr>
-               <td class="cell_number" id="cell_number_%s" %s>
-                 %s
-               </td>
-               <td class="output_cell">%s</td></tr></table></div>"""%(
-                   self.__id,
-                   '' if do_print else 'onClick="cycle_cell_output_type(%s);"'%self.__id,
-                   r, s)
-
-        return tbl
-
-
 
 ########
 

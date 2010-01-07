@@ -1,29 +1,26 @@
-{% extends "html/base.html" %}
+{% extends "html/base_authenticated.html" %}
 
 {% block title %}Upload File{% endblock %}
 
-{% block css %}main{% endblock %}
-
 {% block page_id %}upload-worksheet-page{% endblock %}
 
-{% block body %}
+{% block main %}
 
-{% include "html/top_bar.html" %}
 <div>
     <h2>Upload worksheet (an sws or txt file) to the Sage Notebook</h2>
     <form method="POST" action="upload_worksheet"
           name="upload" enctype="multipart/form-data">
         <div>
             <label for="file">Browse your computer to select a worksheet file to upload:</label>
-            <input size="50" type="file" name="file"></input>
+            <input size="50" type="file" name="file" />
         </div>
         <div>
             <label for="url">Or enter the url of a worksheet file on the web:</label>
-            <input size="50" type="text" name="url"></input>
+            <input size="50" type="text" name="url" />
         </div>
         <div>
             <label for="name">What do you want to call it? (if different than the original name)</label>
-            <input size="50" type="text" name="name"></input>
+            <input size="50" type="text" name="name" />
         </div>
         <button type="submit">Upload Worksheet</button>
     </form>

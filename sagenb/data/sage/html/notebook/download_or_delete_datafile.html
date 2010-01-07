@@ -1,18 +1,15 @@
-{% extends "html/notebook/worksheet_page_template.html" %}
+{% extends "html/notebook/base_aux.html" %}
 {#
 INPUT:
 - worksheet - an instance of Worksheet
-- worksheet_filename - a string containing a worksheet's filename
 - username - a string containing a username
-- active_worksheets - a list of the Worksheet instances that are active for username
 - filename_ - the name of the file
-- path - the path to the file
 - file_is_image - a boolean stating whether the file is an image
 - file_is_text - a boolean stating whether the file is a text file
 - text_file_content - a string containing the content of a text file
-- JSMATH - a boolean stating whether to include jsMath
-- JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
+
+{% set path = "/home/%s/data/%s"|format(worksheet.filename(), filename_) %}
 
 {% block sharebar_title %}
 Data file: {{ filename_ }}
@@ -21,7 +18,7 @@ Data file: {{ filename_ }}
 {% block after_sharebar %}
 <p>You may download <a href="{{ path }}">{{ filename_ }}</a> or create a linked copy to the worksheet <select onchange="go_option(this);" class="worksheet">
 <option selected>select worksheet</option>
-{% for worksheet in active_worksheets %}
+{% for worksheet in notebook.active_worksheets_for(username) %}
     <option value='link_datafile("{{ worksheet.filename() }}","{{ filename_ }}")'>{{ worksheet.name() }}</option>
 {% endfor %}
 </select> or <a href="/home/{{ worksheet.filename() }}/datafile?name={{ filename_ }}&action=delete">delete {{ filename_ }}.</a></p>
@@ -35,7 +32,7 @@ Data file: {{ filename_ }}
 {% elif file_is_text %}
 <form method="post" action="savedatafile" enctype="multipart/form-data">
     <input type="submit" value="Save Changes" name="button_save" /> <input type="submit" value="Cancel" name="button_cancel" style="display:block" />
-    <textarea class="edit" name="textfield" rows=17 cols=70 id="textfield">{{ text_file_content }}</textarea>
+    <textarea class="edit" name="textfield" rows=17 cols=70 id="textfield">{{ text_file_content | escape }}</textarea>
     <input type="hidden" name="filename" value="{{ filename_ }}" id="filename" />
 </form>
 {% endif %}

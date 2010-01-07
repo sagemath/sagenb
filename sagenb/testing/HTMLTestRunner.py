@@ -347,7 +347,7 @@ class HTMLTestRunner(object):
     results.
     """
     def __init__(self, stream=sys.stdout, verbosity=1, title=None,
-                 description=None):
+                 description=None, **extra_args):
         """
         Initialize variables.
         """
@@ -355,6 +355,7 @@ class HTMLTestRunner(object):
         self.verbosity = verbosity
         self.title = title
         self.description = description
+        self.extra_args = extra_args
 
         # Set up Pygments syntax highlighting.
         self.formatter = get_formatter_by_name('html', noclasses=True,
@@ -407,6 +408,7 @@ class HTMLTestRunner(object):
         template_dict['title'] = jinja2.escape(self.title)
         template_dict['description'] = jinja2.escape(self.description)
         template_dict['sagenb_version'] = SAGENB_VERSION
+        template_dict['environment'] = self.extra_args.get('environment')
         template_dict['start_time'] = str(self.start_time)[:19]
         template_dict['stop_time'] = str(self.stop_time)[:19]
         template_dict['elapsed_time'] = self.elapsed_time

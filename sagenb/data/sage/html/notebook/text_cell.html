@@ -1,0 +1,61 @@
+{#
+INPUT:
+
+- cell -- Cell instance
+
+- wrap -- number of columns to wrap
+
+- do_print -- whether to display for printing
+
+- do_math_parse -- whether to parse jsMath
+
+- editing -- whether user is editing the cell
+#}
+<span id="cell_outer_{{ cell.id() }}">
+    {% if not do_print and not cell.worksheet().docbrowser() %}
+    <div class="insert_new_cell" id="insert_new_cell_before{{ cell.id() }}">
+    </div>
+    <script type="text/javascript">
+        $("#insert_new_cell_before{{ cell.id() }}").plainclick(function (e) {
+            insert_new_cell_before({{ cell.id() }});
+        });
+        $("#insert_new_cell_before{{ cell.id() }}").shiftclick(function (e) {
+            insert_new_text_cell_before({{ cell.id() }});
+        });
+    </script>
+    {% endif %}
+    <div class="text_cell" id="cell_text_{{ cell.id() }}">
+        {% if do_math_parse %}
+            {{ cell.plain_text()|math_parse }}
+        {% else %}
+            {{ cell.plain_text() }}
+    {% endif %}
+    </div>
+{% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print %}
+    <script type="text/javascript">
+        $("#cell_text_{{ cell.id() }}").unbind('dblclick').editable(function(value,settings) {
+            evaluate_text_cell_input({{ cell.id() }},value,settings);
+            return(value);
+            },
+            {
+                tooltip   : "",
+                placeholder : "",
+        //      type   : 'textarea',
+                type   : 'mce',
+                onblur : 'ignore',
+                select : false,
+                submit : 'Save changes',
+                cancel : 'Cancel changes',
+                event  : "dblclick",
+                style  : "inherit",
+	        data   : {{ '%r'|format(cell.plain_text()) }}
+        });
+    </script>
+{% endif %}
+
+{% if editing and not do_print %}
+    <script>
+        $("#cell_text_{{ cell.id() }}").trigger('dblclick');
+    </script>
+{% endif %}
+</span>

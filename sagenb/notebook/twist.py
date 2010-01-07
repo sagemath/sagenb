@@ -135,6 +135,25 @@ def message(msg, cont='/'):
     return template(os.path.join('html', 'error_message.html'),
                     **template_dict)
 
+class Response(http.Response):
+    """
+    An adapter for ``twisted.web2.http.Response`` that automatically
+    encodes its stream into UTF-8.
+
+    INPUT:
+
+    - code -- HTTP status code for the response
+
+    - headers -- headers to be sent
+
+    - stream -- content body to send
+    """
+    def __init__(self, code=None, headers=None, stream=None):
+        if stream is not None:
+            if isinstance(stream, unicode):
+                stream = stream.encode('utf-8', 'ignore')
+        super(Response, self).__init__(code, headers, stream)
+
 def HTMLResponse(*args, **kwds):
     """
     Returns an HTMLResponse object whose 'Content-Type' header has been set
@@ -148,7 +167,7 @@ def HTMLResponse(*args, **kwds):
         <Headers: Raw: {'content-type': ['text/html; charset=utf-8']} Parsed: {'content-type': <RecalcNeeded>}>
 
     """
-    response = http.Response(*args, **kwds)
+    response = Response(*args, **kwds)
     response.headers.addRawHeader('Content-Type', 'text/html; charset=utf-8')
     return response
 
@@ -1008,7 +1027,7 @@ class SettingsPage(resource.PostableResource):
 
         td['admin'] = nu.is_admin()
 
-        s = template(os.path.join('html', 'account_settings.html'), **td)
+        s = template(os.path.join('html', 'settings', 'account_settings.html'), **td)
         return HTMLResponse(stream = s)
 
 
@@ -1023,9 +1042,11 @@ class NotebookSettingsPage(resource.PostableResource):
 
         template_dict = {}
         template_dict['auto_table'] = notebook.conf().html_table(updated)
-        s = template(os.path.join('html', 'notebook_settings.html'),
+        template_dict['admin'] = notebook.user(self.username).is_admin()
+        template_dict['username'] = self.username
+        s = template(os.path.join('html', 'settings', 'notebook_settings.html'),
                      **template_dict)
-        return http.Response(stream = s)
+        return HTMLResponse(stream = s)
 
 
 ########################################################
@@ -1038,7 +1059,9 @@ class Worksheet_cell_list(WorksheetResource, resource.PostableResource):
     """
     def render(self, ctx):
         W = self.worksheet
-        v = encode_list([W.state_number(), W.html_cell_list()])
+        # TODO: Send and actually use the body's HTML.
+        v = encode_list([W.state_number(), ''])
+#        v = encode_list([W.state_number(), W.html_cell_list()])
         return HTMLResponse(stream=v)
 
 
@@ -1324,17 +1347,7 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
 class Worksheet_rating_info(WorksheetResource, resource.Resource):
     def render(self, ctx):
         s = self.worksheet.html_ratings_info()
-        return HTMLResponse(stream=message('''
-        <h2 align=center>Ratings for %s</h2>
-        <h3 align=center><a href='/home/%s'>Go to the worksheet.</a>
-        <br><br>
-        <table width=70%%align=center border=1 cellpadding=10 cellspacing=0>
-        <tr bgcolor="#7799bb"><td width=30em>User</td><td width=10em align=center>Rating</td><td width=10em align=center width=60em>Comment</td></tr>
-        %s
-        </table>
-        <br><br>
-        '''%(self.worksheet.name(), self.worksheet.filename(), s)))
-
+        return HTMLResponse(stream=s)
 
 class Worksheet_rate(WorksheetResource, resource.Resource):
     def render(self, ctx):
@@ -1439,11 +1452,6 @@ class Worksheet_interrupt(WorksheetResource, resource.Resource):
         s = self.worksheet.interrupt()
         return HTMLResponse(stream='ok' if s else 'failed')
 
-class Worksheet_plain(WorksheetResource, resource.Resource):
-    def render(self, ctx):
-        s = notebook.plain_text_worksheet_html(self.name)
-        return HTMLResponse(stream=s)
-
 class Worksheet_hide_all(WorksheetResource, resource.Resource):
     def render(self, ctx):
         self.worksheet.hide_all()
@@ -1466,7 +1474,7 @@ class Worksheet_delete_all_output(WorksheetResource, resource.Resource):
 
 class Worksheet_print(WorksheetResource, resource.Resource):
     def render(self, ctx):
-        s = notebook.worksheet_html(self.name, do_print=True)
+        s = notebook.html(self.name, do_print=True)
         return HTMLResponse(stream=s)
 
 
@@ -1801,15 +1809,9 @@ class Main_css(resource.Resource):
     def render(self, ctx):
         s = css.css()
         gzip_handler(ctx)
-        response = http.Response(stream=s)
+        response = Response(stream=s)
         response.headers.addRawHeader('Content-Type', 'text/css; charset=utf-8')
         return response
-
-class Reset_css(resource.Resource):
-    def render(self, ctx):
-        s = template(os.path.join('css', 'reset.css'))
-        gzip_handler(ctx)
-        return http.Response(stream=s)
 
 class CSS(resource.Resource):
     addSlash = True
@@ -1822,7 +1824,6 @@ class CSS(resource.Resource):
         return static.File(os.path.join(css_path, name))
 
 setattr(CSS, 'child_main.css', Main_css())
-setattr(CSS, 'child_reset.css', Reset_css())
 
 ############################
 
@@ -1839,13 +1840,13 @@ class JSMath_js(resource.Resource):
                      jsmath_macros = jsmath_macros,
                      jsmath_image_fonts = jsmath_image_fonts)
 
-        return http.Response(stream=s)
+        return Response(stream=s)
 
 class Main_js(resource.Resource):
     def render(self, ctx):
         gzip_handler(ctx)
         s = js.javascript()
-        return http.Response(stream=s)
+        return Response(stream=s)
 
 class Keyboard_js_specific(resource.Resource):
     def __init__(self, browser_os):
@@ -1853,7 +1854,7 @@ class Keyboard_js_specific(resource.Resource):
 
     def render(self, ctx):
         gzip_handler(ctx)
-        return http.Response(stream = self.s)
+        return Response(stream = self.s)
 
 class Keyboard_js(resource.Resource):
     def childFactory(self, request, browser_os):
@@ -2163,7 +2164,7 @@ class RegistrationPage(resource.PostableResource):
         # VALIDATE OVERALL.
         if empty == required:
             # All required fields are empty.  Not really an error.
-            form = template(os.path.join('html', 'registration.html'),
+            form = template(os.path.join('html', 'accounts', 'registration.html'),
                             **empty_form_dict)
             return HTMLResponse(stream = form)
         elif validated != required:
@@ -2171,7 +2172,7 @@ class RegistrationPage(resource.PostableResource):
             errors = len(required) - len(validated)
             template_dict['error'] = 'E ' if errors == 1 else 'Es '
 
-            form = template(os.path.join('html', 'registration.html'),
+            form = template(os.path.join('html', 'accounts', 'registration.html'),
                             **template_dict)
             return HTMLResponse(stream = form)
 
@@ -2182,7 +2183,7 @@ class RegistrationPage(resource.PostableResource):
             template_dict['username_taken'] = True
             template_dict['error'] = 'E '
 
-            form = template(os.path.join('html', 'registration.html'),
+            form = template(os.path.join('html', 'accounts', 'registration.html'),
                             **template_dict)
             return HTMLResponse(stream = form)
 
@@ -2263,7 +2264,7 @@ class ForgotPassPage(resource.Resource):
 
             return HTMLResponse(stream=message("A new password has been sent to your e-mail address.", '/'))
         else:
-            s = template(os.path.join('html', 'account_recovery.html'))
+            s = template(os.path.join('html', 'accounts', 'account_recovery.html'))
         return HTMLResponse(stream=s)
 
 class ListOfUsers(resource.Resource):
@@ -2300,29 +2301,36 @@ class ListOfUsers(resource.Resource):
         users = sorted(notebook.valid_login_names())
         del users[users.index('admin')]
         template_dict['users'] = [notebook.user(i) for i in users]
-        return HTMLResponse(stream = template(os.path.join('html', 'user_management.html'), **template_dict))
+        template_dict['admin'] = notebook.user(self.username).is_admin()
+        template_dict['username'] = self.username
+        return HTMLResponse(stream = template(os.path.join('html', 'settings', 'user_management.html'), **template_dict))
 
 class AdminAddUser(resource.PostableResource):
-    def __init__(self, userdb):
-        self.userdb = userdb
+    def __init__(self, username):
+        self.username = username
 
     def render(self, request):
-
+        template_dict = {'admin': notebook.user(self.username).is_admin(),
+                         'username': self.username}
         if 'username' in request.args:
             username = request.args['username'][0]
             if not is_valid_username(username):
-                return HTMLResponse(stream=template(os.path.join('html', 'admin_add_user.html'), error='username_invalid', username=username))
+                return HTMLResponse(stream=template(os.path.join('html', 'settings', 'admin_add_user.html'),
+                                                    error='username_invalid', username=username, **template_dict))
 
             from random import choice
             import string
             chara = string.letters + string.digits
             password = ''.join([choice(chara) for i in range(8)])
             if username in notebook.usernames():
-                return HTMLResponse(stream=template(os.path.join('html', 'admin_add_user.html'), error='username_taken', username=username))
+                return HTMLResponse(stream=template(os.path.join('html', 'settings', 'admin_add_user.html'),
+                                                    error='username_taken', username_input=username, **template_dict))
             notebook.add_user(username, password, '', force=True)
-            return HTMLResponse(stream=message('The temporary password for the new user <em>%s</em> is <em>%s</em>' % (username, password), '/adduser'))
+            return HTMLResponse(stream=message('The temporary password for the new user <em>%s</em> is <em>%s</em>' %
+                                               (username, password), '/adduser'))
         else:
-            return HTMLResponse(stream=template(os.path.join('html', 'admin_add_user.html')))
+            
+            return HTMLResponse(stream=template(os.path.join('html', 'settings', 'admin_add_user.html'), **template_dict))
 
 class InvalidPage(resource.Resource):
     addSlash = True
@@ -2478,8 +2486,8 @@ class UserToplevel(Toplevel):
     # better call userchildFactory it in the base class (Toplevel)!
     def userchildFactory(self, request, name):
         try:
-            return UserToplevel.__dict__['userchild_%s'%name](username = self.username)
-        except KeyError:
+            return getattr(self.__class__, 'userchild_%s' % name )(username = self.username)
+        except AttributeError:
             pass
 
     userchild_doc = Doc
@@ -2521,11 +2529,11 @@ setattr(UserToplevel, 'userchild_download_worksheets.zip', DownloadWorksheets)
 
 class AdminToplevel(UserToplevel):
     addSlash = True
-
+    
     userchild_home = WorksheetsAdmin
-    child_users = ListOfUsers
-    child_adduser = AdminAddUser
-    child_notebooksettings = NotebookSettingsPage
+    userchild_users = ListOfUsers
+    userchild_adduser = AdminAddUser
+    userchild_notebooksettings = NotebookSettingsPage
 
 def user_type(username):
     # one of admin, guest, user

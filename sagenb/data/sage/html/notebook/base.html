@@ -1,0 +1,166 @@
+{% extends "html/base_authenticated.html" %}
+{#
+INPUT:
+- notebook - an instance of Notebook
+- worksheet - an instance of Worksheet
+- username  - a string containing a username
+- title - a string
+- select    - a string containing the control that is selected
+- backwards - a boolean
+#}
+
+{% set system_names = worksheet.notebook().system_names() %}
+{% block title %}{{ worksheet.name() }}{% endblock %}
+
+
+{% block javascript %}
+<!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
+<link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.7.2.custom.css" />
+<script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.7.2.custom.min.js"></script>
+
+<!-- jQuery plugins - color pickers, shift-click, AJAX forms, IE fixes -->
+<link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />
+<script type="text/javascript" src="/javascript/jquery/plugins/farbtastic/farbtastic.min.js"></script>
+<script type="text/javascript" src="/javascript/jquery/plugins/extendedclick/jquery.event.extendedclick.min.js"></script>
+<script type="text/javascript" src="/javascript/jquery/plugins/form/jquery.form.min.js"></script>
+<script type="text/javascript" src="/javascript/jquery/plugins/jquery.bgiframe.min.js"></script>
+<link rel="stylesheet" href="/javascript/jquery/plugins/jpicker/css/jPicker-1.0.11.css" type="text/css" />
+<script type="text/javascript" src="/javascript/jquery/plugins/jpicker/jpicker-1.0.11.min.js"></script>
+<link rel="stylesheet" media="screen" type="text/css" href="/javascript/jquery/plugins/colorpicker/css/colorpicker.css" />
+<script type="text/javascript" src="/javascript/jquery/plugins/colorpicker/js/colorpicker.min.js"></script>
+
+<script type="text/javascript" src="/javascript/sage/main.js"></script>
+
+{% if JSMATH %}
+<!-- jsMath - typeset mathematics -->
+<script type="text/javascript" src="/javascript/sage/jsmath.js"></script>
+{% endif %}
+
+<!-- Sage3d - accelerated 3D graphics -->
+<script type="text/javascript" src="/javascript/sage3d/sage3d.js"></script>
+
+<!-- Jmol - embedded 3D graphics -->
+<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
+<!-- This must stay in head -->
+<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
+
+{% if JEDITABLE_TINYMCE and not worksheet.docbrowser() and not worksheet.is_published() %}
+<!-- TinyMCE and jEditable - in-place editing of text cells -->
+<script type="text/javascript" src="/javascript/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/javascript/jquery/plugins/jeditable/jquery.jeditable.mini.js" charset="utf-8"></script>
+<script type="text/javascript" src="/javascript/sage/tinymce.js"></script>
+{% endif %}
+
+<script type="text/javascript">user_name= "{{ username }}";</script>
+{% if worksheet.filename() %}
+<script  type="text/javascript">
+    worksheet_filename = "{{ worksheet.filename() }}";
+    worksheet_name = "{{ worksheet.name() }}";
+    server_ping_while_alive();
+</script>
+{% endif %}
+
+{% endblock %}
+
+{% block main %}
+<div id="worksheet-bar">
+    <div class="worksheet_title">
+        <a id="worksheet_title" class="worksheet_title"
+           onClick="rename_worksheet(); return false;"
+           title="Click to rename this worksheet">
+            {{ worksheet.name() }}
+        </a>
+        <div><span class="lastedit">{{ worksheet.html_time_last_edited() }}</span></div>
+        {% if worksheet.warn_about_other_person_editing(username) and username != 'guest' and not worksheet.is_doc_worksheet() %}
+        <span class="pingdown">(Someone else is viewing this worksheet)</span>
+        {% endif %}
+    </div>
+    <div id="save-discard-buttons">
+        {% if not worksheet.is_doc_worksheet() %}
+        <button name="button_save" title="Save changes" onClick="save_worksheet();">Save</button><button title="Save changes and close window" onClick="save_worksheet_and_close();" name="button_save">Save & quit</button><button title="Discard changes to this worksheet" onClick="worksheet_discard();">Discard & quit</button>
+        {% endif %}
+    </div>
+    
+    <div id="worksheet-menu">
+        <select class="worksheet"  onchange="go_option(this);" id="file-menu">
+            <option title="Select a file related function" value=""  selected>File...</option>
+            <option title="Load a new worksheet stored in a file" value="upload_worksheet_button();">Load worksheet from a file...</option>
+            <option title="Create a new worksheet" value="new_worksheet();">New worksheet</option>
+            <option title="Save this worksheet to an sws file" value="download_worksheet();">Save worksheet to a file...</option>
+            <option title="Print this worksheet" value="print_worksheet();">Print</option>
+            <option title="Rename this worksheet" value="rename_worksheet();">Rename worksheet</option>
+            <option title="Copy this worksheet" value="copy_worksheet();">Copy worksheet</option>
+            <option title="Move this worksheet to the trash" value="delete_worksheet('{{ worksheet.filename() }}');">Delete worksheet</option>
+        </select>
+
+        <select class="worksheet"  onchange="go_option(this);"  id="action-menu">
+            <option title="Select a worksheet function" value="" selected>Action...</option>
+            <option title="Interrupt currently running calculations, if possible" value="interrupt();">Interrupt</option>
+            <option title="Restart the worksheet process" value="restart_sage();">Restart worksheet</option>
+            <option title="Quit the worksheet process" value="save_worksheet_and_close();">Save and quit worksheet</option> 
+            <option value="">---------------------------</option>
+            <option title="Evaluate all input cells in the worksheet" value="evaluate_all();">Evaluate All</option>
+            <option title="Hide all output" value="hide_all();">Hide All Output</option>
+            <option title="Show all output" value="show_all();">Show All Output</option>
+            <option title="Delete all output" value="delete_all_output();">Delete All Output</option>
+            <option value="">---------------------------</option>
+            <option title="Switch to single-cell mode" value="slide_mode();">One Cell Mode</option>
+            <option title="Switch to multi-cell mode" value="cell_mode();">Multi Cell Mode</option> 
+        </select>
+        <select class="worksheet" onchange="handle_data_menu(this);" id="data-menu">
+            <option title="Select an attached file" value="" selected>Data...</option>
+            <option title="Upload or create a data file in a wide range of formats" value="__upload_data_file__">Upload or create file...</option>
+            <option value="">--------------------</option>
+            {% for name in worksheet.attached_data_files()|sort %}
+            <option value="datafile?name={{ name }}">{{ name }}</option>
+            {% endfor %}
+        </select>
+
+        {% if not worksheet.is_doc_worksheet() %}
+        <select onchange="go_system_select(this, {{ worksheet.system_index() }});" class="worksheet" id="systems-menu">
+            {% for system_name in worksheet.notebook().systems() %}
+            <option title="Evaluate all input cells using {{ system_names[loop.index0] }}"
+                    {{ "selected" if worksheet.system_index() == loop.index0 else "" }} value="{{ system_names[loop.index0] }}">
+                {{ system_name }}
+            </option>
+            {% endfor %}
+        </select>    
+        <input type="checkbox" title="Enable/disable pretty_printing"
+               onchange="pretty_print_check(this.checked);"
+               class="worksheet" value="pretty_print" {{ "checked" if worksheet.pretty_print() else "" }} />&nbsp;Typeset
+        {% endif %}
+    </div>
+    <div id="share-publish-buttons">
+        {% if not worksheet.is_doc_worksheet() %}
+        {% macro cls(x) %}
+        {{ "control-select" if x == select else "control" }}
+        {% endmacro %}
+        {% macro backwards_text() %}{{ "../" if backwards else "" }}{% endmacro %}
+        <a title="Print this worksheet" class="print-link" onClick="print_worksheet()"><img border=0 src="/images/icon_print.gif" alt="Print">Print</a>
+        <a class="{{ cls('use') }}" title="Interactively use this worksheet" onClick="edit_worksheet();">Worksheet</a>        
+        <a class="{{ cls('edit') }}" title="Edit text version of this worksheet" href="{{ backwards_text() }}edit">Edit</a>
+        <a class="{{ cls('text') }}" title="View plain text version of this worksheet" href="{{ backwards_text() }}text">Text</a>
+        <a class="{{ cls('undo') }}" title="View changes to this worksheet over time" href="{{ backwards_text() }}revisions">Undo</a>
+        <a class="{{ cls('share') }}" title="Let others edit this worksheet" href="{{ backwards_text() }}share">Share</a>
+        <a class="{{ cls('publish') }}" title="Make this worksheet publicly viewable" href="{{ backwards_text() }}publish">Publish</a>
+        {% endif %}
+    </div>
+</div>
+<div class="hidden" id="slide_controls">
+    <div class="slideshow_control">
+        <a class="slide_arrow" onClick="slide_next()">&gt;</a>
+        <a class="slide_arrow" onClick="slide_last()">&gt;&gt;</a> <span class="vbar"></span>
+        <a class="cell_mode" onClick="cell_mode()">Exit</a>
+    </div>
+    <div class="slideshow_progress" id="slideshow_progress" onClick="slide_next()">
+        <div class="slideshow_progress_bar" id="slideshow_progress_bar">&nbsp;</div>
+        <div class="slideshow_progress_text" id="slideshow_progress_text">&nbsp;</div>
+    </div>
+    <div class="slideshow_control">
+        <a class="slide_arrow" onClick="slide_first()">&lt;&lt;</a>
+        <a class="slide_arrow" onClick="slide_prev()">&lt;</a>
+    </div>
+</div>
+{% block worksheet_main %}{% endblock %}
+{% endblock %}
+

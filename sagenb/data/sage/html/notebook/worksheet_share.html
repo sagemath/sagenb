@@ -1,13 +1,9 @@
-{% extends "html/notebook/worksheet_page_template.html" %}
+{% extends "html/notebook/base_aux.html" %}
 {#
 INPUT:
     - worksheet - an instance of Worksheet
-    - worksheet_filename - a string containing a worksheet's filename
     - username - a string containing a username
     - other_users - a list of strings containing other users names
-    - user_is_admin - a boolean stating whether the user is an admin
-    - JSMATH - a boolean stating whether to include jsMath
-    - JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
 #}
 
 {% block sharebar_title %}
@@ -17,7 +13,7 @@ Share this document
 {% set select = "share" %}
 
 {% block after_sharebar %}
-{% if not (user_is_admin or username == worksheet.owner()) %}
+{% if not (notebook.user_is_admin(username) or username == worksheet.owner()) %}
     Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href="copy">make your own copy</a>.
 {% else %}
 <p>This Sage Worksheet is currently shared with the people listed in the box below.</p>

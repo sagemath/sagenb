@@ -443,9 +443,9 @@ class reCAPTCHAChallenge(AbstractChallenge):
             sage: nb = n.Notebook(tmp)
             sage: chal = reCAPTCHAChallenge(nb.conf(), remote_ip = 'localhost')
             sage: chal.html()
-            '<script type="text/javascript">...</script>'
+            u'...recaptcha...'
             sage: chal.html('incorrect-captcha-sol')
-            '<script...incorrect-captcha-sol...</script>'
+            u'...incorrect-captcha-sol...'
 
         """
         error_param = ''

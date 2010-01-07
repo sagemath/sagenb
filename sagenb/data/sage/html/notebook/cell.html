@@ -1,0 +1,111 @@
+{#
+INPUT:
+
+        - ``cell`` -- Cell instance
+
+        - ``wrap`` - an integer stating column position to wrap lines. Defaults to
+          configuration if not given.
+
+        - ``div_wrap`` - a boolean stating whether to wrap ``div``.
+
+        - ``do_print`` - a boolean stating whether the HTML is for
+        print or not.
+#}
+{% if do_print %}
+    {% set wrap = 68 %}
+    {% set div_wrap = true %}
+{% endif %}
+{% set cell_cls = "cell_evaluated" if cell.evaluated() or do_print else "cell_not_evaluated" %}
+
+{% if div_wrap %}
+<div id="cell_outer_{{ cell.id() }}" class="cell_visible">
+    <div id="cell_{{ cell.id() }}" class="{{ cell_cls }}">
+{% endif %}
+        {% if 'hideall' not in cell.percent_directives() %}
+        {# input #}
+        {% if not do_print %}
+            <div class="insert_new_cell" id="insert_new_cell_before{{ cell.id() }}">
+            </div>
+            <script type="text/javascript">
+                $("#insert_new_cell_before{{ cell.id() }}").plainclick(function (e) {
+                    insert_new_cell_before({{ cell.id() }});
+                });
+		{% if not cell.worksheet().docbrowser() %}
+                $("#insert_new_cell_before{{ cell.id() }}").shiftclick(function (e) {
+                    insert_new_text_cell_before({{ cell.id() }});
+                });
+		{% endif %}
+            </script>
+        {% endif %}
+            {% if 'hide' in cell.percent_directives() %}
+                {% set input_cls = 'cell_input_hide' %}
+            {% else %}
+                {% set input_cls = 'cell_input' %}
+            {% endif %}
+            {% if do_print %}
+                <div class="cell_input_print">{{ cell.input_text().rstrip()|escape }}&nbsp;</div>
+            {% else %}
+                <textarea class="cell_input" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
+                          cols="80"
+                          id="cell_input_{{ cell.id() }}"
+                          {# TODO: Migrate these 'on' handlers to a .js file #}
+                          onKeyPress="return input_keypress({{ cell.id() }}, event);"
+                          onKeyDown="return input_keydown({{ cell.id() }},event);"
+                          onKeyUp="return input_keyup({{ cell.id() }}, event);"
+                          onBlur="cell_blur({{ cell.id() }}); return true;"
+                          onFocus="cell_focused(this, {{ cell.id() }}); return true;">{{ cell.input_text().rstrip() }}</textarea>
+                <a href="javascript:evaluate_cell({{ cell.id() }},0)"
+                   class="eval_button"
+                   id="eval_button{{ cell.id() }}"
+                   alt="Click here or press shift-return to evaluate">
+                    evaluate
+                </a>
+            {% endif %}
+            {# end input #}
+
+            <div id='introspect_div_{{ cell.id() }}' class='introspection'></div>
+        {% endif %}
+
+        {% if do_print and cell.cell_output_type() == 'hidden' %}
+        <pre>
+        </pre>
+        {% else %}
+        {% set output_cls = 'cell_div_output_running' if cell.computing() else 'cell_div_output_' + cell.cell_output_type() %}
+        <div class="cell_output_div">
+            <table class="cell_output_box">
+                <tr>
+                    <td class="cell_number" id="cell_number_{{ cell.id() }}"
+                        {{ '' if do_print else 'onClick="cycle_cell_output_type(%s);"'|format(cell.id()) }} >
+                        {% for i in range(7) %}&nbsp;{% endfor %}
+                    </td>
+                    <td class="output_cell">
+                        <div class="{{ output_cls }}" id="cell_div_output_{{ cell.id() }}">
+                            <div class="cell_output_{{ "print_" if do_print else '' }}{{ cell.cell_output_type() }}"
+                                id="cell_output_{{ cell.id() }}">
+                                {% if cell.introspect() %}
+                                    {{ cell.output_text(0, html=true) }}
+                                {% else %}
+                                    {{ cell.output_text(wrap, html=true) }}
+                                {% endif %}
+                            </div>
+                            {% if not do_print %}
+                                <div class="cell_output_{{ 'print_' if do_print else '' }}nowrap_{{ cell.cell_output_type() }}"
+                                     id="cell_output_nowrap_{{ cell.id() }}">
+                                    {{ cell.output_text(0, html=true) }}
+                                </div>
+                            {% endif %}
+                                <div class="cell_output_html_{{ cell.cell_output_type() }}"
+                                     id="cell_output_html_{{ cell.id() }}">
+                                    {{ cell.output_html() }}
+                                </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        {% endif %}
+        
+{% if div_wrap %}
+    </div>
+</div>
+{% endif %}

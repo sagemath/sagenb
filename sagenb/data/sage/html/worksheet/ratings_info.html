@@ -1,0 +1,18 @@
+{% extends "html/base.html" %}
+
+{% block title %}Ratings for {{ worksheet.name() }}{% endblock %}
+
+{% block body %}
+<h2 align=center>Ratings for {{ worksheet.name() }}</h2>
+<h3 align=center><a href='/home/{{ worksheet.filename() }}'>Go to the worksheet.</a>
+<table width=70%%align=center border=1 cellpadding=10 cellspacing=0>
+    <tr bgcolor="#7799bb"><td width=30em>User</td><td width=10em align=center>Rating</td><td width=10em align=center width=60em>Comment</td></tr>
+    {% for rating in worksheet.ratings()|sort %}
+    <tr>
+        <td>{{ rating[0] }}{# User #}</td>
+        <td>{{ rating[1] }}{# Rating #}</td>
+        <td>{{'' if rating|length < 3 else rating[2]}}{# Comment #}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

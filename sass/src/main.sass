@@ -1,13 +1,22 @@
+// The warning below is for those editing the generated .css files
+/*  Warning: These .css files are automatically generated and will be overwritten */
+/*  when they are next generated. Please edit the SASS source located at */
+/* <sagenb-spkg-root>/sass/src. Kindly refer to the readme for editing */
+/* instructions at <sagenb-spkg-root>/sass */
 @import compass/utilities/general.sass
 @import compass/utilities/lists.sass
+@import partials/base.sass
 @import partials/mixins.sass
 @import typography/base.sass
 
+
 body
   :background-color white
+  +sans-serif-stack
 
   &.worksheet-online
     :margin-bottom 80%
+
 
 .hidden
   :display none
@@ -17,107 +26,7 @@ div
   &.fivepix
     :height 5px
 
-/******* Top Bar (Banner, controls, etc.) *********/
-
-body div#banner
-  :font-size 1.2em
-  :float left
-  :margin 0
-  :max-width 35%
-
-  a.banner
-    :text-decoration none
-    :border none
-    :margin-top 2px
-    :float left
-    :position relative
-    &:visited
-      :color #1950c8
-    img
-      :border none
-    span
-      :margin-left 0.2em
-      :margin-top -0.25em
-  #ping
-    :float left
-
-  div.version
-    :float left
-    :clear left
-    :font-size xx-small
-    :text-indent 13px
-    :color black
-
-#controls
-  :float right
-  :width 65%
-
-  ul
-    :list-style none
-    :margin 0
-    :padding 0
-    :text-align right
-
-    li
-      :border-right 1px solid #000
-      :color #112abb
-      :display inline
-      :font-size 14px
-      :margin 0
-      :padding 0 0.5em
-      &:last-child
-        :border-right 0
-
-    li.username
-      :border 0
-      :color #000
-      :font-family sans-serif
-      :font-weight bold
-      :padding 0
-
-    a
-      :text-decoration underline
-      :white-space nowrap
-      &:hover
-        :cursor pointer
-
-#top-bar
-  :position relative
-  :padding 10px 5px
-  :border-bottom 1px solid #c9d7f1
-  :min-height 40px
-  :margin-bottom 0.5em
-  +clearfix
-
-#search-area
-  :float right
-  :clear right
-
-hr.usercontrol
-  :clear both
-  :float left
-
-
-div
-  &#usercontrols
-    +clearfix
-    :clear both
-    :border-bottom 1px solid #c9d7f1
-    :padding 10px
-
-  &#worksheet-list-controls
-    :padding 10px
-    :clear both
-    +clearfix
-
-    div
-      &.action-buttons
-        :float left
-
-      &.folders
-        :float left
-        :clear right
-        :margin-left 100px
+@import topbar.sass
 
 /******** Top Control Bar (Worksheets)  ***********/
 
@@ -274,7 +183,7 @@ pre
     :border-left 2px solid #c0c0c0
 
   &.introspection
-    :font-family monospace
+    +monospace-stack
     :font-size 15px
     :background-color #f1f1f1
     :color blue
@@ -291,7 +200,7 @@ ul.completion_menu_one
   :border solid 1px black
   :display inline
   :margin 5px
-  :font-family monospace
+  +monospace-stack
   :font-size 15px
   :padding 5px
 
@@ -326,7 +235,7 @@ li.completion_menu_two
 span.search_doc_topbar
   :z-index 12
   :height 24px
-  :font-family monospace
+  +monospace-stack
   :font-size 12px
   :width 158px
   :top 40px
@@ -361,7 +270,7 @@ input.search_input
   :width 160px
   :padding 4px
   :z-index 12
-  :font-family monospace
+  +monospace-stack
   :font-size 14px
   :color #222222
   :color #808080
@@ -446,7 +355,7 @@ span
 span
   &.pane
     :z-index 30
-    :font-family monospace
+    +monospace-stack
     :font-size 12px
     :position fixed
     :left 5px
@@ -462,7 +371,7 @@ span
   &.plusminus
     :color black
     :font-size 8pt
-    :font-family monospace
+    +monospace-stack
 
     &:hover
       :cursor pointer
@@ -695,12 +604,6 @@ a.new_worksheet
 
 
 div
-  &.worksheet_bottom_padding
-    :height 50%
-
-  &.worksheet_top_padding
-    :height 5%
-
   &.worksheet_menu
     :top 50px
 
@@ -848,7 +751,7 @@ div.control_area
 
 span.control
   :border 1px solid white
-  :font-family monospace
+  +monospace-stack
   :font-size 14pt
   :font-weight bold
 
@@ -867,6 +770,7 @@ div
   &.worksheet
     :background-color white
     :border 1px solid #aaa
+    :padding .75em 0.2em
 
   &.banner
     :background-color white
@@ -894,7 +798,7 @@ div.banner a.banner
   &:hover
 
 input.btn
-  :font-family monospace
+  +monospace-stack
   :font-size 13pt
   :font-weight bold
   :color #808080
@@ -962,7 +866,7 @@ textarea.cell_input
   :color #000000
   :background-color white
   :border 1px solid  #a8a8a8
-  :font-family monospace
+  +monospace-stack
   :font-size 12pt
   :overflow hidden
   :padding-bottom 1px
@@ -979,7 +883,7 @@ pre.cell_input
   :color #000000
   :background-color white
   :border 1px solid  #a8a8a8
-  :font-family monospace
+  +monospace-stack
   :font-size 12pt
   :padding-bottom 1px
   :padding-left 6px
@@ -996,7 +900,7 @@ pre.cell_input
 textarea.cell_input_hide
   :background-color white
   :border 0px solid white
-  :font-family monospace
+  +monospace-stack
   :font-size 12pt
   :color #888888
   :overflow hidden
@@ -1011,7 +915,7 @@ textarea.cell_input_hide
 pre.cell_input_hide
   :background-color white
   :border 2px solid #e8e8e8
-  :font-family monospace
+  +monospace-stack
   :font-size 12pt
   :overflow hidden
   :padding-bottom 0px
@@ -1028,7 +932,7 @@ pre.cell_input_hide
 textarea.cell_input_active
   :background-color white
   :border 2px solid  #8888fe
-  :font-family monospace
+  +monospace-stack
   :font-size 12pt
   :overflow hidden
   :padding-bottom 0px
@@ -1045,7 +949,7 @@ div
   &.cell_input_active
     :background-color white
     :border 2px solid  #8888fe
-    :font-family monospace
+    +monospace-stack
     :font-size 12pt
     :padding-bottom 0px
     :padding-left 5px
@@ -1062,7 +966,7 @@ div
   &.cell_input_print
     :background-color white
     :border 1px solid  #a8a8a8
-    :font-family monospace
+    +monospace-stack
     :font-size 12pt
     :padding-bottom 1px
     :padding-left 6px
@@ -1072,6 +976,7 @@ div
     :margin-bottom 0px
     :line-height 1.2em
     :width 97%
+    :white-space pre-wrap
 
 
 textarea.cell_input:hover
@@ -1094,7 +999,7 @@ a
 
 div
   &.cell_div_output
-    :font-family monospace
+    +monospace-stack
     :font-size 12pt
     :margin-top -5px
     :margin-bottom 5px
@@ -1166,14 +1071,14 @@ div
     :display none
 
   &.cell_output_html_wrap, &.cell_output_html_nowrap
-    :font-family monospace
+    +monospace-stack
     :font-size 12pt
 
   &.cell_output_html_hidden
     :display none
 
   &.cell_div_output_running
-    :font-family monospace
+    +monospace-stack
     :font-size 12pt
     :margin 0px
     :background-color #ffffff
@@ -1234,7 +1139,7 @@ div
   &.debug_output
     :background-color white
     :border 0px
-    :font-family monospace
+    +monospace-stack
     :font-size 10pt
     :overflow scroll
     :padding-left 3px
@@ -1246,7 +1151,7 @@ div
 textarea.debug_input
   :background-color white
   :border 1px solid #8888fe
-  :font-family monospace
+  +monospace-stack
   :font-size 12pt
   :overflow scroll
   :padding-left 3px
@@ -1289,17 +1194,16 @@ span.worksheet_buttons
 
 /************ User Home (Worksheet listing) **************************/
 
-span
-  &.ratingmsg
-    :color #112abb
-    :padding 0.3em
-    :font-size 14px
+.ratingmsg
+  :color #112abb
+  :padding 0.3em
+  :font-size 14px
 
-  &.pubmsg
-    :font-family sans-serif
-    :color #112abb
-    :padding 0.3em
-    :font-size 12px
+.pubmsg
+  :font-family sans-serif
+  :color #112abb
+  :padding 0.3em
+  :font-size 12px
 
 #worksheet-list
   :clear both
@@ -1309,29 +1213,30 @@ span
   td.checkbox
     :padding 4px
 
-a.usercontrol
+.controls a, .usercontrol
   :color #112abb
-  :padding 0.3em
   :font-size 14px
   :text-decoration underline
 
   &:hover
     :cursor pointer
 
-
-span.usercontrol
-  :color #112abb
-  :padding 0.3em
-  :font-size 14px
-
-
-a
-  &.boldusercontrol
+.controls
+  span
     :color #112abb
-    :padding 0.5em
-    :font-weight bold
+    :padding 0.3em
     :font-size 14px
 
+
+.user-controls a, .boldusercontrol
+  :color #112abb
+  :font-weight bold
+  :font-size 14px
+
+.user-controls a, .controls a, .controls span
+  :padding 0.3em
+
+a
   &.control, &.control-select
     :background-color #7799bb
     :font-family sans-serif
@@ -1354,17 +1259,14 @@ a
       :cursor pointer
 
 
-span.sharebar
+.sharebar
   :background-color #4477aa
   :font-family sans-serif
   :color #ffffff
-  :position absolute
-  :left 0.5em
-  :right 0ex
   :padding-top 0.5em
   :padding-bottom 0.5em
   :padding-left 2em
-  :font-size 18px
+  :font-size 1.25em
   :font-weight bold
 
 
@@ -1451,22 +1353,21 @@ div.ultrathinspace
   :height 0px
 
 
-span
-  &.lastedit
-    :font-family sans-serif
-    :font-size 10px
-    :color #717171
+.lastedit
+  :font-family sans-serif
+  :font-size 10px
+  :color #717171
 
-  &.revs
-    :font-family sans-serif
-    :font-size 12px
-    :font-weight bold
-    :color #333333
+.revs
+  :font-family sans-serif
+  :font-size 12px
+  :font-weight bold
+  :color #333333
 
-  &.users
-    :font-family sans-serif
-    :font-size 13px
-    :color #222222
+.users
+  :font-family sans-serif
+  :font-size 13px
+  :color #222222
 
 
 a.share
@@ -1553,234 +1454,14 @@ span
     :font-weight bold
     :color white
     :background-color #990000
-
-/* These have been scraped directly from pygment. */
-
-.hll
-  :background-color #ffffcc 
-
-
-.c
-  :color #408090
-  :font-style italic 
-
-
-.err
-  :border 1px solid #FF0000 
-
-
-.k
-  :color #007020
-  :font-weight bold 
-
-
-.o
-  :color #666666 
-
-
-.cm
-  :color #408090
-  :font-style italic 
-
-
-.cp
-  :color #007020 
-
-
-.c1
-  :color #408090
-  :font-style italic 
-
-
-.cs
-  :color #408090
-  :background-color #fff0f0 
-
-
-.gd
-  :color #A00000 
-
-
-.ge
-  :font-style italic 
-
-
-.gr
-  :color #FF0000 
-
-
-.gh
-  :color #000080
-  :font-weight bold 
-
-
-.gi
-  :color #00A000 
-
-
-.go
-  :color #0000aa 
-
-
-.gp
-  :color #c65d09
-  :font-weight bold 
-
-
-.gs
-  :font-weight bold 
-
-
-.gu
-  :color #800080
-  :font-weight bold 
-
-
-.gt
-  :color #0040D0 
-
-
-.kc, .kd, .kn
-  :color #007020
-  :font-weight bold 
-
-
-.kp
-  :color #007020 
-
-
-.kr
-  :color #007020
-  :font-weight bold 
-
-
-.kt
-  :color #902000 
-
-
-.m
-  :color #208050 
-
-
-.s, .na
-  :color #4070a0 
-
-
-.nb
-  :color #007020 
-
-
-.nc
-  :color #0e84b5
-  :font-weight bold 
-
-
-.no
-  :color #60add5 
-
-
-.nd
-  :color #555555
-  :font-weight bold 
-
-
-.ni
-  :color #d55537
-  :font-weight bold 
-
-
-.ne
-  :color #007020 
-
-
-.nf
-  :color #06287e 
-
-
-.nl
-  :color #002070
-  :font-weight bold 
-
-
-.nn
-  :color #0e84b5
-  :font-weight bold 
-
-
-.nt
-  :color #062873
-  :font-weight bold 
-
-
-.nv
-  :color #bb60d5 
-
-
-.ow
-  :color #007020
-  :font-weight bold 
-
-
-.w
-  :color #bbbbbb 
-
-
-.mf, .mh, .mi, .mo
-  :color #208050 
-
-
-.sb, .sc
-  :color #4070a0 
-
-
-.sd
-  :color #4070a0
-  :font-style italic 
-
-
-.s2
-  :color #4070a0 
-
-
-.se
-  :color #4070a0
-  :font-weight bold 
-
-
-.sh
-  :color #4070a0 
-
-
-.si
-  :color #70a0d0
-  :font-style italic 
-
-
-.sx
-  :color #c65d09 
-
-
-.sr
-  :color #235388 
-
-
-.s1
-  :color #4070a0 
-
-
-.ss
-  :color #517918 
-
-
-.bp
-  :color #007020 
-
-
-.vc, .vg, .vi
-  :color #bb60d5 
-
-
-.il
-  :color #208050
-
-/* end stuff scraped from pygment */
+    :margin-left 1em
+
+@import prettify.sass
+@import source.sass
+@import print_worksheet.sass
+@import guest_worksheet.sass
+@import worksheet_aux.sass
+@import settings.sass
+@import accounts.sass
+@import login.sass
+@import pygment.sass

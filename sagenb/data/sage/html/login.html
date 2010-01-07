@@ -2,9 +2,9 @@
 
 {% block title %}Sign in{% endblock %}
 
-{% block body %}
-{% include "html/banner.html" %}        
+{% block page_id %}login-page{% endblock %}
 
+{% block main %}
 {% if welcome %}
 <h2>Congratulations {{ welcome }}! You can now sign into the Sage Notebook.</h2>
 {% endif %}
@@ -58,36 +58,36 @@
             <label for="email">Username</label>
             <input type="text" name="email" value="{{ default_user }}" size="15" />
             {% if username_error %}
-            <span style="color:red">Error:</span>Username is not in the system
+            <span style="color:red">Error: </span>Username is not in the system
             {% endif %}
         </div>
         <div>
             <label for="password">Password</label>
             <input type="password" name="password" size="15" />
             {% if password_error %}
-            <span style="color:red">Error:</span>Wrong password
+            <span style="color:red">Error: </span>Wrong password
             {% endif %}
         </div>
         <div>
-            <input type="checkbox" name="remember" />Remember me
+            <input type="checkbox" name="remember" /> Remember me
         </div>
         <div>
             <button type="submit">Sign in</button>
         </div>
     </form>
+    {% if accounts %}
     <div>
-        {% if accounts %}
         <a href="/register" id="register-link"><strong>Sign up for a new Sage Notebook account</strong></a>
-        {% endif %}
     </div>
+    {% endif %}
     <div>
         <a href="/pub"><strong>Browse published Sage worksheets<br>(no login required)</strong></a>
     </div>
+    {% if recovery %}
     <div>
-        {% if recovery %}
         <a href="/forgotpass"><strong>Forgot password</strong></a>
-        {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}
 

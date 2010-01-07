@@ -1,12 +1,5 @@
-{% extends "html/notebook/worksheet_page_template.html" %}
-{#
-INPUT:
-- worksheet - an instance of Worksheet
-- worksheet_filename - a string containing a worksheet's filename
-- username - a string containing a username
-- JSMATH - a boolean stating whether to include jsMath
-- JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
-#}
+{% extends "html/notebook/base_aux.html" %}
+
 
 {% block page_id %}upload-data-page{% endblock %}
 
@@ -20,19 +13,19 @@ Upload or Create Data File to attach to worksheet "{{ worksheet.name() }}"
           name="upload" enctype="multipart/form-data">
         <div>
             <label for="file">Browse your computer to select a worksheet file to upload:</label>
-            <input size="50" type="file" name="file"></input>
+            <input size="50" type="file" name="file" />
         </div>
         <div>
             <label for="url">Or enter the url of a worksheet file on the web:</label>
-            <input size="50" type="text" name="url"></input>
+            <input size="50" type="text" name="url" />
         </div>
         <div>
             <label for="new">Or enter the name of a new file, which will be created:</label>
-            <input size="50" type="text" name="new"></input>
+            <input size="50" type="text" name="new" />
         </div>
         <div>
             <label for="name">What do you want to call it? (if different than the original name)</label>
-            <input size="50" type="text" name="name"></input>
+            <input size="50" type="text" name="name" />
         </div>
         <button type="submit">Upload or Create Data File</button>
     </form>

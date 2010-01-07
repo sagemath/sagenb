@@ -1,17 +1,4 @@
-{% extends "html/notebook/worksheet_page_template.html" %}
-{#
-INPUT:
-- worksheet - an instance of Worksheet
-- worksheet_filename - a string containing a worksheet's filename
-- username - a string containing a username
-- rev - this revision's key
-- prev_rev - the previous revision's key
-- next_rev - the next revision's key
-- time_ago - a string containing the time since revision
-- body_worksheet_html - the body html of the worksheet
-- JSMATH - a boolean stating whether to include jsMath
-- JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
-#}
+{% extends "html/notebook/base_aux.html" %}
 
 {% set select = "revisions" %}
 {% block sharebar_title %}
@@ -40,7 +27,7 @@ Revision from {{ time_ago }} ago&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>Revi
 {% block after_sharebar %}
 {{ actions() }}
 <div id="revision-data">
-    {{ body_worksheet_html }}
+    {{ worksheet.html(do_print=true, publish=true) }}
 </div>
 {{ actions() }}
 <script type="text/javascript">

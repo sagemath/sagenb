@@ -1,35 +1,39 @@
 {#
 INPUT:
-     - worksheet_name - a string containing a worksheet's name
-     - worksheet_html - a string containing the html for a worksheet
-     - do_print - a boolean stating whether to render a print version of the
-                  worksheet
-  #}
-{% extends "html/base.html" %}
 
-{% block title %}Sage Worksheet: {{ worksheet_name }}{% endblock %}
+- worksheet -- Worksheet object
 
-{% block css %}main{% endblock %}
+- publish -- boolean whether this is for the published version
 
-{% block javascript %}
-<script type="text/javascript" src="/javascript/sage/main.js"></script>
-{% if do_print %}
-<script type="text/javascript" src="/javascript/sage/jsmath.js"></script>
-{% endif %}    
-{% endblock %}
+- do_print -- boolean whether this is for a print version
 
-{% block body_attrs %}
-{% if not do_print %}
-    class="worksheet-online" onLoad="initialize_the_notebook();"
+#}
+
+{% set wrap = conf['word_wrap_cols'] %}
+{% if not publish %}
+    {% set publish = worksheet.is_published() %}
 {% endif %}
-{% endblock %}
 
-{% block body %}
-{% if do_print %}
-    <div class="worksheet_print_title"> {{ worksheet_name }}</div>
+<div class="cell_input_active" id="cell_resizer"></div>
+{% if not publish %}
+<div class="worksheet_cell_list" id="worksheet_cell_list">
 {% endif %}
-{{ worksheet_html }}
-{% if do_print %}
-    <script type="text/javascript">jsMath.Process();</script>
+
+{% for cell in worksheet.cell_list() %}
+    {{ cell.html(wrap = wrap, div_wrap = true, do_print = do_print or publish) }}
+{% endfor %}
+
+{% if not do_print and not publish %}
+</div>
+<div class="insert_new_cell" id="insert_last_cell"></div>
+<script type="text/javascript">
+    $("#insert_last_cell").plainclick(function (e) {
+        insert_new_cell_after(cell_id_list[cell_id_list.length - 1]);
+    });
+{% if not worksheet.docbrowser() %}
+    $("#insert_last_cell").shiftclick(function (e) {
+        insert_new_text_cell_after(cell_id_list[cell_id_list.length - 1]);
+    });
 {% endif %}
-{% endblock %}
+</script>
+{% endif %}

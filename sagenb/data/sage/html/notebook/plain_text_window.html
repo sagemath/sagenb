@@ -1,13 +1,4 @@
-{% extends "html/notebook/worksheet_page_template.html" %}
-{#
-INPUT:
-- worksheet - an instance of Worksheet
-- worksheet_filename - a string containing a worksheet's filename
-- username - a string containing a username
-- plain_text - a string containing the plain text version
-- JSMATH - a boolean stating whether to include jsMath
-- JEDITABLE_TINYMCE - a boolean stating whether to include jEditable and TinyMCE
-#}
+{% extends "html/notebook/base_aux.html" %}
 
 {% block sharebar_title %}
 View plain text
@@ -16,5 +7,5 @@ View plain text
 {% set select = "text" %}
 
 {% block after_sharebar %}
-<pre class="plaintext" id="cell_intext" name="textfield">{{ plain_text }}</pre>
+<pre class="plaintext" id="cell_intext" name="textfield">{{ worksheet.plain_text(prompts=true, banner=false)|escape|trim }}</pre>
 {% endblock %}

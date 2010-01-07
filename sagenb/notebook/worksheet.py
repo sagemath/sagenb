@@ -44,7 +44,7 @@ import sagenb.misc.support  as support
 
 # Imports specifically relevant to the sage notebook
 from   cell import Cell, TextCell
-from template import template
+from template import template, clean_name, prettify_time_ago
 
 # Set some constants that will be used for regular expressions below.
 whitespace = re.compile('\s')  # Match any whitespace character
@@ -111,7 +111,7 @@ def worksheet_filename(name, owner):
         sage: sagenb.notebook.worksheet.worksheet_filename('Example#%&! work\\sheet 3', 'sage10')
         'sage10/Example_____work_sheet_3'
     """
-    return os.path.join(owner, _notebook.clean_name(name))
+    return os.path.join(owner, clean_name(name))
 
 def Worksheet_from_basic(obj, notebook_worksheet_directory):
     """
@@ -1187,7 +1187,7 @@ class Worksheet(object):
                 del self.__published_version
                 raise ValueError
         except AttributeError:
-            raise ValueError, "no published version"
+            raise ValueError("no published version")
 
     def set_worksheet_that_was_published(self, W):
         """
@@ -1249,6 +1249,7 @@ class Worksheet(object):
             [('hilbert', 3, 'this is great'), ('riemann', 0, 'this lacks content')]
         """
         r = self.ratings()
+        x = int(x)
         for i in range(len(r)):
             if r[i][0] == username:
                 r[i] = (username, x, comment)
@@ -1324,19 +1325,10 @@ class Worksheet(object):
             sage: W.rate(0, 'this lacks content', 'riemann')
             sage: W.rate(3, 'this is great', 'hilbert')
             sage: W.html_ratings_info()
-            '<tr><td>hilbert</td><td align=center>3</td><td>this is great</td></tr>\n<tr><td>riemann</td><td align=center>0</td><td>this lacks content</td></tr>'
+            u'...hilbert...3...this is great...this lacks content...'
         """
-        ratings = self.ratings()
-        lines = []
-        for z in sorted(ratings):
-            if len(z) == 2:
-                person, rating = z
-                comment = ''
-            else:
-                person, rating, comment = z
-            lines.append('<tr><td>%s</td><td align=center>%s</td><td>%s</td></tr>'%(
-                person, rating, '&nbsp;' if not comment else comment))
-        return '\n'.join(lines)
+        return template(os.path.join('html', 'worksheet', 'ratings_info.html'),
+                        worksheet = self)
 
     def rating(self):
         """
@@ -1993,7 +1985,7 @@ class Worksheet(object):
         filenames = os.listdir(self.snapshot_directory())
         filenames.sort()
         t = time.time()
-        v = [(convert_seconds_to_meaningful_time_span(t - float(os.path.splitext(x)[0]))+ self._saved_by_info(x), x)  \
+        v = [(prettify_time_ago(t - float(os.path.splitext(x)[0]))+ self._saved_by_info(x), x)  \
              for x in filenames]
         self.__snapshot_data = v
         return v
@@ -2286,17 +2278,17 @@ class Worksheet(object):
             try:
                 cells_html += cell.html(ncols, do_print=do_print) + '\n'
             except Exception, msg:
-                # catch any exception, since this exception is raised sometimes, at least
-                # for some worksheets:
+                # catch any exception, since this exception is raised
+                # sometimes, at least for some worksheets:
                 # exceptions.UnicodeDecodeError: 'ascii' codec can't decode byte
                 #         0xc2 in position 825: ordinal not in range(128)
-                # and this causes the entire worksheet to fail to save/render, which is
-                # obviously *not* good (much worse than a weird issue with one cell).
+                # and this causes the entire worksheet to fail to
+                # save/render, which is obviously *not* good (much
+                # worse than a weird issue with one cell).
                 print msg
         return cells_html
 
-    def html(self, include_title=True, do_print=False,
-             confirm_before_leave=False, read_only=False):
+    def html(self, do_print=False, publish=False):
         r"""
         INPUT:
 
@@ -2313,14 +2305,21 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.html()
-            '\n\n\n<div class="cell_input_active" id="cell_resizer"></div>\n\n<div class="worksheet_cell_list" id...'
+            u'...cell_input_active...worksheet_cell_list...cell_1...cell_output_html_1...'
         """
-        return template(os.path.join("html", "worksheet", "worksheet.html"),
-                        published = self.is_published(),
-                        do_print = do_print, confirm_before_leave = confirm_before_leave,
-                        cells_html = self.html_cell_list(do_print=do_print),
-                        cell_id_list = self.cell_id_list(),
-                        state_number = self.state_number())
+        if self.is_published():
+            try:
+                return self.__html
+            except AttributeError:
+                pass
+
+        s = template(os.path.join("html", "notebook", "worksheet.html"),
+                     do_print=do_print, publish=publish, worksheet=self) 
+
+        if self.is_published():
+            self.__html = s
+
+        return s
 
     def truncated_name(self, max=30):
         name = self.name()
@@ -2336,96 +2335,6 @@ class Worksheet(object):
 
     def set_is_doc_worksheet(self, value):
         self.__is_doc_worksheet = value
-
-    def html_save_discard_buttons(self):
-        r"""
-        OUTPUT:
-
-        - string -- the HTML for the save, discard, etc. buttons
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.html_save_discard_buttons()
-            '\n\n<button name="button_save" title="Save changes" onClick="save_worksheet();">Save<...'
-        """
-        return template(os.path.join("html", "worksheet", "save_discard_buttons.html"),
-                        doc_worksheet = self.is_doc_worksheet())
-
-    def html_share_publish_buttons(self, select=None, backwards=False):
-        r"""
-        INPUT:
-
-        - select - a boolean
-
-        - backwards - a boolean
-
-        OUTPUT:
-
-        - string -- the HTML for the share, publish, etc. buttons
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.html_share_publish_buttons()
-            '...Print...Worksheet...Edit...Undo...Share...Publish...'
-        """
-        return template(os.path.join("html", "worksheet", "share_publish_buttons.html"),
-                        worksheet = self, select = select, backwards = backwards)
-
-    def html_menu(self):
-        r"""
-        OUTPUT:
-
-        - string -- the HTML for the menus of the worksheet
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.html_menu()
-            '...File...Action...Data...pretty_print...'
-        """
-        return template(os.path.join("html", "worksheet", "menu.html"),
-                        name = _notebook.clean_name(self.name()),
-                        filename_ = self.filename(), data = sorted(self.attached_data_files()),
-                        systems_enumerated = enumerate(self.notebook().systems()),
-                        system_names = self.notebook().system_names(),
-                        current_system_index = self.system_index(),
-                        pretty_print = self.pretty_print(),
-                        doc_worksheet = self.is_doc_worksheet())
-
-    def html_worksheet_body(self, do_print, publish=False):
-        r"""
-        INPUT:
-
-        - publish - a boolean stating whether the worksheet is published
-
-        - do_print - a boolean
-
-        OUTPUT:
-
-        - string -- the HTML for the File menu of the worksheet
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.html_worksheet_body(false)
-            '\n\n<div class="cell_input_active" id="cell_resizer"></div>\n\n<div class="worksheet_cell_list" id...'
-        """
-        published = self.is_published() or publish
-        ncols = self.notebook().conf()['word_wrap_cols']
-        cells_html = ""
-        for cell in self.cell_list():
-            cells_html += cell.html(ncols, do_print=do_print) + '\n'
-
-        return template(os.path.join("html", "worksheet", "worksheet_body.html"),
-                        cells_html = cells_html,
-                        published = published,
-                        do_print = do_print)
 
 
     ##########################################################
@@ -2541,7 +2450,7 @@ class Worksheet(object):
 
     def html_time_since_last_edited(self):
         t = self.time_since_last_edited()
-        tm = convert_seconds_to_meaningful_time_span(t)
+        tm = prettify_time_ago(t)
         return template(os.path.join("html", "worksheet", "time_since_last_edited.html"),
                         last_editor = self.last_to_edit(),
                         time = tm)
@@ -3782,7 +3691,7 @@ from sagenb.notebook.all import *
 
         ::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
 
@@ -4167,28 +4076,6 @@ def next_available_id(v):
     while i in v:
         i += 1
     return i
-
-
-def convert_seconds_to_meaningful_time_span(t):
-    if t < 60:
-        s = int(t)
-        if s == 1:
-            return "1 second"
-        return "%d seconds"%s
-    if t < 3600:
-        m = int(t/60)
-        if m == 1:
-            return "1 minute"
-        return "%d minutes"%m
-    if t < 3600*24:
-        h = int(t/3600)
-        if h == 1:
-            return "1 hour"
-        return "%d hours"%h
-    d = int(t/(3600*24))
-    if d == 1:
-        return "1 day"
-    return "%d days"%d
 
 
 def convert_time_to_string(t):

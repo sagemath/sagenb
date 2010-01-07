@@ -1,0 +1,26 @@
+{% extends "html/settings/base.html" %}
+{% block title %}Notebook Settings{% endblock %}
+
+{% block more_css %}
+<link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />  
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="/javascript/sage/ws_list.js"></script>
+<script type="text/javascript" src="/javascript/jquery/plugins/farbtastic/farbtastic.min.js"></script>
+{% endblock %}
+
+{% block page_id %}notebook-settings-page{% endblock %}
+
+{% block settings_main %}
+<form method="get" action="/notebooksettings">
+  <input type="hidden" name="form" value="on" />
+  {%- if auto_table %}
+  {{ auto_table }}
+  {%- endif %}
+  <div id="buttons">
+    <input type="submit" value="Save" />
+    <input type="button" value="Cancel" style="margin-left:5px" onClick="parent.location='/'" />
+  </div>
+</form>
+{% endblock %}

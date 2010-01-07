@@ -86,6 +86,12 @@ $(document).ready(function () {
 	  <td class="value">{{ sage_version }}</td>
 	</tr>
 	{% endif %}
+	{%- if environment %}
+	<tr>
+          <td class="label">Environment</td>
+          <td class="value">{{ environment }}</td>
+	</tr>
+	{% endif %}
 	<tr>
 	  <td class="label">Start</td>
 	  <td class="value">{{ start_time }}</td>

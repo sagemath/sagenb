@@ -1,0 +1,18 @@
+{% extends "html/base_authenticated.html" %}
+
+{% block body_classes %}settings-page{% endblock %}
+
+{% block main %}
+<h1>{{ render_title() }}</h1>
+{% block settings_nav %}
+<ul id="settings-nav" class="user-controls">
+    {% if admin %}
+    <li><a href="/users">Manage Users</a></li>
+    <li><a href="/notebooksettings">Notebook Settings</a></li>
+    {% endif %}
+    <li><a href="/settings">Account Settings</a></li>
+</ul>
+{% endblock %}
+{% block settings_main %}
+{% endblock %}
+{% endblock %}

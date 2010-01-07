@@ -1,13 +1,16 @@
+/* Warning: These .css files are automatically generated and will be overwritten */
+/* when they are next generated. Please edit the SASS source located at */
+/* <sagenb-spkg-root>/sass/src. Kindly refer to the readme for editing */
+/* instructions at <sagenb-spkg-root>/sass */
 thead { font-weight: bold; }
 
-body { background-color: white; }
+body { background-color: white; font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
 body.worksheet-online { margin-bottom: 80%; }
 
 .hidden { display: none; }
 
 div.fivepix { height: 5px; }
 
-/* ****** Top Bar (Banner, controls, etc.) ******** */
 body div#banner { font-size: 1.2em; float: left; margin: 0; max-width: 35%; }
 body div#banner a.banner { text-decoration: none; border: none; margin-top: 2px; float: left; position: relative; }
 body div#banner a.banner:visited { color: #1950c8; }
@@ -16,13 +19,16 @@ body div#banner a.banner span { margin-left: 0.2em; margin-top: -0.25em; }
 body div#banner #ping { float: left; }
 body div#banner div.version { float: left; clear: left; font-size: xx-small; text-indent: 13px; color: black; }
 
-#controls { float: right; width: 65%; }
-#controls ul { list-style: none; margin: 0; padding: 0; text-align: right; }
-#controls ul li { border-right: 1px solid #000; color: #112abb; display: inline; font-size: 14px; margin: 0; padding: 0 0.5em; }
-#controls ul li:last-child { border-right: 0; }
-#controls ul li.username { border: 0; color: #000; font-family: sans-serif; font-weight: bold; padding: 0; }
-#controls ul a { text-decoration: underline; white-space: nowrap; }
-#controls ul a:hover { cursor: pointer; }
+#main-controls { float: right; width: 65%; }
+#main-controls ul { list-style: none; margin: 0; padding: 0; text-align: right; }
+#main-controls ul li { border-right: 1px solid #000; color: #112abb; display: inline; font-size: 14px; margin: 0; padding: 0 0.5em; }
+#main-controls ul li:last-child { border-right: 0; }
+#main-controls ul li.username { border: 0; color: #000; font-family: sans-serif; font-weight: bold; padding: 0; }
+#main-controls ul a { text-decoration: underline; white-space: nowrap; }
+#main-controls ul a:hover { cursor: pointer; }
+#main-controls ul #toggle-link { display: none; }
+
+.worksheet-online #main-controls ul #toggle-link { display: inline; }
 
 #top-bar { position: relative; padding: 10px 5px; border-bottom: 1px solid #c9d7f1; min-height: 40px; margin-bottom: 0.5em; overflow: hidden; display: inline-block; }
 #top-bar { display: block; }
@@ -31,8 +37,8 @@ body div#banner div.version { float: left; clear: left; font-size: xx-small; tex
 
 hr.usercontrol { clear: both; float: left; }
 
-div#usercontrols { overflow: hidden; display: inline-block; clear: both; border-bottom: 1px solid #c9d7f1; padding: 10px; }
-div#usercontrols { display: block; }
+div#user-controls { overflow: hidden; display: inline-block; clear: both; border-bottom: 1px solid #c9d7f1; padding: 10px; }
+div#user-controls { display: block; }
 div#worksheet-list-controls { padding: 10px; clear: both; overflow: hidden; display: inline-block; }
 div#worksheet-list-controls { display: block; }
 div#worksheet-list-controls div.action-buttons { float: left; }
@@ -172,8 +178,6 @@ span.pane div.worksheet_list { position: fixed; overflow: scroll; font-size: 12p
 a.new_worksheet { font-family: arial, monospace; font-size: 12pt; text-align: right; color: #0000aa; }
 a.new_worksheet:hover { cursor: pointer; }
 
-div.worksheet_bottom_padding { height: 50%; }
-div.worksheet_top_padding { height: 5%; }
 div.worksheet_menu { top: 50px; }
 
 a.worksheet_title { text-decoration: none; font-size: 20px; font-family: arial; font-weight: bold; color: #000000; }
@@ -212,7 +216,7 @@ span.control a.cs { color: #777777; text-decoration: none; border: 0px solid whi
 span.control:hover a.cs, span.control a:hover.cs { color: black; border: 1px solid #333333; }
 
 /* *********** WORKSHEET ************************* */
-div.worksheet { background-color: white; border: 1px solid #aaa; }
+div.worksheet { background-color: white; border: 1px solid #aaa; padding: .75em 0.2em; }
 div.banner { background-color: white; font-family: sans-serif; font-size: 18px; text-decoration: none; color: #1950c8; }
 div.banner a.banner { text-decoration: none; border: none; margin-top: 2px; }
 
@@ -248,7 +252,7 @@ pre.cell_input_hide:hover { cursor: text; }
 textarea.cell_input_active { background-color: white; border: 2px solid  #8888fe; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; }
 
 div.cell_input_active { background-color: white; border: 2px solid  #8888fe; font-family: monospace; font-size: 12pt; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; z-index: -100; visibility: hidden; position: absolute; }
-div.cell_input_print { background-color: white; border: 1px solid  #a8a8a8; font-family: monospace; font-size: 12pt; padding-bottom: 1px; padding-left: 6px; padding-right: 1px; padding-top: 4px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; }
+div.cell_input_print { background-color: white; border: 1px solid  #a8a8a8; font-family: monospace; font-size: 12pt; padding-bottom: 1px; padding-left: 6px; padding-right: 1px; padding-top: 4px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; white-space: pre-wrap; }
 
 textarea.cell_input:hover { cursor: text; }
 
@@ -304,25 +308,29 @@ span.worksheet_buttons { position: relative; top: -20ex; right: 0ex; }
 .thin-right { position: absolute; top: auto; right: 0; width: 70%; }
 
 /* *********** User Home (Worksheet listing) ************************* */
-span.ratingmsg { color: #112abb; padding: 0.3em; font-size: 14px; }
-span.pubmsg { font-family: sans-serif; color: #112abb; padding: 0.3em; font-size: 12px; }
+.ratingmsg { color: #112abb; padding: 0.3em; font-size: 14px; }
+
+.pubmsg { font-family: sans-serif; color: #112abb; padding: 0.3em; font-size: 12px; }
 
 #worksheet-list { clear: both; width: 100%; }
 #worksheet-list thead { background-color: #e8eef7; }
 #worksheet-list td.checkbox { padding: 4px; }
 
-a.usercontrol { color: #112abb; padding: 0.3em; font-size: 14px; text-decoration: underline; }
-a.usercontrol:hover { cursor: pointer; }
+.controls a, .usercontrol { color: #112abb; font-size: 14px; text-decoration: underline; }
+.controls a:hover, .usercontrol:hover { cursor: pointer; }
 
-span.usercontrol { color: #112abb; padding: 0.3em; font-size: 14px; }
+.controls span { color: #112abb; padding: 0.3em; font-size: 14px; }
 
-a.boldusercontrol { color: #112abb; padding: 0.5em; font-weight: bold; font-size: 14px; }
+.user-controls a, .boldusercontrol { color: #112abb; font-weight: bold; font-size: 14px; }
+
+.user-controls a, .controls a, .controls span { padding: 0.3em; }
+
 a.control, a.control-select { background-color: #7799bb; font-family: sans-serif; color: #ffffff; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.5em; padding-right: 0.5em; font-size: 15px; font-weight: bold; text-decoration: none; }
 a.control:hover { cursor: pointer; }
 a.control-select { background-color: #4477aa; }
 a.control-select:hover { cursor: pointer; }
 
-span.sharebar { background-color: #4477aa; font-family: sans-serif; color: #ffffff; position: absolute; left: 0.5em; right: 0ex; padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 2em; font-size: 18px; font-weight: bold; }
+.sharebar { background-color: #4477aa; font-family: sans-serif; color: #ffffff; padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 2em; font-size: 1.25em; font-weight: bold; }
 
 textarea.edit { font-family: courier, monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; padding: 3px; overflow: auto; margin-top: 0.5em; }
 
@@ -347,9 +355,11 @@ tr.thingreybox { background-color: #aaa; }
 
 div.ultrathinspace { border: 0; height: 0px; }
 
-span.lastedit { font-family: sans-serif; font-size: 10px; color: #717171; }
-span.revs { font-family: sans-serif; font-size: 12px; font-weight: bold; color: #333333; }
-span.users { font-family: sans-serif; font-size: 13px; color: #222222; }
+.lastedit { font-family: sans-serif; font-size: 10px; color: #717171; }
+
+.revs { font-family: sans-serif; font-size: 12px; font-weight: bold; color: #333333; }
+
+.users { font-family: sans-serif; font-size: 13px; color: #222222; }
 
 a.share { font-family: sans-serif; font-size: 10px; color: #7777cc; }
 
@@ -368,9 +378,92 @@ pre.plaintext { overflow: auto; font-family: courier, monospace; font-size: 10pt
 div.docidx { text-align: center; font-family: sans-serif; font-size: 16px; color: #222; font-weight: bold; }
 
 span.ping { display: none; }
-span.pingdown { font-family: sans-serif; font-size: 15px; font-weight: bold; color: white; background-color: #990000; }
+span.pingdown { font-family: sans-serif; font-size: 15px; font-weight: bold; color: white; background-color: #990000; margin-left: 1em; }
 
-/* These have been scraped directly from pygment. */
+#source-code-page .str { color: #080; }
+#source-code-page .kwd { color: #008; }
+#source-code-page .com { color: #800; }
+#source-code-page .typ { color: #606; }
+#source-code-page .lit { color: #066; }
+#source-code-page .pun { color: #660; }
+#source-code-page .pln { color: #000; }
+#source-code-page .tag { color: #008; }
+#source-code-page .atn { color: #606; }
+#source-code-page .atv { color: #080; }
+#source-code-page .dec { color: #606; }
+
+#source-code-page h1, #source-code-page h2 { text-align: center; }
+#source-code-page .filename { font-family: monospace; }
+#source-code-page code { display: block; border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 1em; }
+
+#print-page h1 { text-align: center; }
+
+#guest-worksheet-page h1, #guest-worksheet-page h2 { text-align: center; }
+#guest-worksheet-page ul.controls { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; display: inline-block; }
+#guest-worksheet-page ul.controls { display: block; }
+#guest-worksheet-page ul.controls li { list-style-type: none; margin-left: 0px; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
+#guest-worksheet-page ul.controls li.first { padding-left: 0px; }
+#guest-worksheet-page ul.controls li.last { padding-right: 0px; }
+
+#before-publish-page form a { text-decoration: none; }
+#before-publish-page form button { margin-left: 1em; margin-bottom: 0.5em; }
+#before-publish-page form input { margin-left: 1em; }
+
+#after-publish-page input { margin-top: 1em; }
+
+#edit-page .sharebar span { margin-right: 2em; }
+
+.settings-page { line-height: 1.4; }
+.settings-page h1 { font-size: 2em; padding: 0 5px; }
+.settings-page label { display: block; }
+.settings-page #buttons { padding: 5px; }
+.settings-page #buttons button { margin-right: 1em; }
+.settings-page #buttons a { text-decoration: none; }
+.settings-page h2 { font-size: 1.5em; margin: 0 0 0.75em; }
+.settings-page .section { border-bottom: 1px solid #CCC; padding: 5px; margin: 0.5em 0; }
+.settings-page .section div { margin-bottom: 0.5em; }
+.settings-page .error, .settings-page .error_found { color: red; }
+.settings-page .error_found { font-size: 1.2em; }
+.settings-page .updated { color: green; }
+.settings-page input.c1 { width: 200px; }
+
+#settings-nav { margin: 0; padding: 0; border: 0; outline: 0; overflow: hidden; display: inline-block; }
+#settings-nav { display: block; }
+#settings-nav li { list-style-type: none; margin-left: 0px; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
+#settings-nav li.first { padding-left: 0px; }
+#settings-nav li.last { padding-right: 0px; }
+#settings-nav li { border-right: 1px solid #ccc; }
+#settings-nav li:last-child, #settings-nav li.last { border-right: none; }
+
+#user-management-page table { border-collapse: collapse; }
+#user-management-page th, #user-management-page td { border: 1px solid #696969; padding: 0.25em; }
+#user-management-page th { background: #CCC; }
+#user-management-page a:link, #user-management-page a:visited { color: #112abb; }
+
+.accounts-page #wrapper { margin: 0 auto; max-width: 600px; }
+.accounts-page h1, .accounts-page h2, .accounts-page h3, .accounts-page h4, .accounts-page h5 { font-weight: normal; }
+.accounts-page h1 { border-bottom: 1px solid #696969; font-size: 2em; padding: 10px 0; }
+.accounts-page h2 { font-weight: bold; }
+.accounts-page h1, .accounts-page h2, .accounts-page p, .accounts-page li { margin-bottom: 10px; }
+.accounts-page .entry { margin-bottom: 10px; border: 1px solid #999; padding: 3px; width: 200; }
+.accounts-page li { border-bottom: 1px solid #CCC; }
+.accounts-page .error { color: red; }
+.accounts-page .error_found { color: red; font-size: 1.5em; }
+.accounts-page button { margin-right: 1em; }
+.accounts-page form label { display: block; }
+.accounts-page form div { margin-bottom: 1em; }
+.accounts-page form a { text-decoration: none; }
+
+#login-page h2 { font-size: 1.5em; margin-bottom: 0.375em; }
+#login-page h1, #login-page h2, #login-page h3, #login-page h4, #login-page h5, #login-page h6 { line-height: 1em; }
+#login-page p { margin-bottom: 1em; }
+#login-page strong { font-weight: bold; }
+#login-page #desc { float: left; margin-right: 400px; }
+#login-page div { padding: 0.5em 1em; }
+#login-page #sign-in-box { background-color: #efefff; float: left; margin-left: -400px; width: 350px; }
+#login-page #sign-in-box form label { display: block; }
+#login-page #sign-in-box a { font-size: 0.875em; }
+
 .hll { background-color: #ffffcc; }
 
 .c { color: #408090; font-style: italic; }
@@ -474,5 +567,3 @@ span.pingdown { font-family: sans-serif; font-size: 15px; font-weight: bold; col
 .vc, .vg, .vi { color: #bb60d5; }
 
 .il { color: #208050; }
-
-/* end stuff scraped from pygment */

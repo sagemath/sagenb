@@ -1,0 +1,64 @@
+{% extends "html/notebook/base.html" %}
+{#
+INPUT:
+- worksheet - an instance of Worksheet
+- notebook - an instance of Notebook which contains worksheet
+- show_debug - a boolean stating whether to show debug information
+- do_print - a boolean stating whether the file is for print mode
+#}
+
+{% block body_classes %}worksheet-online{% if not (worksheet.is_published() or notebook.user_is_guest(username) or worksheet.is_doc_worksheet()) %} active-worksheet-page{% endif %}{% endblock %}
+{% block page_id %}user-worksheet-index{% endblock %}
+
+{% block worksheet_main %}
+{% set toggle=true %}
+<div class="worksheet" id="worksheet">
+    {{ worksheet.html() }}
+    {% if do_print %}
+    <script>
+        jsMath.ProcessBeforeShowing();
+    </script>
+    {% else %}
+    <script type="text/javascript">
+        cell_id_list = {{ worksheet.cell_id_list() }};
+        state_number = {{ worksheet.state_number() }};
+        {% if not published %}
+	$(document).ready(function () {
+            if (worksheet_name === "Untitled") {
+                rename_worksheet();
+            }
+         });
+	{% endif %}
+    </script>
+    {% endif %}
+</div>
+
+{% if show_debug %}
+<div class='debug_window'>
+    <div class='debug_output'><pre id='debug_output'></pre></div>
+    <textarea rows=5 id='debug_input' class='debug_input' 
+              onKeyPress='return debug_keypress(event);' 
+              onFocus='debug_focus();' onBlur='debug_blur();'>
+    </textarea>
+</div>
+{% endif %}
+
+<script type="text/javascript">
+{% if worksheet.is_only_viewer(username) %}
+    worksheet_locked = true;
+{% else %}
+    worksheet_locked = false;
+{% endif %}
+</script>
+
+{% if worksheet.computing() %}
+<!-- Set the update checking back in motion. -->
+<script type="text/javascript">
+    active_cell_list = {{ worksheet.queue_id_list() }};
+    for (var i = 0; i < active_cell_list.length; i += 1) {
+        cell_set_running(active_cell_list[i]);
+    }
+    start_update_check();
+</script>
+{% endif %}
+{% endblock %}

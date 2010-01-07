@@ -1,0 +1,63 @@
+.settings-page
+  :line-height 1.4
+
+  h1
+    :font-size 2em
+    :padding 0 5px
+
+  label
+    :display block
+
+  #buttons
+    :padding 5px
+  
+    button
+      :margin-right 1em
+    a
+      :text-decoration none
+
+  h2
+    :font-size 1.5em
+    :margin 0 0 0.75em
+
+
+  .section
+    :border-bottom 1px solid #CCC
+    :padding 5px
+    :margin 0.5em 0
+
+    div
+      :margin-bottom 0.5em
+
+  .error, .error_found
+    :color red
+
+  .error_found
+    :font-size 1.2em
+
+  .updated
+    :color green
+
+  input.c1
+    :width 200px
+
+#settings-nav
+  +horizontal-list(0.5em)
+  li
+    :border-right 1px solid #ccc
+    &:last-child, &.last
+      :border-right none
+
+#user-management-page
+  table
+    :border-collapse collapse
+  th, td
+    :border 1px solid #696969
+    :padding 0.25em
+
+  th 
+    :background #CCC
+
+  a:link, a:visited
+    :color = !link_color
+        
