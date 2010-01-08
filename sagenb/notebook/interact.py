@@ -1966,7 +1966,7 @@ class InteractCanvas:
             "<div ...</div>"
         """
         return """<div id='cell-interact-%s'><?__SAGE__START>
-        <table border=0 bgcolor='#white' width=100%% height=100%%>
+        <table border=0 bgcolor='white' width=100%% height=100%%>
         <tr><td bgcolor=white align=left valign=top><pre><?__SAGE__TEXT></pre></td></tr>
         <tr><td  align=left valign=top><?__SAGE__HTML></td></tr>
         </table><?__SAGE__END></div>"""%self.cell_id()
