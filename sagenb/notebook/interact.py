@@ -147,6 +147,7 @@ import math
 import types
 
 # Sage libraries
+from jsmath import math_parse
 from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
 
 # SAGE_CELL_ID is a module scope variable that is always set equal to
@@ -712,7 +713,7 @@ class InteractControl(InteractElement):
             sage: InteractControl('x', default_value=5, label='the x value').label()
             'the x value'        
         """
-        return self.__label
+        return math_parse(self.__label)
 
     def default_value(self):
         """
