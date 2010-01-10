@@ -108,7 +108,8 @@ class JavaScriptCompressor:
 			elif type == "regexp" or type == "doublequote" or type == "singlequote":
 				clean.append(str[map[a]["start"]:map[a]["end"]])
 			if type != "regexp":
-				clean.append("\n")
+#				clean.append("\n")
+				pass
 		return re.sub("/(\n)+/", "\n", re.sub("/^\s*|\s*$/", "", string.join(clean, "")))
 	def __commonInitMethods(self, jsSource, packed):
 		header = ""

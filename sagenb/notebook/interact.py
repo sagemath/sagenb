@@ -252,10 +252,10 @@ def html_slider(id, values, callback, steps, default=0, margin=0):
         <html>...</html>
     """
     s = """<table><tr><td>
-        <div id='%s' style='margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 15.0em;'></div>
+        <div id="%s" style="margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 15.0em;"></div>
         </td>"""%(id,int(margin))
     if values != "null":
-        s += "<td><font color='black' id='%s-lbl'></font></td>"%id
+        s += '<td><font color="black" id="%s-lbl"></font></td>' % id
     s += "</tr></table>"
 
     # We now generate javascript that gets run after the above div
@@ -316,10 +316,10 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, marg
         <html>...</html>
     """
     s = """<table><tr><td>
-        <div id='%s' style='margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 20.0em;'></div>
+        <div id="%s" style="margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 20.0em;"></div>
         </td></tr>"""%(id,int(margin))
     if values != "null":
-        s += "<tr><td><font color='black' id='%s-lbl'></font></td></tr>"%id
+        s += '<tr><td><font color="black" id="%s-lbl"></font></td></tr>' % id
     s += "</table>"
 
     # We now generate javascript that gets run after the above div
@@ -334,7 +334,7 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, marg
         {
             pos[0]=$(sel).slider('values', 0);
             pos[1]=$(sel).slider('values', 1);
-            if(values!=null) $(sel+'-lbl').text("("+values[pos[0]]+", "+values[pos[1]]+")");
+            if(values!=null) $(sel+'-lbl').text('('+values[pos[0]]+', '+values[pos[1]]+')');
         };
         setTimeout(function()
         {
@@ -367,8 +367,8 @@ def html_color_selector(id, change, input_change, default='000000',
 
     INPUT:
 
-    - ``id`` - an integer; the ID of the HTML div element that this
-      selector should have.
+    - ``id`` - an integer or string; an identifier (e.g., cell ID) for
+      this selector
 
     - ``change`` - a string; JavaScript code to execute when the color
       selector changes.
@@ -410,7 +410,7 @@ def html_color_selector(id, change, input_change, default='000000',
                   <input type="text"
                          id="%s"
                          name="color"
-                         onchange='%s; $(this).css({backgroundColor: this.value, color: ""}); $.farbtastic("#%s-picker").setColor(this.value);'
+                         onchange="%s; $(this).css({backgroundColor: this.value, color: ''}); $.farbtastic('#%s-picker').setColor(this.value);"
                          value="%s"
                          style="%s"/>
                 </td>
@@ -452,7 +452,7 @@ def html_color_selector(id, change, input_change, default='000000',
                   <input type="text"
                          id="%s"
                          name="color"
-                         onchange='%s; $(this).css({backgroundColor: this.value}); $("#%s-picker").ColorPickerSetColor(this.value.slice(1)); $("#%s-picker div").css({backgroundColor: this.value});'
+                         onchange="%s; $(this).css({backgroundColor: this.value}); $('#%s-picker').ColorPickerSetColor(this.value.slice(1)); $('#%s-picker div').css({backgroundColor: this.value});"
                          value="%s"
                          style="%s" />
                 </td>
@@ -509,7 +509,7 @@ def html_color_selector(id, change, input_change, default='000000',
                   <input type="text"
                          id="%s"
                          name="color"
-                         onchange='%s; $(this).css({backgroundColor: this.value}); $(".jPicker_HexText", $("#%s-picker").next()).val(this.value.slice(1)).trigger("keyup");'
+                         onchange="%s; $(this).css({backgroundColor: this.value}); $('.jPicker_HexText', $('#%s-picker').next()).val(this.value.slice(1)).trigger('keyup');"
                          value="%s"
                          style="%s" />
                 </td>
@@ -820,25 +820,26 @@ class InteractControl(InteractElement):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InteractControl('x', 1).interact()
-            'interact(..., "_interact_.update(..., \\"x\\", ..., _interact_.standard_b64decode(\\""+encode64(NULL)+"\\"), globals());_interact_.recompute(0)")'
+            "interact(..., '_interact_.update(..., \\'x\\', ..., _interact_.standard_b64decode(\\''+encode64(NULL)+'\\'), globals()); _interact_.recompute(\\'0\\');')"
         """
-        #We have to do a try/except block here since the
-        #control may not have a canvas associated with it.
+        # We have to do a try/except block here since the control may
+        # not have a canvas associated with it.
         try:
             auto_update = self.canvas().is_auto_update()
         except ValueError:
             auto_update = True
 
-        # The following is a crazy line to read because of all the backslashes and try/except.
-        # All it does is run the interact function once after setting exactly one
-        # dynamic variable.    If setting the dynamic variable fails, due to a KeyError
-        python_string = '_interact_.update(%s, \\"%s\\", %s, _interact_.standard_b64decode(\\""+encode64(%s)+"\\"), globals())'%(
+        # The following is a crazy line to read because of all the
+        # backslashes and try/except.  All it does is run the interact
+        # function once after setting exactly one dynamic variable.
+        # If setting the dynamic variable fails, due to a KeyError
+        python_string = """_interact_.update(\\'%s\\', \\'%s\\', %s, _interact_.standard_b64decode(\\''+encode64(%s)+'\\'), globals())""" % (
             self.cell_id(), self.var(), self.adapt_number(), self.value_js(*args))
 
         if auto_update:
-            python_string += ';_interact_.recompute(%s)'%self.cell_id()
+            python_string += """; _interact_.recompute(\\'%s\\');""" % self.cell_id()
         
-        s = 'interact(%s, "%s")'%(self.cell_id(), python_string)
+        s = """interact(%r, '%s')""" % (self.cell_id(), python_string)
         return s
    
     def var(self):
@@ -862,7 +863,7 @@ class InteractControl(InteractElement):
 
         OUTPUT:
 
-        - an integer - ID of cell that this control interacts
+        - an integer or a string
 
         EXAMPLES:
 
@@ -993,16 +994,16 @@ class InputBox(InteractControl):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InputBox('theta', 1).render()
-            '<input type=\'text\' value="1" size=80 onchange=\'interact(0, "_interact_.update(0, \\"theta\\", ..., _interact_.standard_b64decode(\\""+encode64(this.value)+"\\"), globals());_interact_.recompute(0)")\'></input>'
+            '<input type="text" value="1" size=80 onchange="interact(0, \'_interact_.update(\\\'0\\\', \\\'theta\\\', ..., _interact_.standard_b64decode(\\\'\'+encode64(this.value)+\'\\\'), globals()); _interact_.recompute(\\\'0\\\');\')"></input>'
         """
         if self.__type is bool:
-            return """<input type='checkbox' %s width=200px onchange='%s'></input>"""%(
+            return """<input type="checkbox" %s width=200px onchange="%s"></input>"""%(
                 'checked' if self.default_value() else '',  self.interact())
         elif self.__type is str:
-            return """<input type='text' value="%s" size=%s onchange='%s'></input>"""%(
+            return """<input type="text" value="%s" size=%s onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width, self.interact())
         else:
-            return """<input type='text' value="%s" size=%s onchange='%s'></input>"""%(
+            return """<input type="text" value="%s" size=%s onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width,  self.interact())
 
 class ColorInput(InputBox):
@@ -1162,13 +1163,13 @@ class InputGrid(InteractControl):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InputGrid('M', 2,2).value_js()
-            ' "[["+jQuery(this).parents("table").eq(0).find("tr").map(function(){return jQuery(this).find("input").map(function() {return jQuery(this).val();}).get().join(",");}).get().join("],[")+"]]" '
+            " '[['+jQuery(this).parents('table').eq(0).find('tr').map(function(){return jQuery(this).find('input').map(function() {return jQuery(this).val();}).get().join(',');}).get().join('],[')+']]' "
         """
         # Basically, given an input element in a table, it constructs
         # a python string representation of a list of lists from the
         # rows in the table.
         
-        return """ "[["+jQuery(this).parents("table").eq(0).find("tr").map(function(){return jQuery(this).find("input").map(function() {return jQuery(this).val();}).get().join(",");}).get().join("],[")+"]]" """
+        return """ '[['+jQuery(this).parents('table').eq(0).find('tr').map(function(){return jQuery(this).find('input').map(function() {return jQuery(this).val();}).get().join(',');}).get().join('],[')+']]' """
 
     def render(self):
         """
@@ -1181,14 +1182,13 @@ class InputGrid(InteractControl):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InputGrid('M', 1,2).render()
-            '<table><tr><td><input type=\'text\' value=\'None\' ...
-
+            '<table><tr><td><input type="text" value="None" ...'
         """
         table = "<table>"
         for i in range(self.__rows):
             table += "<tr>"
             for j in range(self.__columns):
-                table += "<td><input type='text' value='%r' size='%s' onchange='%s'></input></td>"%(self.__default_value_grid[i][j], self.__width, self.interact())
+                table += """<td><input type="text" value="%r" size="%s" onchange="%s"></input></td>""" % (self.__default_value_grid[i][j], self.__width, self.interact())
             table += "</tr>"
         table += "</table>"
 
@@ -1382,10 +1382,10 @@ class Selector(InteractControl):
         if use_buttons:
                 #On selected buttons, border is set to inset, on unselected boxes - outset. This usually is default rendering.
                 if len(vals) > 1:
-                        event = '$("BUTTON", this.parentNode).css("border-style", "outset"); $(this).css("border-style", "inset"); %s'%event
-                s = '<table style="border:1px solid #dfdfdf;background-color:#efefef">'
+                        event = """$('BUTTON', this.parentNode).css('border-style', 'outset'); $(this).css('border-style', 'inset'); %s""" % event
+                s = """<table style="border:1px solid #dfdfdf; background-color:#efefef;">"""
         else:
-            s = "<select onchange='%s;'>"%event
+            s = """<select onchange="%s;">""" % event
         i = 0
         for r in range(self.__nrows):
             if use_buttons:
@@ -1405,9 +1405,9 @@ class Selector(InteractControl):
                 else:
                     lbl = lbls[i]
                 if use_buttons:
-                    s += "<button style='%s%s' value='%s' onclick='%s'>%s</button>\n"%('border-style:inset;' if i==default and len(vals)>1 else 'border-style:outset;', style, i, event, lbl)
+                    s += """<button style="%s%s" value="%s" onclick="%s">%s</button>\n""" % ('border-style:inset;' if i==default and len(vals)>1 else 'border-style:outset;', style, i, event, lbl)
                 else:
-                    s += "<option value='%s' %s>%s</option>\n"%(i, 'selected' if i==default else '', lbl)
+                    s += '<option value="%s" %s>%s</option>\n' % (i, 'selected' if i==default else '', lbl)
                 i += 1
             if use_buttons:
                 s += '</td></tr>'
@@ -1835,8 +1835,8 @@ class InteractCanvas:
 
         - ``controls`` - a list of :class:`InteractControl` instances.
 
-        - ``id`` - an integer; the ID of the cell that contains this
-          InteractCanvas.
+        - ``id`` - an integer or a string; the ID of the cell that
+          contains this InteractCanvas.
 
         - ``options`` - any additional keyword arguments (for example,
           auto_update=False)
@@ -1900,7 +1900,7 @@ class InteractCanvas:
 
         OUTPUT:
 
-        - an integer
+        - an integer or a string
 
         EXAMPLES::
 
@@ -1933,11 +1933,12 @@ class InteractCanvas:
     
     def cell_id(self):
         """
-        Return the cell id that contains this interactive canvas.
+        Returns the ID of the cell that contains this interactive
+        canvas.
 
         OUTPUT:
 
-        - an integer
+        - an integer or a string
 
         EXAMPLES::
 
@@ -1964,11 +1965,11 @@ class InteractCanvas:
 
             sage: B = sagenb.notebook.interact.InputBox('x',2)
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render_output()
-            "<div ...</div>"
+            '<div id="cell-interact...</div>'
         """
-        return """<div id='cell-interact-%s'><?__SAGE__START>
-        <table border=0 bgcolor='white' width=100%% height=100%%>
-        <tr><td bgcolor=white align=left valign=top><pre><?__SAGE__TEXT></pre></td></tr>
+        return """<div id="cell-interact-%s"><?__SAGE__START>
+        <table border=0 bgcolor="white" width=100%% height=100%%>
+        <tr><td bgcolor="white" align=left valign=top><pre><?__SAGE__TEXT></pre></td></tr>
         <tr><td  align=left valign=top><?__SAGE__HTML></td></tr>
         </table><?__SAGE__END></div>"""%self.cell_id()
 
@@ -2013,10 +2014,10 @@ class InteractCanvas:
 
             sage: B = sagenb.notebook.interact.InputBox('x',2)
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).wrap_in_outside_frame('<!--inside-->')
-            "<!--notruncate--><div padding=6 id='div-interact-3'> ...</div>\n                 "
+            '<!--notruncate--><div padding=6 id="div-interact-3"> ...</div>...'
         """
-        return """<!--notruncate--><div padding=6 id='div-interact-%s'> <table width=800px height=20px bgcolor='#c5c5c5'
-                 cellpadding=15><tr><td bgcolor='#f9f9f9' valign=top align=left>%s</td>
+        return """<!--notruncate--><div padding=6 id="div-interact-%s"> <table width=800px height=20px bgcolor="#c5c5c5"
+                 cellpadding=15><tr><td bgcolor="#f9f9f9" valign=top align=left>%s</td>
                  </tr></table></div>
                  """%(self.cell_id(), inside)
 
@@ -2041,7 +2042,7 @@ class InteractCanvas:
 
             sage: B = sagenb.notebook.interact.InputBox('x',2)
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render()
-            '<!--notruncate--><div padding=6 id=\'div-interact-3\'> ...</div>\n                 '
+            '<!--notruncate--><div padding=6 id="div-interact-3"> ...</div>...'
         """
         s = "%s%s"%(self.render_controls(), self.render_output())
         s = self.wrap_in_outside_frame(s)
@@ -2073,31 +2074,29 @@ class JavascriptCodeButton(InteractElement):
 
             sage: b = sagenb.notebook.interact.JavascriptCodeButton('Push me', 'alert("2")')
             sage: b.render()
-            '<input type="button" value="Push me" onclick=\'alert("2")\'>\n'
-
+            '<input type="button" value="Push me" onclick="alert("2")">\n'
         """
-        return '<input type="button" value="%s" onclick=\'%s\'>\n'%(self.__label, self.__code)
+        return """<input type="button" value="%s" onclick="%s">\n"""%(self.__label, self.__code)
 
 class UpdateButton(JavascriptCodeButton):
     def __init__(self, cell_id):
         r"""
-        This :func:`interact` element creates a button which when clicked
-        causes the :func:`interact` function in the cell ``cell_id`` to be
-        recomputed with the current values of the variables.
+        Creates an :func:`interact` button element.  A click on the
+        button triggers recomputation of the cell with the current
+        values of the variables.
 
         INPUT:
 
-        - ``cell_id`` - an integer; the ambient cell's ID
+        - ``cell_id`` - an integer or string; the ambient cell's ID
 
         EXAMPLES::
 
             sage: b = sagenb.notebook.interact.UpdateButton(0)
             sage: b.render()
-            '<input type="button" value="Update" onclick=\'interact(0, "_interact_.recompute(0)")\'>\n'
-
+            '<input type="button" value="Update" onclick="interact(0, \'_interact_.recompute(\\\'0\\\')\')">\n'
         """
-        s = 'interact(%s, "_interact_.recompute(%s)")'%(cell_id, cell_id)
-        JavascriptCodeButton.__init__(self, "Update", s)                                     
+        s = """interact(%r, '_interact_.recompute(\\'%s\\')')""" % (cell_id, cell_id)
+        JavascriptCodeButton.__init__(self, "Update", s)
         
 def interact(f):
     r"""
@@ -3618,7 +3617,8 @@ def update(cell_id, var, adapt, value, globs):
     
     INPUT:
 
-    - ``cell_id`` - an integer; the ID of an :func:`interact` cell
+    - ``cell_id`` - an integer or string; the ID of an
+      :func:`interact` cell
 
     - ``var`` - an object; a variable associated to that cell
 
@@ -3637,6 +3637,12 @@ def update(cell_id, var, adapt, value, globs):
         sage: sagenb.notebook.interact.update(0, 'a', 0, '5', globals())
         __SAGE_INTERACT_RESTART__         
     """
+    # We cast the id to an integer, if it's an integer.
+    try:
+        cell_id = int(cell_id)
+    except ValueError:
+        pass
+
     try:
         S = state[cell_id]
         # Look up the function that adapts inputs to have the right type
@@ -3655,7 +3661,8 @@ def recompute(cell_id):
     
     INPUT:
 
-    - ``cell_id`` - an integer
+    - ``cell_id`` - a string or an integer; the ID of an
+      :func:`interact` cell
 
     EXAMPLES:
 
@@ -3667,6 +3674,12 @@ def recompute(cell_id):
         __SAGE_INTERACT_RESTART__         
 
     """
+    # We cast the id to an integer, if it's an integer.
+    try:
+        cell_id = int(cell_id)
+    except ValueError:
+        pass
+
     try:
         S = state[cell_id]
         # Finally call the interactive function, which will use the above variables.

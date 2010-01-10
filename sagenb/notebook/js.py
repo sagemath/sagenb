@@ -75,16 +75,16 @@ def javascript():
                  SAGE_URL=SAGE_URL,
                  KEY_CODES=keyhandler.all_tests())
 
+    global debug_mode
+    if debug_mode:
+        return s
+
     # TODO: use minify here, which is more standard (and usually safer
     # and with gzip compression, smaller); But first inquire about the
     # propriety of the "This software shall be used for Good, not
     # Evil" clause in the license.  Does that prevent us from
     # distributing it (i.e., it adds an extra condition to the
     # software)?  See http://www.crockford.com/javascript/jsmin.py.txt
-    global debug_mode
-    if debug_mode:
-        return s
-
     s = JavaScriptCompressor().getPacked(s.encode('utf-8'))
     _cache_javascript = s
 

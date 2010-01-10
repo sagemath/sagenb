@@ -17,10 +17,10 @@ INPUT:
     </div>
     <script type="text/javascript">
         $("#insert_new_cell_before{{ cell.id() }}").plainclick(function (e) {
-            insert_new_cell_before({{ cell.id() }});
+            insert_new_cell_before({{ '%r'|format(cell.id()) }});
         });
         $("#insert_new_cell_before{{ cell.id() }}").shiftclick(function (e) {
-            insert_new_text_cell_before({{ cell.id() }});
+            insert_new_text_cell_before({{ '%r'|format(cell.id()) }});
         });
     </script>
     {% endif %}
@@ -33,22 +33,21 @@ INPUT:
     </div>
 {% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print %}
     <script type="text/javascript">
-        $("#cell_text_{{ cell.id() }}").unbind('dblclick').editable(function(value,settings) {
-            evaluate_text_cell_input({{ cell.id() }},value,settings);
+        $("#cell_text_{{ cell.id() }}").unbind('dblclick').editable(function (value, settings) {
+            evaluate_text_cell_input({{ '%r'|format(cell.id()) }}, value, settings);
             return(value);
-            },
-            {
-                tooltip   : "",
-                placeholder : "",
-        //      type   : 'textarea',
-                type   : 'mce',
-                onblur : 'ignore',
-                select : false,
-                submit : 'Save changes',
-                cancel : 'Cancel changes',
-                event  : "dblclick",
-                style  : "inherit",
-	        data   : {{ '%r'|format(cell.plain_text()) }}
+        }, {
+            tooltip   : "",
+            placeholder : "",
+         // type   : 'textarea',
+            type   : 'mce',
+            onblur : 'ignore',
+            select : false,
+            submit : 'Save changes',
+            cancel : 'Cancel changes',
+            event  : "dblclick",
+            style  : "inherit",
+	    data   : {{ '%r'|format(cell.plain_text()) }}
         });
     </script>
 {% endif %}

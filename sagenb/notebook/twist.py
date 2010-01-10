@@ -536,7 +536,12 @@ class WorksheetResource:
                     raise RuntimeError, "illegal worksheet access"
 
     def id(self, ctx):
-        return int(ctx.args['id'][0])
+        # We cast the incoming cell ID to an integer, if it's
+        # possible.  Otherwise, we treat it as a string.
+        try:
+            return int(ctx.args['id'][0])
+        except ValueError:
+            return ctx.args['id'][0]
 
 
 ###############################################
@@ -748,7 +753,7 @@ class Worksheet_introspect(WorksheetResource, resource.PostableResource):
     """
     def render(self, ctx):
         try:
-            id = int(ctx.args['id'][0])
+            id = self.id(ctx)
         except (KeyError,TypeError):
             return HTMLResponse(stream = 'Error in introspection -- invalid cell id.')
         try:

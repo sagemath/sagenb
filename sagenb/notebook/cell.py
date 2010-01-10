@@ -12,50 +12,52 @@ a list of cells.
 #                  http://www.gnu.org/licenses/
 ###########################################################################
 
-import os, shutil
-from cgi import escape
+import os
 import re
+import shutil
+from cgi import escape
 
-from   sagenb.misc.misc import (word_wrap, SAGE_DOC,
-                                strip_string_literals,
-                                set_restrictive_permissions)
+from jsmath import math_parse
+from sagenb.misc.misc import (word_wrap, SAGE_DOC, strip_string_literals,
+                              set_restrictive_permissions)
 
-from   jsmath import math_parse
-
-# Maximum number of characters allowed in output.  This is
-# needed avoid overloading web browser.  For example, it
-# should be possible to gracefully survive:
+# Maximum number of characters allowed in output.  This is needed
+# avoid overloading web browser.  For example, it should be possible
+# to gracefully survive:
 #    while True:
 #       print "hello world"
 # On the other hand, we don't want to loose the output of big matrices
 # and numbers, so don't make this too small.
-
 MAX_OUTPUT = 32000
 MAX_OUTPUT_LINES = 120
 
+# Used to detect and format tracebacks.  See :func:`format_exception`.
 TRACEBACK = 'Traceback (most recent call last):'
 
 # This regexp matches "cell://blah..." in a non-greedy way (the ?), so
 # we don't get several of these combined in one.
 re_cell = re.compile('"cell://.*?"')
 re_cell_2 = re.compile("'cell://.*?'")   # same, but with single quotes
-# Matches script blocks
+# Matches script blocks.
 re_script = re.compile(r'<script[^>]*?>.*?</script>', re.DOTALL | re.I)
 
+# Whether to enable editing of :class:`TextCell`s with TinyMCE.
 JEDITABLE_TINYMCE = True
 
-# Introspection.  The cache directory is a module-scope variable set
-# in the first call to Cell.set_introspect_html().
-import errno, hashlib, time
-from sphinx.application import Sphinx
-_SAGE_INTROSPECT = None
 
-
+###########################
+# Generic (abstract) cell #
+###########################
 class Cell_generic:
     def is_interactive_cell(self):
         """
-        Returns True if this cell contains the use of interact either as a
-        function call or a decorator.
+        Returns whether this cell uses
+        :func:`sagenb.notebook.interact.interact` as a function call
+        or decorator.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -86,22 +88,46 @@ class Cell_generic:
         """
         raise NotImplementedError
 
+
+#############
+# Text cell #
+#############
 class TextCell(Cell_generic):
     def __init__(self, id, text, worksheet):
         """
+        Creates a new text cell.
+
+        INPUT:
+
+        - ``id`` - an integer or string; this cell's ID
+
+        - ``text`` - a string; this cell's contents
+
+        - ``worksheet`` - a
+          :class:`sagenb.notebook.worksheet.Worksheet` instance; this
+          cells parent worksheet
+
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
             sage: C == loads(dumps(C))
             True
         """
-        self.__id = int(id)
+        try:
+            self.__id = int(id)
+        except ValueError:
+            self.__id = id
+
         self.__text = text
         self.__worksheet = worksheet
 
     def __repr__(self):
         """
-        String representation of this text cell.
+        Returns a string representation of this text cell.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -113,8 +139,8 @@ class TextCell(Cell_generic):
 
     def delete_output(self):
         """
-        Delete all output in this cell. This does nothing since text cells
-        have no output.
+        Delete all output in this text cell.  This does nothing since
+        text cells have no output.
 
         EXAMPLES::
 
@@ -129,7 +155,11 @@ class TextCell(Cell_generic):
 
     def set_input_text(self, input_text):
         """
-        Sets the input text of self to be input_text.
+        Sets the input text of this text cell.
+
+        INPUT:
+
+        - ``input_text`` - a string; the new input text for this cell
 
         EXAMPLES::
 
@@ -144,8 +174,17 @@ class TextCell(Cell_generic):
 
     def set_worksheet(self, worksheet, id=None):
         """
-        Sets the worksheet object of self to be worksheet and optionally
-        changes the id of self.
+        Updates this text cell's worksheet object and, optionally, its
+        ID.
+
+        INPUT:
+
+        - ``worksheet`` - a
+          :class:`sagenb.notebook.worksheet.Worksheet` instance; the
+          cell's new parent worksheet object
+
+        - ``id`` - an integer or string (default: None); the cell's
+          new ID
 
         EXAMPLES::
 
@@ -164,7 +203,12 @@ class TextCell(Cell_generic):
 
     def worksheet(self):
         """
-        Returns the worksheet object associated to self.
+        Returns this text cell's worksheet object
+
+        OUTPUT:
+
+        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
+
 
         EXAMPLES::
 
@@ -174,25 +218,33 @@ class TextCell(Cell_generic):
         """
         return self.__worksheet
 
-    def html(self, wrap=None, div_wrap=True, do_print=False, do_math_parse=True, editing=False):
+    def html(self, wrap=None, div_wrap=True, do_print=False,
+             do_math_parse=True, editing=False):
         """
-        Returns an HTML version of self as a string.
+        Returns HTML code for this text cell, including its contents
+        and associated script elements.
 
         INPUT:
 
-        - ``wrap`` -- number of columns to wrap at (not used)
+        - ``wrap`` -- an integer (default: None); number of columns to
+          wrap at (not used)
 
-        - ``div_wrap`` -- whether to wrap in a div (not used)
-        
-        - ``do_math_parse`` - bool (default: True)
-          If True, call math_parse (defined in cell.py)
-          on the html.
+        - ``div_wrap`` -- a boolean (default: True); whether to wrap
+          in a div (not used)
 
-        - ``do_print`` - bool (default: False)
-          If True, display for printing
+        - ``do_print`` - a boolean (default: False); whether to render the
+          cell for printing
 
-        - ``editing`` - bool (default: False)
-          If True, # TODO: figure out what this does
+        - ``do_math_parse`` - a boolean (default: True); whether to
+          process the contents for JSMath (see
+          :func:`sagenb.notebook.jsmath.math_parse`)
+
+        - ``editing`` - a boolean (default: False); whether to open an
+          editor for this cell
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -209,10 +261,18 @@ class TextCell(Cell_generic):
                         do_math_parse = do_math_parse, editing = editing,
                         div_wrap=div_wrap)
 
-
     def plain_text(self, prompts=False):
         """
-        Returns a plain text version of self.
+        Returns a plain text version of this ext cell.
+
+        INPUT:
+
+        - ``prompts`` - a boolean (default: False); whether to strip
+          interpreter prompts from the beginning of each line
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -224,7 +284,12 @@ class TextCell(Cell_generic):
 
     def edit_text(self):
         """
-        Returns the text to be displayed in the Edit window.
+        Returns the text to be displayed for this text cell in the
+        Edit window.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -236,11 +301,11 @@ class TextCell(Cell_generic):
 
     def id(self):
         """
-        Returns self's ID.
+        Returns this text cell's ID.
 
         OUTPUT:
 
-        - int -- self's ID.
+        - an integer or string
 
         EXAMPLES::
 
@@ -252,7 +317,12 @@ class TextCell(Cell_generic):
 
     def is_auto_cell(self):
         """
-        Returns True if self is automatically evaluated.
+        Returns whether this is an automatically evaluated text cell.
+        This is always false for :class:`TextCell`\ s.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -264,7 +334,16 @@ class TextCell(Cell_generic):
 
     def __cmp__(self, right):
         """
-        Compares cells by ID.
+        Compares text cells by ID.
+
+        INPUT:
+
+        - ``right`` - a :class:`TextCell` instance; the cell to
+          compare to this cell
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -282,7 +361,12 @@ class TextCell(Cell_generic):
 
     def set_cell_output_type(self, typ='wrap'):
         """
-        This does nothing for TextCells.
+        Sets this text cell's output type.  This does nothing for
+        :class:`TextCell`\ s.
+
+        INPUT:
+
+        - ``typ`` - a string (default: 'wrap'); the target output type
 
         EXAMPLES::
 
@@ -292,16 +376,37 @@ class TextCell(Cell_generic):
         pass # ignored
 
 
+################
+# Compute cell #
+###############
 class Cell(Cell_generic):
     def __init__(self, id, input, out, worksheet):
         """
+        Creates a new compute cell.
+
+        INPUT:
+
+        - ``id`` - an integer or string; the new cell's ID
+
+        - ``input`` - a string; this cell's input
+
+        - ``out`` - a string; this cell's output
+
+        - ``worksheet`` - a
+          :class:`sagenb.notebook.worksheet.Worksheet` instance; this
+          cell's worksheet object
+
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C == loads(dumps(C))
             True
         """
-        self.__id    = int(id)
+        try:
+            self.__id = int(id)
+        except ValueError:
+            self.__id = id
+
         self.__out   = str(out).replace('\r','')
         self.__worksheet = worksheet
         self.__interrupted = False
@@ -314,7 +419,12 @@ class Cell(Cell_generic):
 
     def set_asap(self, asap):
         """
-        Set whether this cell is evaluated as soon as possible.
+        Sets whether to evaluate this compute cell as soon as possible
+        (ASAP).
+
+        INPUT:
+
+        - ``asap`` - a boolean convertible
 
         EXAMPLES::
 
@@ -329,8 +439,12 @@ class Cell(Cell_generic):
 
     def is_asap(self):
         """
-        Return True if this is an asap cell, i.e., evaluation of it is done
-        as soon as possible.
+        Returns whether this compute cell is to be evaluated as soon
+        as possible (ASAP).
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -349,7 +463,7 @@ class Cell(Cell_generic):
 
     def delete_output(self):
         """
-        Delete all output in this cell.
+        Deletes all output in this compute cell.
 
         EXAMPLES::
 
@@ -365,16 +479,13 @@ class Cell(Cell_generic):
 
     def evaluated(self):
         r"""
-        Return True if this cell has been successfully evaluated in a
-        currently running session.
-
-        This is not about whether the output of the cell is valid given the
-        input.
+        Returns whether this compute cell has been successfully
+        evaluated in a currently running session.  This is not about
+        whether the output of the cell is valid given the input.
 
         OUTPUT:
 
-        -  ``bool`` - whether or not this cell has been
-           evaluated in this session
+        - a boolean
 
         EXAMPLES: We create a worksheet with a cell that has wrong output::
 
@@ -432,8 +543,12 @@ class Cell(Cell_generic):
 
     def set_no_output(self, no_output):
         """
-        Sets whether or not this is an no_output cell, i.e., a cell for
-        which we don't care at all about the output.
+        Sets whether this is a "no output" compute cell, i.e., we
+        don't care about its output.
+
+        INPUT:
+
+        - ``no_output`` - a boolean convertible
 
         EXAMPLES::
 
@@ -448,8 +563,12 @@ class Cell(Cell_generic):
 
     def is_no_output(self):
         """
-        Return True if this is an no_output cell, i.e., a cell for which
-        we don't care at all about the output.
+        Returns whether this is a "no output" compute cell, i.e., we
+        don't care about its output.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -468,7 +587,11 @@ class Cell(Cell_generic):
 
     def set_cell_output_type(self, typ='wrap'):
         """
-        Sets the cell output type.
+        Sets this compute cell's output type.
+
+        INPUT:
+
+        - ``typ`` - a string (default: 'wrap'); the target output type
 
         EXAMPLES::
 
@@ -483,7 +606,11 @@ class Cell(Cell_generic):
 
     def cell_output_type(self):
         """
-        Returns the cell output type.
+        Returns this compute cell's output type.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -502,8 +629,17 @@ class Cell(Cell_generic):
 
     def set_worksheet(self, worksheet, id=None):
         """
-        Sets the worksheet object of self to be worksheet and optionally
-        changes the id of self.
+        Sets this compute cell's worksheet object and, optionally, its
+        ID.
+
+        INPUT:
+
+        - ``worksheet`` - a
+          :class:`sagenb.notebook.worksheet.Worksheet` instance; the
+          cell's new worksheet object
+
+        - ``id`` - an integer or string (default: None); the cell's
+          new ID
 
         EXAMPLES::
 
@@ -522,7 +658,11 @@ class Cell(Cell_generic):
 
     def worksheet(self):
         """
-        Returns the worksheet object associated to self.
+        Returns this compute cell's worksheet object.
+
+        OUTPUT:
+
+        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
 
         EXAMPLES::
 
@@ -534,13 +674,17 @@ class Cell(Cell_generic):
 
     def update_html_output(self, output=''):
         """
-        Update the list of files with html-style links or embeddings for
-        this cell.
+        Updates this compute cell's the file list with HTML-style
+        links or embeddings.
 
-        For interactive cells the html output section is always empty,
-        mainly because there is no good way to distinguish content (e.g.,
-        images in the current directory) that goes into the interactive
-        template and content that would go here.
+        For interactive cells, the HTML output section is always
+        empty, mainly because there is no good way to distinguish
+        content (e.g., images in the current directory) that goes into
+        the interactive template and content that would go here.
+
+        INPUT:
+
+        - ``output`` - a string (default: ''); the new output
 
         EXAMPLES::
 
@@ -567,7 +711,11 @@ class Cell(Cell_generic):
 
     def id(self):
         """
-        Returns the id of self.
+        Returns this compute cell's ID.
+
+        OUTPUT:
+
+        - an integer or string
 
         EXAMPLES::
 
@@ -579,7 +727,11 @@ class Cell(Cell_generic):
 
     def set_id(self, id):
         """
-        Sets the id of self to id.
+        Sets this compute cell's ID.
+
+        INPUT:
+
+        - ``id`` - an integer or string; the new ID
 
         EXAMPLES::
 
@@ -588,11 +740,15 @@ class Cell(Cell_generic):
             sage: C.id()
             2
         """
-        self.__id = int(id)
+        self.__id = id
 
     def worksheet(self):
         """
-        Returns the workseet associated to self.
+        Returns this compute cell's worksheet object.
+
+        OUTPUT:
+
+        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
 
         EXAMPLES::
 
@@ -608,7 +764,11 @@ class Cell(Cell_generic):
 
     def worksheet_filename(self):
         """
-        Returns the filename of the worksheet associated to self.
+        Returns the filename of this compute cell's worksheet object.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -622,10 +782,13 @@ class Cell(Cell_generic):
         """
         return self.__worksheet.filename()
 
-
     def notebook(self):
         """
-        Returns the notebook object associated to self.
+        Returns this compute cell's associated notebook object.
+
+        OUTPUT:
+
+        - a :class:`sagenb.notebook.notebook.Notebook` instance
 
         EXAMPLES::
 
@@ -641,8 +804,12 @@ class Cell(Cell_generic):
 
     def directory(self):
         """
-        Returns the directory associated to self. If the directory doesn't
-        already exist, then this method creates it.
+        Returns the name of this compute cell's directory, creating
+        it, if it doesn't already exist.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -662,7 +829,11 @@ class Cell(Cell_generic):
 
     def _directory_name(self):
         """
-        Returns a string of the directory associated to self.
+        Returns the name of this compute cell's directory.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -676,10 +847,18 @@ class Cell(Cell_generic):
         """
         return os.path.join(self.__worksheet.directory(), 'cells', str(self.id()))
 
-
     def __cmp__(self, right):
         """
-        Compares cells by their IDs.
+        Compares compute cells by ID.
+
+        INPUT:
+
+        - ``right`` - a :class:`Cell` instance; the cell to compare
+          this this cell
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -697,7 +876,11 @@ class Cell(Cell_generic):
 
     def __repr__(self):
         """
-        Returns a string representation of self.
+        Returns a string representation of this compute cell.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -708,8 +891,13 @@ class Cell(Cell_generic):
 
     def word_wrap_cols(self):
         """
-        Returns the number of columns for word wrapping. This defaults to
-        70, but the default setting for a notebook is 72.
+        Returns the number of columns for word wrapping this compute
+        cell.  This defaults to 70, but the default setting for a
+        notebook is 72.
+
+        OUTPUT:
+
+        - an integer
 
         EXAMPLES::
 
@@ -731,7 +919,22 @@ class Cell(Cell_generic):
 
     def plain_text(self, ncols=0, prompts=True, max_out=None):
         r"""
-        Returns the plain text version of self.
+        Returns the plain text version of this compute cell.
+
+        INPUT:
+
+        - ``ncols`` - an integer (default: 0); the number of word wrap
+          columns
+
+        - ``prompts`` - a boolean (default: False); whether to strip
+          interpreter prompts from the beginning of each line
+
+        - ``max_out`` - an integer (default: None); the maximum number
+          of characters to return
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -810,7 +1013,23 @@ class Cell(Cell_generic):
 
     def edit_text(self, ncols=0, prompts=False, max_out=None):
         r"""
-        Returns the text displayed in the Edit window.
+        Returns the text displayed for this compute cell in the Edit
+        window.
+
+        INPUT:
+
+        - ``ncols`` - an integer (default: 0); the number of word wrap
+          columns
+
+        - ``prompts`` - a boolean (default: False); whether to strip
+          interpreter prompts from the beginning of each line
+
+        - ``max_out`` - an integer (default: None); the maximum number
+          of characters to return
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -823,7 +1042,12 @@ class Cell(Cell_generic):
 
     def is_last(self):
         """
-        Returns True if self is the last cell in the worksheet.
+        Returns whether this compute cell is the last cell in its
+        worksheet object.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -843,9 +1067,14 @@ class Cell(Cell_generic):
 
     def next_id(self):
         """
-        Returns the id of the next cell in the worksheet associated to
-        self. If self is not in the worksheet or self is the last cell in
-        the cell_list, then the id of the first cell is returned.
+        Returns the ID of the next cell in this compute cell's
+        worksheet object.  If this cell is not in the worksheet or is
+        the last cell, it returns the ID of the worksheet's first
+        cell.
+
+        OUTPUT:
+
+        - an integer or string
 
         EXAMPLES::
 
@@ -874,7 +1103,7 @@ class Cell(Cell_generic):
 
     def interrupt(self):
         """
-        Record that the calculation running in this cell was interrupted.
+        Sets this compute cell's evaluation as interrupted.
 
         EXAMPLES::
 
@@ -894,7 +1123,12 @@ class Cell(Cell_generic):
 
     def interrupted(self):
         """
-        Returns True if the evaluation of this cell has been interrupted.
+        Returns whether this compute cell's evaluation has been
+        interrupted.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -911,7 +1145,12 @@ class Cell(Cell_generic):
 
     def computing(self):
         """
-        Returns True if self is in its worksheet's queue.
+        Returns whether this compute cell is queued for evaluation by
+        its worksheet object.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -927,8 +1166,13 @@ class Cell(Cell_generic):
 
     def is_interactive_cell(self):
         r"""
-        Return True if this cell contains the use of interact either as a
-        function call or a decorator.
+        Returns whether this compute cell contains
+        :func:`sagenb.notebook.interact.interact` either as a function
+        call or decorator.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -951,7 +1195,12 @@ class Cell(Cell_generic):
 
     def is_interacting(self):
         r"""
-        Returns True if this cell is currently interacting with the user.
+        Returns whether this compute cell is currently
+        :func:`sagenb.notebook.interact.interact`\ ing.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -966,16 +1215,21 @@ class Cell(Cell_generic):
 
     def stop_interacting(self):
         """
-        Stops interaction with user.
+        Stops :func:`sagenb.notebook.interact.interact`\ ion for this
+        compute cell.
 
-        TODO: Add doctests for :meth:`stop_interacting`.
+        TODO: Add doctests.
         """
         if self.is_interacting():
             del self.interact
 
     def set_input_text(self, input):
         """
-        Sets the input text of self to be the string input.
+        Sets the input text of this compute cell.
+
+        INPUT:
+
+        - ``input`` - a string; the new input text
 
         TODO: Add doctests for the code dealing with interact.
 
@@ -1028,7 +1282,11 @@ class Cell(Cell_generic):
 
     def input_text(self):
         """
-        Returns self's input text.
+        Returns this compute cell's input text.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1040,9 +1298,13 @@ class Cell(Cell_generic):
 
     def cleaned_input_text(self):
         r"""
-        Returns the input text with all of the percent directives
-        removed.  If the cell is interacting, then the interacting
-        text is returned.
+        Returns this compute cell's "cleaned" input text, i.e., its
+        input with all of its percent directives removed.  If this
+        cell is interacting, it returns the interacting text.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1057,10 +1319,12 @@ class Cell(Cell_generic):
 
     def parse_percent_directives(self):
         r"""
-        Returns a string which consists of the input text of this cell
-        with the percent directives at the top removed.  As it's doing
-        this, it computes a list of all the directives and which
-        system (if any) the cell should be run under.
+        Parses this compute cell's percent directives, determines its
+        system (if any), and returns the "cleaned" input text.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1096,8 +1360,11 @@ class Cell(Cell_generic):
 
     def percent_directives(self):
         r"""
-        Returns a list of all the percent directives that appear
-        in this cell.
+        Returns a list of this compute cell's percent directives.
+
+        OUTPUT:
+
+        - a list of strings
 
         EXAMPLES::
 
@@ -1109,13 +1376,17 @@ class Cell(Cell_generic):
 
     def system(self):
         r"""
-        Returns the system used to evaluate this cell. The system
-        is specified by a percent directive like '%maxima' at
+        Returns the system used to evaluate this compute cell.  The
+        system is specified by a percent directive like '%maxima' at
         the top of a cell.
 
-        If no system is explicitly specified, then None is returned
-        which tells the notebook to evaluate the cell using the
-        worksheet's default system.
+        Returns None, if no system is explicitly specified.  In this
+        case, the notebook evaluates the cell using the worksheet's
+        default system.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1132,10 +1403,12 @@ class Cell(Cell_generic):
 
     def is_auto_cell(self):
         r"""
-        Returns True if self is an auto cell.
+        Returns whether this compute cell is evaluated automatically
+        when its worksheet object starts up.
 
-        An auto cell is a cell that is automatically evaluated when the
-        worksheet starts up.
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -1150,9 +1423,13 @@ class Cell(Cell_generic):
 
     def changed_input_text(self):
         """
-        Returns the changed input text for the cell. If there was any
-        changed input text, then it is reset to " before this method
-        returns.
+        Returns the changed input text for this compute cell.  If
+        there is any changed input text, it is reset to '' before this
+        method returns.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1178,8 +1455,13 @@ class Cell(Cell_generic):
 
     def set_changed_input_text(self, new_text):
         """
-        Note that this does not update the version of the cell. This is
-        typically used for things like tab completion.
+        Updates this compute cell's changed input text.  Note: This
+        does not update the version of the cell.  It's typically used,
+        e.g., for tab completion.
+
+        INPUT:
+
+        - ``new_text`` - a string; the new changed input text
 
         EXAMPLES::
 
@@ -1195,7 +1477,16 @@ class Cell(Cell_generic):
 
     def set_output_text(self, output, html, sage=None):
         r"""
-        Sets the output text for self.
+        Sets this compute cell's output text.
+
+        INPUT:
+
+        - ``output`` - a string; the updated output text
+
+        - ``html`` - a string; updated output HTML
+
+        - ``sage`` - a :class:`sage` instance (default: None); the
+          sage instance to use for this cell(?)
 
         EXAMPLES::
 
@@ -1247,7 +1538,11 @@ class Cell(Cell_generic):
 
     def sage(self):
         """
-        TODO: Figure out what exactly this does.
+        Returns the :class:`sage` instance for this compute cell(?).
+
+        OUTPUT:
+
+        - an instance of :class:`sage`
 
         EXAMPLES::
 
@@ -1262,7 +1557,11 @@ class Cell(Cell_generic):
 
     def output_html(self):
         """
-        Returns the HTML for self's output.
+        Returns this compute cell's HTML output.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1281,13 +1580,17 @@ class Cell(Cell_generic):
 
     def process_cell_urls(self, urls):
         """
-        Processes URLs of the form ``'cell://.*?'`` by replacing the
-        protocol with the path to self and appending self's version
-        number.
+        Processes this compute cell's ``'cell://.*?'`` URLs, replacing
+        the protocol with the cell's path and appending the cell's
+        version number.
 
         INPUT:
 
-        - ``urls`` - a string
+        - ``urls`` - a string; the URLs to process
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1306,18 +1609,24 @@ class Cell(Cell_generic):
 
     def output_text(self, ncols=0, html=True, raw=False, allow_interact=True):
         """
-        Returns the text for self's output.
+        Returns this compute cell's output text.
 
         INPUT:
 
-        - ``ncols`` -- maximum number of columns
+        - ``ncols`` - an integer (default: 0); the number of word wrap
+          columns
 
-        - ``html`` -- boolean stating whether to output HTML
+        - ``html`` - a boolean (default: True); whether to output HTML
 
-        - ``raw`` -- boolean stating whether to output raw text
-          (takes precedence over HTML)
+        - ``raw`` - a boolean (default: False); whether to output raw
+          text (takes precedence over HTML)
 
-        - ``allow_interact`` -- boolean stating whether to allow interaction
+        - ``allow_interact`` - a boolean (default: True); whether to
+          allow :func:`sagenb.notebook.interact.interact`\ ion
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1350,8 +1659,8 @@ class Cell(Cell_generic):
                     print msg
                     pass
             else:
-                # Get rid of the interact div to avoid updating the wrong output location
-                # during interact.
+                # Get rid of the interact div to avoid updating the
+                # wrong output location during interact.
                 return ''
 
         is_interact = self.is_interactive_cell()
@@ -1377,13 +1686,18 @@ class Cell(Cell_generic):
 
     def parse_html(self, s, ncols):
         r"""
-        Parse HTML for output.
+        Parses HTML for output, escaping and wrapping HTML and
+        removing script elements.
 
         INPUT:
 
-        - ``s`` -- the input string containing HTML
+        - ``s`` - a string; the HTML to parse
 
-        - ``ncols`` -- maximum number of columns
+        - ``ncols`` - an integer; the number of word wrap columns
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1400,8 +1714,7 @@ class Cell(Cell_generic):
         def format_html(x):
             return self.process_cell_urls(x)
 
-        # if there is an error in the output,
-        # specially format it.
+        # If there is an error in the output, specially format it.
         if not self.is_interactive_cell():
             s = format_exception(format_html(s), ncols)
 
@@ -1432,7 +1745,11 @@ class Cell(Cell_generic):
 
     def has_output(self):
         """
-        Returns True if there is output for this cell.
+        Returns whether this compute cell has any output.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -1447,8 +1764,13 @@ class Cell(Cell_generic):
 
     def is_html(self):
         r"""
-        Returns True if this is an HTML cell. An HTML cell whose system is
-        'html' and is typically specified by ``%html``.
+        Returns whether this is an HTML compute cell, e.g., its system
+        is 'html'.  This is typically specified by the percent
+        directive ``%html``.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -1468,9 +1790,11 @@ class Cell(Cell_generic):
 
     def set_is_html(self, v):
         """
-        Sets whether or not this cell is an HTML cell.
+        Sets whether this compute cell is an HTML cell.
 
-        This is called by check_for_system_switching in worksheet.py.
+        INPUT:
+
+        - ``v`` - a boolean
 
         EXAMPLES::
 
@@ -1488,6 +1812,17 @@ class Cell(Cell_generic):
     #################
     def set_introspect_html(self, html, completing=False, raw=False):
         """
+        Sets this compute cell's introspection text.
+
+        INPUT:
+
+        - ``html`` - a string; the updated text
+
+        - ``completing`` - a boolean (default: False); whether the
+          completions menu is open
+
+        - ``raw`` - a boolean (default: False)
+
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
@@ -1522,10 +1857,14 @@ class Cell(Cell_generic):
 
     introspection_status = property(get_introspection_status, set_introspection_status)
 
-
     def introspect_html(self):
         """
-        Returns HTML for introspection.
+        Returns this compute cell's introspection text, setting it to
+        '', if none is available.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1553,7 +1892,12 @@ class Cell(Cell_generic):
 
     def introspect(self):
         """
-        Returns self's introspection text.
+        Returns compute cell's introspection text.
+
+        OUTPUT:
+
+        - a string 2-tuple ("before" and "after" text) or boolean (not
+          introspecting)
 
         EXAMPLES::
 
@@ -1578,7 +1922,7 @@ class Cell(Cell_generic):
 
     def unset_introspect(self):
         """
-        Unsets self's introspection text.
+        Clears this compute cell's introspection text.
 
         EXAMPLES::
 
@@ -1603,7 +1947,13 @@ class Cell(Cell_generic):
 
     def set_introspect(self, before_prompt, after_prompt):
         """
-        Set self's introspection text.
+        Set this compute cell's introspection text.
+
+        INPUT:
+
+        - ``before_prompt`` - a string
+
+        - ``after_prompt`` - a string
 
         EXAMPLES::
 
@@ -1616,21 +1966,25 @@ class Cell(Cell_generic):
 
     def evaluate(self, introspect=False, time=None, username=None):
         r"""
+        Evaluates this compute cell.
+
         INPUT:
 
-        -  ``username`` - name of user doing the evaluation
+        - ``introspect`` - a pair [``before_cursor``,
+           ``after_cursor``] of strings (default: False)
 
-        -  ``time`` - if True return time computation takes
+        - ``time`` - a boolean (default: None); whether to return the
+          time the computation takes
 
-        -  ``introspect`` - either False or a pair
-           [before_cursor, after_cursor] of strings.
+        - ``username`` - a string (default: None); name of user doing
+           the evaluation
 
         EXAMPLES:
 
         We create a notebook, worksheet, and cell and evaluate it
         in order to compute `3^5`::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n3^5\n}}}')
@@ -1667,7 +2021,11 @@ class Cell(Cell_generic):
 
     def version(self):
         """
-        Returns the version number of this cell.
+        Returns this compute cell's version number.
+
+        OUTPUT:
+
+        - an integer
 
         EXAMPLES::
 
@@ -1686,8 +2044,12 @@ class Cell(Cell_generic):
 
     def time(self):
         r"""
-        Returns True if the time it takes to evaluate this cell should be
-        printed.
+        Returns whether to print timing information about the
+        evaluation of this compute cell.
+
+        OUTPUT:
+
+        - a boolean
 
         EXAMPLES::
 
@@ -1704,29 +2066,52 @@ class Cell(Cell_generic):
 
     def doc_html(self, wrap=None, div_wrap=True, do_print=False):
         """
-        Modified version of ``self.html`` for the doc browser.
-        This is a hack and needs to be improved. The problem is how to get
-        the documentation html to display nicely between the example cells.
-        The type setting (jsMath formatting) needs attention too.
+        Returns HTML for a doc browser cell.  This is a modified
+        version of :meth:``html``.
+
+        This is a hack and needs to be improved.  The problem is how
+        to get the documentation HTML to display nicely between the
+        example cells.  The type setting (jsMath formatting) needs
+        attention too.
 
         TODO: Remove this hack (:meth:`doc_html`)
+
+        INPUT:
+
+        - ``wrap`` - an integer (default: None); the number of word
+          wrap columns
+
+        - ``div_wrap`` - a boolean (default: True); whether to wrap
+          the output in outer div elements
+
+        - ``do_print`` - a boolean (default: False); whether to return
+          output suitable for printing
+
+        OUTPUT:
+
+        - a string
         """
         self.evaluate()
         return self.html(wrap, div_wrap, do_print)
 
     def html(self, wrap=None, div_wrap=True, do_print=False):
         r"""
-        Returns the HTML for self.
+        Returns the HTML for this compute cell.
 
         INPUT:
 
-        - ``wrap`` - None or an integer stating column position to
-          wrap lines. Defaults to configuration if not given.
+        - ``wrap`` - an integer (default: None); the number of word
+          wrap columns
 
-        - ``div_wrap`` - a boolean stating whether to wrap ``div``.
+        - ``div_wrap`` - a boolean (default: True); whether to wrap
+          the output in outer div elements
 
-        - ``do_print`` - a boolean stating whether the HTML is for
-          print or not.
+        - ``do_print`` - a boolean (default: False); whether to return
+          output suitable for printing
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1741,14 +2126,18 @@ class Cell(Cell_generic):
 
         if wrap is None:
             wrap = self.notebook().conf()['word_wrap_cols']
-            
+
         return template(os.path.join('html', 'notebook', 'cell.html'),
                         cell=self, wrap=wrap,
                         div_wrap=div_wrap, do_print=do_print)
 
     def url_to_self(self):
         """
-        Returns a notebook URL for this cell.
+        Returns a notebook URL for this compute cell.
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1767,7 +2156,12 @@ class Cell(Cell_generic):
 
     def files(self):
         """
-        Returns a list of all the files in self's directory.
+        Returns a list of all the files in this compute cell's
+        directory.
+
+        OUTPUT:
+
+        - a list of strings
 
         EXAMPLES::
 
@@ -1792,7 +2186,7 @@ class Cell(Cell_generic):
 
     def delete_files(self):
         """
-        Deletes all of the files associated with this cell.
+        Deletes all of the files associated with this compute cell.
 
         EXAMPLES::
 
@@ -1821,16 +2215,19 @@ class Cell(Cell_generic):
         if os.path.exists(dir):
             shutil.rmtree(dir, ignore_errors=True)
 
-
-
     def files_html(self, out):
         """
-        Returns HTML to display the files in self's directory.
+        Returns HTML to display the files in this compute cell's
+        directory.
 
         INPUT:
 
-        - ``out`` - string to exclude files.
-          Format: To exclude bar, foo, ... ``'cell://bar cell://foo ...'``
+        - ``out`` - a string; files to exclude.  To exclude bar, foo,
+          ..., use the format ``'cell://bar cell://foo ...'``
+
+        OUTPUT:
+
+        - a string
 
         EXAMPLES::
 
@@ -1916,24 +2313,30 @@ class Cell(Cell_generic):
             files  = ('&nbsp'*3).join(files)
         return images + files
 
-########
 
+# Alias
+ComputeCell = Cell
+
+
+#####################
+# Utility functions #
+#####################
 def format_exception(s0, ncols):
     r"""
-    Make it so exceptions don't appear expanded by default.
+    Formats exceptions so they do not appear expanded by default.
 
     INPUT:
 
-    - ``s0`` - string
+    - ``s0`` - a string
 
-    - ``ncols`` - integer
+    - ``ncols`` - an integer; number of word wrap columns
 
     OUTPUT:
 
     - a string
 
-    If s0 contains "notracebacks" then this function always returns
-    s0.
+    If ``s0`` contains "notracebacks," this function simply returns
+    ``s0``.
 
     EXAMPLES::
 
@@ -1960,13 +2363,20 @@ def format_exception(s0, ncols):
         s = s.replace("' + '\\n', '', 'single')", "")
     return s
 
-ComputeCell=Cell
-
-
 def number_of_rows(txt, ncols):
     r"""
-    Returns the number of rows needed to display the string in txt if
-    there are a maximum of ncols columns per row.
+    Returns the number of rows needed to display a string, given a
+    maximum number of columns per row.
+
+    INPUT:
+
+    - ``txt`` - a string; the text to "wrap"
+
+    - ``ncols`` - an integer; the number of word wrap columns
+
+    OUTPUT:
+
+    - an integer
 
     EXAMPLES::
 

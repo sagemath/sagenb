@@ -28,13 +28,13 @@ INPUT:
             </div>
             <script type="text/javascript">
                 $("#insert_new_cell_before{{ cell.id() }}").plainclick(function (e) {
-                    insert_new_cell_before({{ cell.id() }});
+                    insert_new_cell_before({{ '%r'|format(cell.id()) }});
                 });
-		{% if not cell.worksheet().docbrowser() %}
+                {% if not cell.worksheet().docbrowser() %}
                 $("#insert_new_cell_before{{ cell.id() }}").shiftclick(function (e) {
-                    insert_new_text_cell_before({{ cell.id() }});
+                    insert_new_text_cell_before({{ '%r'|format(cell.id()) }});
                 });
-		{% endif %}
+                {% endif %}
             </script>
         {% endif %}
             {% if 'hide' in cell.percent_directives() %}
@@ -49,12 +49,12 @@ INPUT:
                           cols="80"
                           id="cell_input_{{ cell.id() }}"
                           {# TODO: Migrate these 'on' handlers to a .js file #}
-                          onKeyPress="return input_keypress({{ cell.id() }}, event);"
-                          onKeyDown="return input_keydown({{ cell.id() }},event);"
-                          onKeyUp="return input_keyup({{ cell.id() }}, event);"
-                          onBlur="cell_blur({{ cell.id() }}); return true;"
-                          onFocus="cell_focused(this, {{ cell.id() }}); return true;">{{ cell.input_text().rstrip() }}</textarea>
-                <a href="javascript:evaluate_cell({{ cell.id() }},0)"
+                          onKeyPress="return input_keypress({{ '%r'|format(cell.id()) }}, event);"
+                          onKeyDown="return input_keydown({{ '%r'|format(cell.id()) }}, event);"
+                          onKeyUp="return input_keyup({{ '%r'|format(cell.id()) }}, event);"
+                          onBlur="cell_blur({{ '%r'|format(cell.id()) }}); return true;"
+                          onFocus="cell_focused(this, {{ '%r'|format(cell.id()) }}); return true;">{{ cell.input_text().rstrip() }}</textarea>
+                <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
                    class="eval_button"
                    id="eval_button{{ cell.id() }}"
                    alt="Click here or press shift-return to evaluate">
@@ -63,7 +63,7 @@ INPUT:
             {% endif %}
             {# end input #}
 
-            <div id='introspect_div_{{ cell.id() }}' class='introspection'></div>
+            <div id="introspect_div_{{ cell.id() }}" class="introspection"></div>
         {% endif %}
 
         {% if do_print and cell.cell_output_type() == 'hidden' %}
@@ -75,7 +75,7 @@ INPUT:
             <table class="cell_output_box">
                 <tr>
                     <td class="cell_number" id="cell_number_{{ cell.id() }}"
-                        {{ '' if do_print else 'onClick="cycle_cell_output_type(%s);"'|format(cell.id()) }} >
+                        {{ '' if do_print else 'onClick="cycle_cell_output_type(%r);"'|format(cell.id()) }} >
                         {% for i in range(7) %}&nbsp;{% endfor %}
                     </td>
                     <td class="output_cell">
@@ -104,7 +104,7 @@ INPUT:
             </table>
         </div>
         {% endif %}
-        
+
 {% if div_wrap %}
     </div>
 </div>

@@ -24,7 +24,16 @@ AUTHORS:
 ###########################################################################
 
 # Import standard Python libraries that we will use below
-import base64, bz2, calendar, copy, os, re, shutil, string, time, traceback
+import base64
+import bz2
+import calendar
+import copy
+import os
+import re
+import shutil
+import string
+import time
+import traceback
 
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
@@ -39,11 +48,10 @@ from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
                                WorksheetProcess_ReferenceImplementation,
                                WorksheetProcess_RemoteExpectImplementation)
 
-
 import sagenb.misc.support  as support
 
 # Imports specifically relevant to the sage notebook
-from   cell import Cell, TextCell
+from cell import Cell, TextCell
 from template import template, clean_name, prettify_time_ago
 
 # Set some constants that will be used for regular expressions below.
@@ -54,13 +62,14 @@ non_whitespace = re.compile('\S')
 CODE_PY = "___code___.py"
 
 # Constants that control the behavior of the worksheet.
-INTERRUPT_TRIES = 3    # number of times to send control-c to subprocess before giving up
+INTERRUPT_TRIES = 3    # number of times to send control-c to
+                       # subprocess before giving up
 INITIAL_NUM_CELLS = 1  # number of empty cells in new worksheets
-
-WARN_THRESHOLD = 100   # The number of seconds, so if there was no activity on
-                       # this worksheet for this many seconds, then editing
-                       # is considered safe.  Used when multiple people are editing
-                       # the same worksheet.
+WARN_THRESHOLD = 100   # The number of seconds, so if there was no
+                       # activity on this worksheet for this many
+                       # seconds, then editing is considered safe.
+                       # Used when multiple people are editing the
+                       # same worksheet.
 
 # The strings used to synchronized the compute subprocesses.
 # WARNING:  If you make any changes to this, be sure to change the
@@ -71,14 +80,14 @@ SAGE_BEGIN = SC + 'b'
 SAGE_END   = SC + 'e'
 SAGE_ERROR = SC + 'r'
 
-# Integers that define which folder this worksheet is in
-# relative to a given user.
+# Integers that define which folder this worksheet is in relative to a
+# given user.
 ARCHIVED = 0
 ACTIVE   = 1
 TRASH    = 2
 
-all_worksheet_processes = []
 
+all_worksheet_processes = []
 def update_worksheets():
     """
     Iterate through and "update" all the worksheets.  This is needed
@@ -86,7 +95,6 @@ def update_worksheets():
     """
     for S in all_worksheet_processes:
         S.update()
-
 
 import notebook as _notebook
 def worksheet_filename(name, owner):
@@ -1464,7 +1472,8 @@ class Worksheet(object):
         d = {}
         for user, v in tags.iteritems():
             if len(v) >= 1:
-                d[user] = v[0]  # must be a single int for now, until the tag system is implemented
+                d[user] = v[0]  # must be a single int for now, until
+                                # the tag system is implemented
         self.__user_view = d
 
     def set_user_view(self, user, x):
@@ -1665,8 +1674,6 @@ class Worksheet(object):
         """
         self.set_active(user)
 
-    #############
-
     def delete_cells_directory(self):
         r"""
         Delete the directory in which all the cell computations occur.
@@ -1694,11 +1701,9 @@ class Worksheet(object):
         if os.path.exists(dir):
             shutil.rmtree(dir)
 
-
     ##########################################################
     # Owner/viewer/user management
     ##########################################################
-
     def owner(self):
         try:
             return self.__owner
@@ -1836,7 +1841,6 @@ class Worksheet(object):
                 # It will get purged elsewhere.
                 self.__owner = None
 
-
     def add_viewer(self, user):
         """
         Add the given user as an allowed viewer of this worksheet.
@@ -1885,7 +1889,6 @@ class Worksheet(object):
         except AttributeError:
             self.__collaborators = [user]
 
-
     ##########################################################
     # Searching
     ##########################################################
@@ -1916,11 +1919,9 @@ class Worksheet(object):
         # Every single word is there.
         return True
 
-
     ##########################################################
     # Saving
     ##########################################################
-
     def save_snapshot(self, user, E=None):
         if not self.body_is_loaded(): return
         self.uncache_snapshot_data()
@@ -2095,7 +2096,6 @@ class Worksheet(object):
         except AttributeError:
             return False
 
-
     def edit_text(self):
         """
         Returns a plain-text version of the worksheet with {{{}}}
@@ -2247,8 +2247,6 @@ class Worksheet(object):
         # This *depends* on self.cell_list() being set!!
         self.set_cell_counter()
 
-
-
     ##########################################################
     # HTML rendering of the whole worksheet
     ##########################################################
@@ -2336,7 +2334,6 @@ class Worksheet(object):
     def set_is_doc_worksheet(self, value):
         self.__is_doc_worksheet = value
 
-
     ##########################################################
     # Last edited
     ##########################################################
@@ -2388,11 +2385,11 @@ class Worksheet(object):
         self.__date_edited = (time.localtime(tm), username)
         self.__last_edited = (tm, username)
 
-    # TODO: all code below needs to be re-organized, but without breaking
-    # old worksheet migration.  Do this after I wrote a "basic" method
-    # for the *old* sage notebook codebase.  At that point I'll be able
-    # to greatly simplify worksheet migration and totally refactor
-    # anything I want in the new sagenb code.
+    # TODO: all code below needs to be re-organized, but without
+    # breaking old worksheet migration.  Do this after I wrote a
+    # "basic" method for the *old* sage notebook codebase.  At that
+    # point I'll be able to greatly simplify worksheet migration and
+    # totally refactor anything I want in the new sagenb code.
     def last_edited(self):
         try:
             return self.__last_edited[0]
@@ -2460,16 +2457,16 @@ class Worksheet(object):
                         time = convert_time_to_string(self.last_edited()),
                         last_editor = self.last_to_edit())
 
-
     ##########################################################
     # Managing cells and groups of cells in this worksheet
     ##########################################################
-
     def cell_id_list(self):
         r"""
-        Return a new list of the id's of cells in this worksheet.
+        Returns a list of ID's of all cells in this worksheet.
 
-        OUTPUT: a new list
+        OUTPUT:
+
+        - a new list of integers and/or strings
 
         EXAMPLES::
 
@@ -2489,18 +2486,22 @@ class Worksheet(object):
 
     def compute_cell_id_list(self):
         """
-        Return list of id's of all cells.
+        Returns a list of ID's of all compute cells in this worksheet.
+
+        OUTPUT:
+
+        - a new list of IDs integers and/or strings
         """
         return [C.id() for C in self.cell_list() if isinstance(C, Cell)]
 
     def cell_list(self):
         r"""
-        Return a reference to the list of the all the cells in this
-        worksheet.
+        Returns a reference to the list of this worksheet's cells.
 
         OUTPUT:
 
-        -  ``list`` - a list of cells
+        - a list of :class:`sagenb.notebook.cell.Cell_generic`
+          instances
 
         .. note::
 
@@ -2533,9 +2534,12 @@ class Worksheet(object):
 
     def append_new_cell(self):
         """
-        Create and append a new cell to the list of cells.
+        Creates and appends a new compute cell to this worksheet's
+        list of cells.
 
-        OUTPUT: a new empty cell
+        OUTPUT:
+
+        - a new :class:`sagenb.notebook.cell.Cell` instance
 
         EXAMPLES::
 
@@ -2552,23 +2556,21 @@ class Worksheet(object):
         self.cell_list().append(C)
         return C
 
-    def new_cell_before(self, id, input=""):
+    def new_cell_before(self, id, input=''):
         """
-        Insert a new cell into the cell list before the cell
-        with the given integer id.  If the id is not the
-        id of any cell, inserts a new cell at the end of the
-        cell list.
+        Inserts a new compute cell before a cell with the given ID.
+        If the ID does not match any cell in this worksheet's list, it
+        inserts a new cell at the end.
 
         INPUT:
 
-        - ``id`` - integer
+        - ``id`` - an integer or a string; the ID of the cell to find
 
-        - ``input`` - string
+        - ``input`` - a string (default: ''); the new cell's input text
 
         OUTPUT:
 
-        A new cell with the given input text (empty by default).
-
+        - a new :class:`sagenb.notebook.cell.Cell` instance
         """
         cells = self.cell_list()
         for i in range(len(cells)):
@@ -2580,23 +2582,22 @@ class Worksheet(object):
         cells.append(C)
         return C
 
-    def new_text_cell_before(self, id, input=""):
+    def new_text_cell_before(self, id, input=''):
         """
-        Insert a new cell into the cell list before the cell
-        with the given integer id.  If the id is not the
-        id of any cell, inserts a new cell at the end of the
-        cell list.
+        Inserts a new text cell before the cell with the given ID.  If
+        the ID does not match any cell in this worksheet's list, it
+        inserts a new cell at the end.
 
         INPUT:
 
-        - ``id`` - integer
+        - ``id`` - an integer or a string; the ID of the cell to find
 
-        - ``input`` - string
+        - ``input`` - a string (default: ''); the new cell's input
+          text
 
         OUTPUT:
 
-        A new cell with the given input text (empty by default).
-
+        - a new :class:`sagenb.notebook.cell.TextCell` instance
         """
         cells = self.cell_list()
         for i in range(len(cells)):
@@ -2608,22 +2609,21 @@ class Worksheet(object):
         cells.append(C)
         return C
 
-
-    def new_cell_after(self, id, input=""):
+    def new_cell_after(self, id, input=''):
         """
-        Insert a new cell into the cell list after the cell with the given
-        integer id.
+        Inserts a new compute cell into this worksheet's cell list
+        after the cell with the given ID.  If the ID does not match
+        any cell, it inserts the new cell at the end of the list.
 
         INPUT:
 
-         - ``id`` - integer
+        - ``id`` - an integer or a string; the ID of the cell to find
 
-         - ``input`` - string
+        - ``input`` - a string (default: ''); the new cell's input text
 
         OUTPUT:
 
-        A new cell with the given input text (empty by default).
-
+        - a new :class:`sagenb.notebook.cell.Cell` instance
         """
         cells = self.cell_list()
         for i in range(len(cells)):
@@ -2635,23 +2635,21 @@ class Worksheet(object):
         cells.append(C)
         return C
 
-    def new_text_cell_after(self, id, input=""):
+    def new_text_cell_after(self, id, input=''):
         """
-        Insert a new cell into the cell list after the cell
-        with the given integer id.  If the id is not the
-        id of any cell, inserts a new cell at the end of the
-        cell list.
+        Inserts a new text cell into this worksheet's cell list after
+        the cell with the given ID.  If the ID does not match any
+        cell, it inserts the new cell at the end of the list.
 
         INPUT:
 
-        - ``id`` - integer
+        - ``id`` - an integer or a string; the ID of the cell to find
 
-        - ``input`` - string
+        - ``input`` - a string (default: ''); the new cell's input text
 
         OUTPUT:
 
-        A new cell with the given input text (empty by default).
-
+        - a new :class:`sagenb.notebook.cell.TextCell` instance
         """
         cells = self.cell_list()
         for i in range(len(cells)):
@@ -2665,7 +2663,16 @@ class Worksheet(object):
 
     def delete_cell_with_id(self, id):
         """
-        Remove the cell with given id and return the cell before it.
+        Deletes a cell with the given ID, returning the cell before
+        it.
+
+        INPUT:
+
+        - ``id`` - an integer or string; the cell's ID
+
+        OUTPUT:
+
+        - an instance of :class:`sagenb.notebook.cell.Cell_generic`
         """
         cells = self.cell_list()
         for i in range(len(cells)):
@@ -2859,7 +2866,6 @@ from sagenb.notebook.all import *
                 C.set_output_text('Exited %s process'%S,'')
                 return
 
-
         #Handle any percent directives
         if 'save_server' in percent_directives:
             self.notebook().save()
@@ -2868,13 +2874,11 @@ from sagenb.notebook.all import *
         C.code_id = id
 
         # prevent directory disappear problems
-
         input = ''
 
-
-        # This is useful mainly for interact -- it allows
-        # a cell to know it's ID.
-        input += '_interact_.SAGE_CELL_ID=%s\n'%(C.id())
+        # This is useful mainly for interact -- it allows a cell to
+        # know it's ID.
+        input += '_interact_.SAGE_CELL_ID=%r\n' % C.id()
 
         if C.time():
             input += '__SAGE_t__=cputime()\n__SAGE_w__=walltime()\n'
@@ -2958,7 +2962,6 @@ from sagenb.notebook.all import *
             del self.__queue[0]
             return 'd', C
 
-
         try:
             output_status = S.output_status()
         except RuntimeError, msg:
@@ -3018,8 +3021,8 @@ from sagenb.notebook.all import *
         del self.__queue[0]
 
         if C.is_no_output():
-            # Clean up the temp directories associated to C, and do not set any output
-            # text that C might have got.
+            # Clean up the temp directories associated to C, and do
+            # not set any output text that C might have got.
             d = self.cell_directory(C)
             for X in os.listdir(d):
                 if os.path.split(X)[-1] != CODE_PY:
@@ -3066,7 +3069,6 @@ from sagenb.notebook.all import *
             C.set_introspect_html('')
 
         return 'd', C
-
 
     def interrupt(self):
         r"""
@@ -3136,7 +3138,6 @@ from sagenb.notebook.all import *
         self.sage()
         self.start_next_comp()
 
-
     def worksheet_command(self, cmd):
         # return URL in the web browser of the given cmd
         return '/home/%s/%s'%(self.filename(), cmd)
@@ -3186,23 +3187,25 @@ from sagenb.notebook.all import *
     def queue_id_list(self):
         return [c.id() for c in self.__queue]
 
-
     def enqueue(self, C, username=None, next=False):
         r"""
-        Queue up the cell C for evaluation in this worksheet.
+        Queue a cell for evaluation in this worksheet.
 
         INPUT:
 
-        -  ``C`` - a Cell
+        -  ``C`` - a :class:`sagenb.notebook.cell.Cell` instance
 
-        -  ``username`` - the name of the user that is
-           evaluating this cell (mainly used for login)
+        - ``username`` - a string (default: None); the name of the
+           user evaluating this cell (mainly used for login)
+
+        - ``next`` - a boolean (default: False); ignored
 
         .. note::
 
-           If ``C.is_asap()`` is True, then we put C as close to the
-           beginning of the queue as possible, but after all asap
-           cells. Otherwise, C goes at the end of the queue.
+           If ``C.is_asap()`` is True, then we put ``C`` as close to
+           the beginning of the queue as possible, but after all
+           "asap" cells.  Otherwise, ``C`` goes at the end of the
+           queue.
         """
         if self.is_published():
             return
@@ -3239,7 +3242,7 @@ from sagenb.notebook.all import *
             return self.__next_id
 
     def set_cell_counter(self):
-        self.__next_id = 1 + max([C.id() for C in self.cell_list()] + [-1])
+        self.__next_id = 1 + max([C.id() for C in self.cell_list() if isinstance(C.id(), int)] + [-1])
 
     def _new_text_cell(self, plain_text, id=None):
         if id is None:
@@ -3271,7 +3274,6 @@ from sagenb.notebook.all import *
     ##########################################################
     # Accessing existing cells
     ##########################################################
-
     def get_cell_with_id(self, id):
         for c in self.cell_list():
             if c.id() == id:
@@ -3294,18 +3296,17 @@ from sagenb.notebook.all import *
 
     def check_cell(self, id):
         """
-        Check the status on computation of the cell with given id.
+        Checks the status of a given compute cell.
 
         INPUT:
 
-        -  ``id`` - an integer
+        -  ``id`` - an integer or a string; the cell's ID.
 
         OUTPUT:
 
-        -  ``status`` - a string, either 'd' (done) or 'w'
-           (working)
-
-        -  ``cell`` - the cell with given id
+        - a (string, :class:`sagenb.notebook.cell.Cell`)-tuple; the
+          cell's status ('d' for "done" or 'w' for "working") and the
+          cell itself.
         """
         cell = self.get_cell_with_id(id)
 
@@ -3323,7 +3324,6 @@ from sagenb.notebook.all import *
         if len(self.cell_list()[-2].output_text(ncols=0)) == 0:
             return False
         return True
-
 
     ##########################################################
     # (Tab) Completions
@@ -3616,8 +3616,6 @@ from sagenb.notebook.all import *
         v = s.split()
         return ';'.join(['save(%s,"%s")'%(x,x) for x in v])
 
-
-
     def _eval_cmd(self, system, cmd, dir):
         cmd = cmd.replace("'", "\\u0027")
         return "print _support_.syseval(%s, ur'''%s''', '%s')"%(system, cmd, dir)
@@ -3625,7 +3623,6 @@ from sagenb.notebook.all import *
     ##########################################################
     # Parsing the %cython, %jsmath, %python, etc., extension.
     ##########################################################
-
     def get_cell_system(self, cell):
         r"""
         Returns the system that will run the input in cell.  This
@@ -3658,14 +3655,16 @@ from sagenb.notebook.all import *
         return system
 
     def cython_import(self, cmd, cell):
-        # Choice: Can use either C.relative_id() or self.next_block_id().
-        # C.relative_id() has the advantage that block evals are cached, i.e.,
-        # no need to recompile.  On the other hand tracebacks don't work if
-        # you change a cell and create a new function in it.  Caching is
-        # also annoying since the linked .c file disappears.
+        # Choice: Can use either C.relative_id() or
+        # self.next_block_id().  C.relative_id() has the advantage
+        # that block evals are cached, i.e., no need to recompile.  On
+        # the other hand tracebacks don't work if you change a cell
+        # and create a new function in it.  Caching is also annoying
+        # since the linked .c file disappears.
 
-        # TODO: This design will *only* work on local machines -- need to redesign
-        # so works even if compute worksheet process is remote!
+        # TODO: This design will *only* work on local machines -- need
+        # to redesign so works even if compute worksheet process is
+        # remote!
         id = self.next_block_id()
         code = os.path.join(self.directory(), 'code')
         if not os.path.exists(code):
@@ -3985,19 +3984,20 @@ def first_word(s):
         return s
     return s[:i.start()]
 
-
-
 def format_completions_as_html(cell_id, completions):
     """
+    Returns tabular HTML code for a list of introspection completions.
+
     INPUT:
 
-    - cell_id - id for the cell of the completions
+    - ``cell_id`` - an integer or a string; the ID of the ambient cell
 
-    - completions - list of completions in row-major order
+    - ``completions`` - a nested list of completions in row-major
+      order
 
     OUTPUT:
 
-    - string -- html for the completions formatted in rows and columns
+    - a string
     """
     if len(completions) == 0:
         return ''
@@ -4006,7 +4006,6 @@ def format_completions_as_html(cell_id, completions):
                     cell_id = cell_id,
                     # Transpose and enumerate completions to column-major
                     completions_enumerated = enumerate(map(list, zip(*completions))))
-
 
 def extract_name(text):
     # The first line is the title
@@ -4043,7 +4042,6 @@ def extract_system(text):
             n = len(text)-1
         return system, n
 
-
 def dictify(s):
     """
     INPUT:
@@ -4067,7 +4065,6 @@ def dictify(s):
         return {}
     return dict(w)
 
-
 def next_available_id(v):
     """
     Return smallest nonnegative integer not in v.
@@ -4077,10 +4074,8 @@ def next_available_id(v):
         i += 1
     return i
 
-
 def convert_time_to_string(t):
     return time.strftime('%B %d, %Y %I:%M %p', time.localtime(float(t)))
-
 
 def split_search_string_into_keywords(s):
     r"""
@@ -4113,7 +4108,6 @@ def split_search_string_into_keywords(s):
             break
     ans.extend(s.split())
     return ans
-
 
 def _get_next(s, quote='"'):
     i = s.find(quote)
