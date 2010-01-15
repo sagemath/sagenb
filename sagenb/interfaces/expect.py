@@ -291,7 +291,9 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
                 s = v[0][len('START%s'%self._number):]
             else:
                 s = ''
-        s = s.rstrip(self._prompt)
+
+        if s.endswith(self._prompt):
+            s = s[:-len(self._prompt)]
 
         files = []
         if os.path.exists(self._tempdir):
