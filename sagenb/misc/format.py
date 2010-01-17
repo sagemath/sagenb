@@ -13,6 +13,7 @@ AUTHORS:
 
 import ast
 import re
+from sagenb.misc.misc import unicode_str
 
 _futureimport_re = re.compile(r'((?:from __future__ import [^;\n]+)+)(?:;\s*)?(.*)')
 def relocate_future_imports(string):
@@ -77,16 +78,13 @@ def format_for_pexpect(string, prompt, number):
         # -*- coding: utf-8 -*-
         <BLANKLINE>
         <BLANKLINE>
-        <BLANKLINE>
-        <BLANKLINE>
-        <BLANKLINE>
         import sys
         sys.ps1 = "PROMPT"
         print "START1"
-        exec compile(ur'13' + '\n', '', 'single')
-        <BLANKLINE>
+        exec compile(u'13' + '\n', '', 'single')
         sage: print format_for_pexpect('class MyClass:\n    def __init__(self):\n        pass\na = MyClass()\na', 'PRMPT', 30)
         # -*- coding: utf-8 -*-
+        <BLANKLINE>
         <BLANKLINE>
         import sys
         sys.ps1 = "PRMPT"
@@ -95,16 +93,15 @@ def format_for_pexpect(string, prompt, number):
             def __init__(self):
                 pass
         a = MyClass()
-        exec compile(ur'a' + '\n', '', 'single')
-        <BLANKLINE>
+        exec compile(u'a' + '\n', '', 'single')
         sage: print format_for_pexpect('class MyClass:\n    def __init__(self):\n        pass\n', 'PRMPT', 30)
         # -*- coding: utf-8 -*-
+        <BLANKLINE>
         <BLANKLINE>
         import sys
         sys.ps1 = "PRMPT"
         print "START30"
-        exec compile(ur'class MyClass:\u000a    def __init__(self):\u000a        pass' + '\n', '', 'single')
-        <BLANKLINE>
+        exec compile(u'class MyClass:\n    def __init__(self):\n        pass' + '\n', '', 'single')
         sage: print format_for_pexpect('from __future__ import division\nprint "Hey!"', 'MYPROMPT', 25)
         # -*- coding: utf-8 -*-
         from __future__ import division
@@ -112,8 +109,7 @@ def format_for_pexpect(string, prompt, number):
         import sys
         sys.ps1 = "MYPROMPT"
         print "START25"
-        <BLANKLINE>
-        exec compile(ur'print "Hey!"' + '\n', '', 'single')
+        exec compile(u'print "Hey!"' + '\n', '', 'single')
         <BLANKLINE>
         sage: print format_for_pexpect('from __future__ import division; print "Hello world!"\nprint "New line!"', 'MYPRMPT', 30)
         # -*- coding: utf-8 -*-
@@ -123,9 +119,7 @@ def format_for_pexpect(string, prompt, number):
         sys.ps1 = "MYPRMPT"
         print "START30"
         print "Hello world!"
-        exec compile(ur'print "New line!"' + '\n', '', 'single')
-        <BLANKLINE>
-
+        exec compile(u'print "New line!"' + '\n', '', 'single')
     """
     string =  """
 import sys
@@ -158,16 +152,16 @@ def displayhook_hack(string):
     
         sage: from sagenb.misc.format import displayhook_hack
         sage: displayhook_hack('\n12\n')
-        "\nexec compile(ur'12' + '\\n', '', 'single')"
+        "\nexec compile(u'12' + '\\n', '', 'single')"
         sage: displayhook_hack('\ndef my_fun(foo):\n    print foo\n')
         '\ndef my_fun(foo):\n        print foo'
-        sage: print displayhook_hack('\nclass A:\ndef __init__(self, foo):\nself.foo\nb = A()\nb')
+        sage: print displayhook_hack('\nclass A:\n    def __init__(self, foo):\n        self.foo\nb = A(8)\nb')
         <BLANKLINE>
         class A:
             def __init__(self, foo):
                 self.foo
-        b = A()
-        exec compile(ur'b' + '\n', '', 'single')
+        b = A(8)
+        exec compile(u'b' + '\n', '', 'single')
     """
     # This function is all so the last line (or single lines) will
     # implicitly print as they should, unless they are an assignment.
@@ -177,12 +171,11 @@ def displayhook_hack(string):
     if i >= 0:
         while len(string[i]) > 0 and string[i][0] in ' \t':
             i -= 1
-        final_lines = '\n'.join(string[i:])
+        final_lines = unicode_str('\n'.join(string[i:]))
         if not final_lines.startswith('def '):
             try:
                 compile(final_lines + '\n', '', 'single')
-                final_lines = final_lines.replace("'", "\\u0027").replace('\n','\\u000a')
-                string[i] = "exec compile(ur'%s' + '\\n', '', 'single')" % final_lines
+                string[i] = "exec compile(%r + '\\n', '', 'single')" % final_lines
                 string = string[:i+1]
             except SyntaxError, msg:
                 pass

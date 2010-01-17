@@ -2403,7 +2403,7 @@ class Worksheet(object):
             1255029800.0
             sage: W.last_to_edit()
             'john'
-            sage: W.date_edited()                # output depends on timezone
+            sage: W.date_edited() # Output depends on timezone
             time.struct_time(tm_year=2009, tm_mon=10, ...)
             sage: t = W.time_since_last_edited() # just test that call works
         """
@@ -3659,8 +3659,7 @@ from sagenb.notebook.all import *
         return ';'.join(['save(%s,"%s")'%(x,x) for x in v])
 
     def _eval_cmd(self, system, cmd, dir):
-        cmd = cmd.replace("'", "\\u0027")
-        return "print _support_.syseval(%s, ur'''%s''', '%s')"%(system, cmd, dir)
+        return u"print _support_.syseval(%s, %r, %r)"%(system, cmd, dir)
 
     ##########################################################
     # Parsing the %cython, %jsmath, %python, etc., extension.
@@ -3746,7 +3745,7 @@ from sagenb.notebook.all import *
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, u"print _support_.syseval(gap, ur'''SymmetricGroup(5)''', '...')")
+            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', '...')")
 
         ::
 
@@ -3772,7 +3771,7 @@ from sagenb.notebook.all import *
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, u"print _support_.syseval(gap, ur'''SymmetricGroup(5)''', '...')")
+            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', '...')")
             sage: c0.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
             ('d', Cell 0; in=%sage
