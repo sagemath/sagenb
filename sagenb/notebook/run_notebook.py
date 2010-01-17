@@ -284,13 +284,6 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
 
         config.close()                     
 
-        ## Start up twisted
-        if not quiet:
-            print_open_msg('localhost' if not interface else interface, port, secure=secure)
-        if secure and not quiet:
-            print "There is an admin account.  If you do not remember the password,"
-            print "quit the notebook and type notebook(reset=True)."
-
         pidfile = os.path.join(directory, 'twistd.pid')
         cmd = 'twistd --pidfile="%s" -ny "%s"' % (pidfile, os.path.join(directory, 'twistedconf.tac'))
 
@@ -307,6 +300,13 @@ Another Sage Notebook server is running, PID %d.
 
 Please either stop the old server or run the new server in a different directory.
 """ % pid)
+        ## Start up twisted
+        if not quiet:
+            print_open_msg('localhost' if not interface else interface, port, secure=secure)
+        if secure and not quiet:
+            print "There is an admin account.  If you do not remember the password,"
+            print "quit the notebook and type notebook(reset=True)."
+
         if fork:
             import pexpect
             return pexpect.spawn(cmd)
