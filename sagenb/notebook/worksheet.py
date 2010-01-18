@@ -877,7 +877,9 @@ class Worksheet(object):
         OUTPUT: a Notebook object.
 
         EXAMPLES: This really returns the Notebook object that is set as a
-        global variable of the twist module.::
+        global variable of the twist module.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
@@ -1229,7 +1231,9 @@ class Worksheet(object):
         -  ``username`` - string
 
         EXAMPLES: We create a worksheet and rate it, then look at the
-        ratings.::
+        ratings.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('Publish Test', 'admin')
@@ -1415,14 +1419,18 @@ class Worksheet(object):
 
             sage: W.move_to_archive('admin')
 
-        The view is now archive.::
+        The view is now archive.
+
+        ::
 
             sage: W.user_view('admin')
             0
             sage: sagenb.notebook.worksheet.ARCHIVED
             0
 
-        For any other random viewer the view is set by default to ACTIVE.::
+        For any other random viewer the view is set by default to ACTIVE.
+
+        ::
 
             sage: W.user_view('foo')
             1
@@ -1740,7 +1748,9 @@ class Worksheet(object):
 
         OUTPUT: bool
 
-        EXAMPLES: We create a notebook with one worksheet and two users.::
+        EXAMPLES: We create a notebook with one worksheet and two users.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
@@ -1755,7 +1765,9 @@ class Worksheet(object):
             False
 
         After adding 'william' as a collaborator he can edit the
-        worksheet.::
+        worksheet.
+
+        ::
 
             sage: W.add_collaborator('william')
             sage: W.user_can_edit('william')
@@ -1776,7 +1788,9 @@ class Worksheet(object):
         -  ``user`` - string; the name of a user
 
         EXAMPLES: We create a notebook with 2 users and 1 worksheet that
-        both view.::
+        both view.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('wstein','sage','wstein@sagemath.org',force=True)
@@ -1789,7 +1803,9 @@ class Worksheet(object):
             ['wstein']
 
         We delete the sage user from the worksheet W. This makes wstein the
-        new owner.::
+        new owner.
+
+        ::
 
             sage: W.delete_user('sage')
             sage: W.viewers()
@@ -1797,7 +1813,9 @@ class Worksheet(object):
             sage: W.owner()
             'wstein'
 
-        Then we delete wstein from W, which makes the owner None::
+        Then we delete wstein from W, which makes the owner None.
+
+        ::
 
             sage: W.delete_user('wstein')
             sage: W.owner() is None
@@ -1805,7 +1823,9 @@ class Worksheet(object):
             sage: W.viewers()
             []
 
-        Finally, we clean up.::
+        Finally, we clean up.
+
+        ::
 
             sage: nb.delete()
         """
@@ -2135,13 +2155,19 @@ class Worksheet(object):
            ignore all the IDs in the {{{}}} code block.
 
 
-        EXAMPLES: We create a new test notebook and a worksheet.::
+        EXAMPLES:
+
+        We create a new test notebook and a worksheet.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test Edit Save', 'sage')
 
-        We set the contents of the worksheet using the edit_save command.::
+        We set the contents of the worksheet using the edit_save command.
+
+        ::
 
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}\n{{{\n2+8\n///\n10\n}}}')
             sage: W
@@ -2445,8 +2471,8 @@ class Worksheet(object):
             1255029800.0
             sage: W.last_to_edit()
             'john'
-            sage: W.date_edited()
-            time.struct_time(tm_year=2009, tm_mon=10, tm_mday=8, tm_hour=12, tm_min=23, tm_sec=20, tm_wday=3, tm_yday=281, tm_isdst=1)
+            sage: W.date_edited()                # output depends on timezone
+            time.struct_time(tm_year=2009, tm_mon=10, ...)
             sage: t = W.time_since_last_edited() # just test that call works
         """
         username = str(username); tm = float(tm)
@@ -2542,7 +2568,9 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('Test Edit Save', 'admin')
 
         Now we set the worksheet to have two cells with the default id of 0
-        and another with id 10.::
+        and another with id 10.
+
+        ::
 
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
             sage: W.cell_id_list()
@@ -3155,17 +3183,23 @@ from sagenb.notebook.all import *
             sage: W.check_comp()
             ('w', Cell 0; in=factor(2^997-1), out=...)
 
-        We interrupt it successfully.::
+        We interrupt it successfully.
+
+        ::
 
             sage: W.interrupt()         # random -- could fail on heavily loaded machine
             True
 
-        Now we check and nothing is computing.::
+        Now we check and nothing is computing.
+
+        ::
 
             sage: W.check_comp()        # random -- could fail on heavily loaded machine
             ('e', None)
 
-        Clean up.::
+        Clean up.
+
+        ::
 
             sage: W.quit()
             sage: nb.delete()
@@ -3519,7 +3553,7 @@ from sagenb.notebook.all import *
                         l += k+1
                         I = C._before_preparse.split('\n')
                         out = out[:i + len(tb)+1] + '    ' + I[n-2] + out[l:]
-        except (ValueError, IndexError), msg:
+        except (ValueError, IndexError) as msg:
             pass
         return out
 
@@ -3653,7 +3687,7 @@ from sagenb.notebook.all import *
                 cur = os.path.abspath(os.curdir)
                 try:
                     mod, dir  = cython.cython(filename_orig, compile_message=True, use_cache=True)
-                except (IOError, OSError, RuntimeError), msg:
+                except (IOError, OSError, RuntimeError) as msg:
                     return "print r'''Error compiling cython file:\n%s'''"%msg
                 t  = "import sys\n"
                 t += "sys.path.append('%s')\n"%dir
@@ -3744,14 +3778,18 @@ from sagenb.notebook.all import *
 
         -  ``C`` - the cell object
 
-        EXAMPLES: First, we set up a new notebook and worksheet.::
+        EXAMPLES: First, we set up a new notebook and worksheet.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
 
         We first test running a native command in 'sage' mode and then a
-        GAP cell within Sage mode.::
+        GAP cell within Sage mode.
+
+        ::
 
             sage: W.edit_save('{{{\n2+3\n}}}\n\n{{{\n%gap\nSymmetricGroup(5)\n}}}')
             sage: c0, c1 = W.cell_list()
@@ -3774,7 +3812,9 @@ from sagenb.notebook.all import *
             Sym( [ 1 .. 5 ] )
             )
 
-        Next, we run the same commands but from 'gap' mode.::
+        Next, we run the same commands but from 'gap' mode.
+
+        ::
 
             sage: W.edit_save('{{{\n%sage\n2+3\n}}}\n\n{{{\nSymmetricGroup(5)\n}}}')
             sage: W.set_system('gap')
@@ -3842,33 +3882,43 @@ from sagenb.notebook.all import *
            deletion.
 
         EXAMPLES: We create a new notebook, user, and a worksheet with one
-        cell.::
+        cell.
+
+        ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}')
 
-        Notice that there is 1 cell with 5 in its output.::
+        Notice that there is 1 cell with 5 in its output.
+
+        ::
 
             sage: W.cell_list()
             [Cell 0; in=2+3, out=
             5]
 
-        We now delete the output, observe that it is gone.::
+        We now delete the output, observe that it is gone.
+
+        ::
 
             sage: W.delete_all_output('sage')
             sage: W.cell_list()
             [Cell 0; in=2+3, out=]
 
-        If an invalid user tries to delete all, a ValueError is raised.::
+        If an invalid user tries to delete all, a ValueError is raised.
+
+        ::
 
             sage: W.delete_all_output('hacker')
             Traceback (most recent call last):
             ...
             ValueError: user 'hacker' not allowed to edit this worksheet
 
-        Clean up.::
+        Clean up.
+
+        ::
 
             sage: nb.delete()
         """

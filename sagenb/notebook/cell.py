@@ -68,8 +68,12 @@ class Cell_generic:
         Delete all output in this cell. This is not executed - it is an
         abstract function that must be overwritten in a derived class.
 
-        EXAMPLES: This function just raises a NotImplementedError, since it
-        most be defined in derived class.::
+        EXAMPLES:
+
+        This function just raises a NotImplementedError, since it must
+        be defined in a derived class.
+
+        ::
 
             sage: C = sagenb.notebook.cell.Cell_generic()
             sage: C.delete_output()
@@ -485,7 +489,9 @@ class Cell(Cell_generic):
             sage: C     # random output -- depends on computer speed
             Cell 0; in=2+3, out=
 
-        And the cell is considered to have been evaluated.::
+        And the cell is considered to have been evaluated.
+
+        ::
 
             sage: C.evaluated()     # random output -- depends on computer speed
             True

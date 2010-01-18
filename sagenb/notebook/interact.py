@@ -944,7 +944,7 @@ class InputBox(InteractControl):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InputBox('theta', Color('red'), type=Color)._adaptor('#aaaaaa',globals())
-            RGB color (0.66666666666666663, 0.66666666666666663, 0.66666666666666663)
+            RGB color (0.66..., 0.66..., 0.66...)
         """
         if self.__type is None:
             return sage_eval(value, globs)
@@ -2723,7 +2723,7 @@ class color_selector(input_box):
             ...
             ValueError: unknown color 'crayon'
             sage: color_selector('#abcdef', label='height', widget='jpicker')
-            Interact color selector labeled 'height', with default RGB color (0.6705882352941176, 0.80392156862745101, 0.93725490196078431), widget 'jpicker', and visible input box
+            Interact color selector labeled 'height', with default RGB color (0.6..., 0.8..., 0.9...), widget 'jpicker', and visible input box
             sage: color_selector('abcdef', label='height', widget='jpicker')
             Traceback (most recent call last):
             ...
