@@ -666,7 +666,8 @@ class Worksheet_datafile(WorksheetResource, resource.Resource):
                 path = os.path.join(self.worksheet.data_directory(), filename)
                 os.unlink(path)
                 return HTMLResponse(stream = message("Successfully deleted '%s'"%filename,
-                                                      '/home/' + self.worksheet.filename()))
+                                                      '/home/' + self.worksheet.filename(),
+                                                     title=u'%s delete successful' % filename))
         s = notebook.html_download_or_delete_datafile(self.worksheet, self.username, filename)
         return HTMLResponse(stream=s)
 
