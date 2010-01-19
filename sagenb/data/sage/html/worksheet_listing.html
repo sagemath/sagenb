@@ -73,7 +73,9 @@ INPUT:
         <a class="{{ 'bold' if typ == 'trash' else '' }}usercontrol" href=".?typ=trash">Trash</a>
 
         {% if typ == 'trash' %}
-        <a class="boldusercontrol" onClick="empty_trash();return false;" href="">(Empty Trash)</a>
+        <form method="POST" action="/emptytrash" id="empty-trash-form">
+            <a class="boldusercontrol" onClick="empty_trash(this); return false" href="#">(Empty Trash)</a>
+        </form>
         {% endif %}
     </div>
     {% endif %}

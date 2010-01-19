@@ -1594,7 +1594,7 @@ class WorksheetsByUser(resource.Resource):
 ############################
 # Trash can, archive and active
 ############################
-class EmptyTrash(resource.Resource):
+class EmptyTrash(resource.PostableResource):
     def __init__(self, username):
         """
         This twisted resource empties the trash of the current user when it
@@ -1610,6 +1610,9 @@ class EmptyTrash(resource.Resource):
         """
         self.username = username
 
+    def http_GET(self, request):
+        return http.StatusResponse(403, 'This url can only be accessed through a POST request.')
+        
     def render(self, ctx):
         """
         Rendering this resource (1) empties the trash, and (2) returns a
@@ -1642,11 +1645,11 @@ class EmptyTrash(resource.Resource):
             []
             sage: n.delete()
         """
+        notebook.empty_trash(self.username)
         if ctx.headers.hasHeader('referer'):
-            notebook.empty_trash(self.username)
             return http.RedirectResponse(ctx.headers.getHeader('referer'))
         else:
-            return http.StatusResponse(403, 'No referer found. Forbidden.')
+            return http.RedirectResponse('/home/' + self.username + '/?typ=trash')
 
 class SendWorksheetToFolder(resource.PostableResource):
     def __init__(self, username):

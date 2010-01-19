@@ -4385,15 +4385,16 @@ function decode64(input) {
 // Trash
 ///////////////////////////////////////////////////////////////////
 
-function empty_trash() {
+function empty_trash(button) {
     /*
-       This asks for confirmation from the user then sends a request back to the
-       server asking that the trash be emptied for this user. The request to the
-       server goes by accessing the url /emptytrash.  After that finishes, the
-       empty trash folder is displayed.
+
+      This asks for confirmation from the user before submitting the
+      empty trash form, which sends a POST request. GET requests are not
+      allowed by the server.
+
     */
     if(confirm('Emptying the trash will permanently delete all items in the trash. Continue?')) {
-        window.location.replace("/emptytrash");
+        $('#empty-trash-form').submit();
     }
 }
 
