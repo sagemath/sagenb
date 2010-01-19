@@ -677,6 +677,7 @@ class Notebook(object):
                 X.move_to_archive(username)
                 worksheet.set_published_version(X.filename())
                 X.record_edit(username)
+                X.set_name(worksheet.name())
                 return X
 
         # Have to create a new worksheet
