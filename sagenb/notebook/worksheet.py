@@ -1612,6 +1612,8 @@ class Worksheet(object):
             True
         """
         self.set_user_view(user, ARCHIVED)
+        if self.viewers() == [user]:
+            self.quit()
 
     def set_active(self, user):
         """
@@ -1651,6 +1653,8 @@ class Worksheet(object):
             True
         """
         self.set_user_view(user, TRASH)
+        if self.viewers() == [user]:
+            self.quit()
 
     def move_out_of_trash(self, user):
         """
