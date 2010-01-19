@@ -226,14 +226,13 @@ def save_notebook():
     twist.notebook.quit()
     print "Saving notebook..."
     twist.notebook.save()
+    print "Notebook cleanly saved."
+    
+def my_sigint(x, n):
     try:
         reactor.stop()
     except ReactorNotRunning:
         pass
-    print "Notebook cleanly saved."
-    
-def my_sigint(x, n):
-    save_notebook()
     signal.signal(signal.SIGINT, signal.SIG_DFL)
     
     
