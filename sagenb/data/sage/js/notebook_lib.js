@@ -2656,19 +2656,24 @@ function jump_to_cell(id, delta, bottom) {
          Changes the focused cell.  Does not send any information back
          to the server.
      */
+    var switch_id;
     if (ignore_next_jump) {
         ignore_next_jump = false;
         return;
     }
 
     if (delta && delta !== 0) {
-        id = id_of_cell_delta(id, delta);
+        switch_id = id_of_cell_delta(id, delta);
+    }
+
+    if (switch_id === id) {
+        return;
     }
 
     if (in_slide_mode) {
-        jump_to_slide(id);
+        jump_to_slide(switch_id);
     } else {
-        cell_focus(id, bottom);
+        cell_focus(switch_id, bottom);
     }
 }
 
