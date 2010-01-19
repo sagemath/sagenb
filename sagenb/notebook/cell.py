@@ -1418,6 +1418,7 @@ class Cell(Cell_generic):
             sage: [(C, C.system()) for C in cells if C.system() is not None]
             []
         """
+        self.parse_percent_directives()
         return self._system
 
 
@@ -1814,29 +1815,7 @@ class Cell(Cell_generic):
             sage: C.is_html()
             False
         """
-        try:
-            return self.__is_html
-        except AttributeError:
-            return self.system() == 'html'
-
-    def set_is_html(self, v):
-        """
-        Sets whether this compute cell is an HTML cell.
-
-        INPUT:
-
-        - ``v`` - a boolean
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C.is_html()
-            False
-            sage: C.set_is_html(True)
-            sage: C.is_html()
-            True
-        """
-        self.__is_html = v
+        return self.system() == 'html'
 
     #################
     # Introspection #

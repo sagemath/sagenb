@@ -46,7 +46,7 @@ div#worksheet-list-controls div.folders { float: left; clear: right; margin-left
 
 /* ******* Top Control Bar (Worksheets)  ********** */
 #worksheet-bar { overflow: hidden; clear: both; }
-#worksheet-bar a.worksheet_title { text-decoration: none; font-size: 20px; font-family: arial; font-weight: bold; color: #000000; }
+#worksheet-bar a.worksheet_title { text-decoration: none; font-size: 20px; font-weight: bold; color: #000000; }
 #worksheet-bar a.worksheet_title:hover { background-color: #ffffcc; cursor: pointer; }
 #worksheet-bar div.worksheet_title { float: left; clear: left; padding-left: 1em; background-color: #ffffff; color: black; margin-bottom: 0.5em; }
 #worksheet-bar #save-discard-buttons { float: right; clear: right; }
@@ -55,10 +55,10 @@ div#worksheet-list-controls div.folders { float: left; clear: right; margin-left
 #worksheet-bar #share-publish-buttons a.print-link { color: #112abb; text-decoration: underline; margin-right: 0.5em; }
 #worksheet-bar #share-publish-buttons a.print-link img { margin-right: 0.3em; }
 
-span.control_commands { position: fixed; top: 1ex; right: 1ex; text-align: right; color: blue; font-weight: normal; font-family: arial; font-size: 12px; }
-span.worksheet_control_commands { position: relative; top: 0px; right: 0px; text-align: right; color: blue; font-weight: normal; font-family: arial; font-size: 12px; padding: 5px; }
+span.control_commands { position: fixed; top: 1ex; right: 1ex; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
+span.worksheet_control_commands { position: relative; top: 0px; right: 0px; text-align: right; color: blue; font-weight: normal; font-size: 12px; padding: 5px; }
 
-div.slide_control_commands { float: right; position: fixed; width: 500px; top: 1ex; right: 45%; text-align: right; color: blue; font-weight: normal; font-family: arial; font-size: 12px; }
+div.slide_control_commands { float: right; position: fixed; width: 500px; top: 1ex; right: 45%; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
 
 span.vbar { height: 1.5ex; border-left: 1px solid black; width: 1px; }
 
@@ -76,7 +76,7 @@ div.slideshow_progress_text { position: absolute; z-index: 2; top: 2px; text-ali
 
 .completion_menu_selected { background-color: #8888ff; }
 
-div.docstring { font-family: arial; background-color: #fafafa; color: black; border: solid 1px black; padding: 8px; margin: 8px; }
+div.docstring { background-color: #fafafa; color: black; border: solid 1px black; padding: 8px; margin: 8px; }
 
 pre.literal-block { background-color: #ffffff; color: black; padding: 0 0 0 5px; border-left: 2px solid #c0c0c0; }
 pre.introspection { font-family: monospace; font-size: 15px; background-color: #f1f1f1; color: blue; border: solid 1px black; padding: 8px; margin: 8px; }
@@ -93,20 +93,20 @@ li.completion_menu_two:hover { background-color: #8888bb; cursor: pointer; }
 /* **** SEARCH / HELP AREA ******************************** */
 span.search_doc_topbar { z-index: 12; height: 24px; font-family: monospace; font-size: 12px; width: 158px; top: 40px; left: 5px; position: fixed; border: 1px solid #387CAF; background-color: #73a6ff; }
 
-td.menubar { text-decoration: none; font-family: arial; font-size: 15px; font-weight: bold; color: #FFFFFF; }
+td.menubar { text-decoration: none; font-size: 15px; font-weight: bold; color: #FFFFFF; }
 
-a.menubar { text-decoration: none; font-family: arial; font-size: 15px; font-weight: bold; color: #FFFFFF; background-color: #73a6ff; }
+a.menubar { text-decoration: none; font-size: 15px; font-weight: bold; color: #FFFFFF; background-color: #73a6ff; }
 
 input.search_input { position: fixed; left: 5px; top: 65px; height: 32px; width: 160px; padding: 4px; z-index: 12; font-family: monospace; font-size: 14px; color: #222222; color: #808080; border: 3px solid #387CAF; background: #FFF; }
 
-span.search_doc { z-index: 12; font-family: arial; font-size: 12px; overflow: auto; position: fixed; top: 96px; left: 5px; width: 154px; height: 150px; margin: 0px; border: 1px solid #387CAF; background-color: white; padding: 2px; }
+span.search_doc { z-index: 12; font-size: 12px; overflow: auto; position: fixed; top: 96px; left: 5px; width: 154px; height: 150px; margin: 0px; border: 1px solid #387CAF; background-color: white; padding: 2px; }
 
 #docs-main-page div.control-bar { margin: 0 auto 1em; padding: 1em 0.5em; border-bottom: 1px solid #c9d7f1; text-align: center; }
 #docs-main-page ul.controls { margin: 1em auto; list-style-type: none; text-align: center; }
 #docs-main-page ul.controls li { display: inline; }
-#docs-main-page ul.controls li a { background-color: #7799bb; font-family: sans-serif; color: #ffffff; padding: 0.25em 0.5em; font-size: 15px; font-weight: bold; text-decoration: none; }
+#docs-main-page ul.controls li a { background-color: #7799bb; color: #ffffff; padding: 0.25em 0.5em; font-size: 15px; font-weight: bold; text-decoration: none; }
 #docs-main-page ul.controls li a:hover { cursor: pointer; }
-#docs-main-page div.help_window { font-family: sans-serif; background-color: white; border: 3px solid #3d86d0; padding: 2em; width: 90%; margin: 0 auto; }
+#docs-main-page div.help_window { background-color: white; border: 3px solid #3d86d0; padding: 2em; width: 90%; margin: 0 auto; }
 #docs-main-page table.help_window { background-color: white; width: 95%; }
 #docs-main-page td.help_window_sub { background-color: #f5e0aa; width: 100%; padding: 0.5ex; font-weight: bold; }
 #docs-main-page td.help_window_cmd { background-color: #f5e0aa; width: 30%; padding: 0.5ex; }
@@ -124,7 +124,7 @@ div.left_pane_bar { position: fixed; left: 0px; top: 36px; background-color: whi
 div.left_pane_bar:hover { background-color: #8888fe; }
 
 /* *********** VARIABLES ************************* */
-span.pane div.variables_topbar { color: black; background: url('corner.png') no-repeat top left; background-color: #dcdcdc; font-family: arial; text-decoration: none; font-size: 13px; height: 2ex; padding-left: 10px; padding-bottom: 1px; width: 174px; }
+span.pane div.variables_topbar { color: black; background: url('corner.png') no-repeat top left; background-color: #dcdcdc; text-decoration: none; font-size: 13px; height: 2ex; padding-left: 10px; padding-bottom: 1px; width: 174px; }
 span.pane div.variable_list { font-size: 11px; top: 0ex; height: 20ex; border: 2px solid #dcdcdc; width: 180px; overflow: auto; }
 
 div.variable_name { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
@@ -132,15 +132,15 @@ div.variable_name { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 span.vartype { color: #657d6c; }
 
 /* *********** ATTACHED ************************* */
-span.pane div.attached_topbar { color: black; height: 2ex; top: 0ex; background: url('corner.png') no-repeat top left; background-color: #dcdcdc; text-decoration: none; font-size: 13px; font-family: arial; padding-left: 10px; padding-bottom: 1px; width: 174px; }
+span.pane div.attached_topbar { color: black; height: 2ex; top: 0ex; background: url('corner.png') no-repeat top left; background-color: #dcdcdc; text-decoration: none; font-size: 13px; padding-left: 10px; padding-bottom: 1px; width: 174px; }
 span.pane div.attached_list { font-size: 11px; top: 0ex; height: 20ex; border: 2px solid  #dcdcdc; width: 180px; overflow: auto; }
 
 div.attached_filename { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
 /* *********** WORKSHEETS ************************* */
-span.pane div.worksheets_topbar { color: black; height: 3ex; top: 0ex; background: url('/images/corner.png') no-repeat top left; background-color: #ccc; text-decoration: none; font-size: 15px; font-family: arial; padding-left: 10px; padding-top: 10px; width: 174px; }
+span.pane div.worksheets_topbar { color: black; height: 3ex; top: 0ex; background: url('/images/corner.png') no-repeat top left; background-color: #ccc; text-decoration: none; font-size: 15px; padding-left: 10px; padding-top: 10px; width: 174px; }
 
-a.left_panel_hide { position: relative; top: 0px; right: -1px; text-align: right; color: blue; font-weight: normal; font-family: arial; font-size: 12px; }
+a.left_panel_hide { position: relative; top: 0px; right: -1px; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
 a.left_panel_hide:hover { cursor: pointer; }
 
 span.X { color: white; font-family: arial, monospace; font-weight: bold; cursor: pointer; }
@@ -149,11 +149,11 @@ span.X { color: white; font-family: arial, monospace; font-weight: bold; cursor:
 .modal-prompt div.message, .modal-prompt div.field { margin-bottom: 0.25em; }
 .modal-prompt div.button-div { text-align: center; }
 
-span.pane div.add_new_worksheet_menu { position: relative; color: black; padding-top: 0.5ex; padding-bottom: 0.5ex; left: 0ex; background-color: white; text-decoration: none; font-size: 11px; font-family: arial; padding-left: 0px; width: 174px; }
+span.pane div.add_new_worksheet_menu { position: relative; color: black; padding-top: 0.5ex; padding-bottom: 0.5ex; left: 0ex; background-color: white; text-decoration: none; font-size: 11px; padding-left: 0px; width: 174px; }
 
 input.add_new_worksheet_menu { width: 100%; }
 
-button.add_new_worksheet_menu { font-size: 14px; font-family: sans-serif; }
+button.add_new_worksheet_menu { font-size: 14px; }
 
 #upload-worksheet-page h2, #upload-data-page h2 { padding-bottom: 0.5em; border-bottom: 1px solid #ccc; }
 #upload-worksheet-page label, #upload-data-page label { display: block; }
@@ -167,11 +167,11 @@ button.add_new_worksheet_menu { font-size: 14px; font-family: sans-serif; }
 
 #history-page pre { border-bottom: 1px solid #c9d7f1; padding: 1em 0.5em; }
 
-span.pane div.delete_worksheet_menu { color: black; top: 0ex; background-color: #ccc; text-decoration: none; font-size: 11px; font-family: arial; padding-left: 10px; width: 174px; display: none; }
+span.pane div.delete_worksheet_menu { color: black; top: 0ex; background-color: #ccc; text-decoration: none; font-size: 11px; padding-left: 10px; width: 174px; display: none; }
 
 input.delete_worksheet_menu { width: 50%; }
 
-button.delete_worksheet_menu { font-size: 11px; font-family: arial; background-color: #ffcccc; }
+button.delete_worksheet_menu { font-size: 11px; background-color: #ffcccc; }
 
 span.pane div.worksheet_list { position: fixed; overflow: scroll; font-size: 12px; top: 25ex; bottom: 2ex; left: 1ex; border: 2px solid #ccc; width: 180px; }
 
@@ -180,12 +180,12 @@ a.new_worksheet:hover { cursor: pointer; }
 
 div.worksheet_menu { top: 50px; }
 
-a.worksheet_title { text-decoration: none; font-size: 20px; font-family: arial; font-weight: bold; color: #000000; }
+a.worksheet_title { text-decoration: none; font-size: 20px; font-weight: bold; color: #000000; }
 a.worksheet_title:hover { background-color: #ffffcc; cursor: pointer; }
 
 div.worksheet_title { padding-left: 1em; background-color: #ffffff; color: black; }
-div.worksheet_print_title { text-decoration: none; font-size: 24px; font-family: arial; font-weight: bold; color: #000000; text-align: center; }
-div.worksheet_title_under { z-index: 0; padding-top: 3px; padding-left: 1em; background-color: #dcdcdc; font-family: arial; font-size: 22px; font-weight: bold; color: black; }
+div.worksheet_print_title { text-decoration: none; font-size: 24px; font-weight: bold; color: #000000; text-align: center; }
+div.worksheet_title_under { z-index: 0; padding-top: 3px; padding-left: 1em; background-color: #dcdcdc; font-size: 22px; font-weight: bold; color: black; }
 div.worksheet_cell_list { padding-left: 0.5ex; }
 
 a.delete_worksheet { font-family: arial, monospace; font-size: 8pt; text-decoration: underline; text-align: right; color: #0000aa; }
@@ -202,7 +202,7 @@ span.pane a.worksheet_other_computing { font-size: 14px; padding-left: 1ex; back
 .verbatim { background-color: #fafad2; border-style: solid; border-width: 1px 1px; border-color: black; }
 
 /* *********** OBJECTS ************************* */
-span.pane div.objects_topbar { color: black; height: 2ex; top: 0ex; background: url('corner.png') no-repeat top left; background-color: #ccc; text-decoration: none; font-size: 13px; font-family: arial; padding-left: 10px; padding-bottom: 1px; width: 174px; }
+span.pane div.objects_topbar { color: black; height: 2ex; top: 0ex; background: url('corner.png') no-repeat top left; background-color: #ccc; text-decoration: none; font-size: 13px; padding-left: 10px; padding-bottom: 1px; width: 174px; }
 span.pane div.object_list { font-size: 11px; height: 20ex; border: 2px solid #ccc; width: 180px; overflow: auto; }
 
 a.object_name { padding-left: 1ex; border-top: 1px solid #ccc; background-color: white; text-decoration: none; color: black; }
@@ -217,7 +217,7 @@ span.control:hover a.cs, span.control a:hover.cs { color: black; border: 1px sol
 
 /* *********** WORKSHEET ************************* */
 div.worksheet { background-color: white; border: 1px solid #aaa; padding: .75em 0.2em; }
-div.banner { background-color: white; font-family: sans-serif; font-size: 18px; text-decoration: none; color: #1950c8; }
+div.banner { background-color: white; font-size: 18px; text-decoration: none; color: #1950c8; }
 div.banner a.banner { text-decoration: none; border: none; margin-top: 2px; }
 
 a.banner:visited { color: #1950c8; }

@@ -3370,7 +3370,6 @@ from sagenb.notebook.all import *
     # Processing of input and output to worksheet process.
     ##########################################################
     def preparse_input(self, input, C):
-        C.set_is_html(False)
         introspect = C.introspect()
         if introspect:
             input = self.preparse_introspection_input(input, C, introspect)

@@ -48,7 +48,7 @@ INPUT:
             {% if do_print %}
                 <div class="cell_input_print">{{ cell.input_text().rstrip()|escape }}&nbsp;</div>
             {% else %}
-                <textarea class="cell_input" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
+                <textarea class="{{ input_cls }}" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
                           cols="80"
                           id="cell_input_{{ cell.id() }}"
                           {# TODO: Migrate these 'on' handlers to a .js file #}
