@@ -7,6 +7,7 @@ var jmol_count = 0;
 function jmol_applet(size, url) {
     var s;
     jmolSetDocument(cell_writer);
+    jmolSetAppletCssClass('jmol_applet');
     jmolApplet(size, "script " + url, jmol_count);
     s = ' <a href="#" onclick="jmol_image(' + jmol_count +
         ');return false;">Get Image</a>';

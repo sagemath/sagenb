@@ -525,6 +525,45 @@ function set_cursor_position(cell, n) {
 // Misc page functions -- for making the page work nicely
 //
 ///////////////////////////////////////////////////////////////////
+function hide_java_applets() {
+    /*
+    Hides all Jmol applets by moving them off the screen and putting a
+    box of the same size in the same place.
+     */
+    $('.jmol_applet').each(function () {
+        var me = $(this),
+            width = me.width(),
+            height = me.height();
+        me.css({
+            marginLeft: '-' + (width + 1000) + 'px'
+        })
+        me.after(
+            $('<table><tbody><tr><td align="center" valign="middle">' + 
+              'Java Applet Hidden</td></tr></tbody></table>').css({
+                marginTop: '-' + height.toString() + 'px',
+                width: width.toString() + 'px',
+                height: height.toString() + 'px',
+                border: '1px solid black',
+                backgroundColor: '#ccc',
+                color: 'black'
+            })
+        );
+    });
+}
+
+
+function show_java_applets() {
+    /*
+    Shows all the java applets hid with applet_hide().
+    */
+    $('.jmol_applet').each(function () {
+        $(this).css({
+            marginLeft: '0px'
+        }).next().remove();
+    });
+}
+
+
 function modal_prompt(form_options, options, modal_options) {
     /*
     Displays a prompt with a modal dialog. Use this instead of
@@ -587,22 +626,8 @@ function modal_prompt(form_options, options, modal_options) {
     submit_value = options.submit || 'OK';
     css = options.css || {};
 
-    
-
-    new_prompt = $(modal_prompt_element);
-    $('body').append(new_prompt);
-    new_prompt.css(css);
-
-    new_form = new_prompt.find('form');
-    if (options.id) {
-        new_prompt.attr('id', options.id);
-    }
-    if (options.form_id) {
-        new_form.attr('id', options.form_id);
-    }
-
     overlay_close = options.overlay_close;
-    if (!options.overlay_close) {
+    if (typeof(options.overlay_close) === 'undefined') { 
         overlay_close = true;
     }
 
@@ -616,8 +641,9 @@ function modal_prompt(form_options, options, modal_options) {
         } else if (typeof(close_behavior) === 'function') {
             close_behavior();
         }
+        show_java_applets();
     };
-
+    
     modal_options = $.extend({
         autoOpen: true,
         bgiframe: true,
@@ -626,6 +652,18 @@ function modal_prompt(form_options, options, modal_options) {
         close: close_dialog
     },
     modal_options);
+
+    new_prompt = $(modal_prompt_element);
+    $('body').append(new_prompt);
+    new_prompt.css(css);
+
+    new_form = new_prompt.find('form');
+    if (options.id) {
+        new_prompt.attr('id', options.id);
+    }
+    if (options.form_id) {
+        new_form.attr('id', options.form_id);
+    }
 
     // Prompt setup.
     new_prompt.find('div.message').html(message);
@@ -646,6 +684,7 @@ function modal_prompt(form_options, options, modal_options) {
     };
 
     new_form.ajaxForm(form_options);
+    hide_java_applets();
     new_prompt.dialog(modal_options);
     input.select();
 }
