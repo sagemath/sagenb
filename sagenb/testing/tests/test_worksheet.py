@@ -47,6 +47,30 @@ class TestWorksheet(NotebookTestCase):
         self.assert_(sel.is_element_present('//h1[contains(@class, "title") and contains(text(), "To be published")]'))
 
         sel.open('/home/admin')
+    
+    def test_7434(self):
+        """
+        Tests that #7434 (notebook: new modal jquery dialog boxes are covered
+        by jmol 3d graphics) has been fixed.
+        """
+        sel = self.selenium
+        self.eval_cell(1, "sphere()")
+        java_applet_selector = 'object[type="application/x-java-applet"]'
+        self.wait_in_window("return this.$('%s').length > 0"
+            % java_applet_selector, 30000)
+        sel.click("worksheet_title")
+        self.wait_in_window("""
+            var obj = this.$('%s');
+            var offset = obj.offset();
+            return offset.left + obj.width() < 0;""" % java_applet_selector,
+            30000)
+        sel.click("css=.ui-widget-overlay")
+        self.wait_in_window("""
+            var obj = this.$('%s');
+            var offset = obj.offset();
+            return offset.left > 0;""" % java_applet_selector,
+            30000)
+        
 
     def test_edit(self):
         sel = self.selenium
