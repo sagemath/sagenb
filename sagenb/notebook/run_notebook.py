@@ -31,23 +31,89 @@ import notebook
 
 conf_path       = os.path.join(DOT_SAGENB, 'notebook')
 
-private_pem = conf_path + '/private.pem'
-public_pem  = conf_path + '/public.pem'
+private_pem   = os.path.join(conf_path, 'private.pem')
+public_pem    = os.path.join(conf_path, 'public.pem')
+template_file = os.path.join(conf_path, 'cert.cfg')
+
+def cmd_exists(cmd):
+    """
+    Return True if the given cmd exists.
+    """
+    return os.system('which %s 2>/dev/null >/dev/null'%cmd) == 0
 
 def notebook_setup(self=None):
     if not os.path.exists(conf_path):
         os.makedirs(conf_path)
 
-    try:
-        import dsage.all
-        import dsage.misc.constants
-        print "Using dsage certificates."
-        path = dsage.misc.constants.DSAGE_DIR
-        dsage.all.dsage.setup()
-        shutil.copyfile(path + '/cacert.pem', private_pem)
-        shutil.copyfile(path + '/pubcert.pem', public_pem)
-    except ImportError:
-        pass
+    if not cmd_exists('certtool'):
+        raise RuntimeError, "You must install certtool to use the secure notebook server."
+
+    dn = raw_input("Domain name [localhost]: ").strip()
+    if dn == '':
+        print "Using default localhost"
+        dn = 'localhost'
+
+    import random
+    template_dict = {'organization': 'SAGE (at %s)' % (dn),
+                'unit': '389',
+                'locality': None,
+                'state': 'Washington',
+                'country': 'US',
+                'cn': dn,
+                'uid': 'sage_user',
+                'dn_oid': None,
+                'serial': str(random.randint(1,2**31)),
+                'dns_name': None,
+                'crl_dist_points': None,
+                'ip_address': None,
+                'expiration_days': 10000,
+                'email': 'sage@sagemath.org',
+                'ca': None,
+                'tls_www_client': None,
+                'tls_www_server': True,
+                'signing_key': True,
+                'encryption_key': True,
+                }
+                
+    s = ""
+    for key, val in template_dict.iteritems():
+        if val is None:
+            continue
+        if val == True:
+            w = ''
+        elif isinstance(val, list):
+            w = ' '.join(['"%s"' % x for x in val])
+        else:
+            w = '"%s"' % val
+        s += '%s = %s \n' % (key, w) 
+    
+    f = open(template_file, 'w')
+    f.write(s)
+    f.close()
+
+    import subprocess
+    
+    if os.uname()[0] != 'Darwin' and cmd_exists('openssl'):
+        # We use openssl by default if it exists, since it is open
+        # *vastly* faster on Linux, for some weird reason.
+        cmd = ['openssl genrsa > %s' % private_pem]
+        print "Using openssl to generate key"
+        print cmd[0]
+        subprocess.call(cmd, shell=True)
+    else:
+        # We checked above that certtool is available. 
+        cmd = ['certtool --generate-privkey --outfile %s' % private_pem]
+        print "Using certtool to generate key"
+        print cmd[0]
+        subprocess.call(cmd, shell=True)
+        
+    cmd = ['certtool --generate-self-signed --template %s --load-privkey %s \
+           --outfile %s' % (template_file, private_pem, public_pem)]
+    print cmd[0]
+    subprocess.call(cmd, shell=True)
+    
+    # Set permissions on private cert
+    os.chmod(private_pem, 0600)
 
     print "Successfully configured notebook."
 
