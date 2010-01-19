@@ -22,6 +22,7 @@ from zope.interface import Interface, implements
 from twisted.web2 import iweb
 from twisted.web2 import server
 
+
 #standard library
 import random
 import time
@@ -260,7 +261,7 @@ class MySessionWrapper(object):
             return avatars.TokenCred(request.args.get('startup_token', [''])[0])
         if request.headers.getHeader('cookie'):
             for C in request.headers.getHeader('cookie'):
-                if C.name == 'cookie_test':
+                if C.name == 'cookie_test_%s' % twist.notebook.port:
                     username = request.args.get('email', [''])[0]
                     password = request.args.get('password', [''])[0]
                 else:
@@ -303,7 +304,7 @@ def get_our_cookie(request):
     if cookies is None:
         return None
     for C in cookies:
-        if C.name == 'nb_session':
+        if C.name == 'nb_session_%s' % twist.notebook.port:
             return C.value
     return None  # not found
     

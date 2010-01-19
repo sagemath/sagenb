@@ -2455,7 +2455,7 @@ class AnonymousToplevel(Toplevel):
                          'recovery': notebook.conf()['email'],
                          'sage_version':SAGE_VERSION}
         response = HTMLResponse(stream=template(os.path.join('html', 'login.html'), **template_dict))
-        response.headers.setHeader("set-cookie", [http_headers.Cookie('cookie_test', 'cookie_test')])
+        response.headers.setHeader("set-cookie", [http_headers.Cookie('cookie_test_%s' % notebook.port, 'cookie_test')])
         return response
 
 class FailedToplevel(Toplevel):
@@ -2547,9 +2547,9 @@ class UserToplevel(Toplevel):
         # sign back in when she restarts her web browser
         # This works by setting an expiration date because without one the browser forgets the cookie.
         if 'remember' in request.args:
-            response.headers.setHeader("set-cookie", [http_headers.Cookie('nb_session', self.cookie, expires=(time.time() + 60 * 60 * 24 * 14)), http_headers.Cookie('cookie_test', self.cookie, expires=1)])
+            response.headers.setHeader("set-cookie", [http_headers.Cookie('nb_session_%s' % notebook.port, self.cookie, expires=(time.time() + 60 * 60 * 24 * 14)), http_headers.Cookie('cookie_test_%s' % notebook.port, self.cookie, expires=1)])
         else:
-            response.headers.setHeader("set-cookie", [http_headers.Cookie('nb_session', self.cookie), http_headers.Cookie('cookie_test', self.cookie, expires=1)])
+            response.headers.setHeader("set-cookie", [http_headers.Cookie('nb_session_%s' % notebook.port, self.cookie), http_headers.Cookie('cookie_test_%s' % notebook.port, self.cookie, expires=1)])
         return response
 
 setattr(UserToplevel, 'userchild_download_worksheets.zip', DownloadWorksheets)
