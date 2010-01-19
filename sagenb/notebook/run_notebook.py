@@ -20,7 +20,10 @@ except ImportError:
     protocol = 'ssl'
 
 # System libraries
-import getpass, os, shutil, socket
+import getpass, os, shutil, socket, sys
+from exceptions import SystemExit
+
+from twisted.python.runtime import platformType
 
 from sagenb.misc.misc import (DOT_SAGENB, print_open_msg, find_next_available_port)
 
@@ -287,7 +290,23 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
         if secure and not quiet:
             print "There is an admin account.  If you do not remember the password,"
             print "quit the notebook and type notebook(reset=True)."
-        cmd = 'twistd --pidfile="%s"/twistd.pid -ny "%s"/twistedconf.tac'%(directory, directory)
+
+        pidfile = os.path.join(directory, 'twistd.pid')
+        cmd = 'twistd --pidfile="%s" -ny "%s"' % (pidfile, os.path.join(directory, 'twistedconf.tac'))
+
+        # Check if a Twistd PID exists in the given directory
+        if platformType != 'win32':
+            from twisted.scripts._twistd_unix import checkPID
+            try:
+                checkPID(pidfile)
+            except SystemExit as e:
+                pid = int(open(pidfile).read())
+                if str(e).startswith('Another twistd server is running,'):
+                    sys.exit("""\
+Another Sage Notebook server is running, PID %d.
+
+Please either stop the old server or run the new server in a different directory.
+""" % pid)
         if fork:
             import pexpect
             return pexpect.spawn(cmd)
