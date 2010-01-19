@@ -1449,7 +1449,7 @@ function download_worksheets_button() {
     /*
     Downloads the set of checked worksheets as a zip file.
     */
-    window.location.replace("/download_worksheets?filenames=" +
+    window.location.replace("/download_worksheets.zip?filenames=" +
                             checked_worksheet_filenames() + "&sep=" + SEP);
 }
 
