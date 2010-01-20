@@ -2457,7 +2457,7 @@ function cell_input_key_event(id, e) {
         return comment_cell(cell_input);
     } else if (key_uncomment(e) && !selection_is_empty) {
         return uncomment_cell(cell_input);
-    } else if (key_unindent(e) && !selection_is_empty) {
+    } else if (key_unindent(e)) {
         // Unfortunately, shift-tab needs to get caught before
         // not-shift tab.
         unindent_cell(cell_input);
@@ -2744,8 +2744,8 @@ function indent_cell(cell) {
 
 function unindent_cell(cell) {
     /*
-    Unindent all the highlighted text in the given input cell by 4
-    spaces.
+    Unindent the current line or highlighted text in the given input cell
+    by 4 spaces.
 
     INPUT:
         cell -- DOM textarea; an input cell
@@ -2767,7 +2767,11 @@ function unindent_cell(cell) {
     b = lines.join("\n");
 
     cell.value = a + b + c;
-    set_selection_range(cell, a.length, a.length + b.length);
+    if (R[0] === R[1]) { // nothing is selected
+        set_cursor_position(cell, a.length + b.length);
+    } else {
+        set_selection_range(cell, a.length, a.length + b.length);
+    }
 }
 
 
