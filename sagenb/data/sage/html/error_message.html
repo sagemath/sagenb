@@ -1,13 +1,21 @@
 {% extends "html/base_authenticated.html" %}
 
-{% block title %}Error{% endblock %}
+{% block title %}
+{% if title %}{{ title }}{% else %}Error{% endif %}
+{% endblock %}
+
+{% if redirect_url %}
+{% block more_meta %}
+<meta http-equiv="refresh" content="{{ redirect_delay }};url={{ redirect_url}}" />
+{% endblock %}
+{% endif %}
 
 {% block main %}
 <div>
     {{ msg }}
 </div>
 {% if cont %}
-<div>
+<div style="padding: 1.0em; text-align: center;">
     <a class="boldusercontrol" href="{{ cont }}">Continue</a>
 </div>
 {% endif %}

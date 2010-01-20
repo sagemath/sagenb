@@ -137,8 +137,9 @@ def gzip_handler(request):
 ############################
 # An error message
 ############################
-def message(msg, cont='/'):
-    template_dict = {'msg': msg, 'cont': cont}
+def message(msg, cont='/', username=None, **kwargs):
+    template_dict = {'msg': msg, 'cont': cont, 'username': username}
+    template_dict.update(kwargs)
     return template(os.path.join('html', 'error_message.html'),
                     **template_dict)
 
@@ -680,7 +681,7 @@ class Worksheet_datafile(WorksheetResource, resource.Resource):
                 os.unlink(path)
                 return HTMLResponse(stream = message("Successfully deleted '%s'"%filename,
                                                       '/home/' + self.worksheet.filename(),
-                                                     title=u'%s delete successful' % filename))
+                                                     title=u'Data file deleted'))
         s = notebook.html_download_or_delete_datafile(self.worksheet, self.username, filename)
         return HTMLResponse(stream=s)
 
@@ -1398,7 +1399,7 @@ class Worksheet_rate(WorksheetResource, resource.Resource):
         return HTMLResponse(stream=message("""
         Thank you for rating the worksheet <b><i>%s</i></b>!
         You can <a href="rating_info">see all ratings of this worksheet.</a>
-        """%self.worksheet.name(), '/pub/'))
+        """%self.worksheet.name(), '/pub/', title=u'Rating Accepted'))
 
 
 ########################################################
@@ -1633,8 +1634,14 @@ class WorksheetsByUser(resource.Resource):
         try:
             return Worksheet(filename, self.username)
         except KeyError:
-            s = "The user '%s' has no worksheet '%s'."%(self.user, name)
-            return InvalidPage(msg = s, username = self.user)
+            if self.user != 'pub':
+                s = "The user '%s' has no worksheet '%s'."%(self.user, name)
+                return InvalidPage(msg = s, username = self.user)
+            else:
+                s = 'There is no published worksheet with name "%s".  Redirecting to the index of published worksheets in 10 seconds...<br><br>' % name
+                return InvalidPage(msg = s, username = self.username,
+                                   cont = '/pub', redirect_url = '/pub',
+                                   redirect_delay = 10)
         except RuntimeError:
             s = "You are not logged in or do not have access to the worksheet '%s'."%name
             return InvalidPage(msg = s, username = self.user)
@@ -1962,9 +1969,9 @@ class Java(resource.Resource):
 ############################
 class Logout(resource.Resource):
     def render(self, ctx):
-        # TODO -- actually log out.
-        s = message("<br>Thank you for using Sage.<br><br><a href='/'>Please login and use Sage again soon.</a><br>")
-        return HTMLResponse(stream=s)
+        # We use this class only when require_login is False.  Since
+        # we haven't logged in, we just redirect to the home page.
+        return http.RedirectResponse('/')
 
 ############################
 # Image resource
@@ -2002,7 +2009,7 @@ server. Please <a href="/register">register</a> with the server.</p>
             return HTMLResponse(stream=message(invalid_confirm_key, '/register'))
         success = """<h1>Email address confirmed for user %s</h1>""" % username
         del waiting[key]
-        return HTMLResponse(stream=message(success))
+        return HTMLResponse(stream=message(success, title='Email Confirmed'))
 
 ############################
 # Registration page
@@ -2380,7 +2387,8 @@ class AdminAddUser(resource.PostableResource):
                                                     error='username_taken', username_input=username, **template_dict))
             notebook.add_user(username, password, '', force=True)
             return HTMLResponse(stream=message('The temporary password for the new user <em>%s</em> is <em>%s</em>' %
-                                               (username, password), '/adduser'))
+                                               (username, password), '/adduser',
+                                               title=u'New User'))
         else:
             
             return HTMLResponse(stream=template(os.path.join('html', 'settings', 'admin_add_user.html'), **template_dict))
@@ -2388,9 +2396,11 @@ class AdminAddUser(resource.PostableResource):
 class InvalidPage(resource.Resource):
     addSlash = True
 
-    def __init__(self, msg, username):
+    def __init__(self, msg, username, cont='/', **kwargs):
         self.msg = msg
         self.username = username
+        self.cont = cont
+        self.kwargs = kwargs
 
     def render(self, ctx):
         if self.msg:
@@ -2399,7 +2409,8 @@ class InvalidPage(resource.Resource):
             s = "This is an invalid page."
             if self.username == 'guest':
                 s += ' You might have to login to view this page.'
-        return HTMLResponse(stream = message(s, '/'))
+        return HTMLResponse(stream = message(s, self.cont, self.username,
+                                             **self.kwargs))
 
     def childFactory(self, request, name):
         return InvalidPage(msg = self.msg, username = self.username)

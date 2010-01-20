@@ -4,6 +4,7 @@
     <head>
         <title>{{ render_title() }} -- Sage</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        {% block more_meta %}{% endblock %}
         {% block pre_main_css %}{% endblock %}
         <link type="text/css" rel="stylesheet" href="/css/{% block css %}main{% endblock %}.css" />
         {% block more_css %}{% endblock %}
