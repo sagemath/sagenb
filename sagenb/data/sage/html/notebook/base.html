@@ -55,7 +55,7 @@ INPUT:
 {% if worksheet.filename() %}
 <script  type="text/javascript">
     worksheet_filename = "{{ worksheet.filename() }}";
-    worksheet_name = "{{ worksheet.name() }}";
+    worksheet_name = {{ worksheet.name()|repr_str }};
     server_ping_while_alive();
 </script>
 {% endif %}
