@@ -36,6 +36,8 @@ import string
 import time
 import traceback
 
+from twisted.internet.defer import Deferred
+
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
                               alarm, cancel_alarm, verbose, DOT_SAGENB,
@@ -3093,15 +3095,20 @@ from sagenb.notebook.all import *
 
         return 'd', C
 
-    def interrupt(self):
+    def interrupt(self, callback = None, timeout = 1):
         r"""
         Interrupt all currently queued up calculations.
 
+        INPUT:
+
+        - ``timeout`` -- time to wait for interruption to succeed
+        
+        - ``callback`` -- callback to be called. Called with True if
+          interrupt succeeds, else called with False.
+        
         OUTPUT:
 
-        -  ``bool`` - return True if no problems interrupting
-           calculation return False if the Sage interpreter had to be
-           restarted.
+        -  ``deferred`` - a Deferred object with the given callbacks and errbacks
 
         EXAMPLES: We create a worksheet and start a large factorization
         going::
@@ -3121,7 +3128,7 @@ from sagenb.notebook.all import *
 
         ::
 
-            sage: W.interrupt()         # random -- could fail on heavily loaded machine
+            sage: W.interrupt()         # not tested -- needs running reactor
             True
 
         Now we check and nothing is computing.
@@ -3144,7 +3151,20 @@ from sagenb.notebook.all import *
         # stop the current computation in the running Sage
         S = self.__sage
         S.interrupt()
-        return True
+        
+        deferred = Deferred()
+        deferred.addCallback(callback)
+        
+        def interrupt_check():
+            if S.is_computing():
+                deferred.callback(False)
+            else:
+                deferred.callback(True)
+                
+        from twist import reactor
+        reactor.callLater(timeout, interrupt_check)
+        
+        return deferred
 
     def clear_queue(self):
         # empty the queue

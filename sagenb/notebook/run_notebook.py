@@ -288,6 +288,7 @@ twist.SAGETEX_PATH = %r
 twist.OPEN_MODE = %s
 twist.SID_COOKIE = str(hash(%r))
 twist.DIR = %r
+twist.reactor = reactor
 twist.init_updates()
 import sagenb.notebook.worksheet as worksheet
 

@@ -30,6 +30,7 @@ notebook   = None
 DIR        = None
 OPEN_MODE  = None
 SID_COOKIE = None
+reactor    = None
 
 ############################################################
 
@@ -1481,8 +1482,12 @@ class Worksheet_quit_sage(WorksheetResource, resource.Resource):
 class Worksheet_interrupt(WorksheetResource, resource.Resource):
     def render(self, ctx):
         # TODO -- this must not block long (!)
-        s = self.worksheet.interrupt()
-        return HTMLResponse(stream='ok' if s else 'failed')
+        def callback(success):
+            """Called when interrupt is successful"""
+            return HTMLResponse(stream = 'success' if success else 'failed')
+        
+        deferred = self.worksheet.interrupt(callback)
+        return deferred
 
 class Worksheet_hide_all(WorksheetResource, resource.Resource):
     def render(self, ctx):

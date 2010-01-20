@@ -83,6 +83,9 @@ var debug_keypress;
 var skip_keyup = false;
 var in_debug_input = false;
 
+// Interrupts.
+var interrupt_state = {count: 0};
+
 // Focus / blur.
 var current_cell = -1;
 var cell_has_changed = false;
@@ -3557,6 +3560,7 @@ function cancel_update_check() {
     updating = false;
     clearTimeout(update_timeout);
     document.title = original_title;
+    reset_interrupts();
 }
 
 
@@ -4371,7 +4375,25 @@ function interrupt() {
     Send a message to the server that we would like to interrupt all
     running calculations in the worksheet.
     */
+    if (!updating) {
+        return;
+    }
     async_request(worksheet_command('interrupt'), interrupt_callback);
+}
+
+
+function reset_interrupts() {
+    /*
+    Stops sending periodic interrupt commands, closes any running
+    alerts, and resets state variables.
+    */
+    var is = interrupt_state;
+
+    if (is.alert) {
+        is.alert.achtung('close');
+    }
+    is.alert = null;
+    is.count = 0;
 }
 
 
@@ -4379,15 +4401,49 @@ function interrupt_callback(status, response_text) {
     /*
     Callback called after we send the interrupt signal to the server.
     If the interrupt succeeds, we change the CSS/DOM to indicate that
-    no cells are currently computing.  If it fails, we display an
-    annoying alert (it might be a good idea to change this, e.g., to
-    blink red or something instead of an alert).
+    no cells are currently computing.  If it fails, we display/update
+    a alert and repeat after a timeout.  If the signal doesn't make
+    it, we just reset any alerts.
     */
-    if (response_text === "failed") {
-        alert('Unable to immediately interrupt calculation.');
-        return;
-    } else if (status === "success") {
+    var is = interrupt_state, message, timeout = 5;
+
+    if (response_text === 'failed') {
+        if (!is.count) {
+            is.count = 1;
+            message = 'Unable to interrupt calculation. ' +
+                'Trying again in ' + timeout + ' seconds... ' +
+                'Close this box to stop trying.';
+
+            is.alert = $.achtung({
+                className: 'interrupt-fail-notification',
+                message: message,
+                timeout: timeout,
+                hideEffects: false,
+                showEffects: false,
+                onCloseButton: function () {
+                    reset_interrupts();
+                },
+                onTimeout: function () {
+                    interrupt();
+                }
+            });
+            return;
+        }
+
+        is.count += 1;
+        message = 'Interrupt attempt ' + is.count;
+        if (is.count > 5) {
+            message += '. <a href="javascript:restart_sage();">Restart</a>, instead?';
+        }
+        is.alert.achtung('update', {
+            message: message,
+            timeout: timeout
+        });
+    } else if (status === 'success') {
+        // halt_active_cells calls reset_interrupts.
         halt_active_cells();
+    } else {
+        reset_interrupts();
     }
 }
 
@@ -4497,6 +4553,8 @@ function halt_active_cells() {
         cell_set_not_evaluated(active_cell_list[i]);
     }
     active_cell_list = [];
+
+    reset_interrupts();
 }
 
 
