@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # JavaScriptCompressor class,
 #	removes comments or pack JavaScript source[s] code.
 # ______________________________________________________________

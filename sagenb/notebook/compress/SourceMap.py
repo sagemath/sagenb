@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # SourceMap class,
 #	reads a generic language source code and returns its map.
 # ______________________________________________________________

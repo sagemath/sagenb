@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 r"""
 The Sage Notebook Twisted Web Server
 

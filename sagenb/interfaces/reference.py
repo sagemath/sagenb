@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import os, StringIO, sys, traceback, tempfile
 
 from status import OutputStatus

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
 Worksheet process base clase
 

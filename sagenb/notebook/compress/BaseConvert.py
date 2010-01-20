@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 # BaseConvert class,
 #    converts an unsigned base 10 integer to a different base and vice versa.
 # ______________________________________________________________

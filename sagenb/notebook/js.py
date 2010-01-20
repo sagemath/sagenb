@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 r"""nodoctest
 JavaScript (AJAX) Components of the Notebook
 

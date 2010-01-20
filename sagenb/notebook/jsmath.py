@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
 jsMath support for the notebook
 

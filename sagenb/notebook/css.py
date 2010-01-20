@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """nodoctest
 Notebook Stylesheets (CSS)
 """

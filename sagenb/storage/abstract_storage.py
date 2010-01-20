@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
 Sage Notebook Storage Abstraction Layer
 """

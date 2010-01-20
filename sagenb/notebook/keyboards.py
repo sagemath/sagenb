@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
 Keyboard maps for the Sage Notebook
 

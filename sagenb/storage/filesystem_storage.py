@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
 A Filesystem-based Sage Notebook Datastore
 

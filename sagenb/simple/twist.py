@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 r"""nodoctest
 Simple Sage Server API
 

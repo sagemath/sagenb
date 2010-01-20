@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import os
 
 from notebook_object import notebook

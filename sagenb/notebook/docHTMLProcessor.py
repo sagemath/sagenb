@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 """
 Live Documentation in the Notebook
 
