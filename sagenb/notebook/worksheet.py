@@ -2992,28 +2992,24 @@ from sagenb.notebook.all import *
             return 'w', C
 
         if C.introspect() and not C.is_no_output():
-            if C.introspection_status == 'working':
-                # Done processing the docstring.
-                C.set_introspect_html(output_status.output, raw=True)
-            else:
-                before_prompt, after_prompt = C.introspect()
-                if len(before_prompt) == 0:
-                    return
-                if before_prompt[-1] != '?':
-                    # completions
-                    if hasattr(C, '_word_being_completed'):
-                        c = self.best_completion(out, C._word_being_completed)
-                    else:
-                        c = ''
-                    C.set_changed_input_text(before_prompt + c + after_prompt)
-                    out = self.completions_html(C.id(), out)
-                    C.set_introspect_html(out, completing=True)
+            before_prompt, after_prompt = C.introspect()
+            if len(before_prompt) == 0:
+                return
+            if before_prompt[-1] != '?':
+                # completions
+                if hasattr(C, '_word_being_completed'):
+                    c = self.best_completion(out, C._word_being_completed)
                 else:
+                    c = ''
+                C.set_changed_input_text(before_prompt + c + after_prompt)
+                out = self.completions_html(C.id(), out)
+                C.set_introspect_html(out, completing=True)
+            else:
+                if C.eval_method == 'introspect':
                     C.set_introspect_html(out, completing=False)
-
-        # C.set_introspect_html may execute a process.
-        if not S.output_status().done:
-            return 'w', C
+                else:
+                    C.set_introspect_html('')
+                    C.set_output_text('<html>' + out + '</html>', '')
 
         # Finished a computation.
         self.__comp_is_running = False

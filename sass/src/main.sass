@@ -14,10 +14,6 @@ body
   :background-color white
   +sans-serif-stack
 
-  &.worksheet-online
-    :margin-bottom 80%
-
-
 .hidden
   :display none
 
@@ -450,6 +446,21 @@ div.attached_filename
   :border-top 1px solid #d3e9ff
 
 /************ WORKSHEETS **************************/
+
+div.docstring-introspection-dialog
+  :font-size inherit
+  +sans-serif-stack
+
+.docstring
+  +sans-serif-stack
+  .click-message
+    :font-size 0.75em
+    :float right
+    :clear both
+  .unprinted-note
+    :float right
+    :clear both
+    :font-size 0.6em
 
 span.pane div.worksheets_topbar
   :color black

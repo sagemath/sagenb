@@ -37,10 +37,9 @@ try:
     from sage.misc.misc import SAGE_ROOT
     from pkg_resources import Requirement, working_set
     sagenb_path = working_set.find(Requirement.parse('sagenb')).location
-    debug_mode = not SAGE_ROOT in os.path.realpath(sagenb_path)
+    debug_mode = SAGE_ROOT not in os.path.realpath(sagenb_path)
 except AttributeError, ImportError:
     debug_mode = False
-
 
 _cache_javascript = None
 def javascript():

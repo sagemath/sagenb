@@ -1,6 +1,3 @@
-"""nodoctest
-"""
-
 #############################################################################
 #       Copyright (C) 2006, 2007 William Stein <wstein@gmail.com>
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -8,7 +5,7 @@
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-r"""
+r"""nodoctest
 Sage Notebook Interface
 
 AUTHORS:
@@ -180,11 +177,13 @@ To find all completions for an identifier you are typing press
 the tab key.  This should work exactly like IPython, and even
 respects the \code{trait_names()} method.
 
-To find help for any object in a line, put ? after it
-and press the tab key.  The cursor must be somewhere in the identifier
-with the question mark after it.   For source code, put ?? after
-the identifier and press tab.  You can also put an identifier by
-itself on a line with ? (or ??) after it and press shift-enter. 
+To find help for any object in a line, put ? after it and press the
+tab key.  The cursor must be somewhere in the identifier with the
+question mark after it.  For source code, put ?? after the identifier
+and press tab.  You can also put an identifier by itself on a line
+with ? (or ??) after it and press shift-enter. Note that only help
+retrieved by shift-enter appears in printed output. It also overwrites
+all current output, while using TAB does not.
 
 To get extensive help on an object, type "help(object)" and press
 return.  This works, since I set the PAGER to "cat", and I strip out
@@ -350,9 +349,9 @@ notebook_help = [
     ('Find Help and Documentation',
      [('Get Started with Sage', '<a href="/doc/live/tutorial/index.html">Work through the tutorial</a> (if you have trouble with it, view the <a href="/doc/static/tutorial/index.html">static version</a>).'),
       ('Help About',
-       'Type ? immediately after the object or function and press tab.'),
+       'Type ? immediately after the object or function and press tab or shift-enter (shift-enter overwrites output and saves to worksheet).'),
       ('Source Code',
-       'Put ?? after the object and press tab.'),
+       'Put ?? after the object and press tab or shift-enter (shift-enter overwrites output and saves to worksheet).'),
       ('Full Text Search of Docs and Source',
        'Search the SAGE documentation by typing <pre>search_doc("my query")</pre> in an input cell and press shift-enter.  Search the source code of SAGE by typing <pre>search_src("my query")</pre> and pressing shift-enter.  Arbitrary regular expressions are allowed as queries.'),
       # ('More Help',

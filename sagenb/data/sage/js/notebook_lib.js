@@ -587,13 +587,7 @@ function modal_prompt(form_options, options, modal_options) {
     submit_value = options.submit || 'OK';
     css = options.css || {};
 
-    modal_options = $.extend({
-        autoOpen: true,
-        bgiframe: true,
-        modal: true,
-        width: '20em'
-    },
-    modal_options);
+    
 
     new_prompt = $(modal_prompt_element);
     $('body').append(new_prompt);
@@ -623,6 +617,15 @@ function modal_prompt(form_options, options, modal_options) {
             close_behavior();
         }
     };
+
+    modal_options = $.extend({
+        autoOpen: true,
+        bgiframe: true,
+        modal: true,
+        width: '20em',
+        close: close_dialog
+    },
+    modal_options);
 
     // Prompt setup.
     new_prompt.find('div.message').html(message);
@@ -1107,26 +1110,29 @@ function update_introspection_text(id, text) {
     */
     var d, intr = introspect[id];
 
-    d = get_element("introspect_div_" + id);
-    if (!d) {
+    var introspect_div = $("#introspect_div_" + id);
+    if (introspect_div.length == 0) {
         return;
     }
-
+    
     if (intr.loaded) {
-        d.innerHTML = text;
+        introspect_div.html(text);
         if (contains_jsmath(text)) {
             try {
-                jsMath.ProcessBeforeShowing(d);
+                jsMath.ProcessBeforeShowing(introspect_div.get(0));
             } catch (e) {
-                d.innerHTML = jsmath_font_msg + d.innerHTML;
+                introspect_div.html(jsmath_font_msg + introspect_div.html());
             }
         }
+
+        introspect_div.find('.docstring').prepend('<div class="click-message" style="cursor: pointer">Click here to pop out</div><div class="unprinted-note">unprinted</div>');
+
         if (intr.replacing && !intr.docstring) {
             select_replacement_element(id, intr.replacement_row,
                                        intr.replacement_col);
         }
     } else {
-        d.innerHTML = text;
+        introspect_div.html(text);
     }
 }
 
@@ -3614,6 +3620,7 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
     if (stat === 'd' && contains_jsmath(output_text)) {
         try {
             jsMath.ProcessBeforeShowing(cell_output);
+            jsMath.ProcessBeforeShowing(cell_output_nowrap);
         } catch (e) {
             cell_output.innerHTML = jsmath_font_msg + cell_output.innerHTML;
             cell_output_nowrap.innerHTML = jsmath_font_msg +

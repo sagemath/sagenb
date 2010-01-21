@@ -1232,7 +1232,6 @@ class Worksheet_cell_update(WorksheetResource, resource.PostableResource):
         if "Unhandled SIGSEGV" in raw:
             inter = 'restart'
             print "Segmentation fault detected in output!"
-
         msg = '%s%s %s'%(status, cell.id(),
                        encode_list([cell.output_text(html=True),
                                     cell.output_text(word_wrap_cols(), html=True),

@@ -5,7 +5,6 @@
 thead { font-weight: bold; }
 
 body { background-color: white; font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
-body.worksheet-online { margin-bottom: 80%; }
 
 .hidden { display: none; }
 
@@ -138,6 +137,12 @@ span.pane div.attached_list { font-size: 11px; top: 0ex; height: 20ex; border: 2
 div.attached_filename { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
 /* *********** WORKSHEETS ************************* */
+div.docstring-introspection-dialog { font-size: inherit; font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+
+.docstring { font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.docstring .click-message { font-size: 0.75em; float: right; clear: both; }
+.docstring .unprinted-note { float: right; clear: both; font-size: 0.6em; }
+
 span.pane div.worksheets_topbar { color: black; height: 3ex; top: 0ex; background: url('/images/corner.png') no-repeat top left; background-color: #ccc; text-decoration: none; font-size: 15px; padding-left: 10px; padding-top: 10px; width: 174px; }
 
 a.left_panel_hide { position: relative; top: 0px; right: -1px; text-align: right; color: blue; font-weight: normal; font-size: 12px; }

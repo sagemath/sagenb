@@ -1,4 +1,7 @@
 """nodoctest
+Notebook control object
+
+This is used for configuring and starting the Sage notebook server.
 """
 #############################################################################
 #       Copyright (C) 2007 William Stein <wstein@gmail.com>
@@ -6,13 +9,6 @@
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
-
-
-"""
-Notebook control object
-
-This is used for configuring and starting the Sage notebook server.
-"""
 
 import time, os, shutil, signal, tempfile
 

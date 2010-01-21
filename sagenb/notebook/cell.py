@@ -1711,7 +1711,8 @@ class Cell(Cell_generic):
         if html:
             s = self.parse_html(s, ncols)
 
-        if not is_interact and not self.is_html() and len(s.strip()) > 0:
+        if (not is_interact and not self.is_html() and len(s.strip()) > 0 and
+            '<div class="docstring">' not in s):
             s = '<pre class="shrunk">' + s.strip('\n') + '</pre>'
 
         return s.strip('\n')
@@ -1859,18 +1860,6 @@ class Cell(Cell_generic):
         html = unicode_str(html)
 
         self.__introspect_html = html
-        self.introspection_status = 'done'
-
-    def get_introspection_status(self):
-        try:
-            return self.__introspection_status
-        except AttributeError:
-            return None
-
-    def set_introspection_status(self, value):
-        self.__introspection_status = value
-
-    introspection_status = property(get_introspection_status, set_introspection_status)
 
     def introspect_html(self):
         """
@@ -2016,6 +2005,10 @@ class Cell(Cell_generic):
             sage: W.quit()
             sage: nb.delete()
         """
+        if introspect:
+            self.eval_method = 'introspect' # Run through TAB-introspection
+        else:
+            self.eval_method = 'eval' # Run through S-Enter, evaluate link, etc.
         self.__interrupted = False
         self.__evaluated = True
         if time is not None:
