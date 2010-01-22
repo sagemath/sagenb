@@ -2105,21 +2105,78 @@ def do_passwords_match(pass1, pass2):
     """
     return pass1 == pass2
 
+re_valid_email = re.compile(r"""
+    ^%(unquoted)s+(\.%(unquoted)s+)*    # unquoted local-part
+    @                                   # at
+    ([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+  # subdomains can't start or end with -
+    [a-z]+$                             # top-level domain is at least 1 char
+""" % {'unquoted': r"[a-z0-9!#$%&'*+\-/=?^_`{|}~]"}, re.IGNORECASE | re.VERBOSE)
+
 def is_valid_email(email):
     """
-    from http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/65215
+    Validates an email address.  The implemention here is short, but
+    it should cover the more common forms.  In particular, it
+    allows "plus addresses," e.g.,
+
+        first.last+label@gmail.com
+
+    But it rejects several other classes, including those with
+    comments, quoted local-parts, and/or IP address domains.  For more
+    information, please see `RFC 3696`_, `RFC 5322`_, and their
+    errata.
+
+    .. _RFC 3696:   http://tools.ietf.org/html/rfc3696#section-3
+    .. _RFC 5322: http://tools.ietf.org/html/rfc5322#section-3.4.1
+
+    INPUT:
+
+    - ``email`` - string; the address to validate
+
+    OUTPUT:
+
+    - a boolean; whether the address is valid, according to simplistic
+      but widely used criteria
 
     EXAMPLES::
 
         sage: from sagenb.notebook.twist import is_valid_email
         sage: is_valid_email('joe@washinton.gov')
         True
-        sage: is_valid_email('joe.washington.gov')
+        sage: is_valid_email('joe.washington.gov')  # missing @
+        False
+        sage: is_valid_email('foo+plus@gmail.com')
+        True
+        sage: is_valid_email('foo++@gmail.com')
+        True
+        sage: is_valid_email('foo+bar+baz@gmail.com')
+        True
+        sage: is_valid_email('+plus@something.org')
+        True
+        sage: is_valid_email('hyphens-are-okay@example.ab.cd')
+        True
+        sage: is_valid_email('onlytld@com')         # missing subdomain
+        False
+        sage: is_valid_email("we..are@the.borg")    # consecutive dots not allowed
+        False
+        sage: is_valid_email("abcd@[12.34.56.78]")  # legal, really
+        False
+        sage: is_valid_email("x@y.z")               # legal but too short
+        False
+        sage: is_valid_email('"i c@nt"@do.it')      # legal, really
+        False
+        sage: is_valid_email(65 * 'a' + '@lim.sup') # username too long
+        False
+        sage: is_valid_email(32 * '@..@.][.' + '!') # too long, ...
         False
     """
-    if len(email) > 7:
-        if re.match("^[a-zA-Z0-9._%-]+@[a-zA-Z0-9._%-]+\.[a-zA-Z]{2,6}$", email) != None:
-            return True
+    if 7 < len(email) < 257:
+        if re_valid_email.match(email) is None:
+            return False
+        # TODO: If/when we permit *quoted* local-parts, account for
+        # legal additional @'s, e.g., "foo@bar"@bar.foo
+        if len(email.split('@')[0]) > 64:
+            return False
+        return True
     return False
 
 class RegistrationPage(resource.PostableResource):
