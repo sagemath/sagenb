@@ -2892,7 +2892,7 @@ from sagenb.notebook.all import *
 
         #Handle line continuations: join lines that end in a backslash
         #_except_ in LaTeX mode.
-        if cell_system not in ['latex']:
+        if cell_system not in ['latex', 'sage', 'python']:
             I = I.replace('\\\n','')
 
         C._before_preparse = input + I
