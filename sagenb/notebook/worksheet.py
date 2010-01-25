@@ -2769,15 +2769,16 @@ class Worksheet(object):
     def initialize_sage(self):
         S = self.__sage
         try:
-            dirs = 'DATA="%s%s";'%(os.path.abspath(self.data_directory()), os.path.sep)
-            dirs += '_support_.init(None, globals()); '
+            import twist
             cmd = """
 import base64
 import sagenb.misc.support as _support_
 import sagenb.notebook.interact as _interact_ # for setting current cell id
 from sagenb.notebook.interact import interact
 
-%s
+DATA = %r
+DIR = %r
+_support_.init(None, globals())
 
 # The following is Sage-specific -- this immediately bombs out if sage isn't installed.
 from sage.all_notebook import *
@@ -2786,7 +2787,7 @@ sage.misc.latex.EMBEDDED_MODE=True
 # TODO: For now we take back sagenb interact; do this until the sage notebook
 # gets removed from the sage library.
 from sagenb.notebook.all import *
-    """%dirs
+    """ % (os.path.join(os.path.abspath(self.data_directory()),''), twist.DIR)
             S.execute(cmd)
             S.output_status()
 

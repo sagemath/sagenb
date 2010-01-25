@@ -142,7 +142,7 @@ def notebook_twisted(self,
              quiet = False,
 
              subnets = None):
-
+    cwd = os.getcwd()
     # For backwards compatible, we still allow the address to be set
     # instead of the interface argument
     if address is not None:
@@ -284,9 +284,10 @@ sagenb.notebook.notebook.JSMATH=True
 import sagenb.notebook.notebook as notebook
 import sagenb.notebook.twist as twist
 twist.notebook = notebook.load_notebook(%s)
-twist.SAGETEX_PATH = "%s"
+twist.SAGETEX_PATH = %r
 twist.OPEN_MODE = %s
-twist.SID_COOKIE = str(hash("%s"))
+twist.SID_COOKIE = str(hash(%r))
+twist.DIR = %r
 twist.init_updates()
 import sagenb.notebook.worksheet as worksheet
 
@@ -341,14 +342,14 @@ site = server.Site(rsrc)
 from twisted.web2 import channel
 from twisted.application import service, strports
 application = service.Application("SAGE Notebook")
-s = strports.service('%s', factory)
+s = strports.service(%r, factory)
 %s
 s.setServiceParent(application)
 
 reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
 
 """%(notebook_opts, sagetex_path, not require_login,
-     os.path.abspath(directory), factory,
+     os.path.abspath(directory), cwd, factory,
      strport, open_page))
 
 
