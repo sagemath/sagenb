@@ -15,12 +15,16 @@
 {% block settings_main %}
 <form method="get" action="/notebooksettings">
   <input type="hidden" name="form" value="on" />
+  <div class="buttons buttons-top">
+    <input type="submit" value="Save" />
+    <input type="button" value="Cancel" onClick="parent.location='/'" />
+  </div>
   {%- if auto_table %}
   {{ auto_table }}
   {%- endif %}
-  <div id="buttons">
+  <div class="buttons">
     <input type="submit" value="Save" />
-    <input type="button" value="Cancel" style="margin-left:5px" onClick="parent.location='/'" />
+    <input type="button" value="Cancel" onClick="parent.location='/'" />
   </div>
 </form>
 {% endblock %}
