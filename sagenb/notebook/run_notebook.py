@@ -238,7 +238,11 @@ def notebook_twisted(self,
                 start_path = "'/?startup_token=%s' % startup_token"
             else:
                 start_path = "'/'"
-            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s)"%(interface, port, secure, start_path)
+            if interface:
+                hostname = interface
+            else:
+                hostname = 'localhost'
+            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s)"%(hostname, port, secure, start_path)
         else:
             open_page = ''
         
