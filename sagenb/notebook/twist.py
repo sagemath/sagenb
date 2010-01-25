@@ -1346,10 +1346,13 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
         else:
             # Page for when worksheet already published
             if self.worksheet.has_published_version():
-                addr = 'http%s://' % ('' if not notebook.secure else 's')
-                addr += notebook.interface
-                addr += ':%s' % notebook.port
-                addr += '/home/' + self.worksheet.published_version().filename()
+                if ctx.headers.hasHeader('host'):
+                    hostname = ctx.headers.getHeader('host')
+                else:
+                    hostname = notebook.interface + ':' + notebook.port
+                addr = 'http%s://%s/home/%s' % ('' if not notebook.secure else 's',
+                                                hostname,
+                                                self.worksheet.published_version().filename())
                 dtime = self.worksheet.published_version().date_edited()
                 return HTMLResponse(stream=notebook.html_afterpublish_window(self.worksheet, self.username, addr, dtime))
             # Page for when worksheet is not already published
