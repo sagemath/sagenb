@@ -1348,9 +1348,9 @@ class Cell(Cell_generic):
 
         EXAMPLES::
 
-            sage: C = sagenb.notebook.cell.Cell(0, '%hide\n%maxima\n2+3', '5', None)
+            sage: C = sagenb.notebook.cell.Cell(0, '%hide\n%maxima\n%pi+3', '5', None)
             sage: C.parse_percent_directives()
-            u'2+3'
+            u'%pi+3'
             sage: C.percent_directives()
             [u'hide', u'maxima']
         """
@@ -1363,17 +1363,19 @@ class Cell(Cell_generic):
             if not line.startswith('%'):
                 #Handle the #auto case here for now
                 if line == "#auto":
-                    pass
+                    directives.append(line[1:])
                 else:
                     break
-            elif line in ['%auto', '%hide', '%hideall', '%save_server', '%time', '%timeit']:
+            elif line in ['%auto', '%hide', '%hideall', '%save_server',
+                          '%time', '%timeit']:
                 # We do not consider any of the above percent
                 # directives as specifying a system.
-                pass
+                directives.append(line[1:])
             else:
                 self._system = line[1:]
-
-            directives.append(line[1:])
+                directives.append(line[1:])
+                i += 1
+                break
 
         self._percent_directives = directives
         return "\n".join(text[i:]).strip()
