@@ -1,41 +1,48 @@
 #!/usr/bin/env python
-import os, shutil, sys, tarfile
+# Create a new Sage Notebook spkg.
+
+import os
+import sys
+import stat
+import shutil
+import tarfile
+import subprocess
 from tempfile import mkdtemp
 
 from pkg_resources import Requirement
 from setuptools.package_index import PackageIndex
-# Create an spkg of the Separated Sage notebook for inclusion in Sage.
 
-# Get the version from setup.py
+# Get the version from setup.py.
 version_line = [f for f in open('setup.py').readlines() if 'version' in f][0]
 i = version_line.find("'")
 j = version_line.rfind("'")
-version = version_line[i+1:j]
+version = version_line[i + 1:j]
 
-# Create the sdist
+# Create the source distribution.
+proc = subprocess.Popen([os.path.join(os.path.curdir, 'sdist')], shell=True)
+if proc.wait():
+    print "Uncommitted changes in repository.  Stopping."
+    sys.exit(1)
 
-os.system(os.path.join(os.path.curdir, 'sdist'))
-
-# Create the spkg
-
-path = os.path.join('dist','sagenb-%s'%version)
+# Create the spkg.
+base = 'sagenb-%s' % version
+path = os.path.join('dist', base)
 if os.path.exists(path):
     shutil.rmtree(path)
-
 os.makedirs(path)
 
-file = 'sagenb-%s.tar.gz'%version
-print "Extracting %s"%file
+file = 'sagenb-%s.tar.gz' % version
+print "Extracting %s" % file
 t = tarfile.open(os.path.join('dist', file))
-
 t.extractall(path)
 
 os.chdir(path)
 os.mkdir('src')
-shutil.move('sagenb-%s'%version, 'src/sagenb')
+shutil.move(base, os.path.join('src', 'sagenb'))
 
-spkg_install_fd = open('spkg-install','w')
-spkg_install_fd.write("cd src; ")
+spkg_install = os.path.abspath(os.path.join(os.path.curdir, 'spkg-install'))
+spkg_install_fd = open(spkg_install, 'w')
+spkg_install_fd.write("cd src\n")
 
 shutil.copy(os.path.join(os.path.pardir, os.path.pardir, 'SPKG.txt'),
             os.path.curdir)
@@ -44,24 +51,34 @@ print "Fetching the required packages"
 pkg_index = PackageIndex()
 
 tmp_dir = mkdtemp()
-required_packages = ('pytz>=2009r', 'zope.i18nmessageid>=3.5', 'zope.event>=3.4.1',
-                     'ClientForm>=0.2.10', 'mechanize>=0.1.11', 'zope.interface>=3.3.0',
-                     'zope.schema>=3.5.4', 'zope.testbrowser>=3.7.0a1')
+required_packages = ('pytz>=2009r',
+                     'zope.i18nmessageid>=3.5',
+                     'zope.event>=3.4.1',
+                     'ClientForm>=0.2.10',
+                     'mechanize>=0.1.11',
+                     'zope.interface>=3.3.0',
+                     'zope.schema>=3.5.4',
+                     'zope.testbrowser>=3.7.0a1')
+
 pkg_locations = []
 
 for pkg in required_packages:
     print "Fetching %s" % pkg
-    dist = pkg_index.fetch_distribution(Requirement.parse(pkg), tmp_dir, True, True)
+    dist = pkg_index.fetch_distribution(Requirement.parse(pkg), tmp_dir,
+                                        True, True)
     pkg_locations.append(os.path.abspath(dist.location))
 
 for location in pkg_locations:
     shutil.copy(location, 'src')
-    spkg_install_fd.write('easy_install %s; ' % os.path.basename(location))
+    spkg_install_fd.write('easy_install %s\n' % os.path.basename(location))
 
 os.chdir(os.path.pardir)
 
-spkg_install_fd.write('cd sagenb; python setup.py install')
+spkg_install_fd.write('cd sagenb\n')
+spkg_install_fd.write('python setup.py install\n')
 spkg_install_fd.close()
+os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
+         stat.S_IROTH | stat.S_IXOTH)
 shutil.rmtree(tmp_dir)
-os.system('sage -pkg sagenb-%s'%version)
 
+subprocess.call(['sage -pkg ' + base], shell=True)

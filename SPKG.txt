@@ -5,8 +5,6 @@
 The Sage Notebook is a web-based graphical user interface for
 mathematical software.
 
-== Website ==
-
 == License ==
 
 GPLv2+
@@ -14,17 +12,44 @@ GPLv2+
 == SPKG Maintainers ==
 
  * William Stein
+ * Tim Dumol
+ * Mitesh Patel
 
 == Upstream Contact ==
 
  * William Stein
+ * Homepage: http://nb.sagemath.org/
 
 == Dependencies ==
- * Python 2.6 (?) or later -- only tested with 2.6
 
-== Special Update/Build Instructions ==
+ * Python >= 2.6
+ * jinja2 >= 2.1.1
+ * Twisted >= 8.2
+ * zope.testbrowser >= 3.7.0a1 (included)
+ * Sphinx >= 0.6.3 (pretty docstrings)
 
- * None
+== Special Update / Build Instructions ==
+
+ * To release a new spkg, check that
+
+   * All changes are committed.
+   * .hgignore and MANIFEST.in are current.
+   * The patch queue is clear.
+   * The notebook runs.
+   * The doctests pass: sage -t -sagenb
+   * The Selenium tests pass (optional, for now).
+
+   Then,
+
+   * Update the version in setup.py and commit this change.
+   * Run spkg-dist.
+   * Install and test the new spkg: sage -f dist/sagenb-*.spkg
+
+   Contact a maintainer about pushing updates to the public Mercurial
+   repository.
+
+ * Stylesheets (CSS): see sass/readme.txt.
 
 == Changelog ==
 
+ * For an accurate log of changes, run "hg log" in src/sagenb.

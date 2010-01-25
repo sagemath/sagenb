@@ -1,3 +1,12 @@
-hg ci && sage -python setup.py sdist
+#!/bin/bash
+set -e
 
-./push
+sage -hg ci
+
+sage -python setup.py sdist
+
+echo "**********************************************************"
+echo "* If this is an official SageNB release, don't forget to *"
+echo "* push the changes to the public Mercurial repository.   *"
+echo "**********************************************************"
+#./push
