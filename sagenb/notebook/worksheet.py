@@ -2746,9 +2746,9 @@ class Worksheet(object):
         return C
 
     def delete_cell_with_id(self, id):
-        """
-        Deletes a cell with the given ID, returning the cell before
-        it.
+        r"""
+        Deletes a cell from this worksheet's cell list.  This also
+        deletes the cell's output and files.
 
         INPUT:
 
@@ -2756,7 +2756,31 @@ class Worksheet(object):
 
         OUTPUT:
 
-        - an instance of :class:`sagenb.notebook.cell.Cell_generic`
+        - an integer or string; ID of the preceding cell
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: W = nb.create_new_worksheet('Test Delete Cell', 'admin')
+            sage: W.edit_save('{{{id=foo|\n2+3\n///\n5\n}}}\n{{{id=9|\n2+8\n///\n10\n}}}{{{id=dont_delete_me|\n2*3\n///\n6\n}}}\n')
+            sage: W.cell_id_list()
+            ['foo', 9, 'dont_delete_me']
+            sage: C = W.cell_list()[1]           # save a reference to the cell
+            sage: C.output_text(raw=True)
+            u'\n10'
+            sage: open(os.path.join(C.directory(), 'bar'), 'w').write('hello')
+            sage: C.files()
+            ['bar']
+            sage: C.files_html('')
+            u'<a target="_new" href=".../cells/9/bar" class="file_link">bar</a>'
+            sage: W.delete_cell_with_id(C.id())
+            'foo'
+            sage: C.output_text(raw=True)
+            u''
+            sage: C.files()
+            []
+            sage: W.cell_id_list()
+            ['foo', 'dont_delete_me']
         """
         cells = self.cell_list()
         for i in range(len(cells)):
@@ -2767,8 +2791,12 @@ class Worksheet(object):
                 if C in self.__queue and self.__queue[0] != C:
                     self.__queue.remove(C)
 
+                # Delete the cell's output.
+                C.delete_output()
+
                 # Delete this cell from the list of cells in this worksheet:
                 del cells[i]
+
                 if i > 0:
                     return cells[i - 1].id()
                 else:
@@ -3910,52 +3938,66 @@ except (KeyError, IOError):
 
     def delete_all_output(self, username):
         r"""
-        Delete all the output in all the worksheet cells.
+        Delete all the output, files included, in all the worksheet cells.
 
         INPUT:
 
         -  ``username`` - name of the user requesting the
            deletion.
 
-        EXAMPLES: We create a new notebook, user, and a worksheet with one
-        cell.
+        EXAMPLES: We create a new notebook, user, and a worksheet::
 
-        ::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save('{{{\n2+3\n///\n5\n}}}')
+            sage: W.edit_save("{{{\n2+3\n///\n5\n}}}\n{{{\nopen('afile', 'w').write('some text')\nprint 'hello'\n///\n\n}}}")
 
-        Notice that there is 1 cell with 5 in its output.
-
-        ::
+        We have two cells::
 
             sage: W.cell_list()
             [Cell 0: in=2+3, out=
-            5]
+            5, Cell 1: in=open('afile', 'w').write('some text')
+            print 'hello', out=
+            ]
+            sage: C0 = W.cell_list()[1]
+            sage: open(os.path.join(C0.directory(), 'xyz'), 'w').write('bye')
+            sage: C0.files()
+            ['xyz']
+            sage: C1 = W.cell_list()[1]
+            sage: C1.evaluate()
+            sage: W.check_comp()     # random output -- depends on computer speed
+            ('w', Cell 1: in=open('afile', 'w').write('some text')
+            print 'hello', out=)
+            sage: W.check_comp()     # random output -- depends on computer speed
+            ('d', Cell 1: in=open('afile', 'w').write('some text')
+            print 'hello', out=
+            hello
+            )
+            sage: W.check_comp()     # random output -- depends on computer speed
+            ('e', None)
+            sage: C1.files()         # random output -- depends on computer speed
+            ['afile']
 
-        We now delete the output, observe that it is gone.
-
-        ::
+        We now delete the output, observe that it is gone::
 
             sage: W.delete_all_output('sage')
             sage: W.cell_list()
-            [Cell 0: in=2+3, out=]
+            [Cell 0: in=2+3, out=, Cell 1: in=open('afile', 'w').write('some text')
+            print 'hello', out=]
+            sage: C0.files(), C1.files()
+            ([], [])
 
-        If an invalid user tries to delete all, a ValueError is raised.
-
-        ::
+        If an invalid user tries to delete all output, a ValueError is
+        raised::
 
             sage: W.delete_all_output('hacker')
             Traceback (most recent call last):
             ...
             ValueError: user 'hacker' not allowed to edit this worksheet
 
-        Clean up.
+        Clean up::
 
-        ::
-
+            sage: W.quit()
             sage: nb.delete()
         """
         if not self.user_can_edit(username):
