@@ -254,7 +254,7 @@ textarea.cell_input_hide { background-color: white; border: 0px solid white; fon
 pre.cell_input_hide { background-color: white; border: 2px solid #e8e8e8; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; height: 1em; margin: 0px; }
 pre.cell_input_hide:hover { cursor: text; }
 
-textarea.cell_input_active { border: 2px solid  #8888fe; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; }
+textarea.cell_input_active { background-color: white; border: 2px solid  #8888fe; color: black; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; }
 
 div.cell_input_active { background-color: white; border: 2px solid  #8888fe; font-family: monospace; font-size: 12pt; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; z-index: -100; visibility: hidden; position: absolute; }
 div.cell_input_print { background-color: white; border: 1px solid  #a8a8a8; font-family: monospace; font-size: 12pt; padding-bottom: 1px; padding-left: 6px; padding-right: 1px; padding-top: 4px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; white-space: pre-wrap; }
