@@ -2810,6 +2810,10 @@ sage.misc.latex.EMBEDDED_MODE=True
 # TODO: For now we take back sagenb interact; do this until the sage notebook
 # gets removed from the sage library.
 from sagenb.notebook.all import *
+try:
+    attach(os.path.join(os.environ['DOT_SAGE'], 'init.sage'))
+except (KeyError, IOError):
+    pass
     """ % (os.path.join(os.path.abspath(self.data_directory()),''), twist.DIR)
             S.execute(cmd)
             S.output_status()
