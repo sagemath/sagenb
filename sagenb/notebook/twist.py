@@ -1522,6 +1522,11 @@ class Worksheet(WorksheetResource, resource.Resource):
             # Rather than a bunch of if-else statements, we wrap
             # any Worksheet_... class as a subresource of a worksheet
             # using the following  statement:
+            if (self.name.startswith('pub/') and
+                op not in ['alive', 'cells', 'data', 'download',
+                           'edit_published_page', 'rate', 'rating_info']):
+                raise KeyError
+
             R = globals()['Worksheet_%s'%op]
             return R(self.name, username = self.username)
         except KeyError:
