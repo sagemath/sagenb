@@ -3016,7 +3016,8 @@ from sagenb.notebook.all import *
                     C.set_introspect_html(out, completing=False)
                 else:
                     C.set_introspect_html('')
-                    C.set_output_text('<html>' + out + '</html>', '')
+                    C.set_output_text('<html><!--notruncate-->' + out +
+                                      '</html>', '')
 
         # Finished a computation.
         self.__comp_is_running = False
