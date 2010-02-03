@@ -46,18 +46,22 @@ def is_sphinx_markup(docstring):
     return ("`" in docstring or "::" in docstring)
 
 
-def sphinxify(docstring):
+def sphinxify(docstring, format='html'):
     r"""
     Runs Sphinx on a ``docstring``, and outputs the processed
     documentation.
 
     INPUT:
 
-    - ``docstring`` - string, a ReST-formatted docstring
+    - ``docstring`` -- string -- a ReST-formatted docstring
+
+    - ``format`` -- string (optional, default 'html') -- either 'html' or
+      'text'
 
     OUTPUT:
 
-    - string, Sphinx-processed documentation.
+    - string -- Sphinx-processed documentation, in either HTML or
+      plain text format, depending on the value of ``format``
 
     EXAMPLES::
 
@@ -66,6 +70,12 @@ def sphinxify(docstring):
         '<div class="docstring">\n    \n  <p>A test</p>\n\n\n</div>'
         sage: sphinxify('**Testing**\n`monospace`')
         '<div class="docstring"...<strong>Testing</strong>\n<span class="math"...</p>\n\n\n</div>'
+        sage: sphinxify('`x=y`')
+        '<div class="docstring">\n    \n  <p><span class="math">x=y</span></p>\n\n\n</div>'
+        sage: sphinxify('`x=y`', format='text')
+        'x=y\n'
+        sage: sphinxify(':math:`x=y`', format='text')
+        'x=y\n'
     """
     global Sphinx
     if not Sphinx:
@@ -74,7 +84,12 @@ def sphinxify(docstring):
     srcdir = mkdtemp()
     base_name = os.path.join(srcdir, 'docstring')
     rst_name = base_name + '.rst'
-    html_name = base_name + '.html'
+
+    if format == 'html':
+        suffix = '.html'
+    else:
+        suffix = '.txt'
+    output_name = base_name + suffix
 
     # This is needed for jsMath to work.
     docstring = docstring.replace('\\\\', '\\')
@@ -96,13 +111,13 @@ def sphinxify(docstring):
     doctreedir = os.path.join(srcdir, 'doctrees')
     confoverrides = {'html_context': {}, 'master_doc': 'docstring'}
 
-    sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, 'html',
+    sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, format,
                         confoverrides, None, None, True)
     sphinx_app.build(None, [rst_name])
 
-    if os.path.exists(html_name):
-        new_html = open(html_name, 'r').read()
-        new_html = new_html.replace('<pre>', '<pre class="literal-block">')
+    if os.path.exists(output_name):
+        output = open(output_name, 'r').read()
+        output = output.replace('<pre>', '<pre class="literal-block">')
 
         # Translate URLs for media from something like
         #    "../../media/...path.../blah.png"
@@ -110,18 +125,21 @@ def sphinxify(docstring):
         #    "/media/...path.../blah.png"
         # to
         #    "/doc/static/reference/media/...path.../blah.png"
-        new_html = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
+        output = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
                           'src="/doc/static/reference/media/\\2"',
-                          new_html)
+                          output)
     else:
-        print "BUG -- error constructing html"
-        new_html = '<pre class="introspection">%s</pre>' % docstring
+        print "BUG -- Sphinx error"
+        if format == 'html':
+            output = '<pre class="introspection">%s</pre>' % docstring
+        else:
+            output = docstring
 
     if temp_confdir:
         shutil.rmtree(confdir, ignore_errors=True)
     shutil.rmtree(srcdir, ignore_errors=True)
 
-    return new_html
+    return output
 
 
 def generate_configuration(directory):
