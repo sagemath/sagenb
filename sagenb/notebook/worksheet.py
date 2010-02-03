@@ -680,7 +680,7 @@ class Worksheet(object):
         self.__viewers = []
 
     def name(self):
-        u"""
+        ur"""
         Return the name of this worksheet.
 
         OUTPUT: string
@@ -691,12 +691,9 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.name()
             u'A Test Worksheet'
-            sage: W = nb.create_new_worksheet('ΫäĻƾṀБ', 'admin')
+            sage: W = nb.create_new_worksheet('ěščřžýáíéďĎ', 'admin')
             sage: W.name()
-            u'\u03ab\xe4\u013b\u01be\u1e40\u0411'
-            sage: W = nb.create_new_worksheet('Теория чисел', 'admin')
-            sage: W.name()
-            u'\u0422\u0435\u043e\u0440\u0438\u044f \u0447\u0438\u0441\u0435\u043b'
+            u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
         try:
             return self.__name
