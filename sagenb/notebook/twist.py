@@ -1398,8 +1398,10 @@ class Worksheet_download(WorksheetResource, resource.Resource):
     def childFactory(self, request, tmp_title):
         worksheet_name = self.name
         filename = tmp_filename() + '.sws'
+        if tmp_title.endswith('.sws'):
+            tmp_title = tmp_title[:-4]
         try:
-            notebook.export_worksheet(worksheet_name, filename, tmp_title.rstrip('.sws'))
+            notebook.export_worksheet(worksheet_name, filename, tmp_title)
         except KeyError:
             return HTMLResponse(stream=message('No such worksheet.'))
         r = open(filename, 'rb').read()
