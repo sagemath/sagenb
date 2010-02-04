@@ -73,7 +73,7 @@ Python classes with no docstring, but an __init__ docstring::
     ...         pass
     ...
     sage: sage_getdoc(Foo)
-    'docstring'
+    'docstring\n'
 
 Test introspection of functions defined in Python and Cython files:
 
@@ -457,7 +457,7 @@ def sage_getdoc(obj, obj_name=''):
 
         sage: from sagenb.misc.sageinspect import sage_getdoc
         sage: sage_getdoc(identity_matrix)[5:39]
-        'Return the `n x n` identity matrix'
+        'turn the n x n identity matrix ove'
 
     AUTHORS:
     
