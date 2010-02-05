@@ -9,6 +9,26 @@ INPUT:
 - text_file_content - a string containing the content of a text file
 #}
 
+{% block page_id %}datafile-page{% endblock %}
+
+{% block more_css %}
+<style type="text/css">
+    .CodeMirror-line-numbers {
+	border-right: 1px dotted blue;
+	font-family: monospace;
+	font-size: 10pt;
+	line-height: 1.1em;
+	margin: 0;
+	padding: 0.4em 0.3em;
+	text-align: right;
+    }
+</style>
+{% endblock %}
+
+{% block more_javascript %}
+<script type="text/javascript" src="/javascript/codemirror/js/codemirror.js"></script>
+{% endblock %}
+
 {% set path = "/home/%s/data/%s"|format(worksheet.filename(), filename_) %}
 
 {% block sharebar_title %}
@@ -32,7 +52,27 @@ Data file: {{ filename_ }}
 {% elif file_is_text %}
 <form method="post" action="savedatafile" enctype="multipart/form-data">
     <input type="submit" value="Save Changes" name="button_save" /> <input type="submit" value="Cancel" name="button_cancel" style="display:block" />
-    <textarea class="edit" name="textfield" rows=17 cols=70 id="textfield">{{ text_file_content | escape }}</textarea>
+    <div style="border: 1px solid black; padding: 0px;">
+        <textarea class="edit" name="textfield" rows=20 cols=100 id="textfield" style="overflow: auto;">{{ text_file_content | escape }}</textarea>
+    </div>
+    <script type="text/javascript">
+    $(document).ready(function () {
+	CodeMirror.fromTextArea('textfield', {
+	    parserfile: "../contrib/python/js/parsepython.js",
+	    stylesheet: "/javascript/codemirror/contrib/python/css/pythoncolors.css",
+	    path: "/javascript/codemirror/js/",
+	    height: '25.0em',
+	    width: '100%',
+	    indentUnit: 4,
+	    lineNumbers: true,
+	    textWrapping: false,
+            parserConfig: {
+		'pythonVersion': 2,
+		'strictErrors': true
+	    }
+	}); 
+      });
+    </script>
     <input type="hidden" name="filename" value="{{ filename_ }}" id="filename" />
 </form>
 {% endif %}
