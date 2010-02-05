@@ -21,7 +21,7 @@ def all_files(dir, lstrip):
     
 
 code = setup(name = 'sagenb',
-      version     = '0.7.3',  # the spkg-dist script assumes single quotes here
+      version     = '0.7.4',  # the spkg-dist script assumes single quotes here
       description = 'The Sage Notebook',
       license     = 'GNU Public License (GPL) v2+',
       author      = 'William Stein et al.',
