@@ -383,8 +383,11 @@ Please either stop the old server or run the new server in a different directory
             return pexpect.spawn(cmd)
         else:
             e = os.system(cmd)
+
+        os.chdir(cwd)
         if e == 256:
             raise socket.error
+
         return True
         # end of inner function run
                      
