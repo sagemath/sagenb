@@ -94,7 +94,7 @@ jsMath.Easy = {
     //  would allow them to enter arbitrary HTML code within their
     //  math formulas, and that poses a security risk.)
     //
-    safeHBoxes: 1,
+    safeHBoxes: 0,
 
     //
     //  Show TeX source when mathematics is double-clicked?
