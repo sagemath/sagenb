@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-"""
+r"""
 Notebook Keybindings
 
 This module is responsible for setting the keyboard bindings for the notebook. 
@@ -27,7 +27,7 @@ notebook:
 
 ..
 
-- *Insert New HTML Cell:* Shift click between cells to create a new HTML cell. Double click on existing HTML to edit it. Use $...$ and $$...$$ to include typeset math in the HTML block.
+- *Insert New HTML Cell:* Shift click between cells to create a new HTML cell. Double click on existing HTML to edit it. Use \$...\$ and \$\$...\$\$ to include typeset math in the HTML block.
 
 ..
 
