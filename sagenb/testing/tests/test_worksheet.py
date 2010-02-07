@@ -213,6 +213,21 @@ print(13)
         sel.wait_for_page_to_load("30000")
         self.assert_(sel.is_text_present('Archive Worksheet'),
                      'worksheet was not in the archive')
+    
+    def test_8208(self):
+        """
+        Check the fix for trac #8208: Click "No" actually publishes a worksheet.
+        """
+        sel = self.selenium
+        self.create_new_worksheet('published_worksheet')
+        self.publish_worksheet()
+        self.assertTrue(self.is_worksheet_published('published_worksheet'))
+        self.create_new_worksheet('not_p_ws')
+        sel.click("link=Publish")
+        sel.wait_for_page_to_load("30000")
+        sel.click("//input[@value='No']")
+        sel.wait_for_page_to_load("30000")
+        self.assertFalse(self.is_worksheet_published('not_p_ws'))        
 
     def test_simple_evaluation(self):
         """

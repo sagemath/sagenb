@@ -337,7 +337,7 @@ class NotebookTestCase(unittest.TestCase):
         sel = self.selenium
         sel.click("link=Publish")
         sel.wait_for_page_to_load("30000")
-        sel.click("//button[text()='Yes']")
+        sel.click("//input[@value='Yes']")
         sel.wait_for_page_to_load("30000")
         sel.click("link=Worksheet")
         sel.wait_for_page_to_load("30000")
@@ -362,6 +362,16 @@ class NotebookTestCase(unittest.TestCase):
         sel = self.selenium
         sel.open('/pub')
         sel.wait_for_page_to_load("30000")
+        
+    def is_worksheet_published(self, name):
+        """
+        Returns True if worksheet id is published, False otherwise.
+        """
+        name = str(name)
+        sel = self.selenium
+        sel.click("link=Published")
+        sel.wait_for_page_to_load("30000")
+        return sel.is_text_present(name)
 
     def goto_published_worksheet(self, id):
         """

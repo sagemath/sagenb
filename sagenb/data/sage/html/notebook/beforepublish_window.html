@@ -11,8 +11,8 @@
 <form method="get" action=".">
     <input type="hidden" name="yes" value="" />
     <div>
-        <button type="submit">Yes</button>
-        <a href="../"><button>No</button></a>
+        <input type="submit" value="Yes" />
+        <input type="button" value="No" onClick="parent.location='../'" />
     </div>
     <div>
         <input type="checkbox" name="auto" /> <label for="auto"> Automatically re-publish when changes are made</label>
