@@ -2952,7 +2952,7 @@ from sagenb.notebook.all import *
                 pass
 
         if C.time() and not C.introspect():
-            input += 'print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__))\n'
+            input += '; print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__))\n'
         self.__comp_is_running = True
         self.sage().execute(input, os.path.abspath(self.data_directory()))
 
