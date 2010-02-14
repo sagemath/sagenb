@@ -2477,7 +2477,7 @@ function cell_input_key_event(id, e) {
     } else if (!in_slide_mode && key_down_arrow(e) && selection_is_empty) {
         after = cell_input.value.substring(selection_range[0]);
         i = after.indexOf('\n');
-        if (i === -1 || after === '') {
+        if ((i === -1 || after === '') && id !== extreme_compute_cell(-1)) {
             jump_to_cell(id, 1);
             return false;
         } else {
@@ -2695,24 +2695,19 @@ function jump_to_cell(id, delta, bottom) {
          Changes the focused cell.  Does not send any information back
          to the server.
      */
-    var switch_id;
     if (ignore_next_jump) {
         ignore_next_jump = false;
         return;
     }
 
     if (delta && delta !== 0) {
-        switch_id = id_of_cell_delta(id, delta);
-    }
-
-    if (switch_id === id) {
-        return;
+        id = id_of_cell_delta(id, delta);
     }
 
     if (in_slide_mode) {
-        jump_to_slide(switch_id);
+        jump_to_slide(id);
     } else {
-        cell_focus(switch_id, bottom);
+        cell_focus(id, bottom);
     }
 }
 
