@@ -2422,6 +2422,23 @@ class RedirectLogin(resource.PostableResource):
     def childFactory(self, request, name):
         return RedirectLogin()
 
+class LogoutRedirectLogin(resource.PostableResource):
+    def render(self, ctx):
+        response = http.RedirectResponse('/')
+
+        # Force cookie deletion.
+        yesterday = time.time() - 3600 * 24
+        c1 = http_headers.Cookie('nb_session_%s' % notebook.port, '',
+                                 expires=yesterday)
+        c2 = http_headers.Cookie('cookie_test_%s' % notebook.port, '',
+                                 expires=yesterday)
+        response.headers.setHeader("set-cookie", [c1, c2])
+
+        return response
+
+    def childFactory(self, request, name):
+        return LogoutRedirectLogin()
+
 import sagenb.simple.twist
 
 class Toplevel(resource.PostableResource):
@@ -2471,7 +2488,7 @@ class AnonymousToplevel(Toplevel):
     child_css = CSS()
     child_javascript = Javascript()
     child_java = Java()
-    child_logout = RedirectLogin()
+    child_logout = LogoutRedirectLogin()
 
     def userchildFactory(self, request, name):
         # This is called from Toplevel above

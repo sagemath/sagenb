@@ -1622,7 +1622,7 @@ function close_callback(status, response_text) {
         alert(response_text);
         return;
     }
-    window.location.replace('/');
+    window.location.replace('/home/' + user_name);
 }
 
 
