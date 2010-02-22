@@ -2718,7 +2718,7 @@ class color_selector(input_box):
             sage: color_selector(default = Color(0, 0.5, 0.25))
             Interact color selector labeled None, with default RGB color (0.0, 0.5, 0.25), widget 'farbtastic', and visible input box
             sage: color_selector('purple', widget = 'colorpicker')
-            Interact color selector labeled None, with default RGB color (0.5, 0.0, 1.0), widget 'colorpicker', and visible input box
+            Interact color selector labeled None, with default RGB color (0.50..., 0.0, 0.50...), widget 'colorpicker', and visible input box
             sage: color_selector('crayon', widget = 'colorpicker')
             Traceback (most recent call last):
             ...
