@@ -686,7 +686,7 @@ def sage_getsourcelines(obj, is_binary=False):
 
         sage: from sagenb.misc.sageinspect import sage_getsourcelines
         sage: sage_getsourcelines(matrix, True)[1]
-        33
+        34
         sage: sage_getsourcelines(matrix, False)[0][0][4:]
         'matrix(*args, **kwds):\n'
 
