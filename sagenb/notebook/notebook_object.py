@@ -20,10 +20,9 @@ import run_notebook
 
 class NotebookObject:
     r"""
-    Start the Sage Notebook server. More documentation is available in
-    the Sage installation guide, in the "Running the Sage Notebook
-    Securely" chapter, and at
-    http://wiki.sagemath.org/StartingTheNotebook.
+    Start the Sage Notebook server.  More details about using these
+    options, as well as tips and tricks, may be available at `this
+    Sage wiki page`_.
 
     INPUT:
     
@@ -98,15 +97,16 @@ class NotebookObject:
         - ``subnets`` -- list of strings (default: None) a list of
           strings that define subnets; if given, requests to the
           notebook server from ip addresses that are not in any of the
-          listed subnets are ignored.  See
-          http://en.wikipedia.org/wiki/Subnetwork for more about
-          subnets.  An example input is ``subnets=['192.168.1.0/24',
-          '216.34.0.0/16']``, which accepts any address of the form
-          ``192.168.1.*`` or of the form ``216.34.*.*``.  For serious
-          use, you may want to instead use your operating system's
-          firewall, which is probably more robust and reduces the load
-          on the server.  Note that ``127.0.0.1`` is always allowed no
-          matter what.
+          listed subnets are ignored.  See `this Wikipedia article`_
+          more about subnets.  An example input is
+          ``subnets=['192.168.1.0/24', '216.34.0.0/16']``, which
+          accepts any address of the form ``192.168.1.*`` or of the
+          form ``216.34.*.*``.  For serious use, you may want to
+          instead use your operating system's firewall, which is
+          probably more robust and reduces the load on the server.
+          Note that ``127.0.0.1`` is always allowed no matter what.
+
+    .. _this Wikipedia article: http://en.wikipedia.org/wiki/Subnetwork
 
     .. note:: 
 
@@ -122,7 +122,7 @@ class NotebookObject:
     2. I want to run the Sage notebook server on a remote machine and
        be the only person allowed to log in.  Type::
 
-           notebook(address='', secure=True)
+           notebook(interface='', secure=True)
 
        the first time you do this you'll be prompted to set an
        administrator password.  Use this to login. NOTE: You may have
@@ -141,11 +141,10 @@ class NotebookObject:
     4. I want to create a Sage notebook server that is open to anybody
        in the world to create new accounts. To run the Sage notebook
        publicly (1) at a minimum run it from a chroot jail or inside a
-       virtual machine (see
-       http://wiki.sagemath.org/StartingTheNotebook and the Sage
-       install guide) and (2) use a command like::
+       virtual machine (see `this Sage wiki page`_) and (2) use a
+       command like::
     
-           notebook(address='', server_pool=['sage1@localhost'],
+           notebook(interface='', server_pool=['sage1@localhost'],
            ulimit='-v 500000', accounts=True)
 
        The server_pool option specifies that worksheet processes run
@@ -163,10 +162,6 @@ class NotebookObject:
 
     INPUT:  (more advanced)
 
-    More details about using these options can be found at:
-    http://wiki.sagemath.org/StartingTheNotebook and in the Sage
-    install guide.
-
         - ``server_pool`` -- list of strings (initial default: None),
           if given, should be a list like \['sage1@localhost',
           'sage2@localhost'\], where you have setup ssh keys so that
@@ -178,8 +173,8 @@ class NotebookObject:
           ``ssh-keygen`` as the notebook server user, then putting
           ``~/.ssh/id_rsa.pub`` as the file
           ``.ssh/authorized_keys``. Note: you have to get the
-          permissions of files and directories just right -- see the
-          above wiki page for more details.  Also, every user in the
+          permissions of files and directories just right -- see `this
+          Sage wiki page`_ for more details.  Also, every user in the
           server pool must share the same ``/tmp`` directory right
           now, so if the machines are separate the server machine must
           NSF export ``/tmp``.
@@ -214,6 +209,9 @@ class NotebookObject:
          allows notebook administrators to customize the look of the
          notebook.  Note that by default ``\\$DOT_SAGE`` is
          ``\\$HOME/.sage``.
+
+    .. _this Sage wiki page:  http://wiki.sagemath.org/StartingTheNotebook
+
     """
     def __call__(self, *args, **kwds):
         return self.notebook(*args, **kwds)
@@ -232,7 +230,8 @@ def inotebook(*args, **kwds):
     notebook(*args, **kwds)
 
 
-def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address='localhost', verbose=False):
+def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
+                  interface='localhost', verbose=False):
     """
     This function is used to test notebook server functions.
     
@@ -240,7 +239,7 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address
     
         sage: from sagenb.notebook.notebook_object import test_notebook
         sage: passwd = str(randint(1,1<<128))
-        sage: nb = test_notebook(passwd, address='localhost', port=8060)
+        sage: nb = test_notebook(passwd, interface='localhost', port=8060)
         sage: import urllib
         sage: h = urllib.urlopen('http://localhost:8060')
         sage: homepage = h.read()
@@ -265,7 +264,8 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050, address
     nb.set_accounts(False)
     nb.save()
     
-    p = notebook(directory=directory, accounts=True, secure=secure, port=port, address=address, open_viewer=False, fork=True, quiet=True)
+    p = notebook(directory=directory, accounts=True, secure=secure, port=port,
+                 interface=interface, open_viewer=False, fork=True, quiet=True)
     p.expect("Starting factory")
     def dispose():
         try:
