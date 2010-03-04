@@ -4,7 +4,7 @@
 /* instructions at <sagenb-spkg-root>/sass */
 thead { font-weight: bold; }
 
-body { background-color: white; font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+body { background-color: white; }
 
 .hidden { display: none; }
 
@@ -22,7 +22,7 @@ body div#banner div.version { float: left; clear: left; font-size: xx-small; tex
 #main-controls ul { list-style: none; margin: 0; padding: 0; text-align: right; }
 #main-controls ul li { border-right: 1px solid #000; color: #112abb; display: inline; font-size: 14px; margin: 0; padding: 0 0.5em; }
 #main-controls ul li:last-child { border-right: 0; }
-#main-controls ul li.username { border: 0; color: #000; font-family: sans-serif; font-weight: bold; padding: 0; }
+#main-controls ul li.username { font-family: 'Arial', 'Helvetica', sans-serif; border: 0; color: #000; font-weight: bold; padding: 0; }
 #main-controls ul a { text-decoration: underline; white-space: nowrap; }
 #main-controls ul a:hover { cursor: pointer; }
 #main-controls ul #toggle-link { display: none; }
@@ -137,9 +137,9 @@ span.pane div.attached_list { font-size: 11px; top: 0ex; height: 20ex; border: 2
 div.attached_filename { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
 /* *********** WORKSHEETS ************************* */
-div.docstring-introspection-dialog { font-size: inherit; font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+div.docstring-introspection-dialog { font-size: inherit; font-family: 'Arial', 'Helvetica', sans-serif; }
 
-.docstring { font-family: "Gill Sans", "Gill Sans MT", "Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif; }
+.docstring { font-family: 'Arial', 'Helvetica', sans-serif; }
 .docstring .click-message { font-size: 0.75em; float: right; clear: both; }
 .docstring .unprinted-note { float: right; clear: both; font-size: 0.6em; }
 
@@ -148,7 +148,7 @@ span.pane div.worksheets_topbar { color: black; height: 3ex; top: 0ex; backgroun
 a.left_panel_hide { position: relative; top: 0px; right: -1px; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
 a.left_panel_hide:hover { cursor: pointer; }
 
-span.X { color: white; font-family: arial, monospace; font-weight: bold; cursor: pointer; }
+span.X { color: white; font-family: 'Arial', 'Helvetica', sans-serif; font-weight: bold; cursor: pointer; }
 
 .modal-prompt form { font-size: 0.9em; }
 .modal-prompt div.message, .modal-prompt div.field { margin-bottom: 0.25em; }
@@ -180,7 +180,7 @@ button.delete_worksheet_menu { font-size: 11px; background-color: #ffcccc; }
 
 span.pane div.worksheet_list { position: fixed; overflow: scroll; font-size: 12px; top: 25ex; bottom: 2ex; left: 1ex; border: 2px solid #ccc; width: 180px; }
 
-a.new_worksheet { font-family: arial, monospace; font-size: 12pt; text-align: right; color: #0000aa; }
+a.new_worksheet { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 12pt; text-align: right; color: #0000aa; }
 a.new_worksheet:hover { cursor: pointer; }
 
 div.worksheet_menu { top: 50px; }
@@ -193,7 +193,7 @@ div.worksheet_print_title { text-decoration: none; font-size: 24px; font-weight:
 div.worksheet_title_under { z-index: 0; padding-top: 3px; padding-left: 1em; background-color: #dcdcdc; font-size: 22px; font-weight: bold; color: black; }
 div.worksheet_cell_list { padding-left: 0.5ex; }
 
-a.delete_worksheet { font-family: arial, monospace; font-size: 8pt; text-decoration: underline; text-align: right; color: #0000aa; }
+a.delete_worksheet { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 8pt; text-decoration: underline; text-align: right; color: #0000aa; }
 a.delete_worksheet:hover { cursor: pointer; }
 a.upload_worksheet:hover { cursor: pointer; }
 
@@ -237,9 +237,9 @@ div.cell_visible { display: block; }
 div.cell_evaluated { border-left: 1px solid white; padding-left: 3px; }
 div.cell_not_evaluated { border-left: 1px solid #ff8888; padding-left: 3px; }
 
-td.cell_number { font-size: 12pt; font-family: arial, monospace; color: #bbbbbb; text-align: left; border-left: 4px solid #ffffff; }
+td.cell_number { font-size: 12pt; font-family: 'Arial', 'Helvetica', sans-serif; color: #bbbbbb; text-align: left; border-left: 4px solid #ffffff; }
 td.cell_number:hover { color: #555555; cursor: pointer; }
-td.cell_number_running { font-size: 12pt; font-family: arial, monospace; color: #bbbbbb; border-left: 4px solid #aaffaa; text-align: left; }
+td.cell_number_running { font-size: 12pt; font-family: 'Arial', 'Helvetica', sans-serif; color: #bbbbbb; border-left: 4px solid #aaffaa; text-align: left; }
 td.cell_number_running:hover { cursor: wait; }
 
 div.cellbox { z-index: 2; background-color: white; padding-left: .5em; padding-top: 4em; }
@@ -318,7 +318,7 @@ span.worksheet_buttons { position: relative; top: -20ex; right: 0ex; }
 
 .ratingmsg { color: #112abb; padding: 0.3em; font-size: 14px; }
 
-.pubmsg { font-family: sans-serif; color: #112abb; padding: 0.3em; font-size: 12px; }
+.pubmsg { font-family: 'Arial', 'Helvetica', sans-serif; color: #112abb; padding: 0.3em; font-size: 12px; }
 
 #worksheet-list { clear: both; width: 100%; }
 #worksheet-list thead { background-color: #e8eef7; }
@@ -333,14 +333,14 @@ span.worksheet_buttons { position: relative; top: -20ex; right: 0ex; }
 
 .user-controls a, .controls a, .controls span { padding: 0.3em; }
 
-a.control, a.control-select { background-color: #7799bb; font-family: sans-serif; color: #ffffff; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.5em; padding-right: 0.5em; font-size: 15px; font-weight: bold; text-decoration: none; }
+a.control, a.control-select { background-color: #7799bb; font-family: 'Arial', 'Helvetica', sans-serif; color: #ffffff; padding-top: 0.25em; padding-bottom: 0.25em; padding-left: 0.5em; padding-right: 0.5em; font-size: 15px; font-weight: bold; text-decoration: none; }
 a.control:hover { cursor: pointer; }
 a.control-select { background-color: #4477aa; }
 a.control-select:hover { cursor: pointer; }
 
-.sharebar { background-color: #4477aa; font-family: sans-serif; color: #ffffff; padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 2em; font-size: 1.25em; font-weight: bold; }
+.sharebar { background-color: #4477aa; font-family: 'Arial', 'Helvetica', sans-serif; color: #ffffff; padding-top: 0.5em; padding-bottom: 0.5em; padding-left: 2em; font-size: 1.25em; font-weight: bold; }
 
-textarea.edit { font-family: courier, monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; padding: 3px; overflow: auto; margin-top: 0.5em; }
+textarea.edit { font-family: monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; padding: 3px; overflow: auto; margin-top: 0.5em; }
 
 a.listcontrol { padding: 1ex; color: #112abb; font-weight: bold; font-size: 14px; text-decoration: none; }
 
@@ -363,30 +363,30 @@ tr.thingreybox { background-color: #aaa; }
 
 div.ultrathinspace { border: 0; height: 0px; }
 
-.lastedit { font-family: sans-serif; font-size: 10px; color: #717171; }
+.lastedit { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 10px; color: #717171; }
 
-.revs { font-family: sans-serif; font-size: 12px; font-weight: bold; color: #333333; }
+.revs { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 12px; font-weight: bold; color: #333333; }
 
-.users { font-family: sans-serif; font-size: 13px; color: #222222; }
+.users { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 13px; color: #222222; }
 
-a.share { font-family: sans-serif; font-size: 10px; color: #7777cc; }
+a.share { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 10px; color: #7777cc; }
 
 select.worksheet { width: 6em; border: #aaaaaa; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; }
 select.worksheet_list, select.worksheet_edit { width: 5em; border: #aaaaaa; border-style: solid; border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; }
 
-td.worksheet_link { font-family: sans-serif; font-size: 12px; font-weight: bold; color: #000000; }
-td.archived_worksheet_link, td.owner_collab, td.last_edited { font-family: sans-serif; font-size: 12px; color: #000000; }
+td.worksheet_link { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 12px; font-weight: bold; color: #000000; }
+td.archived_worksheet_link, td.owner_collab, td.last_edited { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 12px; color: #000000; }
 
-span.addtext { font-family: sans-serif; font-size: 13px; color: #222; }
+span.addtext { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 13px; color: #222; }
 
-textarea.plaintextedit { font-family: courier, monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; overflow: auto; width: 99%; height: 60%; }
+textarea.plaintextedit { font-family: monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; overflow: auto; width: 99%; height: 60%; }
 
-pre.plaintext { overflow: auto; font-family: courier, monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; margin-top: 0.5em; }
+pre.plaintext { overflow: auto; font-family: monospace; font-size: 10pt; border: 1px solid #8cacbb; color: black; background-color: white; margin-top: 0.5em; }
 
-div.docidx { text-align: center; font-family: sans-serif; font-size: 16px; color: #222; font-weight: bold; }
+div.docidx { text-align: center; font-family: 'Arial', 'Helvetica', sans-serif; font-size: 16px; color: #222; font-weight: bold; }
 
 span.ping { display: none; }
-span.pingdown { font-family: sans-serif; font-size: 15px; font-weight: bold; color: white; background-color: #990000; margin-left: 1em; }
+span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; font-weight: bold; color: white; background-color: #990000; margin-left: 1em; }
 
 #source-code-page .str { color: #080; }
 #source-code-page .kwd { color: #008; }

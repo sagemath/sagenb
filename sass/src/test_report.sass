@@ -3,13 +3,15 @@
 /*  when they are next generated. Please edit the SASS source located at */
 /* <sagenb-spkg-root>/sass/src. Kindly refer to the readme for editing */
 /* instructions at <sagenb-spkg-root>/sass */
+@import partials/base.sass
+@import partials/mixins.sass
+
 body, table
+  +sans-serif-stack
   :background-color #fff
   :color #111
-  :font-family sans-serif
   :-moz-border-radius 0.25em
   :-webkit-border-radius 0.25em
-
 
 pre
   :margin 0
