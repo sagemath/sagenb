@@ -158,7 +158,7 @@ class Worksheet(object):
                  notebook_worksheet_directory=None, system=None,
                  owner=None, docbrowser=False, pretty_print=False,
                  auto_publish=False, create_directories=True):
-        u"""
+        ur"""
         Create and initialize a new worksheet.
 
         INPUT:
@@ -193,10 +193,9 @@ class Worksheet(object):
         EXAMPLES: We test the constructor via an indirect doctest::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test with unicode ΫäĻƾṀБ', 'admin')
+            sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
             admin/0: [Cell 1; in=, out=]
-
         """
         if name is None:
             # A fresh worksheet
