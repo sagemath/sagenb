@@ -86,7 +86,7 @@ Cython functions::
     '.../rational.pyx'
 
     sage: sage_getdoc(sage.rings.rational.make_rational).lstrip()
-    "Make a rational number ...
+    "Make a rational number ..."
 
     sage: sage_getsource(sage.rings.rational.make_rational, True)[4:]
     'make_rational(s):...'
@@ -116,7 +116,7 @@ Unfortunately, there is no argspec extractable from builtins::
 
 import inspect
 import os
-from .misc import encoded_str
+import tokenize
 EMBEDDED_MODE = False
 
 def isclassinstance(obj):
@@ -134,8 +134,17 @@ def isclassinstance(obj):
         True
         sage: isclassinstance(SteenrodAlgebra)
         True
+        sage: class myclass: pass
+        sage: isclassinstance(myclass)
+        False
+        sage: class mymetaclass(type): pass
+        sage: class myclass2:
+        ...       __metaclass__ = mymetaclass
+        sage: isclassinstance(myclass2)
+        False
     """
-    return (hasattr(obj, '__class__') and \
+    return (not inspect.isclass(obj) and \
+            hasattr(obj, '__class__') and \
             hasattr(obj.__class__, '__module__') and \
             obj.__class__.__module__ not in ('__builtin__', 'exceptions'))
 
@@ -183,6 +192,66 @@ def _extract_embedded_position(docstring):
         return (original, filename, lineno)
     return None
 
+class BlockFinder:
+    """
+    Provide a tokeneater() method to detect the end of a code block.
+    
+    This is the Python library's :class:`inspect.BlockFinder` modified
+    to recognize Cython definitions.
+    """
+    def __init__(self):
+        self.indent = 0
+        self.islambda = False
+        self.started = False
+        self.passline = False
+        self.last = 1
+
+    def tokeneater(self, type, token, srow_scol, erow_ecol, line):
+        srow, scol = srow_scol
+        erow, ecol = erow_ecol
+        if not self.started:
+            # look for the first "(cp)def", "class" or "lambda"
+            if token in ("def", "cpdef", "class", "lambda"):
+                if token == "lambda":
+                    self.islambda = True
+                self.started = True
+            self.passline = True    # skip to the end of the line
+        elif type == tokenize.NEWLINE:
+            self.passline = False   # stop skipping when a NEWLINE is seen
+            self.last = srow
+            if self.islambda:       # lambdas always end at the first NEWLINE
+                raise inspect.EndOfBlock
+        elif self.passline:
+            pass
+        elif type == tokenize.INDENT:
+            self.indent = self.indent + 1
+            self.passline = True
+        elif type == tokenize.DEDENT:
+            self.indent = self.indent - 1
+            # the end of matching indent/dedent pairs end a block
+            # (note that this only works for "def"/"class" blocks,
+            #  not e.g. for "if: else:" or "try: finally:" blocks)
+            if self.indent <= 0:
+                raise inspect.EndOfBlock
+        elif self.indent == 0 and type not in (tokenize.COMMENT, tokenize.NL):
+            # any other token on the same indentation level end the previous
+            # block as well, except the pseudo-tokens COMMENT and NL.
+            raise inspect.EndOfBlock
+
+def _getblock(lines):
+    """
+    Extract the block of code at the top of the given list of lines.
+
+    This is the Python library's :func:`inspect.getblock`, except that
+    it uses an instance of our custom :class:`BlockFinder`.
+    """
+    blockfinder = BlockFinder()
+    try:
+        tokenize.tokenize(iter(lines).next, blockfinder.tokeneater)
+    except (inspect.EndOfBlock, IndentationError):
+        pass
+    return lines[:blockfinder.last]
+
 def _extract_source(lines, lineno):
     r"""
     Given a list of lines or a multiline string and a starting lineno,
@@ -211,7 +280,7 @@ def _extract_source(lines, lineno):
         # Fixes an issue with getblock
         lines[-1] += '\n'
 
-    return inspect.getblock(lines[lineno:])
+    return _getblock(lines[lineno:])
 
 def _sage_getargspec_cython(source):
     r"""
@@ -259,19 +328,24 @@ def _sage_getargspec_cython(source):
         argnames = [] # argument names
         argdefs  = [] # default values
         for arg in args:
-            s = arg.split('=')
-            argname = s[0]
+            # only process arg if it has positive length
+            if len(arg) > 0:
+                s = arg.split('=')
+                argname = s[0]
 
-            # Cython often has type information; we split off the right most
-            # identifier to discard this information
-            argname = argname.split()[-1]
-            # Cython often has C pointer symbols before variable names
-            argname.lstrip('*')
-            argnames.append(argname)
-            if len(s) > 1:
-                defvalue = s[1]
-                # eval defvalue so we aren't just returning strings
-                argdefs.append(eval(defvalue))
+                # Cython often has type information; we split off the right most
+                # identifier to discard this information
+                argname = argname.split()[-1]
+                # Cython often has C pointer symbols before variable names
+                argname.lstrip('*')
+                argnames.append(argname)
+                if len(s) > 1:
+                    defvalue = s[1]
+                    # eval defvalue so we aren't just returning strings
+                    try:
+                        argdefs.append(eval(defvalue))
+                    except NameError:
+                        argdefs.append(defvalue)
 
         if len(argdefs) > 0:
             argdefs = tuple(argdefs)
@@ -344,9 +418,22 @@ def sage_getargspec(obj):
       Python Standard Library, which was taken from IPython for use in Sage.
     - Extensions by Nick Alexander
     """
+    try:
+        from sage.misc.lazy_attribute import lazy_attribute
+        from sage.misc.abstract_method import AbstractMethod
+    except ImportError:
+        class lazy_attribute(object):
+            pass
+        class AbstractMethod(object):
+            pass
+
+    if isinstance(obj, (lazy_attribute, AbstractMethod)):
+        source = sage_getsource(obj)
+        return _sage_getargspec_cython(source)
     if not callable(obj):
         raise TypeError, "obj is not a code object"
-    
+    if hasattr(obj, '_sage_argspec_'):
+        return obj._sage_argspec_()
     if inspect.isfunction(obj):
         func_obj = obj
     elif inspect.ismethod(obj):
@@ -355,6 +442,11 @@ def sage_getargspec(obj):
         return sage_getargspec(obj.__class__.__call__)
     elif inspect.isclass(obj):
         return sage_getargspec(obj.__call__)
+    elif (hasattr(obj, '__objclass__') and hasattr(obj, '__name__') and
+          obj.__name__ == 'next'):
+        # Handle sage.rings.ring.FiniteFieldIterator.next and similar
+        # slot wrappers.  This is mainly to suppress Sphinx warnings.
+        return ['self'], None, None, None
     else:
         # Perhaps it is binary and defined in a Cython file
         source = sage_getsource(obj, is_binary=True)
@@ -394,7 +486,7 @@ def sage_getdef(obj, obj_name=''):
         'identity_matrix(ring, n=0, sparse=False)'
 
     Check that trac ticket #6848 has been fixed::
-
+    
         sage: sage_getdef(RDF.random_element)
         '(min=-1, max=1)'
 
@@ -444,9 +536,11 @@ def sage_getdef(obj, obj_name=''):
     except (AttributeError, TypeError, ValueError):
         return '%s( [noargspec] )'%obj_name
 
-def sage_getdoc(obj, obj_name=''):
+def _sage_getdoc_unformatted(obj):
     r"""
-    Return the docstring associated to ``obj`` as a string.
+    Return the unformatted docstring associated to ``obj`` as a
+    string.  Feed the results from this into the
+    sage.misc.sagedoc.format for printing to the screen.
 
     INPUT: ``obj``, a function, module, etc.: something with a docstring.
 
@@ -455,9 +549,9 @@ def sage_getdoc(obj, obj_name=''):
 
     EXAMPLES::
 
-        sage: from sagenb.misc.sageinspect import sage_getdoc
-        sage: sage_getdoc(identity_matrix)[5:39]
-        'turn the n x n identity matrix ove'
+        sage: from sagenb.misc.sageinspect import _sage_getdoc_unformatted
+        sage: _sage_getdoc_unformatted(identity_matrix)[5:44]
+        'Return the `n \\times n` identity matrix'
 
     AUTHORS:
     
@@ -465,13 +559,6 @@ def sage_getdoc(obj, obj_name=''):
     - extensions by Nick Alexander
     """
     if obj is None: return ''
-    try:
-        from sage.misc.sagedoc import format
-    except ImportError:
-        # Fallback
-        def format(s, *args, **kwds):
-            return s
-        
     r = None
     try:
         r = obj._sage_doc_()
@@ -485,9 +572,48 @@ def sage_getdoc(obj, obj_name=''):
 
     if r is None:
         return ''
-    r = encoded_str(r)
+    from sagenb.misc.misc import encoded_str
+    return encoded_str(r)
 
-    s = format(r, embedded=EMBEDDED_MODE)
+def sage_getdoc(obj, obj_name='', embedded_override=False):
+    r"""
+    Return the docstring associated to ``obj`` as a string.
+
+    INPUT: ``obj``, a function, module, etc.: something with a docstring.
+
+    If ``obj`` is a Cython object with an embedded position in its
+    docstring, the embedded position is stripped.
+
+    If optional argument ``embedded_override`` is False (its default
+    value), then the string is formatted according to the value of
+    EMBEDDED_MODE.  If this argument is True, then it is formatted as
+    if EMBEDDED_MODE were True.
+
+    EXAMPLES::
+
+        sage: from sagenb.misc.sageinspect import sage_getdoc
+        sage: sage_getdoc(identity_matrix)[3:39]
+        'Return the n x n identity matrix ove'
+
+    AUTHORS:
+    
+    - William Stein
+    - extensions by Nick Alexander
+    """
+    try:
+        from sage.misc.sagedoc import format
+    except ImportError:
+        # Fallback
+        def format(s, *args, **kwds):
+            return s
+
+    if obj is None: return ''
+    r = _sage_getdoc_unformatted(obj)
+
+    if r is None:
+        return ''
+
+    s = format(str(r), embedded=(embedded_override or EMBEDDED_MODE))
 
     # If there is a Cython embedded position, it needs to be stripped
     pos = _extract_embedded_position(s)
@@ -591,9 +717,56 @@ def sage_getsourcelines(obj, is_binary=False):
         source_lines = open(filename).readlines()
     except IOError:
         return None
+
     return _extract_source(source_lines, lineno), lineno
 
+def sage_getvariablename(obj, omit_underscore_names=True):
+    """
+    Attempt to get the name of a Sage object.
 
+    INPUT:
+
+    - ``obj`` - an object
+    - ``omit_underscore_names`` (optional, default True)
+
+    If the user has assigned an object ``obj`` to a variable name,
+    then return that variable name.  If several variables point to
+    ``obj``, return a list of those names.  If
+    ``omit_underscore_names`` is True (the default) then omit names
+    starting with an underscore "_".
+
+    This is a modified version of code taken from 
+    http://pythonic.pocoo.org/2009/5/30/finding-objects-names,
+    written by Georg Brandl.
+
+    EXAMPLES::
+
+        sage: from sagenb.misc.sageinspect import sage_getvariablename
+        sage: A = random_matrix(ZZ, 100)
+        sage: sage_getvariablename(A)
+        'A'
+        sage: B = A
+        sage: sage_getvariablename(A)
+        ['A', 'B']
+
+    If an object is not assigned to a variable, an empty list is returned::
+
+        sage: sage_getvariablename(random_matrix(ZZ, 60))
+        []
+    """
+    import gc
+    result = []
+    for referrer in gc.get_referrers(obj):
+        if isinstance(referrer, dict):
+            for k, v in referrer.iteritems():
+                if v is obj:
+                    if isinstance(k, str):
+                        if (not omit_underscore_names) or not k.startswith('_'):
+                            result.append(k)
+    if len(result) == 1:
+        return result[0]
+    else:
+        return result
 
 __internal_teststring = '''
 import os                                  # 1
