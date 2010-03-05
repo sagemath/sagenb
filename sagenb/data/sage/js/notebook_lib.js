@@ -3667,7 +3667,6 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
     if (stat === 'd' && contains_jsmath(output_text)) {
         try {
             jsMath.ProcessBeforeShowing(cell_output);
-            jsMath.ProcessBeforeShowing(cell_output_nowrap);
         } catch (e) {
             cell_output.innerHTML = jsmath_font_msg + cell_output.innerHTML;
             cell_output_nowrap.innerHTML = jsmath_font_msg +
