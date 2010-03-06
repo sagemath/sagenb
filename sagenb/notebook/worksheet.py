@@ -2168,6 +2168,30 @@ class Worksheet(object):
             10]
             sage: W.name()
             u'Test Edit Save'
+
+        We check that loading a worksheet whose last cell is a
+        :class:`~sagenb.notebook.cell.TextCell` properly increments
+        the worksheet's cell count (see Sage trac ticket `#8443`_).
+
+        .. _#8443: http://trac.sagemath.org/sage_trac/ticket/8443
+
+        ::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir() + '.sagenb')
+            sage: nb.add_user('sage', 'sage', 'sage@sagemath.org', force=True)
+            sage: W = nb.create_new_worksheet('Test trac #8443', 'sage')
+            sage: W.edit_save('{{{\n1+1\n///\n}}}')
+            sage: W.cell_id_list()
+            [0]
+            sage: W.next_id()
+            1
+            sage: W.edit_save("{{{\n1+1\n///\n}}}\n\n<p>a text cell</p>")
+            sage: len(set(W.cell_id_list())) == 3
+            True
+            sage: W.cell_id_list()
+            [0, 1, 2]
+            sage: W.next_id()
+            3
         """
         # Clear any caching.
         try:
@@ -2232,20 +2256,20 @@ class Worksheet(object):
                     C.update_html_output(output)
                 cells.append(C)
 
-        if len(cells) == 0:   # there must be at least one cell.
-            cells = [self._new_cell()]
-        elif isinstance(cells[-1], TextCell):
-            cells.append(self._new_cell())
-
         self.__cells = cells
+        # Set the next id.  This *depends* on self.cell_list() being
+        # set!!
+        self.set_cell_counter()
+
+        # There must be at least one cell.
+        if len(cells) == 0 or isinstance(cells[-1], TextCell):
+            self.append_new_cell()
 
         if not self.is_published():
             for c in self.cell_list():
                 if c.is_interactive_cell():
                     c.delete_output()
 
-        # This *depends* on self.cell_list() being set!!
-        self.set_cell_counter()
 
     ##########################################################
     # HTML rendering of the whole worksheet
