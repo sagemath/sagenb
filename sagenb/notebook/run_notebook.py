@@ -399,7 +399,7 @@ Please either stop the old server or run the new server in a different directory
             print "**crazy**!  You should run the notebook with the option secure=True."
             print "*"*70
 
-    port = find_next_available_port(port, port_tries)
+    port = find_next_available_port(interface, port, port_tries)
     if open_viewer:
         "Open viewer automatically isn't fully implemented.  You have to manually open your web browser to the above URL."
     return run(port, subnets)
