@@ -16,15 +16,15 @@
 <form method="get" action="/notebooksettings">
   <input type="hidden" name="form" value="on" />
   <div class="buttons buttons-top">
-    <input type="submit" value="Save" />
-    <input type="button" value="Cancel" onClick="parent.location='/'" />
+      <button type="submit">Save</button>
+      <a href="/"><button>Cancel</button></a>
   </div>
   {%- if auto_table %}
   {{ auto_table }}
   {%- endif %}
   <div class="buttons">
-    <input type="submit" value="Save" />
-    <input type="button" value="Cancel" onClick="parent.location='/'" />
+      <button type="submit">Save</button>
+      <a href="/"><button>Cancel</button></a>
   </div>
 </form>
 {% endblock %}

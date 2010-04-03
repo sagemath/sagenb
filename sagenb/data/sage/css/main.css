@@ -428,7 +428,7 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 .settings-page h1 { font-size: 2em; padding: 0 5px; }
 .settings-page label { display: block; }
 .settings-page .buttons { padding: 5px; }
-.settings-page .buttons input { margin: 0px 5px; }
+.settings-page .buttons button { margin: 0px 5px; }
 .settings-page .buttons a { text-decoration: none; }
 .settings-page .buttons-top { border-bottom: 1px solid #CCC; margin-top: 1em; }
 .settings-page h2 { font-size: 1.5em; margin: 0 0 0.75em; }

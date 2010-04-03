@@ -5,7 +5,10 @@
 
 {% block settings_main %}
 <form method="post" action="/settings">
-    
+    <div class="buttons buttons-top">
+        <button type="submit">Save</button>
+        <a href="/"><button>Cancel</button></a>
+    </div>
     <div class="section">
         <h2>Change Auto-Save Interval</h2>
         <div>
@@ -51,7 +54,7 @@
         </div>
     </div>
     {% endif %}
-    <div id="buttons">
+    <div class="buttons">
         <button type="submit">Save</button>
         <a href="/"><button>Cancel</button></a>
     </div>
