@@ -34,10 +34,6 @@ SEL_OPTIONS = {
     'browser_url': ''         # Set automatically if empty.
 }
 
-# This is for Google Chrome, which caches '/new_worksheet', for some
-# reason.
-CACHE_SKIP = 0
-
 KEY_CODES = {
     'tab': 9,
     'enter': 10,
@@ -308,10 +304,7 @@ class NotebookTestCase(unittest.TestCase):
     def create_new_worksheet(self, title = "My New Worksheet"):
         sel = self.selenium
         self.go_home()
-
-        global CACHE_SKIP
-        CACHE_SKIP += 1
-        sel.open('/new_worksheet?%d' % CACHE_SKIP)
+        sel.run_script('window.location="/new_worksheet"')
         sel.wait_for_page_to_load("30000")
         self.assert_(sel.is_element_present('//a[@id="worksheet_title" and contains(text(),"Untitled")]'))
         sel.type('//div[contains(@class,"modal-prompt")]//input[@type="text"]', title)

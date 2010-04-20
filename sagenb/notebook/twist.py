@@ -176,7 +176,18 @@ def HTMLResponse(*args, **kwds):
     response.headers.addRawHeader('Content-Type', 'text/html; charset=utf-8')
     return response
 
-
+class RedirectResponse(http.Response):
+    """
+    A redirect response class that uses the proper status code (303
+    See Other) instead of 301 Moved Permanently, as twisted.web2
+    uses. This is not cached, unlike 301.
+    """
+    def __init__(self, location):
+        headers = http_headers.Headers()
+        headers.setHeader('location', location)
+        headers.setRawHeaders('cache-control', ['no-cache', 'no-store'])
+        super(RedirectResponse, self).__init__(303, headers)
+    
 ############################
 # Create a Sage worksheet from a latex2html'd file
 ############################
@@ -406,7 +417,7 @@ class NewWorksheet(resource.Resource):
 
     def render(self, ctx):
         W = notebook.create_new_worksheet("Untitled", self.username)
-        return http.RedirectResponse('/home/'+W.filename())
+        return RedirectResponse('/home/'+W.filename())
 
 
 ############################
@@ -472,7 +483,7 @@ class UploadWorksheet(resource.PostableResource):
                                 W = notebook.import_worksheet(sws_file, self.username)
                                 if new_name:
                                     W.set_name("%s - %s" % (new_name, W.name()))
-                        return http.RedirectResponse('/')
+                        return RedirectResponse('/')
 
                     else:
                         W = notebook.import_worksheet(filename, self.username)
@@ -496,7 +507,7 @@ class UploadWorksheet(resource.PostableResource):
             if new_name:
                 W.set_name(new_name)
 
-            return http.RedirectResponse('/home/'+W.filename())
+            return RedirectResponse('/home/'+W.filename())
 
         if url != '':
             # We use the downloadPage function which returns a
@@ -563,7 +574,7 @@ class Worksheet_savedatafile(WorksheetResource, resource.PostableResource):
             dest = os.path.join(self.worksheet.data_directory(), filename)
             if os.path.exists(dest): os.unlink(dest)
             open(dest,'w').write(E)
-        return http.RedirectResponse('/home/'+self.worksheet.filename())
+        return RedirectResponse('/home/'+self.worksheet.filename())
 
 class Worksheet_link_datafile(WorksheetResource, resource.Resource):
     def render(self, ctx):
@@ -577,7 +588,7 @@ class Worksheet_link_datafile(WorksheetResource, resource.Resource):
         if target_ws.owner() != self.username and not target_ws.is_collaborator(self.username):
             return HTMLResponse(stream=message("illegal link attempt!"))
         os.system('ln "%s" "%s"'%(src, target))
-        return http.RedirectResponse('/home/'+target_ws.filename() + '/datafile?name=%s'%data_filename)
+        return RedirectResponse('/home/'+target_ws.filename() + '/datafile?name=%s'%data_filename)
 
 
 class Worksheet_upload_data(WorksheetResource, resource.Resource):
@@ -622,7 +633,7 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
                 return HTMLResponse(stream=message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url))
             os.unlink(dest)
 
-        response = http.RedirectResponse(worksheet_url + '/datafile?name=%s' % name)
+        response = RedirectResponse(worksheet_url + '/datafile?name=%s' % name)
 
         if url != '':
             # Here we use twisted's downloadPage function which
@@ -807,7 +818,7 @@ class Worksheet_copy(WorksheetResource, resource.PostableResource):
         if 'no_load' in ctx.args:
             return http.StatusResponse(200, '')
         else:
-            return http.RedirectResponse('/home/' + W.filename())
+            return RedirectResponse('/home/' + W.filename())
 
 ########################################################
 # Get a copy of a published worksheet and start editing it
@@ -823,7 +834,7 @@ class Worksheet_edit_published_page(WorksheetResource, resource.Resource):
         else:
             W = notebook.copy_worksheet(self.worksheet, self.username)
             W.set_name(self.worksheet.name())
-        return http.RedirectResponse('/home/' + W.filename())
+        return RedirectResponse('/home/' + W.filename())
 
 ########################################################
 # Save a worksheet
@@ -838,7 +849,7 @@ class Worksheet_save(WorksheetResource, resource.PostableResource):
             E = ctx.args['textfield'][0]
             self.worksheet.edit_save(E)
             self.worksheet.record_edit(self.username)
-        return http.RedirectResponse('/home/'+self.worksheet.filename())
+        return RedirectResponse('/home/'+self.worksheet.filename())
 
 
 class Worksheet_save_snapshot(WorksheetResource, resource.PostableResource):
@@ -897,7 +908,7 @@ class Worksheet_invite_collab(WorksheetResource, resource.PostableResource):
             collab = ctx.args['collaborators'][0]
             v = [x.strip() for x in collab.split(',')]
         self.worksheet.set_collaborators(v)
-        return http.RedirectResponse('.')
+        return RedirectResponse('.')
 
 
 #################################
@@ -914,7 +925,7 @@ class PublishWorksheetRevision(resource.Resource):
         txt = open(self.worksheet.get_snapshot_text_filename(self.rev)).read()
         W.delete_cells_directory()
         W.edit_save(txt)
-        return http.RedirectResponse('/home/'+W.filename())
+        return RedirectResponse('/home/'+W.filename())
 
 class RevertToWorksheetRevision(resource.Resource):
     def __init__(self, worksheet, rev):
@@ -926,21 +937,21 @@ class RevertToWorksheetRevision(resource.Resource):
         txt = open(self.worksheet.get_snapshot_text_filename(self.rev)).read()
         self.worksheet.delete_cells_directory()
         self.worksheet.edit_save(txt)
-        return http.RedirectResponse('/home/'+self.worksheet.filename())
+        return RedirectResponse('/home/'+self.worksheet.filename())
 
 def worksheet_revision_publish(worksheet, rev, username):
     W = notebook.publish_worksheet(worksheet, username)
     txt = bz2.decompress(open(worksheet.get_snapshot_text_filename(rev)).read())
     W.delete_cells_directory()
     W.edit_save(txt)
-    return http.RedirectResponse('/home/'+W.filename())
+    return RedirectResponse('/home/'+W.filename())
 
 def worksheet_revision_revert(worksheet, rev, username):
     worksheet.save_snapshot(username)
     txt = bz2.decompress(open(worksheet.get_snapshot_text_filename(rev)).read())
     worksheet.delete_cells_directory()
     worksheet.edit_save(txt)
-    return http.RedirectResponse('/home/'+worksheet.filename())
+    return RedirectResponse('/home/'+worksheet.filename())
 
 
 class Worksheet_revisions(WorksheetResource, resource.PostableResource):
@@ -1018,10 +1029,10 @@ class SettingsPage(resource.PostableResource):
             return HTMLResponse(stream = message(error, '/settings'))
 
         if redirect_to_logout:
-            return http.RedirectResponse('/logout')
+            return RedirectResponse('/logout')
 
         if redirect_to_home:
-            return http.RedirectResponse('/home/%s' % self.username)
+            return RedirectResponse('/home/%s' % self.username)
 
         td = {}
         td['username'] = self.username
@@ -1325,23 +1336,23 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
         if 'yes' in ctx.args and 'auto' in ctx.args:
             notebook.publish_worksheet(self.worksheet, self.username)
             self.worksheet.set_auto_publish(True)
-            return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
+            return RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Just publishes worksheet
         elif 'yes' in ctx.args:
             notebook.publish_worksheet(self.worksheet, self.username)
-            return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
+            return RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Stops publication of worksheet
         elif 'stop' in ctx.args:
             notebook.delete_worksheet(self.worksheet.published_version().filename())
-            return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
+            return RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Re-publishes worksheet
         elif 're' in ctx.args:
             W = notebook.publish_worksheet(self.worksheet, self.username)
-            return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
+            return RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Sets worksheet to be published automatically when saved
         elif 'auto' in ctx.args:
             self.worksheet.set_auto_publish(not self.worksheet.is_auto_publish())
-            return http.RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
+            return RedirectResponse("/home/%s/publish" % (self.worksheet.filename()))
         # Returns boolean of "Is this worksheet set to be published automatically when saved?"
         elif 'is_auto' in ctx.args:
             return HTMLResponse(stream=str(self.worksheet.is_auto_publish()))
@@ -1606,7 +1617,7 @@ class WorksheetsByUser(resource.Resource):
             if not self.username == 'guest':
                 s = message("User '%s' does not have permission to view the home page of '%s'."%(self.username, self.user))
             else:
-                return http.RedirectResponse('/')
+                return RedirectResponse('/')
             return HTMLResponse(stream = s)
 
     def childFactory(self, request, name):
@@ -1681,9 +1692,9 @@ class EmptyTrash(resource.PostableResource):
         """
         notebook.empty_trash(self.username)
         if ctx.headers.hasHeader('referer'):
-            return http.RedirectResponse(ctx.headers.getHeader('referer'))
+            return RedirectResponse(ctx.headers.getHeader('referer'))
         else:
-            return http.RedirectResponse('/home/' + self.username + '/?typ=trash')
+            return RedirectResponse('/home/' + self.username + '/?typ=trash')
 
 class SendWorksheetToFolder(resource.PostableResource):
     def __init__(self, username):
@@ -1826,7 +1837,7 @@ class LiveHistory(resource.Resource):
 
     def render(self, ctx):
         W = notebook.create_new_worksheet_from_history('Log', self.username, 100)
-        return http.RedirectResponse('/home/'+W.filename())
+        return RedirectResponse('/home/'+W.filename())
 
 
 ############################
@@ -2391,7 +2402,7 @@ class InvalidPage(resource.Resource):
 
 class RedirectLogin(resource.PostableResource):
     def render(self, ctx):
-        return http.RedirectResponse('/')
+        return RedirectResponse('/')
     def childFactory(self, request, name):
         return RedirectLogin()
 
@@ -2552,7 +2563,7 @@ class UserToplevel(Toplevel):
         # so that after login (which is a POST operation), the postdata will not remain
         # in the browser on return.  This method is sometimes
         # referred to as the post-redirect-get method.
-        response = http.RedirectResponse("/home/%s" % self.username)
+        response = RedirectResponse("/home/%s" % self.username)
         # This allows a Notebook user to select a "remember me" checkbox and not have to
         # sign back in when she restarts her web browser
         # This works by setting an expiration date because without one the browser forgets the cookie.
