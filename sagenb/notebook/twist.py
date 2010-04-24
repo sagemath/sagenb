@@ -2546,6 +2546,7 @@ class AnonymousToplevel(Toplevel):
     child_javascript = Javascript()
     child_java = Java()
     child_logout = LogoutRedirectLogin()
+    child_static = static.File(DATA)
 
     def userchildFactory(self, request, name):
         # This is called from Toplevel above
@@ -2607,6 +2608,7 @@ class UserToplevel(Toplevel):
     child_css = CSS()
     child_javascript = Javascript()
     child_java = Java()
+    child_static = static.File(DATA)
 
     child_logout = Logout()
 
