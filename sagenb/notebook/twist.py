@@ -1694,7 +1694,7 @@ class EmptyTrash(resource.PostableResource):
             sage: ctx = HTMLResponse(stream = 'foo')
             sage: ctx.headers.addRawHeader('referer', 'over there')
             sage: E.render(ctx)
-            <RedirectResponse 301 Document moved to over there.>
+            <sagenb.notebook.twist.RedirectResponse code=303, streamlen=None>
 
         Finally we verify that the trashed worksheet is gone::
 
