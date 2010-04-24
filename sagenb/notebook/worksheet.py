@@ -2909,8 +2909,8 @@ except (KeyError, IOError):
         input = ''
 
         # This is useful mainly for interact -- it allows a cell to
-        # know it's ID.
-        input += '_interact_.SAGE_CELL_ID=%r\n' % C.id()
+        # know its ID.
+        input += '_interact_.SAGE_CELL_ID=%r\n__SAGE_TMP_DIR__=os.getcwd()\n' % C.id()
 
         if C.time():
             input += '__SAGE_t__=cputime()\n__SAGE_w__=walltime()\n'
@@ -3662,8 +3662,8 @@ except (KeyError, IOError):
         v = s.split()
         return ';'.join(['save(%s,"%s")'%(x,x) for x in v])
 
-    def _eval_cmd(self, system, cmd, dir):
-        return u"print _support_.syseval(%s, %r, %r)"%(system, cmd, dir)
+    def _eval_cmd(self, system, cmd):
+        return u"print _support_.syseval(%s, %r, __SAGE_TMP_DIR__)"%(system, cmd)
 
     ##########################################################
     # Parsing the %cython, %jsmath, %python, etc., extension.
@@ -3749,7 +3749,7 @@ except (KeyError, IOError):
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', '...')")
+            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__)")
 
         ::
 
@@ -3775,7 +3775,7 @@ except (KeyError, IOError):
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', '...')")
+            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__)")
             sage: c0.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
             ('d', Cell 0; in=%sage
@@ -3796,8 +3796,7 @@ except (KeyError, IOError):
         elif system in ['cython', 'pyrex', 'sagex']:
             return True, self.cython_import(input, cell)
         else:
-            cmd = self._eval_cmd(system, input,
-                                 os.path.abspath(cell.directory()))
+            cmd = self._eval_cmd(system, input)
             return True, cmd
 
     ##########################################################
