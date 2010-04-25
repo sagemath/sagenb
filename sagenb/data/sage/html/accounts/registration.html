@@ -56,7 +56,7 @@
                     confirmation and recovery. You will be emailed a confirmation link
                     right after you successfully sign up.
                 </p>
-                <input type="text" name="email" value="{{ email_address }}" class="entry" tabindex="4" />
+                <input type="email" name="email" value="{{ email_address }}" class="entry" tabindex="4" />
                 {% if email_missing %}
                 <p><span class="error">Error:</span> No email address given</p>
                 {% endif %}
