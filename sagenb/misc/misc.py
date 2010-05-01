@@ -106,7 +106,8 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
 
     EXAMPLES::
 
-        sage: sage.server.misc.find_next_available_port('', 9000, verbose=False)   # random output -- depends on network
+        sage: import sagenb
+        sage: sagenb.misc.misc.find_next_available_port('127.0.0.1', 9000, verbose=False)   # random output -- depends on network
         9002
     """
     alarm_count = 0  
