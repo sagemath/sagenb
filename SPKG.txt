@@ -25,7 +25,7 @@ GPLv2+
  * Python >= 2.6
  * jinja2 >= 2.1.1
  * Twisted >= 8.2
- * zope.testbrowser >= 3.7.0a1 (included)
+ * zope.testbrowser >= 3.8.1 (included)
  * Sphinx >= 0.6.3 (pretty docstrings)
 
 == Special Update / Build Instructions ==
@@ -37,6 +37,10 @@ GPLv2+
    * The patch queue is clear.
    * The notebook runs.
    * The doctests pass: sage -t -sagenb
+   * Test for ability to install without internet connection.
+     Any dependencies that must be downloaded can be added in ./spkg-dist and inserted
+     in setup.py. Dependencies of dependencies need not be put in setup.py, but
+     need to be put in ./spkg-dist.
    * The Selenium tests pass (optional, for now).
 
    Then,

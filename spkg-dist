@@ -55,10 +55,10 @@ required_packages = ('pytz>=2009r',
                      'zope.i18nmessageid>=3.5',
                      'zope.event>=3.4.1',
                      'ClientForm>=0.2.10',
-                     'mechanize>=0.1.11',
+                     'mechanize==0.1.11',
                      'zope.interface>=3.3.0',
                      'zope.schema>=3.5.4',
-                     'zope.testbrowser>=3.7.0a1')
+                     'zope.testbrowser>=3.8.1')
 
 pkg_locations = []
 
