@@ -1988,13 +1988,23 @@ class InteractCanvas:
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render_controls()
             '<table>...'
         """
+        layout = self.__options.get('layout',None)
         tbl_body = ''
-        for c in self.__controls:
-            if c.label() == '':
-                tbl_body += '<tr><td colspan=2>%s</td></tr>\n'%c.render()
-            else:
-                tbl_body += '<tr><td align=right><font color="black">%s&nbsp;</font></td><td>%s</td></tr>\n'%(
-                c.label(), c.render())
+        if layout is None:
+            layout = [[c.var()] for c in self.__controls]
+            
+        controls = dict([c.var(), c] for c in self.__controls)
+        for row in layout:
+            tbl_body += '<tr>'
+            for c_name in row:
+                c = controls[c_name]
+                if c.label() == '':
+                    tbl_body += '<td colspan=2>%s</td>\n'%c.render()
+                else:
+                    tbl_body += '<td align=right><font color="black">%s&nbsp;</font></td><td>%s</td>\n'%(c.label(), c.render())
+                    
+            tbl_body += '</tr>'
+        
         return '<table>%s</table>'%tbl_body
 
     def wrap_in_outside_frame(self, inside):
@@ -2099,7 +2109,10 @@ class UpdateButton(JavascriptCodeButton):
         s = """interact(%r, '_interact_.recompute(\\'%s\\')')""" % (cell_id, cell_id)
         JavascriptCodeButton.__init__(self, "Update", s)
         
-def interact(f):
+from sage.misc.misc import decorator_defaults
+
+@decorator_defaults
+def interact(f, layout=None):
     r"""
     Use interact as a decorator to create interactive Sage notebook
     cells with sliders, text boxes, radio buttons, check boxes, and
@@ -2111,6 +2124,9 @@ def interact(f):
     INPUT:
 
     - ``f`` - a Python function
+
+    - ``layout`` (optional) - a list of rows of controls, each control
+      denoted by a string of its variable name.
 
     EXAMPLES:
 
@@ -2126,6 +2142,13 @@ def interact(f):
 
         sage: @interact
         ... def _(a=5, y=(0..20)): print a + y
+        ...
+        <html>...
+
+    ::
+
+        sage: @interact(layout=[['a','b'],['d']])
+        ... def _(a=x^2, b=(0..20), c=100, d=x+1): print a+b+c+d
         ...
         <html>...
 
@@ -2492,7 +2515,7 @@ def interact(f):
         i = args.index('auto_update')
         controls[i] = UpdateButton(SAGE_CELL_ID)
 
-    C = InteractCanvas(controls, SAGE_CELL_ID, auto_update=auto_update)
+    C = InteractCanvas(controls, SAGE_CELL_ID, auto_update=auto_update, layout=layout)
     html(C.render())
 
     def _():
