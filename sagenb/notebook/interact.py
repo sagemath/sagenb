@@ -1826,7 +1826,7 @@ class TextControl(InteractControl):
 
 
 class InteractCanvas:
-    def __init__(self, controls, id, **options):
+    def __init__(self, controls, id, layout=None, width=None, **options):
         """
         Base class for :func:`interact` canvases. This is where all
         the controls along with the output of the interacted function
@@ -1838,6 +1838,15 @@ class InteractCanvas:
 
         - ``id`` - an integer or a string; the ID of the cell that
           contains this InteractCanvas.
+
+        - ``layout`` - a dictionary with keys
+          'top','bottom','left','right' and values lists of rows of
+          control variable names.  If a dictionary is not passed in,
+          then the value of layout is set to the 'top' value.  If
+          ``None``, then all control names are put on separate rows in
+          the 'top' value.
+
+        - ``width`` - the width of the interact control
 
         - ``options`` - any additional keyword arguments (for example,
           auto_update=False)
@@ -1853,7 +1862,15 @@ class InteractCanvas:
 
         self.__controls = controls
         self.__cell_id = id
+        self.__width = width
         self.__options = options
+
+        if layout is None:
+            layout = [[c.var()] for c in self.__controls]
+        if not isinstance(layout, dict):
+            layout={'top': layout}
+        self.__layout = layout
+
 
     def __repr__(self):
         """
@@ -1894,23 +1911,6 @@ class InteractCanvas:
             False            
         """
         return self.__options.get('auto_update', True)
-
-    def cell_id(self):
-        r"""
-        Returns the cell ID associated to this :class:`InteractCanvas`.
-
-        OUTPUT:
-
-        - an integer or a string
-
-        EXAMPLES::
-
-            sage: B = sagenb.notebook.interact.InputBox('x',2)
-            sage: canvas = sagenb.notebook.interact.InteractCanvas([B], 3)
-            sage: canvas.cell_id()
-            3
-        """
-        return self.__cell_id
 
     def controls(self):
         """
@@ -1968,13 +1968,13 @@ class InteractCanvas:
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render_output()
             '<div id="cell-interact...</div>'
         """
-        return """<div id="cell-interact-%s"><?__SAGE__START>
-        <table border=0 bgcolor="white" width=100%% height=100%%>
+        return """<div id="cell-interact-{0}"><?__SAGE__START>
+        <table border=0 bgcolor="white" width=100%>
         <tr><td bgcolor="white" align=left valign=top><pre><?__SAGE__TEXT></pre></td></tr>
         <tr><td  align=left valign=top><?__SAGE__HTML></td></tr>
-        </table><?__SAGE__END></div>"""%self.cell_id()
+        </table><?__SAGE__END></div>""".format(self.cell_id())
 
-    def render_controls(self):
+    def render_controls(self, side='top'):
         """
         Render in text (HTML) form all the input controls. 
 
@@ -1988,24 +1988,23 @@ class InteractCanvas:
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render_controls()
             '<table>...'
         """
-        layout = self.__options.get('layout',None)
+        if side not in self.__layout:
+            return ''
+
         tbl_body = ''
-        if layout is None:
-            layout = [[c.var()] for c in self.__controls]
-            
         controls = dict([c.var(), c] for c in self.__controls)
-        for row in layout:
+        for row in self.__layout[side]:
             tbl_body += '<tr>'
             for c_name in row:
                 c = controls[c_name]
                 if c.label() == '':
-                    tbl_body += '<td colspan=2>%s</td>\n'%c.render()
+                    tbl_body += '<td colspan=2>{0}</td>\n'.format(c.render())
                 else:
-                    tbl_body += '<td align=right><font color="black">%s&nbsp;</font></td><td>%s</td>\n'%(c.label(), c.render())
+                    tbl_body += '<td align=right><font color="black">{0}&nbsp;</font></td><td>{1}</td>\n'.format(c.label(), c.render())
                     
             tbl_body += '</tr>'
-        
-        return '<table>%s</table>'%tbl_body
+
+        return '<table>'+tbl_body+'</table>'
 
     def wrap_in_outside_frame(self, inside):
         """
@@ -2027,10 +2026,10 @@ class InteractCanvas:
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).wrap_in_outside_frame('<!--inside-->')
             '<!--notruncate--><div padding=6 id="div-interact-3"> ...</div>...'
         """
-        return """<!--notruncate--><div padding=6 id="div-interact-%s"> <table width=800px height=20px bgcolor="#c5c5c5"
-                 cellpadding=15><tr><td bgcolor="#f9f9f9" valign=top align=left>%s</td>
+        return """<!--notruncate--><div padding=6 id="div-interact-{0}"> <table width={width} height=20px bgcolor="#c5c5c5"
+                 cellpadding=15><tr><td bgcolor="#f9f9f9" valign=top align=left>{1}</td>
                  </tr></table></div>
-                 """%(self.cell_id(), inside)
+                 """.format(self.cell_id(), inside, width=self.__width)
 
     # The following could be used to make the interact frame resizable and/or draggable.
     # Neither effect is as cool as it sounds!
@@ -2055,7 +2054,16 @@ class InteractCanvas:
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render()
             '<!--notruncate--><div padding=6 id="div-interact-3"> ...</div>...'
         """
-        s = "%s%s"%(self.render_controls(), self.render_output())
+        html_controls={}
+        for side in ('top','left','right','bottom'):
+            html_controls[side]=self.render_controls(side=side)
+
+        s = """<table>
+<tr><td colspan=3>{top}</td></tr>
+<tr><td>{left}</td><td style='width: 100%;'>{output}</td><td>{right}</td></tr>
+<tr><td colspan=3>{bottom}</td></tr>
+</table>""".format(output=self.render_output(), **html_controls)
+        
         s = self.wrap_in_outside_frame(s)
         return s
 
@@ -2112,7 +2120,7 @@ class UpdateButton(JavascriptCodeButton):
 from sage.misc.misc import decorator_defaults
 
 @decorator_defaults
-def interact(f, layout=None):
+def interact(f, layout=None, width='800px'):
     r"""
     Use interact as a decorator to create interactive Sage notebook
     cells with sliders, text boxes, radio buttons, check boxes, and
@@ -2125,8 +2133,7 @@ def interact(f, layout=None):
 
     - ``f`` - a Python function
 
-    - ``layout`` (optional) - a list of rows of controls, each control
-      denoted by a string of its variable name.
+    - ``layout`` (optional) - a dictionary with keys 'top', 'bottom', 'left', 'right' and values lists of rows of control variable names.  Controls are laid out according to this pattern.  If ``layout`` is not a dictionary, it is assumed to be the 'top' value.  If ``layout`` is None, then all controls are assigned separate rows in the ``top`` value.
 
     EXAMPLES:
 
@@ -2151,6 +2158,14 @@ def interact(f, layout=None):
         ... def _(a=x^2, b=(0..20), c=100, d=x+1): print a+b+c+d
         ...
         <html>...
+
+    ::
+
+        sage: @interact(layout={'top': [['a', 'b']], 'left': [['c']], 'bottom': [['d']]})
+        ... def _(a=x^2, b=(0..20), c=100, d=x+1): print a+b+c+d
+        ...
+        <html>...
+    
 
     Draw a plot interacting with the "continuous" variable ``a``.  By
     default continuous variables have exactly 50 possibilities.
@@ -2515,7 +2530,8 @@ def interact(f, layout=None):
         i = args.index('auto_update')
         controls[i] = UpdateButton(SAGE_CELL_ID)
 
-    C = InteractCanvas(controls, SAGE_CELL_ID, auto_update=auto_update, layout=layout)
+    C = InteractCanvas(controls, SAGE_CELL_ID, auto_update=auto_update, layout=layout, 
+                       width=width)
     html(C.render())
 
     def _():
