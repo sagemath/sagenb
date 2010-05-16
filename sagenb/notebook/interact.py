@@ -581,7 +581,7 @@ class InteractElement(object):
         EXAMPLES::
 
             sage: from sagenb.notebook.interact import UpdateButton, InteractElement
-            sage: b = UpdateButton(1)
+            sage: b = UpdateButton(1, 'autoupdate')
             sage: isinstance(b, InteractElement)
             True
             sage: b.label()
@@ -2098,7 +2098,7 @@ class JavascriptCodeButton(InteractElement):
         return """<input type="button" value="%s" onclick="%s">\n"""%(self.__label, self.__code)
 
 class UpdateButton(JavascriptCodeButton):
-    def __init__(self, cell_id):
+    def __init__(self, cell_id, var):
         r"""
         Creates an :func:`interact` button element.  A click on the
         button triggers recomputation of the cell with the current
@@ -2108,14 +2108,34 @@ class UpdateButton(JavascriptCodeButton):
 
         - ``cell_id`` - an integer or string; the ambient cell's ID
 
+        - ``var``` - a variable which is used in the layout
+
         EXAMPLES::
 
-            sage: b = sagenb.notebook.interact.UpdateButton(0)
+            sage: b = sagenb.notebook.interact.UpdateButton(0, 'auto_update')
             sage: b.render()
             '<input type="button" value="Update" onclick="interact(0, \'_interact_.recompute(\\\'0\\\')\')">\n'
         """
         s = """interact(%r, '_interact_.recompute(\\'%s\\')')""" % (cell_id, cell_id)
         JavascriptCodeButton.__init__(self, "Update", s)
+
+        self.__var = var
+
+    def var(self):
+        """
+        Return the name of the variable that this control interacts.
+
+        OUTPUT:
+
+        - a string - name of a variable as a string.
+
+        EXAMPLES::
+
+            sage: sagenb.notebook.interact.UpdateButton(1, 'auto_update').var()
+            'auto_update'
+        """
+        return self.__var
+
         
 from sage.misc.misc import decorator_defaults
 
@@ -2528,7 +2548,7 @@ def interact(f, layout=None, width='800px'):
     auto_update = variables.get('auto_update', True)
     if auto_update is False:
         i = args.index('auto_update')
-        controls[i] = UpdateButton(SAGE_CELL_ID)
+        controls[i] = UpdateButton(SAGE_CELL_ID, 'auto_update')
 
     C = InteractCanvas(controls, SAGE_CELL_ID, auto_update=auto_update, layout=layout, 
                        width=width)
