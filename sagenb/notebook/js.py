@@ -39,7 +39,7 @@ try:
     from pkg_resources import Requirement, working_set
     sagenb_path = working_set.find(Requirement.parse('sagenb')).location
     debug_mode = SAGE_ROOT not in os.path.realpath(sagenb_path)
-except AttributeError, ImportError:
+except (AttributeError, ImportError):
     debug_mode = False
 
 _cache_javascript = None
