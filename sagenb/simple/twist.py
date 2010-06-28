@@ -20,7 +20,7 @@ Start the notebook server.::
 
     sage: from sage.server.misc import find_next_available_port
     sage: port = find_next_available_port(9000, verbose=False)
-    sage: from sage.server.notebook.notebook_object import test_notebook
+    sage: from sagenb.notebook.notebook_object import test_notebook
     sage: passwd = str(randint(1,1<<128))
     sage: nb = test_notebook(passwd, secure=False, address='localhost', port=port, verbose=True) #doctest: +ELLIPSIS 
     ...
@@ -121,6 +121,9 @@ When you are done, log out::
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
+#
+# 2010 - David Poetzsch-Heffter: Fixed trac #9327
+#
 
 
 import re, random, os.path, shutil, time
@@ -141,8 +144,8 @@ late_import_done = False
 def late_import():
     global SEP, notebook_twist, late_import_done
     if not late_import_done:
-        from sage.server.notebook.twist import SEP
-        import sage.server.notebook.twist as notebook_twist
+        from sagenb.notebook.twist import SEP
+        import sagenb.notebook.twist as notebook_twist
         late_import_done = True
 
 def simple_jsonize(data):
@@ -281,7 +284,9 @@ class CellResource(resource.Resource):
             cell_status = 'done'
         status = { 'cell_id': cell.id(), 'status': cell_status, 'files': cell.files() }
         result = cell.output_text(raw=True)
-        return http.Response(stream = "\n".join([simple_jsonize(status), SEP, result]))
+        # The conversion to str must be done because unicode strings are somehow not
+        # supported by http.Response
+        return http.Response(stream = str("\n".join([simple_jsonize(status), SEP, result])))
 
 
 class ComputeResource(CellResource):
