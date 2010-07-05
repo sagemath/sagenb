@@ -7,25 +7,25 @@ INPUT:
 #}
 
 {% block sharebar_title %}
-Share this document
+{{ gettext('Share this document') }}
 {% endblock %}
 
 {% set select = "share" %}
 
 {% block after_sharebar %}
 {% if not (notebook.user_manager().user_is_admin(username) or username == worksheet.owner()) %}
-    Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href="copy">make your own copy</a>.
+{{ gettext('Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href="copy">make your own copy</a>.') }}
 {% else %}
-<p>This Sage Worksheet is currently shared with the people listed in the box below.</p>
-<p style="margin-bottom:1em">You may add or remove collaborators (separate user names by commas).</p>
+<p>{{ gettext('This Sage Worksheet is currently shared with the people listed in the box below.') }}</p>
+<p style="margin-bottom:1em">{{ gettext('You may add or remove collaborators (separate user names by commas).') }}</p>
 
 <form width=70% method="post" action="invite_collab" style="margin-bottom:1em">
     <textarea name="collaborators" rows=5 cols=70 class="edit" id="collaborators" style="display:block; margin-bottom:1em;">{{ worksheet.collaborators()|join(', ') }}</textarea>
-    <input type="submit" title="Give access to your worksheet to the above collaborators" value="Invite Collaborators" />
+    <input type="submit" title="{{ gettext('Give access to your worksheet to the above collaborators') }}" value="{{ gettext('Invite Collaborators') }}" />
 </form>
 
 <hr class="usercontrol" />
-<span class="username">Sage Users:</span>
+<span class="username">{{ gettext('Sage Users:') }}</span>
 <span class="users">
     {{ other_users|join(', ') }}
 </span>

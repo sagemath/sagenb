@@ -9,6 +9,7 @@ Configuration
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
+from flaskext.babel import gettext, lazy_gettext
 
 DESC = 'desc'
 GROUP = 'group'
@@ -55,7 +56,7 @@ class Configuration(object):
                 self.confs[key] = A
                 return A
             else:
-                raise KeyError, "No key '%s' and no default for this key"%key
+                raise KeyError("No key '%s' and no default for this key"%key)
 
     def __setitem__(self, key, value):
         self.confs[key] = value
@@ -116,7 +117,7 @@ class Configuration(object):
 
             if self[key] != val:
                 self[key] = val
-                updated[key] = ('updated', 'Updated')
+                updated[key] = ('updated', gettext('Updated'))
 
         return updated
 
@@ -144,16 +145,16 @@ class Configuration(object):
             except KeyError:
                 G[gp] = [key]
 
-        s = ''
+        s = u''
         color_picker = 0
-        special_init = ''
+        special_init = u''
         for group in G:
-            s += '<div class="section">\n  <h2>%s</h2>\n  <table>\n' % group
+            s += u'<div class="section">\n  <h2>%s</h2>\n  <table>\n' % lazy_gettext(group)
 
             opts = G[group]
             opts.sort()
             for o in opts:
-                s += '    <tr>\n      <td>%s</td>\n      <td>\n' % DS[o][DESC]
+                s += u'    <tr>\n      <td>%s</td>\n      <td>\n' % lazy_gettext(DS[o][DESC])
                 input_type = 'text'
                 input_value = self[o]
 
@@ -168,30 +169,29 @@ class Configuration(object):
                         input_value = ','.join(input_value)
 
                 if DS[o][TYPE] == T_CHOICE:
-                    s += '        <select name="%s" id="%s">\n' % (o, o)
-
+                    s += u'        <select name="%s" id="%s">\n' % (o, o)
                     for c in DS[o][CHOICES]:
                         selected = ''
                         if c == input_value:
-                            selected = ' selected="selected"'
-                        s += '          <option value="%s"%s>%s</option>\n' % (c, selected, c)
-                    s += '        </select>\n'
+                            selected = u' selected="selected"'
+                        s += u'          <option value="%s"%s>%s</option>\n' % (c, selected, lazy_gettext(c))
+                    s += u'        </select>\n'
 
                 else:
-                    s += '        <input type="%s" name="%s" id="%s" value="%s"%s>\n' % (input_type, o, o, input_value, extra)
+                    s += u'        <input type="%s" name="%s" id="%s" value="%s"%s>\n' % (input_type, o, o, input_value, extra)
 
                     if DS[o][TYPE] == T_COLOR:
-                        s += '        <div id="picker_%s"></div>\n' % color_picker
-                        special_init += '    $("#picker_%s").farbtastic("#%s");\n' % (color_picker, o)
+                        s += u'        <div id="picker_%s"></div>\n' % color_picker
+                        special_init += u'    $("#picker_%s").farbtastic("#%s");\n' % (color_picker, o)
                         color_picker += 1
 
-                s += '      </td>\n      <td class="%s">%s</td>\n    </tr>\n' % updated.get(o, ('', ''))
+                s += u'      </td>\n      <td class="%s">%s</td>\n    </tr>\n' % updated.get(o, ('', ''))
 
-            s += '  </table>\n</div>\n'
+            s += u'  </table>\n</div>\n'
 
-        s += '<script type="text/javascript">\n$(document).ready(function() {\n' + special_init + '});\n</script>'
+        s += u'<script type="text/javascript">\n$(document).ready(function() {\n' + special_init + '});\n</script>'
 
-        lines = s.split('\n')
-        lines = map(lambda x: '  ' + x, lines)
+        lines = s.split(u'\n')
+        lines = map(lambda x: u'  ' + x, lines)
 
-        return '\n'.join(lines)
+        return u'\n'.join(lines)

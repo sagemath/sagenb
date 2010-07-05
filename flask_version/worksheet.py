@@ -3,6 +3,8 @@ from functools import wraps
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
 from collections import defaultdict
+from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+_ = gettext
 
 ws = Module('flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
@@ -15,7 +17,7 @@ def worksheet_view(f):
         try:
             worksheet = kwds['worksheet'] = g.notebook.get_worksheet_with_filename(worksheet_filename)
         except KeyError:
-            return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+            return current_app.message(_("You do not have permission to access this worksheet"))
         
         with worksheet_locks[worksheet]:
             owner = worksheet.owner()
@@ -24,7 +26,7 @@ def worksheet_view(f):
                 if not worksheet.is_published():
                     if (not g.username in worksheet.collaborators() and
                         not g.notebook.user_manager().user_is_admin(g.username)):
-                        return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+                        return current_app.message(_("You do not have permission to access this worksheet"))
 
             if not worksheet.is_published():
                 worksheet.set_active(g.username)
@@ -64,7 +66,7 @@ def get_cell_id():
 @login_required
 @with_lock
 def new_worksheet():
-    W = g.notebook.create_new_worksheet("Untitled", g.username)
+    W = g.notebook.create_new_worksheet(gettext("Untitled"), g.username)
     return redirect(url_for_worksheet(W))
 
 @ws.route('/home/<username>/<id>/')
@@ -558,7 +560,7 @@ def worksheet_datafile(worksheet):
     if request.values.get('action', '') == 'delete':
         path = os.path.join(dir, filename)
         os.unlink(path)
-        return current_app.message("Successfully deleted '%s'"%filename) #XXX: i18n
+        return current_app.message(_("Successfully deleted '%(filename)s'", filename=filename))
     else:
         return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
@@ -583,7 +585,7 @@ def worksheet_link_datafile(worksheet):
     target = os.path.abspath(os.path.join(
         target_ws.data_directory(), data_filename))
     if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
-        return current_app.message("illegal link attempt!") #XXX: i18n
+        return current_app.message(_("illegal link attempt!"))
     os.system('ln "%s" "%s"'%(src, target))
     return redirect(worksheet_link_datafile.url_for(worksheet, name=data_filename))
     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
@@ -599,21 +601,18 @@ def worksheet_do_upload_data(worksheet):
     worksheet_url = url_for_worksheet(worksheet)
     upload_url = worksheet_upload_data.url_for(worksheet)
 
-    #XXX: i18n
-    backlinks = """ Return to <a href="%s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%s" title="Interactively use the worksheet"><strong>%s</strong></a>.""" % (upload_url, worksheet_url, worksheet.name())
+    backlinks = _(""" Return to <a href="%(upload_url)s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%(worksheet_url)s" title="Interactively use the worksheet"><strong>%(worksheet_name)s</strong></a>.""", upload_url=upload_url, worksheet_url=worksheet_url, worksheet_name=worksheet.name())
 
 
     if 'file' not in request.files:
-        #XXX: i18n
-        return current_app.message('Error uploading file (missing field "file").%s' % backlinks, worksheet_url)
+        return current_app.message(_('Error uploading file (missing field "file"). %(backlinks)s', backlinks=backlinks), worksheet_url)
     else:
         file = request.files['file']
         
     text_fields = ['url', 'new', 'name']
     for field in text_fields:
         if field not in request.values:
-            #XXX: i18n
-            return current_app.message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url)
+            return current_app.message(_('Error uploading file (missing %(field)s arg).%(backlinks)s', field=field, backlinks=backlinks), worksheet_url)
 
 
     name = request.values.get('name', '').strip()
@@ -626,15 +625,13 @@ def worksheet_do_upload_data(worksheet):
     name = secure_filename(name)
 
     if not name:
-        #XXX: i18n
-        return current_app.message('Error uploading file (missing filename).%s' % backlinks, worksheet_url)
+        return current_app.message(_('Error uploading file (missing filename).%(backlinks)s', backlinks=backlinks), worksheet_url)
 
     #XXX: disk access
     dest = os.path.join(worksheet.data_directory(), name)
     if os.path.exists(dest):
         if not os.path.isfile(dest):
-            #XXX: i18n
-            return current_app.message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url)
+            return current_app.message(_('Suspicious filename "%(filename)s" encountered uploading file.%(backlinks)s', filename=filename, backlinks=backlinks), worksheet_url)
         os.unlink(dest)
 
 
@@ -821,7 +818,7 @@ def extract_title(html_page):
     h = html_page.lower()
     i = h.find('<title>')
     if i == -1:
-        return "Untitled"
+        return gettext("Untitled")
     j = h.find('</title>')
     return html_page[i + len('<title>') : j]
 

@@ -159,7 +159,9 @@ def pad_zeros(s, size=3):
     """    
     return "0"*(size-len(str(s))) + str(s)
 
-DATA = os.path.join(os.path.split(resource_filename(__name__, ''))[0], 'data')
+SAGENB_ROOT = os.path.split(resource_filename(__name__, ''))[0]
+
+DATA = os.path.join(SAGENB_ROOT, 'data')
 
 if os.environ.has_key('DOT_SAGENB'):
     DOT_SAGENB = os.environ['DOT_SAGENB']
@@ -494,3 +496,10 @@ def ignore_nonexistent_files(curdir, dirlist):
         if not os.path.exists(os.path.join(curdir, x)):
             ignore.append(x)
     return ignore
+
+
+def translations_path():
+    return os.path.join(SAGENB_ROOT, 'translations')
+
+def get_languages():
+    return ['en_US'] + os.listdir(translations_path())

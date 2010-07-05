@@ -8,6 +8,9 @@ from decorators import global_lock
 from flaskext.autoindex import AutoIndex
 SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
 from flaskext.openid import OpenID
+from flaskext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
+from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
+
 oid = OpenID()
 
 class SageNBFlask(Flask):
@@ -17,7 +20,8 @@ class SageNBFlask(Flask):
         self.startup_token = kwds.pop('startup_token', None)
         Flask.__init__(self, *args, **kwds)
 
-        from sagenb.misc.misc import DATA
+        self.root_path = SAGENB_ROOT
+
         self.add_static_path('/css', os.path.join(DATA, "sage", "css"))        
         self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
         self.add_static_path('/javascript/sage', os.path.join(DATA, "sage", "js"))
@@ -32,7 +36,6 @@ class SageNBFlask(Flask):
         # Doc #
         #######
         #These "should" be in doc.py
-        from sagenb.misc.misc import SAGE_DOC 
         DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
         self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
         self.add_static_path('/doc/static', DOC) 
@@ -126,6 +129,14 @@ def main_js():
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
+@base.route('/javascript/sage/localization.js')
+def localization_js():
+    print "localization.js"
+    response = make_response(render_template(os.path.join('js/localization.js')))
+    response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+    return response
+
+
 @base.route('/javascript/sage/jsmath.js')
 def jsmath_js():
     from sagenb.misc.misc import jsmath_macros
@@ -173,7 +184,7 @@ def history():
 @login_required
 @with_lock
 def live_history():
-    W = g.notebook.create_new_worksheet_from_history('Log', g.username, 100)
+    W = g.notebook.create_new_worksheet_from_history(gettext('Log'), g.username, 100)
     from worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))
 
@@ -183,7 +194,6 @@ def live_history():
 @base.route('/favicon.ico')
 def favicon():
     from flask.helpers import send_file
-    from sagenb.misc.misc import DATA
     return send_file(os.path.join(DATA, 'sage', 'images', 'favicon.ico'))
 
 @base.route('/loginoid', methods=['POST', 'GET'])
@@ -323,6 +333,13 @@ def create_app(path_to_notebook, *args, **kwds):
     def set_notebook_object():
         g.notebook = notebook
 
+    ####################################
+    # create Babel translation manager #
+    ####################################
+    babel = Babel(app, default_locale=notebook.conf()['default_language'],
+                  default_timezone='UTC',
+                  date_formats=None, configure_jinja=True)        
+
     ########################
     # Register the modules #
     ########################
@@ -357,9 +374,11 @@ def create_app(path_to_notebook, *args, **kwds):
         if os.path.isfile(filename):
             from cgi import escape
             src = escape(open(filename).read().decode('utf-8','ignore'))
-            if os.path.splitext(filename)[1] in \
-            ['.py','.c','.cc','.h','.hh','.pyx','.pyd']:
-                return render_template(os.path.join('html', 'source_code.html'), src_filename=path, src=src, username = g.username)
+            if (os.path.splitext(filename)[1] in 
+                ['.py','.c','.cc','.h','.hh','.pyx','.pyd']):
+                return render_template(os.path.join('html', 'source_code.html'),
+                                       src_filename=path, 
+                                       src=src, username = g.username)
             return src
         return idx.render_autoindex(path)
 

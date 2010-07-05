@@ -2,20 +2,20 @@
 
 {% block page_id %}before-publish-page{% endblock %}
 {% block sharebar_title %}
-<p>You can publish your worksheet to the Internet, where anyone will be able to access and view it online.</p>
+<p>{{ gettext('You can publish your worksheet to the Internet, where anyone will be able to access and view it online.') }}</p>
 
-<p>Your worksheet will be assigned a unique address (URL) that you can send to your friends and colleagues.</p>
+<p>{{ gettext('Your worksheet will be assigned a unique address (URL) that you can send to your friends and colleagues.') }}</p>
 
-<p>Do you want to publish this worksheet?</p>
+<p>{{ gettext('Do you want to publish this worksheet?') }}</p>
 
 <form method="">
     <input type="hidden" name="yes" value="" />
     <div>
-        <input type="submit" value="Yes" />
-        <input type="button" value="No" onClick="parent.location='../'" />
+        <input type="submit" value="{{ gettext('Yes') }}" />
+        <input type="button" value="{{ gettext('No') }}" onClick="parent.location='../'" />
     </div>
     <div>
-        <input type="checkbox" name="auto" /> <label for="auto"> Automatically re-publish when changes are made</label>
+        <input type="checkbox" name="auto" /> <label for="auto"> {{ gettext('Automatically re-publish when changes are made') }}</label>
     </div>
 </form>
 {% endblock %}

@@ -4,7 +4,7 @@
 {% block page_id %}upload-data-page{% endblock %}
 
 {% block sharebar_title %}
-Upload or Create Data File to attach to worksheet "{{ worksheet.name() }}"
+{{ gettext('Upload or Create Data File to attach to worksheet "%(wn)s"')|format(wn=worksheet.name()) }}
 {% endblock %}
 
 {% block after_sharebar %}
@@ -12,22 +12,22 @@ Upload or Create Data File to attach to worksheet "{{ worksheet.name() }}"
     <form method="POST" action="do_upload_data"
           name="upload" enctype="multipart/form-data">
         <div>
-            <label for="file">Browse your computer to select a file to upload:</label>
+            <label for="file">{{ gettext('Browse your computer to select a file to upload:') }}</label>
             <input size="50" type="file" name="file" />
         </div>
         <div>
-            <label for="url">Or enter the URL of a file on the web:</label>
+            <label for="url">{{ gettext('Or enter the URL of a file on the web:') }}</label>
             <input size="50" type="text" name="url" />
         </div>
         <div>
-            <label for="new">Or enter the name of a new file, which will be created:</label>
+            <label for="new">{{ gettext('Or enter the name of a new file, which will be created:') }}</label>
             <input size="50" type="text" name="new" />
         </div>
         <div>
-            <label for="name">What do you want to call it? (if different than the original name)</label>
+            <label for="name">{{ gettext('What do you want to call it? (if different than the original name)') }}</label>
             <input size="50" type="text" name="name" />
         </div>
-        <button type="submit">Upload or Create Data File</button>
+        <button type="submit">{{ gettext('Upload or Create Data File') }}</button>
     </form>
 </div>
 {% endblock %}

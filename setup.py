@@ -44,6 +44,7 @@ code = setup(name = 'sagenb',
                       'sagenb/data/sage3d/sage3d',
                      ],
       package_data = {'sagenb':
-                          all_files('sagenb/data', 'sagenb/')
+                          all_files('sagenb/data', 'sagenb/') +
+                             all_files('sagenb/locale', 'sagenb/')
                       },
       )

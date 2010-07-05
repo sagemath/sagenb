@@ -76,41 +76,41 @@ $(document).ready(function () {
       <table id="statistics1" class="statistics">
 	{%- if sagenb_version %}
 	<tr>
-	  <td class="label">Sage Notebook version</td>
+	  <td class="label">{{ gettext('Sage Notebook version') }}</td>
 	  <td class="value">{{ sagenb_version }}</td>
 	</tr>
 	{% endif %}
 	{%- if sage_version %}
 	<tr>
-	  <td class="label">Sage version</td>
+	  <td class="label">{{ gettext('Sage version') }}</td>
 	  <td class="value">{{ sage_version }}</td>
 	</tr>
 	{% endif %}
 	{%- if environment %}
 	<tr>
-          <td class="label">Environment</td>
+          <td class="label">{{ gettext('Environment') }}</td>
           <td class="value">{{ environment }}</td>
 	</tr>
 	{% endif %}
 	<tr>
-	  <td class="label">Start</td>
+	  <td class="label">{{ gettext('Start') }}</td>
 	  <td class="value">{{ start_time }}</td>
 	</tr>
 	<tr>
-	  <td class="label">Stop</td>
+	  <td class="label">{{ gettext('Stop') }}</td>
 	  <td class="value">{{ stop_time }}</td>
 	</tr>
 	<tr>
-	  <td class="label">Elapsed</td>
+	  <td class="label">{{ gettext('Elapsed') }}</td>
 	  <td class="value">{{ elapsed_time }}</td>
 	</tr>
 	<tr>
-	  <td class="label">Status</td>
+	  <td class="label">{{ gettext('Status') }}</td>
 	  <td class="value">
-	    <span class="txt_pass">Pass {{ pass_total }}</span>
-	    &nbsp;<span class="txt_fail">Fail {{ fail_total }}</span>	
-	    &nbsp;<span class="txt_error">Error {{ error_total }}</span>
-	    &nbsp;<span class="txt_total">Total {{ count_total }}</span>
+	    <span class="txt_pass">{{ gettext('Pass') }} {{ pass_total }}</span>
+	    &nbsp;<span class="txt_fail">{{ gettext('Fail') }} {{ fail_total }}</span>	
+	    &nbsp;<span class="txt_error">{{ gettext('Error') }} {{ error_total }}</span>
+	    &nbsp;<span class="txt_total">{{ gettext('Total') }} {{ count_total }}</span>
 	  </td>
 	</tr>
       </table>
@@ -118,18 +118,18 @@ $(document).ready(function () {
 
     <div id="top_bar1" class="top_bar">
       Output / Tracebacks:
-      &nbsp;<div class="out_trace_hide top_bar_item">Hide</div>
-      &nbsp;<div class="out_trace_show top_bar_item">Show</div>
-      &nbsp;<div class="out_trace_toggle top_bar_item">Toggle</div>
+      &nbsp;<div class="out_trace_hide top_bar_item">{{ gettext('Hide') }}</div>
+      &nbsp;<div class="out_trace_show top_bar_item">{{ gettext('Show') }}</div>
+      &nbsp;<div class="out_trace_toggle top_bar_item">{{ gettext('Toggle') }}</div>
     </div>
 
     <table id="results1" class="results">
       <tr id="headers1" class="headers">
-	<td class="test_case_header left">Cases / Tests</td>
-	<td class="pass_header">Pass</td>
-	<td class="fail_header">Fail</td>
-	<td class="error_header">Error</td>
-	<td class="count_header">Count</td>
+	<td class="test_case_header left">{{ gettext('Cases / Tests') }}</td>
+	<td class="pass_header">{{ gettext('Pass') }}</td>
+	<td class="fail_header">{{ gettext('Fail') }}</td>
+	<td class="error_header">{{ gettext('Error') }}</td>
+	<td class="count_header">{{ gettext('Count') }}</td>
 	<td class="hide_all">H</td>
 	<td class="show_all">S</td>
 	<td class="toggle_all">T</td>
@@ -138,7 +138,7 @@ $(document).ready(function () {
       {{ test_cases_and_tests }}
 
       <tr id="totals1" class="totals">
-	<td class="test_case_total left">Totals</td>
+	<td class="test_case_total left">{{ gettext('Totals') }}</td>
 	<td class="pass_total">{{ pass_total }}</td>
 	<td class="fail_total">{{ fail_total }}</td>
 	<td class="error_total">{{ error_total }}</td>

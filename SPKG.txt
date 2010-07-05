@@ -42,6 +42,12 @@ GPLv2+
      in setup.py. Dependencies of dependencies need not be put in setup.py, but
      need to be put in ./spkg-dist.
    * The Selenium tests pass (optional, for now).
+   * The localization file ``sagenb.pot`` is up-to-date .
+      * Run ``pybabel extract -F /path/to/babel.cfg /path/to/project
+        -o /path/to/sagenb.po`` (get pybabel with ``easy_install
+        pybabel``).
+      * Copy the headers from the existing ``sagenb.pot``.
+      * Replace ``sagenb.pot`` with ``sagenb.po``.
 
    Then,
 
@@ -53,6 +59,25 @@ GPLv2+
    repository.
 
  * Stylesheets (CSS): see sass/readme.txt.
+
+ * To add a locale to an existing install:
+ 
+   * Create a new locale, or download one from
+     `http://wiki.sagemath.org/i18n`_:
+
+      * To create a new locale:
+  
+        * Edit and save a copy of ``sagenb.pot``
+          using your favorite text editor or POEdit (http://poedit.net)
+
+        * (Recommended) Post the new locale to
+          `http://wiki.sagemath.org/i18n`_
+
+   * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
+
+   * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``,
+     where xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+
 
 == Changelog ==
 

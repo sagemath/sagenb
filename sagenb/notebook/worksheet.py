@@ -35,6 +35,7 @@ import shutil
 import string
 import time
 import traceback
+import locale
 
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
@@ -56,6 +57,8 @@ from sagenb.misc.format import relocate_future_imports
 # Imports specifically relevant to the sage notebook
 from cell import Cell, TextCell
 from template import template, clean_name, prettify_time_ago
+from flaskext.babel import gettext, lazy_gettext
+_ = gettext
 
 # Set some constants that will be used for regular expressions below.
 whitespace = re.compile('\s')  # Match any whitespace character
@@ -282,7 +285,7 @@ class Worksheet(object):
             sage: import sagenb.notebook.worksheet
             sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, tmp_dir(), owner='sage')
             sage: sorted((W.basic().items()))
-            [('auto_publish', False), ('collaborators', []), ('id_number', 0), ('last_change', ('sage', ...)), ('name', u'test'), ('owner', 'sage'), ('pretty_print', False), ('published_id_number', None), ('ratings', []), ('system', None), ('tags', {'sage': [1]}), ('viewers', []), ('worksheet_that_was_published', ('sage', 0))]
+            [('auto_publish', False), ('collaborators', []), ('id_number', 0), ('last_change', ('sage', ...)), ('name', u'test'), ('owner', 'sage'), ('pretty_print', False), ('published_id_number', None), ('ratings', []), ('saved_by_info', {}), ('system', None), ('tags', {'sage': [1]}), ('viewers', []), ('worksheet_that_was_published', ('sage', 0))]
         """
         try:
             published_id_number = int(os.path.split(self.__published_version)[1])
@@ -678,7 +681,7 @@ class Worksheet(object):
         self.__collaborators = [self.owner()]
         self.__viewers = []
 
-    def name(self):
+    def name(self, username=None):
         ur"""
         Return the name of this worksheet.
 
@@ -697,7 +700,7 @@ class Worksheet(object):
         try:
             return self.__name
         except AttributeError:
-            self.__name = u"Untitled"
+            self.__name = lazy_gettext("Untitled")
             return self.__name
 
     def set_name(self, name):
@@ -717,7 +720,7 @@ class Worksheet(object):
             u'A renamed worksheet'
         """
         if len(name.strip()) == 0:
-            name = u'Untitled'
+            name = lazy_gettext('Untitled')
         name = unicode_str(name)
         self.__name = name
 
@@ -1316,7 +1319,7 @@ class Worksheet(object):
             self.__ratings = v
             return v
 
-    def html_ratings_info(self):
+    def html_ratings_info(self, username=None):
         r"""
         Return html that renders to give a summary of how this worksheet
         has been rated.
@@ -1335,7 +1338,7 @@ class Worksheet(object):
             u'...hilbert...3...this is great...this lacks content...'
         """
         return template(os.path.join('html', 'worksheet', 'ratings_info.html'),
-                        worksheet = self)
+                        worksheet = self, username = username)
 
     def rating(self):
         """
@@ -1976,24 +1979,32 @@ class Worksheet(object):
         E = bz2.decompress(open(filename).read())
         self.edit_save(E)
 
-    def _saved_by_info(self, x):
+    def _saved_by_info(self, x, username=None):
         try:
             u = self.__saved_by_info[x]
-            return ' ago by %s'%u
+            return u
         except (KeyError,AttributeError):
-            return ' ago'
+            return ''
 
     def snapshot_data(self):
         try:
-            return self.__snapshot_data
+            self.__filenames
         except AttributeError:
-            pass
-        filenames = os.listdir(self.snapshot_directory())
-        filenames.sort()
+            filenames = os.listdir(self.snapshot_directory())
+            filenames.sort()
+            self.__filenames = filenames
         t = time.time()
-        v = [(prettify_time_ago(t - float(os.path.splitext(x)[0]))+ self._saved_by_info(x), x)  \
-             for x in filenames]
-        self.__snapshot_data = v
+        v = []
+        for x in self.__filenames:
+            base = os.path.splitext(x)[0]
+            if self._saved_by_info(x):
+                v.append((_('%(t)s ago by %(le)s',) %
+                            {'t': prettify_time_ago(t - float(base)),
+                             'le': self._saved_by_info(base)},
+                          x))
+            else:
+                v.append((_('%(seconds)s ago', seconds=prettify_time_ago(t - float(base))),
+                          x))
         return v
 
     def uncache_snapshot_data(self):
@@ -2123,7 +2134,7 @@ class Worksheet(object):
             # to zero out the state dictionary.
             return
 
-    def edit_save_old_format(self, text):
+    def edit_save_old_format(self, text, username=None):
         text.replace('\r\n','\n')
 
         name, i = extract_name(text)
@@ -2279,7 +2290,7 @@ class Worksheet(object):
     ##########################################################
     # HTML rendering of the whole worksheet
     ##########################################################
-    def html_cell_list(self, do_print=False):
+    def html_cell_list(self, do_print=False, username=None):
         """
         INPUT:
 
@@ -2296,14 +2307,15 @@ class Worksheet(object):
                 return self.__html
             except AttributeError:
                 for cell in self.cell_list():
-                    cells_html += cell.html(ncols, do_print=True) + '\n'
+                    cells_html += cell.html(ncols, do_print=True, username=self.username) + '\n'
                 s = template(os.path.join('html', 'worksheet', 'published_worksheet.html'),
-                             ncols = ncols, cells_html = cells_html)
+                             ncols = ncols, cells_html = cells_html,
+                             username=username)
                 self.__html = s
                 return s
         for cell in self.cell_list():
             try:
-                cells_html += cell.html(ncols, do_print=do_print) + '\n'
+                cells_html += cell.html(ncols, do_print=do_print, username=self.username) + '\n'
             except Exception, msg:
                 # catch any exception, since this exception is raised
                 # sometimes, at least for some worksheets:
@@ -2315,7 +2327,7 @@ class Worksheet(object):
                 print msg
         return cells_html
 
-    def html(self, do_print=False, publish=False):
+    def html(self, do_print=False, publish=False, username=None):
         r"""
         INPUT:
 
@@ -2341,7 +2353,8 @@ class Worksheet(object):
                 pass
 
         s = template(os.path.join("html", "notebook", "worksheet.html"),
-                     do_print=do_print, publish=publish, worksheet=self) 
+                     do_print=do_print, publish=publish,
+                     worksheet=self, username=username) 
 
         if self.is_published():
             self.__html = s
@@ -2474,17 +2487,19 @@ class Worksheet(object):
                 return True, user
         return False
 
-    def html_time_since_last_edited(self):
+    def html_time_since_last_edited(self, username=None):
         t = self.time_since_last_edited()
         tm = prettify_time_ago(t)
         return template(os.path.join("html", "worksheet", "time_since_last_edited.html"),
                         last_editor = self.last_to_edit(),
-                        time = tm)
+                        time = tm,
+                        username=username)
 
-    def html_time_last_edited(self):
+    def html_time_last_edited(self, username=None):
         return template(os.path.join("html", "worksheet", "time_last_edited.html"),
                         time = convert_time_to_string(self.last_edited()),
-                        last_editor = self.last_to_edit())
+                        last_editor = self.last_to_edit(),
+                        username=username)
 
     ##########################################################
     # Managing cells and groups of cells in this worksheet
@@ -3800,9 +3815,10 @@ except (KeyError, IOError):
     ##########################################################
     # List of attached files.
     ##########################################################
-    def attached_html(self):
+    def attached_html(self, username=None):
         return template(os.path.join("html", "worksheet", "attached.html"),
-                        attached_files = self.attached_files())
+                        attached_files = self.attached_files(),
+                        username=username)
 
     ##########################################################
     # Showing and hiding all cells
@@ -4025,7 +4041,7 @@ def first_word(s):
         return s
     return s[:i.start()]
 
-def format_completions_as_html(cell_id, completions):
+def format_completions_as_html(cell_id, completions, username=None):
     """
     Returns tabular HTML code for a list of introspection completions.
 
@@ -4052,7 +4068,7 @@ def extract_name(text):
     # The first line is the title
     i = non_whitespace.search(text)
     if i is None:
-        name = 'Untitled'
+        name = _('Untitled')
         n = 0
     else:
         i = i.start()
@@ -4116,7 +4132,30 @@ def next_available_id(v):
     return i
 
 def convert_time_to_string(t):
-    return time.strftime('%B %d, %Y %I:%M %p', time.localtime(float(t)))
+    """
+    Converts ``t`` (in Unix time) to a locale-specific string
+    describing the time and date.
+    """
+    from flaskext.babel import format_datetime
+    import datetime, time
+    try:
+        return format_datetime(datetime.datetime.fromtimestamp(float(t)))
+    except AttributeError: #testing as opposed to within the Flask app
+        return time.strftime('%B %d, %Y %I:%M %p', time.localtime(float(t)))
+
+# For pybabel
+lazy_gettext('January')
+lazy_gettext('February')
+lazy_gettext('March')
+lazy_gettext('April')
+lazy_gettext('May')
+lazy_gettext('June')
+lazy_gettext('July')
+lazy_gettext('August')
+lazy_gettext('September')
+lazy_gettext('October')
+lazy_gettext('November')
+lazy_gettext('December')
 
 def split_search_string_into_keywords(s):
     r"""

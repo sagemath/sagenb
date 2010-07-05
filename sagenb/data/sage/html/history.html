@@ -1,6 +1,6 @@
 {% extends "html/base.html" %}
 
-{% block title %}Sage: History for {{username}} {% endblock %}
+{% block title %}{{ gettext('Sage: History for %(u)s')|format(u=username) }}{% endblock %}
 
 {% block javascript %}
 <script type="text/javascript" src="/javascript/sage/ws_list.js"></script>
@@ -10,7 +10,7 @@
 
 {% block body %}
     <pre>{{ text | escape }}</pre>
-    <a title="Click here to turn the above into a Sage worksheet" href="/live_history">Create a new Sage worksheet version of the last 100 commands in the above log.</a>
+    <a title="{{ gettext('Click here to turn the above into a Sage worksheet') }}" href="/live_history">{{ gettext('Create a new Sage worksheet version of the last 100 commands in the above log.') }}</a>
     <a name="bottom"></a>
     <script type="text/javascript">
       $(window).load(function () {

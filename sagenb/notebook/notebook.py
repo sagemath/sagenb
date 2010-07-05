@@ -36,29 +36,50 @@ from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
                               ignore_nonexistent_files, unicode_str)
 
 # Sage Notebook
-import css          # style
-import js           # javascript
-import worksheet    # individual worksheets (which make up a notebook)
-import config       # internal configuration stuff (currently, just keycodes)
-import keyboards    # keyboard layouts
-import server_conf  # server configuration
-import user_conf    # user configuration
-import user         # users
+from . import css          # style
+from . import js           # javascript
+from . import worksheet    # individual worksheets (which make up a notebook)
+from . import config       # internal configuration stuff (currently, just keycodes)
+from . import keyboards    # keyboard layouts
+from . import server_conf  # server configuration
+from . import user_conf    # user configuration
+from . import user         # users
 from   template import template, prettify_time_ago
-
+from flaskext.babel import gettext, lazy_gettext
 
 try:
     # sage is installed
     import sage
-    SYSTEMS = ['sage', 'gap', 'gp', 'jsmath', 'html', 'latex', 'maxima', 'python', 'r', 'sh', 'singular', 'axiom (optional)', 'kash (optional)', 'macaulay2 (optional)', 'magma (optional)', 'maple (optional)', 'mathematica (optional)', 'matlab (optional)', 'mupad (optional)', 'octave (optional)', 'scilab (optional)']
+    # [(string: name, bool: optional)]
+    SYSTEMS = [('sage', False),
+               ('gap', False),
+               ('gp', False),
+               ('jsmath', False),
+               ('html', False),
+               ('latex', False),
+               ('maxima', False),
+               ('python', False),
+               ('r', False),
+               ('sh', False),
+               ('singular', False),
+               ('axiom', True),
+               ('kash', True),
+               ('macaulay2', True),
+               ('magma', True),
+               ('maple', True,),
+               ('mathematica', True),
+               ('matlab', True),
+               ('mupad', True),
+               ('octave', True),
+               ('scilab', True)]
 except ImportError:
     # sage is not installed
-    SYSTEMS = ['sage']    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
+    SYSTEMS = [('sage', True)]    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
 
 
 # We also record the system names without (optional) since they are
 # used in some of the html menus, etc.
-SYSTEM_NAMES = [v.split()[0] for v in SYSTEMS]
+SYSTEM_NAMES = [v[0] for v in SYSTEMS]
 
 JSMATH = True
 
@@ -141,8 +162,14 @@ class Notebook(object):
         """
         self.__storage.delete()
 
-    def systems(self):
-        return SYSTEMS
+    def systems(self, username=None):
+        systems = []
+        for system in SYSTEMS:
+            if system[1]:
+                systems.append(system[0] + ' (' + lazy_gettext('optional') + ')')
+            else:
+                systems.append(system[0])
+        return systems
 
     def system_names(self):
         return SYSTEM_NAMES
@@ -997,7 +1024,7 @@ class Notebook(object):
             u'...Revision...Last Edited...ago...'
         """
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
-
+        
         return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
                         data = data, worksheet = worksheet,
                         notebook = self,

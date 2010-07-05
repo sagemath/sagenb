@@ -74,5 +74,3 @@ def settings_page():
 
     return render_template(os.path.join('html', 'settings', 'account_settings.html'), **td)
 
-
-

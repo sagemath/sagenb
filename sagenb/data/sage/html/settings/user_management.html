@@ -1,19 +1,19 @@
 {% extends "html/settings/base.html" %}
 
-{% block title %}Users{% endblock %}
+{% block title %}{{ gettext('Users') }}{% endblock %}
 {% block page_id %}user-management-page{% endblock %}
 
 {% block settings_main %}
-    <h1>User Management</h1>
-    <a href="/adduser" class="boldusercontrol">Add User</a>
+    <h1>{{ gettext('User Management') }}</h1>
+    <a href="/adduser" class="boldusercontrol">{{ gettext('Add User') }}</a>
     {% if reset %}
-    <p>The password for the user {{ reset[0] }} has been reset to <strong>{{ reset[1] }}</strong></p>
+    <p>{{ gettext('The password for the user %(u)s has been reset to <strong>%(p)s</strong>')|format(u=reset[0], p=reset[1]) }}</p>
     {% endif %}
     <table>
-      <tr><th>Users</th><th>Password</th><th>Suspension</th></tr>
+      <tr><th>{{ gettext('Users') }}</th><th>{{ gettext('Password') }}</th><th>{{ gettext('Suspension') }}</th></tr>
       {% for user in users %}
       {% if user != 'admin' %}
-      <tr><td><a href="/home/{{ user }}/">{{ user }}</a></td><td><a href="/users/?reset={{ user }}">Reset</a></td><td><a href="/users/?suspension={{ user }}">{% if user.is_suspended() %}Unsuspend{% else %}Suspend{% endif %}</td></tr>
+      <tr><td><a href="/home/{{ user }}/">{{ user }}</a></td><td><a href="/users/?reset={{ user }}">{{ gettext('Reset') }}</a></td><td><a href="/users/?suspension={{ user }}">{% if user.is_suspended() %}{{ gettext('Unsuspend') }}{% else %}{{ gettext('Suspend') }}{% endif %}</td></tr>
       {% endif %}
       {% endfor %}
     </table>
