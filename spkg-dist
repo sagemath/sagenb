@@ -47,30 +47,29 @@ spkg_install_fd.write("cd src\n")
 shutil.copy(os.path.join(os.path.pardir, os.path.pardir, 'SPKG.txt'),
             os.path.curdir)
 
-print "Fetching the required packages"
-pkg_index = PackageIndex()
 
-tmp_dir = mkdtemp()
-required_packages = ('pytz>=2009r',
-                     'zope.i18nmessageid>=3.5',
-                     'zope.event>=3.4.1',
-                     'ClientForm>=0.2.10',
-                     'mechanize==0.1.11',
-                     'zope.interface>=3.3.0',
-                     'zope.schema>=3.5.4',
-                     'zope.testbrowser>=3.8.1')
 
-pkg_locations = []
+def fetch_packages():
+    # This block is here in case we ever need it again.
+    print "Fetching the required packages"
+    pkg_index = PackageIndex()
 
-for pkg in required_packages:
-    print "Fetching %s" % pkg
-    dist = pkg_index.fetch_distribution(Requirement.parse(pkg), tmp_dir,
-                                        True, True)
-    pkg_locations.append(os.path.abspath(dist.location))
+    tmp_dir = mkdtemp()
 
-for location in pkg_locations:
-    shutil.copy(location, 'src')
-    spkg_install_fd.write('easy_install %s\n' % os.path.basename(location))
+
+    required_packages = ()
+
+    pkg_locations = []
+
+    for pkg in required_packages:
+        print "Fetching %s" % pkg
+        dist = pkg_index.fetch_distribution(Requirement.parse(pkg), tmp_dir,
+                                            True, True)
+        pkg_locations.append(os.path.abspath(dist.location))
+
+    for location in pkg_locations:
+        shutil.copy(location, 'src')
+        spkg_install_fd.write('easy_install %s\n' % os.path.basename(location))
 
 os.chdir(os.path.pardir)
 
@@ -79,6 +78,5 @@ spkg_install_fd.write('python setup.py install\n')
 spkg_install_fd.close()
 os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
          stat.S_IROTH | stat.S_IXOTH)
-shutil.rmtree(tmp_dir)
 
 subprocess.call(['sage -pkg ' + base], shell=True)
