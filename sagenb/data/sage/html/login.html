@@ -56,14 +56,14 @@
     <form method="POST" action="/login">
         <div>
             <label for="email">Username</label>
-            <input type="text" name="email" value="{{ default_user }}" size="15" />
+            <input type="text" id="email" name="email" value="{{ default_user }}" size="15" />
             {% if username_error %}
             <span style="color:red">Error: </span>Username is not in the system
             {% endif %}
         </div>
         <div>
             <label for="password">Password</label>
-            <input type="password" name="password" size="15" />
+            <input type="password" id="password" name="password" size="15" />
             {% if password_error %}
             <span style="color:red">Error: </span>Wrong password
             {% endif %}
