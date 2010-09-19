@@ -202,6 +202,9 @@ except ImportError:
         "CFF : '{\\\\Bold{CFF}}'",
         "Bold : ['{\\\\mathbf{#1}}', 1]"
         ]
+except Exception:
+    sage_jsmath_macros_easy = []
+    raise
 finally:
     jsmath_macros = ',\n'.join(sage_jsmath_macros_easy)
 
