@@ -71,10 +71,31 @@ def fetch_packages():
         shutil.copy(location, 'src')
         spkg_install_fd.write('easy_install %s\n' % os.path.basename(location))
 
+    return [os.path.basename(location) for location in pkg_locations]
+
 os.chdir(os.path.pardir)
 
-spkg_install_fd.write('cd sagenb\n')
-spkg_install_fd.write('python setup.py install\n')
+spkg_install_fd.write("""
+cd sagenb
+python setup.py install
+
+echo "Copying SageNB package to '$SAGE_ROOT/devel/sagenb-main'."
+if [ -d "$SAGE_ROOT/devel/sagenb-main" ]; then
+  echo "Copying old SageNB package to '$SAGE_ROOT/devel/sagenb-main-old'."
+  rm -rf "$SAGE_ROOT/devel/sagenb-main-old"
+  cp -pr "$SAGE_ROOT/devel/sagenb-main" "$SAGE_ROOT/devel/sagenb-main-old"
+fi
+
+rm -f "$SAGE_ROOT/devel/sagenb"
+
+cd ..
+cp -pr sagenb "$SAGE_ROOT/devel/sagenb-main"
+
+ln -sf "$SAGE_ROOT/devel/sagenb-main" "$SAGE_ROOT/devel/sagenb"
+
+cd "$SAGE_ROOT/devel/sagenb"
+python setup.py develop
+""")
 spkg_install_fd.close()
 os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
          stat.S_IROTH | stat.S_IXOTH)
