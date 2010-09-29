@@ -260,15 +260,13 @@ class MySessionWrapper(object):
         if request.args.get('startup_token', [''])[0]:
             import avatars
             return avatars.TokenCred(request.args.get('startup_token', [''])[0])
+        username = password = 'COOKIESDISABLED'
         if request.headers.getHeader('cookie'):
             for C in request.headers.getHeader('cookie'):
                 if C.name == 'cookie_test_%s' % twist.notebook.port:
                     username = request.args.get('email', [''])[0]
                     password = request.args.get('password', [''])[0]
-                else:
-                    username = password = 'COOKIESDISABLED'
-        else:
-            username = password = 'COOKIESDISABLED'
+                    break
         return credentials.UsernamePassword(username, password)
 
     def _loginSuccess(self, (iface, rsrc, logout), session, creds, segments):
