@@ -79,6 +79,8 @@ spkg_install_fd.write("""
 cd sagenb
 python setup.py install
 
+mkdir -p "$SAGE_ROOT/devel"
+
 echo "Copying SageNB package to '$SAGE_ROOT/devel/sagenb-main'."
 if [ -d "$SAGE_ROOT/devel/sagenb-main" ]; then
   echo "Copying old SageNB package to '$SAGE_ROOT/devel/sagenb-main-old'."
