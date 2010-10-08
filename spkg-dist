@@ -93,10 +93,16 @@ rm -f "$SAGE_ROOT/devel/sagenb"
 cd ..
 cp -pr sagenb "$SAGE_ROOT/devel/sagenb-main"
 
-ln -sf "$SAGE_ROOT/devel/sagenb-main" "$SAGE_ROOT/devel/sagenb"
+cd "$SAGE_ROOT/devel"
+ln -snf sagenb-main sagenb
 
+# We use relative paths for relocatability.
 cd "$SAGE_ROOT/devel/sagenb"
-python setup.py develop
+python setup.py develop --egg-path ../../../../devel/sagenb
+
+cd "$SAGE_ROOT/local/lib/python/site-packages"
+sed 's/^.*sagenb.*$/..\/..\/..\/..\/devel\/sagenb/' easy-install.pth > easy-install.pth.new
+mv -f easy-install.pth.new easy-install.pth
 """)
 spkg_install_fd.close()
 os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
