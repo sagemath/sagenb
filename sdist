@@ -1,9 +1,39 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
 
+# Just curious: *Which* 'sage' is supposed to be called here?
+# Should we check if SAGE_LOCAL or SAGE_ROOT is defined?
+# ... and perhaps call $SAGE_ROOT/sage or $SAGE_LOCAL/bin/...? -leif
+
+# At least check that 'sage' is in the path to specifically catch
+# one potential error [earlier, with an appropriate error message]:
+if ! command -v sage >/dev/null; then
+    echo >&2 "Error: $0 requires 'sage' to be in your PATH"
+    echo >&2 "Maybe first call 'SAGE_ROOT/sage -sh'"
+    exit 1
+fi
+
+echo "Trying to commit changes (if any)..."
 sage -hg ci
+status=$?
+if [ $status -eq 1 ]; then
+    # 'hg ci' returns 1 (!) if there are no changes to commit...
+    echo "No changes to commit (not an error)"
+elif [ $status -ne 0 ]; then
+    echo >&2 "Error: $0: Couldn't commit changes" \
+             "('hg ci' failed with exit code $status)"
+    exit 1
+else
+    # $status == 0
+    echo "Successfully committed the changes"
+fi
 
+echo "Running 'python setup.py sdist'..."
 sage -python setup.py sdist
+if [ $? -ne 0 ]; then
+    echo >&2 "Error: $0: 'python setup.py sdist' failed"
+    exit 1
+fi
+
 
 echo "**********************************************************"
 echo "* If this is an official SageNB release, don't forget to *"
