@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 # Create a new Sage Notebook spkg.
-
+#
 # Since the 'sdist' shell script called below requires (at least) 'sage'
 # to be in the path, we could equally check *here* if it is; SAGE_ROOT
 # or SAGE_LOCAL don't have to be set, since 'sdist' calls 'sage -hg ...'
 # and 'sage -python ...'.
 # (We also later run 'sage -pkg ...' from *this* script.)
 #
-# We *might* get import errors earlier if some system-wide Python executes
-# this script (which is probably not intended), so we could really check
-# here first if SAGE_LOCAL is defined, which is a strong indication that
-# we're actually using Sage's Python. -leif
+# This spkg-dist doesn't need any Sage components, it is fine to run
+# it from a system-wide Python. -- Jeroen Demeyer
 
 import os
 import sys
@@ -29,11 +27,12 @@ try:
 except IndexError:
     sys.stderr.write("Error: Found no version string in 'setup.py'\n")
     sys.exit(1)
+
 i = version_line.find("'")
 j = version_line.rfind("'")
 if i==-1 or j==-1 or j-i<3:
     sys.stderr.write(
-      "Error: Illegal version string in 'setup.py':\n    %s\n" % version_line)
+        "Error: Illegal version string in 'setup.py':\n    %s\n" % version_line)
     sys.stderr.write("Perhaps no single quotes used?\n")
     sys.exit(1)
 version = version_line[i + 1:j]
@@ -44,14 +43,8 @@ print "Creating the new source tarball..."
 sys.stdout.flush()
 proc = subprocess.Popen([os.path.join(os.path.curdir, 'sdist')], shell=True)
 if proc.wait():
-    # The previous error message was most probably inadequate, since
-    # 'sdist' tries to commit any changes, and 'hg ci' returns 1 (!) (which
-    # usually indicates an error) if there are *no changes to commit*.
-    # The other potential error in 'sdist' was that 'python setup.py sdist'
-    # failed, in which case the error message would have also been wrong.
-    #print "Uncommitted changes in repository.  Stopping."
     sys.stderr.write(
-      "Error: './sdist' failed. See message(s) above for the specific error.\n")
+        "Error: './sdist' failed. See message(s) above for the specific error.\n")
     sys.exit(1)
 
 # Create the spkg.
@@ -179,8 +172,7 @@ if [ $? -ne 0 ]; then
 fi
 
 cd "$SAGE_ROOT/local/lib/python/site-packages"
-# Dave says Solaris' non-POSIX grep in the default path
-# doesn't understand "-q" (which *is* POSIX):
+# Use >/dev/null instead of grep -q (which doesn't work on Solaris)
 if ! grep sagenb easy-install.pth >/dev/null; then
     # Ugly work-around, we haven't found the real cause yet (see #10176):
     echo "No sagenb path found in 'easy-install.pth'"'!'
@@ -198,10 +190,11 @@ else
         exit 1
     fi
 fi
-if true; then # Aids debugging (cf. #10176)
-    echo "Old path: \"`grep sagenb easy-install.pth`\""
-    echo "New path: \"`grep sagenb easy-install.pth.$$`\""
-fi
+
+# Print paths for debugging
+echo "Old path: '`grep sagenb easy-install.pth`'"
+echo "New path: '`grep sagenb easy-install.pth.$$`'"
+
 # The following fails only on wrong file permissions etc.:
 mv -f easy-install.pth.$$ easy-install.pth
 if [ $? -ne 0 ]; then
@@ -216,6 +209,6 @@ os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
 # We are still in dist/, now package sagenb-x.y.z/ :
 print "Running 'sage -pkg %s'..."%base
 sys.stdout.flush()
-subprocess.call(['sage -pkg ' + base], shell=True)
-# XXX Perhaps also check exit code here... (but 'sage -pkg' is verbose)
-
+if subprocess.call(['sage', '-pkg', base]):
+    print "sage -pkg %s failed. See message(s) above for the specific error.\n"%base
+    sys.exit(1)
