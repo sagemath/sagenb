@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 # Create a new Sage Notebook spkg.
 #
-# Since the 'sdist' shell script called below requires (at least) 'sage'
-# to be in the path, we could equally check *here* if it is; SAGE_ROOT
-# or SAGE_LOCAL don't have to be set, since 'sdist' calls 'sage -hg ...'
-# and 'sage -python ...'.
-# (We also later run 'sage -pkg ...' from *this* script.)
-#
-# This spkg-dist doesn't need any Sage components, it is fine to run
-# it from a system-wide Python. -- Jeroen Demeyer
+# This spkg-dist doesn't need any Python modules of Sage, so it should
+# be okay to run it from a system-wide Python (provided it is sufficiently
+# recent).  This script *does* need a sage executable to be in the PATH
+# because we need to run "sage -pkg" below and also the "sdist" script
+# runs "sage -python" and "sage -hg". -- Jeroen Demeyer
+
 
 import os
 import sys
@@ -210,5 +208,5 @@ os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
 print "Running 'sage -pkg %s'..."%base
 sys.stdout.flush()
 if subprocess.call(['sage', '-pkg', base]):
-    print "sage -pkg %s failed. See message(s) above for the specific error.\n"%base
+    sys.stderr.write('Error: "sage -pkg %s" failed.\nSee message(s) above for the specific error.\n'%base)
     sys.exit(1)
