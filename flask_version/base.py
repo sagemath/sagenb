@@ -2,11 +2,12 @@
 import os, time
 from functools import wraps, partial
 from flask import Flask, url_for, render_template, request, session, redirect, g
+from decorators import login_required
 from random import randint
 
 class SageNBFlask(Flask):
     static_path = ''
-    
+
     def __init__(self, *args, **kwds):
         Flask.__init__(self, *args, **kwds)
 
@@ -36,104 +37,39 @@ class SageNBFlask(Flask):
 app = SageNBFlask(__name__)
 app.secret_key = os.urandom(24)
 
-def login_required(f):
-    @wraps(f)
-    def wrapper(*args, **kwds):
-        if 'username' not in session:
-            return redirect(url_for('index'))
-        return f(*args, **kwds)
-    return wrapper
-
 #############
 # Main Page #
 #############
-
 @app.route('/')
 def index():
     if 'username' in session:
         response = redirect(url_for('home', username=session['username']))
         if 'remember' in request.args:
-            response.set_cookie('nb_session_%s'%notebook.port,
+            response.set_cookie('nb_session_%s'%app.notebook.port,
                                 expires=(time.time() + 60 * 60 * 24 * 14))
         else:
-            response.set_cookie('nb_session_%s'%notebook.port)
-        response.set_cookie('cookie_test_%s'%notebook.port, expires=1)
+            response.set_cookie('nb_session_%s'%app.notebook.port)
+        response.set_cookie('cookie_test_%s'%app.notebook.port, expires=1)
         return response
+        
+    from authentication import login
+    
     if app.one_time_token != -1 and 'one_time_token' in request.args:
         if request.args['one_time_token'] == app.one_time_token:
             session['username'] = 'admin' 
             session.modified = True
             app.one_time_token = -1 
-            return index() 
+            return index()
+            
     return login()
 
-@app.route('/home/<username>/')
-@login_required
-def home(username):
-    if username != session['username']:
-        #XXX: Put this into a template
-        return "User '%s' does not have permission to view the home page of '%s'."%(session['username'],
-                                                                                    username)
-    else:
-        from sagenb.notebook.twist import render_worksheet_list
-        import sagenb.notebook.twist as twist
-        twist.notebook = notebook
-        return render_worksheet_list(request.args, pub=False, username=session['username'])
-
-@app.route('/home/')
-@login_required
-def bare_home():
-    return redirect(url_for('home', username=session['username']))
-
-##################
-# Authentication #
-##################
-
-@app.route('/login', methods=['POST', 'GET'])
-def login():
-    from sagenb.misc.misc import SAGE_VERSION
-    template_dict = {'accounts': notebook.get_accounts(),
-                     'default_user': notebook.default_user(),
-                     'recovery': notebook.conf()['email'],
-                     'sage_version':SAGE_VERSION}
-
-    if request.method == 'POST':
-        username = request.form['email']
-        password = request.form['password']
-
-        if username == 'COOKIESDISABLED':
-            return "Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again."
-
-        try:
-            U = notebook.user(str(username))
-        except KeyError:
-            #log.msg("Login attempt by unknown user '%s'."%username)
-            U = None
-            template_dict['username_error'] = True
-            
-            
-        if U is None:
-            pass
-        elif U.password_is(str(password)):
-            if U.is_suspended():
-                #suspended
-                return "Your account is currently suspended"
-            else:
-                #Valid user, everything is okay
-                session['username'] = username
-                session.modified = True
-                return redirect(url_for('index'))
-        else:
-            template_dict['password_error'] = True
-
-    response = app.make_response(render_template('html/login.html', **template_dict))
-    response.set_cookie('cookie_test_%s'%notebook.port, 'cookie_test')
-    return response
-
-@app.route('/logout/')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('index'))
+################
+# View imports #
+################
+import authentication
+import doc
+import worksheet_listing
+import worksheet
 
 #############
 # OLD STUFF #
@@ -142,12 +78,13 @@ def init_updates():
     global save_interval, idle_interval, last_save_time, last_idle_time
     from sagenb.misc.misc import walltime
 
-    save_interval = notebook.conf()['save_interval']
-    idle_interval = notebook.conf()['idle_check_interval']
+    save_interval = app.notebook.conf()['save_interval']
+    idle_interval = app.notebook.conf()['idle_check_interval']
     last_save_time = walltime()
     last_idle_time = walltime()
 
-if __name__ == '__main__':
+#CLEAN THIS UP!
+def start():
     import sys
     path_to_notebook = sys.argv[1].rstrip('/')
     port = 5000
@@ -159,7 +96,7 @@ if __name__ == '__main__':
     sagenb.notebook.notebook.JSMATH = True
     import sagenb.notebook.notebook as notebook
 
-    notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
+    app.notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
     SAGETEX_PATH = ""
     OPEN_MODE = False
     SID_COOKIE = str(hash(path_to_notebook))
@@ -168,5 +105,5 @@ if __name__ == '__main__':
 
     app.run(debug=True, port=port)
 
-    notebook.save()
+    app.notebook.save()
     print "Notebook saved!"
