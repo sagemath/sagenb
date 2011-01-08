@@ -2,6 +2,7 @@
 import os, time
 from functools import wraps, partial
 from flask import Flask, url_for, render_template, request, session, redirect, g
+from decorators import login_required
 
 class SageNBFlask(Flask):
     static_path = ''
@@ -33,18 +34,9 @@ class SageNBFlask(Flask):
 app = SageNBFlask(__name__)
 app.secret_key = os.urandom(24)
 
-def login_required(f):
-    @wraps(f)
-    def wrapper(*args, **kwds):
-        if 'username' not in session:
-            return redirect(url_for('index'))
-        return f(*args, **kwds)
-    return wrapper
-
 #############
 # Main Page #
 #############
-
 @app.route('/')
 def index():
     if 'username' in session:
@@ -60,29 +52,13 @@ def index():
     from authentication import login
     return login()
 
-@app.route('/home/<username>/')
-@login_required
-def home(username):
-    if not app.notebook.user_is_admin(username) and username != session['username']:
-        #XXX: Put this into a template
-        return "User '%s' does not have permission to view the home page of '%s'."%(session['username'],
-                                                                                    username)
-    else:
-        from sagenb.notebook.twist import render_worksheet_list
-        import sagenb.notebook.twist as twist
-        twist.notebook = app.notebook
-        return render_worksheet_list(request.args, pub=False, username=session['username'])
-
-@app.route('/home/')
-@login_required
-def bare_home():
-    return redirect(url_for('home', username=session['username']))
-
 ################
 # View imports #
 ################
 import authentication
 import doc
+import worksheet_listing
+import worksheet
 
 #############
 # OLD STUFF #
