@@ -93,6 +93,14 @@ def keyboard_js(browser_os):
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
+###########
+# Favicon #
+###########
+@app.route('/favicon.ico')
+def favicon():
+    from flask.helpers import send_file
+    from sagenb.misc.misc import DATA
+    return send_file(os.path.join(DATA, 'sage', 'images', 'favicon.ico'))
 
 ################
 # View imports #
@@ -145,6 +153,7 @@ def notebook_updates():
 
 #CLEAN THIS UP!
 def start():
+    print "Starting notebook..."
     import sys
     path_to_notebook = sys.argv[1].rstrip('/')
     port = 5000

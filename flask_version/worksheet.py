@@ -378,6 +378,96 @@ def worksheet_cell_update(worksheet):
     worksheet.start_next_comp()
     return msg
 
+########################################################
+# Cell introspection
+########################################################
+@worksheet_command('introspect')
+def worksheet_introspect(worksheet):
+    """
+    Cell introspection. This is called when the user presses the tab
+    key in the browser in order to introspect.
+    """
+    id = get_cell_id()
+    before_cursor = request.values.get('before_cursor', '')
+    after_cursor = request.values.get('after_cursor', '')
+    cell = worksheet.get_cell_with_id(id)
+    cell.evaluate(introspect=[before_cursor, after_cursor])
+
+    from sagenb.notebook.twist import encode_list
+    return encode_list([cell.next_id(), 'introspect', id])
+
+########################################################
+# Edit the entire worksheet
+########################################################
+@worksheet_command('edit')
+def worksheet_edit(worksheet):
+    """
+    Return a window that allows the user to edit the text of the
+    worksheet with the given filename.
+    """    
+    return app.notebook.html_edit_window(worksheet, g.username)
+
+
+########################################################
+# Plain text log view of worksheet
+########################################################
+@worksheet_command('text')
+def worksheet_text(worksheet):
+    """
+    Return a window that allows the user to edit the text of the
+    worksheet with the given filename.
+    """
+    return app.notebook.html_plain_text_window(worksheet, g.username)
+
+########################################################
+# Copy a worksheet
+########################################################
+@worksheet_command('copy')
+def worksheet_copy(request):
+    copy = app.notebook.copy_worksheet(worksheet, g.username)
+    if 'no_load' in request.values:
+        return ''
+    else:
+        return redirect(url_for_worksheet(copy))
+
+########################################################
+# Get a copy of a published worksheet and start editing it
+########################################################
+@worksheet_command('edit_published_page')
+def worksheet_edit_published_page(worksheet):
+    ## if user_type(self.username) == 'guest':
+    ##     #XXX: This should be in a template
+    ##     return 'You must <a href="/">login first</a> in order to edit this worksheet.'
+
+    ws = worksheet.worksheet_that_was_published()
+    if ws.owner() == g.username:
+        W = ws
+    else:
+        W = notebook.copy_worksheet(worksheet, g.username)
+        W.set_name(worksheet.name())
+
+    return redirect(url_for_worksheet(W))
+
+
+########################################################
+# Collaborate with others
+########################################################
+@worksheet_command('share')
+def worksheet_share(worksheet):
+    return app.notebook.html_share(worksheet, g.session)
+
+@worksheet_command('invite_collab')
+def worksheet_invite_collab(worksheet):
+    collaborators = [u.strip() for u in request.values.get('collaborators', '').split(',')]
+    worksheet.set_collaborators(collaborators)
+    return redirect('.') #XXX: What should this really be?
+    
+########################################################
+# Revisions
+########################################################
+@worksheet_command('revisions')
+def worksheet_revisions(worksheet):
+    pass
 
 """
 Functions from twist.py to add:
@@ -390,15 +480,6 @@ Functions from twist.py to add:
     691:class Worksheet_data(WorksheetResource, resource.Resource):
     721:class Worksheet_cells(WorksheetResource, resource.Resource):
 
-    768:class Worksheet_introspect(WorksheetResource, resource.PostableResource):
-    793:class Worksheet_edit(WorksheetResource, resource.Resource):
-    805:class Worksheet_text(WorksheetResource, resource.Resource):
-    817:class Worksheet_copy(WorksheetResource, resource.PostableResource):
-    828:class Worksheet_edit_published_page(WorksheetResource, resource.Resource):
-
-    
-    900:class Worksheet_share(WorksheetResource, resource.Resource):
-    905:class Worksheet_invite_collab(WorksheetResource, resource.PostableResource):
     959:class Worksheet_revisions(WorksheetResource, resource.PostableResource):
    
    1326:class Worksheet_publish(WorksheetResource, resource.Resource):
