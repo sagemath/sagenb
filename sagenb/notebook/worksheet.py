@@ -1492,7 +1492,7 @@ class Worksheet(object):
             sage: W.user_view('admin') == sagenb.notebook.worksheet.ARCHIVED
             True
         """
-        if not isinstance(user, str):
+        if not isinstance(user, (str, unicode)):
             raise TypeError, "user (=%s) must be a string"%user
         try:
             self.__user_view[user] = x
