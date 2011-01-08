@@ -112,6 +112,7 @@ def login():
             else:
                 #Valid user, everything is okay
                 session['username'] = username
+                session.modified = True
                 return redirect(url_for('index'))
         else:
             template_dict['password_error'] = True
@@ -147,19 +148,15 @@ if __name__ == '__main__':
     #############
     # OLD STUFF #
     #############
-    import sage.server.notebook.notebook
-    sage.server.notebook.notebook.JSMATH=True
-    import sage.server.notebook.notebook as notebook
+    import sagenb.notebook.notebook
+    sagenb.notebook.notebook.JSMATH = True
+    import sagenb.notebook.notebook as notebook
 
-    notebook = notebook.load_notebook(path_to_notebook,address="localhost",port=8000,secure=False)
+    notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=8000,secure=False)
     SAGETEX_PATH = ""
     OPEN_MODE = False
     SID_COOKIE = str(hash(path_to_notebook))
+    DIR = path_to_notebook
     init_updates()
 
-    import sage.server.notebook.worksheet as worksheet
-    worksheet.init_sage_prestart(notebook.get_server(), notebook.get_ulimit())
-
-    print notebook.users()
-    
     app.run(debug=True)
