@@ -2,6 +2,7 @@
 import os, time
 from functools import wraps, partial
 from flask import Flask, url_for, render_template, request, session, redirect, g
+from random import randint
 
 class SageNBFlask(Flask):
     static_path = ''
@@ -15,6 +16,8 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript/sage', os.path.join(DATA, "sage", "js"))
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/java', DATA)
+
+        self.one_time_token = str(randint(0, 2**128));
 
     def create_jinja_environment(self):
         from sagenb.notebook.template import env
@@ -48,7 +51,7 @@ def login_required(f):
 @app.route('/')
 def index():
     if 'username' in session:
-        response =  redirect(url_for('home', username=session['username']))
+        response = redirect(url_for('home', username=session['username']))
         if 'remember' in request.args:
             response.set_cookie('nb_session_%s'%notebook.port,
                                 expires=(time.time() + 60 * 60 * 24 * 14))
@@ -56,7 +59,12 @@ def index():
             response.set_cookie('nb_session_%s'%notebook.port)
         response.set_cookie('cookie_test_%s'%notebook.port, expires=1)
         return response
-
+    if app.one_time_token != -1 and 'one_time_token' in request.args:
+        if request.args['one_time_token'] == app.one_time_token:
+            session['username'] = 'admin' 
+            session.modified = True
+            app.one_time_token = -1 
+            return index() 
     return login()
 
 @app.route('/home/<username>/')
