@@ -82,6 +82,7 @@ def bare_home():
 # View imports #
 ################
 import authentication
+import doc
 
 #############
 # OLD STUFF #
