@@ -1,3 +1,4 @@
+import os
 from functools import wraps
 from flask import Flask, url_for, render_template, request, session, redirect, g
 from decorators import login_required
@@ -455,7 +456,7 @@ def worksheet_edit_published_page(worksheet):
     if ws.owner() == g.username:
         W = ws
     else:
-        W = notebook.copy_worksheet(worksheet, g.username)
+        W = app.notebook.copy_worksheet(worksheet, g.username)
         W.set_name(worksheet.name())
 
     return redirect(url_for_worksheet(W))
@@ -501,7 +502,7 @@ def worksheet_revisions(worksheet):
             return redirect(url_for_worksheet(worksheet))
         elif action == 'publish':
             import bz2
-            W = notebook.publish_worksheet(worksheet, g.username)
+            W = app.notebook.publish_worksheet(worksheet, g.username)
             txt = bz2.decompress(open(worksheet.get_snapshot_text_filename(rev)).read())
             W.delete_cells_directory()
             W.edit_save(txt)
@@ -525,7 +526,7 @@ def worksheet_cells(worksheet, filename):
 # Data
 ##############################################
 @worksheet_command('data/<path:filename>')
-def worksheet_data(worksheet):
+def worksheet_data(worksheet, filename):
     dir = os.path.abspath(worksheet.data_directory())
     if not os.path.exists(dir):
         return app.message('No data files')
@@ -568,7 +569,7 @@ def worksheet_link_datafile(worksheet):
     if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
         return app.message("illegal link attempt!") #XXX: i18n
     os.system('ln "%s" "%s"'%(src, target))
-    return redirect(worksheet_link_datafile.urlf_for(worksheet, name=data_filename))
+    return redirect(worksheet_link_datafile.url_for(worksheet, name=data_filename))
     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
     
 @worksheet_command('upload_data')
@@ -594,7 +595,7 @@ def worksheet_do_upload_data(worksheet):
         
     text_fields = ['url', 'new', 'name']
     for field in text_fields:
-        if field not in requeset.values:
+        if field not in request.values:
             #XXX: i18n
             return app.message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url)
 
@@ -647,7 +648,7 @@ def worksheet_publish(worksheet):
     # Publishes worksheet and also sets worksheet to be published automatically when saved
     if 'yes' in request.values and 'auto' in request.values:
         app.notebook.publish_worksheet(worksheet, g.username)
-        self.worksheet.set_auto_publish(True)
+        worksheet.set_auto_publish(True)
         return redirect(worksheet_publish.url_for(worksheet))
     # Just publishes worksheet
     elif 'yes' in request.values:
@@ -667,7 +668,7 @@ def worksheet_publish(worksheet):
         return redirect(worksheet_publish.url_for(worksheet))
     # Returns boolean of "Is this worksheet set to be published automatically when saved?"
     elif 'is_auto' in request.values:
-        return str(self.worksheet.is_auto_publish())
+        return str(worksheet.is_auto_publish())
     # Returns the publication page
     else:
         # Page for when worksheet already published
@@ -726,7 +727,7 @@ def worksheet_download(worksheet, title):
 
     try:
         #XXX: Accessing the hard disk.
-        notebook.export_worksheet(worksheet.filename(), filename, title)
+        app.notebook.export_worksheet(worksheet.filename(), filename, title)
     except KeyError:
         return app.message('No such worksheet.')
 
@@ -775,10 +776,56 @@ def worksheet_delete_all_output(worksheet):
 def worksheet_print(worksheet):
     #XXX: We might want to separate the printing template from the
     #regular html template.
-    return notebook.html(worksheet.filename(), do_print=True)
+    return app.notebook.html(worksheet.filename(), do_print=True)
 
-"""
-Functions from twist.py to add:
-   
-   1410:class Worksheet_download(WorksheetResource, resource.Resource):
-"""
+
+#######################
+# Live documentation #
+######################
+doc_worksheet_number = 0
+def doc_worksheet():
+    global doc_worksheet_number
+    wnames = app.notebook.worksheet_names()
+    name = 'doc_browser_%s'%doc_worksheet_number
+    doc_worksheet_number = doc_worksheet_number % app.notebook.conf()['doc_pool_size']
+    if name in wnames:
+        W = app.notebook.get_worksheet_with_name(name)
+        W.clear()
+    else:
+        W = app.notebook.create_new_worksheet(name, '_sage_', docbrowser=True)
+    W.set_is_doc_worksheet(True)
+    return W
+
+def extract_title(html_page):
+    #XXX: This might be better as a regex
+    h = html_page.lower()
+    i = h.find('<title>')
+    if i == -1:
+        return "Untitled"
+    j = h.find('</title>')
+    return html_page[i + len('<title>') : j]
+
+@login_required
+def worksheet_file(path):
+    # Create a live Sage worksheet out of path and render it.
+    if not os.path.exists(path):
+        return app.message('Document does not exist.')
+
+    doc_page_html = open(path).read()
+    from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
+    doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
+
+    title = extract_title(doc_page_html).replace('&mdash;','--')
+    doc_page = title + '\nsystem:sage\n\n' + doc_page
+
+    W = doc_worksheet()
+    W.edit_save(doc_page)
+
+    #FIXME: For some reason, an extra cell gets added
+    #so we remove it here.
+    cells = W.cell_list()
+    cells.pop()
+
+    return app.notebook.html(worksheet_filename=W.filename(),
+                         username=g.username)
+
