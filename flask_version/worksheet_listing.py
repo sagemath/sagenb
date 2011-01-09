@@ -25,7 +25,7 @@ def render_worksheet_list(args, pub, username):
     a string
     """
     from sagenb.notebook.notebook import sort_worksheet_list
-    from sagenb.misc.misc import unicode_str
+    from sagenb.misc.misc import unicode_str, SAGE_VERSION
     
     typ = args['typ'] if 'typ' in args else 'active'
     search = unicode_str(args['search']) if 'search' in args else None
@@ -46,7 +46,7 @@ def render_worksheet_list(args, pub, username):
         username = 'pub'
 
     accounts = app.notebook.get_accounts()
-
+    sage_version = SAGE_VERSION
     return render_template('html/worksheet_listing.html', **locals())
 
 
