@@ -38,7 +38,5 @@ def doc_live_base():
 @app.route('/doc/live/<path:filename>')
 @login_required
 def doc_live(filename):
-    print 'doc live', filename
-    #FIXME worksheet does not have worksheet file yet 
     from worksheet import worksheet_file
     return worksheet_file(os.path.join(DOC, filename))
