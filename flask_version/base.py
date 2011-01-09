@@ -36,7 +36,7 @@ class SageNBFlask(Flask):
     def message(msg, cont='/', username=None, **kwds):
         """Returns an error message to the user."""
         template_dict = {'msg': msg, 'cont': cont, 'username': username}
-        template_dict.update(kwargs)
+        template_dict.update(kwds)
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
@@ -99,6 +99,25 @@ def keyboard_js(browser_os):
     response = make_response(get_keyboard(browser_os))
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
+
+###############
+# Dynamic CSS #
+###############
+@app.route('/css/main.css')
+def main_css():
+    from sagenb.notebook.css import css 
+    response = make_response(css())
+    response.headers['Content-Type'] = 'text/css; charset=utf-8'
+    return response
+
+########
+# Help #
+########
+@app.route('/help')
+@login_required
+def help():
+    from sagenb.notebook.tutorial import notebook_help
+    return render_template('html/docs.html', username = session['username'], notebook_help = notebook_help)
 
 ###########
 # Favicon #
