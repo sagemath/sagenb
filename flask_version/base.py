@@ -117,7 +117,23 @@ def main_css():
 @login_required
 def help():
     from sagenb.notebook.tutorial import notebook_help
-    return render_template('html/docs.html', username = session['username'], notebook_help = notebook_help)
+    return render_template(os.path.join('html', 'docs.html'), username = g.username, notebook_help = notebook_help)
+
+###########
+# History #
+###########
+@app.route('/history')
+@login_required
+def history():
+    return render_template(os.path.join('html', 'history.html'), username = g.username, 
+                           text = app.notebook.user_history_text(g.username), actions = False)
+
+@app.route('/live_history')
+@login_required
+def live_history():
+        W = app.notebook.create_new_worksheet_from_history('Log', g.username, 100)
+        from worksheet import url_for_worksheet
+        return redirect(url_for_worksheet(W))
 
 ###########
 # Favicon #
