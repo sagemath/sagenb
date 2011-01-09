@@ -17,7 +17,7 @@ AUTHORS:
 
 import jinja2
 
-import os, re, sys
+import os, re, sys, json
 
 from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
@@ -106,6 +106,7 @@ env.filters['prettify_time_ago'] = prettify_time_ago
 env.filters['math_parse'] = math_parse
 env.filters['max'] = max
 env.filters['repr_str'] = lambda x: repr(unicode_str(x))[1:]
+env.filters['tojson'] = json.dumps
 
 def template(filename, **user_context):
     """
