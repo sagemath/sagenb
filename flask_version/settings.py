@@ -1,7 +1,10 @@
+import os
 from flask import Flask, url_for, render_template, request, session, redirect, g
+from decorators import login_required
 from base import app
 
 @app.route('/settings')
+@login_required
 def settings():
     error = None
     redirect_to_home = None
@@ -34,7 +37,7 @@ def settings():
             app.notebook.change_password(g.username, new)
             redirect_to_logout = True
 
-    if notebook.conf()['email']:
+    if app.notebook.conf()['email']:
         newemail = request.values.get('new-email', None)
         if newemail:
             nu.set_email(newemail)
