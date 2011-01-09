@@ -72,14 +72,14 @@ class Configuration(object):
         """%(action, options)
         return s
 
-    def update_from_form(self, req_args):
+    def update_from_form(self, form):
         D = self.defaults()
         DS = self.defaults_descriptions()
         C = self.confs
-        K = list(set(C.keys() + D.keys()))
+        keys = list(set(C.keys() + D.keys()))
 
         updated = {}
-        for key in K:
+        for key in keys:
             try:
                 typ = DS[key][TYPE]
             except KeyError:
@@ -87,7 +87,7 @@ class Configuration(object):
                 # is not in sync with defaults, someone has tampered
                 # with the request arguments, etc.
                 continue
-            val = req_args.get(key, [None])[0]
+            val = form.get(key, None)
 
             if typ == T_BOOL:
                 if val:

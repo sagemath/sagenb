@@ -153,6 +153,7 @@ import doc
 import worksheet_listing
 import worksheet
 import settings
+import admin
 
 #############
 # OLD STUFF #
