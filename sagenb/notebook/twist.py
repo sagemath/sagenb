@@ -1627,9 +1627,6 @@ class WorksheetsByUser(resource.Resource):
             return HTMLResponse(stream = s)
 
     def childFactory(self, request, name):
-        if name == "trash":
-            return TrashCan(self.user)
-
         filename = self.user + '/' + name
         try:
             return Worksheet(filename, self.username)
