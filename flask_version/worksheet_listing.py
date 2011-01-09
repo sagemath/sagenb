@@ -50,24 +50,24 @@ def render_worksheet_list(args, pub, username):
 @app.route('/home/<username>/')
 @login_required
 def home(username):
-    if not app.notebook.user_is_admin(username) and username != session['username']:
+    if not app.notebook.user_is_admin(username) and username != g.username:
         #XXX: Put this into a template
-        return "User '%s' does not have permission to view the home page of '%s'."%(session['username'],
+        return "User '%s' does not have permission to view the home page of '%s'."%(g.username,
                                                                                     username)
     else:
-        return render_worksheet_list(request.args, pub=False, username=session['username'])
+        return render_worksheet_list(request.args, pub=False, username=g.username)
 
 @app.route('/home/')
 @login_required
 def bare_home():
-    return redirect(url_for('home', username=session['username']))
+    return redirect(url_for('home', username=g.username))
 
 ###########
 # Folders #
 ###########
 
 def get_worksheets_from_request():
-    U = app.notebook.user(session['username'])
+    U = app.notebook.user(g.username)
     
     if 'filename' in request.form:
         filenames = [request.form['filename']]
@@ -80,7 +80,7 @@ def get_worksheets_from_request():
     worksheets = []
     for filename in filenames:
         W = app.notebook.get_worksheet_with_filename(filename)
-        if W.owner() != session['username']:
+        if W.owner() != g.username:
             continue
         worksheets.append(W)
 
@@ -90,21 +90,21 @@ def get_worksheets_from_request():
 @login_required
 def send_worksheet_to_trash():
     for W in get_worksheets_from_request():
-        W.move_to_trash(session['username'])
+        W.move_to_trash(g.username)
     return ''
 
 @app.route('/send_to_archive', methods=['POST'])
 @login_required
 def send_worksheet_to_archive():
     for W in get_worksheets_from_request():
-        W.move_to_archive(session['username'])
+        W.move_to_archive(g.username)
     return ''
 
 @app.route('/send_to_active', methods=['POST'])
 @login_required
 def send_worksheet_to_active():
     for W in get_worksheets_from_request():
-        W.set_active(session['username'])
+        W.set_active(g.username)
     return ''
 
 @app.route('/send_to_stop', methods=['POST'])
@@ -116,9 +116,21 @@ def send_worksheet_to_stop():
 
 @app.route('/emptytrash', methods=['POST'])
 def empty_trash():
-    app.notebook.empty_trash(session['username'])
+    app.notebook.empty_trash(g.username)
     if 'referer' in request.headers:
         return redirect(request.headers['referer'])
     else:
         return redirect(url_for('home', typ='trash'))
                        
+
+#####################
+# Public Worksheets #
+#####################
+@app.route('/pub/')
+def pub():
+    return render_worksheet_list(request.args, pub=True, username='')
+
+@app.route('/home/pub/<id>/')
+def public_worksheet(id):
+    filename = 'pub' + '/' + id
+    return app.notebook.html(worksheet_filename=filename)

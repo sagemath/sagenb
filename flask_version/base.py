@@ -32,7 +32,14 @@ class SageNBFlask(Flask):
         self.add_url_rule(base_url + '/<path:filename>',
                           endpoint='/static'+base_url,
                           view_func=partial(self.static_view_func, root_path))
-        
+
+    def message(msg, cont='/', username=None, **kwds):
+        """Returns an error message to the user."""
+        template_dict = {'msg': msg, 'cont': cont, 'username': username}
+        template_dict.update(kwargs)
+        return render_template(os.path.join('html', 'error_message.html'),
+                               **template_dict)
+
 
 app = SageNBFlask(__name__)
 app.secret_key = os.urandom(24)
@@ -102,6 +109,7 @@ def favicon():
     from sagenb.misc.misc import DATA
     return send_file(os.path.join(DATA, 'sage', 'images', 'favicon.ico'))
 
+
 ################
 # View imports #
 ################
@@ -109,6 +117,7 @@ import authentication
 import doc
 import worksheet_listing
 import worksheet
+import settings
 
 #############
 # OLD STUFF #
