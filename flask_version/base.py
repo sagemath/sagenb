@@ -33,7 +33,7 @@ class SageNBFlask(Flask):
                           endpoint='/static'+base_url,
                           view_func=partial(self.static_view_func, root_path))
 
-    def message(msg, cont='/', username=None, **kwds):
+    def message(self, msg, cont='/', username=None, **kwds):
         """Returns an error message to the user."""
         template_dict = {'msg': msg, 'cont': cont, 'username': username}
         template_dict.update(kwds)
