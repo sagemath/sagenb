@@ -8,18 +8,16 @@ def worksheet_view(f):
     @login_required
     @wraps(f)
     def wrapper(username, id, **kwds):
-        assert username == g.username
-        worksheet_filename = g.username + "/" + id
+        worksheet_filename = username + "/" + id
         worksheet = kwds['worksheet'] = app.notebook.get_worksheet_with_filename(worksheet_filename)
         owner = worksheet.owner()
 
-        if owner != g.username:
-            return app.message("You do not have permission to access this worksheet")
 
-        ## if owner != '_sage_' and g.username != owner:
-        ##     if not worksheet.is_published():
-        ##         if not username in self.worksheet.collaborators() and user_type(username) != 'admin':
-        ##             raise RuntimeError, "illegal worksheet access"
+        if owner != '_sage_' and g.username != owner:
+            if not worksheet.is_published():
+                if (not username in self.worksheet.collaborators() and
+                    not app.notebook.user_is_admin(g.username)):
+                    return app.message("You do not have permission to access this worksheet")
 
         if not worksheet.is_published():
             worksheet.set_active(g.username)
