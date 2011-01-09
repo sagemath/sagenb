@@ -12,6 +12,7 @@ def login():
     template_dict = {'accounts': app.notebook.get_accounts(),
                      'default_user': app.notebook.default_user(),
                      'recovery': app.notebook.conf()['email'],
+                     'next': request.values.get('next', ''), 
                      'sage_version':SAGE_VERSION}
 
     if request.method == 'POST':
@@ -38,7 +39,7 @@ def login():
                 #Valid user, everything is okay
                 session['username'] = username
                 session.modified = True
-                return redirect(url_for('index'))
+                return redirect(request.values.get('next', url_for('index')))
         else:
             template_dict['password_error'] = True
 

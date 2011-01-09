@@ -18,7 +18,7 @@ def worksheet_view(f):
 
         if owner != '_sage_' and g.username != owner:
             if not worksheet.is_published():
-                if (not username in self.worksheet.collaborators() and
+                if (not username in worksheet.collaborators() and
                     not app.notebook.user_is_admin(g.username)):
                     return app.message("You do not have permission to access this worksheet") #XXX: i18n
 
