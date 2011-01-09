@@ -33,10 +33,15 @@ def docs_static_index():
 @app.route('/doc/live/')
 @login_required
 def doc_live_base():
-    return app.message('nothing to see.', username = session['username'])
+    return app.message('nothing to see.', username=g.username)
 
 @app.route('/doc/live/<path:filename>')
 @login_required
 def doc_live(filename):
-    from worksheet import worksheet_file
-    return worksheet_file(os.path.join(DOC, filename))
+    filename = os.path.join(DOC, filename)
+    if filename.endswith('.html'):
+        from worksheet import worksheet_file
+        return worksheet_file(filename)
+    else:
+        from flask.helpers import send_file
+        return send_file(filename)
