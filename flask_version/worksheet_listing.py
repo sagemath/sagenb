@@ -2,7 +2,7 @@
 """
 import os
 from flask import Flask, url_for, render_template, request, session, redirect, g
-from decorators import login_required
+from decorators import login_required, guest_or_login_required 
 from base import app
 
 def render_worksheet_list(args, pub, username):
@@ -130,13 +130,25 @@ def empty_trash():
 # Public Worksheets #
 #####################
 @app.route('/pub/')
+@guest_or_login_required
 def pub():
-    return render_worksheet_list(request.args, pub=True, username='')
+    return render_worksheet_list(request.args, pub=True, username=g.username)
 
 @app.route('/home/pub/<id>/')
+@guest_or_login_required
 def public_worksheet(id):
     filename = 'pub' + '/' + id
-    return app.notebook.html(worksheet_filename=filename)
+    return app.notebook.html(worksheet_filename=filename, username = g.username)
+
+@app.route('/home/pub/<id>/download/<path:title>')
+def public_worksheet_download(id, title):
+    from worksheet import unconditional_download
+    worksheet_filename =  "pub" + "/" + id
+    try:
+        worksheet = app.notebook.get_worksheet_with_filename(worksheet_filename)
+    except KeyError:
+        return app.message("You do not have permission to access this worksheet") #XXX: i18n
+    return unconditional_download(worksheet, title)
 
 #######################
 # Download Worksheets #

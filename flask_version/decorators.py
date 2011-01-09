@@ -22,3 +22,13 @@ def admin_required(f):
         return f(*args, **kwds)
 
     return wrapper
+
+def guest_or_login_required(f):
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        if 'username' not in session:
+            g.username = 'guest'
+        else:
+            g.username = session['username']
+        return f(*args, **kwds)
+    return wrapper
