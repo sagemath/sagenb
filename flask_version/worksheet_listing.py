@@ -115,6 +115,7 @@ def send_worksheet_to_stop():
     return ''
 
 @app.route('/emptytrash', methods=['POST'])
+@login_required
 def empty_trash():
     app.notebook.empty_trash(g.username)
     if 'referer' in request.headers:
@@ -134,3 +135,49 @@ def pub():
 def public_worksheet(id):
     filename = 'pub' + '/' + id
     return app.notebook.html(worksheet_filename=filename)
+
+#######################
+# Download Worksheets #
+#######################
+@app.route('/download_worksheets.zip')
+@login_required
+def download_worksheets():
+    import os
+    from sagenb.misc.misc import walltime, tmp_filename
+    
+    t = walltime()
+    print "Starting zipping a group of worksheets in a separate thread..."
+    zip_filename = tmp_filename() + ".zip"
+
+    # child
+    worksheet_names = set()
+    if 'filenames' in request.values:
+        sep = request.values['sep']
+        worksheets = [app.notebook.get_worksheet_with_filename(x.strip())
+                      for x in request.values['filenames'].split(sep)
+                      if len(x.strip()) > 0]
+    else:
+        worksheets = app.notebook.worksheet_list_for_user(g.username)
+
+    import zipfile
+    zip = zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_STORED)
+    for worksheet in worksheets:
+        sws_filename = tmp_filename() + '.sws'
+        app.notebook.export_worksheet(worksheet.filename(), sws_filename)
+        entry_name = worksheet.name()
+        if entry_name in worksheet_names:
+            i = 2
+            while ("%s_%s" % (entry_name, i)) in worksheet_names:
+                i += 1
+            entry_name = "%s_%s" % (entry_name, i)
+        zip.write(sws_filename, entry_name + ".sws")
+        os.unlink(sws_filename)
+    zip.close()
+    r = open(zip_filename, 'rb').read()
+    os.unlink(zip_filename)
+    print "Finished zipping %s worksheets (%s seconds)"%(len(worksheets), walltime(t))
+
+    response = app.make_response(r)
+    response.headers['Content-Type'] = 'application/zip'
+    return response
+
