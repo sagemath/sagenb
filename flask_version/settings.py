@@ -3,7 +3,7 @@ from flask import Flask, url_for, render_template, request, session, redirect, g
 from decorators import login_required
 from base import app
 
-@app.route('/settings')
+@app.route('/settings', methods = ['GET','POST'])
 @login_required
 def settings():
     error = None
