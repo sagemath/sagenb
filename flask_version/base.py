@@ -200,10 +200,8 @@ def notebook_updates():
 
 
 #CLEAN THIS UP!
-def start():
+def init_app(path_to_notebook, port=5000):
     print "Starting notebook..."
-    import sys
-    path_to_notebook = sys.argv[1].rstrip('/')
     port = 5000
     
     #############
@@ -219,7 +217,13 @@ def start():
     SID_COOKIE = str(hash(path_to_notebook))
     DIR = path_to_notebook
     init_updates()
+    return app
 
+def start(port=5000):
+    import sys
+    path_to_notebook = sys.argv[1].rstrip('/')
+
+    app = init_app(path_to_notebook)
     app.run(debug=True, port=port)
 
     app.notebook.save()
