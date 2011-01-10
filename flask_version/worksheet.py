@@ -438,7 +438,7 @@ def worksheet_text(worksheet):
 # Copy a worksheet
 ########################################################
 @worksheet_command('copy')
-def worksheet_copy(request):
+def worksheet_copy(worksheet):
     copy = app.notebook.copy_worksheet(worksheet, g.username)
     if 'no_load' in request.values:
         return ''
