@@ -53,11 +53,11 @@ def render_worksheet_list(args, pub, username):
 @app.route('/home/<username>/')
 @login_required
 def home(username):
-    if not app.notebook.user_is_admin(username) and username != g.username:
+    if not app.notebook.user_is_admin(g.username) and username != g.username:
         #XXX: i18n
         return app.message("User '%s' does not have permission to view the home page of '%s'."%(g.username, username))
     else:
-        return render_worksheet_list(request.args, pub=False, username=g.username)
+        return render_worksheet_list(request.args, pub=False, username=username)
 
 @app.route('/home/')
 @login_required
