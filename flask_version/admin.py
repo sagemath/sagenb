@@ -3,8 +3,8 @@ from flask import Flask, url_for, render_template, request, session, redirect, g
 from base import app
 from decorators import login_required, admin_required
 
-
-@app.route('/users')
+# '/users' does not work, because current template calls urls like '/users/?reset=...'
+@app.route('/users/')
 @admin_required
 def users():
     template_dict = {}
@@ -38,7 +38,7 @@ def users():
     template_dict['username'] = g.username
     return render_template(os.path.join('html', 'settings', 'user_management.html'), **template_dict)
 
-@app.route('/adduser')
+@app.route('/adduser', methods = ['GET','POST'])
 @admin_required
 def add_user():
     from sagenb.notebook.twist import is_valid_username

@@ -719,6 +719,9 @@ def worksheet_rate(worksheet):
 ########################################################
 @worksheet_command('download/<path:title>')
 def worksheet_download(worksheet, title):
+    return unconditional_download(worksheet, title)
+
+def unconditional_download(worksheet, title):
     from sagenb.misc.misc import tmp_filename
     from flask.helpers import send_file
     filename = tmp_filename() + '.sws'

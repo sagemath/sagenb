@@ -29,6 +29,13 @@ def login():
             U = None
             template_dict['username_error'] = True
             
+        # It is critically important that it be impossible to login as the
+        # pub, _sage_, or guest users.  This _sage_ user is a fake user that is used
+        # internally by the notebook for the doc browser and other tasks.
+        if username in ['_sage_', 'guest', 'pub']:
+            U = None
+            template_dict['username_error'] = True
+
         if U is None:
             pass
         elif U.password_is(password):
