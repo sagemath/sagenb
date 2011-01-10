@@ -468,7 +468,7 @@ def worksheet_edit_published_page(worksheet):
 ########################################################
 @worksheet_command('share')
 def worksheet_share(worksheet):
-    return app.notebook.html_share(worksheet, g.session)
+    return app.notebook.html_share(worksheet, g.username)
 
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
