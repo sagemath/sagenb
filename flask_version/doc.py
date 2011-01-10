@@ -4,10 +4,9 @@ Documentation functions
 URLS to do:
 
 ###/pdf/       <-FILE->  DOC_PDF
-/doc/        - Doc
-/doc/live/   - WorksheetFile(os.path.join(DOC, name)
-/doc/static/ - DOC/index.html
-###doc/static/reference/ <-FILE-> DOC/reference/
+###/doc/live/   - WorksheetFile(os.path.join(DOC, name)
+###/doc/static/ - DOC/index.html
+###/doc/static/reference/ <-FILE-> DOC/reference/
 ###/doc/reference/media/  <-FILE-> DOC_REF_MEDIA
 
 /src/             - SourceBrowser
@@ -16,8 +15,8 @@ URLS to do:
 """
 import os
 from flask import Flask, url_for, render_template, request, session, redirect, g
-from base import app
-from decorators import login_required
+from base import app, SRC, idx
+from decorators import login_required, guest_or_login_required
 
 from sagenb.misc.misc import SAGE_DOC 
 DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
@@ -45,3 +44,14 @@ def doc_live(filename):
     else:
         from flask.helpers import send_file
         return send_file(filename)
+
+@app.route('/src/')
+@app.route('/src/<path:path>')
+@guest_or_login_required
+def autoindex(path='.'):
+    filename = os.path.join(SRC, path)
+    if os.path.isfile(filename):
+        from cgi import escape
+        src = escape(open(filename).read())
+        return render_template(os.path.join('html', 'source_code.html'), src_filename=path, src=src, username = g.username)
+    return idx.render_autoindex(path)

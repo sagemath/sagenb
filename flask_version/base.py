@@ -2,6 +2,7 @@
 import os, time
 from functools import wraps, partial
 from flask import Flask, url_for, render_template, request, session, redirect, g, make_response
+from flaskext.autoindex import AutoIndex
 from decorators import login_required
 
 class SageNBFlask(Flask):
@@ -43,6 +44,8 @@ class SageNBFlask(Flask):
 
 app = SageNBFlask(__name__)
 app.secret_key = os.urandom(24)
+SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
+idx = AutoIndex(app, browse_root=SRC)
 
 #XXX: This should probably be made able to put in a "central" place
 #with all of the jsmath stuff rather than just a global variable here.
