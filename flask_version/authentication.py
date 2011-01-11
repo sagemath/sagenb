@@ -6,7 +6,7 @@ authentication = Module('flask_version.authentication')
 ##################
 # Authentication #
 ##################
-@app.before_request
+@authentication.before_request
 def lookup_current_user():
     g.username = None
     if 'username' in session:
