@@ -283,11 +283,11 @@ import sagenb.notebook.notebook
 sagenb.notebook.notebook.JSMATH=True
 import sagenb.notebook.notebook as notebook
 import sagenb.notebook.twist as twist
-twist.notebook = notebook.load_notebook(%s)
-twist.SAGETEX_PATH = %r
-twist.OPEN_MODE = %s
-twist.SID_COOKIE = str(hash(%r))
-twist.DIR = %r
+twist.notebook = notebook.load_notebook(%(notebook_opts)s)
+twist.SAGETEX_PATH = %(sagetex_path)r
+twist.OPEN_MODE = %(do_not_require_login)s
+twist.SID_COOKIE = str(hash(%(dir)r))
+twist.DIR = %(cwd)r
 twist.reactor = reactor
 twist.init_updates()
 import sagenb.notebook.worksheet as worksheet
@@ -339,19 +339,21 @@ p.registerChecker(checkers.AllowAnonymousAccess())
 rsrc = guard.MySessionWrapper(p)
 log.DefaultCommonAccessLoggingObserver().start()
 site = server.Site(rsrc)
-%s
+%(factory)s
 from twisted.web2 import channel
 from twisted.application import service, strports
 application = service.Application("SAGE Notebook")
-s = strports.service(%r, factory)
-%s
+s = strports.service(%(strport)r, factory)
+%(open_page)s
 s.setServiceParent(application)
 
 reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
 
-"""%(notebook_opts, sagetex_path, not require_login,
-     os.path.abspath(directory), cwd, factory,
-     strport, open_page))
+"""%{'notebook_opts': notebook_opts, 'sagetex_path': sagetex_path,
+     'do_not_require_login': not require_login,
+     'dir': os.path.abspath(directory), 'cwd':cwd, 
+     'factory': factory, 'strport': strport,
+     'open_page': open_page})
 
 
         config.close()                     
