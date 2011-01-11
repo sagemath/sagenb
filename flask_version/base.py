@@ -8,6 +8,7 @@ class SageNBFlask(Flask):
     static_path = ''
 
     def __init__(self, *args, **kwds):
+        startup_token = kwds.pop('startup_token', None)
         Flask.__init__(self, *args, **kwds)
 
         from sagenb.misc.misc import DATA
@@ -27,8 +28,11 @@ class SageNBFlask(Flask):
         self.add_static_path('/doc/static', DOC) 
         self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'en', 'reference'))
 
-        from random import randint
-        self.one_time_token = str(randint(0, 2**128))
+        if startup_token:
+            from random import randint
+            self.one_time_token = str(randint(0, 2**128))
+        else:
+            self.one_time_token = None
 
     def create_jinja_environment(self):
         from sagenb.notebook.template import env
@@ -75,7 +79,7 @@ def index():
         
     from authentication import login
     
-    if current_app.one_time_token != -1 and 'one_time_token' in request.args:
+    if current_app.one_time_token is not None and 'one_time_token' in request.args:
         if request.args['one_time_token'] == current_app.one_time_token:
             session['username'] = 'admin' 
             session.modified = True
@@ -196,20 +200,16 @@ def notebook_updates():
 notebook = None
 
 #CLEAN THIS UP!
-def init_app(path_to_notebook, port=5000):
+def create_app(path_to_notebook, *args, **kwds):
     global notebook
+    startup_token = kwds.pop('startup_token', None)
 
-    print "Starting notebook..."
-    port = 5000
-    
     #############
     # OLD STUFF #
     #############
-    import sagenb.notebook.notebook
-    sagenb.notebook.notebook.JSMATH = True
     import sagenb.notebook.notebook as notebook
-
-    notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
+    notebook.JSMATH = True
+    notebook = notebook.load_notebook(path_to_notebook, *args, **kwds)
     SAGETEX_PATH = ""
     OPEN_MODE = False
     SID_COOKIE = str(hash(path_to_notebook))
@@ -219,7 +219,7 @@ def init_app(path_to_notebook, port=5000):
     ##############
     # Create app #
     ##############
-    app = SageNBFlask('flask_version')
+    app = SageNBFlask('flask_version', startup_token=startup_token)
     app.secret_key = os.urandom(24)
 
     @app.before_request
@@ -250,13 +250,3 @@ def init_app(path_to_notebook, port=5000):
     app.register_module(settings)
 
     return app
-
-def start(port=5000):
-    import sys
-    path_to_notebook = sys.argv[1].rstrip('/')
-
-    app = init_app(path_to_notebook)
-    app.run(debug=True, port=port)
-
-    notebook.save()
-    print "Notebook saved!"
