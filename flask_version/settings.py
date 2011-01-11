@@ -35,7 +35,7 @@ def settings_page():
         if not error:
             # The browser may auto-fill in "old password," even
             # though the user may not want to change her password.
-            g.notebook.user_manager().change_password(, new)
+            g.notebook.user_manager().change_password(g.username, new)
             redirect_to_logout = True
 
     if g.notebook.conf()['email']:
