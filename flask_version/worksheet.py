@@ -1,8 +1,9 @@
 import os
 from functools import wraps
-from flask import Flask, url_for, render_template, request, session, redirect, g
+from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required
-from base import app
+
+ws = Module('flask_version.worksheet')
 
 def worksheet_view(f):
     @login_required
@@ -10,17 +11,17 @@ def worksheet_view(f):
     def wrapper(username, id, **kwds):
         worksheet_filename = username + "/" + id
         try:
-            worksheet = kwds['worksheet'] = app.notebook.get_worksheet_with_filename(worksheet_filename)
+            worksheet = kwds['worksheet'] = g.notebook.get_worksheet_with_filename(worksheet_filename)
         except KeyError:
-            return app.message("You do not have permission to access this worksheet") #XXX: i18n
+            return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
         
         owner = worksheet.owner()
 
         if owner != '_sage_' and g.username != owner:
             if not worksheet.is_published():
                 if (not username in worksheet.collaborators() and
-                    not app.notebook.user_is_admin(g.username)):
-                    return app.message("You do not have permission to access this worksheet") #XXX: i18n
+                    not g.notebook.user_is_admin(g.username)):
+                    return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
 
         if not worksheet.is_published():
             worksheet.set_active(g.username)
@@ -37,7 +38,7 @@ def url_for_worksheet(worksheet):
     """
     Returns the url for a given worksheet.
     """
-    return url_for('worksheet', username=g.username,
+    return url_for('worksheet.worksheet', username=g.username,
                    id=worksheet.filename_without_owner())
 
 
@@ -56,17 +57,17 @@ def get_cell_id():
 ##############################
 # Views
 ##############################
-@app.route('/new_worksheet')
+@ws.route('/new_worksheet')
 @login_required
 def new_worksheet():
-    W = app.notebook.create_new_worksheet("Untitled", g.username)
+    W = g.notebook.create_new_worksheet("Untitled", g.username)
     return redirect(url_for_worksheet(W))
 
-@app.route('/home/<username>/<id>/')
+@ws.route('/home/<username>/<id>/')
 @worksheet_view
 def worksheet(username, id, worksheet=None):
     worksheet.sage()
-    s = app.notebook.html(worksheet_filename=worksheet.filename(),
+    s = g.notebook.html(worksheet_filename=worksheet.filename(),
                           username=username)
     return s
 
@@ -76,7 +77,7 @@ def worksheet_command(target, **route_kwds):
         route_kwds['methods'] = ['GET', 'POST']
         
     def decorator(f):
-        @app.route('/home/<username>/<id>/' + target, **route_kwds)
+        @ws.route('/home/<username>/<id>/' + target, **route_kwds)
         @worksheet_view
         @wraps(f)
         def wrapper(*args, **kwds):
@@ -366,7 +367,7 @@ def worksheet_cell_update(worksheet):
         H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
         H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
                             max_out=HISTORY_MAX_OUTPUT)
-        app.notebook.add_to_user_history(H, g.username)
+        g.notebook.add_to_user_history(H, g.username)
     else:
         new_input = ''
         out_html = ''
@@ -420,7 +421,7 @@ def worksheet_edit(worksheet):
     Return a window that allows the user to edit the text of the
     worksheet with the given filename.
     """    
-    return app.notebook.html_edit_window(worksheet, g.username)
+    return g.notebook.html_edit_window(worksheet, g.username)
 
 
 ########################################################
@@ -432,14 +433,14 @@ def worksheet_text(worksheet):
     Return a window that allows the user to edit the text of the
     worksheet with the given filename.
     """
-    return app.notebook.html_plain_text_window(worksheet, g.username)
+    return g.notebook.html_plain_text_window(worksheet, g.username)
 
 ########################################################
 # Copy a worksheet
 ########################################################
 @worksheet_command('copy')
 def worksheet_copy(worksheet):
-    copy = app.notebook.copy_worksheet(worksheet, g.username)
+    copy = g.notebook.copy_worksheet(worksheet, g.username)
     if 'no_load' in request.values:
         return ''
     else:
@@ -451,13 +452,13 @@ def worksheet_copy(worksheet):
 @worksheet_command('edit_published_page')
 def worksheet_edit_published_page(worksheet):
     ## if user_type(self.username) == 'guest':
-    ##     return app.message('You must <a href="/">login first</a> in order to edit this worksheet.')
+    ##     return current_app.message('You must <a href="/">login first</a> in order to edit this worksheet.')
 
     ws = worksheet.worksheet_that_was_published()
     if ws.owner() == g.username:
         W = ws
     else:
-        W = app.notebook.copy_worksheet(worksheet, g.username)
+        W = g.notebook.copy_worksheet(worksheet, g.username)
         W.set_name(worksheet.name())
 
     return redirect(url_for_worksheet(W))
@@ -468,7 +469,7 @@ def worksheet_edit_published_page(worksheet):
 ########################################################
 @worksheet_command('share')
 def worksheet_share(worksheet):
-    return app.notebook.html_share(worksheet, g.username)
+    return g.notebook.html_share(worksheet, g.username)
 
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
@@ -486,10 +487,10 @@ def worksheet_revisions(worksheet):
     """    
     if 'action' not in request.values:
         if 'rev' in request.values:
-            return app.notebook.html_specific_revision(g.username, worksheet,
+            return g.notebook.html_specific_revision(g.username, worksheet,
                                                        request.values['rev'])
         else:
-            return app.notebook.html_worksheet_revision_list(g.username, worksheet)
+            return g.notebook.html_worksheet_revision_list(g.username, worksheet)
     else:
         rev = request.values['rev']
         action = request.values['action']
@@ -503,13 +504,13 @@ def worksheet_revisions(worksheet):
             return redirect(url_for_worksheet(worksheet))
         elif action == 'publish':
             import bz2
-            W = app.notebook.publish_worksheet(worksheet, g.username)
+            W = g.notebook.publish_worksheet(worksheet, g.username)
             txt = bz2.decompress(open(worksheet.get_snapshot_text_filename(rev)).read())
             W.delete_cells_directory()
             W.edit_save(txt)
             return redirect(url_for_worksheet(W))
         else:
-            return app.message('Error')
+            return current_app.message('Error')
 
 
         
@@ -530,7 +531,7 @@ def worksheet_cells(worksheet, filename):
 def worksheet_data(worksheet, filename):
     dir = os.path.abspath(worksheet.data_directory())
     if not os.path.exists(dir):
-        return app.message('No data files')
+        return current_app.message('No data files')
     else:
         from flask.helpers import send_from_directory
         return send_from_directory(worksheet.data_directory(), filename)
@@ -544,9 +545,9 @@ def worksheet_datafile(worksheet):
     if request.values.get('action', '') == 'delete':
         path = os.path.join(dir, filename)
         os.unlink(path)
-        return app.message("Successfully deleted '%s'"%filename) #XXX: i18n
+        return current_app.message("Successfully deleted '%s'"%filename) #XXX: i18n
     else:
-        return app.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
+        return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
 @worksheet_command('savedatafile')
 def worksheet_savedatafile(worksheet):
@@ -564,18 +565,18 @@ def worksheet_link_datafile(worksheet):
     data_filename = request.values['filename']
     src = os.path.abspath(os.path.join(
         worksheet.data_directory(), data_filename))
-    target_ws =  app.notebook.get_worksheet_with_filename(target_worksheet_filename)
+    target_ws =  g.notebook.get_worksheet_with_filename(target_worksheet_filename)
     target = os.path.abspath(os.path.join(
         target_ws.data_directory(), data_filename))
     if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
-        return app.message("illegal link attempt!") #XXX: i18n
+        return current_app.message("illegal link attempt!") #XXX: i18n
     os.system('ln "%s" "%s"'%(src, target))
     return redirect(worksheet_link_datafile.url_for(worksheet, name=data_filename))
     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
     
 @worksheet_command('upload_data')
 def worksheet_upload_data(worksheet):
-    return app.notebook.html_upload_data_window(worksheet, g.username)        
+    return g.notebook.html_upload_data_window(worksheet, g.username)        
 
 @worksheet_command('do_upload_data')
 def worksheet_do_upload_data(worksheet):
@@ -590,7 +591,7 @@ def worksheet_do_upload_data(worksheet):
 
     if 'file' not in request.files:
         #XXX: i18n
-        return app.message('Error uploading file (missing field "file").%s' % backlinks, worksheet_url)
+        return current_app.message('Error uploading file (missing field "file").%s' % backlinks, worksheet_url)
     else:
         file = request.files['file']
         
@@ -598,7 +599,7 @@ def worksheet_do_upload_data(worksheet):
     for field in text_fields:
         if field not in request.values:
             #XXX: i18n
-            return app.message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url)
+            return current_app.message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url)
 
 
     name = request.values.get('name', '').strip()
@@ -612,14 +613,14 @@ def worksheet_do_upload_data(worksheet):
 
     if not name:
         #XXX: i18n
-        return app.message('Error uploading file (missing filename).%s' % backlinks, worksheet_url)
+        return current_app.message('Error uploading file (missing filename).%s' % backlinks, worksheet_url)
 
     #XXX: disk access
     dest = os.path.join(worksheet.data_directory(), name)
     if os.path.exists(dest):
         if not os.path.isfile(dest):
             #XXX: i18n
-            return app.message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url)
+            return current_app.message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url)
         os.unlink(dest)
 
 
@@ -648,20 +649,20 @@ def worksheet_publish(worksheet):
     """
     # Publishes worksheet and also sets worksheet to be published automatically when saved
     if 'yes' in request.values and 'auto' in request.values:
-        app.notebook.publish_worksheet(worksheet, g.username)
+        g.notebook.publish_worksheet(worksheet, g.username)
         worksheet.set_auto_publish(True)
         return redirect(worksheet_publish.url_for(worksheet))
     # Just publishes worksheet
     elif 'yes' in request.values:
-        app.notebook.publish_worksheet(worksheet, g.username)
+        g.notebook.publish_worksheet(worksheet, g.username)
         return redirect(worksheet_publish.url_for(worksheet))
     # Stops publication of worksheet
     elif 'stop' in request.values:
-        app.notebook.delete_worksheet(worksheet.published_version().filename())
+        g.notebook.delete_worksheet(worksheet.published_version().filename())
         return redirect(worksheet_publish.url_for(worksheet))
     # Re-publishes worksheet
     elif 're' in request.values:
-        W = app.notebook.publish_worksheet(worksheet, g.username)
+        W = g.notebook.publish_worksheet(worksheet, g.username)
         return redirect(worksheet_publish.url_for(worksheet))
     # Sets worksheet to be published automatically when saved
     elif 'auto' in request.values:
@@ -674,17 +675,17 @@ def worksheet_publish(worksheet):
     else:
         # Page for when worksheet already published
         if worksheet.has_published_version():
-            hostname = request.headers.get('host', app.notebook.interface + ':' + str(app.notebook.port))
+            hostname = request.headers.get('host', g.notebook.interface + ':' + str(g.notebook.port))
 
             #XXX: We shouldn't hardcode this.
-            addr = 'http%s://%s/home/%s' % ('' if not app.notebook.secure else 's',
+            addr = 'http%s://%s/home/%s' % ('' if not g.notebook.secure else 's',
                                             hostname,
                                             worksheet.published_version().filename())
             dtime = worksheet.published_version().date_edited()
-            return app.notebook.html_afterpublish_window(worksheet, g.username, addr, dtime)
+            return g.notebook.html_afterpublish_window(worksheet, g.username, addr, dtime)
         # Page for when worksheet is not already published
         else:
-            return app.notebook.html_beforepublish_window(worksheet, g.username)
+            return g.notebook.html_beforepublish_window(worksheet, g.username)
 
 ############################################    
 # Ratings
@@ -701,7 +702,7 @@ def worksheet_rate(worksheet):
 
     rating = int(request.values['rating'])
     if rating < 0 or rating >= 5:
-        return app.messge("Gees -- You can't fool the rating system that easily!",
+        return current_app.messge("Gees -- You can't fool the rating system that easily!",
                           url_for_worksheet(worksheet))
 
     comment = request.values['comment']
@@ -711,7 +712,7 @@ def worksheet_rate(worksheet):
     You can <a href="rating_info">see all ratings of this worksheet.</a>
     """%(worksheet.name())
     #XXX: Hardcoded url
-    return app.message(s.strip(), '/pub/', title=u'Rating Accepted')
+    return current_app.message(s.strip(), '/pub/', title=u'Rating Accepted')
 
 
 ########################################################
@@ -731,9 +732,9 @@ def unconditional_download(worksheet, title):
 
     try:
         #XXX: Accessing the hard disk.
-        app.notebook.export_worksheet(worksheet.filename(), filename, title)
+        g.notebook.export_worksheet(worksheet.filename(), filename, title)
     except KeyError:
-        return app.message('No such worksheet.')
+        return current_app.message('No such worksheet.')
 
     from flask.helpers import send_file
     return send_file(filename, mimetype='application/sage')
@@ -780,7 +781,7 @@ def worksheet_delete_all_output(worksheet):
 def worksheet_print(worksheet):
     #XXX: We might want to separate the printing template from the
     #regular html template.
-    return app.notebook.html(worksheet.filename(), do_print=True)
+    return g.notebook.html(worksheet.filename(), do_print=True)
 
 
 #######################
@@ -789,14 +790,14 @@ def worksheet_print(worksheet):
 doc_worksheet_number = 0
 def doc_worksheet():
     global doc_worksheet_number
-    wnames = app.notebook.worksheet_names()
+    wnames = g.notebook.worksheet_names()
     name = 'doc_browser_%s'%doc_worksheet_number
-    doc_worksheet_number = doc_worksheet_number % app.notebook.conf()['doc_pool_size']
+    doc_worksheet_number = doc_worksheet_number % g.notebook.conf()['doc_pool_size']
     if name in wnames:
-        W = app.notebook.get_worksheet_with_name(name)
+        W = g.notebook.get_worksheet_with_name(name)
         W.clear()
     else:
-        W = app.notebook.create_new_worksheet(name, '_sage_', docbrowser=True)
+        W = g.notebook.create_new_worksheet(name, '_sage_', docbrowser=True)
     W.set_is_doc_worksheet(True)
     return W
 
@@ -813,7 +814,7 @@ def extract_title(html_page):
 def worksheet_file(path):
     # Create a live Sage worksheet out of path and render it.
     if not os.path.exists(path):
-        return app.message('Document does not exist.')
+        return current_app.message('Document does not exist.')
 
     doc_page_html = open(path).read()
     from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
@@ -830,6 +831,6 @@ def worksheet_file(path):
     cells = W.cell_list()
     cells.pop()
 
-    return app.notebook.html(worksheet_filename=W.filename(),
+    return g.notebook.html(worksheet_filename=W.filename(),
                          username=g.username)
 

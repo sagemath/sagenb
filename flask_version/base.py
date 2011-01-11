@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 import os, time
-from functools import wraps, partial
-from flask import Flask, url_for, render_template, request, session, redirect, g, make_response
-from flaskext.autoindex import AutoIndex
+from functools import partial
+from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required
 
 class SageNBFlask(Flask):
@@ -17,6 +16,16 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript/sage', os.path.join(DATA, "sage", "js"))
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/java', DATA)
+        
+        #######
+        # Doc #
+        #######
+        #These "should" be in doc.py
+        from sagenb.misc.misc import SAGE_DOC 
+        DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
+        self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
+        self.add_static_path('/doc/static', DOC) 
+        self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'en', 'reference'))
 
         from random import randint
         self.one_time_token = str(randint(0, 2**128))
@@ -42,38 +51,35 @@ class SageNBFlask(Flask):
                                **template_dict)
 
 
-app = SageNBFlask('flask_version')
-app.secret_key = os.urandom(24)
-SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
-idx = AutoIndex(app, browse_root=SRC)
-
 #XXX: This should probably be made able to put in a "central" place
 #with all of the jsmath stuff rather than just a global variable here.
 from sagenb.misc.misc import is_package_installed
 jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
 
+base = Module('flask_version.base')
+
 #############
 # Main Page #
 #############
-@app.route('/')
+@base.route('/')
 def index():
     if 'username' in session:
         response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:
-            response.set_cookie('nb_session_%s'%app.notebook.port,
+            response.set_cookie('nb_session_%s'%g.notebook.port,
                                 expires=(time.time() + 60 * 60 * 24 * 14))
         else:
-            response.set_cookie('nb_session_%s'%app.notebook.port)
-        response.set_cookie('cookie_test_%s'%app.notebook.port, expires=1)
+            response.set_cookie('nb_session_%s'%g.notebook.port)
+        response.set_cookie('cookie_test_%s'%g.notebook.port, expires=1)
         return response
         
     from authentication import login
     
-    if app.one_time_token != -1 and 'one_time_token' in request.args:
-        if request.args['one_time_token'] == app.one_time_token:
+    if current_app.one_time_token != -1 and 'one_time_token' in request.args:
+        if request.args['one_time_token'] == current_app.one_time_token:
             session['username'] = 'admin' 
             session.modified = True
-            app.one_time_token = -1 
+            current_app.one_time_token = -1 
             return index()
             
     return login()
@@ -81,14 +87,14 @@ def index():
 ######################
 # Dynamic Javascript #
 ######################
-@app.route('/javascript/sage/main.js')
+@base.route('/javascript/sage/main.js')
 def main_js():
     from sagenb.notebook.js import javascript
     response = make_response(javascript())
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
-@app.route('/javascript/sage/jsmath.js')
+@base.route('/javascript/sage/jsmath.js')
 def jsmath_js():
     from sagenb.misc.misc import jsmath_macros
     response = make_response(render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
@@ -96,7 +102,7 @@ def jsmath_js():
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
-@app.route('/javascript/sage/keyboard/<browser_os>')
+@base.route('/javascript/sage/keyboard/<browser_os>')
 def keyboard_js(browser_os):
     from sagenb.notebook.keyboards import get_keyboard
     response = make_response(get_keyboard(browser_os))
@@ -106,7 +112,7 @@ def keyboard_js(browser_os):
 ###############
 # Dynamic CSS #
 ###############
-@app.route('/css/main.css')
+@base.route('/css/main.css')
 def main_css():
     from sagenb.notebook.css import css 
     response = make_response(css())
@@ -116,7 +122,7 @@ def main_css():
 ########
 # Help #
 ########
-@app.route('/help')
+@base.route('/help')
 @login_required
 def help():
     from sagenb.notebook.tutorial import notebook_help
@@ -125,36 +131,27 @@ def help():
 ###########
 # History #
 ###########
-@app.route('/history')
+@base.route('/history')
 @login_required
 def history():
     return render_template(os.path.join('html', 'history.html'), username = g.username, 
-                           text = app.notebook.user_history_text(g.username), actions = False)
+                           text = g.notebook.user_history_text(g.username), actions = False)
 
-@app.route('/live_history')
+@base.route('/live_history')
 @login_required
 def live_history():
-        W = app.notebook.create_new_worksheet_from_history('Log', g.username, 100)
-        from worksheet import url_for_worksheet
-        return redirect(url_for_worksheet(W))
+    W = g.notebook.create_new_worksheet_from_history('Log', g.username, 100)
+    from worksheet import url_for_worksheet
+    return redirect(url_for_worksheet(W))
 
 ###########
 # Favicon #
 ###########
-@app.route('/favicon.ico')
+@base.route('/favicon.ico')
 def favicon():
     from flask.helpers import send_file
     from sagenb.misc.misc import DATA
     return send_file(os.path.join(DATA, 'sage', 'images', 'favicon.ico'))
-
-
-################
-# View imports #
-################
-import authentication
-import doc
-import worksheet
-import settings
 
 #############
 # OLD STUFF #
@@ -167,8 +164,8 @@ def init_updates():
     global save_interval, idle_interval, last_save_time, last_idle_time
     from sagenb.misc.misc import walltime
     
-    save_interval = app.notebook.conf()['save_interval']
-    idle_interval = app.notebook.conf()['idle_check_interval']
+    save_interval = notebook.conf()['save_interval']
+    idle_interval = notebook.conf()['idle_check_interval']
     last_save_time = walltime()
     last_idle_time = walltime()
 
@@ -178,7 +175,7 @@ def notebook_save_check():
 
     t = walltime()
     if t > last_save_time + save_interval:
-        app.notebook.save()
+        notebook.save()
         last_save_time = t
 
 def notebook_idle_check():
@@ -187,8 +184,8 @@ def notebook_idle_check():
 
     t = walltime()
     if t > last_idle_time + idle_interval:
-        app.notebook.update_worksheet_processes()
-        app.notebook.quit_idle_worksheet_processes()
+        notebook.update_worksheet_processes()
+        notebook.quit_idle_worksheet_processes()
         last_idle_time = t
 
 def notebook_updates():
@@ -212,22 +209,44 @@ def init_app(path_to_notebook, port=5000):
     sagenb.notebook.notebook.JSMATH = True
     import sagenb.notebook.notebook as notebook
 
-    app.notebook = notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
+    notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
     SAGETEX_PATH = ""
     OPEN_MODE = False
     SID_COOKIE = str(hash(path_to_notebook))
     DIR = path_to_notebook
     init_updates()
 
+    ##############
+    # Create app #
+    ##############
+    app = SageNBFlask('flask_version')
+    app.secret_key = os.urandom(24)
+
     @app.before_request
     def set_notebook_object():
         g.notebook = notebook
+
+    ########################
+    # Register the modules #
+    ########################
         
     from worksheet_listing import worksheet_listing
     app.register_module(worksheet_listing)  
 
     from admin import admin
     app.register_module(admin)
+
+    from authentication import authentication
+    app.register_module(authentication)
+
+    from doc import doc
+    app.register_module(doc)
+
+    from worksheet import ws as worksheet
+    app.register_module(worksheet)
+
+    from settings import settings
+    app.register_module(settings)
 
     return app
 
@@ -238,5 +257,5 @@ def start(port=5000):
     app = init_app(path_to_notebook)
     app.run(debug=True, port=port)
 
-    app.notebook.save()
+    notebook.save()
     print "Notebook saved!"

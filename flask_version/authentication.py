@@ -1,17 +1,17 @@
-from flask import Flask, url_for, render_template, request, session, redirect, g
+from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 
-from base import app
+authentication = Module('flask_version.authentication')
 
 ##################
 # Authentication #
 ##################
 
-@app.route('/login', methods=['POST', 'GET'])
+@authentication.route('/login', methods=['POST', 'GET'])
 def login():
     from sagenb.misc.misc import SAGE_VERSION
-    template_dict = {'accounts': app.notebook.get_accounts(),
-                     'default_user': app.notebook.default_user(),
-                     'recovery': app.notebook.conf()['email'],
+    template_dict = {'accounts': g.notebook.get_accounts(),
+                     'default_user': g.notebook.default_user(),
+                     'recovery': g.notebook.conf()['email'],
                      'next': request.values.get('next', ''), 
                      'sage_version':SAGE_VERSION}
 
@@ -23,7 +23,7 @@ def login():
             return "Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again."
 
         try:
-            U = app.notebook.user(username)
+            U = g.notebook.user(username)
         except KeyError:
             #log.msg("Login attempt by unknown user '%s'."%username)
             U = None
@@ -50,11 +50,11 @@ def login():
         else:
             template_dict['password_error'] = True
 
-    response = app.make_response(render_template('html/login.html', **template_dict))
-    response.set_cookie('cookie_test_%s'%app.notebook.port, 'cookie_test')
+    response = current_app.make_response(render_template('html/login.html', **template_dict))
+    response.set_cookie('cookie_test_%s'%g.notebook.port, 'cookie_test')
     return response
 
-@app.route('/logout/')
+@authentication.route('/logout/')
 def logout():
     session.pop('username', None)
     return redirect(url_for('index'))
