@@ -1,15 +1,16 @@
 import os
-from flask import Flask, url_for, render_template, request, session, redirect, g
+from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required
-from base import app
 
-@app.route('/settings', methods = ['GET', 'POST'])
+settings = Module('flask_version.settings')
+
+@settings.route('/settings', methods = ['GET','POST'])
 @login_required
-def settings():
+def settings_page():
     error = None
     redirect_to_home = None
     redirect_to_logout = None
-    nu = app.notebook.user_manager().user(g.username)
+    nu = g.notebook.user_manager().user(g.username)
 
     autosave = int(request.values.get('autosave', 0))*60
     if autosave:
@@ -34,10 +35,10 @@ def settings():
         if not error:
             # The browser may auto-fill in "old password," even
             # though the user may not want to change her password.
-            nu.set_password(new)
+            g.notebook.user_manager().change_password(, new)
             redirect_to_logout = True
 
-    if app.notebook.conf()['email']:
+    if g.notebook.conf()['email']:
         newemail = request.values.get('new-email', None)
         if newemail:
             nu.set_email(newemail)
@@ -45,20 +46,20 @@ def settings():
             redirect_to_home = True
 
     if error:
-        return app.message(error, url_for('settings'))
+        return current_app.message(error, url_for('settings_page'))
 
     if redirect_to_logout:
-        return redirect(url_for('logout'))
+        return redirect(url_for('authentication.logout'))
 
     if redirect_to_home:
-        return redirect(url_for('home', username=g.username))
+        return redirect(url_for('worksheet_listing.home', username=g.username))
 
     td = {}
     td['username'] = g.username
 
     td['autosave_intervals'] = ((i, ' selected') if nu['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))
 
-    td['email'] = app.notebook.conf()['email']
+    td['email'] = g.notebook.conf()['email']
     if td['email']:
         td['email_address'] = nu.get_email() or 'None'
         if nu.is_email_confirmed():

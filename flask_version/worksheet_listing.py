@@ -1,9 +1,10 @@
 """
 """
 import os
-from flask import Flask, url_for, render_template, request, session, redirect, g
+from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required 
-from base import app
+
+worksheet_listing = Module('flask_version.worksheet_listing')
 
 def render_worksheet_list(args, pub, username):
     """
@@ -24,6 +25,7 @@ def render_worksheet_list(args, pub, username):
 
     a string
     """
+    
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
     
@@ -33,11 +35,11 @@ def render_worksheet_list(args, pub, username):
     reverse = (args['reverse'] == 'True') if 'reverse' in args else False
 
     if not pub:
-        worksheets = app.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
+        worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
                                                           search=search, reverse=reverse)
 
     else:
-        worksheets = app.notebook.worksheet_list_for_public(username, sort=sort,
+        worksheets = g.notebook.worksheet_list_for_public(username, sort=sort,
                                                             search=search, reverse=reverse)
 
     worksheet_filenames = [x.filename() for x in worksheets]
@@ -45,21 +47,21 @@ def render_worksheet_list(args, pub, username):
     if pub and (not username or username == tuple([])):
         username = 'pub'
 
-    accounts = app.notebook.user_manager().get_accounts()
+    accounts = g.notebook.user_manager().get_accounts()
     sage_version = SAGE_VERSION
     return render_template('html/worksheet_listing.html', **locals())
 
 
-@app.route('/home/<username>/')
+@worksheet_listing.route('/home/<username>/')
 @login_required
 def home(username):
-    if not app.notebook.user_manager().user_is_admin(g.username) and username != g.username:
+    if not g.notebook.user_manager().user_is_admin(g.username) and username != g.username:
         #XXX: i18n
-        return app.message("User '%s' does not have permission to view the home page of '%s'."%(g.username, username))
+        return current_app.message("User '%s' does not have permission to view the home page of '%s'."%(g.username, username))
     else:
         return render_worksheet_list(request.args, pub=False, username=username)
 
-@app.route('/home/')
+@worksheet_listing.route('/home/')
 @login_required
 def bare_home():
     return redirect(url_for('home', username=g.username))
@@ -81,45 +83,45 @@ def get_worksheets_from_request():
 
     worksheets = []
     for filename in filenames:
-        W = app.notebook.get_worksheet_with_filename(filename)
+        W = g.notebook.get_worksheet_with_filename(filename)
         if W.owner() != g.username:
             continue
         worksheets.append(W)
 
     return worksheets
 
-@app.route('/send_to_trash', methods=['POST'])
+@worksheet_listing.route('/send_to_trash', methods=['POST'])
 @login_required
 def send_worksheet_to_trash():
     for W in get_worksheets_from_request():
         W.move_to_trash(g.username)
     return ''
 
-@app.route('/send_to_archive', methods=['POST'])
+@worksheet_listing.route('/send_to_archive', methods=['POST'])
 @login_required
 def send_worksheet_to_archive():
     for W in get_worksheets_from_request():
         W.move_to_archive(g.username)
     return ''
 
-@app.route('/send_to_active', methods=['POST'])
+@worksheet_listing.route('/send_to_active', methods=['POST'])
 @login_required
 def send_worksheet_to_active():
     for W in get_worksheets_from_request():
         W.set_active(g.username)
     return ''
 
-@app.route('/send_to_stop', methods=['POST'])
+@worksheet_listing.route('/send_to_stop', methods=['POST'])
 @login_required
 def send_worksheet_to_stop():
     for W in get_worksheets_from_request():
         W.quit()
     return ''
 
-@app.route('/emptytrash', methods=['POST'])
+@worksheet_listing.route('/emptytrash', methods=['POST'])
 @login_required
 def empty_trash():
-    app.notebook.empty_trash(g.username)
+    g.notebook.empty_trash(g.username)
     if 'referer' in request.headers:
         return redirect(request.headers['referer'])
     else:
@@ -129,31 +131,31 @@ def empty_trash():
 #####################
 # Public Worksheets #
 #####################
-@app.route('/pub/')
+@worksheet_listing.route('/pub/')
 @guest_or_login_required
 def pub():
     return render_worksheet_list(request.args, pub=True, username=g.username)
 
-@app.route('/home/pub/<id>/')
+@worksheet_listing.route('/home/pub/<id>/')
 @guest_or_login_required
 def public_worksheet(id):
     filename = 'pub' + '/' + id
-    return app.notebook.html(worksheet_filename=filename, username = g.username)
+    return g.notebook.html(worksheet_filename=filename, username = g.username)
 
-@app.route('/home/pub/<id>/download/<path:title>')
+@worksheet_listing.route('/home/pub/<id>/download/<path:title>')
 def public_worksheet_download(id, title):
     from worksheet import unconditional_download
     worksheet_filename =  "pub" + "/" + id
     try:
-        worksheet = app.notebook.get_worksheet_with_filename(worksheet_filename)
+        worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
-        return app.message("You do not have permission to access this worksheet") #XXX: i18n
+        return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
     return unconditional_download(worksheet, title)
 
 #######################
 # Download Worksheets #
 #######################
-@app.route('/download_worksheets.zip')
+@worksheet_listing.route('/download_worksheets.zip')
 @login_required
 def download_worksheets():
     from sagenb.misc.misc import walltime, tmp_filename
@@ -166,17 +168,17 @@ def download_worksheets():
     worksheet_names = set()
     if 'filenames' in request.values:
         sep = request.values['sep']
-        worksheets = [app.notebook.get_worksheet_with_filename(x.strip())
+        worksheets = [g.notebook.get_worksheet_with_filename(x.strip())
                       for x in request.values['filenames'].split(sep)
                       if len(x.strip()) > 0]
     else:
-        worksheets = app.notebook.worksheet_list_for_user(g.username)
+        worksheets = g.notebook.worksheet_list_for_user(g.username)
 
     import zipfile
     zip = zipfile.ZipFile(zip_filename, 'w', zipfile.ZIP_STORED)
     for worksheet in worksheets:
         sws_filename = tmp_filename() + '.sws'
-        app.notebook.export_worksheet(worksheet.filename(), sws_filename)
+        g.notebook.export_worksheet(worksheet.filename(), sws_filename)
         entry_name = worksheet.name()
         if entry_name in worksheet_names:
             i = 2
@@ -190,7 +192,7 @@ def download_worksheets():
     os.unlink(zip_filename)
     print "Finished zipping %s worksheets (%s seconds)"%(len(worksheets), walltime(t))
 
-    response = app.make_response(r)
+    response = current_app.make_response(r)
     response.headers['Content-Type'] = 'application/zip'
     return response
 
@@ -198,13 +200,13 @@ def download_worksheets():
 #############
 # Uploading #
 #############
-@app.route('/upload')
+@worksheet_listing.route('/upload')
 @login_required
 def upload():
     return render_template(os.path.join('html', 'upload.html'),
                            username=g.username)
 
-@app.route('/upload_worksheet', methods=['GET', 'POST'])
+@worksheet_listing.route('/upload_worksheet', methods=['GET', 'POST'])
 @login_required
 def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
@@ -226,7 +228,7 @@ def upload_worksheet():
         dir = tmp_dir()
         file = request.files['file']
         if file.filename == '':
-            return app.message("Please specify a worksheet to load.%s" % backlinks)
+            return current_app.message("Please specify a worksheet to load.%s" % backlinks)
 
         filename = secure_filename(file.filename)
         filename = os.path.join(dir, filename)
@@ -243,17 +245,17 @@ def upload_worksheet():
                 for sws in zip_file.namelist():
                     if sws.endswith('.sws'):
                         open(sws_file, 'w').write(zip_file.read(sws)) # 2.6 zip_file.extract(sws, sws_file)
-                        W = app.notebook.import_worksheet(sws_file, g.username)
+                        W = g.notebook.import_worksheet(sws_file, g.username)
                         if new_name:
                             W.set_name("%s - %s" % (new_name, W.name()))
                 return redirect(url_for('home', username=g.username))
 
             else:
-                W = app.notebook.import_worksheet(filename, g.username)
+                W = g.notebook.import_worksheet(filename, g.username)
 
         except Exception, msg:
             s = 'There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s' % backlinks
-            return app.message(s, url_for('home', username=g.username))
+            return current_app.message(s, url_for('home', username=g.username))
         finally:
             # Clean up the temporarily uploaded filename.
             os.unlink(filename)
@@ -264,7 +266,7 @@ def upload_worksheet():
 
     except ValueError, msg:
         s = "Error uploading worksheet '%s'.%s" % (msg, backlinks)
-        return app.message(s, url_for('home', username=g.username))
+        return current_app.message(s, url_for('home', username=g.username))
 
     if new_name:
         W.set_name(new_name)

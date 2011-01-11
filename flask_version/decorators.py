@@ -5,7 +5,7 @@ def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if 'username' not in session:
-            return redirect(url_for('index', next=request.url))
+            return redirect(url_for('base.index', next=request.url))
         else:
             g.username = session['username']
         return f(*args, **kwds)

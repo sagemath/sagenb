@@ -14,27 +14,31 @@ URLS to do:
 
 """
 import os
-from flask import Flask, url_for, render_template, request, session, redirect, g
-from base import app, SRC, idx
+from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required
+from flaskext.autoindex import AutoIndex
+
+doc = Module('flask_version.doc')
 
 from sagenb.misc.misc import SAGE_DOC 
 DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
 
-app.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
-app.add_static_path('/doc/static', DOC) 
-app.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'en', 'reference'))
+################
+# Static paths #
+################
 
-@app.route('/doc/static/')
+#The static documentation paths are currently set in base.SageNBFlask.__init__
+
+@doc.route('/doc/static/')
 def docs_static_index():
     return redirect(url_for('/static/doc/static', filename='index.html'))
 
-@app.route('/doc/live/')
+@doc.route('/doc/live/')
 @login_required
 def doc_live_base():
-    return app.message('nothing to see.', username=g.username)
+    return current_app.message('nothing to see.', username=g.username)
 
-@app.route('/doc/live/<path:filename>')
+@doc.route('/doc/live/<path:filename>')
 @login_required
 def doc_live(filename):
     filename = os.path.join(DOC, filename)
@@ -45,8 +49,11 @@ def doc_live(filename):
         from flask.helpers import send_file
         return send_file(filename)
 
-@app.route('/src/')
-@app.route('/src/<path:path>')
+SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
+idx = AutoIndex(doc, browse_root=SRC)
+
+@doc.route('/src/')
+@doc.route('/src/<path:path>')
 @guest_or_login_required
 def autoindex(path='.'):
     filename = os.path.join(SRC, path)

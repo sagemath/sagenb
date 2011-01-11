@@ -36,8 +36,6 @@ import string
 import time
 import traceback
 
-from twisted.internet.defer import Deferred
-
 # General sage library code
 from sagenb.misc.misc import (cython, load, save, 
                               alarm, cancel_alarm, verbose, DOT_SAGENB,
@@ -881,10 +879,14 @@ class Worksheet(object):
 
         OUTPUT: a Notebook object.
 
-        EXAMPLES: This really returns the Notebook object that is set as a
-        global variable of the twist module.
+        .. note::
 
-        ::
+           This really returns the Notebook object that is set as a
+           global variable of the twist module.  This is done *even*
+           in the Flask version of the notebook as it is set in
+           func:`sagenb.notebook.notebook.load_notebook`.
+
+        EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
@@ -3155,21 +3157,15 @@ except (KeyError, IOError):
         # stop the current computation in the running Sage
         S = self.__sage
         S.interrupt()
-        
-        deferred = Deferred()
-        deferred.addCallback(callback)
-        
-        def interrupt_check():
-            if S.is_computing():
-                deferred.callback(False)
-            else:
-                deferred.callback(True)
-                
-        from twist import reactor
-        reactor.callLater(timeout, interrupt_check)
-        
-        return deferred
 
+        import time
+        time.sleep(timeout)
+
+        if S.is_computing():
+            return False
+        else:
+            return True
+        
     def clear_queue(self):
         # empty the queue
         for C in self.__queue:
