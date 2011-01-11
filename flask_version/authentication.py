@@ -46,7 +46,7 @@ def login():
                 #Valid user, everything is okay
                 session['username'] = username
                 session.modified = True
-                return redirect(request.values.get('next', url_for('index')))
+                return redirect(request.values.get('next', url_for('base.index')))
         else:
             template_dict['password_error'] = True
 
@@ -57,4 +57,4 @@ def login():
 @authentication.route('/logout/')
 def logout():
     session.pop('username', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('base.index'))

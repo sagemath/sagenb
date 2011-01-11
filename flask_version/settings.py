@@ -46,7 +46,7 @@ def settings_page():
             redirect_to_home = True
 
     if error:
-        return current_app.message(error, url_for('settings_pages'))
+        return current_app.message(error, url_for('settings_page'))
 
     if redirect_to_logout:
         return redirect(url_for('authentication.logout'))

@@ -229,7 +229,8 @@ def init_app(path_to_notebook, port=5000):
     ########################
     # Register the modules #
     ########################
-        
+    app.register_module(base)
+
     from worksheet_listing import worksheet_listing
     app.register_module(worksheet_listing)  
 
