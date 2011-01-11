@@ -338,22 +338,22 @@ def notebook_twisted(self,
 
     nb.conf()['idle_timeout'] = int(timeout)
     
-    if nb.user_exists('root') and not nb.user_exists('admin'):
+    if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
         # This is here only for backward compatibility with one
         # version of the notebook. 
         s = nb.create_user_with_same_password('admin', 'root')
         # It would be a security risk to leave an escalated account around. 
 
-    if not nb.user_exists('admin'):
+    if not nb.user_manager().user_exists('admin'):
         reset = True
         
     if reset:  
         passwd = get_admin_passwd()                
         if reset:
-            nb.user('admin').set_password(passwd)
+            nb.user_manager().user('admin').set_password(passwd)
             print "Password changed for user 'admin'."
         else:
-            nb.create_default_users(passwd)
+            nb.user_manager().create_default_users(passwd)
             print "User admin created with the password you specified."
             print "\n\n"
             print "*"*70
@@ -364,7 +364,7 @@ def notebook_twisted(self,
             
     nb.set_server_pool(server_pool)
     nb.set_ulimit(ulimit)
-    nb.set_accounts(accounts)
+    nb.user_manager().set_accounts(accounts)
     
     if os.path.exists('%s/nb-older-backup.sobj'%directory):
         nb._migrate_worksheets()

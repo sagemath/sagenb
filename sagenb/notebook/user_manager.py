@@ -437,6 +437,9 @@ class SimpleUserManager(UserManager):
         if encrypt:
             new_password = self.encrypt_password(new_password)
         self._passwords[username] = new_password
+        # need to make sure password in the user object is synced
+        # for compatibility only the user object data is stored in the 'users.pickle'
+        self.user(username).set_password(new_password)
 
     def passwords(self):
         """
