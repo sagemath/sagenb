@@ -50,9 +50,6 @@ import notebook as _notebook
 
 from sagenb.notebook.template import template
 
-HISTORY_MAX_OUTPUT = 92*5
-HISTORY_NCOLS = 90
-
 from sagenb.misc.misc import (SAGE_DOC, DATA, SAGE_VERSION, walltime,
                               tmp_filename, tmp_dir, is_package_installed,
                               jsmath_macros, encoded_str, unicode_str)
@@ -71,13 +68,6 @@ waiting = {}
 # the user database
 from user_db import UserDatabase
 users = UserDatabase()
-
-_cols = None
-def word_wrap_cols():
-    global _cols
-    if _cols is None:
-        _cols = notebook.conf()['word_wrap_cols']
-    return _cols
 
 ############################
 # Encoding data to go between the server and client
@@ -1232,8 +1222,8 @@ class Worksheet_cell_update(WorksheetResource, resource.PostableResource):
             new_input = cell.changed_input_text()
             out_html = cell.output_html()
             H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
-            H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
-                                max_out=HISTORY_MAX_OUTPUT)
+            H += cell.edit_text(ncols=notebook.HISTORY_NCOLS, prompts=False,
+                                max_out=notebook.HISTORY_MAX_OUTPUT)
             notebook.add_to_user_history(H, self.username)
         else:
             new_input = ''
@@ -1250,7 +1240,7 @@ class Worksheet_cell_update(WorksheetResource, resource.PostableResource):
             print "Segmentation fault detected in output!"
         msg = '%s%s %s'%(status, cell.id(),
                        encode_list([cell.output_text(html=True),
-                                    cell.output_text(word_wrap_cols(), html=True),
+                                    cell.output_text(notebook.conf()['word_wrap_cols'], html=True),
                                     out_html,
                                     new_input,
                                     inter,
@@ -2346,7 +2336,7 @@ class ForgotPassPage(resource.Resource):
 
             try:
                 import string
-                user = notebook.user(request.args[string.strip('username')][0])
+                user = notebook.user(string.strip(request.args['username'][0]))
             except KeyError:
                 return error('Username is invalid.')
 

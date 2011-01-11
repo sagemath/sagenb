@@ -210,10 +210,6 @@ def create_app(path_to_notebook, *args, **kwds):
     import sagenb.notebook.notebook as notebook
     notebook.JSMATH = True
     notebook = notebook.load_notebook(path_to_notebook, *args, **kwds)
-    SAGETEX_PATH = ""
-    OPEN_MODE = False
-    SID_COOKIE = str(hash(path_to_notebook))
-    DIR = path_to_notebook
     init_updates()
 
     ##############

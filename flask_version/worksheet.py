@@ -351,7 +351,7 @@ def worksheet_eval(worksheet):
 @worksheet_command('cell_update')
 def worksheet_cell_update(worksheet):
     import time
-    from sagenb.notebook.twist import encode_list, HISTORY_MAX_OUTPUT, HISTORY_NCOLS, word_wrap_cols
+    from sagenb.notebook.twist import encode_list
     
     id = get_cell_id()
 
@@ -365,8 +365,8 @@ def worksheet_cell_update(worksheet):
         new_input = cell.changed_input_text()
         out_html = cell.output_html()
         H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
-        H += cell.edit_text(ncols=HISTORY_NCOLS, prompts=False,
-                            max_out=HISTORY_MAX_OUTPUT)
+        H += cell.edit_text(ncols=g.notebook.HISTORY_NCOLS, prompts=False,
+                            max_out=g.notebook.HISTORY_MAX_OUTPUT)
         g.notebook.add_to_user_history(H, g.username)
     else:
         new_input = ''
@@ -384,7 +384,7 @@ def worksheet_cell_update(worksheet):
         
     msg = '%s%s %s'%(status, cell.id(),
                    encode_list([cell.output_text(html=True),
-                                cell.output_text(word_wrap_cols(), html=True),
+                                cell.output_text(g.notebook.conf()['word_wrap_cols'], html=True),
                                 out_html,
                                 new_input,
                                 inter,

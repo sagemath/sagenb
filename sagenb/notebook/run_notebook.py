@@ -128,6 +128,9 @@ import sagenb.notebook.notebook
 sagenb.notebook.notebook.JSMATH=True
 import sagenb.notebook.notebook as notebook
 import sagenb.notebook.worksheet as worksheet
+import sagenb.notebook.twist as twist
+
+twist.DIR = %(cwd)r #We should really get rid of this!
 
 import signal, sys, random
 def save_notebook(notebook):

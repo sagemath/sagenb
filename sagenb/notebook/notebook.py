@@ -67,6 +67,9 @@ JEDITABLE_TINYMCE  = True
 DOC_TIMEOUT = 120
 
 class Notebook(object):
+    HISTORY_MAX_OUTPUT = 92*5
+    HISTORY_NCOLS = 90
+
     def __init__(self, dir):
 
         if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":
