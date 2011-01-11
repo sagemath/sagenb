@@ -19,7 +19,7 @@ def worksheet_view(f):
         if owner != '_sage_' and g.username != owner:
             if not worksheet.is_published():
                 if (not username in worksheet.collaborators() and
-                    not app.notebook.user_is_admin(g.username)):
+                    not app.notebook.user_manager().user_is_admin(g.username)):
                     return app.message("You do not have permission to access this worksheet") #XXX: i18n
 
         if not worksheet.is_published():
@@ -581,7 +581,7 @@ def worksheet_upload_data(worksheet):
 def worksheet_do_upload_data(worksheet):
     from werkzeug import secure_filename
 
-    worksheet_url = url_for_worksheet(worksheet_url)
+    worksheet_url = url_for_worksheet(worksheet)
     upload_url = worksheet_upload_data.url_for(worksheet)
 
     #XXX: i18n

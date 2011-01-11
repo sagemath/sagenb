@@ -30,6 +30,20 @@ class User(object):
         self._temporary_password = ''
         self._is_suspended = False
 
+    def __eq__(self, other):
+        if self.__class__ is not other.__class__:
+            return False
+        elif self.username() != other.username():
+            return False
+        elif self.get_email() != other.get_email():
+            return False
+        elif self.conf() != other.conf():
+            return False
+        elif self.account_type() != other.account_type():
+            return False
+        else:
+            return True
+
     def __getstate__(self):
         d = copy.copy(self.__dict__)
 
@@ -96,6 +110,20 @@ class User(object):
         """
         return self._username
 
+    def password(self):
+        """
+        EXAMPLES::
+
+            sage: from sagenb.notebook.user import User
+            sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').username()
+            'tEir&tiwk!'
+            sage: User('sarah', 'Miaasc!', 'sarah@ellipticcurves.org', 'user').username()
+            'Miaasc!'
+            sage: User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin').username()
+            'Aisfa!!'
+        """
+        return self._password
+
     def __repr__(self):
         return self._username
 
@@ -122,17 +150,6 @@ class User(object):
 
     def __setitem__(self, *args):
         self._conf.__setitem__(*args)
-
-    def password(self):
-        """
-        EXAMPLES::
-
-            sage: from sagenb.notebook.user import User
-            sage: user = User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin')
-            sage: user.password()
-            'aamxw5LCYcWY.'
-        """
-        return self._password
 
     def set_password(self, password):
         """
@@ -221,21 +238,6 @@ class User(object):
         except AttributeError:
             self._email_confirmed = False
             return False
-
-    def password_is(self, password):
-        """
-        EXAMPLES::
-
-            sage: from sagenb.notebook.user import User
-            sage: user = User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin')
-            sage: user.password_is('ecc')
-            False
-            sage: user.password_is('Aisfa!!')
-            True
-        """
-        if self._username == "pub":
-            return False
-        return self._password == crypt.crypt(password, SALT)
 
     def account_type(self):
         """
