@@ -151,7 +151,8 @@ class FilesystemDatastore(Datastore):
         return dict([(name, User_from_basic(basic)) for name, basic in obj])
 
     def _users_to_basic(self, users):
-        return list(sorted([[name, U.basic()] for name, U in users.iteritems()]))
+        new = list(sorted([[name, U.basic()] for name, U in users.iteritems()]))
+        return new
 
     def _basic_to_server_conf(self, obj):
         from sagenb.notebook.server_conf import ServerConfiguration_from_basic
@@ -239,6 +240,7 @@ class FilesystemDatastore(Datastore):
             sage: U.users()
             {'admin': admin, 'wstein': wstein}
         """
+        print 'in users', users
         self._save(self._users_to_basic(users), 'users.pickle')
         self._permissions('users.pickle')
         
