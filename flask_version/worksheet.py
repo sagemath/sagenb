@@ -582,7 +582,7 @@ def worksheet_upload_data(worksheet):
 def worksheet_do_upload_data(worksheet):
     from werkzeug import secure_filename
 
-    worksheet_url = url_for_worksheet(worksheet_url)
+    worksheet_url = url_for_worksheet(worksheet)
     upload_url = worksheet_upload_data.url_for(worksheet)
 
     #XXX: i18n
