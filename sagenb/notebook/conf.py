@@ -31,6 +31,12 @@ class Configuration(object):
     def __repr__(self):
         return 'Configuration: %s'%self.confs
 
+    def __eq__(self, other):
+        return self.__class__ is other.__class__ and self.confs == other.confs
+        
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
     def basic(self):
         return self.confs
 
