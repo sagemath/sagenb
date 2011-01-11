@@ -135,6 +135,9 @@ class Notebook(object):
     def system_names(self):
         return SYSTEM_NAMES
 
+    def user_manager(self):
+        return self._user_manager
+        
     ##########################################################
     # Users
     ##########################################################
@@ -169,6 +172,7 @@ class Notebook(object):
         self.add_user('_sage_', '', '', account_type='user', force=True)
         self.add_user('guest', '', '', account_type='guest', force=True)
         self.add_user('admin', passwd, '', account_type='admin', force=True)
++       self.user_manager().create_default_users(passwd)
 
     def user_exists(self, username):
         """
@@ -196,7 +200,7 @@ class Notebook(object):
             sage: nb.user_exists('guest')
             True
         """
-        return username in self.users()
+        return self.user_manager().user_exists(username)
 
     def users(self):
         """
@@ -214,11 +218,7 @@ class Notebook(object):
             sage: list(sorted(nb.users().iteritems()))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
         """
-        try:
-            return self.__users
-        except AttributeError:
-            self.__users = {}
-            return self.__users
+        return self.user_manager().users()
 
     def user(self, username):
         """
@@ -245,21 +245,7 @@ class Notebook(object):
             sage: nb.user('admin').password()
             'aajfMKNH1hTm2'
         """
-        if not isinstance(username, (str, unicode)) or '/' in username:
-            raise KeyError, "no user '%s'"%username
-        try:
-            return self.users()[username]
-        except KeyError:
-            if username in ['pub', '_sage_']:
-                self.add_user(username, '', '', account_type='user', force=True)
-                return self.users()[username]
-            elif username == 'admin':
-                self.add_user(username, '', '', account_type='admin', force=True)
-                return self.users()[username]
-            elif username == 'guest':
-                self.add_user('guest', '', '', account_type='guest', force=True)
-                return self.users()[username]
-            raise KeyError, "no user '%s'"%username
+        return self.user_manager().user(username)
 
     def create_user_with_same_password(self, user, other_user):
         r"""
@@ -284,10 +270,7 @@ class Notebook(object):
             sage: nb.user('bob').password() == nb.user('mary').password()
             True
         """
-        U = self.user(user)
-        O = self.user(other_user)
-        passwd = O.password()
-        U.set_hashed_password(passwd)
+        self.user_manager().create_user_with_same_password(user, other_user)
 
     def user_is_admin(self, user):
         """
@@ -311,7 +294,7 @@ class Notebook(object):
             sage: nb.user_is_admin('RegularUser')
             False
         """
-        return self.user(user).is_admin()
+        return self.user_manager().user_is_admin(user)
 
     def user_is_guest(self, username):
         """
@@ -329,16 +312,12 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: nb.user_is_guest('guest')
             True
             sage: nb.user_is_guest('admin')
             False
         """
-        try:
-            return self.user(username).is_guest()
-        except KeyError:
-            return False
+        return self.user_manager().user_is_guest(username)
 
     def user_list(self):
         """
@@ -352,11 +331,10 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: sorted(nb.user_list(), key=lambda k: k.username())
             [_sage_, admin, guest, pub]
         """
-        return list(self.users().itervalues())
+        return self.user_manager().user_list()
 
     def usernames(self):
         """
@@ -370,12 +348,10 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: sorted(nb.usernames())
             ['_sage_', 'admin', 'guest', 'pub']
         """
-        U = self.users()
-        return U.keys()
+        return self.user_manager().usernames()
 
     def valid_login_names(self):
         """
@@ -389,7 +365,6 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: nb.valid_login_names()
             ['admin']
             sage: nb.add_user('Mark', 'password', '', force=True)
@@ -398,7 +373,7 @@ class Notebook(object):
             sage: sorted(nb.valid_login_names())
             ['David', 'Mark', 'Sarah', 'admin']
         """
-        return [x for x in self.usernames() if not x in ['guest', '_sage_', 'pub']]
+        return self.user_manager().valid_login_names()
 
     def default_user(self):
         r"""
@@ -415,17 +390,13 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: nb.default_user()
             'admin'
             sage: nb.add_user('AnotherUser', 'password', '', force=True)
             sage: nb.default_user()
             ''
         """
-        if self.valid_login_names() == ['admin']:
-            return 'admin'
-        else:
-            return ''
+        return self.user_manager().default_user()
 
     def set_accounts(self, value):
         r"""
@@ -449,7 +420,7 @@ class Notebook(object):
             sage: nb.get_accounts()
             False
         """
-        self.conf()['accounts'] = bool(value)
+        return self.user_manager().get_accounts()
 
     def get_accounts(self):
         r"""
@@ -503,15 +474,7 @@ class Notebook(object):
             sage: nb.user('Sarah')
             Sarah
         """
-        if not self.get_accounts() and not force:
-            raise ValueError, "creating new accounts disabled."
-
-        us = self.users()
-        if us.has_key(username):
-            print "WARNING: User '%s' already exists -- and is now being replaced."%username
-        U = user.User(username, password, email, account_type)
-        us[username] = U
-
+        return self.user_manager().add_user(username, password, email, account_type='user', force=False)
         # Save the user database
         self.__storage.save_users(self.users())
 
@@ -536,7 +499,7 @@ class Notebook(object):
             sage: nb.user('Mark').password()
             'aaTlXok5npQME'
         """
-        self.user(username).set_password(password)
+        self.user_manager().change_password(username, password)
 
     def del_user(self, username):
         """
@@ -557,9 +520,7 @@ class Notebook(object):
             Traceback (most recent call last):
             KeyError: "no user 'Mark'"
         """
-        us = self.users()
-        if us.has_key(username):
-            del us[username]
+        self.user_manager().delete_user(username)
 
     def passwords(self):
         """
@@ -573,12 +534,11 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: nb.add_user('Mark', 'password', '', force=True)
             sage: list(sorted(nb.passwords().iteritems()))
             [('Mark', 'aajfMKNH1hTm2'), ('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajfMKNH1hTm2'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
         """
-        return dict([(user.username(), user.password()) for user in self.user_list()])
+        return self.user_manager().passwords()
 
     def user_conf(self, username):
         """
@@ -592,7 +552,6 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: config = nb.user_conf('admin')
             sage: config['max_history_length']
             1000
@@ -603,7 +562,7 @@ class Notebook(object):
             sage: config['default_pretty_print']
             False
         """
-        return self.users()[username].conf()
+        return self.user_manager().user_conf(username)
 
     ##########################################################
     # Publishing worksheets
@@ -1177,6 +1136,7 @@ class Notebook(object):
             name = name + " (%s)"%i
             worksheet.set_name(name)
 
+from user_manager import SimpleUserManager
 
     ##########################################################
     # Server configuration
@@ -1674,7 +1634,7 @@ class Notebook(object):
 
 ####################################################################
 
-def load_notebook(dir, interface=None, port=None, secure=None):
+def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None):
     """
     Load and return a notebook from a given directory.  Create a new
     one in that directory, if one isn't already there.
@@ -1707,6 +1667,8 @@ def load_notebook(dir, interface=None, port=None, secure=None):
     nb.interface = interface
     nb.port = port
     nb.secure = secure
+
+    self._user_manager = SimpleUserManager() if user_manager is None else user_manager
 
     # Install this copy of the notebook in twist.py as *the*
     # global notebook object used for computations.  This is
