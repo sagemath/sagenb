@@ -51,7 +51,7 @@ def settings():
         return redirect(url_for('logout'))
 
     if redirect_to_home:
-        return redirect(url_for('home', username=g.username))
+        return redirect(url_for('worksheet_listing.home', username=g.username))
 
     td = {}
     td['username'] = g.username

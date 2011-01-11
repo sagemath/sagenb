@@ -42,7 +42,7 @@ class SageNBFlask(Flask):
                                **template_dict)
 
 
-app = SageNBFlask(__name__)
+app = SageNBFlask('flask_version')
 app.secret_key = os.urandom(24)
 SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
 idx = AutoIndex(app, browse_root=SRC)
@@ -58,7 +58,7 @@ jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
 @app.route('/')
 def index():
     if 'username' in session:
-        response = redirect(url_for('home', username=session['username']))
+        response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:
             response.set_cookie('nb_session_%s'%app.notebook.port,
                                 expires=(time.time() + 60 * 60 * 24 * 14))
@@ -153,10 +153,8 @@ def favicon():
 ################
 import authentication
 import doc
-import worksheet_listing
 import worksheet
 import settings
-import admin
 
 #############
 # OLD STUFF #
@@ -198,9 +196,12 @@ def notebook_updates():
     notebook_idle_check()
 
 
+notebook = None
 
 #CLEAN THIS UP!
 def init_app(path_to_notebook, port=5000):
+    global notebook
+
     print "Starting notebook..."
     port = 5000
     
@@ -211,12 +212,23 @@ def init_app(path_to_notebook, port=5000):
     sagenb.notebook.notebook.JSMATH = True
     import sagenb.notebook.notebook as notebook
 
-    app.notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
+    app.notebook = notebook = notebook.load_notebook(path_to_notebook,interface="localhost",port=port,secure=False)
     SAGETEX_PATH = ""
     OPEN_MODE = False
     SID_COOKIE = str(hash(path_to_notebook))
     DIR = path_to_notebook
     init_updates()
+
+    @app.before_request
+    def set_notebook_object():
+        g.notebook = notebook
+        
+    from worksheet_listing import worksheet_listing
+    app.register_module(worksheet_listing)  
+
+    from admin import admin
+    app.register_module(admin)
+
     return app
 
 def start(port=5000):
