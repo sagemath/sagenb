@@ -439,7 +439,7 @@ class SimpleUserManager(UserManager):
         self._passwords[username] = new_password
         # need to make sure password in the user object is synced
         # for compatibility only the user object data is stored in the 'users.pickle'
-        self.user(username).set_password(new_password)
+        self.user(username).set_password(new_password, encrypt = False)
 
     def passwords(self):
         """
@@ -457,7 +457,7 @@ class SimpleUserManager(UserManager):
              ('pub', 'aaQSqAReePlq6')]
 
         """
-        return dict([(user.username(), user.password()) for user in self.user_list()])
+        return dict([(user.username(), self.password(user.username())) for user in self.user_list()])
 
     def password(self, username):
         """

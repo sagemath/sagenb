@@ -240,7 +240,6 @@ class FilesystemDatastore(Datastore):
             sage: U.users()
             {'admin': admin, 'wstein': wstein}
         """
-        print 'in users', users
         self._save(self._users_to_basic(users), 'users.pickle')
         self._permissions('users.pickle')
         

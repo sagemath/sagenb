@@ -31,7 +31,7 @@ def users():
         except KeyError:
             pass
 
-    template_dict['number_of_users'] = len(app.notebook.user_manager().valid_login_names()) if len(app.notebook.user_manager().valid_login_names()) > 1 else None
+    template_dict['number_of_users'] = len(g.notebook.user_manager().valid_login_names()) if len(g.notebook.user_manager().valid_login_names()) > 1 else None
     users = sorted(g.notebook.user_manager().valid_login_names())
     del users[users.index('admin')]
     template_dict['users'] = [g.notebook.user_manager().user(username) for username in users]

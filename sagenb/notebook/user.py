@@ -151,7 +151,7 @@ class User(object):
     def __setitem__(self, *args):
         self._conf.__setitem__(*args)
 
-    def set_password(self, password):
+    def set_password(self, password, encrypt = True):
         """
         EXAMPLES::
 
@@ -165,7 +165,10 @@ class User(object):
         if password == '':
             self._password = 'x'   # won't get as a password -- i.e., this account is closed.
         else:
-            self._password = crypt.crypt(password, SALT)
+            if encrypt:
+                self._password = crypt.crypt(password, SALT)
+            else:
+                self._password = password
             self._temporary_password = ''
 
     def set_hashed_password(self, password):
