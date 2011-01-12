@@ -44,7 +44,7 @@ def login():
 
         if U is None:
             pass
-        elif app.notebook.user_manager().check_password(username, password):
+        elif g.notebook.user_manager().check_password(username, password):
             if U.is_suspended():
                 #suspended
                 return "Your account is currently suspended"

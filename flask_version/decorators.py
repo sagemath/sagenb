@@ -15,8 +15,7 @@ def admin_required(f):
     @login_required
     @wraps(f)
     def wrapper(*args, **kwds):
-        from base import app
-        if not app.notebook.user_manager().user_is_admin(g.username):
+        if not g.notebook.user_manager().user_is_admin(g.username):
             #XXX: i18n
             app.message("You do not have permission to access this location")
         return f(*args, **kwds)
