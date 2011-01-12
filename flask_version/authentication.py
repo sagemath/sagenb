@@ -1,5 +1,6 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
+from flaskext.openid import OpenID
 
 authentication = Module('flask_version.authentication')
 
@@ -11,6 +12,7 @@ def lookup_current_user():
     g.username = None
     if 'username' in session:
         g.username = session['username']
+
 
 @authentication.route('/login', methods=['POST', 'GET'])
 def login():

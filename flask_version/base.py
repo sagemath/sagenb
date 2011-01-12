@@ -2,7 +2,10 @@
 import os, time
 from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
-from decorators import login_required
+from decorators import login_required, guest_or_login_required
+
+from flaskext.openid import OpenID
+oid = OpenID(fs_store_path = '/home/rado/')
 
 class SageNBFlask(Flask):
     static_path = ''
@@ -157,6 +160,35 @@ def favicon():
     from sagenb.misc.misc import DATA
     return send_file(os.path.join(DATA, 'sage', 'images', 'favicon.ico'))
 
+@base.route('/loginoid', methods=['POST', 'GET'])
+@guest_or_login_required
+@oid.loginhandler
+def loginoid():
+    if g.username != 'guest':
+        return redirect(oid.get_next_url())
+    if request.method == 'POST':
+        openid = request.form.get('openid')
+        if openid:
+            return oid.try_login(openid, ask_for=['email', 'fullname', 'nickname'])
+    return render_template('html/loginoid.html', next=oid.get_next_url(),
+                           error=oid.fetch_error())
+
+@oid.after_login
+def create_or_login(resp):
+    print 'after login' 
+    from flask import flash
+    session['username'] = username = resp.identity_url
+    # tell user manager to check for user with username
+    #user = User.query.filter_by(openid=resp.identity_url).first()
+    if username is not None:
+        flash(u'Successfully signed in')
+        g.username = username
+    return redirect(oid.get_next_url())
+    #
+    #return redirect(url_for('create_profile', next=oid.get_next_url(),
+    #                        name=resp.fullname or resp.nickname,
+    #                        email=resp.email))
+
 #############
 # OLD STUFF #
 #############
@@ -217,6 +249,8 @@ def create_app(path_to_notebook, *args, **kwds):
     ##############
     app = SageNBFlask('flask_version', startup_token=startup_token)
     app.secret_key = os.urandom(24)
+    oid.init_app(app)
+
 
     @app.before_request
     def set_notebook_object():
