@@ -363,6 +363,7 @@ class SimpleUserManager(UserManager):
         """
         self._passwords = {}
         UserManager.__init__(self)
+        self.set_accounts(True)
 
     def create_user_with_same_password(self, user, other_user):
         """
@@ -468,7 +469,7 @@ class SimpleUserManager(UserManager):
             sage: U.password('admin')
             passpass
         """
-        return self._passwords[username]
+        return self._passwords.get(username, None)
 
     def encrypt_password(self, password):
         return crypt.crypt(password, SALT)

@@ -5,7 +5,7 @@ from flask import Flask, Module, url_for, render_template, request, session, red
 from decorators import login_required, guest_or_login_required
 
 from flaskext.openid import OpenID
-oid = OpenID(fs_store_path = '/home/rado/')
+oid = OpenID()
 
 class SageNBFlask(Flask):
     static_path = ''
@@ -175,19 +175,14 @@ def loginoid():
 
 @oid.after_login
 def create_or_login(resp):
-    print 'after login' 
-    from flask import flash
-    session['username'] = username = resp.identity_url
-    # tell user manager to check for user with username
-    #user = User.query.filter_by(openid=resp.identity_url).first()
-    if username is not None:
-        flash(u'Successfully signed in')
+    session['username'] = username = 'openid' + resp.identity_url[-10:]
+    if g.notebook.user_manager().user_exists(username):
         g.username = username
+    else:
+        from sagenb.notebook.user import User
+        new_user = User(username, '', email = resp.email, account_type='user') 
+        g.notebook.add_user_if_allowed(new_user)
     return redirect(oid.get_next_url())
-    #
-    #return redirect(url_for('create_profile', next=oid.get_next_url(),
-    #                        name=resp.fullname or resp.nickname,
-    #                        email=resp.email))
 
 #############
 # OLD STUFF #
