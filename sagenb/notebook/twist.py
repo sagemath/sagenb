@@ -34,7 +34,7 @@ reactor    = None
 
 ############################################################
 
-import os, shutil, time
+import os, shutil, time, urlparse
 import bz2
 from cgi import escape
 
@@ -436,8 +436,14 @@ class UploadWorksheet(resource.PostableResource):
         url = ctx.args['url'][0].strip()
         dir = ''  # we will delete the directory below if it is used
         if url != '':
-            # downloading a file from the internet
-            filename = tmp_filename()+".sws"
+            # The file will be downloaded from the internet and saved
+            # to a temporary file with the same extension
+            path = urlparse.urlparse(url).path
+            extension = os.path.splitext(path)[1].lower()
+            if extension not in [".txt", ".sws", ".zip", ".html"]:
+                # Or shall we try to import the document as an sws in doubt?
+                return HTMLResponse(stream=message("Unknown worksheet extension: %s. %s" %(extension,backlinks)))
+            filename = tmp_filename()+extension
         else:
             # uploading a file from the user's computer
             dir = tmp_dir()
@@ -470,7 +476,8 @@ class UploadWorksheet(resource.PostableResource):
                         zip_file = zipfile.ZipFile(filename)
                         sws_file = os.path.join(dir, "tmp.sws")
                         for sws in zip_file.namelist():
-                            if sws.endswith('.sws'):
+                            extension = os.path.splitext(sws)[1].lower()
+                            if extension in ['.html', '.txt', '.sws']:
                                 open(sws_file, 'w').write(zip_file.read(sws)) # 2.6 zip_file.extract(sws, sws_file)
                                 W = notebook.import_worksheet(sws_file, self.username)
                                 if new_name:
