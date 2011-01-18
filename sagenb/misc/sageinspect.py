@@ -1067,7 +1067,7 @@ def __internal_tests():
     A cython function with default arguments (one of which is a string)::
     
         sage: sage_getdef(sage.rings.integer.Integer.factor, obj_name='factor')
-        "factor(algorithm='pari', proof=True, limit=None)"
+        "factor(algorithm='pari', proof=None, limit=None, int_=False, verbose=0)"
 
         sage: sage_getdef(sage.rings.integer.Integer.__init__, obj_name='__init__')
         '__init__(x=None, base=0)'
