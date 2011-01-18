@@ -59,6 +59,11 @@ jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
 
 base = Module('flask_version.base')
 
+
+from flaskext.autoindex import AutoIndex
+SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
+idx = None
+
 #############
 # Main Page #
 #############
@@ -267,5 +272,19 @@ def create_app(path_to_notebook, *args, **kwds):
 
     from settings import settings
     app.register_module(settings)
+
+    #autoindex v0.3 doesnt seem to work with modules
+    #routing with app directly does the trick
+    idx = AutoIndex(app, browse_root=SRC)
+    @app.route('/src/')
+    @app.route('/src/<path:path>')
+    @guest_or_login_required
+    def autoindex(path='.'):
+        filename = os.path.join(SRC, path)
+        if os.path.isfile(filename):
+            from cgi import escape
+            src = escape(open(filename).read())
+            return render_template(os.path.join('html', 'source_code.html'), src_filename=path, src=src, username = g.username)
+        return idx.render_autoindex(path)
 
     return app

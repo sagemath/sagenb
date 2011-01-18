@@ -16,7 +16,6 @@ URLS to do:
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required
-from flaskext.autoindex import AutoIndex
 
 doc = Module('flask_version.doc')
 
@@ -48,17 +47,3 @@ def doc_live(filename):
     else:
         from flask.helpers import send_file
         return send_file(filename)
-
-SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
-idx = AutoIndex(doc, browse_root=SRC)
-
-@doc.route('/src/')
-@doc.route('/src/<path:path>')
-@guest_or_login_required
-def autoindex(path='.'):
-    filename = os.path.join(SRC, path)
-    if os.path.isfile(filename):
-        from cgi import escape
-        src = escape(open(filename).read())
-        return render_template(os.path.join('html', 'source_code.html'), src_filename=path, src=src, username = g.username)
-    return idx.render_autoindex(path)
