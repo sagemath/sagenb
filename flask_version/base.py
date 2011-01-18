@@ -11,7 +11,7 @@ class SageNBFlask(Flask):
     static_path = ''
 
     def __init__(self, *args, **kwds):
-        startup_token = kwds.pop('startup_token', None)
+        self.startup_token = kwds.pop('startup_token', None)
         Flask.__init__(self, *args, **kwds)
 
         from sagenb.misc.misc import DATA
@@ -30,12 +30,6 @@ class SageNBFlask(Flask):
         self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
         self.add_static_path('/doc/static', DOC) 
         self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'en', 'reference'))
-
-        if startup_token:
-            from random import randint
-            self.one_time_token = str(randint(0, 2**128))
-        else:
-            self.one_time_token = None
 
     def create_jinja_environment(self):
         from sagenb.notebook.template import env
@@ -82,11 +76,11 @@ def index():
         
     from authentication import login
     
-    if current_app.one_time_token is not None and 'one_time_token' in request.args:
-        if request.args['one_time_token'] == current_app.one_time_token:
+    if current_app.startup_token is not None and 'startup_token' in request.args:
+        if request.args['startup_token'] == current_app.startup_token:
             session['username'] = 'admin' 
             session.modified = True
-            current_app.one_time_token = -1 
+            current_app.startup_token = -1 
             return index()
             
     return login()
