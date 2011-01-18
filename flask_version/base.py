@@ -230,7 +230,7 @@ notebook = None
 def create_app(path_to_notebook, *args, **kwds):
     global notebook
     startup_token = kwds.pop('startup_token', None)
-
+    
     #############
     # OLD STUFF #
     #############
@@ -245,7 +245,7 @@ def create_app(path_to_notebook, *args, **kwds):
     app = SageNBFlask('flask_version', startup_token=startup_token)
     app.secret_key = os.urandom(24)
     oid.init_app(app)
-
+    app.debug = True
 
     @app.before_request
     def set_notebook_object():
