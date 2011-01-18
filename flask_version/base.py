@@ -4,6 +4,8 @@ from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required, guest_or_login_required
 
+from flaskext.autoindex import AutoIndex
+SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
 from flaskext.openid import OpenID
 oid = OpenID()
 
@@ -60,9 +62,6 @@ jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
 base = Module('flask_version.base')
 
 
-from flaskext.autoindex import AutoIndex
-SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
-idx = None
 
 #############
 # Main Page #
