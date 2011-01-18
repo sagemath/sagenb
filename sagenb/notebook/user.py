@@ -112,15 +112,12 @@ class User(object):
 
     def password(self):
         """
+        Deprecated. Use user_manager object instead. 
         EXAMPLES::
 
             sage: from sagenb.notebook.user import User
-            sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').username()
-            'tEir&tiwk!'
-            sage: User('sarah', 'Miaasc!', 'sarah@ellipticcurves.org', 'user').username()
-            'Miaasc!'
-            sage: User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin').username()
-            'Aisfa!!'
+            sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').password()
+            'aaVOpo2zPZsI2'
         """
         return self._password
 
@@ -151,7 +148,7 @@ class User(object):
     def __setitem__(self, *args):
         self._conf.__setitem__(*args)
 
-    def set_password(self, password, encrypt = True):
+    def set_password(self, password, encrypt=True):
         """
         EXAMPLES::
 

@@ -58,7 +58,7 @@ def add_user():
         if username in g.notebook.user_manager().usernames():
             return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
                                    error='username_taken', username_input=username, **template_dict)
-        g.notebook.add_user(username, password, '', force=True)
+        g.notebook.user_manager().add_user(username, password, '', force=True)
 
         #XXX: i18n
         return current_app.message('The temporary password for the new user <em>%s</em> is <em>%s</em>' %

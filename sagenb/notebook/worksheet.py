@@ -571,8 +571,8 @@ class Worksheet(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: nb.add_user('hilbert','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('hilbert','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.set_collaborators(['sage', 'admin', 'hilbert', 'sage'])
 
@@ -583,7 +583,7 @@ class Worksheet(object):
             ['hilbert', 'sage']
         """
         n = self.notebook()
-        U = n.users().keys()
+        U = n.user_manager().users().keys()
         L = [x.lower() for x in U]
         owner = self.owner()
         self.__collaborators = []
@@ -609,8 +609,8 @@ class Worksheet(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: nb.add_user('hilbert','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('hilbert','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.add_viewer('hilbert')
             sage: W.viewers()
@@ -661,7 +661,7 @@ class Worksheet(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('hilbert','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('hilbert','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.add_viewer('hilbert')
             sage: W.delete_notebook_specific_data()
@@ -1684,7 +1684,7 @@ class Worksheet(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n3^20\n}}}')
             sage: W.cell_list()[0].evaluate()
@@ -1753,8 +1753,8 @@ class Worksheet(object):
         ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: nb.add_user('william', 'william', 'wstein@sagemath.org', force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('william', 'william', 'wstein@sagemath.org', force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.user_can_edit('sage')
             True
@@ -1793,8 +1793,8 @@ class Worksheet(object):
         ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('wstein','sage','wstein@sagemath.org',force=True)
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('wstein','sage','wstein@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
             sage: W.add_viewer('wstein')
             sage: W.owner()
@@ -1855,7 +1855,7 @@ class Worksheet(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('diophantus','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('diophantus','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Viewer test', 'admin')
             sage: W.add_viewer('diophantus')
             sage: W.viewers()
@@ -1878,7 +1878,7 @@ class Worksheet(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('diophantus','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('diophantus','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Collaborator test', 'admin')
             sage: W.collaborators()
             []
@@ -2158,7 +2158,7 @@ class Worksheet(object):
         ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test Edit Save', 'sage')
 
         We set the contents of the worksheet using the edit_save command.
@@ -2182,7 +2182,7 @@ class Worksheet(object):
         ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir() + '.sagenb')
-            sage: nb.add_user('sage', 'sage', 'sage@sagemath.org', force=True)
+            sage: nb.user_manager().add_user('sage', 'sage', 'sage@sagemath.org', force=True)
             sage: W = nb.create_new_worksheet('Test trac #8443', 'sage')
             sage: W.edit_save('{{{\n1+1\n///\n}}}')
             sage: W.cell_id_list()
@@ -2976,7 +2976,7 @@ except (KeyError, IOError):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n3^20\n}}}')
             sage: W.cell_list()[0].evaluate()
@@ -3120,7 +3120,7 @@ except (KeyError, IOError):
         going::
 
             sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\nfactor(2^997-1)\n}}}')
             sage: W.cell_list()[0].evaluate()
@@ -3673,7 +3673,7 @@ except (KeyError, IOError):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n2+3\n}}}\n\n{{{\n%gap\nSymmetricGroup(5)\n}}}')
             sage: c0, c1 = W.cell_list()
@@ -3732,7 +3732,7 @@ except (KeyError, IOError):
         ::
 
             sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
 
         We first test running a native command in 'sage' mode and then a
@@ -3834,7 +3834,7 @@ except (KeyError, IOError):
         ::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}')
 

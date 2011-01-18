@@ -20,10 +20,10 @@ class UserManager(object):
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U1 = SimpleUserManager()
-            sage: U2 = SimpleUserManager(accounts=True)
+            sage: U2 = SimpleUserManager(accounts=False)
             sage: U1 == U2
             False
-            sage: U1.set_accounts(True)
+            sage: U2.set_accounts(True)
             sage: U1 == U2
             True
             sage: U1.create_default_users('password')
@@ -98,10 +98,10 @@ class UserManager(object):
             sage: U.user('hello/')
             Traceback (most recent call last):
             ...
-            ValueError
+            ValueError: no user 'hello/'
         """
         if not isinstance(username, (str, unicode)) or '/' in username:
-            raise KeyError, "no user '%s'"%username
+            raise ValueError, "no user '%s'"%username
         if username in self.users():
             return self.users()[username]
 
@@ -271,10 +271,10 @@ class UserManager(object):
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
             sage: U.get_accounts()
-            False
-            sage: U.set_accounts(True)
+            True 
+            sage: U.set_accounts(False)
             sage: U.get_accounts()
-            True
+            False 
         """
         if value not in [True, False]:
             raise ValueError, "accounts must be True or False"
@@ -289,10 +289,10 @@ class UserManager(object):
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
             sage: U.get_accounts()
-            False
-            sage: U.set_accounts(True)
+            True 
+            sage: U.set_accounts(False)
             sage: U.get_accounts()
-            True
+            False 
         """
         return self._accounts
 
@@ -311,11 +311,9 @@ class UserManager(object):
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.add_user('william', 'password', 'email@address.com', account_type='admin')
-            Traceback (most recent call last):
-            ...
-            ValueError: creating new accounts disabled.
             sage: U.set_accounts(True)
             sage: U.add_user('william', 'password', 'email@address.com', account_type='admin')
+            WARNING: User 'william' already exists -- and is now being replaced.
             sage: U.user('william')
             william
         """
@@ -329,7 +327,7 @@ class UserManager(object):
         us[username] = U
         self.set_password(username, password)
 
-    def add_user_object(self, user):
+    def add_user_object(self, user, force=False):
         """
         Adds a new user to the user dictionary.
 
@@ -338,21 +336,26 @@ class UserManager(object):
 
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import SimpleUserManager
+            sage: from sagenb.notebook.user import User 
             sage: U = SimpleUserManager()
             sage: user = User('william', 'password', 'email@address.com', account_type='admin')
-            sage: U.add_user(user)
-            Traceback (most recent call last):
-            ...
-            ValueError: creating new accounts disabled.
+            sage: U.add_user_object(user)
             sage: U.set_accounts(True)
-            sage: U.add_user(user)
+            sage: U.add_user_object(user)
+            WARNING: User 'william' already exists -- and is now being replaced.
             sage: U.user('william')
             william
         """
+        if not self.get_accounts() and not force:
+            raise ValueError, "creating new accounts disabled."
+        us = self.users()
+        if us.has_key(user.username()):
+            print "WARNING: User '%s' already exists -- and is now being replaced."%user.username()
+
         self._users[user.username()] = user 
 
 class SimpleUserManager(UserManager):
-    def __init__(self):
+    def __init__(self, accounts=True):
         """
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import SimpleUserManager
@@ -362,31 +365,29 @@ class SimpleUserManager(UserManager):
 
         """
         self._passwords = {}
-        UserManager.__init__(self)
-        self.set_accounts(True)
+        UserManager.__init__(self, accounts=accounts)
 
-    def create_user_with_same_password(self, user, other_user):
+    def copy_password(self, username, other_username):
         """
         Sets the password of user to be the password of other_user.
 
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import SimpleUserManager
-            sage: U = SimpleUserManager(accounts=True)
-            sage: U.create_default_users('passpass')
-            sage: U.add_user('william', 'password', 'email@address.com')
-            sage: U.passwords()['admin']
+            sage: UM = SimpleUserManager(accounts=True)
+            sage: UM.create_default_users('passpass')
+            sage: UM.add_user('william', 'password', 'email@address.com')
+            sage: UM.passwords()['admin']
             'aaJAM8WS/7IvY'
-            sage: U.passwords()['william']
+            sage: UM.passwords()['william']
             'aajfMKNH1hTm2'
-            sage: U.create_user_with_same_password('william', 'admin')
-            sage: U.passwords()['william']
+            sage: UM.copy_password('william', 'admin')
+            sage: UM.passwords()['william']
             'aaJAM8WS/7IvY'
 
         """
-        U = self.user(user)
-        O = self.user(other_user)
+        O = self.user(other_username)
         passwd = O.password()
-        U.set_hashed_password(passwd)
+        self.set_password(username, passwd, encrypt=False)
 
     def _user(self, username):
         """
@@ -462,12 +463,13 @@ class SimpleUserManager(UserManager):
 
     def password(self, username):
         """
+        Return the stored password for username. Might be encrypted.
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
             sage: U.password('admin')
-            passpass
+            'aaJAM8WS/7IvY'
         """
         return self._passwords.get(username, None)
 

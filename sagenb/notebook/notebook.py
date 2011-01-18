@@ -145,9 +145,9 @@ class Notebook(object):
         """
         Returns self's UserManager object.
         EXAMPLES:
-            sage: n = sage.server.notebook.notebook.Notebook(tmp_dir())
+            sage: n = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: n.user_manager()
-            <sage.server.notebook.user_manager.SimpleUserManager object at 0x...>
+            <sagenb.notebook.user_manager.SimpleUserManager object at 0x...>
         """
         return self._user_manager
         
@@ -166,24 +166,18 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: list(sorted(nb.user_manager().users().iteritems()))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
-            sage: list(sorted(nb.passwords().iteritems()))
+            sage: list(sorted(nb.user_manager().passwords().iteritems()))
             [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajfMKNH1hTm2'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
             sage: nb.create_default_users('newpassword')
-            Creating default users.
             WARNING: User 'pub' already exists -- and is now being replaced.
             WARNING: User '_sage_' already exists -- and is now being replaced.
             WARNING: User 'guest' already exists -- and is now being replaced.
             WARNING: User 'admin' already exists -- and is now being replaced.
-            sage: list(sorted(nb.passwords().iteritems()))
+            sage: list(sorted(nb.user_manager().passwords().iteritems()))
             [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajH86zjeUSDY'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
         """
-        self.user_manager().add_user('pub', '', '', account_type='user', force=True)
-        self.user_manager().add_user('_sage_', '', '', account_type='user', force=True)
-        self.user_manager().add_user('guest', '', '', account_type='guest', force=True)
-        self.user_manager().add_user('admin', passwd, '', account_type='admin', force=True)
         self.user_manager().create_default_users(passwd)
 
     def user(self, username):
@@ -203,7 +197,6 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.user_manager().create_default_users('password')
-            Creating default users.
             sage: nb.user('admin')
             admin
             sage: nb.user('admin').get_email()

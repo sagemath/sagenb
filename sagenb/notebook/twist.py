@@ -1669,7 +1669,7 @@ class EmptyTrash(resource.PostableResource):
         worksheet.::
 
             sage: n = sagenb.notebook.notebook.load_notebook('notebook-test.sagenb')
-            sage: n.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: n.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = n.new_worksheet_with_title_from_text('Sage', owner='sage')
             sage: W.move_to_trash('sage')
             sage: n.worksheet_names()
