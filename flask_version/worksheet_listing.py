@@ -71,7 +71,7 @@ def bare_home():
 ###########
 
 def get_worksheets_from_request():
-    U = app.notebook.user_manager().user(g.username)
+    U = g.notebook.user_manager().user(g.username)
     
     if 'filename' in request.form:
         filenames = [request.form['filename']]

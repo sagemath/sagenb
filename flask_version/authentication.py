@@ -78,9 +78,10 @@ def logout():
 #This is data should be stored somewhere more persistant.
 waiting = {}
 
-@authentication.route('/register')
+@authentication.route('/register', methods = ['GET','POST'])
 def register():
-    from sagenb.notebook.twist import is_valid_username
+    from sagenb.notebook.twist import is_valid_username, is_valid_password, \
+    is_valid_email, do_passwords_match
     from sagenb.notebook.challenge import challenge
 
     # VALIDATORS: is_valid_username, is_valid_password,
@@ -127,6 +128,8 @@ def register():
     if username:
         if not is_valid_username(username):
             template_dict['username_invalid'] = True
+        if g.notebook.user_manager().user_exists(username):
+            template_dict['username_taken'] = True
         else:
             template_dict['username'] = username
             validated.add('username')
@@ -150,7 +153,7 @@ def register():
 
     # Email address.
     email_address = ''
-    if notebook.conf()['email']:
+    if g.notebook.conf()['email']:
         email_address = request.args.get('email', [None])[0]
         if email_address:
             if not is_valid_email(email_address):
@@ -163,7 +166,7 @@ def register():
             empty.add('email')
 
     # Challenge (e.g., reCAPTCHA).
-    if notebook.conf()['challenge']:
+    if g.notebook.conf()['challenge']:
         status = chal.is_valid_response(req_args = request.args)
         if status.is_valid is True:
             validated.add('challenge')
@@ -191,8 +194,7 @@ def register():
 
     # Create an account, if username is unique.
     try:
-        #XXX: Use the user manager here
-        g.nobteook.user_manager().add_user(username, password, email_address)
+        g.notebook.user_manager().add_user(username, password, email_address)
     except ValueError:
         template_dict['username_taken'] = True
         template_dict['error'] = 'E '
@@ -226,8 +228,8 @@ def register():
 
     # Go to the login page.
     from sagenb.misc.misc import SAGE_VERSION
-    template_dict = {'accounts': g.notebook.get_accounts(),
-                     'default_user': g.notebook.default_user(),
+    template_dict = {'accounts': g.notebook.user_manager().get_accounts(),
+                     'default_user': g.notebook.user_manager().default_user(),
                      'welcome': username,
                      'recovery': g.notebook.conf()['email'],
                      'sage_version': SAGE_VERSION}

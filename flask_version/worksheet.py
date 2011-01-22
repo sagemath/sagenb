@@ -19,7 +19,7 @@ def worksheet_view(f):
 
         if owner != '_sage_' and g.username != owner:
             if not worksheet.is_published():
-                if (not username in worksheet.collaborators() and
+                if (not g.username in worksheet.collaborators() and
                     not g.notebook.user_manager().user_is_admin(g.username)):
                     return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
 
@@ -474,8 +474,9 @@ def worksheet_share(worksheet):
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
     collaborators = [u.strip() for u in request.values.get('collaborators', '').split(',')]
+    print collaborators
     worksheet.set_collaborators(collaborators)
-    return redirect('.') #XXX: What should this really be?
+    return redirect(url_for_worksheet(worksheet))
     
 ########################################################
 # Revisions
