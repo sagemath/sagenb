@@ -436,8 +436,6 @@ class SimpleUserManager(UserManager):
             sage: U.set_password('admin', 'test', encrypt=False); U.password('admin')
             'test'
         """
-        if new_password == '':
-            return
         if encrypt:
             new_password = self.encrypt_password(new_password)
         self._passwords[username] = new_password
