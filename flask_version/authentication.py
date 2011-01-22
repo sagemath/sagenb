@@ -1,6 +1,5 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from flaskext.openid import OpenID
 
 authentication = Module('flask_version.authentication')
 
@@ -21,7 +20,8 @@ def login():
                      'default_user': g.notebook.user_manager().default_user(),
                      'recovery': g.notebook.conf()['email'],
                      'next': request.values.get('next', ''), 
-                     'sage_version':SAGE_VERSION}
+                     'sage_version': SAGE_VERSION,
+                     'openIDlogin': True}
 
     if request.method == 'POST':
         username = request.form['email']

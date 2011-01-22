@@ -1296,15 +1296,6 @@ class Notebook(object):
                         notebook = self, do_print=do_print,
                         username = username, show_debug = show_debug)
 
-    def add_user_if_allowed(self, user):
-        '''
-        Checks if the notebook is allowed to create new users.
-        the user_manager().
-        '''
-        if self.conf()['accounts']:
-            return self.user_manager().add_user_object(user) 
-        return None
-
 ####################################################################
 
 def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None):

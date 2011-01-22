@@ -163,24 +163,29 @@ def favicon():
 @oid.loginhandler
 def loginoid():
     if g.username != 'guest':
-        return redirect(oid.get_next_url())
+        return redirect(request.values.get('next', url_for('base.index')))
     if request.method == 'POST':
-        openid = request.form.get('openid')
+        openid = request.form.get('url')
         if openid:
             return oid.try_login(openid, ask_for=['email', 'fullname', 'nickname'])
-    return render_template('html/loginoid.html', next=oid.get_next_url(),
-                           error=oid.fetch_error())
+    return redirect(url_for('authentication.login'))
+        #render_template('html/login.html', next=oid.get_next_url(), error=oid.fetch_error())
 
 @oid.after_login
 def create_or_login(resp):
-    session['username'] = username = 'openid' + resp.identity_url[-10:]
+    username = 'openid' + resp.identity_url[-10:]
     if g.notebook.user_manager().user_exists(username):
-        g.username = username
+        session['username'] = g.username = username
     else:
         from sagenb.notebook.user import User
         new_user = User(username, '', email = resp.email, account_type='user') 
-        g.notebook.add_user_if_allowed(new_user)
-    return redirect(oid.get_next_url())
+        try: 
+            g.notebook.user_manager().add_user_object(new_user)
+            session['username'] = g.username = username
+        except ValueError:
+            #add creation_error=True to the render dict somehow 
+            return redirect(url_for('authentication.login'))
+    return redirect(request.values.get('next', url_for('base.index')))
 
 #############
 # OLD STUFF #

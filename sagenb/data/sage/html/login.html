@@ -1,5 +1,23 @@
 {% extends "html/base.html" %}
 
+{% block javascript %}
+<link rel="stylesheet" href="/javascript/openid-realselector/css/style.css" />
+<script type="text/javascript" src="/javascript/openid-realselector/js/jquery.openid.js"></script>
+<script type="text/javascript">
+    $(function() {
+      $('#openid').openid({
+        img_path: '/javascript/openid-realselector/img/openid/',
+        txt: {
+          label: 'Type your a {username} for <b>{provider}</b>',
+          username: 'username',
+          title: 'Select an OpenID provider',
+          sign: 'Send'
+        }
+      });
+    });
+</script>
+{% endblock %}
+
 {% block title %}Sign in{% endblock %}
 
 {% block page_id %}login-page{% endblock %}
@@ -88,6 +106,12 @@
     <div>
         <a href="/forgotpass"><strong>Forgot password</strong></a>
     </div>
+    {% endif %}
+    {% if openIDlogin %}
+    <form method="post" action="/loginoid" id="openid"></form>
+    {% endif %}
+    {% if creation_error%}
+    <span style="color:red">Error: </span>Creating new users is disabled by the administrator.
     {% endif %}
 </div>
 {% endblock %}
