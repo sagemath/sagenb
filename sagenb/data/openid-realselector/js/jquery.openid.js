@@ -36,16 +36,17 @@ Martin Conte Mac Donell <Reflejo@gmail.com>
           big: true
         },    
         {
-          name: 'AOL',
-          username_txt: 'screenname',
-          url: 'http://openid.aol.com/{username}',
-          big: true
-        },
-        {
           name: 'OpenID',
           username_txt: 'url',
           big: true
         },
+        /*{
+        comment out to save some space
+          name: 'AOL',
+          username_txt: 'screenname',
+          url: 'http://openid.aol.com/{username}',
+          big: false 
+      },*/
         {
           name: 'MyOpenID',
           url: 'http://{username}.myopenid.com/'
