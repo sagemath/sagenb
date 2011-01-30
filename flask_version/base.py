@@ -21,6 +21,7 @@ class SageNBFlask(Flask):
         self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
         self.add_static_path('/javascript/sage', os.path.join(DATA, "sage", "js"))
         self.add_static_path('/javascript', DATA)
+        self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
         
         #######
