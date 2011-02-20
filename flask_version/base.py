@@ -172,9 +172,17 @@ def loginoid():
     return redirect(url_for('authentication.login'))
         #render_template('html/login.html', next=oid.get_next_url(), error=oid.fetch_error())
 
+def sanitize_openid(identity_url):
+    whitelist = set([])
+    whitelist = whitelist.union([chr(i) for i in range(ord('a'), ord('z')+1)] \
+                              + [chr(i) for i in range(ord('A'), ord('Z')+1)] \
+                              + [chr(i) for i in range(ord('0'), ord('9')+1)])
+    good_part = ''.join([i for i in identity_url if i in whitelist])
+    return 'openid' + good_part[-10:] 
+
 @oid.after_login
 def create_or_login(resp):
-    username = 'openid' + resp.identity_url[-10:]
+    username = sanitize_openid(resp.identity_url)
     if g.notebook.user_manager().user_exists(username):
         session['username'] = g.username = username
     else:
