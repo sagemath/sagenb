@@ -1,9 +1,10 @@
-import os
+import os, threading, collections
 from functools import wraps
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required
 
 ws = Module('flask_version.worksheet')
+worksheet_locks = defaultdict(threading.Lock)
 
 def worksheet_view(f):
     @login_required
@@ -15,22 +16,23 @@ def worksheet_view(f):
         except KeyError:
             return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
         
-        owner = worksheet.owner()
+        with worksheet_locks[worksheet]:
+            owner = worksheet.owner()
 
-        if owner != '_sage_' and g.username != owner:
+            if owner != '_sage_' and g.username != owner:
+                if not worksheet.is_published():
+                    if (not g.username in worksheet.collaborators() and
+                        not g.notebook.user_manager().user_is_admin(g.username)):
+                        return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+
             if not worksheet.is_published():
-                if (not g.username in worksheet.collaborators() and
-                    not g.notebook.user_manager().user_is_admin(g.username)):
-                    return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+                worksheet.set_active(g.username)
 
-        if not worksheet.is_published():
-            worksheet.set_active(g.username)
+            #This was in twist.Worksheet.childFactory
+            from base import notebook_updates
+            notebook_updates()
 
-        #This was in twist.Worksheet.childFactory
-        from base import notebook_updates
-        notebook_updates()
-
-        return f(username, id, **kwds)
+            return f(username, id, **kwds)
 
     return wrapper
 
