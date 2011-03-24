@@ -2964,22 +2964,7 @@ except (KeyError, IOError):
         self.__comp_is_running = True
         self.sage().execute(input, os.path.abspath(self.data_directory()))
 
-    def check_comp(self, **kwds):
-        r"""
-        Wrapper function for locking self.check_comp_in 
-        Needed for using the notebook with multithreaded WSGI servers.
-        """
-    
-        if not hasattr(self,'_lock'):
-            self._lock = True
-            code, C = self.check_comp_in(**kwds)
-            del self._lock 
-            return code, C
-        else:
-            return 'e', None 
-
-
-    def check_comp_in(self, wait=0.2):
+    def check_comp(self, wait=0.2):
         r"""
         Check on currently computing cells in the queue.
 
