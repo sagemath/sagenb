@@ -299,6 +299,7 @@ def notebook_twisted(self,
              quiet = False,
 
              subnets = None):
+
     cwd = os.getcwd()
     # For backwards compatible, we still allow the address to be set
     # instead of the interface argument
@@ -337,6 +338,7 @@ def notebook_twisted(self,
         print "The notebook files are stored in:", nb._dir
 
     nb.conf()['idle_timeout'] = int(timeout)
+    nb.conf()['require_login'] = require_login
     
     if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
         # This is here only for backward compatibility with one

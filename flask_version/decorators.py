@@ -5,7 +5,10 @@ def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if 'username' not in session:
-            return redirect(url_for('base.index', next=request.url))
+            if not g.notebook.conf()['require_login']:
+                g.username = session['username'] = 'admin'
+            else:
+                return redirect(url_for('base.index', next=request.url))
         else:
             g.username = session['username']
         return f(*args, **kwds)
