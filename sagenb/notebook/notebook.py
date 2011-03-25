@@ -71,9 +71,6 @@ class Notebook(object):
     HISTORY_NCOLS = 90
     
     def __init__(self, dir, user_manager = None):
-        from user_manager import SimpleUserManager
-
-        self._user_manager = SimpleUserManager() if user_manager is None else user_manager
 
         if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":
             dir = dir[:-1]
@@ -95,6 +92,9 @@ class Notebook(object):
         except IOError:
             # Worksheet has never been saved before, so the server conf doesn't exist.
             self.__worksheets = {}
+
+        from user_manager import SimpleUserManager
+        self._user_manager = SimpleUserManager(conf=self.conf()) if user_manager is None else user_manager
 
         # Set the list of users
         try:

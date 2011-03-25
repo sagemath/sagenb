@@ -355,7 +355,7 @@ class UserManager(object):
         self._users[user.username()] = user 
 
 class SimpleUserManager(UserManager):
-    def __init__(self, accounts=True):
+    def __init__(self, accounts=True, conf=None):
         """
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import SimpleUserManager
@@ -366,6 +366,7 @@ class SimpleUserManager(UserManager):
         """
         self._passwords = {}
         UserManager.__init__(self, accounts=accounts)
+        self._conf = {'accounts': accounts} if conf is None else conf
 
     def copy_password(self, username, other_username):
         """
@@ -481,3 +482,12 @@ class SimpleUserManager(UserManager):
         if username == "pub" or password == '':
             return False
         return self.password(username) == self.encrypt_password(password)
+
+    # need to use notebook's conf because those are already serialized
+    def get_accounts(self):
+        return self._conf['accounts']
+
+    def set_accounts(self, value):
+        if value not in [True, False]:
+            raise ValueError, "accounts must be True or False"
+        self._conf['accounts'] = value

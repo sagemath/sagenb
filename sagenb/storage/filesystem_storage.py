@@ -215,7 +215,7 @@ class FilesystemDatastore(Datastore):
             {'admin': admin, 'wstein': wstein}
         """
         for user in self._basic_to_users(self._load('users.pickle')).itervalues():
-            user_manager.add_user_object(user) 
+            user_manager.add_user_object(user, force=True) 
             user_manager.set_password(user.username(), user.password(), encrypt = False)
         return user_manager
     
