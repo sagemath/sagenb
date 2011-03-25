@@ -170,7 +170,7 @@ def loginoid():
         if openid:
             return oid.try_login(openid, ask_for=['email', 'fullname', 'nickname'])
     return redirect(url_for('authentication.login'))
-        #render_template('html/login.html', next=oid.get_next_url(), error=oid.fetch_error())
+    #render_template('html/login.html', next=oid.get_next_url(), error=oid.fetch_error())
 
 def sanitize_openid(identity_url):
     whitelist = set([])
@@ -195,7 +195,8 @@ def create_or_login(resp):
             session.modified = True
         except ValueError:
             #add creation_error=True to the render dict somehow 
-            return render_template('html/login.html', creation_error=True)
+            from authentication import login
+            return login({'creation_error': True})
     return redirect(request.values.get('next', url_for('base.index')))
 
 #############
