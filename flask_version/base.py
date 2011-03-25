@@ -185,15 +185,17 @@ def create_or_login(resp):
     username = sanitize_openid(resp.identity_url)
     if g.notebook.user_manager().user_exists(username):
         session['username'] = g.username = username
+        session.modified = True
     else:
         from sagenb.notebook.user import User
         new_user = User(username, '', email = resp.email, account_type='user') 
         try: 
             g.notebook.user_manager().add_user_object(new_user)
             session['username'] = g.username = username
+            session.modified = True
         except ValueError:
             #add creation_error=True to the render dict somehow 
-            return redirect(url_for('authentication.login'))
+            return render_template('html/login.html', creation_error=True)
     return redirect(request.values.get('next', url_for('base.index')))
 
 #############
