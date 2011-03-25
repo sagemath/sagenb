@@ -83,11 +83,11 @@ def index():
     
     if current_app.startup_token is not None and 'startup_token' in request.args:
         if request.args['startup_token'] == current_app.startup_token:
-            session['username'] = 'admin' 
+            g.username = session['username'] = 'admin' 
             session.modified = True
             current_app.startup_token = -1 
             return index()
-            
+
     return login()
 
 ######################

@@ -393,10 +393,7 @@ def notebook_twisted(self,
                 interface, port, secure)
 
         if open_viewer:
-            if require_login:
-                start_path = "'/?startup_token=%s' % startup_token"
-            else:
-                start_path = "'/'"
+            start_path = "'/?startup_token=%s' % startup_token"
             if interface:
                 hostname = interface
             else:

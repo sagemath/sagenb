@@ -7,6 +7,8 @@ def login_required(f):
         if 'username' not in session:
             if not g.notebook.conf()['require_login']:
                 g.username = session['username'] = 'admin'
+                session.modified = True
+                return f(*args, **kwds)
             else:
                 return redirect(url_for('base.index', next=request.url))
         else:
