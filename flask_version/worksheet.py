@@ -1,7 +1,7 @@
 import os, threading, collections
 from functools import wraps
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from decorators import login_required
+from decorators import login_required, with_lock
 from collections import defaultdict
 
 ws = Module('flask_version.worksheet')
@@ -62,6 +62,7 @@ def get_cell_id():
 ##############################
 @ws.route('/new_worksheet')
 @login_required
+@with_lock
 def new_worksheet():
     W = g.notebook.create_new_worksheet("Untitled", g.username)
     return redirect(url_for_worksheet(W))
@@ -791,6 +792,7 @@ def worksheet_print(worksheet):
 # Live documentation #
 ######################
 doc_worksheet_number = 0
+@with_lock
 def doc_worksheet():
     global doc_worksheet_number
     wnames = g.notebook.worksheet_names()

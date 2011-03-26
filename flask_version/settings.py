@@ -1,11 +1,12 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from decorators import login_required
+from decorators import login_required, with_lock
 
 settings = Module('flask_version.settings')
 
 @settings.route('/settings', methods = ['GET','POST'])
 @login_required
+@with_lock
 def settings_page():
     error = None
     redirect_to_home = None

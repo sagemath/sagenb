@@ -1,5 +1,6 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
+from decorators import with_lock
 
 authentication = Module('flask_version.authentication')
 
@@ -79,6 +80,7 @@ def logout():
 waiting = {}
 
 @authentication.route('/register', methods = ['GET','POST'])
+@with_lock
 def register():
     from sagenb.notebook.twist import is_valid_username, is_valid_password, \
     is_valid_email, do_passwords_match
@@ -238,6 +240,7 @@ def register():
 
 
 @authentication.route('/confirm')
+@with_lock
 def confirm():
     if not g.notebook.conf()['email']:
         return current_app.message('The confirmation system is nlot active.')
@@ -260,6 +263,7 @@ def confirm():
     return current_app.message(success, title='Email Confirmed') #XXX: i18n
 
 @authentication.route('/forgotpass')
+@with_lock
 def forgot_pass():
     if not g.notebook.conf()['email']:
         return current_app.message('The account recovery system is not active.')

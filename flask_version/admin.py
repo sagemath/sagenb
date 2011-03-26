@@ -1,12 +1,13 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from decorators import login_required, admin_required
+from decorators import login_required, admin_required, with_lock
 
 admin = Module('flask_version.admin')
 
 # '/users' does not work, because current template calls urls like '/users/?reset=...'
 @admin.route('/users/')
 @admin_required
+@with_lock
 def users():
     template_dict = {}
 
@@ -41,6 +42,7 @@ def users():
 
 @admin.route('/adduser', methods = ['GET','POST'])
 @admin_required
+@with_lock
 def add_user():
     from sagenb.notebook.twist import is_valid_username
     template_dict = {'admin': g.notebook.user_manager().user(g.username).is_admin(),
@@ -70,6 +72,7 @@ def add_user():
 
 @admin.route('/notebooksettings')
 @admin_required
+@with_lock
 def notebook_settings():
     updated = {}
     if 'form' in request.values:

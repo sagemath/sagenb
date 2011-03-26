@@ -2,7 +2,7 @@
 import os, time
 from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
-from decorators import login_required, guest_or_login_required
+from decorators import login_required, guest_or_login_required, with_lock
 
 from flaskext.autoindex import AutoIndex
 SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
@@ -145,6 +145,7 @@ def history():
 
 @base.route('/live_history')
 @login_required
+@with_lock
 def live_history():
     W = g.notebook.create_new_worksheet_from_history('Log', g.username, 100)
     from worksheet import url_for_worksheet
@@ -181,6 +182,7 @@ def sanitize_openid(identity_url):
     return 'openid' + good_part[-10:] 
 
 @oid.after_login
+@with_lock
 def create_or_login(resp):
     username = sanitize_openid(resp.identity_url)
     if g.notebook.user_manager().user_exists(username):

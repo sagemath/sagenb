@@ -1,5 +1,7 @@
 from functools import wraps
 from flask import Flask, url_for, render_template, request, session, redirect, g
+from threading import Lock
+global_lock = Lock()
 
 def login_required(f):
     @wraps(f)
@@ -35,4 +37,11 @@ def guest_or_login_required(f):
         else:
             g.username = session['username']
         return f(*args, **kwds)
+    return wrapper
+
+def with_lock(f):
+    @wraps(f)
+    def wrapper(*args, **kwds):
+        with global_lock:
+            return f(*args, **kwds)
     return wrapper
