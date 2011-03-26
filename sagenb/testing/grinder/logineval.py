@@ -11,19 +11,23 @@ evaluationTest = Test(4, "Evaluate 2 + 2")
 updateTest = Test(5, "Get 4")
 deleteCellTest = Test(6, "Delete Cell")
 
+user = 'radotest'
+password = 'test'
+
 class TestRunner:
     def __call__(self):
         worksheet = '1'
+        
         request = protectedResourceTest.wrap(
             HTTPRequest(url="http://localhost:8000/"))
 
         result = request.GET()
         result = maybeAuthenticate(result)
-        result = request.GET('/home/admin/%s/' % worksheet)
+        result = request.GET('/home/%s/%s/' % (user, worksheet))
         #print 'test sheet seen: ', (result.text.find('test') != -1)
         #print result.text
         
-        base_url = 'http://localhost:8000/home/admin/%s' % worksheet 
+        base_url = 'http://localhost:8000/home/%s/%s' % (user, worksheet)
         request = newCellTest.wrap(HTTPRequest(url=base_url + "/new_cell_after"))
         result = request.POST((NVPair("id","0"),))
         new_cell = result.text.split()[0].rstrip('___S_A_G_E___')
@@ -65,8 +69,8 @@ def maybeAuthenticate(lastResult):
 
         #print "Challenged, authenticating"
 
-        authenticationFormData = ( NVPair("email", "admin"),
-                                   NVPair("password", "test"),)
+        authenticationFormData = ( NVPair("email", user),
+                                   NVPair("password", password),)
 
         request = authenticationTest.wrap(
             HTTPRequest(url="%s/login" % lastResult.originalURI))
