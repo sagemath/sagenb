@@ -23,6 +23,9 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
+        import mimetypes
+        mimetypes.add_type('text/plain','.jmol')
+
         
         #######
         # Doc #
@@ -46,6 +49,28 @@ class SageNBFlask(Flask):
         self.add_url_rule(base_url + '/<path:filename>',
                           endpoint='/static'+base_url,
                           view_func=partial(self.static_view_func, root_path))
+
+    def save_session(self, session, response):
+        """
+        This method needs to stay in sync with the version in Flask.
+        The only modification made to it is the ``httponly=False``
+        passed to ``save_cookie``.
+
+        Saves the session if it needs updates.  For the default
+        implementation, check :meth:`open_session`.
+
+        :param session: the session to be saved (a
+                        :class:`~werkzeug.contrib.securecookie.SecureCookie`
+                        object)
+        :param response: an instance of :attr:`response_class`
+        """
+        expires = domain = None
+        if session.permanent:
+            expires = datetime.utcnow() + self.permanent_session_lifetime
+        if self.config['SERVER_NAME'] is not None:
+            domain = '.' + self.config['SERVER_NAME']
+        session.save_cookie(response, self.session_cookie_name,
+                            expires=expires, httponly=False, domain=domain)
 
     def message(self, msg, cont='/', username=None, **kwds):
         """Returns an error message to the user."""
