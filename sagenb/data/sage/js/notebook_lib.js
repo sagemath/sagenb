@@ -2998,7 +2998,11 @@ function worksheet_command(cmd) {
     OUTPUT:
         a string
     */
-    if (cmd === 'eval' || cmd === 'new_cell_before') {
+    if (cmd === 'eval' 
+	|| cmd === 'new_cell_before' 
+	|| cmd === 'new_cell_after'
+	|| cmd === 'new_text_cell_before'
+	|| cmd === 'new_text_cell_after') {
         state_number = parseInt(state_number, 10) + 1;
     }
     return ('/home/' + worksheet_filename + '/' + cmd);
