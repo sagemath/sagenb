@@ -1187,21 +1187,47 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: name = tmp_filename() + '.html'
             sage: fd = open(name,'w')
-            sage: fd.write('\n'.join(
-            ...       ['<html><head><title>Test Notebook</title></head>',
-            ...        '<body>',
-            ...          '<div class="highlight-python"><div class="highlight"><pre>',
-            ...            '<span class="gp">sage: </span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span>',
-            ...            '<span class="go">2</span>',
-            ...          '</pre></div></div>',
-            ...        '</body></html>']))
+            sage: fd.write(''.join([
+            ... '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n',
+            ... '  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n',
+            ... '\n',
+            ... '<html xmlns="http://www.w3.org/1999/xhtml">\n',
+            ... '  <head>\n',
+            ... '   <title>Test notebook &mdash; test</title>\n',
+            ... ' </head>\n',
+            ... '  <body>\n',
+            ... '   <div class="document">\n',
+            ... '      <div class="documentwrapper">\n',
+            ... '        <div class="bodywrapper">\n',
+            ... '          <div class="body">\n',
+            ... '<p>Here are some computations:</p>\n',
+            ... '\n',
+            ... '<div class="highlight-python"><div class="highlight"><pre>\n',
+            ... '<span class="gp">sage',
+            ... ': </span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span>\n',
+            ... '<span class="go">2</span>\n',
+            ... '</pre></div></div>\n',
+            ... '\n',
+            ... '</div></div></div></div>\n',
+            ... '</body></html>']))
             sage: fd.close()
             sage: W = nb._import_worksheet_html(name, 'admin')
             sage: W.name()
-            u'Test Notebook'
+            u'Test notebook -- test'
             sage: W.owner()
             'admin'
             sage: W.cell_list()
+            [TextCell 1: <div class="document">
+                  <div class="documentwrapper">
+                    <div class="bodywrapper">
+                      <div class="body">
+            <p>Here are some computations:</p>
+            <BLANKLINE>
+            <div class="highlight-python">, Cell 0; in=1+1, out=
+            2
+            , TextCell 2: </div>
+            <BLANKLINE>
+            </div></div></div></div]
             sage: cell = W.cell_list()[1]
             sage: cell.input_text()
             u'1+1'
@@ -1217,13 +1243,12 @@ class Notebook(object):
 
         from twist import extract_title
         title = extract_title(doc_page_html).replace('&mdash;','--')
-        doc_page = title + '\nsystem:sage\n\n' + doc_page
 
         worksheet = self.create_new_worksheet(title, owner)
         worksheet.edit_save(doc_page)
 
-        #FIXME: For some reason, an extra cell gets added
-        #so we remove it here.
+        # FIXME: An extra compute cell is always added to the end.
+        # Pop it off.
         cells = worksheet.cell_list()
         cells.pop()
 
