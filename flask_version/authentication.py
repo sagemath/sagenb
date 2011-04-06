@@ -22,7 +22,9 @@ def login(template_dict={}):
                           'recovery': g.notebook.conf()['email'],
                           'next': request.values.get('next', ''), 
                           'sage_version': SAGE_VERSION,
-                          'openIDlogin': True})
+                          'openIDlogin': True,
+                          'username_error': False,
+                          'password_error': False})
 
     if request.method == 'POST':
         username = request.form['email']
@@ -34,7 +36,7 @@ def login(template_dict={}):
         try:
             U = g.notebook.user_manager().user(username)
         except KeyError:
-            #log.msg("Login attempt by unknown user '%s'."%username)
+            print "Login attempt by unknown user '%s'."%username
             U = None
             template_dict['username_error'] = True
             
