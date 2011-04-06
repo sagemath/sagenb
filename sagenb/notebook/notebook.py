@@ -1284,6 +1284,10 @@ class Notebook(object):
             except KeyError:
                 W = None
 
+        from flask import current_app
+        if W is None:
+            return current_app.message("The worksheet does not exist") #XXX: i18n
+
         template_page = os.path.join("html", "notebook", "worksheet_page.html")
         if W.docbrowser():
             template_page = os.path.join("html", "notebook", "doc_page.html")
