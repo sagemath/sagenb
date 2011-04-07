@@ -951,5 +951,5 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 
 .achtungSuccess .ui-icon.achtung-close-button-hover, .achtungFail .ui-icon.achtung-close-button-hover { background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_222222_256x240.png); }
 
-.achtung .wait-icon { background-image: url(/javascript/jqueryui/css/sage/images/wait.gif); }
+.achtung .wait-icon { background-image: url(/javascript/jqueryui/css/sage/images/jquery-achtung-wait.gif); }
 .achtung .achtung-message { display: inline; }
