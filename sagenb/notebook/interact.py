@@ -547,12 +547,12 @@ def html_color_selector(id, change, input_change, default='000000',
                     function (color) {},
                     // liveCallback
                     function (color_arg) {
-                        color = '#' + color_arg.hex;
+                        color = '#' + color_arg.val('hex');
                         if (input.val() !== color) {
                             input.val(color);
                             input.css({
                                 backgroundColor: color,
-                                color: color_arg.v > 50 ? '#000000' : '#ffffff'
+                                color: color_arg.val('v') > 50 ? '#000000' : '#ffffff'
                             });
                             %s;
                         }
