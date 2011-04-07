@@ -21,7 +21,7 @@ $.fn.tinymce = function (options) {
 
 tinyMCE.init({
     mode : "none",
-    plugins: "advlist,autoresize,autosave,inlinepopups,lists,media,paste,searchreplace,table,autolink,",
+    plugins: "advlist,autosave,inlinepopups,lists,media,paste,searchreplace,table,autolink,",
 
     theme : "advanced",
     theme_advanced_toolbar_location : "top",
@@ -30,6 +30,7 @@ tinyMCE.init({
     theme_advanced_buttons1 : "formatselect,fontselect,fontsizeselect,bold,italic,underline,strikethrough,forecolor,backcolor,|,bullist,numlist,|,undo,redo,search,pastetext,pasteword",
     theme_advanced_buttons2 : "justifyleft,justifycenter,justifyright,justifyfull,outdent,indent,|,charmap,|,table,tablecontrols,|,code,|,link,image,media,unlink",
     theme_advanced_buttons3 : "",
+    theme_advanced_resizing : true,
     theme_advanced_show_current_color: true,
 
     setup : function (ed) {
