@@ -26,12 +26,14 @@ AUTHORS:
  ** PLANNING **
 
 NOTES:
+
    * There is no testing of pickling anywhere in this file.  This is
      because there is no reason one would ever pickle anything in this
      file, since everything is associated with particular state
      information of a notebook.
  
 BUGS:
+
    [x] have default values set from the get go
    [x] spacing around sliders; also need to have labels  
    [x] when re-evaluate input, make sure to clear output so cell-interact-id div is gone.
@@ -61,6 +63,7 @@ BUGS:
    [x] what do published worksheets do??    
 
 VERSION 1:
+
    [X] get sliders to work; values after move slider
    [x] default values
    [x] NO -- autoswitch to 1-cell mode:
@@ -85,11 +88,13 @@ VERSION 1:
        such requests from the queue in worksheet.py
 
    DOCS:
+
    [x] 100% documentation and doctest coverage
    [ ] put the docs for this in the reference manual
    [ ] put summary doc in notebook help page
    
 VERSION 2:
+
    [ ] vertical scroll bars (maybe very easy via jsquery)
    [ ] small version of color selector
    [ ] button -- block of code gets run when it is clicked
@@ -803,7 +808,7 @@ class InteractControl(InteractElement):
         return sage_eval(value, globs)
         
     def interact(self, *args):
-        """
+        r"""
         Return a string that when evaluated in JavaScript calls the
         JavaScript :func:`interact` function with appropriate inputs for
         this control.
@@ -989,7 +994,7 @@ class InputBox(InteractControl):
             return 'this.value'
 
     def render(self):
-        """
+        r"""
         Render this control as a string.
 
         OUTPUT:
@@ -2895,7 +2900,7 @@ class input_grid(control):
 
         - ``width`` - an integer; size of each input box in characters
             
-        NOTEBOOK EXAMPLE:
+        NOTEBOOK EXAMPLE::
 
             @interact
             def _(m = input_grid(2,2, default = [[1,7],[3,4]],
