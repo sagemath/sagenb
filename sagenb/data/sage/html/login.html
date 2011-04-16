@@ -3,19 +3,8 @@
 {% block javascript %}
 <link rel="stylesheet" href="/javascript/openid-realselector/css/style.css" />
 <script type="text/javascript" src="/javascript/openid-realselector/js/jquery.openid.js"></script>
-<script type="text/javascript">
-    $(function() {
-      $('#openid').openid({
-        img_path: '/javascript/openid-realselector/img/openid/',
-        txt: {
-          label: '{username} for <b>{provider}</b>',
-          username: 'username',
-          title: 'Select an OpenID provider',
-          sign: 'Send'
-        }
-      });
-    });
-</script>
+<script type="text/javascript" src="/javascript/slb_software_sha256/sha256.min.js"></script>
+<script type="text/javascript" src="/javascript/unix-crypt-td-js/unix-crypt-td.min.js"></script>
 {% endblock %}
 
 {% block title %}Sign in{% endblock %}
@@ -71,7 +60,10 @@
 
 <div id="sign-in-box">
     <h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
-    <form method="POST" action="/login">
+    <form method="POST" action="/login" id="sign-in-form">
+        {% if hmac_message -%}
+        <input type="hidden" name="message" value="{{ hmac_message }}" />
+        {%- endif -%}
         <div>
             <label for="email">Username</label>
             <input type="text" name="email" value="{{ default_user }}" size="15" />
@@ -82,6 +74,8 @@
         <div>
             <label for="password">Password</label>
             <input type="password" name="password" size="15" />
+            <input type="hidden" name="hmac_password" />
+            <input type="hidden" name="crypt_password" />
             {% if password_error %}
             <span style="color:red">Error: </span>Wrong password
             {% endif %}
@@ -113,6 +107,7 @@
     {% if creation_error %}
     <span style="color:red">Error: </span>Creating new users is disabled by the administrator.
     {% endif %}
+    <noscript style="color:red">Error: Javascript must be enabled in order to use the Sage Notebook.</noscript>
 </div>
 {% endblock %}
 

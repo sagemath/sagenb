@@ -4,13 +4,17 @@
 
 {% block page_id %}registration-page{% endblock %}
 
+{% block more_javascript %}
+<script type="text/javascript" src="/javascript/slb_software_sha256/sha256.min.js"></script>
+{% endblock %}
+
 {% block body %}
 <div id="wrapper">
     <h1>Sign up for a Sage Notebook account</h1>
     {% if error %}
     <h2 class="error_found">Error{{ error[1:] }}found</h2>
     {% endif %}
-    <form method="POST" action="/register">
+    <form method="POST" action="/register" id="registration-form">
         <ol>
             <li>
                 <h2>Create a username</h2>
@@ -31,10 +35,11 @@
             <li>
                 <h2>Create a good password</h2>
                 <p>
-                    Your password must be between 4 and 32 characters
-                    long. Your password can not contain your username nor spaces.
+                    Your password must have at least 4 characters.
+                    Your password can not contain your username or spaces.
                 </p>
                 <input type="password" name="password" class="entry" tabindex="2" />
+                <input type="hidden" name="hmac_password" />
                 {% if password_missing %}
                 <p><span class="error">Error:</span> No password given</p>
                 {% endif %}
@@ -42,11 +47,13 @@
                 <p><span class="error">Error:</span> Bad password</p>
                 {% endif %}
             </li>
-            <li><h2>Re-type your password</h2>
-            <input type="password" name="retype_password" class="entry" tabindex="3" />
-            {% if passwords_dont_match or retype_password_missing %}
-            <p><span class="error">Error:</span> Passwords didn't match</p>
-            {% endif %}
+            <li>
+                <h2>Re-type your password</h2>
+                <input type="password" name="retype_password" class="entry" tabindex="3" />
+                <input type="hidden" name="hmac_retype_password" />
+                {% if passwords_dont_match or retype_password_missing %}
+                <p><span class="error">Error:</span> Passwords didn't match</p>
+                {% endif %}
             </li>
             {% if email or email_missing or email_invaild %}
             <li>

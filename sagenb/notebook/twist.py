@@ -2073,7 +2073,7 @@ def is_valid_password(password, username):
         False
     """
     import string
-    if len(password) < 4 or len(password) > 32 or ' ' in password:
+    if len(password) < 4 or ' ' in password:
         return False
     if username:
         if string.lower(username) in string.lower(password):

@@ -217,6 +217,7 @@ class FilesystemDatastore(Datastore):
         for user in self._basic_to_users(self._load('users.pickle')).itervalues():
             user_manager.add_user_object(user, force=True) 
             user_manager.set_password(user.username(), user.password(), encrypt = False)
+            user_manager.set_password_type(user.username(), user.password_type())
         return user_manager
     
     def save_users(self, users):

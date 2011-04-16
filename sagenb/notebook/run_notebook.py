@@ -21,7 +21,7 @@ except ImportError:
     protocol = 'ssl'
 
 # System libraries
-import getpass, os, shutil, socket, sys
+import getpass, os, shutil, socket, sys, hashlib
 from exceptions import SystemExit
 
 from twisted.python.runtime import platformType
@@ -170,7 +170,7 @@ import os
 flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_version')
 sys.path.append(flask_dir)
 import base as flask_base
-startup_token = '%%x' %% random.randint(0, 2**128)
+startup_token = '{0:x}'.format(random.randint(0, 2**128))
 flask_app = flask_base.create_app(%(notebook_opts)s, startup_token=startup_token)
 sys.path.remove(flask_dir)
 
@@ -352,7 +352,9 @@ def notebook_twisted(self,
     if reset:  
         passwd = get_admin_passwd()                
         if reset:
-            nb.user_manager().user('admin').set_password(passwd)
+            admin = nb.user_manager().user('admin')
+            admin.set_password_type('hmac-sha256')
+            admin.set_password(hashlib.sha256(passwd).hexdigest())
             print "Password changed for user 'admin'."
         else:
             nb.user_manager().create_default_users(passwd)

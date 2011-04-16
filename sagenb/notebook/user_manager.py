@@ -1,5 +1,7 @@
 import user
 import crypt
+import hmac
+import hashlib
 
 SALT = 'aa'
 
@@ -365,6 +367,7 @@ class SimpleUserManager(UserManager):
 
         """
         self._passwords = {}
+        self._password_types = {}
         UserManager.__init__(self, accounts=accounts)
         self._conf = {'accounts': accounts} if conf is None else conf
 
@@ -421,6 +424,12 @@ class SimpleUserManager(UserManager):
             return self.users()[username]
         raise KeyError, "no user '%s'"%username
 
+    def password_type(self, username):
+        return self._password_types[username]
+
+    def set_password_type(self, username, password_type):
+        self._password_types[username] = password_type
+        
     def set_password(self, username, new_password, encrypt = True):
         """
         EXAMPLES:
@@ -438,7 +447,9 @@ class SimpleUserManager(UserManager):
             'test'
         """
         if encrypt:
-            new_password = self.encrypt_password(new_password)
+            self.user(username).set_password_type('hmac-sha256')
+            self.set_password_type(username, 'hmac-sha256')
+            new_password = hashlib.sha256(new_password).hexdigest()
         self._passwords[username] = new_password
         # need to make sure password in the user object is synced
         # for compatibility only the user object data is stored in the 'users.pickle'
@@ -473,16 +484,17 @@ class SimpleUserManager(UserManager):
             'aaJAM8WS/7IvY'
         """
         return self._passwords.get(username, None)
-
-    def encrypt_password(self, password):
-        return crypt.crypt(password, SALT)
         
-    def check_password(self, username,  password):
+    def check_password(self, username,  password, message = None):
         # the empty password is always false
         if username == "pub" or password == '':
             return False
-        return self.password(username) == self.encrypt_password(password)
-
+        if self.password_type(username) == 'hmac-sha256':
+            return hmac.new(self.password(username),
+                            message,
+                            hashlib.sha256).hexdigest() == password
+        else:
+            return self.password(username) == password
     # need to use notebook's conf because those are already serialized
     def get_accounts(self):
         return self._conf['accounts']
