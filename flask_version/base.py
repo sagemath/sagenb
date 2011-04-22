@@ -3,6 +3,7 @@ import os, time
 from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required, guest_or_login_required, with_lock
+from decorators import global_lock
 
 from flaskext.autoindex import AutoIndex
 SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
@@ -248,8 +249,11 @@ def notebook_save_check():
 
     t = walltime()
     if t > last_save_time + save_interval:
-        notebook.save()
-        last_save_time = t
+        with global_lock:
+            # check again because condition might have changed while waiting
+            if t > last_save_time + save_interval:
+                notebook.save()
+                last_save_time = t
 
 def notebook_idle_check():
     global last_idle_time
@@ -257,9 +261,12 @@ def notebook_idle_check():
 
     t = walltime()
     if t > last_idle_time + idle_interval:
-        notebook.update_worksheet_processes()
-        notebook.quit_idle_worksheet_processes()
-        last_idle_time = t
+        with global_lock:
+            # check again because condition might have changed while waiting
+            if t > last_idle_time + idle_interval:
+                notebook.update_worksheet_processes()
+                notebook.quit_idle_worksheet_processes()
+                last_idle_time = t
 
 def notebook_updates():
     notebook_save_check()
