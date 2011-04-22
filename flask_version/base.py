@@ -199,33 +199,53 @@ def loginoid():
     return redirect(url_for('authentication.login'))
     #render_template('html/login.html', next=oid.get_next_url(), error=oid.fetch_error())
 
-def sanitize_openid(identity_url):
-    whitelist = set([])
-    whitelist = whitelist.union([chr(i) for i in range(ord('a'), ord('z')+1)] \
-                              + [chr(i) for i in range(ord('A'), ord('Z')+1)] \
-                              + [chr(i) for i in range(ord('0'), ord('9')+1)])
-    good_part = ''.join([i for i in identity_url if i in whitelist])
-    return 'openid' + good_part[-10:] 
-
 @oid.after_login
 @with_lock
 def create_or_login(resp):
-    username = sanitize_openid(resp.identity_url)
-    if g.notebook.user_manager().user_exists(username):
+    try:
+        username = g.notebook.user_manager().get_username_from_openid(resp.identity_url)
         session['username'] = g.username = username
         session.modified = True
-    else:
-        from sagenb.notebook.user import User
-        new_user = User(username, '', email = resp.email, account_type='user') 
-        try: 
-            g.notebook.user_manager().add_user_object(new_user)
+    except KeyError:
+        session['openid_response'] = resp 
+        session.modified = True
+        return redirect(url_for('set_profiles'))
+    return redirect(request.values.get('next', url_for('base.index')))
+
+@base.route('/openid_profiles', methods=['POST','GET'])
+def set_profiles():
+    if request.method == 'GET' and 'openid_response' in session:
+        return render_template('html/openid_profiles.html', resp=session['openid_response'])
+
+    if request.method == 'POST':
+        parse_dict = {'resp':session['openid_response']}
+        try:
+            resp = session['openid_response']
+            username = request.form.get('username')
+            from sagenb.notebook.user import User
+            from sagenb.notebook.twist import is_valid_username, is_valid_email
+            if not is_valid_username(username):
+                parse_dict['username_invalid'] = True
+                raise ValueError 
+            if g.notebook.user_manager().user_exists(username):
+                parse_dict['username_taken'] = True
+                raise ValueError 
+            if not is_valid_email(request.form.get('email')):
+                parse_dict['email_invalid'] = True
+                raise ValueError
+            try: 
+                new_user = User(username, '', email = resp.email, account_type='user') 
+                g.notebook.user_manager().add_user_object(new_user)
+            except ValueError:
+                parse_dict['creation_error'] = True
+                raise ValueError
+            g.notebook.user_manager().create_new_openid(resp.identity_url, username)
             session['username'] = g.username = username
             session.modified = True
         except ValueError:
-            #add creation_error=True to the render dict somehow 
-            from authentication import login
-            return login({'creation_error': True})
-    return redirect(request.values.get('next', url_for('base.index')))
+            return render_template('html/openid_profiles.html', **parse_dict) 
+        return redirect(url_for('base.index'))
+
 
 #############
 # OLD STUFF #

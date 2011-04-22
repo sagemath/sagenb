@@ -483,11 +483,62 @@ class SimpleUserManager(UserManager):
             return False
         return self.password(username) == self.encrypt_password(password)
 
-    # need to use notebook's conf because those are already serialized
     def get_accounts(self):
+        # need to use notebook's conf because those are already serialized
+        # fix when user_manager is serialized
         return self._conf['accounts']
 
     def set_accounts(self, value):
         if value not in [True, False]:
             raise ValueError, "accounts must be True or False"
+        self._accounts = value
         self._conf['accounts'] = value
+
+class OpenIDUserManager(SimpleUserManager):
+    def __init__(self, accounts=True, conf=None):
+        """
+        Creates an user_manager that supports OpenID identities
+        EXAMPLES:
+            sage: from sagenb.notebook.user_manager import OpenIDUserManager 
+            sage: UM = OpenIDUserManager()
+            sage: UM.create_default_users('passpass')
+            sage: UM.password('admin')
+            'aaJAM8WS/7IvY'
+        """
+        SimpleUserManager.__init__(self, accounts=accounts)
+        self._openid = {} 
+
+    def get_username_from_openid(self, identity_url):
+        """
+        Return the username corresponding ot a given identity_url
+        EXAMPLES:
+            sage: from sagenb.notebook.user_manager import OpenIDUserManager
+            sage: UM = OpenIDUserManager()
+            sage: UM.create_default_users('passpass')
+            sage: UM.create_new_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14', 'thedude')
+            sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
+            'thedude' 
+        """
+        try:
+            return self._openid[identity_url]
+        except KeyError:
+            raise KeyError, "no openID identity '%s'"%identity_url
+
+    def create_new_openid(self, identity_url, username):
+        """
+        Create a new identity_url -- username pairing
+        EXAMPLES:
+            sage: from sagenb.notebook.user_manager import OpenIDUserManager
+            sage: UM = OpenIDUserManager()
+            sage: UM.create_default_users('passpass')
+            sage: UM.create_new_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14', 'thedude')
+            sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
+            'thedude'
+        """
+        self._openid[identity_url] = username
+
+    def get_user_from_openid(self, identity_url):
+        """
+        Return the user object corresponding ot a given identity_url
+        """
+        return self.user(self.get_username_from_openid(identity_url)) 
