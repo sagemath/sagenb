@@ -531,7 +531,16 @@ def worksheet_cells(worksheet, filename):
 ##############################################
 # Data
 ##############################################
+@worksheet_command('<path:filename>')
+def worksheet_data_legacy(worksheet, filename):
+    # adhering to old behavior, should be removed eventually
+    return worksheet_data(worksheet, filename)
+
 @worksheet_command('data/<path:filename>')
+def worksheed_data_folder(worksheet,filename):
+    # preferred way of accessing data 
+    return worksheet_data(worksheet, filename)
+
 def worksheet_data(worksheet, filename):
     dir = os.path.abspath(worksheet.data_directory())
     if not os.path.exists(dir):
