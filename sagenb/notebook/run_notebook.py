@@ -353,8 +353,7 @@ def notebook_twisted(self,
         passwd = get_admin_passwd()                
         if reset:
             admin = nb.user_manager().user('admin')
-            admin.set_password_type('hmac-sha256')
-            admin.set_password(hashlib.sha256(passwd).hexdigest())
+            admin.set_password(passwd)
             print "Password changed for user 'admin'."
         else:
             nb.user_manager().create_default_users(passwd)

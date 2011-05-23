@@ -2,6 +2,7 @@
 import copy
 import crypt
 import cPickle
+import random
 import hashlib
 import os
 
@@ -18,15 +19,21 @@ def User_from_basic(basic):
     user._conf = user_conf.UserConfiguration_from_basic(user._conf)
     return user
 
+def generate_salt():
+    """
+    Returns a salt for use in hashing.
+    """
+    return hex(random.getrandbits(256))[2:-1]
+
+    
 class User(object):
     def __init__(self, username, password='', email='', account_type='admin'):
         self._username = username
         self.set_password(password)
-        self._password_type = 'hmac-sha256'
         self._email = email
         self._email_confirmed = False
         if not account_type in ['admin', 'user', 'guest']:
-            raise ValueError, "account type must be one of admin, user, or guest"
+            raise ValueError("account type must be one of admin, user, or guest")
         self._account_type = account_type
         self._conf = user_conf.UserConfiguration()
         self._temporary_password = ''
@@ -123,19 +130,6 @@ class User(object):
         """
         return self._password
 
-    def password_type(self):
-        """
-        EXAMPLES::
-
-           sage: from sagenb.notebook.user import User
-           sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').password()
-           'hmac-sha256'
-        """
-        try:
-            return self._password_type
-        except AttributeError:
-            return 'crypt'
-        
     def __repr__(self):
         return self._username
 
@@ -178,26 +172,13 @@ class User(object):
             self._password = 'x'   # won't get as a password -- i.e., this account is closed.
         else:
             if encrypt:
-                self._password = hashlib.sha256(password).hexdigest()
-                self.set_password_type('hmac-sha256')
+                salt = generate_salt()
+                self._password = 'sha256${0}${1}'.format(salt,
+                                                         hashlib.sha256(salt + password).hexdigest())
             else:
                 self._password = password
             self._temporary_password = ''
 
-    def set_password_type(self, password_type):
-        """
-        EXAMPLES::
-        
-            sage: from sagenb.notebook.user import User
-            sage: user = User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin')
-            sage: user.password_type()
-            'hmac-sha256'
-            sage: user.set_password_type('crypt')
-            sage: user.password_type()
-            'crypt'
-        """
-        self._password_type = password_type
-            
     def set_hashed_password(self, password):
         """
         EXAMPLES::

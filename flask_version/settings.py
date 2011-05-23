@@ -19,20 +19,14 @@ def settings_page():
         nu['autosave_interval'] = autosave
         redirect_to_home = True
 
-    message = request.values.get('message', None)
-    old_hmac = request.values.get('hmac-old-pass', None)
-    old_crypt = request.values.get('crypt-old-pass', None)
-    if g.notebook.user_manager().password_type(g.username) == 'hmac-sha256':
-        old = old_hmac
-    else:
-        old = old_crypt
-    new = request.values.get('hmac-new-pass', None)
-    two = request.values.get('hmac-retype-pass', None)
+    old = request.values.get('old-pass', None)
+    new = request.values.get('new-pass', None)
+    two = request.values.get('retype-pass', None)
 
     if new or two:
         if not old:
             error = 'Old password not given'
-        elif not g.notebook.user_manager().check_password(g.username, old, message):
+        elif not g.notebook.user_manager().check_password(g.username, old):
             error = 'Incorrect password given'
         elif not new:
             error = 'New password not given'
@@ -77,7 +71,6 @@ def settings_page():
             td['email_confirmed'] = 'Not confirmed'
 
     td['admin'] = nu.is_admin()
-    td['message'] = '{0:x}'.format(random.getrandbits(128))
 
     return render_template(os.path.join('html', 'settings', 'account_settings.html'), **td)
 

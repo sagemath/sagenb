@@ -39,7 +39,6 @@
                     Your password can not contain your username or spaces.
                 </p>
                 <input type="password" name="password" class="entry" tabindex="2" />
-                <input type="hidden" name="hmac_password" />
                 {% if password_missing %}
                 <p><span class="error">Error:</span> No password given</p>
                 {% endif %}
@@ -50,7 +49,6 @@
             <li>
                 <h2>Re-type your password</h2>
                 <input type="password" name="retype_password" class="entry" tabindex="3" />
-                <input type="hidden" name="hmac_retype_password" />
                 {% if passwords_dont_match or retype_password_missing %}
                 <p><span class="error">Error:</span> Passwords didn't match</p>
                 {% endif %}

@@ -27,13 +27,9 @@ def login(template_dict={}):
                           'username_error': False,
                           'password_error': False})
     
-    template_dict['hmac_message'] = '{0:x}'.format(random.getrandbits(128))
-
     if request.method == 'POST':
         username = request.form['email']
-        hmac_password = request.form['hmac_password']
-        crypt_password = request.form['crypt_password']
-        message = request.form.get('message', None)
+        password = request.form['password']
 
         if username == 'COOKIESDISABLED':
             return "Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again."
@@ -51,15 +47,10 @@ def login(template_dict={}):
         if username in ['_sage_', 'guest', 'pub']:
             U = None
             template_dict['username_error'] = True
-        import pdb; pdb.set_trace()
-        if g.notebook.user_manager().password_type(username) == 'hmac-sha256':
-            password = hmac_password
-        else:
-            password = crypt_password
-            
+
         if U is None:
             pass
-        elif g.notebook.user_manager().check_password(username, password, message):
+        elif g.notebook.user_manager().check_password(username, password):
             if U.is_suspended():
                 #suspended
                 return "Your account is currently suspended"
@@ -152,8 +143,8 @@ def register():
         empty.add('username')
 
     # Password.
-    password = request.values.get('hmac_password', None)
-    retype_password = request.values.get('hmac_retype_password', None)
+    password = request.values.get('password', None)
+    retype_password = request.values.get('retype_password', None)
     if password:
         if not is_valid_password(password, username):
             template_dict['password_invalid'] = True

@@ -1,6 +1,5 @@
 import user
 import crypt
-import hmac
 import hashlib
 
 SALT = 'aa'
@@ -321,7 +320,7 @@ class UserManager(object):
         """
         if not self.get_accounts() and not force:
             raise ValueError, "creating new accounts disabled."
-                               
+
         us = self.users()
         if us.has_key(username):
             print "WARNING: User '%s' already exists -- and is now being replaced."%username
@@ -367,7 +366,6 @@ class SimpleUserManager(UserManager):
 
         """
         self._passwords = {}
-        self._password_types = {}
         UserManager.__init__(self, accounts=accounts)
         self._conf = {'accounts': accounts} if conf is None else conf
 
@@ -422,13 +420,8 @@ class SimpleUserManager(UserManager):
         elif username == 'guest':
             self.add_user('guest', '', '', account_type='guest', force=True)
             return self.users()[username]
-        raise KeyError, "no user '%s'"%username
+        raise KeyError("no user '{0}'".format(username))
 
-    def password_type(self, username):
-        return self._password_types[username]
-
-    def set_password_type(self, username, password_type):
-        self._password_types[username] = password_type
         
     def set_password(self, username, new_password, encrypt = True):
         """
@@ -447,9 +440,9 @@ class SimpleUserManager(UserManager):
             'test'
         """
         if encrypt:
-            self.user(username).set_password_type('hmac-sha256')
-            self.set_password_type(username, 'hmac-sha256')
-            new_password = hashlib.sha256(new_password).hexdigest()
+            salt = user.generate_salt()
+            new_password = 'sha256${0}${1}'.format(salt,
+                                                   hashlib.sha256(salt + new_password).hexdigest())
         self._passwords[username] = new_password
         # need to make sure password in the user object is synced
         # for compatibility only the user object data is stored in the 'users.pickle'
@@ -485,16 +478,21 @@ class SimpleUserManager(UserManager):
         """
         return self._passwords.get(username, None)
         
-    def check_password(self, username,  password, message = None):
+    def check_password(self, username, password):
         # the empty password is always false
         if username == "pub" or password == '':
             return False
-        if self.password_type(username) == 'hmac-sha256':
-            return hmac.new(self.password(username),
-                            message,
-                            hashlib.sha256).hexdigest() == password
+        user_password = self.password(username)
+        if user_password.find('$') == -1:
+            if user_password == crypt.crypt(password, user.SALT):
+                self.set_password(username, password)
+                return True
+            else:
+                return False
         else:
-            return self.password(username) == password
+            salt, user_password = user_password.split('$')[1:]
+            return hashlib.sha256(salt + password).hexdigest() == user_password
+
     # need to use notebook's conf because those are already serialized
     def get_accounts(self):
         return self._conf['accounts']
