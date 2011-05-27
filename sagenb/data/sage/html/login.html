@@ -3,6 +3,20 @@
 {% block javascript %}
 <link rel="stylesheet" href="/javascript/openid-realselector/css/style.css" />
 <script type="text/javascript" src="/javascript/openid-realselector/js/jquery.openid.js"></script>
+<script type="text/javascript">
+    $(function() {
+      $('#openid').openid({
+        img_path: '/javascript/openid-realselector/img/openid/',
+        txt: {
+          label: '{username} for <b>{provider}</b>',
+          username: 'username',
+          title: 'Select an OpenID provider',
+          sign: 'Send'
+        }
+      });
+    });
+</script>
+
 {% endblock %}
 
 {% block title %}Sign in{% endblock %}
