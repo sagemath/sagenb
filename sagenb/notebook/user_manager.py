@@ -1,5 +1,6 @@
 import user
 import crypt
+import hashlib
 
 SALT = 'aa'
 
@@ -319,7 +320,7 @@ class UserManager(object):
         """
         if not self.get_accounts() and not force:
             raise ValueError, "creating new accounts disabled."
-                               
+
         us = self.users()
         if us.has_key(username):
             print "WARNING: User '%s' already exists -- and is now being replaced."%username
@@ -419,8 +420,9 @@ class SimpleUserManager(UserManager):
         elif username == 'guest':
             self.add_user('guest', '', '', account_type='guest', force=True)
             return self.users()[username]
-        raise KeyError, "no user '%s'"%username
+        raise KeyError("no user '{0}'".format(username))
 
+        
     def set_password(self, username, new_password, encrypt = True):
         """
         EXAMPLES:
@@ -438,7 +440,9 @@ class SimpleUserManager(UserManager):
             'test'
         """
         if encrypt:
-            new_password = self.encrypt_password(new_password)
+            salt = user.generate_salt()
+            new_password = 'sha256${0}${1}'.format(salt,
+                                                   hashlib.sha256(salt + new_password).hexdigest())
         self._passwords[username] = new_password
         # need to make sure password in the user object is synced
         # for compatibility only the user object data is stored in the 'users.pickle'
@@ -473,15 +477,21 @@ class SimpleUserManager(UserManager):
             'aaJAM8WS/7IvY'
         """
         return self._passwords.get(username, None)
-
-    def encrypt_password(self, password):
-        return crypt.crypt(password, SALT)
         
-    def check_password(self, username,  password):
+    def check_password(self, username, password):
         # the empty password is always false
         if username == "pub" or password == '':
             return False
-        return self.password(username) == self.encrypt_password(password)
+        user_password = self.password(username)
+        if user_password.find('$') == -1:
+            if user_password == crypt.crypt(password, user.SALT):
+                self.set_password(username, password)
+                return True
+            else:
+                return False
+        else:
+            salt, user_password = user_password.split('$')[1:]
+            return hashlib.sha256(salt + password).hexdigest() == user_password
 
     def get_accounts(self):
         # need to use notebook's conf because those are already serialized

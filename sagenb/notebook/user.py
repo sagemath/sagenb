@@ -2,6 +2,8 @@
 import copy
 import crypt
 import cPickle
+import random
+import hashlib
 import os
 
 SALT = 'aa'
@@ -17,14 +19,21 @@ def User_from_basic(basic):
     user._conf = user_conf.UserConfiguration_from_basic(user._conf)
     return user
 
+def generate_salt():
+    """
+    Returns a salt for use in hashing.
+    """
+    return hex(random.getrandbits(256))[2:-1]
+
+    
 class User(object):
     def __init__(self, username, password='', email='', account_type='admin'):
         self._username = username
-        self._password = crypt.crypt(password, SALT)
+        self.set_password(password)
         self._email = email
         self._email_confirmed = False
         if not account_type in ['admin', 'user', 'guest']:
-            raise ValueError, "account type must be one of admin, user, or guest"
+            raise ValueError("account type must be one of admin, user, or guest")
         self._account_type = account_type
         self._conf = user_conf.UserConfiguration()
         self._temporary_password = ''
@@ -163,7 +172,9 @@ class User(object):
             self._password = 'x'   # won't get as a password -- i.e., this account is closed.
         else:
             if encrypt:
-                self._password = crypt.crypt(password, SALT)
+                salt = generate_salt()
+                self._password = 'sha256${0}${1}'.format(salt,
+                                                         hashlib.sha256(salt + password).hexdigest())
             else:
                 self._password = password
             self._temporary_password = ''

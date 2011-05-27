@@ -1,4 +1,5 @@
 import os
+import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import with_lock
 
@@ -25,7 +26,7 @@ def login(template_dict={}):
                           'openIDlogin': True,
                           'username_error': False,
                           'password_error': False})
-
+    
     if request.method == 'POST':
         username = request.form['email']
         password = request.form['password']
@@ -61,7 +62,7 @@ def login(template_dict={}):
         else:
             template_dict['password_error'] = True
 
-    response = current_app.make_response(render_template('html/login.html', **template_dict))
+    response = current_app.make_response(render_template(os.path.join('html', 'login.html'), **template_dict))
     response.set_cookie('cookie_test_%s'%g.notebook.port, 'cookie_test')
     return response
 

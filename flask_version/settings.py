@@ -1,4 +1,5 @@
 import os
+import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
 
@@ -21,6 +22,7 @@ def settings_page():
     old = request.values.get('old-pass', None)
     new = request.values.get('new-pass', None)
     two = request.values.get('retype-pass', None)
+
     if new or two:
         if not old:
             error = 'Old password not given'
@@ -71,3 +73,6 @@ def settings_page():
     td['admin'] = nu.is_admin()
 
     return render_template(os.path.join('html', 'settings', 'account_settings.html'), **td)
+
+
+
