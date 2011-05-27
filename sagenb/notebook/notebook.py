@@ -110,6 +110,12 @@ class Notebook(object):
 
         self.__worksheets = W
 
+        # Set the openid-user dict
+        try:
+            self._user_manager.load(S)
+        except IOError:
+            pass
+
     def delete(self):
         """
         Delete all files related to this notebook.
@@ -1082,6 +1088,7 @@ class Notebook(object):
         S = self.__storage
         S.save_users(self.user_manager().users())
         S.save_server_conf(self.conf())
+        self._user_manager.save(S)
         # Save the non-doc-browser worksheets.
         for n, W in self.__worksheets.iteritems():
             if not n.startswith('doc_browser'):

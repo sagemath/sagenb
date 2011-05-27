@@ -508,6 +508,18 @@ class OpenIDUserManager(SimpleUserManager):
         SimpleUserManager.__init__(self, accounts=accounts)
         self._openid = {} 
 
+    def load(self, datastore):
+        """
+        Loads required data from a given datastore.
+        """
+        self._openid = datastore.load_openid()
+
+    def save(self, datastore):
+        """
+        Saves persistent data to a given datastore.
+        """
+        datastore.save_openid(self._openid)
+
     def get_username_from_openid(self, identity_url):
         """
         Return the username corresponding ot a given identity_url
@@ -522,7 +534,7 @@ class OpenIDUserManager(SimpleUserManager):
         try:
             return self._openid[identity_url]
         except KeyError:
-            raise KeyError, "no openID identity '%s'"%identity_url
+            raise KeyError, "no openID identity '%s'" % identity_url
 
     def create_new_openid(self, identity_url, username):
         """
