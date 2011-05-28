@@ -475,7 +475,8 @@ class Cell(Cell_generic):
 
     def delete_output(self):
         """
-        Deletes all output in this compute cell.
+        Deletes all output in this compute cell. This also deletes the
+        files, since they appear as output of the cell.
 
         EXAMPLES::
 
@@ -484,10 +485,34 @@ class Cell(Cell_generic):
             sage: C.delete_output()
             sage: C
             Cell 0; in=2+3, out=
+
+        When output is deleted, any files in the cell directory are deleted as well::
+
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: W.edit_save('{{{\nplot(sin(x),(x,0,5))\n///\n20\n}}}')
+            sage: C = W.cell_list()[0]
+            sage: C.evaluate()
+            sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
+            ('d', Cell 0; in=plot(sin(x),(x,0,5)), out=
+            <html><font color='black'><img src='cell://sage0.png'></font></html>
+            <BLANKLINE>
+            )
+            sage: C.files()     # random output -- depends on computer speed
+            ['sage0.png']
+            sage: C.delete_output()
+            sage: C.files()
+            []
+
+            sage: W.quit()
+            sage: nb.delete()
+
         """
         self.__out = u''
         self.__out_html = u''
         self.__evaluated = False
+        self.delete_files()
 
     def evaluated(self):
         r"""
