@@ -159,7 +159,7 @@ def Worksheet_from_basic(obj, notebook_worksheet_directory):
 class Worksheet(object):
     def __init__(self, name=None, id_number=None,
                  notebook_worksheet_directory=None, system=None,
-                 owner=None, docbrowser=False, pretty_print=False,
+                 owner=None, pretty_print=False,
                  auto_publish=False, create_directories=True):
         ur"""
         Create and initialize a new worksheet.
@@ -181,9 +181,6 @@ class Worksheet(object):
 
         -  ``owner`` - string; username of the owner of this
            worksheet
-
-        -  ``docbrowser`` - bool (default: False); whether this
-           is a docbrowser worksheet
 
         -  ``pretty_print`` - bool (default: False); whether
            all output is pretty printed by default.
@@ -211,7 +208,6 @@ class Worksheet(object):
         self.__owner         = owner
         self.__viewers       = []
         self.__collaborators = []
-        self.__docbrowser = docbrowser
         self.__autopublish = auto_publish
         self.__saved_by_info = {}
 
@@ -500,23 +496,18 @@ class Worksheet(object):
         is of course False::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('_sage_', 'password', '', force=True)
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.docbrowser()
             False
 
         We create a worksheet for which docbrowser is True::
 
-            sage: W = nb.create_new_worksheet('docs', 'admin', docbrowser=True)
+            sage: W = nb.create_new_worksheet('doc_browser_0', '_sage_')
             sage: W.docbrowser()
             True
         """
-        try:
-            return self.__docbrowser
-        except AttributeError:
-            return False
-
-    def set_docbrowser(self, x):
-        self.__docbrowser = x
+        return self.name().startswith('doc_browser') and self.owner() == '_sage_'
 
     ##########################################################
     # Basic properties
@@ -2378,15 +2369,6 @@ class Worksheet(object):
             name = name[:max] + ' ...'
         return name
 
-    def is_doc_worksheet(self):
-        try:
-            return self.__is_doc_worksheet
-        except AttributeError:
-            return False
-
-    def set_is_doc_worksheet(self, value):
-        self.__is_doc_worksheet = value
-
     ##########################################################
     # Last edited
     ##########################################################
@@ -2775,6 +2757,7 @@ class Worksheet(object):
             S = self.__sage
         except AttributeError:
             # no sage running anyways!
+            self.notebook().quit_worksheet(self)
             return
 
         try:
@@ -2815,6 +2798,8 @@ class Worksheet(object):
 
 
 
+
+        self.notebook().quit_worksheet(self)
 
     def next_block_id(self):
         try:

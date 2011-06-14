@@ -802,15 +802,16 @@ doc_worksheet_number = 0
 @with_lock
 def doc_worksheet():
     global doc_worksheet_number
-    wnames = g.notebook.worksheet_names()
+    worksheets = g.notebook.users_worksheets('_sage_')
     name = 'doc_browser_%s'%doc_worksheet_number
     doc_worksheet_number = doc_worksheet_number % g.notebook.conf()['doc_pool_size']
-    if name in wnames:
-        W = g.notebook.get_worksheet_with_name(name)
-        W.clear()
+    for W in worksheets:
+        if name == W.name():
+            W.clear()
+            break
     else:
-        W = g.notebook.create_new_worksheet(name, '_sage_', docbrowser=True)
-    W.set_is_doc_worksheet(True)
+        W = g.notebook.create_new_worksheet(name, '_sage_')
+
     return W
 
 def extract_title(html_page):
@@ -837,12 +838,14 @@ def worksheet_file(path):
 
     W = doc_worksheet()
     W.edit_save(doc_page)
+    W.save()
+    W.quit()
 
     #FIXME: For some reason, an extra cell gets added
     #so we remove it here.
     cells = W.cell_list()
     cells.pop()
-
+    
     return g.notebook.html(worksheet_filename=W.filename(),
                          username=g.username)
 

@@ -75,12 +75,12 @@ INPUT:
             {{ worksheet.name() }}
         </a>
         <div><span class="lastedit">{{ worksheet.html_time_last_edited(username) }}</span></div>
-        {% if worksheet.warn_about_other_person_editing(username) and username != 'guest' and not worksheet.is_doc_worksheet() %}
+        {% if worksheet.warn_about_other_person_editing(username) and username != 'guest' and not worksheet.docbrowser() %}
         <span class="pingdown">({{ gettext('Someone else is viewing this worksheet') }})</span>
         {% endif %}
     </div>
     <div id="save-discard-buttons">
-        {% if not worksheet.is_doc_worksheet() %}
+        {% if not worksheet.docbrowser() %}
         <button name="button_save" title="{{ gettext('Save changes') }}" onClick="save_worksheet();">{{ gettext('Save') }}</button><button title="{{ gettext('Save changes and close window') }}" onClick="save_worksheet_and_close();" name="button_save">{{ gettext('Save & quit') }}</button><button title="{{ gettext('Discard changes to this worksheet') }}" onClick="worksheet_discard();">{{ gettext('Discard & quit') }}</button>
         {% endif %}
     </div>
@@ -120,7 +120,7 @@ INPUT:
             {% endfor %}
         </select>
 
-        {% if not worksheet.is_doc_worksheet() %}
+        {% if not worksheet.docbrowser() %}
         <select onchange="go_system_select(this, {{ worksheet.system_index() }});" class="worksheet" id="systems-menu">
             {% for system_name in worksheet.notebook().systems(username) %}
             <option title="{{ gettext('Evaluate all input cells using %(i)s')|format(i=system_names[loop.index0]) }}"
@@ -135,7 +135,7 @@ INPUT:
         {% endif %}
     </div>
     <div id="share-publish-buttons">
-        {% if not worksheet.is_doc_worksheet() %}
+        {% if not worksheet.docbrowser() %}
         {% macro cls(x) %}
         {{ "control-select" if x == select else "control" }}
         {% endmacro %}
