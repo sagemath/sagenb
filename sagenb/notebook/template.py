@@ -25,6 +25,9 @@ from sagenb.notebook.jsmath import math_parse
 
 
 if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
+    if not os.path.isdir(os.environ['SAGENB_TEMPLATE_PATH']):
+        raise ValueError("Enviromental variable SAGENB_TEMPLATE_PATH points to\
+                         a non-existant directory")
     TEMPLATE_PATH = os.environ['SAGENB_TEMPLATE_PATH']
 else:
     TEMPLATE_PATH = os.path.join(DATA, 'sage')
