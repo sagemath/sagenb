@@ -1935,7 +1935,8 @@ class Worksheet(object):
         if E is None:
             E = self.edit_text()
         worksheet_html = self.worksheet_html_filename()
-        if os.path.exists(worksheet_html) and open(worksheet_html).read() == E:
+        if os.path.exists(worksheet_html) and \
+            open(worksheet_html).read() == E.encode('utf-8', 'ignore'):
             # we already wrote it out...
             return
         open(filename, 'w').write(bz2.compress(E.encode('utf-8', 'ignore')))
