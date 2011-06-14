@@ -86,13 +86,38 @@ class FilesystemDatastore(Datastore):
         p = self._abspath(path)
         if not os.path.exists(p): os.makedirs(p)
         return path
+    
+    def _deep_user_path(self, username):
+        from hashlib import md5
+        h = md5(username).hexdigest()
+        base = ['__store__', h[:1], h[:2], h[:3], h[:4]]
+        path = os.path.join(*base)
+        self._makepath(self._abspath(os.path.join(self._home_path, path)))
+        return os.path.join(path, username)
 
     def _user_path(self, username):
         # There are weird cases, e.g., old notebook server migration
         # where username is None, and if we don't string it here,
         # saving can be broken (at a bad moment!).
-        return self._makepath(os.path.join(self._home_path, str(username)))
+        username = str(username)
+        path = self._abspath(os.path.join(self._home_path, username))
+        if not os.path.islink(path):
+            if not os.path.exists(path):
+                self._makepath(path)
 
+            old_dir = os.getcwd()
+            os.chdir(self._abspath(self._home_path))
+            new_path = self._deep_user_path(username)
+
+            #Move the directory to the __store__ directory
+            os.rename(path, new_path)
+
+            #new_path now points to the actual directory
+            os.symlink(new_path, username)
+            os.chdir(old_dir)
+
+        return path
+    
     def _worksheet_pathname(self, username, id_number):
         return os.path.join(self._user_path(username), str(id_number))
     
