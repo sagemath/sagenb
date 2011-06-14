@@ -2797,6 +2797,25 @@ class Worksheet(object):
         self.clear_queue()
         del self.__cells
 
+        import shutil
+        for cell in self.cell_list():
+            try:
+                dir = cell._directory_name()
+            except AttributeError:
+                continue
+            if os.path.exists(dir) and not os.listdir(dir):
+                shutil.rmtree(dir, ignore_errors=True)
+
+
+
+
+
+
+
+
+
+
+
     def next_block_id(self):
         try:
             i = self.__next_block_id
