@@ -16,13 +16,13 @@
                 and dots.</p>
                 <input type="text" name="username" value="{{ resp.fullname }}" class="entry" tabindex="1" />
                 {% if username_missing %}
-                <p><span class="error">Error:</span> No username given</p>
+                <p><span style="color:red">Error:</span> No username given</p>
                 {% endif %}
                 {% if username_taken %}
-                <p><span class="error">Error:</span> Username already in use</p>
+                <p><span style="color:red">Error:</span> Username already in use</p>
                 {% endif %}
                 {% if username_invalid %}
-                <p><span class="error">Error:</span> Bad username</p>
+                <p><span style="color:red">Error:</span> Bad username</p>
                 {% endif %}
             </li>
             <li>
@@ -33,10 +33,10 @@
                 </p>
                 <input type="email" name="email" value="{{ resp.email }}" class="entry" tabindex="4" />
                 {% if email_missing %}
-                <p><span class="error">Error:</span> No email address given</p>
+                <p><span style="color:red">Error:</span> No email address given</p>
                 {% endif %}
                 {% if email_invalid %}
-                <p><span class="error">Error:</span> Invalid email address</p>
+                <p><span style="color:red">Error:</span> Invalid email address</p>
                 {% endif %}
             </li>
         <div>
