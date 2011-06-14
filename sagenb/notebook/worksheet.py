@@ -2763,15 +2763,12 @@ class Worksheet(object):
         except:
             pass
 
-        try: del self.__sage
-        except AttributeError: pass
+        del self.__sage
 
         # We do this to avoid getting a stale Sage that uses old code.
         self.save()
         self.clear_queue()
-        try: del self.__cells
-        except AttributeError: pass
-
+        del self.__cells
 
     def next_block_id(self):
         try:
