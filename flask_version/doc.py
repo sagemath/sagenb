@@ -30,7 +30,7 @@ DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
 
 @doc.route('/doc/static/')
 def docs_static_index():
-    return redirect(url_for('/static/doc/static', filename='index.html'))
+    return redirect('/doc/static/index.html')
 
 @doc.route('/doc/live/')
 @login_required
