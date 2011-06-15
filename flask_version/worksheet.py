@@ -571,6 +571,7 @@ def worksheet_savedatafile(worksheet):
         if os.path.exists(dest):
             os.unlink(dest)
         open(dest, 'w').write(text_field)
+        return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
 @worksheet_command('link_datafile')
 def worksheet_link_datafile(worksheet):
