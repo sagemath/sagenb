@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, time
+import os, time, re
 from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required, guest_or_login_required, with_lock
@@ -215,7 +215,10 @@ def create_or_login(resp):
 @base.route('/openid_profiles', methods=['POST','GET'])
 def set_profiles():
     if request.method == 'GET' and 'openid_response' in session:
-        return render_template('html/openid_profiles.html', resp=session['openid_response'])
+        re_valid_username = re.compile('[^(a-z|A-Z|.|_|0-9)]')
+        openid_resp = session['openid_response']
+        openid_resp.fullname = re.sub(re_valid_username,'_',openid_resp.fullname)
+        return render_template('html/openid_profiles.html', resp=openid_resp)
 
     if request.method == 'POST':
         parse_dict = {'resp':session['openid_response']}

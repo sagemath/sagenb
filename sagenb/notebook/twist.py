@@ -2002,7 +2002,8 @@ server. Please <a href="/register">register</a> with the server.</p>
 # Registration page
 ############################
 import re
-re_valid_username = re.compile('[a-z|A-Z|0-9|_|.|@]*')
+#@ is disabled because it breaks TinyMCE
+re_valid_username = re.compile('[a-z|A-Z|0-9|_|.]*')
 def is_valid_username(username):
     r"""
     Returns whether a candidate username is valid.  It must contain
