@@ -356,8 +356,11 @@ def create_app(path_to_notebook, *args, **kwds):
         filename = os.path.join(SRC, path)
         if os.path.isfile(filename):
             from cgi import escape
-            src = escape(open(filename).read())
-            return render_template(os.path.join('html', 'source_code.html'), src_filename=path, src=src, username = g.username)
+            src = escape(open(filename).read().decode('utf-8','ignore'))
+            if os.path.splitext(filename)[1] in \
+            ['.py','.c','.cc','.h','.hh','.pyx','.pyd']:
+                return render_template(os.path.join('html', 'source_code.html'), src_filename=path, src=src, username = g.username)
+            return src
         return idx.render_autoindex(path)
 
     return app
