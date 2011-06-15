@@ -21,7 +21,7 @@ $.fn.tinymce = function (options) {
 
 tinyMCE.init({
     mode : "none",
-    plugins: "advlist,autosave,inlinepopups,lists,media,paste,searchreplace,table,autolink,",
+    plugins: "advlist,inlinepopups,lists,media,paste,searchreplace,table,autolink,",
 
     theme : "advanced",
     theme_advanced_toolbar_location : "top",
