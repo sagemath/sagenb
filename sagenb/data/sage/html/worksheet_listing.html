@@ -23,12 +23,12 @@ INPUT:
 
 {% block javascript %}
 {% if not pub %}
-<link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.7.2.custom.css" />
-<script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.7.2.custom.min.js"></script>
+<link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.8.11.custom.css" />
+<script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.8.11.custom.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/form/jquery.form.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/jquery.bgiframe.min.js"></script>
 <script type="text/javascript">
-    var worksheet_filenames = {{ worksheet_filenames }}; 
+    var worksheet_filenames = {{ worksheet_filenames|tojson|safe }}; 
 </script>
 <script type="text/javascript" src="/javascript/sage/main.js"></script>
 <script type="text/javascript" src="/javascript/gears/gears_init.js"></script> 

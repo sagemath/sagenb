@@ -33,8 +33,9 @@ Switch the class 'highlight' to 'blue' when a paragraph is clicked with a one se
 <pre>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-  &lt;link type=&quot;text/css&quot; href=&quot;http://jqueryui.com/latest/themes/base/ui.all.css&quot; rel=&quot;stylesheet&quot; /&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/jquery-1.3.2.js&quot;&gt;&lt;/script&gt;
+  &lt;link href=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
   &lt;script src=&quot;http://ui.jquery.com/latest/ui/effects.core.js&quot;&gt;&lt;/script&gt;
 &lt;style type=&quot;text/css&quot;&gt;
   p { margin: 4px; font-size:16px; font-weight:bolder; 
@@ -42,8 +43,8 @@ Switch the class 'highlight' to 'blue' when a paragraph is clicked with a one se
   .blue { background: blue; }
   .highlight { background:yellow; }
 &lt;/style&gt;
-  &lt;script type="text/javascript"&gt;
-  $(document).ready(function(){
+  &lt;script&gt;
+  $(document).ready(function() {
     $(&quot;p&quot;).<a href="http://docs.jquery.com/Events/click" title="Events/click">click</a>(function () {
       $(this).<strong class="selflink">switchClass</strong>(&quot;highlight&quot;, &quot;blue&quot;, 1000);
     });
@@ -119,10 +120,10 @@ Switch the class 'highlight' to 'blue' when a paragraph is clicked with a one se
 </div>
 
 </p><!-- 
-Pre-expand include size: 5655 bytes
-Post-expand include size: 7540 bytes
-Template argument size: 4741 bytes
+Pre-expand include size: 5818 bytes
+Post-expand include size: 7682 bytes
+Template argument size: 4812 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:2609-1!1!0!!en!2 and timestamp 20090604041109 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:2609-1!1!0!!en!2 and timestamp 20110315175313 -->

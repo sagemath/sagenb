@@ -17,6 +17,8 @@
         <h3>Dependencies</h3>
         <ul>
 <li>UI Core</li>
+<li>UI Widget</li>
+<li>UI Mouse</li>
 </ul>
     </div>
     <div id="overview-example">
@@ -33,19 +35,33 @@ A simple jQuery UI Selectable.<br />
 <pre>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-  &lt;link type=&quot;text/css&quot; href=&quot;http://jqueryui.com/latest/themes/base/ui.all.css&quot; rel=&quot;stylesheet&quot; /&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/jquery-1.3.2.js&quot;&gt;&lt;/script&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/ui/ui.core.js&quot;&gt;&lt;/script&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/ui/ui.selectable.js&quot;&gt;&lt;/script&gt;
-  &lt;script type="text/javascript"&gt;
-  $(document).ready(function(){
+  &lt;link href=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
+  &lt;style type=&quot;text/css&quot;&gt;
+#selectable .ui-selecting {
+	background: silver;
+}
+#selectable .ui-selected {
+	background: gray;
+}
+&lt;/style&gt;
+
+  &lt;script&gt;
+  $(document).ready(function() {
     $(&quot;#selectable&quot;).selectable();
   });
   &lt;/script&gt;
 &lt;/head&gt;
 &lt;body style="font-size:62.5%;"&gt;
   
-&lt;div id=&quot;selectable&quot;&gt;&lt;/div&gt;
+&lt;ul id=&quot;selectable&quot;&gt;
+&lt;li&gt;Item 1&lt;/li&gt;
+&lt;li&gt;Item 2&lt;/li&gt;
+&lt;li&gt;Item 3&lt;/li&gt;
+&lt;li&gt;Item 4&lt;/li&gt;
+&lt;li&gt;Item 5&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;/body&gt;
 &lt;/html&gt;
@@ -58,6 +74,48 @@ A simple jQuery UI Selectable.<br />
     <h2 class="top-header">Options</h2>
     <ul class="options-list">
       
+<li class="option" id="option-disabled">
+  <div class="option-header">
+    <h3 class="option-name"><a href="#option-disabled">disabled</a></h3>
+    <dl>
+      <dt class="option-type-label">Type:</dt>
+        <dd class="option-type">Boolean</dd>
+      
+      <dt class="option-default-label">Default:</dt>
+        <dd class="option-default">false</dd>
+      
+    </dl>
+  </div>
+  <div class="option-description">
+    <p>Disables (true) or enables (false) the selectable. Can be set when initialising (first creating) the selectable.</p>
+  </div>
+  <div class="option-examples">
+    <h4>Code examples</h4>
+    <dl class="option-examples-list">
+    
+<dt>
+  Initialize a selectable with the <code>disabled</code> option specified.
+</dt>
+<dd>
+<pre><code>$( ".selector" ).selectable({ disabled: true });</code></pre>
+</dd>
+
+    
+<dt>
+  Get or set the <code>disabled</code> option, after init.
+</dt>
+<dd>
+<pre><code>//getter
+var disabled = $( ".selector" ).selectable( "option", "disabled" );
+//setter
+$( ".selector" ).selectable( "option", "disabled", true );</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
 <li class="option" id="option-autoRefresh">
   <div class="option-header">
     <h3 class="option-name"><a href="#option-autoRefresh">autoRefresh</a></h3>
@@ -81,7 +139,7 @@ A simple jQuery UI Selectable.<br />
   Initialize a selectable with the <code>autoRefresh</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({ autoRefresh: false });</code></pre>
+<pre><code>$( ".selector" ).selectable({ autoRefresh: false });</code></pre>
 </dd>
 
     
@@ -90,9 +148,9 @@ A simple jQuery UI Selectable.<br />
 </dt>
 <dd>
 <pre><code>//getter
-var autoRefresh = $('.selector').selectable('option', 'autoRefresh');
+var autoRefresh = $( ".selector" ).selectable( "option", "autoRefresh" );
 //setter
-$('.selector').selectable('option', 'autoRefresh', false);</code></pre>
+$( ".selector" ).selectable( "option", "autoRefresh", false );</code></pre>
 </dd>
 
     </dl>
@@ -123,7 +181,7 @@ $('.selector').selectable('option', 'autoRefresh', false);</code></pre>
   Initialize a selectable with the <code>cancel</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({ cancel: ':input,option' });</code></pre>
+<pre><code>$( ".selector" ).selectable({ cancel: ':input,option' });</code></pre>
 </dd>
 
     
@@ -132,9 +190,9 @@ $('.selector').selectable('option', 'autoRefresh', false);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var cancel = $('.selector').selectable('option', 'cancel');
+var cancel = $( ".selector" ).selectable( "option", "cancel" );
 //setter
-$('.selector').selectable('option', 'cancel', ':input,option');</code></pre>
+$( ".selector" ).selectable( "option", "cancel", ':input,option' );</code></pre>
 </dd>
 
     </dl>
@@ -165,7 +223,7 @@ $('.selector').selectable('option', 'cancel', ':input,option');</code></pre>
   Initialize a selectable with the <code>delay</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({ delay: 20 });</code></pre>
+<pre><code>$( ".selector" ).selectable({ delay: 20 });</code></pre>
 </dd>
 
     
@@ -174,9 +232,9 @@ $('.selector').selectable('option', 'cancel', ':input,option');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var delay = $('.selector').selectable('option', 'delay');
+var delay = $( ".selector" ).selectable( "option", "delay" );
 //setter
-$('.selector').selectable('option', 'delay', 20);</code></pre>
+$( ".selector" ).selectable( "option", "delay", 20 );</code></pre>
 </dd>
 
     </dl>
@@ -207,7 +265,7 @@ $('.selector').selectable('option', 'delay', 20);</code></pre>
   Initialize a selectable with the <code>distance</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({ distance: 20 });</code></pre>
+<pre><code>$( ".selector" ).selectable({ distance: 20 });</code></pre>
 </dd>
 
     
@@ -216,9 +274,9 @@ $('.selector').selectable('option', 'delay', 20);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var distance = $('.selector').selectable('option', 'distance');
+var distance = $( ".selector" ).selectable( "option", "distance" );
 //setter
-$('.selector').selectable('option', 'distance', 20);</code></pre>
+$( ".selector" ).selectable( "option", "distance", 20 );</code></pre>
 </dd>
 
     </dl>
@@ -249,7 +307,7 @@ $('.selector').selectable('option', 'distance', 20);</code></pre>
   Initialize a selectable with the <code>filter</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({ filter: 'li' });</code></pre>
+<pre><code>$( ".selector" ).selectable({ filter: 'li' });</code></pre>
 </dd>
 
     
@@ -258,9 +316,9 @@ $('.selector').selectable('option', 'distance', 20);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var filter = $('.selector').selectable('option', 'filter');
+var filter = $( ".selector" ).selectable( "option", "filter" );
 //setter
-$('.selector').selectable('option', 'filter', 'li');</code></pre>
+$( ".selector" ).selectable( "option", "filter", 'li' );</code></pre>
 </dd>
 
     </dl>
@@ -297,7 +355,7 @@ $('.selector').selectable('option', 'filter', 'li');</code></pre>
   Initialize a selectable with the <code>tolerance</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({ tolerance: 'fit' });</code></pre>
+<pre><code>$( ".selector" ).selectable({ tolerance: 'fit' });</code></pre>
 </dd>
 
     
@@ -306,9 +364,9 @@ $('.selector').selectable('option', 'filter', 'li');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var tolerance = $('.selector').selectable('option', 'tolerance');
+var tolerance = $( ".selector" ).selectable( "option", "tolerance" );
 //setter
-$('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
+$( ".selector" ).selectable( "option", "tolerance", 'fit' );</code></pre>
 </dd>
 
     </dl>
@@ -321,12 +379,51 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h2 class="top-header">Events</h2>
     <ul class="events-list">
       
+<li class="event" id="event-create">
+  <div class="event-header">
+    <h3 class="event-name"><a href="#event-create">create</a></h3>
+    <dl>
+      <dt class="event-type-label">Type:</dt>
+        <dd class="event-type">selectablecreate</dd>
+    </dl>
+  </div>
+  <div class="event-description">
+    <p>This event is triggered when selectable is created.</p>
+  </div>
+  <div class="event-examples">
+    <h4>Code examples</h4>
+    <dl class="event-examples-list">
+    
+<dt>
+  Supply a callback function to handle the <code>create</code> event as an init option.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).selectable({
+   create: function(event, ui) { ... }
+});</code></pre>
+</dd>
+
+    
+<dt>
+  Bind to the <code>create</code> event by type: <code>selectablecreate</code>.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectablecreate&quot;, function(event, ui) {
+  ...
+});</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
 <li class="event" id="event-selected">
   <div class="event-header">
     <h3 class="event-name"><a href="#event-selected">selected</a></h3>
     <dl>
       <dt class="event-type-label">Type:</dt>
-        <dd class="event-type">selected</dd>
+        <dd class="event-type">selectableselected</dd>
     </dl>
   </div>
   <div class="event-description">
@@ -340,17 +437,17 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Supply a callback function to handle the <code>selected</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({
+<pre><code>$( &quot;.selector&quot; ).selectable({
    selected: function(event, ui) { ... }
 });</code></pre>
 </dd>
 
     
 <dt>
-  Bind to the <code>selected</code> event by type: <code>selected</code>.
+  Bind to the <code>selected</code> event by type: <code>selectableselected</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('selected', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectableselected&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -365,7 +462,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="event-name"><a href="#event-selecting">selecting</a></h3>
     <dl>
       <dt class="event-type-label">Type:</dt>
-        <dd class="event-type">selecting</dd>
+        <dd class="event-type">selectableselecting</dd>
     </dl>
   </div>
   <div class="event-description">
@@ -379,17 +476,17 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Supply a callback function to handle the <code>selecting</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({
+<pre><code>$( &quot;.selector&quot; ).selectable({
    selecting: function(event, ui) { ... }
 });</code></pre>
 </dd>
 
     
 <dt>
-  Bind to the <code>selecting</code> event by type: <code>selecting</code>.
+  Bind to the <code>selecting</code> event by type: <code>selectableselecting</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('selecting', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectableselecting&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -418,7 +515,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Supply a callback function to handle the <code>start</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({
+<pre><code>$( &quot;.selector&quot; ).selectable({
    start: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -428,7 +525,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Bind to the <code>start</code> event by type: <code>selectablestart</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('selectablestart', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectablestart&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -457,7 +554,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Supply a callback function to handle the <code>stop</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({
+<pre><code>$( &quot;.selector&quot; ).selectable({
    stop: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -467,7 +564,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Bind to the <code>stop</code> event by type: <code>selectablestop</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('selectablestop', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectablestop&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -482,7 +579,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="event-name"><a href="#event-unselected">unselected</a></h3>
     <dl>
       <dt class="event-type-label">Type:</dt>
-        <dd class="event-type">unselected</dd>
+        <dd class="event-type">selectableunselected</dd>
     </dl>
   </div>
   <div class="event-description">
@@ -496,17 +593,17 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Supply a callback function to handle the <code>unselected</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({
+<pre><code>$( &quot;.selector&quot; ).selectable({
    unselected: function(event, ui) { ... }
 });</code></pre>
 </dd>
 
     
 <dt>
-  Bind to the <code>unselected</code> event by type: <code>unselected</code>.
+  Bind to the <code>unselected</code> event by type: <code>selectableunselected</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('unselected', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectableunselected&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -521,7 +618,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="event-name"><a href="#event-unselecting">unselecting</a></h3>
     <dl>
       <dt class="event-type-label">Type:</dt>
-        <dd class="event-type">unselecting</dd>
+        <dd class="event-type">selectableunselecting</dd>
     </dl>
   </div>
   <div class="event-description">
@@ -535,17 +632,17 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
   Supply a callback function to handle the <code>unselecting</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').selectable({
+<pre><code>$( &quot;.selector&quot; ).selectable({
    unselecting: function(event, ui) { ... }
 });</code></pre>
 </dd>
 
     
 <dt>
-  Bind to the <code>unselecting</code> event by type: <code>unselecting</code>.
+  Bind to the <code>unselecting</code> event by type: <code>selectableunselecting</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('unselecting', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;selectableunselecting&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -565,7 +662,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="method-name"><a href="#method-destroy">destroy</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.selectable( 'destroy'
+        <dd class="method-signature">.selectable( "destroy"
 
 
 
@@ -587,7 +684,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="method-name"><a href="#method-disable">disable</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.selectable( 'disable'
+        <dd class="method-signature">.selectable( "disable"
 
 
 
@@ -609,7 +706,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="method-name"><a href="#method-enable">enable</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.selectable( 'enable'
+        <dd class="method-signature">.selectable( "enable"
 
 
 
@@ -631,7 +728,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h3 class="method-name"><a href="#method-option">option</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.selectable( 'option'
+        <dd class="method-signature">.selectable( "option"
 
 , optionName
 
@@ -648,12 +745,56 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
 </li>
 
 
+<li class="method" id="method-option">
+  <div class="method-header">
+    <h3 class="method-name"><a href="#method-option">option</a></h3>
+    <dl>
+      <dt class="method-signature-label">Signature:</dt>
+        <dd class="method-signature">.selectable( "option"
+
+, options
+
+
+
+
+
+)</dd>
+    </dl>
+  </div>
+  <div class="method-description">
+    <p>Set multiple selectable options at once by providing an options object.</p>
+  </div>
+</li>
+
+
+<li class="method" id="method-widget">
+  <div class="method-header">
+    <h3 class="method-name"><a href="#method-widget">widget</a></h3>
+    <dl>
+      <dt class="method-signature-label">Signature:</dt>
+        <dd class="method-signature">.selectable( "widget"
+
+
+
+
+
+
+
+)</dd>
+    </dl>
+  </div>
+  <div class="method-description">
+    <p>Returns the .ui-selectable element.</p>
+  </div>
+</li>
+
+
 <li class="method" id="method-refresh">
   <div class="method-header">
     <h3 class="method-name"><a href="#method-refresh">refresh</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.selectable( 'refresh'
+        <dd class="method-signature">.selectable( "refresh"
 
 
 
@@ -675,7 +816,7 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
     <h2 class="top-header">Theming</h2>
     <p>The jQuery UI Selectable plugin uses the jQuery UI CSS Framework to style its look and feel, including colors and background textures. We recommend using the ThemeRoller tool to create and download custom themes that are easy to build and maintain.
 </p>
-  <p>If a deeper level of customization is needed, there are widget-specific classes referenced within the ui.selectable.css stylesheet that can be modified. These classes are highlighed in bold below.
+  <p>If a deeper level of customization is needed, there are widget-specific classes referenced within the jquery.ui.selectable.css stylesheet that can be modified. These classes are highlighed in bold below.
 </p>
     
   <h3>Sample markup with jQuery UI CSS Framework classes</h3>
@@ -698,10 +839,10 @@ $('.selector').selectable('option', 'tolerance', 'fit');</code></pre>
 </div>
 
 </p><!-- 
-Pre-expand include size: 28549 bytes
-Post-expand include size: 45102 bytes
-Template argument size: 24967 bytes
+Pre-expand include size: 34674 bytes
+Post-expand include size: 53359 bytes
+Template argument size: 26926 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3343-1!1!0!!en!2 and timestamp 20090604112214 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3771-1!1!0!!en!2 and timestamp 20110315194405 -->

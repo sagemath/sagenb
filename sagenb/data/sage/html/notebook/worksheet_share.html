@@ -13,7 +13,7 @@ Share this document
 {% set select = "share" %}
 
 {% block after_sharebar %}
-{% if not (notebook.user_is_admin(username) or username == worksheet.owner()) %}
+{% if not (notebook.user_manager().user_is_admin(username) or username == worksheet.owner()) %}
     Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href="copy">make your own copy</a>.
 {% else %}
 <p>This Sage Worksheet is currently shared with the people listed in the box below.</p>
