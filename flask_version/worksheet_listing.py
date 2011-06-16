@@ -226,8 +226,16 @@ def upload_worksheet():
     dir = ''
     if url:
         #Downloading a file from the internet
-        import urllib
+        import urllib, urlparse
         filename = tmp_filename() + ('.zip' if url.endswith('.zip') else '.sws')
+        # The file will be downloaded from the internet and saved
+        # to a temporary file with the same extension
+        path = urlparse.urlparse(url).path
+        extension = os.path.splitext(path)[1].lower()
+        if extension not in [".txt", ".sws", ".zip", ".html"]:
+            # Or shall we try to import the document as an sws in doubt?
+            return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
+        filename = tmp_filename()+extension
         urllib.urlretrieve(url, filename)
     else:
         #Uploading a file from the user's computer
