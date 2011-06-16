@@ -1780,14 +1780,10 @@ function go_option(form) {
       form -- DOM element; the drop-down form element
     */
     var action = form.options[form.selectedIndex].value;
-    action = action.slice(0, action.indexOf('('));
-
-    // This is safer than using eval.
-    if (action === 'delete_worksheet') {
-        delete_worksheet(worksheet_filename);
-    } else if (action !== '') {
-        window[action]();
-    }
+    // not safe, but more straigth forward than parsing
+    // what is basically an eval string and running the 
+    // corresponding function and arguments
+    eval(action);
     form.options[0].selected = 1;
 }
 
