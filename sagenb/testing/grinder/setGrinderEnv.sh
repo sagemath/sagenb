@@ -1,0 +1,5 @@
+#!/bin/bash
+GRINDERPATH=/Users/rado/grinder-3.4
+GRINDERPROPERTIES=grinder.properties
+CLASSPATH=$GRINDERPATH/lib/grinder.jar:$CLASSPATH
+export CLASSPATH GRINDERPROPERTIES

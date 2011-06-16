@@ -17,14 +17,20 @@ AUTHORS:
 
 import jinja2
 
-import os, re, sys
+import os, re, sys, json
 
 from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
 from sagenb.notebook.jsmath import math_parse
 
 
-TEMPLATE_PATH = os.path.join(DATA, 'sage')
+if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
+    if not os.path.isdir(os.environ['SAGENB_TEMPLATE_PATH']):
+        raise ValueError("Enviromental variable SAGENB_TEMPLATE_PATH points to\
+                         a non-existant directory")
+    TEMPLATE_PATH = os.environ['SAGENB_TEMPLATE_PATH']
+else:
+    TEMPLATE_PATH = os.path.join(DATA, 'sage')
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_PATH))
 
 css_illegal_re = re.compile(r'[^-A-Za-z_0-9]')
@@ -106,6 +112,7 @@ env.filters['prettify_time_ago'] = prettify_time_ago
 env.filters['math_parse'] = math_parse
 env.filters['max'] = max
 env.filters['repr_str'] = lambda x: repr(unicode_str(x))[1:]
+env.filters['tojson'] = json.dumps
 
 def template(filename, **user_context):
     """

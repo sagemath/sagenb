@@ -2,6 +2,8 @@
 import copy
 import crypt
 import cPickle
+import random
+import hashlib
 import os
 
 SALT = 'aa'
@@ -17,18 +19,39 @@ def User_from_basic(basic):
     user._conf = user_conf.UserConfiguration_from_basic(user._conf)
     return user
 
+def generate_salt():
+    """
+    Returns a salt for use in hashing.
+    """
+    return hex(random.getrandbits(256))[2:-1]
+
+    
 class User(object):
     def __init__(self, username, password='', email='', account_type='admin'):
         self._username = username
-        self._password = crypt.crypt(password, SALT)
+        self.set_password(password)
         self._email = email
         self._email_confirmed = False
         if not account_type in ['admin', 'user', 'guest']:
-            raise ValueError, "account type must be one of admin, user, or guest"
+            raise ValueError("account type must be one of admin, user, or guest")
         self._account_type = account_type
         self._conf = user_conf.UserConfiguration()
         self._temporary_password = ''
         self._is_suspended = False
+
+    def __eq__(self, other):
+        if self.__class__ is not other.__class__:
+            return False
+        elif self.username() != other.username():
+            return False
+        elif self.get_email() != other.get_email():
+            return False
+        elif self.conf() != other.conf():
+            return False
+        elif self.account_type() != other.account_type():
+            return False
+        else:
+            return True
 
     def __getstate__(self):
         d = copy.copy(self.__dict__)
@@ -96,6 +119,17 @@ class User(object):
         """
         return self._username
 
+    def password(self):
+        """
+        Deprecated. Use user_manager object instead. 
+        EXAMPLES::
+
+            sage: from sagenb.notebook.user import User
+            sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').password()
+            'aaVOpo2zPZsI2'
+        """
+        return self._password
+
     def __repr__(self):
         return self._username
 
@@ -123,18 +157,7 @@ class User(object):
     def __setitem__(self, *args):
         self._conf.__setitem__(*args)
 
-    def password(self):
-        """
-        EXAMPLES::
-
-            sage: from sagenb.notebook.user import User
-            sage: user = User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin')
-            sage: user.password()
-            'aamxw5LCYcWY.'
-        """
-        return self._password
-
-    def set_password(self, password):
+    def set_password(self, password, encrypt=True):
         """
         EXAMPLES::
 
@@ -148,7 +171,12 @@ class User(object):
         if password == '':
             self._password = 'x'   # won't get as a password -- i.e., this account is closed.
         else:
-            self._password = crypt.crypt(password, SALT)
+            if encrypt:
+                salt = generate_salt()
+                self._password = 'sha256${0}${1}'.format(salt,
+                                                         hashlib.sha256(salt + password).hexdigest())
+            else:
+                self._password = password
             self._temporary_password = ''
 
     def set_hashed_password(self, password):
@@ -221,21 +249,6 @@ class User(object):
         except AttributeError:
             self._email_confirmed = False
             return False
-
-    def password_is(self, password):
-        """
-        EXAMPLES::
-
-            sage: from sagenb.notebook.user import User
-            sage: user = User('bob', 'Aisfa!!', 'bob@sagemath.net', 'admin')
-            sage: user.password_is('ecc')
-            False
-            sage: user.password_is('Aisfa!!')
-            True
-        """
-        if self._username == "pub":
-            return False
-        return self._password == crypt.crypt(password, SALT)
 
     def account_type(self):
         """

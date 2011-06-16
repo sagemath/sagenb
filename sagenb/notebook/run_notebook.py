@@ -26,12 +26,14 @@ import os
 import shutil
 import socket
 import sys
+import hashlib
 from exceptions import SystemExit
 
 from twisted.python.runtime import platformType
 
 from sagenb.misc.misc import (DOT_SAGENB, find_next_available_port,
                               print_open_msg)
+
 import notebook
 
 conf_path     = os.path.join(DOT_SAGENB, 'notebook')
@@ -41,293 +43,7 @@ public_pem    = os.path.join(conf_path, 'public.pem')
 template_file = os.path.join(conf_path, 'cert.cfg')
 
 
-def cmd_exists(cmd):
-    """
-    Return True if the given cmd exists.
-    """
-    return os.system('which %s 2>/dev/null >/dev/null' % cmd) == 0
-
-
-def get_old_settings(conf):
-    """
-    Returns three settings from the Twisted configuration file conf:
-    the interface, port number, and whether the server is secure.  If
-    there are any errors, this returns (None, None, None).
-    """
-    import re
-    # This should match the format written to twistedconf.tac below.
-    p = re.compile(r'interface="(.*)",port=(\d*),secure=(True|False)')
-    try:
-        interface, port, secure = p.search(open(conf, 'r').read()).groups()
-        if secure == 'True':
-            secure = True
-        else:
-            secure = False
-        return interface, port, secure
-    except IOError, AttributeError:
-        return None, None, None
-
-
-def notebook_setup(self=None):
-    if not os.path.exists(conf_path):
-        os.makedirs(conf_path)
-
-    if not cmd_exists('certtool'):
-        raise RuntimeError("You must install certtool to use the secure notebook server.")
-
-    dn = raw_input("Domain name [localhost]: ").strip()
-    if dn == '':
-        print "Using default localhost"
-        dn = 'localhost'
-
-    import random
-    template_dict = {'organization': 'SAGE (at %s)' % (dn),
-                'unit': '389',
-                'locality': None,
-                'state': 'Washington',
-                'country': 'US',
-                'cn': dn,
-                'uid': 'sage_user',
-                'dn_oid': None,
-                'serial': str(random.randint(1, 2 ** 31)),
-                'dns_name': None,
-                'crl_dist_points': None,
-                'ip_address': None,
-                'expiration_days': 10000,
-                'email': 'sage@sagemath.org',
-                'ca': None,
-                'tls_www_client': None,
-                'tls_www_server': True,
-                'signing_key': True,
-                'encryption_key': True,
-                }
-
-    s = ""
-    for key, val in template_dict.iteritems():
-        if val is None:
-            continue
-        if val == True:
-            w = ''
-        elif isinstance(val, list):
-            w = ' '.join(['"%s"' % x for x in val])
-        else:
-            w = '"%s"' % val
-        s += '%s = %s \n' % (key, w)
-
-    f = open(template_file, 'w')
-    f.write(s)
-    f.close()
-
-    import subprocess
-
-    if os.uname()[0] != 'Darwin' and cmd_exists('openssl'):
-        # We use openssl by default if it exists, since it is open
-        # *vastly* faster on Linux, for some weird reason.
-        cmd = ['openssl genrsa > %s' % private_pem]
-        print "Using openssl to generate key"
-        print cmd[0]
-        subprocess.call(cmd, shell=True)
-    else:
-        # We checked above that certtool is available.
-        cmd = ['certtool --generate-privkey --outfile %s' % private_pem]
-        print "Using certtool to generate key"
-        print cmd[0]
-        subprocess.call(cmd, shell=True)
-
-    cmd = ['certtool --generate-self-signed --template %s --load-privkey %s '
-           '--outfile %s' % (template_file, private_pem, public_pem)]
-    print cmd[0]
-    subprocess.call(cmd, shell=True)
-
-    # Set permissions on private cert
-    os.chmod(private_pem, 0600)
-
-    print "Successfully configured notebook."
-
-def notebook_twisted(self,
-             directory     = None,
-             port          = 8000,
-             interface     = 'localhost',
-             address       = None,
-             port_tries    = 50,
-             secure        = False,
-             reset         = False,
-             accounts      = False,
-             require_login = True,
-
-             server_pool   = None,
-             ulimit        = '',
-
-             timeout       = 0,
-
-             open_viewer   = True,
-
-             sagetex_path  = "",
-             start_path    = "",
-             fork          = False,
-             quiet         = False,
-
-             subnets       = None):
-    cwd = os.getcwd()
-    # For backwards compatible, we still allow the address to be set
-    # instead of the interface argument
-    if address is not None:
-        from warnings import warn
-        message = "Use 'interface' instead of 'address' when calling notebook(...)."
-        warn(message, DeprecationWarning, stacklevel=3)
-        interface = address
-
-    if directory is None:
-        directory = '%s/sage_notebook' % DOT_SAGENB
-    else:
-        if (isinstance(directory, basestring) and len(directory) > 0 and
-            directory[-1] == "/"):
-            directory = directory[:-1]
-
-    # First change to the directory that contains the notebook directory
-    wd = os.path.split(directory)
-    if wd[0]:
-        os.chdir(wd[0])
-    directory = wd[1]
-
-    port = int(port)
-
-    if not secure and interface != 'localhost':
-        print '*' * 70
-        print "WARNING: Running the notebook insecurely not on localhost is dangerous"
-        print "because its possible for people to sniff passwords and gain access to"
-        print "your account. Make sure you know what you are doing."
-        print '*' * 70
-
-    nb = notebook.load_notebook(directory)
-
-    directory = nb._dir
-    conf = os.path.join(directory, 'twistedconf.tac')
-
-    if not quiet:
-        print "The notebook files are stored in:", nb._dir
-
-    nb.conf()['idle_timeout'] = int(timeout)
-
-    if nb.user_exists('root') and not nb.user_exists('admin'):
-        # This is here only for backward compatibility with one
-        # version of the notebook.
-        s = nb.create_user_with_same_password('admin', 'root')
-        # It would be a security risk to leave an escalated account around.
-
-    if not nb.user_exists('admin'):
-        reset = True
-
-    if reset:
-        passwd = get_admin_passwd()
-        if reset:
-            nb.user('admin').set_password(passwd)
-            print "Password changed for user 'admin'."
-        else:
-            nb.create_default_users(passwd)
-            print "User admin created with the password you specified."
-            print "\n\n"
-            print "*" * 70
-            print "\n"
-            if secure:
-                print "Login to the Sage notebook as admin with the password you specified above."
-        #nb.del_user('root')
-
-    nb.set_server_pool(server_pool)
-    nb.set_ulimit(ulimit)
-    nb.set_accounts(accounts)
-
-    if os.path.exists('%s/nb-older-backup.sobj' % directory):
-        nb._migrate_worksheets()
-        os.unlink('%s/nb-older-backup.sobj' % directory)
-        print "Updating to new format complete."
-
-    nb.save()
-    del nb
-
-    def run(port, subnets):
-        # Is a server already running? Check if a Twistd PID exists in
-        # the given directory.
-        pidfile = os.path.join(directory, 'twistd.pid')
-        if platformType != 'win32':
-            from twisted.scripts._twistd_unix import checkPID
-            try:
-                checkPID(pidfile)
-            except SystemExit as e:
-                pid = int(open(pidfile).read())
-
-                if str(e).startswith('Another twistd server is running,'):
-                    print 'Another Sage Notebook server is running, PID %d.' % pid
-                    old_interface, old_port, old_secure = get_old_settings(conf)
-                    if open_viewer and old_port:
-                        old_interface = old_interface or 'localhost'
-
-                        print 'Opening web browser at http%s://%s:%s/ ...' % (
-                            's' if old_secure else '', old_interface, old_port)
-
-                        from sagenb.misc.misc import open_page as browse_to
-                        browse_to(old_interface, old_port, old_secure, '/')
-                        return
-                    print '\nPlease either stop the old server or run the new server in a different directory.'
-                    return
-
-        ## Create the config file
-        if secure:
-            if (not os.path.exists(private_pem) or
-                not os.path.exists(public_pem)):
-                print "In order to use an SECURE encrypted notebook, you must first run notebook.setup()."
-                print "Now running notebook.setup()"
-                notebook_setup()
-            if (not os.path.exists(private_pem) or
-                not os.path.exists(public_pem)):
-                print "Failed to setup notebook.  Please try notebook.setup() again manually."
-            strport = '%s:%s:interface=%s:privateKey=%s:certKey=%s' % (
-                protocol, port, interface, private_pem, public_pem)
-        else:
-            strport = 'tcp:%s:interface=%s' % (port, interface)
-
-        notebook_opts = '"%s",interface="%s",port=%s,secure=%s' % (
-            os.path.abspath(directory), interface, port, secure)
-
-        if open_viewer:
-            if require_login:
-                start_path = "'/?startup_token=%s' % startup_token"
-            else:
-                start_path = "'/'"
-            if interface:
-                hostname = interface
-            else:
-                hostname = 'localhost'
-            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s)" % (hostname, port, secure, start_path)
-        else:
-            open_page = ''
-
-        config = open(conf, 'w')
-
-        if subnets is None:
-            factory = "factory = channel.HTTPFactory(site)"
-        else:
-            if not isinstance(subnets, (list, tuple)):
-                subnets = [subnets]
-            factory = """
-# See http://stackoverflow.com/questions/1273297/python-twisted-restricting-access-by-ip-address
-from sagenb.misc.ipaddr import IPNetwork
-subnets = eval(r"%s")
-if not any(s.startswith('127') for s in subnets):
-    subnets.insert(0, '127.0.0.0/8')
-subnets = [IPNetwork(x) for x in subnets]
-class RestrictedIPFactory(channel.HTTPFactory):
-    def buildProtocol(self, addr):
-        a = str(addr.host)
-        for X in subnets:
-            if a in X:
-                return channel.HTTPFactory.buildProtocol(self, addr)
-        print 'Ignoring all requests from IP address '+str(addr.host)
-
-factory = RestrictedIPFactory(site)
-""" % tuple([subnets])
-
-        config.write("""
+TWISTED_NOTEBOOK_CONFIG = """
 ####################################################################
 # WARNING -- Do not edit this file!   It is autogenerated each time
 # the notebook(...) command is executed.
@@ -339,11 +55,11 @@ import sagenb.notebook.notebook
 sagenb.notebook.notebook.JSMATH=True
 import sagenb.notebook.notebook as notebook
 import sagenb.notebook.twist as twist
-twist.notebook = notebook.load_notebook(%s)
-twist.SAGETEX_PATH = %r
-twist.OPEN_MODE = %s
-twist.SID_COOKIE = str(hash(%r))
-twist.DIR = %r
+twist.notebook = notebook.load_notebook(%(notebook_opts)s)
+twist.SAGETEX_PATH = %(sagetex_path)r
+twist.OPEN_MODE = %(do_not_require_login)s
+twist.SID_COOKIE = str(hash(%(dir)r))
+twist.DIR = %(cwd)r
 twist.reactor = reactor
 twist.init_updates()
 import sagenb.notebook.worksheet as worksheet
@@ -395,27 +111,392 @@ p.registerChecker(checkers.AllowAnonymousAccess())
 rsrc = guard.MySessionWrapper(p)
 log.DefaultCommonAccessLoggingObserver().start()
 site = server.Site(rsrc)
-%s
+%(factory)s
 from twisted.web2 import channel
 from twisted.application import service, strports
 application = service.Application("SAGE Notebook")
-s = strports.service(%r, factory)
-%s
+s = strports.service(%(strport)r, factory)
+%(open_page)s
 s.setServiceParent(application)
 
 reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
+"""
 
-""" % (notebook_opts, sagetex_path, not require_login,
-       os.path.abspath(directory), cwd, factory,
-       strport, open_page))
+FLASK_NOTEBOOK_CONFIG = """
+####################################################################        
+# WARNING -- Do not edit this file!   It is autogenerated each time
+# the notebook(...) command is executed.
+####################################################################
+from twisted.internet import reactor
 
-        config.close()
+# Now set things up and start the notebook
+import sagenb.notebook.notebook
+sagenb.notebook.notebook.JSMATH=True
+import sagenb.notebook.notebook as notebook
+import sagenb.notebook.worksheet as worksheet
+import sagenb.notebook.twist as twist
+
+twist.DIR = %(cwd)r #We should really get rid of this!
+
+import signal, sys, random
+def save_notebook(notebook):
+    from twisted.internet.error import ReactorNotRunning
+    print "Quitting all running worksheets..."
+    notebook.quit()
+    print "Saving notebook..."
+    notebook.save()
+    print "Notebook cleanly saved."
+    
+def my_sigint(x, n):
+    try:
+        reactor.stop()
+    except ReactorNotRunning:
+        pass
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    
+    
+signal.signal(signal.SIGINT, my_sigint)
+
+## Disable client-side certificate request for gnutls
+try:
+    import gnutls.connection
+    gnutls.connection.CERT_REQUEST = 0
+except (OSError, ImportError):
+    print "Note: GNUTLS not available."
+
+
+## Authentication framework (ported from Knooboo)
+from twisted.web2 import log, server, channel
+from twisted.cred import portal, checkers, credentials
+
+#########
+# Flask #
+#########
+import os
+flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_version')
+sys.path.append(flask_dir)
+import base as flask_base
+startup_token = '{0:x}'.format(random.randint(0, 2**128))
+flask_app = flask_base.create_app(%(notebook_opts)s, startup_token=startup_token)
+sys.path.remove(flask_dir)
+
+from twisted.web2.wsgi import WSGIResource
+resource = WSGIResource(flask_app)
+
+log.DefaultCommonAccessLoggingObserver().start()
+
+site = server.Site(resource)
+%(factory)s
+from twisted.web2 import channel
+from twisted.application import service, strports
+application = service.Application("Sage Notebook")
+s = strports.service(%(strport)r, factory)
+%(open_page)s
+s.setServiceParent(application)
+
+#This has to be done after flask_base.create_app is run
+from functools import partial
+reactor.addSystemEventTrigger('before', 'shutdown', partial(save_notebook, flask_base.notebook))
+"""
+
+def cmd_exists(cmd):
+    """
+    Return True if the given cmd exists.
+    """
+    return os.system('which %s 2>/dev/null >/dev/null' % cmd) == 0
+
+def get_old_settings(conf):
+    """
+    Returns three settings from the Twisted configuration file conf:
+    the interface, port number, and whether the server is secure.  If
+    there are any errors, this returns (None, None, None).
+    """
+    import re
+    # This should match the format written to twistedconf.tac below.
+    p = re.compile(r'interface="(.*)",port=(\d*),secure=(True|False)')
+    try:
+        interface, port, secure = p.search(open(conf, 'r').read()).groups()
+        if secure == 'True':
+            secure = True
+        else:
+            secure = False
+        return interface, port, secure
+    except IOError, AttributeError:
+        return None, None, None
+
+def notebook_setup(self=None):
+    if not os.path.exists(conf_path):
+        os.makedirs(conf_path)
+
+    if not cmd_exists('certtool'):
+        raise RuntimeError("You must install certtool to use the secure notebook server.")
+
+    dn = raw_input("Domain name [localhost]: ").strip()
+    if dn == '':
+        print "Using default localhost"
+        dn = 'localhost'
+
+    import random
+    template_dict = {'organization': 'SAGE (at %s)' % (dn),
+                'unit': '389',
+                'locality': None,
+                'state': 'Washington',
+                'country': 'US',
+                'cn': dn,
+                'uid': 'sage_user',
+                'dn_oid': None,
+                'serial': str(random.randint(1, 2 ** 31)),
+                'dns_name': None,
+                'crl_dist_points': None,
+                'ip_address': None,
+                'expiration_days': 10000,
+                'email': 'sage@sagemath.org',
+                'ca': None,
+                'tls_www_client': None,
+                'tls_www_server': True,
+                'signing_key': True,
+                'encryption_key': True,
+                }
+                
+    s = ""
+    for key, val in template_dict.iteritems():
+        if val is None:
+            continue
+        if val == True:
+            w = ''
+        elif isinstance(val, list):
+            w = ' '.join(['"%s"' % x for x in val])
+        else:
+            w = '"%s"' % val
+        s += '%s = %s \n' % (key, w) 
+
+    f = open(template_file, 'w')
+    f.write(s)
+    f.close()
+
+    import subprocess
+
+    if os.uname()[0] != 'Darwin' and cmd_exists('openssl'):
+        # We use openssl by default if it exists, since it is open
+        # *vastly* faster on Linux, for some weird reason.
+        cmd = ['openssl genrsa > %s' % private_pem]
+        print "Using openssl to generate key"
+        print cmd[0]
+        subprocess.call(cmd, shell=True)
+    else:
+        # We checked above that certtool is available.
+        cmd = ['certtool --generate-privkey --outfile %s' % private_pem]
+        print "Using certtool to generate key"
+        print cmd[0]
+        subprocess.call(cmd, shell=True)
+
+    cmd = ['certtool --generate-self-signed --template %s --load-privkey %s '
+           '--outfile %s' % (template_file, private_pem, public_pem)]
+    print cmd[0]
+    subprocess.call(cmd, shell=True)
+    
+    # Set permissions on private cert
+    os.chmod(private_pem, 0600)
+
+    print "Successfully configured notebook."
+
+def notebook_twisted(self,
+             directory     = None,
+             port          = 8000,
+             interface     = 'localhost',        
+             address       = None,
+             port_tries    = 50,
+             secure        = False,
+             reset         = False,
+             accounts      = False,
+             require_login = True, 
+                     
+             server_pool   = None,
+             ulimit        = '',
+
+             timeout       = 0,
+
+             open_viewer   = True,
+
+             sagetex_path  = "",
+             start_path    = "",
+             fork          = False,
+             quiet         = False,
+
+             subnets       = None):
+
+    cwd = os.getcwd()
+    # For backwards compatible, we still allow the address to be set
+    # instead of the interface argument
+    if address is not None:
+        from warnings import warn
+        message = "Use 'interface' instead of 'address' when calling notebook(...)."
+        warn(message, DeprecationWarning, stacklevel=3)
+        interface = address
+
+    if directory is None:
+        directory = '%s/sage_notebook' % DOT_SAGENB
+    else:
+        if (isinstance(directory, basestring) and len(directory) > 0 and
+           directory[-1] == "/"):
+            directory = directory[:-1]
+
+    # First change to the directory that contains the notebook directory
+    wd = os.path.split(directory)
+    if wd[0]:
+        os.chdir(wd[0])
+    directory = wd[1]
+
+    port = int(port)
+
+    if not secure and interface != 'localhost':
+        print '*' * 70
+        print "WARNING: Running the notebook insecurely not on localhost is dangerous"
+        print "because its possible for people to sniff passwords and gain access to"
+        print "your account. Make sure you know what you are doing."
+        print '*' * 70
+
+    nb = notebook.load_notebook(directory)
+    
+    directory = nb._dir
+    conf = os.path.join(directory, 'twistedconf.tac')
+    
+    if not quiet:
+        print "The notebook files are stored in:", nb._dir
+
+    nb.conf()['idle_timeout'] = int(timeout)
+    nb.conf()['require_login'] = require_login
+    
+    if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
+        # This is here only for backward compatibility with one
+        # version of the notebook.
+        s = nb.create_user_with_same_password('admin', 'root')
+        # It would be a security risk to leave an escalated account around.
+
+    if not nb.user_manager().user_exists('admin'):
+        reset = True
+        
+    if reset:
+        passwd = get_admin_passwd()                
+        if reset:
+            admin = nb.user_manager().user('admin')
+            admin.set_password(passwd)
+            print "Password changed for user 'admin'."
+        else:
+            nb.user_manager().create_default_users(passwd)
+            print "User admin created with the password you specified."
+            print "\n\n"
+            print "*" * 70
+            print "\n"
+            if secure:
+                print "Login to the Sage notebook as admin with the password you specified above."
+        #nb.del_user('root')
+            
+    nb.set_server_pool(server_pool)
+    nb.set_ulimit(ulimit)
+    nb.user_manager().set_accounts(accounts)
+    
+    if os.path.exists('%s/nb-older-backup.sobj' % directory):
+        nb._migrate_worksheets()
+        os.unlink('%s/nb-older-backup.sobj' % directory)
+        print "Updating to new format complete."
+
+    nb.save()
+    del nb
+
+    def run(port, subnets):
+        # Is a server already running? Check if a Twistd PID exists in
+        # the given directory.
+        pidfile = os.path.join(directory, 'twistd.pid')
+        if platformType != 'win32':
+            from twisted.scripts._twistd_unix import checkPID
+            try:
+                checkPID(pidfile)
+            except SystemExit as e:
+                pid = int(open(pidfile).read())
+
+                if str(e).startswith('Another twistd server is running,'):
+                    print 'Another Sage Notebook server is running, PID %d.' % pid
+                    old_interface, old_port, old_secure = get_old_settings(conf)
+                    if open_viewer and old_port:
+                        old_interface = old_interface or 'localhost'
+
+                        print 'Opening web browser at http%s://%s:%s/ ...' % (
+                            's' if old_secure else '', old_interface, old_port)
+
+                        from sagenb.misc.misc import open_page as browse_to
+                        browse_to(old_interface, old_port, old_secure, '/')
+                        return
+                    print '\nPlease either stop the old server or run the new server in a different directory.'
+                    return
+
+        ## Create the config file
+        if secure:
+            if (not os.path.exists(private_pem) or
+                not os.path.exists(public_pem)):
+                print "In order to use an SECURE encrypted notebook, you must first run notebook.setup()."
+                print "Now running notebook.setup()"
+                notebook_setup()
+            if (not os.path.exists(private_pem) or
+                not os.path.exists(public_pem)):
+                print "Failed to setup notebook.  Please try notebook.setup() again manually."
+            strport = '%s:%s:interface=%s:privateKey=%s:certKey=%s'%(
+                protocol, port, interface, private_pem, public_pem)
+        else:
+            strport = 'tcp:%s:interface=%s' % (port, interface)
+
+        notebook_opts = '"%s",interface="%s",port=%s,secure=%s' % (
+            os.path.abspath(directory), interface, port, secure)
+
+        if open_viewer:
+            start_path = "'/?startup_token=%s' % startup_token"
+            if interface:
+                hostname = interface
+            else:
+                hostname = 'localhost'
+            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s)" % (hostname, port, secure, start_path)
+        else:
+            open_page = ''
+
+        config = open(conf, 'w')
+
+        if subnets is None:
+            factory = "factory = channel.HTTPFactory(site)"
+        else:
+            if not isinstance(subnets, (list, tuple)):
+                subnets = [subnets]
+            factory = """
+# See http://stackoverflow.com/questions/1273297/python-twisted-restricting-access-by-ip-address
+from sagenb.misc.ipaddr import IPNetwork
+subnets = eval(r"%s")
+if not any(s.startswith('127') for s in subnets):
+    subnets.insert(0, '127.0.0.0/8')
+subnets = [IPNetwork(x) for x in subnets]
+class RestrictedIPFactory(channel.HTTPFactory):
+    def buildProtocol(self, addr):
+        a = str(addr.host)
+        for X in subnets:
+            if a in X:
+                return channel.HTTPFactory.buildProtocol(self, addr)
+        print 'Ignoring all requests from IP address '+str(addr.host)
+        
+factory = RestrictedIPFactory(site)
+""" % tuple([subnets])
+
+        config.write(FLASK_NOTEBOOK_CONFIG%{'notebook_opts': notebook_opts, 'sagetex_path': sagetex_path,
+                                            'do_not_require_login': not require_login,
+                                            'dir': os.path.abspath(directory), 'cwd':cwd, 
+                                            'factory': factory, 'strport': strport,
+                                            'open_page': open_page})
+
+
+        config.close()                     
 
         ## Start up twisted
         cmd = 'twistd --pidfile="%s" -ny "%s"' % (pidfile, conf)
         if not quiet:
             print_open_msg('localhost' if not interface else interface,
-                           port, secure=secure)
+            port, secure=secure)
         if secure and not quiet:
             print "There is an admin account.  If you do not remember the password,"
             print "quit the notebook and type notebook(reset=True)."
@@ -432,7 +513,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
 
         return True
         # end of inner function run
-
+                     
     if interface != 'localhost' and not secure:
             print "*" * 70
             print "WARNING: Insecure notebook server listening on external interface."
@@ -444,7 +525,6 @@ reactor.addSystemEventTrigger('before', 'shutdown', save_notebook)
     if open_viewer:
         "Open viewer automatically isn't fully implemented.  You have to manually open your web browser to the above URL."
     return run(port, subnets)
-
 
 def get_admin_passwd():
     print "\n" * 2

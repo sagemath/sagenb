@@ -1780,14 +1780,10 @@ function go_option(form) {
       form -- DOM element; the drop-down form element
     */
     var action = form.options[form.selectedIndex].value;
-    action = action.slice(0, action.indexOf('('));
-
-    // This is safer than using eval.
-    if (action === 'delete_worksheet') {
-        delete_worksheet(worksheet_filename);
-    } else if (action !== '') {
-        window[action]();
-    }
+    // not safe, but more straigth forward than parsing
+    // what is basically an eval string and running the 
+    // corresponding function and arguments
+    eval(action);
     form.options[0].selected = 1;
 }
 
@@ -2998,7 +2994,11 @@ function worksheet_command(cmd) {
     OUTPUT:
         a string
     */
-    if (cmd === 'eval' || cmd === 'new_cell_before') {
+    if (cmd === 'eval' 
+	|| cmd === 'new_cell_before' 
+	|| cmd === 'new_cell_after'
+	|| cmd === 'new_text_cell_before'
+	|| cmd === 'new_text_cell_after') {
         state_number = parseInt(state_number, 10) + 1;
     }
     return ('/home/' + worksheet_filename + '/' + cmd);

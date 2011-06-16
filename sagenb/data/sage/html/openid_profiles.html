@@ -1,0 +1,51 @@
+{% extends "html/base.html" %}
+
+{% block title %}Create your Sage profile{% endblock %}
+
+{% block page_id %}login-page{% endblock %}
+
+{% block main %}
+<div> 
+    <h2>Create your Sage profile </h2>
+    <form method="POST" action="/openid_profiles">
+        <ol>
+            <li>
+                <h2>Create a username</h2>
+                <p>Your username must start with a letter and be between 3 and 64
+                characters long. You may only use letters, numbers, underscores, 
+                and dots.</p>
+                <input type="text" name="username" value="{{ resp.fullname }}" class="entry" tabindex="1" />
+                {% if username_missing %}
+                <p><span style="color:red">Error:</span> No username given</p>
+                {% endif %}
+                {% if username_taken %}
+                <p><span style="color:red">Error:</span> Username already in use</p>
+                {% endif %}
+                {% if username_invalid %}
+                <p><span style="color:red">Error:</span> Bad username</p>
+                {% endif %}
+            </li>
+            <li>
+                <h2>Enter your email address</h2>
+                <p>
+                    Your email address is required for account
+                    confirmation and recovery. 
+                </p>
+                <input type="email" name="email" value="{{ resp.email }}" class="entry" tabindex="4" />
+                {% if email_missing %}
+                <p><span style="color:red">Error:</span> No email address given</p>
+                {% endif %}
+                {% if email_invalid %}
+                <p><span style="color:red">Error:</span> Invalid email address</p>
+                {% endif %}
+            </li>
+        <div>
+            <input type="hidden" name="next", value="{{next}}"/>
+            <button type="submit">Create profile</button>
+        </div>
+    </ol>
+    </form>
+</div>
+{% endblock %}
+
+
