@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>test SystemGetProperty</title>
+  </head>
+  <body>
+    <applet name="sgp" code="SystemGetProperty"
+	    height="1" width="1">
+    </applet>
+    <script>
+      function sleep(milliseconds) {
+        var target = new Date().getTime() + milliseconds
+        while (new Date().getTime() < target)
+          ;
+      }
+
+      sleep(1000); // give applet time to load
+      var javaVendor = sgp.systemGetProperty("java.vendor");
+      var osName = sgp.systemGetProperty("os.name");
+      var javaVersion = sgp.systemGetProperty("java.version");
+      document.writeln("Java Vendor:" + javaVendor + "<br />");
+      document.writeln("OS Name:" + osName + "<br />");
+      document.writeln("Java Version:" + javaVersion + "<br />");
+    </script>
+  </body>
+</html>
+
+      

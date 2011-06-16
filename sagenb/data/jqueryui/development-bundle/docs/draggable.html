@@ -19,11 +19,16 @@
 <li><b>ui.position</b> - current position of the helper as { top, left } object, relative to the offset element</li>
 <li><b>ui.offset</b> - current absolute position of the helper as { top, left } object, relative to page</li>
 </ul>
+<p><br />
+</p>
+<p>To manipulate the position of a draggable during drag, you can either <a href="http://jsbin.com/etako/edit" class="external text" title="http://jsbin.com/etako/edit">use a wrapper as the draggable helper</a> and position the wrapped element with absolute positioning, or  you can correct internal values like so: <code>$(this).data('draggable').offset.click.top -= x</code>.</p>
     </div>
     <div id="overview-dependencies">
         <h3>Dependencies</h3>
         <ul>
 <li>UI Core</li>
+<li>UI Widget</li>
+<li>UI Mouse</li>
 </ul>
     </div>
     <div id="overview-example">
@@ -40,15 +45,14 @@ Initialize a draggable with default options.<br />
 <pre>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-  &lt;link type=&quot;text/css&quot; href=&quot;http://jqueryui.com/latest/themes/base/ui.all.css&quot; rel=&quot;stylesheet&quot; /&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/jquery-1.3.2.js&quot;&gt;&lt;/script&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/ui/ui.core.js&quot;&gt;&lt;/script&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/ui/ui.draggable.js&quot;&gt;&lt;/script&gt;
+  &lt;link href=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
   &lt;style type=&quot;text/css&quot;&gt;
     #draggable { width: 100px; height: 70px; background: silver; }
   &lt;/style&gt;
-  &lt;script type="text/javascript"&gt;
-  $(document).ready(function(){
+  &lt;script&gt;
+  $(document).ready(function() {
     $(&quot;#draggable&quot;).draggable();
   });
   &lt;/script&gt;
@@ -68,6 +72,48 @@ Initialize a draggable with default options.<br />
     <h2 class="top-header">Options</h2>
     <ul class="options-list">
       
+<li class="option" id="option-disabled">
+  <div class="option-header">
+    <h3 class="option-name"><a href="#option-disabled">disabled</a></h3>
+    <dl>
+      <dt class="option-type-label">Type:</dt>
+        <dd class="option-type">Boolean</dd>
+      
+      <dt class="option-default-label">Default:</dt>
+        <dd class="option-default">false</dd>
+      
+    </dl>
+  </div>
+  <div class="option-description">
+    <p>Disables (true) or enables (false) the draggable. Can be set when initialising (first creating) the draggable.</p>
+  </div>
+  <div class="option-examples">
+    <h4>Code examples</h4>
+    <dl class="option-examples-list">
+    
+<dt>
+  Initialize a draggable with the <code>disabled</code> option specified.
+</dt>
+<dd>
+<pre><code>$( ".selector" ).draggable({ disabled: true });</code></pre>
+</dd>
+
+    
+<dt>
+  Get or set the <code>disabled</code> option, after init.
+</dt>
+<dd>
+<pre><code>//getter
+var disabled = $( ".selector" ).draggable( "option", "disabled" );
+//setter
+$( ".selector" ).draggable( "option", "disabled", true );</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
 <li class="option" id="option-addClasses">
   <div class="option-header">
     <h3 class="option-name"><a href="#option-addClasses">addClasses</a></h3>
@@ -91,7 +137,7 @@ Initialize a draggable with default options.<br />
   Initialize a draggable with the <code>addClasses</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ addClasses: false });</code></pre>
+<pre><code>$( ".selector" ).draggable({ addClasses: false });</code></pre>
 </dd>
 
     
@@ -100,9 +146,9 @@ Initialize a draggable with default options.<br />
 </dt>
 <dd>
 <pre><code>//getter
-var addClasses = $('.selector').draggable('option', 'addClasses');
+var addClasses = $( ".selector" ).draggable( "option", "addClasses" );
 //setter
-$('.selector').draggable('option', 'addClasses', false);</code></pre>
+$( ".selector" ).draggable( "option", "addClasses", false );</code></pre>
 </dd>
 
     </dl>
@@ -133,7 +179,7 @@ $('.selector').draggable('option', 'addClasses', false);</code></pre>
   Initialize a draggable with the <code>appendTo</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ appendTo: 'body' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ appendTo: 'body' });</code></pre>
 </dd>
 
     
@@ -142,9 +188,9 @@ $('.selector').draggable('option', 'addClasses', false);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var appendTo = $('.selector').draggable('option', 'appendTo');
+var appendTo = $( ".selector" ).draggable( "option", "appendTo" );
 //setter
-$('.selector').draggable('option', 'appendTo', 'body');</code></pre>
+$( ".selector" ).draggable( "option", "appendTo", 'body' );</code></pre>
 </dd>
 
     </dl>
@@ -175,7 +221,7 @@ $('.selector').draggable('option', 'appendTo', 'body');</code></pre>
   Initialize a draggable with the <code>axis</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ axis: 'x' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ axis: 'x' });</code></pre>
 </dd>
 
     
@@ -184,9 +230,9 @@ $('.selector').draggable('option', 'appendTo', 'body');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var axis = $('.selector').draggable('option', 'axis');
+var axis = $( ".selector" ).draggable( "option", "axis" );
 //setter
-$('.selector').draggable('option', 'axis', 'x');</code></pre>
+$( ".selector" ).draggable( "option", "axis", 'x' );</code></pre>
 </dd>
 
     </dl>
@@ -217,7 +263,7 @@ $('.selector').draggable('option', 'axis', 'x');</code></pre>
   Initialize a draggable with the <code>cancel</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ cancel: 'button' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ cancel: 'button' });</code></pre>
 </dd>
 
     
@@ -226,9 +272,9 @@ $('.selector').draggable('option', 'axis', 'x');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var cancel = $('.selector').draggable('option', 'cancel');
+var cancel = $( ".selector" ).draggable( "option", "cancel" );
 //setter
-$('.selector').draggable('option', 'cancel', 'button');</code></pre>
+$( ".selector" ).draggable( "option", "cancel", 'button' );</code></pre>
 </dd>
 
     </dl>
@@ -260,7 +306,7 @@ $('.selector').draggable('option', 'cancel', 'button');</code></pre>
   Initialize a draggable with the <code>connectToSortable</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ connectToSortable: 'ul#myList' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ connectToSortable: 'ul#myList' });</code></pre>
 </dd>
 
     
@@ -269,9 +315,9 @@ $('.selector').draggable('option', 'cancel', 'button');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var connectToSortable = $('.selector').draggable('option', 'connectToSortable');
+var connectToSortable = $( ".selector" ).draggable( "option", "connectToSortable" );
 //setter
-$('.selector').draggable('option', 'connectToSortable', 'ul#myList');</code></pre>
+$( ".selector" ).draggable( "option", "connectToSortable", 'ul#myList' );</code></pre>
 </dd>
 
     </dl>
@@ -302,7 +348,7 @@ $('.selector').draggable('option', 'connectToSortable', 'ul#myList');</code></pr
   Initialize a draggable with the <code>containment</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ containment: 'parent' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ containment: 'parent' });</code></pre>
 </dd>
 
     
@@ -311,9 +357,9 @@ $('.selector').draggable('option', 'connectToSortable', 'ul#myList');</code></pr
 </dt>
 <dd>
 <pre><code>//getter
-var containment = $('.selector').draggable('option', 'containment');
+var containment = $( ".selector" ).draggable( "option", "containment" );
 //setter
-$('.selector').draggable('option', 'containment', 'parent');</code></pre>
+$( ".selector" ).draggable( "option", "containment", 'parent' );</code></pre>
 </dd>
 
     </dl>
@@ -344,7 +390,7 @@ $('.selector').draggable('option', 'containment', 'parent');</code></pre>
   Initialize a draggable with the <code>cursor</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ cursor: 'crosshair' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ cursor: 'crosshair' });</code></pre>
 </dd>
 
     
@@ -353,9 +399,9 @@ $('.selector').draggable('option', 'containment', 'parent');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var cursor = $('.selector').draggable('option', 'cursor');
+var cursor = $( ".selector" ).draggable( "option", "cursor" );
 //setter
-$('.selector').draggable('option', 'cursor', 'crosshair');</code></pre>
+$( ".selector" ).draggable( "option", "cursor", 'crosshair' );</code></pre>
 </dd>
 
     </dl>
@@ -376,7 +422,7 @@ $('.selector').draggable('option', 'cursor', 'crosshair');</code></pre>
     </dl>
   </div>
   <div class="option-description">
-    <p>Moves the dragging helper so the cursor always appears to drag from the same position. Coordinates can be given as a hash using a combination of one or two keys: <code>{ top, left, right, bottom }</code>.</p>
+    <p>Sets the offset of the dragging helper relative to the mouse cursor. Coordinates can be given as a hash using a combination of one or two keys: <code>{ top, left, right, bottom }</code>.</p>
   </div>
   <div class="option-examples">
     <h4>Code examples</h4>
@@ -386,7 +432,7 @@ $('.selector').draggable('option', 'cursor', 'crosshair');</code></pre>
   Initialize a draggable with the <code>cursorAt</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ cursorAt: { left: 5 } });</code></pre>
+<pre><code>$( ".selector" ).draggable({ cursorAt: { left: 5 } });</code></pre>
 </dd>
 
     
@@ -395,9 +441,9 @@ $('.selector').draggable('option', 'cursor', 'crosshair');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var cursorAt = $('.selector').draggable('option', 'cursorAt');
+var cursorAt = $( ".selector" ).draggable( "option", "cursorAt" );
 //setter
-$('.selector').draggable('option', 'cursorAt', { left: 5 });</code></pre>
+$( ".selector" ).draggable( "option", "cursorAt", { left: 5 } );</code></pre>
 </dd>
 
     </dl>
@@ -428,7 +474,7 @@ $('.selector').draggable('option', 'cursorAt', { left: 5 });</code></pre>
   Initialize a draggable with the <code>delay</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ delay: 500 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ delay: 500 });</code></pre>
 </dd>
 
     
@@ -437,9 +483,9 @@ $('.selector').draggable('option', 'cursorAt', { left: 5 });</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var delay = $('.selector').draggable('option', 'delay');
+var delay = $( ".selector" ).draggable( "option", "delay" );
 //setter
-$('.selector').draggable('option', 'delay', 500);</code></pre>
+$( ".selector" ).draggable( "option", "delay", 500 );</code></pre>
 </dd>
 
     </dl>
@@ -470,7 +516,7 @@ $('.selector').draggable('option', 'delay', 500);</code></pre>
   Initialize a draggable with the <code>distance</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ distance: 30 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ distance: 30 });</code></pre>
 </dd>
 
     
@@ -479,9 +525,9 @@ $('.selector').draggable('option', 'delay', 500);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var distance = $('.selector').draggable('option', 'distance');
+var distance = $( ".selector" ).draggable( "option", "distance" );
 //setter
-$('.selector').draggable('option', 'distance', 30);</code></pre>
+$( ".selector" ).draggable( "option", "distance", 30 );</code></pre>
 </dd>
 
     </dl>
@@ -512,7 +558,7 @@ $('.selector').draggable('option', 'distance', 30);</code></pre>
   Initialize a draggable with the <code>grid</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ grid: [50, 20] });</code></pre>
+<pre><code>$( ".selector" ).draggable({ grid: [50, 20] });</code></pre>
 </dd>
 
     
@@ -521,9 +567,9 @@ $('.selector').draggable('option', 'distance', 30);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var grid = $('.selector').draggable('option', 'grid');
+var grid = $( ".selector" ).draggable( "option", "grid" );
 //setter
-$('.selector').draggable('option', 'grid', [50, 20]);</code></pre>
+$( ".selector" ).draggable( "option", "grid", [50, 20] );</code></pre>
 </dd>
 
     </dl>
@@ -554,7 +600,7 @@ $('.selector').draggable('option', 'grid', [50, 20]);</code></pre>
   Initialize a draggable with the <code>handle</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ handle: 'h2' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ handle: 'h2' });</code></pre>
 </dd>
 
     
@@ -563,9 +609,9 @@ $('.selector').draggable('option', 'grid', [50, 20]);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var handle = $('.selector').draggable('option', 'handle');
+var handle = $( ".selector" ).draggable( "option", "handle" );
 //setter
-$('.selector').draggable('option', 'handle', 'h2');</code></pre>
+$( ".selector" ).draggable( "option", "handle", 'h2' );</code></pre>
 </dd>
 
     </dl>
@@ -596,7 +642,7 @@ $('.selector').draggable('option', 'handle', 'h2');</code></pre>
   Initialize a draggable with the <code>helper</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ helper: 'clone' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ helper: 'clone' });</code></pre>
 </dd>
 
     
@@ -605,9 +651,9 @@ $('.selector').draggable('option', 'handle', 'h2');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var helper = $('.selector').draggable('option', 'helper');
+var helper = $( ".selector" ).draggable( "option", "helper" );
 //setter
-$('.selector').draggable('option', 'helper', 'clone');</code></pre>
+$( ".selector" ).draggable( "option", "helper", 'clone' );</code></pre>
 </dd>
 
     </dl>
@@ -638,7 +684,7 @@ $('.selector').draggable('option', 'helper', 'clone');</code></pre>
   Initialize a draggable with the <code>iframeFix</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ iframeFix: true });</code></pre>
+<pre><code>$( ".selector" ).draggable({ iframeFix: true });</code></pre>
 </dd>
 
     
@@ -647,9 +693,9 @@ $('.selector').draggable('option', 'helper', 'clone');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var iframeFix = $('.selector').draggable('option', 'iframeFix');
+var iframeFix = $( ".selector" ).draggable( "option", "iframeFix" );
 //setter
-$('.selector').draggable('option', 'iframeFix', true);</code></pre>
+$( ".selector" ).draggable( "option", "iframeFix", true );</code></pre>
 </dd>
 
     </dl>
@@ -680,7 +726,7 @@ $('.selector').draggable('option', 'iframeFix', true);</code></pre>
   Initialize a draggable with the <code>opacity</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ opacity: 0.35 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ opacity: 0.35 });</code></pre>
 </dd>
 
     
@@ -689,9 +735,9 @@ $('.selector').draggable('option', 'iframeFix', true);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var opacity = $('.selector').draggable('option', 'opacity');
+var opacity = $( ".selector" ).draggable( "option", "opacity" );
 //setter
-$('.selector').draggable('option', 'opacity', 0.35);</code></pre>
+$( ".selector" ).draggable( "option", "opacity", 0.35 );</code></pre>
 </dd>
 
     </dl>
@@ -722,7 +768,7 @@ $('.selector').draggable('option', 'opacity', 0.35);</code></pre>
   Initialize a draggable with the <code>refreshPositions</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ refreshPositions: true });</code></pre>
+<pre><code>$( ".selector" ).draggable({ refreshPositions: true });</code></pre>
 </dd>
 
     
@@ -731,9 +777,9 @@ $('.selector').draggable('option', 'opacity', 0.35);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var refreshPositions = $('.selector').draggable('option', 'refreshPositions');
+var refreshPositions = $( ".selector" ).draggable( "option", "refreshPositions" );
 //setter
-$('.selector').draggable('option', 'refreshPositions', true);</code></pre>
+$( ".selector" ).draggable( "option", "refreshPositions", true );</code></pre>
 </dd>
 
     </dl>
@@ -764,7 +810,7 @@ $('.selector').draggable('option', 'refreshPositions', true);</code></pre>
   Initialize a draggable with the <code>revert</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ revert: true });</code></pre>
+<pre><code>$( ".selector" ).draggable({ revert: true });</code></pre>
 </dd>
 
     
@@ -773,9 +819,9 @@ $('.selector').draggable('option', 'refreshPositions', true);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var revert = $('.selector').draggable('option', 'revert');
+var revert = $( ".selector" ).draggable( "option", "revert" );
 //setter
-$('.selector').draggable('option', 'revert', true);</code></pre>
+$( ".selector" ).draggable( "option", "revert", true );</code></pre>
 </dd>
 
     </dl>
@@ -806,7 +852,7 @@ $('.selector').draggable('option', 'revert', true);</code></pre>
   Initialize a draggable with the <code>revertDuration</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ revertDuration: 1000 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ revertDuration: 1000 });</code></pre>
 </dd>
 
     
@@ -815,9 +861,9 @@ $('.selector').draggable('option', 'revert', true);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var revertDuration = $('.selector').draggable('option', 'revertDuration');
+var revertDuration = $( ".selector" ).draggable( "option", "revertDuration" );
 //setter
-$('.selector').draggable('option', 'revertDuration', 1000);</code></pre>
+$( ".selector" ).draggable( "option", "revertDuration", 1000 );</code></pre>
 </dd>
 
     </dl>
@@ -848,7 +894,7 @@ $('.selector').draggable('option', 'revertDuration', 1000);</code></pre>
   Initialize a draggable with the <code>scope</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ scope: 'tasks' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ scope: 'tasks' });</code></pre>
 </dd>
 
     
@@ -857,9 +903,9 @@ $('.selector').draggable('option', 'revertDuration', 1000);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var scope = $('.selector').draggable('option', 'scope');
+var scope = $( ".selector" ).draggable( "option", "scope" );
 //setter
-$('.selector').draggable('option', 'scope', 'tasks');</code></pre>
+$( ".selector" ).draggable( "option", "scope", 'tasks' );</code></pre>
 </dd>
 
     </dl>
@@ -890,7 +936,7 @@ $('.selector').draggable('option', 'scope', 'tasks');</code></pre>
   Initialize a draggable with the <code>scroll</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ scroll: false });</code></pre>
+<pre><code>$( ".selector" ).draggable({ scroll: false });</code></pre>
 </dd>
 
     
@@ -899,9 +945,9 @@ $('.selector').draggable('option', 'scope', 'tasks');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var scroll = $('.selector').draggable('option', 'scroll');
+var scroll = $( ".selector" ).draggable( "option", "scroll" );
 //setter
-$('.selector').draggable('option', 'scroll', false);</code></pre>
+$( ".selector" ).draggable( "option", "scroll", false );</code></pre>
 </dd>
 
     </dl>
@@ -932,7 +978,7 @@ $('.selector').draggable('option', 'scroll', false);</code></pre>
   Initialize a draggable with the <code>scrollSensitivity</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ scrollSensitivity: 40 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ scrollSensitivity: 40 });</code></pre>
 </dd>
 
     
@@ -941,9 +987,9 @@ $('.selector').draggable('option', 'scroll', false);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var scrollSensitivity = $('.selector').draggable('option', 'scrollSensitivity');
+var scrollSensitivity = $( ".selector" ).draggable( "option", "scrollSensitivity" );
 //setter
-$('.selector').draggable('option', 'scrollSensitivity', 40);</code></pre>
+$( ".selector" ).draggable( "option", "scrollSensitivity", 40 );</code></pre>
 </dd>
 
     </dl>
@@ -974,7 +1020,7 @@ $('.selector').draggable('option', 'scrollSensitivity', 40);</code></pre>
   Initialize a draggable with the <code>scrollSpeed</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ scrollSpeed: 40 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ scrollSpeed: 40 });</code></pre>
 </dd>
 
     
@@ -983,9 +1029,9 @@ $('.selector').draggable('option', 'scrollSensitivity', 40);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var scrollSpeed = $('.selector').draggable('option', 'scrollSpeed');
+var scrollSpeed = $( ".selector" ).draggable( "option", "scrollSpeed" );
 //setter
-$('.selector').draggable('option', 'scrollSpeed', 40);</code></pre>
+$( ".selector" ).draggable( "option", "scrollSpeed", 40 );</code></pre>
 </dd>
 
     </dl>
@@ -1016,7 +1062,7 @@ $('.selector').draggable('option', 'scrollSpeed', 40);</code></pre>
   Initialize a draggable with the <code>snap</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ snap: true });</code></pre>
+<pre><code>$( ".selector" ).draggable({ snap: true });</code></pre>
 </dd>
 
     
@@ -1025,9 +1071,9 @@ $('.selector').draggable('option', 'scrollSpeed', 40);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var snap = $('.selector').draggable('option', 'snap');
+var snap = $( ".selector" ).draggable( "option", "snap" );
 //setter
-$('.selector').draggable('option', 'snap', true);</code></pre>
+$( ".selector" ).draggable( "option", "snap", true );</code></pre>
 </dd>
 
     </dl>
@@ -1058,7 +1104,7 @@ $('.selector').draggable('option', 'snap', true);</code></pre>
   Initialize a draggable with the <code>snapMode</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ snapMode: 'outer' });</code></pre>
+<pre><code>$( ".selector" ).draggable({ snapMode: 'outer' });</code></pre>
 </dd>
 
     
@@ -1067,9 +1113,9 @@ $('.selector').draggable('option', 'snap', true);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var snapMode = $('.selector').draggable('option', 'snapMode');
+var snapMode = $( ".selector" ).draggable( "option", "snapMode" );
 //setter
-$('.selector').draggable('option', 'snapMode', 'outer');</code></pre>
+$( ".selector" ).draggable( "option", "snapMode", 'outer' );</code></pre>
 </dd>
 
     </dl>
@@ -1100,7 +1146,7 @@ $('.selector').draggable('option', 'snapMode', 'outer');</code></pre>
   Initialize a draggable with the <code>snapTolerance</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ snapTolerance: 40 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ snapTolerance: 40 });</code></pre>
 </dd>
 
     
@@ -1109,9 +1155,9 @@ $('.selector').draggable('option', 'snapMode', 'outer');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var snapTolerance = $('.selector').draggable('option', 'snapTolerance');
+var snapTolerance = $( ".selector" ).draggable( "option", "snapTolerance" );
 //setter
-$('.selector').draggable('option', 'snapTolerance', 40);</code></pre>
+$( ".selector" ).draggable( "option", "snapTolerance", 40 );</code></pre>
 </dd>
 
     </dl>
@@ -1124,7 +1170,7 @@ $('.selector').draggable('option', 'snapTolerance', 40);</code></pre>
     <h3 class="option-name"><a href="#option-stack">stack</a></h3>
     <dl>
       <dt class="option-type-label">Type:</dt>
-        <dd class="option-type">Object</dd>
+        <dd class="option-type">Selector</dd>
       
       <dt class="option-default-label">Default:</dt>
         <dd class="option-default">false</dd>
@@ -1132,7 +1178,7 @@ $('.selector').draggable('option', 'snapTolerance', 40);</code></pre>
     </dl>
   </div>
   <div class="option-description">
-    <p>Controls the z-Index of the defined group (key 'group' in the hash, accepts jQuery selector) automatically, always brings to front the dragged item. Very useful in things like window managers. Optionally, a 'min' key can be set, so the zIndex cannot go below that value.</p>
+    <p>Controls the z-Index of the set of elements that match the selector, always brings to front the dragged item. Very useful in things like window managers.</p>
   </div>
   <div class="option-examples">
     <h4>Code examples</h4>
@@ -1142,7 +1188,7 @@ $('.selector').draggable('option', 'snapTolerance', 40);</code></pre>
   Initialize a draggable with the <code>stack</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ stack: { group: 'products', min: 50 } });</code></pre>
+<pre><code>$( ".selector" ).draggable({ stack: &quot;.products&quot; });</code></pre>
 </dd>
 
     
@@ -1151,9 +1197,9 @@ $('.selector').draggable('option', 'snapTolerance', 40);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var stack = $('.selector').draggable('option', 'stack');
+var stack = $( ".selector" ).draggable( "option", "stack" );
 //setter
-$('.selector').draggable('option', 'stack', { group: 'products', min: 50 });</code></pre>
+$( ".selector" ).draggable( "option", "stack", &quot;.products&quot; );</code></pre>
 </dd>
 
     </dl>
@@ -1184,7 +1230,7 @@ $('.selector').draggable('option', 'stack', { group: 'products', min: 50 });</co
   Initialize a draggable with the <code>zIndex</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({ zIndex: 2700 });</code></pre>
+<pre><code>$( ".selector" ).draggable({ zIndex: 2700 });</code></pre>
 </dd>
 
     
@@ -1193,9 +1239,9 @@ $('.selector').draggable('option', 'stack', { group: 'products', min: 50 });</co
 </dt>
 <dd>
 <pre><code>//getter
-var zIndex = $('.selector').draggable('option', 'zIndex');
+var zIndex = $( ".selector" ).draggable( "option", "zIndex" );
 //setter
-$('.selector').draggable('option', 'zIndex', 2700);</code></pre>
+$( ".selector" ).draggable( "option", "zIndex", 2700 );</code></pre>
 </dd>
 
     </dl>
@@ -1208,6 +1254,45 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
     <h2 class="top-header">Events</h2>
     <ul class="events-list">
       
+<li class="event" id="event-create">
+  <div class="event-header">
+    <h3 class="event-name"><a href="#event-create">create</a></h3>
+    <dl>
+      <dt class="event-type-label">Type:</dt>
+        <dd class="event-type">dragcreate</dd>
+    </dl>
+  </div>
+  <div class="event-description">
+    <p>This event is triggered when draggable is created.</p>
+  </div>
+  <div class="event-examples">
+    <h4>Code examples</h4>
+    <dl class="event-examples-list">
+    
+<dt>
+  Supply a callback function to handle the <code>create</code> event as an init option.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).draggable({
+   create: function(event, ui) { ... }
+});</code></pre>
+</dd>
+
+    
+<dt>
+  Bind to the <code>create</code> event by type: <code>dragcreate</code>.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;dragcreate&quot;, function(event, ui) {
+  ...
+});</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
 <li class="event" id="event-start">
   <div class="event-header">
     <h3 class="event-name"><a href="#event-start">start</a></h3>
@@ -1227,7 +1312,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
   Supply a callback function to handle the <code>start</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({
+<pre><code>$( &quot;.selector&quot; ).draggable({
    start: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -1237,7 +1322,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
   Bind to the <code>start</code> event by type: <code>dragstart</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('dragstart', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;dragstart&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -1266,7 +1351,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
   Supply a callback function to handle the <code>drag</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({
+<pre><code>$( &quot;.selector&quot; ).draggable({
    drag: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -1276,7 +1361,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
   Bind to the <code>drag</code> event by type: <code>drag</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('drag', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;drag&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -1305,7 +1390,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
   Supply a callback function to handle the <code>stop</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').draggable({
+<pre><code>$( &quot;.selector&quot; ).draggable({
    stop: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -1315,7 +1400,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
   Bind to the <code>stop</code> event by type: <code>dragstop</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('dragstop', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;dragstop&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -1335,7 +1420,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
     <h3 class="method-name"><a href="#method-destroy">destroy</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.draggable( 'destroy'
+        <dd class="method-signature">.draggable( "destroy"
 
 
 
@@ -1357,7 +1442,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
     <h3 class="method-name"><a href="#method-disable">disable</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.draggable( 'disable'
+        <dd class="method-signature">.draggable( "disable"
 
 
 
@@ -1379,7 +1464,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
     <h3 class="method-name"><a href="#method-enable">enable</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.draggable( 'enable'
+        <dd class="method-signature">.draggable( "enable"
 
 
 
@@ -1401,7 +1486,7 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
     <h3 class="method-name"><a href="#method-option">option</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.draggable( 'option'
+        <dd class="method-signature">.draggable( "option"
 
 , optionName
 
@@ -1418,13 +1503,57 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
 </li>
 
 
+<li class="method" id="method-option">
+  <div class="method-header">
+    <h3 class="method-name"><a href="#method-option">option</a></h3>
+    <dl>
+      <dt class="method-signature-label">Signature:</dt>
+        <dd class="method-signature">.draggable( "option"
+
+, options
+
+
+
+
+
+)</dd>
+    </dl>
+  </div>
+  <div class="method-description">
+    <p>Set multiple draggable options at once by providing an options object.</p>
+  </div>
+</li>
+
+
+<li class="method" id="method-widget">
+  <div class="method-header">
+    <h3 class="method-name"><a href="#method-widget">widget</a></h3>
+    <dl>
+      <dt class="method-signature-label">Signature:</dt>
+        <dd class="method-signature">.draggable( "widget"
+
+
+
+
+
+
+
+)</dd>
+    </dl>
+  </div>
+  <div class="method-description">
+    <p>Returns the .ui-draggable element.</p>
+  </div>
+</li>
+
+
     </ul>
   </div>
   <div id="theming">
     <h2 class="top-header">Theming</h2>
     <p>The jQuery UI Draggable plugin uses the jQuery UI CSS Framework to style its look and feel, including colors and background textures. We recommend using the ThemeRoller tool to create and download custom themes that are easy to build and maintain.
 </p>
-  <p>If a deeper level of customization is needed, there are widget-specific classes referenced within the ui.draggable.css stylesheet that can be modified. These classes are highlighed in bold below.
+  <p>If a deeper level of customization is needed, there are widget-specific classes referenced within the jquery.ui.draggable.css stylesheet that can be modified. These classes are highlighed in bold below.
 </p>
     
   <h3>Sample markup with jQuery UI CSS Framework classes</h3>
@@ -1439,10 +1568,10 @@ $('.selector').draggable('option', 'zIndex', 2700);</code></pre>
 </div>
 
 </p><!-- 
-Pre-expand include size: 55070 bytes
-Post-expand include size: 98892 bytes
-Template argument size: 56660 bytes
+Pre-expand include size: 61392 bytes
+Post-expand include size: 107565 bytes
+Template argument size: 58710 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3340-1!1!0!!en!2 and timestamp 20090604112209 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3768-1!1!0!!en!2 and timestamp 20110315194328 -->

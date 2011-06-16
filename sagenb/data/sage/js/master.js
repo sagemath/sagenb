@@ -2,8 +2,16 @@
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
-$(window).load(function () {
+var replicate_str = function(x, n) {
+    var str = '';
+    for (var i = 0; i < n; ++i) {
+        str += x;
+    }
+};
+
+$(function () {
     var body = $('body'), body_id = body.attr('id');
+
     if (body_id === 'worksheet-listing-page') {
         checkForGearsInstalled();
     }

@@ -7,7 +7,7 @@ INPUT:
 - do_print - a boolean stating whether the file is for print mode
 #}
 
-{% block body_classes %}worksheet-online{% if not (worksheet.is_published() or notebook.user_is_guest(username) or worksheet.is_doc_worksheet()) %} active-worksheet-page{% endif %}{% endblock %}
+{% block body_classes %}worksheet-online{% if not (worksheet.is_published() or notebook.user_manager().user_is_guest(username) or worksheet.is_doc_worksheet()) %} active-worksheet-page{% endif %}{% endblock %}
 {% block page_id %}user-worksheet-index{% endblock %}
 
 {% block worksheet_main %}

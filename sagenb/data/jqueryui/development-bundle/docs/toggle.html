@@ -34,15 +34,16 @@ Apply the effect slide if you click on the p to toggle a div.<br />
 <pre>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-  &lt;link type=&quot;text/css&quot; href=&quot;http://jqueryui.com/latest/themes/base/ui.all.css&quot; rel=&quot;stylesheet&quot; /&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/jquery-1.3.2.js&quot;&gt;&lt;/script&gt;
+  &lt;link href=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
   &lt;script src=&quot;http://ui.jquery.com/latest/ui/effects.core.js&quot;&gt;&lt;/script&gt;
 &lt;script src=&quot;http://ui.jquery.com/latest/ui/effects.slide.js&quot;&gt;&lt;/script&gt;
 &lt;style type=&quot;text/css&quot;&gt;
   div { display: none; margin: 0px; width: 100px; height: 80px; background: blue; position: relative; }
 &lt;/style&gt;
-  &lt;script type="text/javascript"&gt;
-  $(document).ready(function(){
+  &lt;script&gt;
+  $(document).ready(function() {
     $(&quot;p&quot;).<a href="http://docs.jquery.com/Events/click" title="Events/click">click</a>(function () {
       $(&quot;div&quot;).<strong class="selflink">toggle</strong>(&quot;slide&quot;, {}, 1000);
     });
@@ -108,7 +109,7 @@ Apply the effect slide if you click on the p to toggle a div.<br />
     </dl>
   </div>
   <div class="option-description">
-    <p>A string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).</p>
+    <p>A string representing one of the predefined speeds ("slow" or "fast") or the number of milliseconds to run the animation (e.g. 1000).</p>
   </div>
 </li>
 
@@ -134,10 +135,10 @@ Apply the effect slide if you click on the p to toggle a div.<br />
 </div>
 
 </p><!-- 
-Pre-expand include size: 6229 bytes
-Post-expand include size: 8801 bytes
-Template argument size: 5539 bytes
+Pre-expand include size: 6350 bytes
+Post-expand include size: 8665 bytes
+Template argument size: 5445 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:2615-1!1!0!!en!2 and timestamp 20090604035835 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:2615-1!1!0!!en!2 and timestamp 20110315175400 -->

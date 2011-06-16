@@ -532,7 +532,7 @@ def html_color_selector(id, change, input_change, default='000000',
         # simply call $('#%s').jPicker({...}).
         s +="""<script>
             setTimeout(function () {
-                var input = $('#%s'), picker = $('#%s-picker');
+                var input = $('#%(id)s'), picker = $('#%(id)s-picker');
                 picker.jPicker(
                     // Settings.
                     {
@@ -542,7 +542,7 @@ def html_color_selector(id, change, input_change, default='000000',
                             title: 'Select a color'
                         },
                         color: {
-                            active: '%s'
+                            active: new $.jPicker.Color({hex: '%(default)s'})
                         },
                         images: {
                             clientPath: '/javascript/jquery/plugins/jpicker/images/'
@@ -552,14 +552,14 @@ def html_color_selector(id, change, input_change, default='000000',
                     function (color) {},
                     // liveCallback
                     function (color_arg) {
-                        color = '#' + color_arg.hex;
+                        color = '#' + color_arg.val('hex');
                         if (input.val() !== color) {
                             input.val(color);
                             input.css({
                                 backgroundColor: color,
-                                color: color_arg.v > 50 ? '#000000' : '#ffffff'
+                                color: color_arg.val('v') > 50 ? '#000000' : '#ffffff'
                             });
-                            %s;
+                            %(change)s;
                         }
                     },
                     // cancelCallback
@@ -568,7 +568,7 @@ def html_color_selector(id, change, input_change, default='000000',
                 // The 'change' event is still bound:
                 input.unbind('keyup');
             }, 1);
-            </script>""" % (id, id, default, change)
+            </script>""" % dict(id=id, default=default, change=change)
 
     return s
 
