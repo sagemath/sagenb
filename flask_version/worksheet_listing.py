@@ -157,6 +157,16 @@ def public_worksheet_download(id, title):
         return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
     return unconditional_download(worksheet, title)
 
+@worksheet_listing.route('/home/pub/<id>/cells/<path:filename>')
+def public_worksheet_cells(id, filename):
+    worksheet_filename =  "pub" + "/" + id
+    try:
+        worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
+    except KeyError:
+        return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+    from flask.helpers import send_from_directory
+    return send_from_directory(worksheet.cells_directory(), filename)
+
 #######################
 # Download Worksheets #
 #######################
