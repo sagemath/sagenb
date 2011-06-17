@@ -241,7 +241,7 @@ def upload_worksheet():
         #Uploading a file from the user's computer
         dir = tmp_dir()
         file = request.files['file']
-        if file.filename == '':
+        if file.filename is None:
             return current_app.message("Please specify a worksheet to load.%s" % backlinks)
 
         filename = secure_filename(file.filename)
