@@ -150,7 +150,9 @@ class Notebook(object):
     def user_manager(self):
         """
         Returns self's UserManager object.
-        EXAMPLES:
+
+        EXAMPLES::
+
             sage: n = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: n.user_manager()
             <sagenb.notebook.user_manager.SimpleUserManager object at 0x...>
@@ -166,7 +168,7 @@ class Notebook(object):
 
         INPUT:
 
-        -  ``passwd`` - a string
+        - ``passwd`` - a string
 
         EXAMPLES::
 

@@ -1061,7 +1061,7 @@ class ColorInput(InputBox):
 
             sage: sagenb.notebook.interact.ColorInput('c', Color('red')).render()
             '...<table>...'
-            """
+        """
         return html_color_selector('color-selector-%s-%s'%(self.var(),
                                                            self.cell_id()),
                                    change=self.interact(0),
