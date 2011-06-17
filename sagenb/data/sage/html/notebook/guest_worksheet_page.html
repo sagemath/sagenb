@@ -5,6 +5,9 @@ INPUT:
 - notebook - an instance of Notebook which contains worksheet
 - username - a string containing a username
 #}
+{% block javascript %}
+<script src="/javascript/sage/published_worksheet.js"></script>
+{% endblock %}
 
 {% block page_id %}guest-worksheet-page{% endblock %}
 
@@ -36,13 +39,12 @@ INPUT:
         {% endif %}
         {% if not (notebook.user_manager().user_is_guest(username) or worksheet.is_publisher(username)) %}
             <span>
-                {{ "Rerate" if worksheet.is_rater(username) else "Rate" }} it: 
             </span>
             {% for i in range(5) %}
-                <a class="usercontrol"
-                   onClick="rate_worksheet({{ i }})">{{ i }}</a>
+            <input type="radio" name="rating" value={{ i }} > {{ i }}
             {% endfor %}
-                &nbsp;&nbsp; <input name="rating_comment" id="rating_comment" />
+                &nbsp;&nbsp; <input name="rating_comment" id="rating_comment" value="leave a comment"/>
+            <input type="button" id="rate_button" name="rating" value= {{ "Rerate" if worksheet.is_rater(username) else "Rate" }} > 
         {% endif %}
     </li>
     {% endif %}

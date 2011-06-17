@@ -1523,19 +1523,6 @@ function copy_worksheet() {
 }
 
 
-function rate_worksheet(rating) {
-    /*
-    Save the comment and rating that the uses chooses for a public worksheet.
-
-    INPUT:
-        rating -- integer
-    */
-    var comment = get_element("rating_comment").value;
-    window.location.replace(worksheet_command("rate?rating=" + rating +
-                                              "&comment=" + escape0(comment)));
-}
-
-
 function download_worksheet() {
     /*
     Download the current worksheet to the file with name select by the
