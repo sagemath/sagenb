@@ -1,4 +1,4 @@
-This is the first release of the standalone Sage Notebook.
+This is the standalone Sage Notebook.
 
 INSTALLATION:
 
@@ -30,9 +30,8 @@ MORE DETAILS:
       * docutils-0.5-py2.6.egg
       * zope.interface-3.3.0-py2.6.egg-info
 
-   Note that pexpect is not required.  Note that twisted.web2 is.  The
-   only easy way to get the above is probably just to start with a
-   Sage install.
+   Note that pexpect is not required, but highly recommended.  Note that twisted.web2 is required.  The
+   only easy way to get the above is probably just to start with a Sage install.
 
    2. In the current directory, type:
   
