@@ -242,7 +242,7 @@ def upload_worksheet():
         # to a temporary file with the same extension
         path = urlparse.urlparse(url).path
         extension = os.path.splitext(path)[1].lower()
-        if extension not in [".txt", ".sws", ".zip", ".html"]:
+        if extension not in [".txt", ".sws", ".zip", ".html", ".rst"]:
             # Or shall we try to import the document as an sws in doubt?
             return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
         filename = tmp_filename()+extension
@@ -278,6 +278,7 @@ def upload_worksheet():
                 W = g.notebook.import_worksheet(filename, g.username)
 
         except Exception, msg:
+            print "Error: %s" % msg
             s = 'There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s' % backlinks
             return current_app.message(s, url_for('home', username=g.username))
         finally:
