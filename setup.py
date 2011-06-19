@@ -5,6 +5,13 @@
 import os, sys, time
 from setuptools import setup
 
+
+import distutils.log
+
+if os.environ.get("SAGE_SETUPTOOLS_DEBUG","no")=="yes":
+    distutils.log.set_threshold(distutils.log.DEBUG)
+
+
 def all_files(dir, lstrip):
     """
     Return list of all filenames in the given directory, with lstrip
@@ -21,7 +28,7 @@ def all_files(dir, lstrip):
     
 
 code = setup(name = 'sagenb',
-      version     = '0.8.7',  # the spkg-dist script assumes single quotes here
+      version     = '0.8.17',  # the spkg-dist script assumes single quotes here
       description = 'The Sage Notebook',
       license     = 'GNU Public License (GPL) v2+',
       author      = 'William Stein et al.',

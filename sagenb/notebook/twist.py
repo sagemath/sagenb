@@ -49,8 +49,10 @@ import css, js, keyboards, challenge
 import notebook as _notebook
 
 from sagenb.notebook.template import template
-import i18n
-from i18n import _
+#import i18n
+#from i18n import _
+from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+_ = gettext
 
 from sagenb.misc.misc import (SAGE_DOC, DATA, SAGE_VERSION, walltime,
                               tmp_filename, tmp_dir, is_package_installed,
@@ -2046,7 +2048,8 @@ class RegConfirmation(resource.Resource):
 ############################
 import re
 #@ is disabled because it breaks TinyMCE
-re_valid_username = re.compile('[a-z|A-Z|0-9|_|.]*')
+valid_username_chars = 'a-z|A-Z|0-9|_|.|@' 
+re_valid_username = re.compile('[%s]*' % valid_username_chars)
 def is_valid_username(username):
     r"""
     Returns whether a candidate username is valid.  It must contain
@@ -2110,7 +2113,7 @@ def is_valid_password(password, username):
         sage: is_valid_password('8u7', None)
         False
         sage: is_valid_password('fUmDagaz8LmtonAowjSe0Pvu9C5Gvr6eKcC6wsAT', None)
-        False
+        True 
         sage: is_valid_password('rrcF !u78!', None)
         False
         sage: is_valid_password('markusup89', 'markus')

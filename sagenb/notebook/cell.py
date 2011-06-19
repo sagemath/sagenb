@@ -474,7 +474,7 @@ class Cell(Cell_generic):
             return self.__asap
 
     def delete_output(self):
-        """
+        r"""
         Deletes all output in this compute cell. This also deletes the
         files, since they appear as output of the cell.
 
@@ -504,10 +504,8 @@ class Cell(Cell_generic):
             sage: C.delete_output()
             sage: C.files()
             []
-
             sage: W.quit()
             sage: nb.delete()
-
         """
         self.__out = u''
         self.__out_html = u''
@@ -2002,13 +2000,13 @@ class Cell(Cell_generic):
         INPUT:
 
         - ``introspect`` - a pair [``before_cursor``,
-           ``after_cursor``] of strings (default: False)
+          ``after_cursor``] of strings (default: False)
 
         - ``time`` - a boolean (default: None); whether to return the
           time the computation takes
 
         - ``username`` - a string (default: None); name of user doing
-           the evaluation
+          the evaluation
 
         EXAMPLES:
 

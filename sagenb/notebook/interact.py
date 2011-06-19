@@ -26,12 +26,14 @@ AUTHORS:
  ** PLANNING **
 
 NOTES:
+
    * There is no testing of pickling anywhere in this file.  This is
      because there is no reason one would ever pickle anything in this
      file, since everything is associated with particular state
      information of a notebook.
  
 BUGS:
+
    [x] have default values set from the get go
    [x] spacing around sliders; also need to have labels  
    [x] when re-evaluate input, make sure to clear output so cell-interact-id div is gone.
@@ -61,6 +63,7 @@ BUGS:
    [x] what do published worksheets do??    
 
 VERSION 1:
+
    [X] get sliders to work; values after move slider
    [x] default values
    [x] NO -- autoswitch to 1-cell mode:
@@ -85,11 +88,13 @@ VERSION 1:
        such requests from the queue in worksheet.py
 
    DOCS:
+
    [x] 100% documentation and doctest coverage
    [ ] put the docs for this in the reference manual
    [ ] put summary doc in notebook help page
    
 VERSION 2:
+
    [ ] vertical scroll bars (maybe very easy via jsquery)
    [ ] small version of color selector
    [ ] button -- block of code gets run when it is clicked
@@ -803,7 +808,7 @@ class InteractControl(InteractElement):
         return sage_eval(value, globs)
         
     def interact(self, *args):
-        """
+        r"""
         Return a string that when evaluated in JavaScript calls the
         JavaScript :func:`interact` function with appropriate inputs for
         this control.
@@ -876,8 +881,7 @@ class InteractControl(InteractElement):
         return self.__cell_id
 
 class InputBox(InteractControl):
-    def __init__(self, var, default_value, label=None, type=None, width=80,
-                 **kwargs):
+    def __init__(self, var, default_value, label=None, type=None, width=80, height = 1, **kwargs):
         """
         An input box :func:`interact` control.
 
@@ -895,6 +899,10 @@ class InputBox(InteractControl):
         - ``type`` - a type (default: None); the type of this control,
           e.g., the type 'bool'
 
+        - ``height`` - an integer (default: 1); the number of rows.  
+          If greater than 1 a value won't be returned until something
+          outside the textarea is clicked.
+
         - ``width`` - an integer (default: 80); the character width of
           this control
 
@@ -910,6 +918,7 @@ class InputBox(InteractControl):
         InteractControl.__init__(self, var, default_value, label)
         self.__type = type
         self.__width = width
+        self.__height = height
         self._kwargs = kwargs
         
     def __repr__(self):
@@ -985,7 +994,7 @@ class InputBox(InteractControl):
             return 'this.value'
 
     def render(self):
-        """
+        r"""
         Render this control as a string.
 
         OUTPUT:
@@ -1000,9 +1009,13 @@ class InputBox(InteractControl):
         if self.__type is bool:
             return """<input type="checkbox" %s width=200px onchange="%s"></input>"""%(
                 'checked' if self.default_value() else '',  self.interact())
-        elif self.__type is str:
+        elif self.__type is str and self.__height ==1:
             return """<input type="text" value="%s" size=%s onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width, self.interact())
+        elif self.__type is str and self.__height > 1:
+            textval = self.html_escaped_default_value()
+            return """<textarea type="text" value="%s" rows="%s" cols="%s" onchange="%s">%s</textarea>"""%(
+                textval, self.__height, self.__width, self.interact(), textval)
         else:
             return """<input type="text" value="%s" size=%s onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width,  self.interact())
@@ -1048,7 +1061,7 @@ class ColorInput(InputBox):
 
             sage: sagenb.notebook.interact.ColorInput('c', Color('red')).render()
             '...<table>...'
-            """
+        """
         return html_color_selector('color-selector-%s-%s'%(self.var(),
                                                            self.cell_id()),
                                    change=self.interact(0),
@@ -2632,7 +2645,7 @@ class control:
         self.__label = label
 
 class input_box(control):
-    def __init__(self, default=None, label=None, type=None, width=80, **kwargs):
+    def __init__(self, default=None, label=None, type=None, width=80, height=1, **kwargs):
         r"""
         An input box interactive control.  Use this in conjunction
         with the :func:`interact` command.
@@ -2647,6 +2660,10 @@ class input_box(control):
         - ``type`` - a type; coerce inputs to this; this doesn't
           have to be an actual type, since anything callable will do.
 
+        - ``height`` - an integer (default: 1); the number of rows.  
+          If greater than 1 a value won't be returned until something
+          outside the textarea is clicked.
+
         - ``width`` - an integer; width of text box in characters
             
         - ``kwargs`` - a dictionary; additional keyword options
@@ -2656,12 +2673,15 @@ class input_box(control):
             sage: input_box("2+2", 'expression')
             Interact input box labeled 'expression' with default value '2+2'
             sage: input_box('sage', label="Enter your name", type=str)
-            Interact input box labeled 'Enter your name' with default value 'sage'            
+            Interact input box labeled 'Enter your name' with default value 'sage'   
+            sage: input_box('Multiline\nInput',label='Click to change value',type=str,height=5)
+            Interact input box labeled 'Click to change value' with default value 'Multiline\nInput'
         """
         self.__default = default
         self.__type = type
         control.__init__(self, label)
         self.__width = width
+        self.__height = height
         self.__kwargs = kwargs
 
     def __repr__(self):
@@ -2740,7 +2760,7 @@ class input_box(control):
         if self.__type is Color:
             return ColorInput(var, default_value=self.__default, label=self.label(), type=self.__type, **self.__kwargs)
         else:
-            return InputBox(var, default_value=self.__default, label=self.label(), type=self.__type, width=self.__width, **self.__kwargs)
+            return InputBox(var, default_value=self.__default, label=self.label(), type=self.__type, width=self.__width, height = self.__height, **self.__kwargs)
 
 
 class color_selector(input_box):
@@ -2880,7 +2900,7 @@ class input_grid(control):
 
         - ``width`` - an integer; size of each input box in characters
             
-        NOTEBOOK EXAMPLE:
+        NOTEBOOK EXAMPLE::
 
             @interact
             def _(m = input_grid(2,2, default = [[1,7],[3,4]],

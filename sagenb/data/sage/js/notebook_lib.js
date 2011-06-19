@@ -1523,19 +1523,6 @@ function copy_worksheet() {
 }
 
 
-function rate_worksheet(rating) {
-    /*
-    Save the comment and rating that the uses chooses for a public worksheet.
-
-    INPUT:
-        rating -- integer
-    */
-    var comment = get_element("rating_comment").value;
-    window.location.replace(worksheet_command("rate?rating=" + rating +
-                                              "&comment=" + escape0(comment)));
-}
-
-
 function download_worksheet() {
     /*
     Download the current worksheet to the file with name select by the
@@ -1780,14 +1767,10 @@ function go_option(form) {
       form -- DOM element; the drop-down form element
     */
     var action = form.options[form.selectedIndex].value;
-    action = action.slice(0, action.indexOf('('));
-
-    // This is safer than using eval.
-    if (action === 'delete_worksheet') {
-        delete_worksheet(worksheet_filename);
-    } else if (action !== '') {
-        window[action]();
-    }
+    // not safe, but more straigth forward than parsing
+    // what is basically an eval string and running the 
+    // corresponding function and arguments
+    eval(action);
     form.options[0].selected = 1;
 }
 

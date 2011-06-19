@@ -36,13 +36,12 @@ INPUT:
         {% endif %}
         {% if not (notebook.user_manager().user_is_guest(username) or worksheet.is_publisher(username)) %}
             <span>
-                {{ gettext("Rerate") if worksheet.is_rater(username) else gettext("Rate") }} it: 
             </span>
             {% for i in range(5) %}
-                <a class="usercontrol"
-                   onClick="rate_worksheet({{ i }})">{{ i }}</a>
+            <input type="radio" name="rating" value={{ i }} > {{ i }}
             {% endfor %}
-                &nbsp;&nbsp; <input name="rating_comment" id="rating_comment" />
+                &nbsp;&nbsp; <input name="rating_comment" id="rating_comment" value="gettext('leave a comment')"/>
+            <input type="button" id="rate_button" name="rating" value= {{ gettext("Rerate") if worksheet.is_rater(username) else gettext("Rate") }} > 
         {% endif %}
     </li>
     {% endif %}

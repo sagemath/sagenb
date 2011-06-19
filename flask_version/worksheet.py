@@ -587,7 +587,7 @@ def worksheet_link_datafile(worksheet):
     if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
         return current_app.message(_("illegal link attempt!"))
     os.system('ln "%s" "%s"'%(src, target))
-    return redirect(worksheet_link_datafile.url_for(worksheet, name=data_filename))
+    return redirect(worksheet_datafile.url_for(worksheet, name=data_filename))
     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
     
 @worksheet_command('upload_data')
