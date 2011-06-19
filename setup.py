@@ -28,13 +28,18 @@ def all_files(dir, lstrip):
     
 
 code = setup(name = 'sagenb',
-      version     = '0.8.17',  # the spkg-dist script assumes single quotes here
+      version     = '0.9.0',  # the spkg-dist script assumes single quotes here
       description = 'The Sage Notebook',
       license     = 'GNU Public License (GPL) v2+',
       author      = 'William Stein et al.',
-      author_email= 'http://groups.google.com/group/sage-support',
-      url         = 'http://www.sagemath.org',
-      install_requires = ['twisted>=8.2'],
+      author_email= 'http://groups.google.com/group/sage-notebook',
+      url         = 'http://code.google.com/p/sagenb',
+      install_requires = ['twisted>=8.2',
+                          'flask',
+                          'flask-openid',
+                          'flask-autoindex',
+                          'babel',
+                          'flask-babel'],
       test_suite = 'sagenb.testing.run_tests.all_tests',
       packages    = ['sagenb',
                      'sagenb.interfaces',
