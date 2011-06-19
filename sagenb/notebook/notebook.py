@@ -154,8 +154,8 @@ class Notebook(object):
         EXAMPLES::
 
             sage: n = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: n.user_manager()
-            <sagenb.notebook.user_manager.SimpleUserManager object at 0x...>
+            sage: n.user_manager() 
+            <sagenb.notebook.user_manager.OpenIDUserManager object at 0x...>
         """
         return self._user_manager
         
@@ -176,15 +176,17 @@ class Notebook(object):
             sage: nb.create_default_users('password')
             sage: list(sorted(nb.user_manager().users().iteritems()))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
-            sage: list(sorted(nb.user_manager().passwords().iteritems()))
-            [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajfMKNH1hTm2'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(nb.user_manager().passwords().iteritems())) #random
+            [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
             sage: nb.create_default_users('newpassword')
             WARNING: User 'pub' already exists -- and is now being replaced.
             WARNING: User '_sage_' already exists -- and is now being replaced.
             WARNING: User 'guest' already exists -- and is now being replaced.
             WARNING: User 'admin' already exists -- and is now being replaced.
-            sage: list(sorted(nb.user_manager().passwords().iteritems()))
-            [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajH86zjeUSDY'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(nb.user_manager().passwords().iteritems())) #random
+            [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
+            sage: len(list(sorted(nb.user_manager().passwords().iteritems())))
+            4
         """
         self.user_manager().create_default_users(passwd)
 
@@ -209,8 +211,8 @@ class Notebook(object):
             admin
             sage: nb.user('admin').get_email()
             ''
-            sage: nb.user('admin').password()
-            'aajfMKNH1hTm2'
+            sage: nb.user('admin').password() #random
+            '256$7998210096323979f76e9fedaf1f85bda1561c479ae732f9c1f1abab1291b0b9$373f16b9d5fab80b9a9012af26a6b2d52d92b6d4b64c1836562cbd4264a6e704'
         """
         return self.user_manager().user(username)
 
@@ -369,7 +371,7 @@ class Notebook(object):
             raise KeyError, "Attempt to delete missing worksheet '%s'"%filename
         W = self.__worksheets[filename]
         W.quit()
-        shutil.rmtree(W.directory(), ignore_errors=True)
+        shutil.rmtree(W.directory(), ignore_errors=False)
         self.deleted_worksheets()[filename] = W
         del self.__worksheets[filename]
 

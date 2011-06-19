@@ -2010,7 +2010,8 @@ server. Please <a href="/register">register</a> with the server.</p>
 ############################
 import re
 #@ is disabled because it breaks TinyMCE
-re_valid_username = re.compile('[a-z|A-Z|0-9|_|.]*')
+valid_username_chars = 'a-z|A-Z|0-9|_|.|@' 
+re_valid_username = re.compile('[%s]*' % valid_username_chars)
 def is_valid_username(username):
     r"""
     Returns whether a candidate username is valid.  It must contain
@@ -2074,7 +2075,7 @@ def is_valid_password(password, username):
         sage: is_valid_password('8u7', None)
         False
         sage: is_valid_password('fUmDagaz8LmtonAowjSe0Pvu9C5Gvr6eKcC6wsAT', None)
-        False
+        True 
         sage: is_valid_password('rrcF !u78!', None)
         False
         sage: is_valid_password('markusup89', 'markus')

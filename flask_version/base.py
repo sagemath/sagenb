@@ -215,10 +215,11 @@ def create_or_login(resp):
 @base.route('/openid_profiles', methods=['POST','GET'])
 def set_profiles():
     if request.method == 'GET' and 'openid_response' in session:
-        re_valid_username = re.compile('[^(a-z|A-Z|.|_|0-9)]')
+        from sagenb.notebook.twist import valid_username_chars
+        re_invalid_username_chars = re.compile('[^(%s)]' % valid_username_chars)
         openid_resp = session['openid_response']
-        openid_resp.fullname = re.sub(re_valid_username,'_',openid_resp.fullname)
-        return render_template('html/openid_profiles.html', resp=openid_resp)
+        openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
+        return render_template('html/accounts/openid_profile.html', resp=openid_resp)
 
     if request.method == 'POST':
         parse_dict = {'resp':session['openid_response']}
