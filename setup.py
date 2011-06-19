@@ -52,8 +52,7 @@ code = setup(name = 'sagenb',
                      'sagenb.testing.tests',
                      'sagenb.testing.selenium'
                      ],
-      scripts      = ['sagenb/data/jmol/jmol',
-                      'sagenb/data/sage3d/sage3d',
+      scripts      = [ 'sagenb/data/sage3d/sage3d',
                      ],
       package_data = {'sagenb':
                           all_files('sagenb/data', 'sagenb/') +
