@@ -57,6 +57,6 @@ code = setup(name = 'sagenb',
                      ],
       package_data = {'sagenb':
                           all_files('sagenb/data', 'sagenb/') +
-                             all_files('sagenb/locale', 'sagenb/')
+                          all_files('sagenb/translations', 'sagenb/')
                       },
       )
