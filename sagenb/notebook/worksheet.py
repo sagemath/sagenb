@@ -213,6 +213,7 @@ class Worksheet(object):
         self.__collaborators = []
         self.__docbrowser = docbrowser
         self.__autopublish = auto_publish
+        self.__saved_by_info = {}
 
         # state sequence number, used for sync
         self.__state_number = 0
@@ -297,6 +298,11 @@ class Worksheet(object):
         except AttributeError:
             ws_pub = (self.owner(), self.id_number())
 
+        try:
+            saved_by_info = self.__saved_by_info 
+        except AttributeError:
+            saved_by_info = {}
+
         d = {#############
              # basic identification
              'name':self.name(),
@@ -334,6 +340,9 @@ class Worksheet(object):
              # triples
              #       (username, rating, comment)
              'ratings':self.ratings(),
+
+             #???
+             'saved_by_info':saved_by_info,
 
              # dictionary mapping usernames to list of tags that
              # reflect what the tages are for that user.  A tag can be
