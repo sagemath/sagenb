@@ -1,6 +1,8 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, admin_required, with_lock
+from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+_ = gettext
 
 admin = Module('flask_version.admin')
 
@@ -62,25 +64,32 @@ def add_user():
                                    error='username_taken', username_input=username, **template_dict)
         g.notebook.user_manager().add_user(username, password, '', force=True)
 
-        #XXX: i18n
-        return current_app.message('The temporary password for the new user <em>%s</em> is <em>%s</em>' %
-                                           (username, password), '/adduser',
-                                           title=u'New User')
+        message = gettext('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
+                          username=username, password=password)
+        return current_app.message(message='/adduser', title=_('New User'))
     else:
         return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
                                **template_dict)
 
-@admin.route('/notebooksettings')
+@admin.route('/notebooksettings', methods=['GET', 'POST'])
 @admin_required
 @with_lock
 def notebook_settings():
     updated = {}
     if 'form' in request.values:
         updated = g.notebook.conf().update_from_form(request.values)
+        
+    #Make changes to the default language used
+    if 'default_language' in request.values:
+        from flaskext.babel import refresh
+        refresh()
+        current_app.config['BABEL_DEFAULT_LOCALE'] = request.values['default_language']
+        
     template_dict = {}
     template_dict['auto_table'] = g.notebook.conf().html_table(updated)
     template_dict['admin'] = g.notebook.user_manager().user(g.username).is_admin()
     template_dict['username'] = g.username
+        
     return render_template(os.path.join('html', 'settings', 'notebook_settings.html'),
                            **template_dict)
 

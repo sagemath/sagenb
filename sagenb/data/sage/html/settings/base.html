@@ -7,10 +7,10 @@
 {% block settings_nav %}
 <ul id="settings-nav" class="user-controls">
     {% if admin %}
-    <li><a href="/users">Manage Users</a></li>
-    <li><a href="/notebooksettings">Notebook Settings</a></li>
+    <li><a href="/users">{{ gettext('Manage Users') }}</a></li>
+    <li><a href="/notebooksettings">{{ gettext('Notebook Settings') }}</a></li>
     {% endif %}
-    <li><a href="/settings">Account Settings</a></li>
+    <li><a href="/settings">{{ gettext('Account Settings') }}</a></li>
 </ul>
 {% endblock %}
 {% block settings_main %}

@@ -27,7 +27,7 @@ AUTHORS:
 import os, random, re, urllib2, urllib
 
 from sagenb.notebook.template import template
-
+from flaskext.babel import gettext, lazy_gettext
 
 class ChallengeResponse(object):
     """
@@ -172,11 +172,11 @@ class NotConfiguredChallenge(AbstractChallenge):
             sage: import sagenb.notebook.notebook as n
             sage: nb = n.Notebook(tmp)
             sage: chal = NotConfiguredChallenge(nb.conf())
-            sage: chal.html()
-            'Please ask the server administrator to configure a challenge!'
+            sage: print chal.html()
+            Please ask the server administrator to configure a challenge!
 
         """
-        return "Please ask the server administrator to configure a challenge!"
+        return lazy_gettext("Please ask the server administrator to configure a challenge!")
 
     def is_valid_response(self, **kwargs):
         """
@@ -207,18 +207,18 @@ class NotConfiguredChallenge(AbstractChallenge):
 
 
 # HTML template for :class:`SimpleChallenge`.
-SIMPLE_TEMPLATE = """<p>%(question)s</p>
+SIMPLE_TEMPLATE = u"""<p>%(question)s</p>
 <input type="text" id="simple_response_field" name="simple_response_field" class="entry" tabindex="5" />
-<input type="hidden" value="%(question)s" id="simple_challenge_field" name="simple_challenge_field" class="entry" />
+<input type="hidden" value="%(untranslated_question)s" id="simple_challenge_field" name="simple_challenge_field" class="entry" />
 """
 
 # A set of sample questions for :class:`SimpleChallenge`.
 QUESTIONS = {
-    'Is pi > e?' : r'y|yes',
-    'What is 3 times 8?' : r'24|twenty-four',
-    'What is 2 plus 3?' : r'5|five',    
-    'How many bits are in one byte?' : r'8|eight',
-    'What is the largest prime factor of 15?' : r'5|five',
+    lazy_gettext('Is pi > e?') : lazy_gettext('y|yes'),
+    lazy_gettext('What is 3 times 8?') : lazy_gettext('24|twenty-four'),
+    lazy_gettext('What is 2 plus 3?') : lazy_gettext('5|five'),    
+    lazy_gettext('How many bits are in one byte?') : lazy_gettext('8|eight'),
+    lazy_gettext('What is the largest prime factor of 15?') : lazy_gettext('5|five'),
 #    'What is the smallest perfect number?' : r'6|six',
 #    'What is our class registration code?' : r'XYZ123',
 #    'What is the smallest integer expressible as the sum of two positive cubes in two distinct ways?' : r'1729',
@@ -286,7 +286,8 @@ class SimpleChallenge(AbstractChallenge):
             
         """
         question = random.choice([q for q in QUESTIONS])
-        return SIMPLE_TEMPLATE % { 'question' : question }
+        return SIMPLE_TEMPLATE % { 'question' : gettext(question),
+                                   'untranslated_question': question }
 
     def is_valid_response(self, req_args = {}, **kwargs):
         """
@@ -316,12 +317,12 @@ class SimpleChallenge(AbstractChallenge):
             sage: chal.is_valid_response(req).error_code
             ''
             sage: from sagenb.notebook.challenge import QUESTIONS
-            sage: ques, ans = QUESTIONS.items()[0]
+            sage: ques, ans = sorted(QUESTIONS.items())[0]
             sage: ans = ans.split('|')[0]
             sage: print ques
-            What is 3 times 8?
+            How many bits are in one byte?
             sage: print ans
-            24
+            8
             sage: req['simple_response_field'] = [ans]
             sage: chal.is_valid_response(req).is_valid
             False
@@ -341,8 +342,7 @@ class SimpleChallenge(AbstractChallenge):
         challenge_field = req_args.get('simple_challenge_field', [None])[0]
         if not (challenge_field and len(challenge_field)):
             return ChallengeResponse(False, '')
-
-        if agree(response_field, QUESTIONS[challenge_field]):
+        if agree(response_field, gettext(QUESTIONS[challenge_field])):
             return ChallengeResponse(True, '')
         else:
             return ChallengeResponse(False, '')
@@ -612,8 +612,8 @@ class ChallengeDispatcher(object):
             '<p>...'
             sage: nb.conf()['challenge_type'] = 'mistake'
             sage: disp = ChallengeDispatcher(nb.conf())
-            sage: disp().html()
-            'Please ask the server administrator to configure a challenge!'
+            sage: print disp().html()
+            Please ask the server administrator to configure a challenge!
 
         """
         return self.challenge

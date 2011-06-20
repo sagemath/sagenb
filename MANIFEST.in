@@ -3,4 +3,4 @@ recursive-include sass *
 prune sass/src/.sass-cache
 include *.txt Makefile MANIFEST.in .hgignore .hgtags sdist spkg-dist SPKG.txt go
 recursive-include .hg *
-global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\#
+global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc

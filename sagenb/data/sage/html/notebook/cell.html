@@ -60,8 +60,8 @@ INPUT:
                 <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
                    class="eval_button"
                    id="eval_button{{ cell.id() }}" 
-                   alt="Click here or press shift-return to evaluate">
-                    evaluate
+                   alt="{{ gettext('Click here or press shift-return to evaluate') }}">
+                    {{ gettext('evaluate') }}
                 </a>
             {% endif %}
             {# end input #}

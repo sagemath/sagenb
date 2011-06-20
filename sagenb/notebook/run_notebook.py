@@ -308,8 +308,9 @@ def notebook_twisted(self,
              port_tries    = 50,
              secure        = False,
              reset         = False,
-             accounts      = False,
              require_login = True, 
+             accounts      = None,
+             openid        = None,
                      
              server_pool   = None,
              ulimit        = '',
@@ -356,6 +357,9 @@ def notebook_twisted(self,
         print "your account. Make sure you know what you are doing."
         print '*' * 70
 
+    # first use provided values, if none, use loaded values, 
+    # if none use defaults
+
     nb = notebook.load_notebook(directory)
     
     directory = nb._dir
@@ -366,6 +370,16 @@ def notebook_twisted(self,
 
     nb.conf()['idle_timeout'] = int(timeout)
     nb.conf()['require_login'] = require_login
+
+    if openid is not None:
+        nb.conf()['openid'] = openid 
+    elif not nb.conf()['openid']:
+        nb.conf()['openid'] = False
+
+    if accounts is not None:
+        nb.user_manager().set_accounts(accounts)
+    elif not nb.conf()['accounts']:
+        nb.user_manager().set_accounts(True)
     
     if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
         # This is here only for backward compatibility with one
@@ -394,7 +408,6 @@ def notebook_twisted(self,
             
     nb.set_server_pool(server_pool)
     nb.set_ulimit(ulimit)
-    nb.user_manager().set_accounts(accounts)
     
     if os.path.exists('%s/nb-older-backup.sobj' % directory):
         nb._migrate_worksheets()

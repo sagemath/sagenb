@@ -49,6 +49,10 @@ import css, js, keyboards, challenge
 import notebook as _notebook
 
 from sagenb.notebook.template import template
+#import i18n
+#from i18n import _
+from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+_ = gettext
 
 from sagenb.misc.misc import (SAGE_DOC, DATA, SAGE_VERSION, walltime,
                               tmp_filename, tmp_dir, is_package_installed,
@@ -60,7 +64,7 @@ javascript_path      = os.path.join(DATA)
 sage_javascript_path = os.path.join(DATA, 'sage', 'js')
 java_path            = os.path.join(DATA)
 
-jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
+jsmath_image_fonts = is_package_installed("jsmath_image_fonts")
 
 # the list of users waiting to register
 waiting = {}
@@ -214,7 +218,7 @@ class WorksheetFile(resource.Resource):
         from docHTMLProcessor import SphinxHTMLProcessor
         doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
 
-        title = extract_title(doc_page_html).replace('&mdash;','--')
+        title = extract_title(doc_page_html, self.username).replace('&mdash;','--')
         doc_page = title + '\nsystem:sage\n\n' + doc_page
 
         W = doc_worksheet()
@@ -408,7 +412,7 @@ class NewWorksheet(resource.Resource):
         self.username = username
 
     def render(self, ctx):
-        W = notebook.create_new_worksheet("Untitled", self.username)
+        W = notebook.create_new_worksheet(_("Untitled", self.username), self.username)
         return RedirectResponse('/home/'+W.filename())
 
 
@@ -449,7 +453,7 @@ class UploadWorksheet(resource.PostableResource):
             dir = tmp_dir()
             filename = ctx.files['file'][0][0]
             if filename == '':
-                return HTMLResponse(stream=message("Please specify a worksheet to load.%s" % backlinks))
+                return HTMLResponse(stream=message(_("Please specify a worksheet to load.%s") % backlinks))
             # Make tmp file in Sage temp directory
             filename = os.path.join(dir, filename)
             f = file(filename,'wb')
@@ -481,14 +485,14 @@ class UploadWorksheet(resource.PostableResource):
                                 open(sws_file, 'w').write(zip_file.read(sws)) # 2.6 zip_file.extract(sws, sws_file)
                                 W = notebook.import_worksheet(sws_file, self.username)
                                 if new_name:
-                                    W.set_name("%s - %s" % (new_name, W.name()))
+                                    W.set_name("%s - %s" % (new_name, W.name()), self.username)
                         return RedirectResponse('/')
 
                     else:
                         W = notebook.import_worksheet(filename, self.username)
 
                 except Exception, msg:
-                    s = 'There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s' % backlinks
+                    s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s', self.username) % backlinks
                     return HTMLResponse(stream=message(s,'/'))
                 finally:
                     # Clean up the temporarily uploaded filename.
@@ -504,7 +508,7 @@ class UploadWorksheet(resource.PostableResource):
             # If the user requested in the form a specific title for
             # the worksheet set it.
             if new_name:
-                W.set_name(new_name)
+                W.set_name(new_name, self.username)
 
             return RedirectResponse('/home/'+W.filename())
 
@@ -517,7 +521,7 @@ class UploadWorksheet(resource.PostableResource):
             d = downloadPage(url, filename)
             d.addCallback(callback)
             def errback(result):
-                msg = "There was an error uploading '%s' (please recheck the URL).%s" % (url, backlinks)
+                msg = _('There was an error uploading "%s" (please recheck the URL).%s', self.username) % (url, backlinks)
                 return HTMLResponse(stream=message(msg,'/'))
             d.addErrback(errback)
             return d
@@ -599,16 +603,16 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
         # Backlinks.
         worksheet_url = '/home/' + self.worksheet.filename()
         upload_url = worksheet_url + '/upload_data'
-        backlinks = """ Return to <a href="%s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%s" title="Interactively use the worksheet"><strong>%s</strong></a>.""" % (upload_url, worksheet_url, self.worksheet.name())
+        backlinks = _('Return to <a href="%s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%s" title="Interactively use the worksheet"><strong>%s</strong></a>.', self.username) % (upload_url, worksheet_url, self.worksheet.name())
 
         # Check for the form's fields.  They need not be filled.
         if not ctx.files.has_key('file'):
-            return HTMLResponse(stream=message('Error uploading file (missing fileField file).%s' % backlinks, worksheet_url))
+            return HTMLResponse(stream=message(_('Error uploading file (missing fileField file).%s', self.username) % backlinks, worksheet_url))
 
         text_fields = ['url', 'new', 'name']
         for field in text_fields:
             if not ctx.args.has_key(field):
-                return HTMLResponse(stream=message('Error uploading file (missing %s arg).%s' % (field, backlinks), worksheet_url))
+                return HTMLResponse(stream=message(_('Error uploading file (missing %s arg).%s', self.username) % (field, backlinks), worksheet_url))
 
         # Get the fields.
         newfield = ctx.args.get('new', [''])[0].strip()
@@ -625,11 +629,11 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
         name = os.path.split(name)[-1]
 
         if not name:
-            return HTMLResponse(stream=message('Error uploading file (missing filename).%s' % backlinks, worksheet_url))
+            return HTMLResponse(stream=message(_('Error uploading file (missing filename).%s', self.username) % backlinks, worksheet_url))
         dest = os.path.join(self.worksheet.data_directory(), name)
         if os.path.exists(dest):
             if not os.path.isfile(dest):
-                return HTMLResponse(stream=message('Suspicious filename "%s" encountered uploading file.%s' % (name, backlinks), worksheet_url))
+                return HTMLResponse(stream=message(_('Suspicious filename "%s" encountered uploading file.%s', self.username) % (name, backlinks), worksheet_url))
             os.unlink(dest)
 
         response = RedirectResponse(worksheet_url + '/datafile?name=%s' % name)
@@ -647,7 +651,7 @@ class Worksheet_do_upload_data(WorksheetResource, resource.PostableResource):
             def callback(result):
                 return response
             def errback(result):
-                msg = "There was an error uploading '%s' (please recheck the URL).%s" % (url, backlinks)
+                msg = _('There was an error uploading "%s" (please recheck the URL).%s', self.username) % (url, backlinks)
                 return HTMLResponse(stream=message(msg, worksheet_url))
 
             d = downloadPage(url, dest)
@@ -676,7 +680,7 @@ class Worksheet_datafile(WorksheetResource, resource.Resource):
             if ctx.args['action'][0] == 'delete':
                 path = os.path.join(self.worksheet.data_directory(), filename)
                 os.unlink(path)
-                return HTMLResponse(stream = message("Successfully deleted '%s'"%filename,
+                return HTMLResponse(stream = message(_('Successfully deleted "%s"', self.username)%filename,
                                                       '/home/' + self.worksheet.filename(),
                                                      title=u'Data file deleted'))
         s = notebook.html_download_or_delete_datafile(self.worksheet, self.username, filename)
@@ -693,26 +697,27 @@ class Worksheet_data(WorksheetResource, resource.Resource):
         if os.path.exists(dir):
             return static.File(dir)
         else:
-            return HTMLResponse(stream = message("No data files",'..'))
+            return HTMLResponse(stream = message(_('No data files', self.username),'..'))
 
     def childFactory(self, request, name):
         dir = os.path.abspath(self.worksheet.data_directory())
         return static.File(os.path.join(dir, name))
 
 
-class CellData(resource.Resource):
-    def __init__(self, worksheet, number):
-        self.worksheet = worksheet
-        self.number = number
+# Not used anywhere
+# class CellData(resource.Resource):
+#     def __init__(self, worksheet, number):
+#         self.worksheet = worksheet
+#         self.number = number
 
-    def render(self, ctx):
-        return HTMLResponse(stream = message("No data file (%s)"%self.number,'..'))
+#     def render(self, ctx):
+#         return HTMLResponse(stream = message(_("No data file (%s)", self.username)%self.number,'..'))
 
-    def childFactory(self, request, name):
-        dir = self.worksheet.directory()
-        path = os.path.join(dir, 'cells', str(self.number), name)
-        request.setLastModified(os.stat(filename).st_mtime)
-        return static.File(path)
+#     def childFactory(self, request, name):
+#         dir = self.worksheet.directory()
+#         path = os.path.join(dir, 'cells', str(self.number), name)
+#         request.setLastModified(os.stat(filename).st_mtime)
+#         return static.File(path)
 
 
 class Worksheet_cells(WorksheetResource, resource.Resource):
@@ -771,7 +776,7 @@ class Worksheet_introspect(WorksheetResource, resource.PostableResource):
         try:
             id = self.id(ctx)
         except (KeyError,TypeError):
-            return HTMLResponse(stream = 'Error in introspection -- invalid cell id.')
+            return HTMLResponse(stream = _('Error in introspection -- invalid cell id.', self.username))
         try:
             before_cursor = ctx.args['before_cursor'][0]
         except KeyError:
@@ -825,14 +830,13 @@ class Worksheet_copy(WorksheetResource, resource.PostableResource):
 class Worksheet_edit_published_page(WorksheetResource, resource.Resource):
     def render(self, ctx):
         if user_type(self.username) == 'guest':
-            return HTMLResponse(stream = message(
-                'You must <a href="/">login first</a> in order to edit this worksheet.'))
+            return HTMLResponse(stream = message(_('You must <a href="/">login first</a> in order to edit this worksheet.', self.username)))
         ws = self.worksheet.worksheet_that_was_published()
         if ws.owner() == self.username:
             W = ws
         else:
             W = notebook.copy_worksheet(self.worksheet, self.username)
-            W.set_name(self.worksheet.name())
+            W.set_name(self.worksheet.name(), self.username)
         return RedirectResponse('/home/' + W.filename())
 
 ########################################################
@@ -994,22 +998,21 @@ class SettingsPage(resource.PostableResource):
         autosave = int(request.args.get('autosave', [0])[0]) * 60
         if autosave:
             nu['autosave_interval'] = autosave
-            redirect_to_home = True
 
         old = request.args.get('old-pass', [None])[0]
         new = request.args.get('new-pass', [None])[0]
         two = request.args.get('retype-pass', [None])[0]
         if new or two:
             if not old:
-                error = 'Old password not given'
+                error = _('Old password not given', self.username)
             elif not nu.password_is(old):
-                error = 'Incorrect password given'
+                error = _('Incorrect password given', self.username)
             elif not new:
-                error = 'New password not given'
+                error = _('New password not given', self.username)
             elif not two:
-                error = 'Please type in new password again.'
+                error = _('Please type in new password again.', self.username)
             elif new != two:
-                error = 'The passwords you entered do not match.'
+                error = _('The passwords you entered do not match.', self.username)
 
             if not error:
                 # The browser may auto-fill in "old password," even
@@ -1022,16 +1025,16 @@ class SettingsPage(resource.PostableResource):
             if newemail:
                 nu.set_email(newemail)
 #                nu.set_email_confirmation(False)
-                redirect_to_home = True
+
+        updated = {}
+        if request.method == 'POST':
+            updated = notebook.user(self.username).conf().update_from_form(request.args, self.username)
 
         if error:
             return HTMLResponse(stream = message(error, '/settings'))
 
         if redirect_to_logout:
             return RedirectResponse('/logout')
-
-        if redirect_to_home:
-            return RedirectResponse('/home/%s' % self.username)
 
         td = {}
         td['username'] = self.username
@@ -1042,10 +1045,13 @@ class SettingsPage(resource.PostableResource):
         if td['email']:
             td['email_address'] = nu.get_email() or 'None'
             if nu.is_email_confirmed():
-                td['email_confirmed'] = 'Confirmed'
+                td['email_confirmed'] = _('Confirmed', self.username)
             else:
-                td['email_confirmed'] = 'Not confirmed'
+                td['email_confirmed'] = _('Not confirmed', self.username)
 
+        
+                
+        td['auto_table'] = nu.conf().html_table(updated, self.username)
         td['admin'] = nu.is_admin()
 
         s = template(os.path.join('html', 'settings', 'account_settings.html'), **td)
@@ -1058,11 +1064,10 @@ class NotebookSettingsPage(resource.PostableResource):
 
     def render(self, request):
         updated = {}
-        if 'form' in request.args:
-            updated = notebook.conf().update_from_form(request.args)
-
+        if request.method == 'POST':
+            updated = notebook.conf().update_from_form(request.args, self.username)
         template_dict = {}
-        template_dict['auto_table'] = notebook.conf().html_table(updated)
+        template_dict['auto_table'] = notebook.conf().html_table(updated, self.username)
         template_dict['admin'] = notebook.user(self.username).is_admin()
         template_dict['username'] = self.username
         s = template(os.path.join('html', 'settings', 'notebook_settings.html'),
@@ -1120,7 +1125,9 @@ class Worksheet_new_cell_before(WorksheetResource, resource.PostableResource):
 
         cell = self.worksheet.new_cell_before(id, input=input)
         self.worksheet.increase_state_number()
-        s = encode_list([cell.id(), cell.html(div_wrap=False), id])
+        s = encode_list([cell.id(),
+                         cell.html(div_wrap=False, username=self.username),
+                         id])
         return HTMLResponse(stream = s)
 
 class Worksheet_new_text_cell_before(WorksheetResource, resource.PostableResource):
@@ -1136,7 +1143,9 @@ class Worksheet_new_text_cell_before(WorksheetResource, resource.PostableResourc
             input = unicode_str(input)
 
         cell = self.worksheet.new_text_cell_before(id, input=input)
-        s = encode_list([cell.id(), cell.html(editing=True), id])
+        s = encode_list([cell.id(),
+                         cell.html(editing=True, username=self.username),
+                         id])
         return HTMLResponse(stream = s)
 
 
@@ -1153,7 +1162,9 @@ class Worksheet_new_cell_after(WorksheetResource, resource.PostableResource):
             input = unicode_str(input)
 
         cell = self.worksheet.new_cell_after(id, input=input)
-        s = encode_list([cell.id(), cell.html(div_wrap=False), id])
+        s = encode_list([cell.id(),
+                         cell.html(div_wrap=False, username=self.username),
+                         id])
         return HTMLResponse(stream = s)
 
 class Worksheet_new_text_cell_after(WorksheetResource, resource.PostableResource):
@@ -1169,7 +1180,9 @@ class Worksheet_new_text_cell_after(WorksheetResource, resource.PostableResource
             input = unicode_str(input)
 
         cell = self.worksheet.new_text_cell_after(id, input=input)
-        s = encode_list([cell.id(), cell.html(editing=True), id])
+        s = encode_list([cell.id(),
+                         cell.html(editing=True, username=self.username),
+                         id])
         return HTMLResponse(stream = s)
 
 
@@ -1287,7 +1300,7 @@ class Worksheet_eval(WorksheetResource, resource.PostableResource):
         owner = W.owner()
         if owner != '_sage_':
             if W.owner() != self.username and not (self.username in W.collaborators()):
-               return InvalidPage(msg = "can't evaluate worksheet cells", username = self.username)
+               return InvalidPage(msg = _("can't evaluate worksheet cells"), username = self.username)
         cell = W.get_cell_with_id(id)
 
         cell.set_input_text(input_text)
@@ -1297,7 +1310,7 @@ class Worksheet_eval(WorksheetResource, resource.PostableResource):
             return HTMLResponse(stream='')
         elif ctx.args.has_key('text_only') and ctx.args['text_only'][0] == '1':
             notebook_updates()
-            return HTMLResponse(stream=encode_list([str(id), cell.html()]))
+            return HTMLResponse(stream=encode_list([str(id), cell.html(username=self.username)]))
         else:
             newcell = int(ctx.args['newcell'][0])  # whether to insert a new cell or not
 
@@ -1305,10 +1318,10 @@ class Worksheet_eval(WorksheetResource, resource.PostableResource):
 
         if cell.is_last():
             new_cell = W.append_new_cell()
-            s = encode_list([new_cell.id(), 'append_new_cell', new_cell.html(div_wrap=False)])
+            s = encode_list([new_cell.id(), 'append_new_cell', new_cell.html(div_wrap=False, username=self.username)])
         elif newcell:
             new_cell = W.new_cell_after(id)
-            s = encode_list([new_cell.id(), 'insert_cell', new_cell.html(div_wrap=False), str(id)])
+            s = encode_list([new_cell.id(), 'insert_cell', new_cell.html(div_wrap=False, username=self.username), str(id)])
         else:
             s = encode_list([cell.next_id(), 'no_new_cell', str(id)])
 
@@ -1375,7 +1388,7 @@ class Worksheet_publish(WorksheetResource, resource.Resource):
 
 class Worksheet_rating_info(WorksheetResource, resource.Resource):
     def render(self, ctx):
-        s = self.worksheet.html_ratings_info()
+        s = self.worksheet.html_ratings_info(username=self.username)
         return HTMLResponse(stream=s)
 
 class Worksheet_rate(WorksheetResource, resource.Resource):
@@ -1384,19 +1397,14 @@ class Worksheet_rate(WorksheetResource, resource.Resource):
         #if self.worksheet.is_rater(self.username):
         #    return HTMLResponse(stream=message("You have already rated the worksheet <i><b>%s</b></i>."%self.worksheet.name(), ret))
         if user_type(self.username) == "guest":
-            return HTMLResponse(stream = message(
-                'You must <a href="/">login first</a> in order to rate this worksheet.', ret))
+            return HTMLResponse(stream = message(_('You must <a href="/">login first</a> in order to rate this worksheet.', self.username), ret))
 
         rating = int(ctx.args['rating'][0])
         if rating < 0 or rating >= 5:
-            return HTMLResponse(stream = message(
-                "Gees -- You can't fool the rating system that easily!", ret))
+            return HTMLResponse(stream = message(_("Gees -- You can't fool the rating system that easily!", self.username), ret))
         comment = ctx.args['comment'][0]
         self.worksheet.rate(rating, comment, self.username)
-        return HTMLResponse(stream=message("""
-        Thank you for rating the worksheet <b><i>%s</i></b>!
-        You can <a href="rating_info">see all ratings of this worksheet.</a>
-        """%self.worksheet.name(), '/pub/', title=u'Rating Accepted'))
+        return HTMLResponse(stream=message(_('Thank you for rating the worksheet <b><i>%s</i></b>! You can <a href="rating_info">see all ratings of this worksheet.</a>', self.username)%self.worksheet.name(), '/pub/', title=_('Rating Accepted', self.username)))
 
 
 ########################################################
@@ -1413,7 +1421,7 @@ class Worksheet_download(WorksheetResource, resource.Resource):
         try:
             notebook.export_worksheet(worksheet_name, filename, tmp_title)
         except KeyError:
-            return HTMLResponse(stream=message('No such worksheet.'))
+            return HTMLResponse(stream=message(_('No such worksheet.', self.username)))
         r = open(filename, 'rb').read()
         os.unlink(filename)
         return static.Data(r, 'application/sage')
@@ -1462,7 +1470,7 @@ class DownloadWorksheets(resource.Resource):
 
 class Worksheet_rename(WorksheetResource, resource.PostableResource):
     def render(self, ctx):
-        self.worksheet.set_name(ctx.args['name'][0])
+        self.worksheet.set_name(ctx.args['name'][0], self.username)
         return HTMLResponse(stream='done')
 
 class Worksheet_restart_sage(WorksheetResource, resource.Resource):
@@ -1509,7 +1517,7 @@ class Worksheet_delete_all_output(WorksheetResource, resource.Resource):
 
 class Worksheet_print(WorksheetResource, resource.Resource):
     def render(self, ctx):
-        s = notebook.html(self.name, do_print=True)
+        s = notebook.html(self.name, do_print=True, username=self.username)
         return HTMLResponse(stream=s)
 
 
@@ -1519,9 +1527,7 @@ class NotImplementedWorksheetOp(resource.Resource):
         self.ws = ws
 
     def render(self, ctx):
-        return HTMLResponse(stream = message(
-            'The worksheet operation "%s" is not defined.'%self.op,
-            '/home/'+self.ws.filename()))
+        return HTMLResponse(stream = message(_('The worksheet operation "%s" is not defined.', self.username)%self.op,'/home/'+self.ws.filename()))
 
 
 class Worksheet(WorksheetResource, resource.Resource):
@@ -1618,7 +1624,7 @@ class WorksheetsByUser(resource.Resource):
             return self.render_list(ctx)
         else:
             if not self.username == 'guest':
-                s = message("User '%s' does not have permission to view the home page of '%s'."%(self.username, self.user))
+                s = message(_('User "%s" does not have permission to view the home page of "%s".', self.username)%(self.username, self.user))
             else:
                 return RedirectResponse('/')
             return HTMLResponse(stream = s)
@@ -1629,15 +1635,15 @@ class WorksheetsByUser(resource.Resource):
             return Worksheet(filename, self.username)
         except KeyError:
             if self.user != 'pub':
-                s = "The user '%s' has no worksheet '%s'."%(self.user, name)
+                s = _('The user "%s" has no worksheet "%s".', self.username)%(self.user, name)
                 return InvalidPage(msg = s, username = self.user)
             else:
-                s = 'There is no published worksheet with name "%s".  Redirecting to the index of published worksheets in 10 seconds...<br><br>' % name
+                s = _('There is no published worksheet with name "%s".  Redirecting to the index of published worksheets in 10 seconds...<br><br>', self.username) % name
                 return InvalidPage(msg = s, username = self.username,
                                    cont = '/pub', redirect_url = '/pub',
                                    redirect_delay = 10)
         except RuntimeError:
-            s = "You are not logged in or do not have access to the worksheet '%s'."%name
+            s = _('You are not logged in or do not have access to the worksheet "%s".', self.username)%name
             return InvalidPage(msg = s, username = self.user)
 
 
@@ -1662,7 +1668,7 @@ class EmptyTrash(resource.PostableResource):
         self.username = username
 
     def http_GET(self, request):
-        return http.StatusResponse(403, 'This url can only be accessed through a POST request.')
+        return http.StatusResponse(403, _('This url can only be accessed through a POST request.', self.username))
         
     def render(self, ctx):
         """
@@ -1712,7 +1718,7 @@ class SendWorksheetToFolder(resource.PostableResource):
     def render(self, ctx):
         X = notebook.user(self.username)
         if user_type(self.username) == 'guest':
-            return HTMLResponse(stream = message("You are not authorized to move '%s'"%W.name()))
+            return HTMLResponse(stream = message(_('You are not authorized to move "%s"', self.username)%W.name()))
 
         def send_worksheet_to_folder(filename):
             W = notebook.get_worksheet_with_filename(filename)
@@ -1781,7 +1787,7 @@ class Worksheets(resource.Resource):
         self.username = username
 
     def render(self, ctx):
-        return HTMLResponse(stream = message("Please request a specific worksheet"))
+        return HTMLResponse(stream = message(_("Please request a specific worksheet")))
 
     def childFactory(self, request, name):
         return WorksheetsByUser(name, username=self.username)
@@ -1817,9 +1823,16 @@ class Help(resource.Resource):
 
     def render(self, ctx):
         from tutorial import notebook_help
+        def translate_seq(seq):
+            nseq = []
+            if not hasattr(seq, '__iter__'):
+                return _(seq, username=self.username)
+            for item in seq:
+                 nseq.append(translate_seq(item))
+            return nseq
         return HTMLResponse(stream=template(os.path.join('html', 'docs.html'),
                                             username=self.username,
-                                            notebook_help=notebook_help))
+                                            notebook_help=translate_seq(notebook_help)))
 
 
 ############################
@@ -1876,23 +1889,43 @@ setattr(CSS, 'child_main.css', Main_css())
 ############################
 
 class JSMath_js(resource.Resource):
+    def __init__(self, username=None):
+        self.username = username
+        
     def render(self, ctx):
         gzip_handler(ctx)
 
         s = template(os.path.join('js', 'jsmath.js'),
                      jsmath_macros = jsmath_macros,
-                     jsmath_image_fonts = jsmath_image_fonts)
+                     jsmath_image_fonts = jsmath_image_fonts,
+                     username = self.username)
 
         response = Response(stream=s)
         response.headers.addRawHeader('Content-Type',
                                       'text/javascript; charset=utf-8')
         return response
 
+class Localization_js(resource.Resource):
+    def __init__(self, username=None):
+        self.username = username
+
+    def render(self, request):
+        gzip_handler(request)
+        s = template(os.path.join('js', 'localization.js'),
+                     username = self.username)
+
+        response = Response(stream=s)
+        response.headers.addRawHeader('Content-Type',
+                                      'text/javascript; charset=utf-8')
+        return response
+    
 class Main_js(resource.Resource):
+    def __init__(self, username=None):
+        self.username = username
+        
     def render(self, ctx):
         gzip_handler(ctx)
-        s = js.javascript()
-
+        s = js.javascript(username=self.username)
         response = Response(stream=s)
         response.headers.addRawHeader('Content-Type',
                                       'text/javascript; charset=utf-8')
@@ -1918,28 +1951,37 @@ class Keyboard_js(resource.Resource):
 class SageJavascript(resource.Resource):
     addSlash = True
     child_keyboard = Keyboard_js()
-
+    
+    def __init__(self, username=None):
+        self.username = username
+        
     def render(self, ctx):
         return static.File(sage_javascript_path)
 
     def childFactory(self, request, name):
+        if name == 'main.js':
+            return Main_js(self.username)
+        elif name == 'jsmath.js':
+            return JSMath_js(self.username)
+        elif name == 'localization.js':
+            return Localization_js(self.username)
         gzip_handler(request)
         path = os.path.join(sage_javascript_path, name)
         return static.File(path)
 
-setattr(SageJavascript, 'child_main.js', Main_js())
-setattr(SageJavascript, 'child_jsmath.js', JSMath_js())
-
 class Javascript(resource.Resource):
     addSlash = True
 
+    def __init__(self, username=None):
+        self.username = username
+    
     def render(self, ctx):
         return static.File(javascript_path)
 
     def childFactory(self, request, name):
         gzip_handler(request)
         if name == 'sage':
-            return SageJavascript()
+            return SageJavascript(username=self.username)
         path = os.path.join(javascript_path, name)
         return static.File(path)
 
@@ -1986,13 +2028,9 @@ class Images(resource.Resource):
 class RegConfirmation(resource.Resource):
     def render(self, request):
         if not notebook.conf()['email']:
-            return HTMLResponse(stream=message('The confirmation system is not active.'))
+            return HTMLResponse(stream=message(_('The confirmation system is not active.')))
         key = request.args['key'][0]
-        invalid_confirm_key = """\
-<h1>Invalid confirmation key</h1>
-<p>You are reporting a confirmation key that has not been assigned by this
-server. Please <a href="/register">register</a> with the server.</p>
-"""
+        invalid_confirm_key = _('<h1>Invalid confirmation key</h1><p>You are reporting a confirmation key that has not been assigned by this server. Please <a href="/register">register</a> with the server.</p>')
         key = int(key)
         global waiting
         try:
@@ -2001,16 +2039,17 @@ server. Please <a href="/register">register</a> with the server.</p>
             user.set_email_confirmation(True)
         except KeyError:
             return HTMLResponse(stream=message(invalid_confirm_key, '/register'))
-        success = """<h1>Email address confirmed for user %s</h1>""" % username
+        success = _("<h1>Email address confirmed for user %s</h1>") % username
         del waiting[key]
-        return HTMLResponse(stream=message(success, title='Email Confirmed'))
+        return HTMLResponse(stream=message(success, title=_('Email Confirmed')))
 
 ############################
 # Registration page
 ############################
 import re
 #@ is disabled because it breaks TinyMCE
-re_valid_username = re.compile('[a-z|A-Z|0-9|_|.]*')
+valid_username_chars = 'a-z|A-Z|0-9|_|.|@' 
+re_valid_username = re.compile('[%s]*' % valid_username_chars)
 def is_valid_username(username):
     r"""
     Returns whether a candidate username is valid.  It must contain
@@ -2074,7 +2113,7 @@ def is_valid_password(password, username):
         sage: is_valid_password('8u7', None)
         False
         sage: is_valid_password('fUmDagaz8LmtonAowjSe0Pvu9C5Gvr6eKcC6wsAT', None)
-        False
+        True 
         sage: is_valid_password('rrcF !u78!', None)
         False
         sage: is_valid_password('markusup89', 'markus')
@@ -2182,10 +2221,10 @@ def user_type(username):
         return 'guest'
     return U.account_type()
 
-def extract_title(html_page):
+def extract_title(html_page, username=None):
     h = html_page.lower()
     i = h.find('<title>')
     if i == -1:
-        return "Untitled"
+        return _("Untitled", username)
     j = h.find('</title>')
     return html_page[i + len('<title>') : j]

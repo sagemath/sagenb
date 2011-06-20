@@ -154,7 +154,7 @@ def public_worksheet_download(id, title):
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
-        return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+        return current_app.message(_("You do not have permission to access this worksheet"))
     return unconditional_download(worksheet, title)
 
 @worksheet_listing.route('/home/pub/<id>/cells/<path:filename>')
@@ -229,8 +229,7 @@ def upload_worksheet():
     from werkzeug import secure_filename
     import zipfile
     
-    #XXX: i18n
-    backlinks = """ Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>."""
+    backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")
 
     url = request.values['url'].strip()
     dir = ''
@@ -252,7 +251,7 @@ def upload_worksheet():
         dir = tmp_dir()
         file = request.files['file']
         if file.filename is None:
-            return current_app.message("Please specify a worksheet to load.%s" % backlinks)
+            return current_app.message(_("Please specify a worksheet to load.%(backlinks)s",backlinks=backlinks))
 
         filename = secure_filename(file.filename)
         filename = os.path.join(dir, filename)
@@ -278,8 +277,7 @@ def upload_worksheet():
                 W = g.notebook.import_worksheet(filename, g.username)
 
         except Exception, msg:
-            print "Error: %s" % msg
-            s = 'There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s' % backlinks
+            s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%(backlinks)s', backlinks=backlinks)
             return current_app.message(s, url_for('home', username=g.username))
         finally:
             # Clean up the temporarily uploaded filename.
@@ -290,7 +288,7 @@ def upload_worksheet():
                 shutil.rmtree(dir)
 
     except ValueError, msg:
-        s = "Error uploading worksheet '%s'.%s" % (msg, backlinks)
+        s = _("Error uploading worksheet '%(msg)s'.%(backlinks)s", msg=msg, backlinks=backlinks)
         return current_app.message(s, url_for('home', username=g.username))
 
     if new_name:

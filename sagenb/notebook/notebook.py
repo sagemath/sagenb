@@ -36,29 +36,50 @@ from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
                               ignore_nonexistent_files, unicode_str)
 
 # Sage Notebook
-import css          # style
-import js           # javascript
-import worksheet    # individual worksheets (which make up a notebook)
-import config       # internal configuration stuff (currently, just keycodes)
-import keyboards    # keyboard layouts
-import server_conf  # server configuration
-import user_conf    # user configuration
-import user         # users
+from . import css          # style
+from . import js           # javascript
+from . import worksheet    # individual worksheets (which make up a notebook)
+from . import config       # internal configuration stuff (currently, just keycodes)
+from . import keyboards    # keyboard layouts
+from . import server_conf  # server configuration
+from . import user_conf    # user configuration
+from . import user         # users
 from   template import template, prettify_time_ago
-
+from flaskext.babel import gettext, lazy_gettext
 
 try:
     # sage is installed
     import sage
-    SYSTEMS = ['sage', 'gap', 'gp', 'jsmath', 'html', 'latex', 'maxima', 'python', 'r', 'sh', 'singular', 'axiom (optional)', 'kash (optional)', 'macaulay2 (optional)', 'magma (optional)', 'maple (optional)', 'mathematica (optional)', 'matlab (optional)', 'mupad (optional)', 'octave (optional)', 'scilab (optional)']
+    # [(string: name, bool: optional)]
+    SYSTEMS = [('sage', False),
+               ('gap', False),
+               ('gp', False),
+               ('jsmath', False),
+               ('html', False),
+               ('latex', False),
+               ('maxima', False),
+               ('python', False),
+               ('r', False),
+               ('sh', False),
+               ('singular', False),
+               ('axiom', True),
+               ('kash', True),
+               ('macaulay2', True),
+               ('magma', True),
+               ('maple', True,),
+               ('mathematica', True),
+               ('matlab', True),
+               ('mupad', True),
+               ('octave', True),
+               ('scilab', True)]
 except ImportError:
     # sage is not installed
-    SYSTEMS = ['sage']    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
+    SYSTEMS = [('sage', True)]    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
 
 
 # We also record the system names without (optional) since they are
 # used in some of the html menus, etc.
-SYSTEM_NAMES = [v.split()[0] for v in SYSTEMS]
+SYSTEM_NAMES = [v[0] for v in SYSTEMS]
 
 JSMATH = True
 
@@ -141,8 +162,14 @@ class Notebook(object):
         """
         self.__storage.delete()
 
-    def systems(self):
-        return SYSTEMS
+    def systems(self, username=None):
+        systems = []
+        for system in SYSTEMS:
+            if system[1]:
+                systems.append(system[0] + ' (' + lazy_gettext('optional') + ')')
+            else:
+                systems.append(system[0])
+        return systems
 
     def system_names(self):
         return SYSTEM_NAMES
@@ -154,8 +181,8 @@ class Notebook(object):
         EXAMPLES::
 
             sage: n = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: n.user_manager()
-            <sagenb.notebook.user_manager.SimpleUserManager object at 0x...>
+            sage: n.user_manager() 
+            <sagenb.notebook.user_manager.OpenIDUserManager object at 0x...>
         """
         return self._user_manager
         
@@ -176,15 +203,17 @@ class Notebook(object):
             sage: nb.create_default_users('password')
             sage: list(sorted(nb.user_manager().users().iteritems()))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
-            sage: list(sorted(nb.user_manager().passwords().iteritems()))
-            [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajfMKNH1hTm2'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(nb.user_manager().passwords().iteritems())) #random
+            [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
             sage: nb.create_default_users('newpassword')
             WARNING: User 'pub' already exists -- and is now being replaced.
             WARNING: User '_sage_' already exists -- and is now being replaced.
             WARNING: User 'guest' already exists -- and is now being replaced.
             WARNING: User 'admin' already exists -- and is now being replaced.
-            sage: list(sorted(nb.user_manager().passwords().iteritems()))
-            [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajH86zjeUSDY'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(nb.user_manager().passwords().iteritems())) #random
+            [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
+            sage: len(list(sorted(nb.user_manager().passwords().iteritems())))
+            4
         """
         self.user_manager().create_default_users(passwd)
 
@@ -209,8 +238,8 @@ class Notebook(object):
             admin
             sage: nb.user('admin').get_email()
             ''
-            sage: nb.user('admin').password()
-            'aajfMKNH1hTm2'
+            sage: nb.user('admin').password() #random
+            '256$7998210096323979f76e9fedaf1f85bda1561c479ae732f9c1f1abab1291b0b9$373f16b9d5fab80b9a9012af26a6b2d52d92b6d4b64c1836562cbd4264a6e704'
         """
         return self.user_manager().user(username)
 
@@ -369,7 +398,7 @@ class Notebook(object):
             raise KeyError, "Attempt to delete missing worksheet '%s'"%filename
         W = self.__worksheets[filename]
         W.quit()
-        shutil.rmtree(W.directory(), ignore_errors=True)
+        shutil.rmtree(W.directory(), ignore_errors=False)
         self.deleted_worksheets()[filename] = W
         del self.__worksheets[filename]
 
@@ -1174,7 +1203,7 @@ class Notebook(object):
             u'...Revision...Last Edited...ago...'
         """
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
-
+        
         return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
                         data = data, worksheet = worksheet,
                         notebook = self,

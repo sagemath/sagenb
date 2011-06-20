@@ -45,7 +45,7 @@ def css(color='default'):
     main_css = template(os.path.join('css', 'main.css'),
                         color1 = color1, color2 = color2,
                         color_theme = color)
-
+    
     user_css_path = os.path.join(DOT_SAGENB, 'notebook.css')
     user_css = ''
     if os.path.exists(user_css_path):

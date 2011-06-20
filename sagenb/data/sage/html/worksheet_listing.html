@@ -6,13 +6,13 @@ INPUT:
 - worksheets -- list of Worksheet objects
 #}
 {% if pub %}
-{% set worksheet_heading='Published Worksheets' %}
+{% set worksheet_heading=gettext('Published Worksheets') %}
 {% elif typ == 'trash' %}
-{% set worksheet_heading='Deleted Worksheets' %}
+{% set worksheet_heading=gettext('Deleted Worksheets') %}
 {% elif typ == 'active' %}
-{% set worksheet_heading='Active Worksheets' %}
+{% set worksheet_heading=gettext('Active Worksheets') %}
 {% else %}
-{% set worksheet_heading='Archived Worksheets' %}
+{% set worksheet_heading=gettext('Archived Worksheets') %}
 {% endif %}  
 
 {% block title %}
@@ -31,8 +31,6 @@ INPUT:
     var worksheet_filenames = {{ worksheet_filenames|tojson|safe }}; 
 </script>
 <script type="text/javascript" src="/javascript/sage/main.js"></script>
-<script type="text/javascript" src="/javascript/gears/gears_init.js"></script> 
-<script type="text/javascript" src="/javascript/gears/shortcut.js"></script>
 {% else %}
 <script type="text/javascript" src="/javascript/sage/ws_list.js"></script>
 {% endif %}
@@ -42,16 +40,16 @@ INPUT:
 {% block main %}
 <div id="user-main-controls" class="user-controls">
     {% if pub is not defined or not pub %}
-    <a href="/new_worksheet" target="_blank">New Worksheet</a>
-    <a href="/upload">Upload</a>
-    <a href="/download_worksheets.zip">Download All Active</a>
+    <a href="/new_worksheet" target="_blank">{{ gettext('New Worksheet') }}</a>
+    <a href="/upload">{{ gettext('Upload') }}</a>
+    <a href="/download_worksheets.zip">{{ gettext('Download All Active') }}</a>
     {% endif %}
 
     <div id="search-area">
         <form action="." method="GET">
             <input type="hidden" value="{{ typ if not pub else 'pub' }}" name="typ" />
             <input id="search-worksheets" size="20" value="{{ search if search else "" }}" name="search" />
-            <button class="add_new_worksheet_menu" id="search-worksheets-button" type="submit">Search Worksheets</button>
+            <button class="add_new_worksheet_menu" id="search-worksheets-button" type="submit">{{ gettext('Search Worksheets') }}</button>
         </form>
     </div>
 </div>       
@@ -59,31 +57,31 @@ INPUT:
     {% if not pub %}
     <div class="action-buttons">
         {% if typ == 'archive' %}
-        <button onClick="make_active_button();" title="Unarchive selected worksheets so it appears in the default worksheet list">Unarchive</button>
+        <button onClick="make_active_button();" title="{{ gettext('Unarchive selected worksheets so it appears in the default worksheet list') }}">{{ gettext('Unarchive') }}</button>
         {% else %}
-        <button onClick="archive_button();" title="Archive selected worksheets so they do not appear in the default worksheet list">Archive</button>
+        <button onClick="archive_button();" title="{{ gettext('Archive selected worksheets so they do not appear in the default worksheet list') }}">{{ gettext('Archive') }}</button>
         {% endif %}
 
         {% if typ != 'trash' %}
-        <button onClick="delete_button();" title="Move the selected worksheets to the trash">Delete</button>
+        <button onClick="delete_button();" title="{{ gettext('Move the selected worksheets to the trash') }}">{{ gettext('Delete') }}</button>
         {% else %}
-        <button onClick="make_active_button();" title="Move the selected worksheets out of the trash">Undelete</button>
+        <button onClick="make_active_button();" title="{{ gettext('Move the selected worksheets out of the trash') }}">{{ gettext('Undelete') }}</button>
         {% endif %}
 
-        <button onClick="stop_worksheets_button();" title="Stop selected worksheets">Stop</button>
+        <button onClick="stop_worksheets_button();" title="{{ gettext('Stop selected worksheets') }}">{{ gettext('Stop') }}</button>
         {% if not accounts %}
-        <button onClick="download_worksheets_button();" title="Download selected worksheets">Download</button>
+        <button onClick="download_worksheets_button();" title="{{ gettext('Download selected worksheets') }}">{{ gettext('Download') }}</button>
         {% endif %}
     </div>
     <div class="folders">
-        Current Folder:
-        <a class="{{ 'bold' if typ == 'active' else '' }}usercontrol" href=".">Active</a>
-        <a class="{{ 'bold' if typ == 'archive' else '' }}usercontrol" href=".?typ=archive">Archived</a>
-        <a class="{{ 'bold' if typ == 'trash' else '' }}usercontrol" href=".?typ=trash">Trash</a>
+        {{ gettext('Current Folder') }}:
+        <a class="{{ 'bold' if typ == 'active' else '' }}usercontrol" href=".">{{ gettext('Active') }}</a>
+        <a class="{{ 'bold' if typ == 'archive' else '' }}usercontrol" href=".?typ=archive">{{ gettext('Archived') }}</a>
+        <a class="{{ 'bold' if typ == 'trash' else '' }}usercontrol" href=".?typ=trash">{{ gettext('Trash') }}</a>
 
         {% if typ == 'trash' %}
         <form method="POST" action="/emptytrash" id="empty-trash-form">
-            <a class="boldusercontrol" onClick="empty_trash(this); return false" href="#">(Empty Trash)</a>
+            <a class="boldusercontrol" onClick="empty_trash(this); return false" href="#">({{ gettext('Empty Trash') }})</a>
         </form>
         {% endif %}
     </div>
@@ -98,7 +96,7 @@ INPUT:
                 <input id="controlbox" onClick="set_worksheet_list_checks();" class="entry" type="checkbox" />
             </td>
             {% else %}
-            <td><a class="listcontrol" href=".?sort=rating">Rating</a></td>
+            <td><a class="listcontrol" href=".?sort=rating">{{ gettext('Rating') }}</a></td>
             {% endif %}
 
             <td>
@@ -109,13 +107,13 @@ INPUT:
             
             <td>
                 <a class="listcontrol" href=".?typ={{ typ }}&sort=owner{{ '' if sort != 'owner' or reverse else '&reverse=True' }}">
-                    Owner {{ '' if pub else ' / Collaborators' }}
+                    {{ gettext('Owner') }} {{ '' if pub else ' / '+gettext('Collaborators') }}
                 </a>
             </td>
 
             <td>
                 <a class="listcontrol" href=".?typ={{ typ }}{{ '' if sort != 'last_edited' or reverse else '&reverse=True' }}">
-                    Last Edited
+                    {{ gettext('Last Edited') }}
                 </a>
             </td>
         </tr>
@@ -125,15 +123,13 @@ INPUT:
         {% if pub %}
         <tr>
             <td colspan="5">
-                There are no published worksheets.
+                {{ gettext('There are no published worksheets.') }}
             </td>
         </tr>
         {% elif typ == 'active' %}
         <tr>
             <td colspan="5" id="welcome-message">
-                Welcome to Sage! You can <a href="/new_worksheet">create a new worksheet</a>,
-                view <a href="/pub/">published worksheets</a>, or read the
-                <a href="/help" target="_new">documentation</a>.
+                {{ gettext('Welcome to Sage! You can <a href="/new_worksheet">create a new worksheet</a>, view <a href="/pub/">published worksheets</a>, or read the <a href="/help" target="_new">documentation</a>.') }}
             </td>
         </tr>
         {% endif %}
@@ -175,7 +171,7 @@ INPUT:
 
             <td class="worksheet_link">
                 <a title="{{ worksheet.name() | escape }}" id="name-{{ name|css_escape }}" class="worksheetname" href="/home/{{ name }}">
-                    {% if worksheet.compute_process_has_been_started() %}(running) {% endif %}
+                    {% if worksheet.compute_process_has_been_started() %}({{ gettext('running') }}){% endif %}
                     {{ worksheet.truncated_name(50) | escape}}
                 </a>
                 
@@ -208,21 +204,21 @@ INPUT:
                 {% endif %}
                 
                 {% if shared %}
-                <a class="share" href="/home/{{ worksheet.filename() }}/share">Add or Delete</a>
+                <a class="share" href="/home/{{ worksheet.filename() }}/share">{{ gettext('Add or Delete') }}</a>
                 {% else %}
-                <a class="share" href="/home/{{ worksheet.filename() }}/share">Share now</a>
+                <a class="share" href="/home/{{ worksheet.filename() }}/share">{{ gettext('Share now') }}</a>
                 {% endif %}
 
                 {% if worksheet.has_published_version() %}
                 <a href="/home/{{ worksheet.published_version().filename() }}">
-                    (published)
+                    ({{ gettext('published') }})
                 </a>
                 {% endif %}
                 
                 {% endif %}
             </td>
             <td>
-                {{ worksheet.html_time_since_last_edited() }}
+                {{ worksheet.html_time_since_last_edited(username) }}
             </td>
         </tr>
         {% endfor %}

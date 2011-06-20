@@ -378,13 +378,13 @@ class SimpleUserManager(UserManager):
             sage: UM = SimpleUserManager(accounts=True)
             sage: UM.create_default_users('passpass')
             sage: UM.add_user('william', 'password', 'email@address.com')
-            sage: UM.passwords()['admin']
-            'aaJAM8WS/7IvY'
-            sage: UM.passwords()['william']
-            'aajfMKNH1hTm2'
+            sage: UM.check_password('admin','passpass')
+            True
+            sage: UM.check_password('william','password')
+            True
             sage: UM.copy_password('william', 'admin')
-            sage: UM.passwords()['william']
-            'aaJAM8WS/7IvY'
+            sage: UM.check_password('william','passpass')
+            True
 
         """
         O = self.user(other_username)
@@ -429,13 +429,13 @@ class SimpleUserManager(UserManager):
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
-            sage: U.user('admin').password()
-            'aaJAM8WS/7IvY'
+            sage: U.check_password('admin','passpass')
+            True
             sage: U.set_password('admin', 'password')
-            sage: U.user('admin').password()
-            'aajfMKNH1hTm2'
-            sage: U.set_password('admin', 'test'); U.password('admin')
-            'aaqPiZY5xR5l.'
+            sage: U.check_password('admin','password')
+            True
+            sage: U.set_password('admin', 'test'); U.check_password('admin','test')
+            True
             sage: U.set_password('admin', 'test', encrypt=False); U.password('admin')
             'test'
         """
@@ -457,11 +457,13 @@ class SimpleUserManager(UserManager):
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
-            sage: list(sorted(U.passwords().items()))
-            [('_sage_', 'aaQSqAReePlq6'),
-             ('admin', 'aaJAM8WS/7IvY'),
-             ('guest', 'aaQSqAReePlq6'),
-             ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(U.passwords().items())) #random 
+            [('_sage_', ''),
+             ('admin', ''),
+             ('guest', ''),
+             ('pub', '')]
+            sage: len(list(sorted(U.passwords().items())))
+            4
 
         """
         return dict([(user.username(), self.password(user.username())) for user in self.user_list()])
@@ -473,8 +475,8 @@ class SimpleUserManager(UserManager):
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
-            sage: U.password('admin')
-            'aaJAM8WS/7IvY'
+            sage: U.check_password('admin','passpass')
+            True
         """
         return self._passwords.get(username, None)
         
@@ -505,17 +507,17 @@ class SimpleUserManager(UserManager):
         self._conf['accounts'] = value
 
 class OpenIDUserManager(SimpleUserManager):
-    def __init__(self, accounts=True, conf=None):
+    def __init__(self, accounts=None, conf=None):
         """
         Creates an user_manager that supports OpenID identities
         EXAMPLES:
             sage: from sagenb.notebook.user_manager import OpenIDUserManager 
             sage: UM = OpenIDUserManager()
             sage: UM.create_default_users('passpass')
-            sage: UM.password('admin')
-            'aaJAM8WS/7IvY'
+            sage: UM.check_password('admin','passpass')
+            True
         """
-        SimpleUserManager.__init__(self, accounts=accounts)
+        SimpleUserManager.__init__(self, accounts=accounts, conf=conf)
         self._openid = {} 
 
     def load(self, datastore):

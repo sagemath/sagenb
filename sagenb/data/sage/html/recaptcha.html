@@ -24,7 +24,7 @@ var err = RecaptchaState.error_message;
 
 if (err !== '') {
     var ele = document.getElementById('recaptcha_error_message');
-    ele.innerHTML = '<span class="error">Error:</span> ' +
+    ele.innerHTML = '<span class="error">{{ gettext("Error") }}:</span>' +
         err.replace(/class="\w*"/, '');
 }
 </script>

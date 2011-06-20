@@ -13,7 +13,7 @@ INPUT:
 {% block worksheet_main %}
 {% set toggle=true %}
 <div class="worksheet" id="worksheet">
-    {{ worksheet.html() }}
+    {{ worksheet.html(username=username) }}
     {% if do_print %}
     <script>
         jsMath.ProcessBeforeShowing();
@@ -24,7 +24,7 @@ INPUT:
         state_number = {{ worksheet.state_number() }};
         {% if not published %}
 	$(document).ready(function () {
-            if (worksheet_name === "Untitled") {
+            if (worksheet_name === "{{ gettext('Untitled') }}") {
                 rename_worksheet();
             }
          });

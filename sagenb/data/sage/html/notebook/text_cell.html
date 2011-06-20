@@ -43,8 +43,8 @@ INPUT:
             type   : 'mce',
             onblur : 'ignore',
             select : false,
-            submit : 'Save changes',
-            cancel : 'Cancel changes',
+            submit : "{{ gettext('Save changes') }}",
+            cancel : "{{ gettext('Cancel changes') }}",
             event  : "dblclick",
             style  : "inherit",
 	    data   : {{ cell.plain_text()|repr_str }}

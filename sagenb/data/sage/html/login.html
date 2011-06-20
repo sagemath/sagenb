@@ -9,9 +9,9 @@
         img_path: '/javascript/openid-realselector/img/openid/',
         txt: {
           label: '{username} for <b>{provider}</b>',
-          username: 'username',
-          title: 'Select an OpenID provider',
-          sign: 'Send'
+          username: '{{ gettext('username') }}',
+          title: '{{ gettext('Select an OpenID provider') }}',
+          sign: '{{ gettext('Send') }}'
         }
       });
     });
@@ -19,54 +19,37 @@
 
 {% endblock %}
 
-{% block title %}Sign in{% endblock %}
+{% block title %}{{ gettext('Sign in') }}{% endblock %}
 
 {% block page_id %}login-page{% endblock %}
 
 {% block main %}
-{% if welcome %}
-<h2>Congratulations {{ welcome }}! You can now sign into the Sage Notebook.</h2>
+{% if welcome_user %}
+<h2>{{ gettext('Congratulations %(u)s! You can now sign into the Sage Notebook.', u=welcome_user) }}</h2>
 {% endif %}
 
 <div id="desc">
-    <h2>Welcome!</h2>
-    <p><strong>Sage</strong> is a different approach to mathematics software.</p>
+    <h2>{{ gettext('Welcome!') }}</h2>
+    <p>{{ gettext('<strong>Sage</strong> is a different approach to mathematics software.') }}</p>
 
-    <h2>The Sage Notebook</h2>
-    <p>With the Sage Notebook
-    anyone can create, collaborate on, and publish interactive
-    worksheets. In a worksheet, one can write code using Sage, Python,
-    and other software included in Sage.
+    <h2>{{ gettext('The Sage Notebook') }}</h2>
+    <p>{{ gettext('With the Sage Notebook anyone can create, collaborate on, and publish interactive worksheets. In a worksheet, one can write code using Sage, Python, and other software included in Sage.') }}
     </p>
 
-    <h2>General and Advanced Pure and Applied Mathematics</h2>
-    <p>Use Sage for studying 
-    calculus, elementary to very advanced
-    number theory, cryptography, 
-    commutative algebra, group theory, 
-    graph theory, numerical and exact linear algebra, and more.
+    <h2>{{ gettext('General and Advanced Pure and Applied Mathematics') }}</h2>
+    <p>{{ gettext('Use Sage for studying calculus, elementary to very advanced number theory, cryptography, commutative algebra, group theory, graph theory, numerical and exact linear algebra, and more.') }} 
     </p>
 
-    <h2>Use an Open Source Alternative</h2>
-    <p>By using Sage you help to support a viable open source
-    alternative to 
-    Magma, Maple, Mathematica, and MATLAB.
-    Sage includes many 
-    high-quality open source math packages.
+    <h2>{{ gettext('Use an Open Source Alternative') }}</h2>
+    <p>{{ gettext('By using Sage you help to support a viable open source alternative to Magma, Maple, Mathematica, and MATLAB. Sage includes many high-quality open source math packages.') }}
     </p>
 
-    <h2>Use Most Mathematics Software from Within Sage</h2>
-    <p>Sage makes it easy for you
-    to use most mathematics software together. 
-    Sage includes GAP, GP/PARI, Maxima, and Singular, and
-    dozens of other open packages.
+    <h2>{{ gettext('Use Most Mathematics Software from Within Sage') }}</h2>
+    <p>{{ gettext('Sage makes it easy for you to use most mathematics software together. Sage includes GAP, GP/PARI, Maxima, and Singular, and dozens of other open packages.') }}
     </p>
 
-    <h2>Use a Mainstream Programming Language</h2>
-    <p>You work with Sage using the highly regarded 
-    scripting language Python.
-    You can write programs that combine serious mathematics with
-    anything else.   
+    <h2>{{ gettext('Use a Mainstream Programming Language') }}</h2>
+    <p>{{ gettext('You work with Sage using the highly regarded scripting language Python. You can write programs that combine serious mathematics with anything else.') }}
     </p>
 </div>
 
@@ -74,47 +57,47 @@
     <h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
     <form method="POST" action="/login" id="sign-in-form">
         <div>
-            <label for="email">Username</label>
-            <input type="text" id="email" name="email" value="{{ default_user }}" size="15" />
+            <label for="email">{{ gettext('Username') }}</label>
+            <input type="text" name="email" value="{{ default_user }}" size="15" />
             {% if username_error %}
-            <span style="color:red">Error: </span>Username is not in the system
+            <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Username is not in the system') }}
             {% endif %}
         </div>
         <div>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" size="15" />
+            <label for="password">{{ gettext('Password') }}</label>
+            <input type="password" name="password" size="15" />
             {% if password_error %}
-            <span style="color:red">Error: </span>Wrong password
+            <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Wrong password') }}
             {% endif %}
         </div>
         <div>
-            <input type="checkbox" name="remember" /> Remember me
+            <input type="checkbox" name="remember" /> {{ gettext('Remember me') }} 
         </div>
         <div>
             <input type="hidden" name="next", value="{{next}}"/>
-            <button type="submit">Sign in</button>
+            <button type="submit">{{ gettext('Sign in') }}</button>
         </div>
     </form>
     {% if accounts %}
     <div>
-        <a href="/register" id="register-link"><strong>Sign up for a new Sage Notebook account</strong></a>
+        <a href="/register" id="register-link"><strong>{{ gettext('Sign up for a new Sage Notebook account') }}</strong></a>
     </div>
     {% endif %}
     <div>
-        <a href="/pub"><strong>Browse published Sage worksheets<br>(no login required)</strong></a>
+        <a href="/pub"><strong>{{ gettext('Browse published Sage worksheets<br>(no login required)') }}</strong></a>
     </div>
     {% if recovery %}
     <div>
-        <a href="/forgotpass"><strong>Forgot password</strong></a>
+        <a href="/forgotpass"><strong>{{ gettext('Forgot password') }}</strong></a>
     </div>
     {% endif %}
-    {% if openIDlogin %}
+    {% if openid %}
     <form method="post" action="/loginoid" id="openid"></form>
     {% endif %}
     {% if creation_error %}
-    <span style="color:red">Error: </span>Creating new users is disabled by the administrator.
+    <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Creating new users is disabled by the administrator.') }}
     {% endif %}
-    <noscript style="color:red">Error: Javascript must be enabled in order to use the Sage Notebook.</noscript>
+    <noscript style="color:red">{{ gettext('Error') }}: {{ gettext('Javascript must be enabled in order to use the Sage Notebook.') }}</noscript>
 </div>
 {% endblock %}
 

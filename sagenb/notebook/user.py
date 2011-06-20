@@ -125,8 +125,7 @@ class User(object):
         EXAMPLES::
 
             sage: from sagenb.notebook.user import User
-            sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').password()
-            'aaVOpo2zPZsI2'
+            sage: User('andrew', 'tEir&tiwk!', 'andrew@matrixstuff.com', 'user').password() #random
         """
         return self._password
 

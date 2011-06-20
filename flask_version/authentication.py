@@ -2,6 +2,8 @@ import os
 import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import with_lock
+from flaskext.babel import gettext, ngettext, lazy_gettext
+_ = gettext
 
 authentication = Module('flask_version.authentication')
 
@@ -23,7 +25,7 @@ def login(template_dict={}):
                           'recovery': g.notebook.conf()['email'],
                           'next': request.values.get('next', ''), 
                           'sage_version': SAGE_VERSION,
-                          'openIDlogin': True,
+                          'openid': g.notebook.conf()['openid'],
                           'username_error': False,
                           'password_error': False})
     
@@ -235,7 +237,7 @@ def register():
     from sagenb.misc.misc import SAGE_VERSION
     template_dict = {'accounts': g.notebook.user_manager().get_accounts(),
                      'default_user': g.notebook.user_manager().default_user(),
-                     'welcome': username,
+                     'welcome_user': username,
                      'recovery': g.notebook.conf()['email'],
                      'sage_version': SAGE_VERSION}
 
@@ -246,24 +248,23 @@ def register():
 @with_lock
 def confirm():
     if not g.notebook.conf()['email']:
-        return current_app.message('The confirmation system is nlot active.')
+        return current_app.message(_('The confirmation system is not active.'))
     key = int(request.values.get('key', '-1'))
     
-    #XXX: i18n
-    invalid_confirm_key = """\
+    invalid_confirm_key = _("""\
     <h1>Invalid confirmation key</h1>
     <p>You are reporting a confirmation key that has not been assigned by this
     server. Please <a href="/register">register</a> with the server.</p>
-    """
+    """)
     try:
         username = waiting[key]
         user = g.notebook.user(username)
         user.set_email_confirmation(True)
     except KeyError:
         return current_app.message(invalid_confirm_key, '/register')
-    success = """<h1>Email address confirmed for user %s</h1>""" % username #XXX: i18n
+    success = _("""<h1>Email address confirmed for user %(username)s</h1>""", username=username)
     del waiting[key]
-    return current_app.message(success, title='Email Confirmed') #XXX: i18n
+    return current_app.message(success, title=_('Email Confirmed'))
 
 @authentication.route('/forgotpass')
 @with_lock

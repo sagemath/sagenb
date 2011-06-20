@@ -2097,36 +2097,6 @@ class Cell(Cell_generic):
                 'timeit' in self.percent_directives() or
                 getattr(self, '__time', False))
 
-    def doc_html(self, wrap=None, div_wrap=True, do_print=False):
-        """
-        Returns HTML for a doc browser cell.  This is a modified
-        version of :meth:``html``.
-
-        This is a hack and needs to be improved.  The problem is how
-        to get the documentation HTML to display nicely between the
-        example cells.  The type setting (jsMath formatting) needs
-        attention too.
-
-        TODO: Remove this hack (:meth:`doc_html`)
-
-        INPUT:
-
-        - ``wrap`` - an integer (default: None); the number of word
-          wrap columns
-
-        - ``div_wrap`` - a boolean (default: True); whether to wrap
-          the output in outer div elements
-
-        - ``do_print`` - a boolean (default: False); whether to return
-          output suitable for printing
-
-        OUTPUT:
-
-        - a string
-        """
-        self.evaluate()
-        return self.html(wrap, div_wrap, do_print)
-
     def html(self, wrap=None, div_wrap=True, do_print=False):
         r"""
         Returns the HTML for this compute cell.
