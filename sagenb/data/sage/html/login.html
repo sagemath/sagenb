@@ -91,7 +91,7 @@
         <a href="/forgotpass"><strong>{{ gettext('Forgot password') }}</strong></a>
     </div>
     {% endif %}
-    {% if openIDlogin %}
+    {% if openid %}
     <form method="post" action="/loginoid" id="openid"></form>
     {% endif %}
     {% if creation_error %}

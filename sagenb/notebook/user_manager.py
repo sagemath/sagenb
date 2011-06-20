@@ -507,7 +507,7 @@ class SimpleUserManager(UserManager):
         self._conf['accounts'] = value
 
 class OpenIDUserManager(SimpleUserManager):
-    def __init__(self, accounts=True, conf=None):
+    def __init__(self, accounts=None, conf=None):
         """
         Creates an user_manager that supports OpenID identities
         EXAMPLES:
@@ -517,7 +517,7 @@ class OpenIDUserManager(SimpleUserManager):
             sage: UM.check_password('admin','passpass')
             True
         """
-        SimpleUserManager.__init__(self, accounts=accounts)
+        SimpleUserManager.__init__(self, accounts=accounts, conf=conf)
         self._openid = {} 
 
     def load(self, datastore):

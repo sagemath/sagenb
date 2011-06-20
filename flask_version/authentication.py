@@ -25,7 +25,7 @@ def login(template_dict={}):
                           'recovery': g.notebook.conf()['email'],
                           'next': request.values.get('next', ''), 
                           'sage_version': SAGE_VERSION,
-                          'openIDlogin': True,
+                          'openid': g.notebook.conf()['openid'],
                           'username_error': False,
                           'password_error': False})
     

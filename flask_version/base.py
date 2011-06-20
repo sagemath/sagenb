@@ -199,6 +199,8 @@ def favicon():
 @guest_or_login_required
 @oid.loginhandler
 def loginoid():
+    if not g.notebook.conf()['openid']:
+        return redirect(url_for('base.index'))
     if g.username != 'guest':
         return redirect(request.values.get('next', url_for('base.index')))
     if request.method == 'POST':
@@ -211,6 +213,8 @@ def loginoid():
 @oid.after_login
 @with_lock
 def create_or_login(resp):
+    if not g.notebook.conf()['openid']:
+        return redirect(url_for('base.index'))
     try:
         username = g.notebook.user_manager().get_username_from_openid(resp.identity_url)
         session['username'] = g.username = username
@@ -223,6 +227,8 @@ def create_or_login(resp):
 
 @base.route('/openid_profiles', methods=['POST','GET'])
 def set_profiles():
+    if not g.notebook.conf()['openid']:
+        return redirect(url_for('base.index'))
     if request.method == 'GET' and 'openid_response' in session:
         from sagenb.notebook.twist import valid_username_chars
         re_invalid_username_chars = re.compile('[^(%s)]' % valid_username_chars)

@@ -32,6 +32,8 @@ defaults = {'word_wrap_cols':72,
 
             'accounts':False,
 
+            'openid':False,
+
             'challenge':False,
             'challenge_type':'simple',
             'recaptcha_public_key':'',
@@ -113,6 +115,12 @@ defaults_descriptions = {
 
     'accounts': {
         DESC : lazy_gettext('Enable user registration'),
+        GROUP : G_AUTH,
+        TYPE : T_BOOL,
+        },
+
+    'openid': {
+        DESC : lazy_gettext('Allow OpenID authentication (requires python ssl module)'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
