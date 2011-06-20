@@ -237,7 +237,7 @@ def register():
     from sagenb.misc.misc import SAGE_VERSION
     template_dict = {'accounts': g.notebook.user_manager().get_accounts(),
                      'default_user': g.notebook.user_manager().default_user(),
-                     'welcome': username,
+                     'welcome_user': username,
                      'recovery': g.notebook.conf()['email'],
                      'sage_version': SAGE_VERSION}
 

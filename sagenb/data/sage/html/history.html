@@ -1,6 +1,6 @@
 {% extends "html/base.html" %}
 
-{% block title %}{{ gettext('Sage: History for %(u)s')|format(u=username) }}{% endblock %}
+{% block title %}{{ gettext('Sage: History for %(u)s', u=username) }}{% endblock %}
 
 {% block javascript %}
 <script type="text/javascript" src="/javascript/sage/ws_list.js"></script>

@@ -24,8 +24,8 @@
 {% block page_id %}login-page{% endblock %}
 
 {% block main %}
-{% if welcome %}
-<h2>{{ gettext('Congratulations %(u)s! You can now sign into the Sage Notebook.')|format(u=welcome) }}</h2>
+{% if welcome_user %}
+<h2>{{ gettext('Congratulations %(u)s! You can now sign into the Sage Notebook.', u=welcome_user) }}</h2>
 {% endif %}
 
 <div id="desc">
