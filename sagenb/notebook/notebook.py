@@ -36,29 +36,50 @@ from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
                               ignore_nonexistent_files, unicode_str)
 
 # Sage Notebook
-import css          # style
-import js           # javascript
-import worksheet    # individual worksheets (which make up a notebook)
-import config       # internal configuration stuff (currently, just keycodes)
-import keyboards    # keyboard layouts
-import server_conf  # server configuration
-import user_conf    # user configuration
-import user         # users
+from . import css          # style
+from . import js           # javascript
+from . import worksheet    # individual worksheets (which make up a notebook)
+from . import config       # internal configuration stuff (currently, just keycodes)
+from . import keyboards    # keyboard layouts
+from . import server_conf  # server configuration
+from . import user_conf    # user configuration
+from . import user         # users
 from   template import template, prettify_time_ago
-
+from flaskext.babel import gettext, lazy_gettext
 
 try:
     # sage is installed
     import sage
-    SYSTEMS = ['sage', 'gap', 'gp', 'jsmath', 'html', 'latex', 'maxima', 'python', 'r', 'sh', 'singular', 'axiom (optional)', 'kash (optional)', 'macaulay2 (optional)', 'magma (optional)', 'maple (optional)', 'mathematica (optional)', 'matlab (optional)', 'mupad (optional)', 'octave (optional)', 'scilab (optional)']
+    # [(string: name, bool: optional)]
+    SYSTEMS = [('sage', False),
+               ('gap', False),
+               ('gp', False),
+               ('jsmath', False),
+               ('html', False),
+               ('latex', False),
+               ('maxima', False),
+               ('python', False),
+               ('r', False),
+               ('sh', False),
+               ('singular', False),
+               ('axiom', True),
+               ('kash', True),
+               ('macaulay2', True),
+               ('magma', True),
+               ('maple', True,),
+               ('mathematica', True),
+               ('matlab', True),
+               ('mupad', True),
+               ('octave', True),
+               ('scilab', True)]
 except ImportError:
     # sage is not installed
-    SYSTEMS = ['sage']    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
+    SYSTEMS = [('sage', True)]    # but gracefully degenerated version of sage mode, e.g., preparsing is trivial
 
 
 # We also record the system names without (optional) since they are
 # used in some of the html menus, etc.
-SYSTEM_NAMES = [v.split()[0] for v in SYSTEMS]
+SYSTEM_NAMES = [v[0] for v in SYSTEMS]
 
 JSMATH = True
 
@@ -67,7 +88,10 @@ JEDITABLE_TINYMCE  = True
 DOC_TIMEOUT = 120
 
 class Notebook(object):
-    def __init__(self, dir):
+    HISTORY_MAX_OUTPUT = 92*5
+    HISTORY_NCOLS = 90
+    
+    def __init__(self, dir, user_manager = None):
 
         if isinstance(dir, basestring) and len(dir) > 0 and dir[-1] == "/":
             dir = dir[:-1]
@@ -90,19 +114,28 @@ class Notebook(object):
             # Worksheet has never been saved before, so the server conf doesn't exist.
             self.__worksheets = {}
 
+        from user_manager import SimpleUserManager, OpenIDUserManager
+        self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
+
         # Set the list of users
         try:
-            self.__users = S.load_users()
+            S.load_users(self._user_manager)
         except IOError:
-            self.__users = {}
+            pass
 
         # Set the list of worksheets
         W = {}
-        for username in self.__users.keys():
+        for username in self._user_manager.users():
             for w in S.worksheets(username):
                 W['%s/%s'%(username, w.id_number())] = w
 
         self.__worksheets = W
+
+        # Set the openid-user dict
+        try:
+            self._user_manager.load(S)
+        except IOError:
+            pass
 
     def delete(self):
         """
@@ -129,12 +162,30 @@ class Notebook(object):
         """
         self.__storage.delete()
 
-    def systems(self):
-        return SYSTEMS
+    def systems(self, username=None):
+        systems = []
+        for system in SYSTEMS:
+            if system[1]:
+                systems.append(system[0] + ' (' + lazy_gettext('optional') + ')')
+            else:
+                systems.append(system[0])
+        return systems
 
     def system_names(self):
         return SYSTEM_NAMES
 
+    def user_manager(self):
+        """
+        Returns self's UserManager object.
+
+        EXAMPLES::
+
+            sage: n = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: n.user_manager() 
+            <sagenb.notebook.user_manager.OpenIDUserManager object at 0x...>
+        """
+        return self._user_manager
+        
     ##########################################################
     # Users
     ##########################################################
@@ -144,81 +195,27 @@ class Notebook(object):
 
         INPUT:
 
-        -  ``passwd`` - a string
+        - ``passwd`` - a string
 
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
-            sage: list(sorted(nb.users().iteritems()))
+            sage: list(sorted(nb.user_manager().users().iteritems()))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
-            sage: list(sorted(nb.passwords().iteritems()))
-            [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajfMKNH1hTm2'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(nb.user_manager().passwords().iteritems())) #random
+            [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
             sage: nb.create_default_users('newpassword')
-            Creating default users.
             WARNING: User 'pub' already exists -- and is now being replaced.
             WARNING: User '_sage_' already exists -- and is now being replaced.
             WARNING: User 'guest' already exists -- and is now being replaced.
             WARNING: User 'admin' already exists -- and is now being replaced.
-            sage: list(sorted(nb.passwords().iteritems()))
-            [('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajH86zjeUSDY'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
+            sage: list(sorted(nb.user_manager().passwords().iteritems())) #random
+            [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
+            sage: len(list(sorted(nb.user_manager().passwords().iteritems())))
+            4
         """
-        print "Creating default users."
-        self.add_user('pub', '', '', account_type='user', force=True)
-        self.add_user('_sage_', '', '', account_type='user', force=True)
-        self.add_user('guest', '', '', account_type='guest', force=True)
-        self.add_user('admin', passwd, '', account_type='admin', force=True)
-
-    def user_exists(self, username):
-        """
-        Return whether a user with the given ``username`` exists.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        OUTPUT:
-
-        - a bool
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: nb.user_exists('admin')
-            True
-            sage: nb.user_exists('pub')
-            True
-            sage: nb.user_exists('mark')
-            False
-            sage: nb.user_exists('guest')
-            True
-        """
-        return username in self.users()
-
-    def users(self):
-        """
-        Return a dictionary of users in a notebook.
-
-        OUTPUT:
-
-        - a string:User instance dictionary
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: list(sorted(nb.users().iteritems()))
-            [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
-        """
-        try:
-            return self.__users
-        except AttributeError:
-            self.__users = {}
-            return self.__users
+        self.user_manager().create_default_users(passwd)
 
     def user(self, username):
         """
@@ -236,146 +233,15 @@ class Notebook(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
+            sage: nb.user_manager().create_default_users('password')
             sage: nb.user('admin')
             admin
             sage: nb.user('admin').get_email()
             ''
-            sage: nb.user('admin').password()
-            'aajfMKNH1hTm2'
+            sage: nb.user('admin').password() #random
+            '256$7998210096323979f76e9fedaf1f85bda1561c479ae732f9c1f1abab1291b0b9$373f16b9d5fab80b9a9012af26a6b2d52d92b6d4b64c1836562cbd4264a6e704'
         """
-        if not isinstance(username, str) or '/' in username:
-            raise KeyError, "no user '%s'"%username
-        try:
-            return self.users()[username]
-        except KeyError:
-            if username in ['pub', '_sage_']:
-                self.add_user(username, '', '', account_type='user', force=True)
-                return self.users()[username]
-            elif username == 'admin':
-                self.add_user(username, '', '', account_type='admin', force=True)
-                return self.users()[username]
-            elif username == 'guest':
-                self.add_user('guest', '', '', account_type='guest', force=True)
-                return self.users()[username]
-            raise KeyError, "no user '%s'"%username
-
-    def create_user_with_same_password(self, user, other_user):
-        r"""
-        Change the password of ``user`` to that of ``other_user``.
-
-        INPUT:
-
-        -  ``user`` - a string
-
-        -  ``other_user`` - a string
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('bob', 'an**d', 'bob@gmail.com', force=True)
-            sage: nb.user('bob').password()
-            'aa4Q6Jbx/MiUs'
-            sage: nb.add_user('mary', 'ccd', 'mary@gmail.com', force=True)
-            sage: nb.user('mary').password()
-            'aaxr0gcWJMXKU'
-            sage: nb.create_user_with_same_password('bob', 'mary')
-            sage: nb.user('bob').password() == nb.user('mary').password()
-            True
-        """
-        U = self.user(user)
-        O = self.user(other_user)
-        passwd = O.password()
-        U.set_hashed_password(passwd)
-
-    def user_is_admin(self, user):
-        """
-        Return True if ``user`` is an admin.
-
-        INPUT:
-
-        - ``user`` - an instance of User
-
-        OUTPUT:
-
-        - a bool
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('Administrator', 'password', '', 'admin', True)
-            sage: nb.add_user('RegularUser', 'password', '', 'user', True)
-            sage: nb.user_is_admin('Administrator')
-            True
-            sage: nb.user_is_admin('RegularUser')
-            False
-        """
-        return self.user(user).is_admin()
-
-    def user_is_guest(self, username):
-        """
-        Return True if ``username`` is a guest.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        OUTPUT:
-
-        - a bool
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: nb.user_is_guest('guest')
-            True
-            sage: nb.user_is_guest('admin')
-            False
-        """
-        try:
-            return self.user(username).is_guest()
-        except KeyError:
-            return False
-
-    def user_list(self):
-        """
-        Return a list of user objects.
-
-        OUTPUT:
-
-        - a list of User instances
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: sorted(nb.user_list(), key=lambda k: k.username())
-            [_sage_, admin, guest, pub]
-        """
-        return list(self.users().itervalues())
-
-    def usernames(self):
-        """
-        Return a list of usernames.
-
-        OUTPUT:
-
-        - a list of strings
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: sorted(nb.usernames())
-            ['_sage_', 'admin', 'guest', 'pub']
-        """
-        U = self.users()
-        return U.keys()
+        return self.user_manager().user(username)
 
     def valid_login_names(self):
         """
@@ -389,221 +255,15 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            Creating default users.
             sage: nb.valid_login_names()
             ['admin']
-            sage: nb.add_user('Mark', 'password', '', force=True)
-            sage: nb.add_user('Sarah', 'password', '', force=True)
-            sage: nb.add_user('David', 'password', '', force=True)
+            sage: nb.user_manager().add_user('Mark', 'password', '', force=True)
+            sage: nb.user_manager().add_user('Sarah', 'password', '', force=True)
+            sage: nb.user_manager().add_user('David', 'password', '', force=True)
             sage: sorted(nb.valid_login_names())
             ['David', 'Mark', 'Sarah', 'admin']
         """
-        return [x for x in self.usernames() if not x in ['guest', '_sage_', 'pub']]
-
-    def default_user(self):
-        r"""
-        Return a default login name that the user will see when
-        confronted with the Sage notebook login page.  Currently, this
-        returns 'admin' if that is the *only* user.  Otherwise it
-        returns an empty string ('').
-
-        OUTPUT:
-
-        - a string - the default username.
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: nb.default_user()
-            'admin'
-            sage: nb.add_user('AnotherUser', 'password', '', force=True)
-            sage: nb.default_user()
-            ''
-        """
-        if self.valid_login_names() == ['admin']:
-            return 'admin'
-        else:
-            return ''
-
-    def set_accounts(self, value):
-        r"""
-        Set the accounts attribute of the server configuration to
-        ``value``.  This property determines whether users can create
-        new accounts.
-
-        INPUT:
-
-        - ``value`` - a bool
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.get_accounts()
-            False
-            sage: nb.set_accounts(True)
-            sage: nb.get_accounts()
-            True
-            sage: nb.set_accounts(False)
-            sage: nb.get_accounts()
-            False
-        """
-        self.conf()['accounts'] = bool(value)
-
-    def get_accounts(self):
-        r"""
-        Return whether or not users can create new accounts.
-
-        OUTPUT:
-
-        - a bool
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.get_accounts()
-            False
-            sage: nb.set_accounts(True)
-            sage: nb.get_accounts()
-            True
-        """
-        return self.conf()['accounts']
-
-    def add_user(self, username, password, email, account_type="user", force=False):
-        """
-        Add a user with the given credentials.
-
-        INPUT:
-
-        -  ``username`` - the username
-
-        -  ``password`` - the password
-
-        -  ``email`` - the email address
-
-        -  ``account_type`` - one of 'user', 'admin', or 'guest'
-
-        -  ``force`` - a bool (default: False)
-
-        If the method :meth:`get_accounts` returns False then user can
-        only be added if ``force`` is True.
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('Mark', 'password', '', force=True)
-            sage: nb.user('Mark')
-            Mark
-            sage: nb.add_user('Sarah', 'password', ")
-            Traceback (most recent call last):
-            ValueError: creating new accounts disabled.
-            sage: nb.set_accounts(True)
-            sage: nb.add_user('Sarah', 'password', ")
-            sage: nb.user('Sarah')
-            Sarah
-        """
-        if not self.get_accounts() and not force:
-            raise ValueError, "creating new accounts disabled."
-
-        us = self.users()
-        if us.has_key(username):
-            print "WARNING: User '%s' already exists -- and is now being replaced."%username
-        U = user.User(username, password, email, account_type)
-        us[username] = U
-
-        # Save the user database
-        self.__storage.save_users(self.users())
-
-
-    def change_password(self, username, password):
-        """
-        Change a user's password.
-
-        INPUT:
-
-        - ``username`` - a string, the username
-
-        - ``password`` - a string, the user's new password
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('Mark', 'password', '', force=True)
-            sage: nb.user('Mark').password()
-            'aajfMKNH1hTm2'
-            sage: nb.change_password('Mark', 'different_password')
-            sage: nb.user('Mark').password()
-            'aaTlXok5npQME'
-        """
-        self.user(username).set_password(password)
-
-    def del_user(self, username):
-        """
-        Delete the given user.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('Mark', 'password', '', force=True)
-            sage: nb.user('Mark')
-            Mark
-            sage: nb.del_user('Mark')
-            sage: nb.user('Mark')
-            Traceback (most recent call last):
-            KeyError: "no user 'Mark'"
-        """
-        us = self.users()
-        if us.has_key(username):
-            del us[username]
-
-    def passwords(self):
-        """
-        Return a username:password dictionary.
-
-        OUTPUT:
-
-        - a string:string dictionary
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: nb.add_user('Mark', 'password', '', force=True)
-            sage: list(sorted(nb.passwords().iteritems()))
-            [('Mark', 'aajfMKNH1hTm2'), ('_sage_', 'aaQSqAReePlq6'), ('admin', 'aajfMKNH1hTm2'), ('guest', 'aaQSqAReePlq6'), ('pub', 'aaQSqAReePlq6')]
-        """
-        return dict([(user.username(), user.password()) for user in self.user_list()])
-
-    def user_conf(self, username):
-        """
-        Return a user's configuration object.
-
-        OUTPUT:
-
-        - an instance of Configuration.
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.create_default_users('password')
-            Creating default users.
-            sage: config = nb.user_conf('admin')
-            sage: config['max_history_length']
-            1000
-            sage: config['default_system']
-            'sage'
-            sage: config['autosave_interval']
-            3600
-            sage: config['default_pretty_print']
-            False
-        """
-        return self.users()[username].conf()
+        return self.user_manager().valid_login_names()
 
     ##########################################################
     # Publishing worksheets
@@ -652,7 +312,7 @@ class Notebook(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('Mark','password','',force=True)
+            sage: nb.user_manager().add_user('Mark','password','',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('First steps', owner='Mark')
             sage: nb.worksheet_names()
             ['Mark/0']
@@ -704,7 +364,7 @@ class Notebook(object):
 
     def create_new_worksheet(self, worksheet_name, username,
                              docbrowser=False, add_to_list=True):
-        if username!='pub' and self.user_is_guest(username):
+        if username!='pub' and self.user_manager().user_is_guest(username):
             raise ValueError, "guests cannot create new worksheets"
 
         W = self.worksheet(username)
@@ -738,7 +398,7 @@ class Notebook(object):
             raise KeyError, "Attempt to delete missing worksheet '%s'"%filename
         W = self.__worksheets[filename]
         W.quit()
-        shutil.rmtree(W.directory(), ignore_errors=True)
+        shutil.rmtree(W.directory(), ignore_errors=False)
         self.deleted_worksheets()[filename] = W
         del self.__worksheets[filename]
 
@@ -763,7 +423,7 @@ class Notebook(object):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
             sage: W.move_to_trash('sage')
             sage: nb.worksheet_names()
@@ -793,9 +453,9 @@ class Notebook(object):
         then list their names::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
-            sage: nb.add_user('wstein','sage','wstein@sagemath.org',force=True)
+            sage: nb.user_manager().add_user('wstein','sage','wstein@sagemath.org',force=True)
             sage: W2 = nb.new_worksheet_with_title_from_text('Elliptic Curves', owner='wstein')
             sage: nb.worksheet_names()
             ['sage/0', 'wstein/1']
@@ -955,7 +615,7 @@ class Notebook(object):
     def add_to_user_history(self, entry, username):
         history = self.user_history(username)
         history.append(entry)
-        maxlen = self.user_conf(username)['max_history_length']
+        maxlen = self.user_manager().user_conf(username)['max_history_length']
         while len(history) > maxlen:
             del history[0]
 
@@ -1071,9 +731,28 @@ class Notebook(object):
         elif ext.lower() == '.html':
             # An html file, which should contain the static version of
             # a sage help page, as generated by Sphinx
-            W = self._import_worksheet_html(filename, owner)
+            html = open(filename).read()
+
+            cell_pattern = r"""{{{id=.*?///.*?}}}"""
+            docutils_pattern = r"""<meta name="generator" content="Docutils \S+: http://docutils\.sourceforge\.net/" />"""
+            sphinx_pattern = r"""Created using <a href="http://sphinx\.pocoo\.org/">Sphinx</a>"""
+
+            if re.search(cell_pattern, html, re.DOTALL) is not None:
+                W = self._import_worksheet_txt(filename, owner)
+            elif re.search(docutils_pattern, html) is not None:
+                W = self._import_worksheet_docutils_html(filename, owner)
+            elif re.search(sphinx_pattern, html) is not None:
+                W = self._import_worksheet_html(filename, owner)
+            else:
+                # Unrecognized html file
+                # We do the default behavior, i.e. we import as if it was generated
+                # by Sphinx web page
+                W = self._import_worksheet_html(filename, owner)
+        elif ext.lower() == '.rst':
+            # A ReStructuredText file
+            W = self._import_worksheet_rst(filename, owner)
         else:
-            # We only support txt, sws, and html files
+            # We only support txt, sws, html and rst files
             raise ValueError, "unknown extension '%s'"%ext
         self.__worksheets[W.filename()] = W
         return W
@@ -1171,7 +850,7 @@ class Notebook(object):
 
         INPUT:
 
-        -  ``filename`` - a string; a filename that ends in .txt
+        -  ``filename`` - a string; a filename that ends in .html
 
         -  ``owner`` - a string; the imported worksheet's owner
 
@@ -1224,10 +903,9 @@ class Notebook(object):
             <p>Here are some computations:</p>
             <BLANKLINE>
             <div class="highlight-python">, Cell 0; in=1+1, out=
-            2
-            , TextCell 2: </div>
+            2, TextCell 2: </div>
             <BLANKLINE>
-            </div></div></div></div]
+            </div></div></div></div>]
             sage: cell = W.cell_list()[1]
             sage: cell.input_text()
             u'1+1'
@@ -1254,6 +932,163 @@ class Notebook(object):
 
         return worksheet
 
+    def _import_worksheet_rst(self, filename, owner):
+        r"""
+        Import a ReStructuredText file as a new worksheet.
+
+        INPUT:
+
+        -  ``filename`` - a string; a filename that ends in .rst
+
+        -  ``owner`` - a string; the imported worksheet's owner
+
+        OUTPUT:
+
+        -  a new instance of Worksheet
+
+        EXAMPLES:
+
+            sage: sprompt = 'sage' + ':'
+            sage: rst = '\n'.join(['=============',
+            ...       'Test Notebook',
+            ...       '=============',
+            ...       '',
+            ...       'Let\'s do some computations::',
+            ...       '',
+            ...       '    %s 2+2' % sprompt,
+            ...       '    4',
+            ...       '',
+            ...       '::',
+            ...       '',
+            ...       '    %s x^2' % sprompt,
+            ...       '    x^2'])
+            sage: name = tmp_filename() + '.rst'
+            sage: fd = open(name,'w')
+            sage: fd.write(rst)
+            sage: fd.close()
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: W = nb._import_worksheet_rst(name, 'admin')
+            sage: W.name()
+            u'Test Notebook'
+            sage: W.owner()
+            'admin'
+            sage: W.cell_list()
+            [TextCell 2: <h1 class="title">Test Notebook</h1>
+            <BLANKLINE>
+            <p>Let's do some computations:</p>, Cell 0; in=2+2, out=
+            4, Cell 1; in=x^2, out=
+            x^2]
+            sage: cell = W.cell_list()[1]
+            sage: cell.input_text()
+            u'2+2'
+            sage: cell.output_text()
+            u'<pre class="shrunk">4</pre>'
+
+        """
+        rst = open(filename).read()
+
+        # docutils removes the backslashes if they are not escaped This is
+        # not practical because backslashes are almost never escaped in
+        # Sage docstrings written in ReST.  So if the user wants the
+        # backslashes to be escaped automatically, he adds the comment 
+        # ".. escape-backslashes" in the input file
+        if re.search(r'^\.\.[ \t]+escape-backslashes', rst, re.MULTILINE) is not None:
+            rst = rst.replace('\\','\\\\')
+
+        # Do the translation rst -> html (using docutils)
+        from docutils.core import publish_parts
+        D = publish_parts(rst, writer_name='html')
+        title = D['title']
+        html = D['whole']
+
+        # Do the translation html -> txt
+        from docHTMLProcessor import docutilsHTMLProcessor
+        translator = docutilsHTMLProcessor()
+        worksheet_txt = translator.process_doc_html(html)
+
+        # Create worksheet
+        worksheet = self.create_new_worksheet(title, owner)
+        worksheet.edit_save(worksheet_txt)
+
+        return worksheet
+
+    def _import_worksheet_docutils_html(self, filename, owner):
+        r"""
+        Import a static html help page generated by docutils as a new
+        worksheet.
+
+        INPUT:
+
+        -  ``filename`` - a string; a filename that ends in .html
+
+        -  ``owner`` - a string; the imported worksheet's owner
+
+        OUTPUT:
+
+        -  a new instance of Worksheet
+
+        EXAMPLES:
+
+            sage: sprompt = 'sage' + ':'
+            sage: rst = '\n'.join(['=============',
+            ...       'Test Notebook',
+            ...       '=============',
+            ...       '',
+            ...       'Let\'s do some computations::',
+            ...       '',
+            ...       '    %s 2+2' % sprompt,
+            ...       '    4',
+            ...       '',
+            ...       '::',
+            ...       '',
+            ...       '    %s x^2' % sprompt,
+            ...       '    x^2'])
+            sage: from docutils.core import publish_string
+            sage: html = publish_string(rst, writer_name='html')
+            sage: name = tmp_filename() + '.html'
+            sage: fd = open(name,'w')
+            sage: fd.write(html)
+            sage: fd.close()
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: W = nb._import_worksheet_docutils_html(name, 'admin')
+            sage: W.name()
+            u'Test Notebook'
+            sage: W.owner()
+            'admin'
+            sage: W.cell_list()
+            [TextCell 2: <h1 class="title">Test Notebook</h1>
+            <BLANKLINE>
+            <p>Let's do some computations:</p>, Cell 0; in=2+2, out=
+            4, Cell 1; in=x^2, out=
+            x^2]
+            sage: cell = W.cell_list()[1]
+            sage: cell.input_text()
+            u'2+2'
+            sage: cell.output_text()
+            u'<pre class="shrunk">4</pre>'
+
+        """
+        html = open(filename).read()
+
+        # Do the translation html -> txt
+        from docHTMLProcessor import docutilsHTMLProcessor
+        translator = docutilsHTMLProcessor()
+        worksheet_txt = translator.process_doc_html(html)
+
+        # Extract title
+        from worksheet import extract_name
+        title, _ = extract_name(worksheet_txt)
+        if title.startswith('<h1 class="title">'):
+            title = title[18:]
+        if title.endswith('</h1>'):
+            title = title[:-5]
+
+        # Create worksheet
+        worksheet = self.create_new_worksheet(title, owner)
+        worksheet.edit_save(worksheet_txt)
+
+        return worksheet
+
     def change_worksheet_name_to_avoid_collision(self, worksheet):
         """
         Change the display name of the worksheet if there is already a
@@ -1272,9 +1107,10 @@ class Notebook(object):
             worksheet.set_name(name)
 
 
-    ##########################################################
-    # Server configuration
-    ##########################################################
+##########################################################
+# Server configuration
+##########################################################
+
     def conf(self):
         try:
             return self.__conf
@@ -1367,7 +1203,7 @@ class Notebook(object):
             u'...Revision...Last Edited...ago...'
         """
         data = worksheet.snapshot_data()  # pairs ('how long ago', key)
-
+        
         return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
                         data = data, worksheet = worksheet,
                         notebook = self,
@@ -1436,7 +1272,7 @@ class Notebook(object):
             sage: nb.html_share(W, 'admin')
             u'...currently shared...add or remove collaborators...'
         """
-        U = self.users()
+        U = self.user_manager().users()
         other_users = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
         other_users.sort(lambda x,y: cmp(x.lower(), y.lower()))
 
@@ -1497,15 +1333,15 @@ class Notebook(object):
         return [x for x in self.__worksheets.itervalues() if not x.owner() in ['_sage_', 'pub']]
 
     def get_worksheets_with_collaborator(self, user):
-        if self.user_is_admin(user): return self.get_all_worksheets()
+        if self._user_manager.user_is_admin(user): return self.get_all_worksheets()
         return [w for w in self.__worksheets.itervalues() if w.is_collaborator(user)]
 
     def get_worksheet_names_with_collaborator(self, user):
-        if self.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
+        if self._user_manager.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
         return [W.name() for W in self.get_worksheets_with_collaborator(user)]
 
     def get_worksheets_with_viewer(self, user):
-        if self.user_is_admin(user): return self.get_all_worksheets()
+        if self._user_manager.user_is_admin(user): return self.get_all_worksheets()
         return [w for w in self.__worksheets.itervalues() if w.is_viewer(user)]
 
     def get_worksheets_with_owner(self, owner):
@@ -1515,7 +1351,7 @@ class Notebook(object):
         return [w for w in self.get_worksheets_with_owner(owner) if w.is_viewer(user)]
 
     def get_worksheet_names_with_viewer(self, user):
-        if self.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
+        if self._user_manager.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
         return [W.name() for W in self.get_worksheets_with_viewer(user) if not W.docbrowser()]
 
     def get_worksheet_with_name(self, name):
@@ -1550,8 +1386,9 @@ class Notebook(object):
         Save this notebook server to disk.
         """
         S = self.__storage
-        S.save_users(self.users())
+        S.save_users(self.user_manager().users())
         S.save_server_conf(self.conf())
+        self._user_manager.save(S)
         # Save the non-doc-browser worksheets.
         for n, W in self.__worksheets.iteritems():
             if not n.startswith('doc_browser'):
@@ -1754,12 +1591,16 @@ class Notebook(object):
             except KeyError:
                 W = None
 
+        from flask import current_app
+        if W is None:
+            return current_app.message("The worksheet does not exist") #XXX: i18n
+
         template_page = os.path.join("html", "notebook", "worksheet_page.html")
         if W.docbrowser():
             template_page = os.path.join("html", "notebook", "doc_page.html")
         elif do_print:
             template_page = os.path.join('html', 'notebook', 'print_worksheet.html')
-        elif W.is_published() or self.user_is_guest(username):
+        elif W.is_published() or self.user_manager().user_is_guest(username):
             template_page = os.path.join('html', 'notebook', 'guest_worksheet_page.html')
 
         return template(template_page, worksheet = W,
@@ -1768,7 +1609,7 @@ class Notebook(object):
 
 ####################################################################
 
-def load_notebook(dir, interface=None, port=None, secure=None):
+def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None):
     """
     Load and return a notebook from a given directory.  Create a new
     one in that directory, if one isn't already there.
@@ -1801,6 +1642,7 @@ def load_notebook(dir, interface=None, port=None, secure=None):
     nb.interface = interface
     nb.port = port
     nb.secure = secure
+
 
     # Install this copy of the notebook in twist.py as *the*
     # global notebook object used for computations.  This is
@@ -1858,9 +1700,9 @@ def migrate_old_notebook_v1(dir):
             new_nb.conf().confs[t] = getattr(old_nb, '_Notebook__' + t)
 
     # Now update the user data from the old notebook to the new one:
-    print "Migrating %s user accounts..."%len(old_nb.users())
-    users = new_nb.users()
-    for username, old_user in old_nb.users().iteritems():
+    print "Migrating %s user accounts..."%len(old_nb.user_manager().users())
+    users = new_nb.user_manager().users()
+    for username, old_user in old_nb.user_manager().users().iteritems():
         new_user = user.User(old_user.username(), '',
                              old_user.get_email(), old_user.account_type())
         new_user.set_hashed_password(old_user.password())
@@ -1968,7 +1810,7 @@ def migrate_old_notebook_v1(dir):
 
     # Migrating history
     new_nb._user_history = {}
-    for username in old_nb.users().keys():
+    for username in old_nb.user_manager().users().keys():
         history_file = os.path.join(dir, 'worksheets', username, 'history.sobj')
         if os.path.exists(history_file):
             new_nb._user_history[username] = cPickle.loads(open(history_file).read())

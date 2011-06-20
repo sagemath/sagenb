@@ -13,6 +13,7 @@
     <div id="overview-main">
         <p>The jQuery UI Slider plugin makes selected elements into sliders. There are various options such as multiple handles, and ranges. The handle can be moved with the mouse or the arrow keys.</p>
 <p>All callbacks receive two arguments: The original browser event and a prepared ui object, view below for a documentation of this object (if you name your second argument 'ui'):
+</p><p>The slider widget will create handle elements with the class 'ui-slider-handle' on initialization. You can specify custom handle elements by creating and appending the elements and adding the 'ui-slider-handle' class before init. It will only create the number of handles needed to match the length of value/values. For example, if you specify 'values: [1, 5, 18]' and create one custom handle, the plugin will create the other two.
 </p>
 <ul>
   <li><b>ui.handle</b>: DOMElement - the current focused handle
@@ -23,6 +24,8 @@
         <h3>Dependencies</h3>
         <ul>
 <li>UI Core</li>
+<li>UI Widget</li>
+<li>UI Mouse</li>
 </ul>
     </div>
     <div id="overview-example">
@@ -39,15 +42,14 @@ A simple jQuery UI Slider.<br />
 <pre>&lt;!DOCTYPE html&gt;
 &lt;html&gt;
 &lt;head&gt;
-  &lt;link type=&quot;text/css&quot; href=&quot;http://jqueryui.com/latest/themes/base/ui.all.css&quot; rel=&quot;stylesheet&quot; /&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/jquery-1.3.2.js&quot;&gt;&lt;/script&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/ui/ui.core.js&quot;&gt;&lt;/script&gt;
-  &lt;script type=&quot;text/javascript&quot; src=&quot;http://jqueryui.com/latest/ui/ui.slider.js&quot;&gt;&lt;/script&gt;
-  &lt;style type=&quot;text/css&quot;&gt;
+  &lt;link href=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;/&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js&quot;&gt;&lt;/script&gt;
+    &lt;style type=&quot;text/css&quot;&gt;
     #slider { margin: 10px; }
   &lt;/style&gt;
-  &lt;script type="text/javascript"&gt;
-  $(document).ready(function(){
+  &lt;script&gt;
+  $(document).ready(function() {
     $(&quot;#slider&quot;).slider();
   });
   &lt;/script&gt;
@@ -67,9 +69,9 @@ A simple jQuery UI Slider.<br />
     <h2 class="top-header">Options</h2>
     <ul class="options-list">
       
-<li class="option" id="option-animate">
+<li class="option" id="option-disabled">
   <div class="option-header">
-    <h3 class="option-name"><a href="#option-animate">animate</a></h3>
+    <h3 class="option-name"><a href="#option-disabled">disabled</a></h3>
     <dl>
       <dt class="option-type-label">Type:</dt>
         <dd class="option-type">Boolean</dd>
@@ -80,7 +82,49 @@ A simple jQuery UI Slider.<br />
     </dl>
   </div>
   <div class="option-description">
-    <p>Whether to slide handle smoothly when user click outside handle on the bar.</p>
+    <p>Disables (true) or enables (false) the slider. Can be set when initialising (first creating) the slider.</p>
+  </div>
+  <div class="option-examples">
+    <h4>Code examples</h4>
+    <dl class="option-examples-list">
+    
+<dt>
+  Initialize a slider with the <code>disabled</code> option specified.
+</dt>
+<dd>
+<pre><code>$( ".selector" ).slider({ disabled: true });</code></pre>
+</dd>
+
+    
+<dt>
+  Get or set the <code>disabled</code> option, after init.
+</dt>
+<dd>
+<pre><code>//getter
+var disabled = $( ".selector" ).slider( "option", "disabled" );
+//setter
+$( ".selector" ).slider( "option", "disabled", true );</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
+<li class="option" id="option-animate">
+  <div class="option-header">
+    <h3 class="option-name"><a href="#option-animate">animate</a></h3>
+    <dl>
+      <dt class="option-type-label">Type:</dt>
+        <dd class="option-type">Boolean, String, Number</dd>
+      
+      <dt class="option-default-label">Default:</dt>
+        <dd class="option-default">false</dd>
+      
+    </dl>
+  </div>
+  <div class="option-description">
+    <p>Whether to slide handle smoothly when user click outside handle on the bar. Will also accept a string representing one of the three predefined speeds ("slow", "normal", or "fast") or the number of milliseconds to run the animation (e.g. 1000).</p>
   </div>
   <div class="option-examples">
     <h4>Code examples</h4>
@@ -90,7 +134,7 @@ A simple jQuery UI Slider.<br />
   Initialize a slider with the <code>animate</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ animate: true });</code></pre>
+<pre><code>$( ".selector" ).slider({ animate: true });</code></pre>
 </dd>
 
     
@@ -99,9 +143,9 @@ A simple jQuery UI Slider.<br />
 </dt>
 <dd>
 <pre><code>//getter
-var animate = $('.selector').slider('option', 'animate');
+var animate = $( ".selector" ).slider( "option", "animate" );
 //setter
-$('.selector').slider('option', 'animate', true);</code></pre>
+$( ".selector" ).slider( "option", "animate", true );</code></pre>
 </dd>
 
     </dl>
@@ -132,7 +176,7 @@ $('.selector').slider('option', 'animate', true);</code></pre>
   Initialize a slider with the <code>max</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ max: 7 });</code></pre>
+<pre><code>$( ".selector" ).slider({ max: 7 });</code></pre>
 </dd>
 
     
@@ -141,9 +185,9 @@ $('.selector').slider('option', 'animate', true);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var max = $('.selector').slider('option', 'max');
+var max = $( ".selector" ).slider( "option", "max" );
 //setter
-$('.selector').slider('option', 'max', 7);</code></pre>
+$( ".selector" ).slider( "option", "max", 7 );</code></pre>
 </dd>
 
     </dl>
@@ -174,7 +218,7 @@ $('.selector').slider('option', 'max', 7);</code></pre>
   Initialize a slider with the <code>min</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ min: -7 });</code></pre>
+<pre><code>$( ".selector" ).slider({ min: -7 });</code></pre>
 </dd>
 
     
@@ -183,9 +227,9 @@ $('.selector').slider('option', 'max', 7);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var min = $('.selector').slider('option', 'min');
+var min = $( ".selector" ).slider( "option", "min" );
 //setter
-$('.selector').slider('option', 'min', -7);</code></pre>
+$( ".selector" ).slider( "option", "min", -7 );</code></pre>
 </dd>
 
     </dl>
@@ -201,12 +245,12 @@ $('.selector').slider('option', 'min', -7);</code></pre>
         <dd class="option-type">String</dd>
       
       <dt class="option-default-label">Default:</dt>
-        <dd class="option-default">'auto'</dd>
+        <dd class="option-default">'horizontal'</dd>
       
     </dl>
   </div>
   <div class="option-description">
-    <p>Normally you don't need to set this option because the plugin detects the slider orientation automatically. If the orientation is not correctly detected you can set this option to 'horizontal' or 'vertical'.</p>
+    <p>This option determines whether the slider has the min at the left, the max at the right or the min at the bottom, the max at the top. Possible values: 'horizontal', 'vertical'.</p>
   </div>
   <div class="option-examples">
     <h4>Code examples</h4>
@@ -216,7 +260,7 @@ $('.selector').slider('option', 'min', -7);</code></pre>
   Initialize a slider with the <code>orientation</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ orientation: 'vertical' });</code></pre>
+<pre><code>$( ".selector" ).slider({ orientation: 'vertical' });</code></pre>
 </dd>
 
     
@@ -225,9 +269,9 @@ $('.selector').slider('option', 'min', -7);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var orientation = $('.selector').slider('option', 'orientation');
+var orientation = $( ".selector" ).slider( "option", "orientation" );
 //setter
-$('.selector').slider('option', 'orientation', 'vertical');</code></pre>
+$( ".selector" ).slider( "option", "orientation", 'vertical' );</code></pre>
 </dd>
 
     </dl>
@@ -258,7 +302,7 @@ $('.selector').slider('option', 'orientation', 'vertical');</code></pre>
   Initialize a slider with the <code>range</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ range: 'min' });</code></pre>
+<pre><code>$( ".selector" ).slider({ range: 'min' });</code></pre>
 </dd>
 
     
@@ -267,9 +311,9 @@ $('.selector').slider('option', 'orientation', 'vertical');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var range = $('.selector').slider('option', 'range');
+var range = $( ".selector" ).slider( "option", "range" );
 //setter
-$('.selector').slider('option', 'range', 'min');</code></pre>
+$( ".selector" ).slider( "option", "range", 'min' );</code></pre>
 </dd>
 
     </dl>
@@ -300,7 +344,7 @@ $('.selector').slider('option', 'range', 'min');</code></pre>
   Initialize a slider with the <code>step</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ step: 5 });</code></pre>
+<pre><code>$( ".selector" ).slider({ step: 5 });</code></pre>
 </dd>
 
     
@@ -309,9 +353,9 @@ $('.selector').slider('option', 'range', 'min');</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var step = $('.selector').slider('option', 'step');
+var step = $( ".selector" ).slider( "option", "step" );
 //setter
-$('.selector').slider('option', 'step', 5);</code></pre>
+$( ".selector" ).slider( "option", "step", 5 );</code></pre>
 </dd>
 
     </dl>
@@ -342,7 +386,7 @@ $('.selector').slider('option', 'step', 5);</code></pre>
   Initialize a slider with the <code>value</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ value: 37 });</code></pre>
+<pre><code>$( ".selector" ).slider({ value: 37 });</code></pre>
 </dd>
 
     
@@ -351,9 +395,9 @@ $('.selector').slider('option', 'step', 5);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var value = $('.selector').slider('option', 'value');
+var value = $( ".selector" ).slider( "option", "value" );
 //setter
-$('.selector').slider('option', 'value', 37);</code></pre>
+$( ".selector" ).slider( "option", "value", 37 );</code></pre>
 </dd>
 
     </dl>
@@ -384,7 +428,7 @@ $('.selector').slider('option', 'value', 37);</code></pre>
   Initialize a slider with the <code>values</code> option specified.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({ values: [1,5,9] });</code></pre>
+<pre><code>$( ".selector" ).slider({ values: [1,5,9] });</code></pre>
 </dd>
 
     
@@ -393,9 +437,9 @@ $('.selector').slider('option', 'value', 37);</code></pre>
 </dt>
 <dd>
 <pre><code>//getter
-var values = $('.selector').slider('option', 'values');
+var values = $( ".selector" ).slider( "option", "values" );
 //setter
-$('.selector').slider('option', 'values', [1,5,9]);</code></pre>
+$( ".selector" ).slider( "option", "values", [1,5,9] );</code></pre>
 </dd>
 
     </dl>
@@ -408,6 +452,45 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h2 class="top-header">Events</h2>
     <ul class="events-list">
       
+<li class="event" id="event-create">
+  <div class="event-header">
+    <h3 class="event-name"><a href="#event-create">create</a></h3>
+    <dl>
+      <dt class="event-type-label">Type:</dt>
+        <dd class="event-type">slidecreate</dd>
+    </dl>
+  </div>
+  <div class="event-description">
+    <p>This event is triggered when slider is created.</p>
+  </div>
+  <div class="event-examples">
+    <h4>Code examples</h4>
+    <dl class="event-examples-list">
+    
+<dt>
+  Supply a callback function to handle the <code>create</code> event as an init option.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).slider({
+   create: function(event, ui) { ... }
+});</code></pre>
+</dd>
+
+    
+<dt>
+  Bind to the <code>create</code> event by type: <code>slidecreate</code>.
+</dt>
+<dd>
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;slidecreate&quot;, function(event, ui) {
+  ...
+});</code></pre>
+</dd>
+
+    </dl>
+  </div>
+</li>
+
+
 <li class="event" id="event-start">
   <div class="event-header">
     <h3 class="event-name"><a href="#event-start">start</a></h3>
@@ -427,7 +510,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Supply a callback function to handle the <code>start</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({
+<pre><code>$( &quot;.selector&quot; ).slider({
    start: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -437,7 +520,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Bind to the <code>start</code> event by type: <code>slidestart</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('slidestart', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;slidestart&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -467,7 +550,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Supply a callback function to handle the <code>slide</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({
+<pre><code>$( &quot;.selector&quot; ).slider({
    slide: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -477,7 +560,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Bind to the <code>slide</code> event by type: <code>slide</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('slide', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;slide&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -506,7 +589,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Supply a callback function to handle the <code>change</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({
+<pre><code>$( &quot;.selector&quot; ).slider({
    change: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -516,7 +599,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Bind to the <code>change</code> event by type: <code>slidechange</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('slidechange', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;slidechange&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -545,7 +628,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Supply a callback function to handle the <code>stop</code> event as an init option.
 </dt>
 <dd>
-<pre><code>$('.selector').slider({
+<pre><code>$( &quot;.selector&quot; ).slider({
    stop: function(event, ui) { ... }
 });</code></pre>
 </dd>
@@ -555,7 +638,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
   Bind to the <code>stop</code> event by type: <code>slidestop</code>.
 </dt>
 <dd>
-<pre><code>$('.selector').bind('slidestop', function(event, ui) {
+<pre><code>$( &quot;.selector&quot; ).bind( &quot;slidestop&quot;, function(event, ui) {
   ...
 });</code></pre>
 </dd>
@@ -575,7 +658,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h3 class="method-name"><a href="#method-destroy">destroy</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.slider( 'destroy'
+        <dd class="method-signature">.slider( "destroy"
 
 
 
@@ -597,7 +680,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h3 class="method-name"><a href="#method-disable">disable</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.slider( 'disable'
+        <dd class="method-signature">.slider( "disable"
 
 
 
@@ -619,7 +702,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h3 class="method-name"><a href="#method-enable">enable</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.slider( 'enable'
+        <dd class="method-signature">.slider( "enable"
 
 
 
@@ -641,7 +724,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h3 class="method-name"><a href="#method-option">option</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.slider( 'option'
+        <dd class="method-signature">.slider( "option"
 
 , optionName
 
@@ -658,12 +741,56 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
 </li>
 
 
+<li class="method" id="method-option">
+  <div class="method-header">
+    <h3 class="method-name"><a href="#method-option">option</a></h3>
+    <dl>
+      <dt class="method-signature-label">Signature:</dt>
+        <dd class="method-signature">.slider( "option"
+
+, options
+
+
+
+
+
+)</dd>
+    </dl>
+  </div>
+  <div class="method-description">
+    <p>Set multiple slider options at once by providing an options object.</p>
+  </div>
+</li>
+
+
+<li class="method" id="method-widget">
+  <div class="method-header">
+    <h3 class="method-name"><a href="#method-widget">widget</a></h3>
+    <dl>
+      <dt class="method-signature-label">Signature:</dt>
+        <dd class="method-signature">.slider( "widget"
+
+
+
+
+
+
+
+)</dd>
+    </dl>
+  </div>
+  <div class="method-description">
+    <p>Returns the .ui-slider element.</p>
+  </div>
+</li>
+
+
 <li class="method" id="method-value">
   <div class="method-header">
     <h3 class="method-name"><a href="#method-value">value</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.slider( 'value'
+        <dd class="method-signature">.slider( "value"
 
 , <span class="optional">[</span>value<span class="optional">] </span>
 
@@ -685,7 +812,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h3 class="method-name"><a href="#method-values">values</a></h3>
     <dl>
       <dt class="method-signature-label">Signature:</dt>
-        <dd class="method-signature">.slider( 'values'
+        <dd class="method-signature">.slider( "values"
 
 , index
 
@@ -707,7 +834,7 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
     <h2 class="top-header">Theming</h2>
     <p>The jQuery UI Slider plugin uses the jQuery UI CSS Framework to style its look and feel, including colors and background textures. We recommend using the ThemeRoller tool to create and download custom themes that are easy to build and maintain.
 </p>
-  <p>If a deeper level of customization is needed, there are widget-specific classes referenced within the ui.slider.css stylesheet that can be modified. These classes are highlighed in bold below.
+  <p>If a deeper level of customization is needed, there are widget-specific classes referenced within the jquery.ui.slider.css stylesheet that can be modified. These classes are highlighed in bold below.
 </p>
     
   <h3>Sample markup with jQuery UI CSS Framework classes</h3>
@@ -724,10 +851,10 @@ $('.selector').slider('option', 'values', [1,5,9]);</code></pre>
 </div>
 
 </p><!-- 
-Pre-expand include size: 30277 bytes
-Post-expand include size: 46114 bytes
-Template argument size: 25048 bytes
+Pre-expand include size: 36418 bytes
+Post-expand include size: 54713 bytes
+Template argument size: 27351 bytes
 Maximum: 2097152 bytes
 -->
 
-<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3349-1!1!0!!en!2 and timestamp 20090604112222 -->
+<!-- Saved in parser cache with key jqdocs_docs:pcache:idhash:3776-1!1!0!!en!2 and timestamp 20110315185554 -->

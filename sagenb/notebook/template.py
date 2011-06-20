@@ -17,14 +17,20 @@ AUTHORS:
 
 import jinja2
 
-import os, re, sys
+import os, re, sys, json
 
 from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
 from sagenb.notebook.jsmath import math_parse
+from flaskext.babel import gettext, ngettext, lazy_gettext
 
-
-TEMPLATE_PATH = os.path.join(DATA, 'sage')
+if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
+    if not os.path.isdir(os.environ['SAGENB_TEMPLATE_PATH']):
+        raise ValueError("Enviromental variable SAGENB_TEMPLATE_PATH points to\
+                         a non-existant directory")
+    TEMPLATE_PATH = os.environ['SAGENB_TEMPLATE_PATH']
+else:
+    TEMPLATE_PATH = os.path.join(DATA, 'sage')
 env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_PATH))
 
 css_illegal_re = re.compile(r'[^-A-Za-z_0-9]')
@@ -65,23 +71,15 @@ def prettify_time_ago(t):
     """
     if t < 60:
         s = int(t)
-        if s == 1:
-            return "1 second"
-        return "%d seconds"%s
+        return ngettext('%(num)d second', '%(num)d seconds', s)
     if t < 3600:
         m = int(t/60)
-        if m == 1:
-            return "1 minute"
-        return "%d minutes"%m
+        return ngettext('%(num)d minute', '%(num)d minutes', m)
     if t < 3600*24:
         h = int(t/3600)
-        if h == 1:
-            return "1 hour"
-        return "%d hours"%h
+        return ngettext('%(num)d hour', '%(num)d hours', h)
     d = int(t/(3600*24))
-    if d == 1:
-        return "1 day"
-    return "%d days"%d
+    return ngettext('%(num)d day', '%(num)d days', d)
 
 def clean_name(name):
     """
@@ -106,6 +104,7 @@ env.filters['prettify_time_ago'] = prettify_time_ago
 env.filters['math_parse'] = math_parse
 env.filters['max'] = max
 env.filters['repr_str'] = lambda x: repr(unicode_str(x))[1:]
+env.filters['tojson'] = json.dumps
 
 def template(filename, **user_context):
     """
@@ -139,15 +138,17 @@ def template(filename, **user_context):
     from sagenb.notebook.notebook import JSMATH, JEDITABLE_TINYMCE
     from twist import notebook
     #A dictionary containing the default context
-    default_context = {'sitename': 'Sage Notebook',
+    default_context = {'sitename': gettext('Sage Notebook'),
                        'sage_version': SAGE_VERSION,
                        'JSMATH': JSMATH,
+                       'gettext': lambda x: x,
                        'JEDITABLE_TINYMCE': JEDITABLE_TINYMCE,
                        'conf': notebook.conf() if notebook else None}
     try:
         tmpl = env.get_template(filename)
     except jinja2.exceptions.TemplateNotFound:
         return "Notebook Bug -- missing template %s"%filename
+
     context = dict(default_context)
     context.update(user_context)
     r = tmpl.render(**context)

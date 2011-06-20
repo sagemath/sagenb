@@ -1,7 +1,7 @@
 {% extends "html/base_authenticated.html" %}
 
 {% block title %}
-{% if title %}{{ title }}{% else %}Error{% endif %}
+{% if title %}{{ title }}{% else %}{{ gettext('Error') }}{% endif %}
 {% endblock %}
 
 {% if redirect_url %}
@@ -16,7 +16,7 @@
 </div>
 {% if cont %}
 <div style="padding: 1.0em; text-align: center;">
-    <a class="boldusercontrol" href="{{ cont }}">Continue</a>
+    <a class="boldusercontrol" href="{{ cont }}">{{ gettext('Continue') }}</a>
 </div>
 {% endif %}
 {% endblock %}

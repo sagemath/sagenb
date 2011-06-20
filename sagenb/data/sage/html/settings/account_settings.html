@@ -1,18 +1,18 @@
 {% extends "html/settings/base.html" %}
 
-{% block title %}Account Settings{% endblock %}
+{% block title %}{{ gettext('Account Settings') }}{% endblock %}
 {% block page_id %}account-settings-page{% endblock %}
 
 {% block settings_main %}
-<form method="post" action="/settings">
+<form method="post" action="/settings" id="account-settings-form">
     <div class="buttons buttons-top">
-        <button type="submit">Save</button>
-        <a href="/"><button>Cancel</button></a>
+        <button type="submit">{{ gettext('Save') }}</button>
+        <a href="/"><button>{{ gettext('Cancel') }}</button></a>
     </div>
     <div class="section">
-        <h2>Change Auto-Save Interval</h2>
+        <h2>{{ gettext('Change Auto-Save Interval') }}</h2>
         <div>
-            Minutes:
+            {{ gettext('Minutes') }}:
             <select name="autosave">
                 {% for i, selected in autosave_intervals %}
                 <option{{ selected }}>{{ i }}</option>
@@ -21,18 +21,21 @@
         </div>
     </div>
     <div class="section">
-        <h2>Change Password</h2>
+        <h2>{{ gettext('Change Password') }}</h2>
         <div id="passwd">
+            {% if message -%}
+            <input type="hidden" name="message" value="{ message }" />
+            {%- endif -%}
             <div>
-                <label for="old-pass">Old password</label>
+                <label for="old-pass">{{ gettext('Old password') }}</label>
                 <input type="password" name="old-pass" />
             </div>
             <div>
-                <label for="new-pass">New password</label>
+                <label for="new-pass">{{ gettext('New password') }}</label>
                 <input type="password" name="new-pass" />
             </div>
             <div>
-                <label for="retype-pass">Retype new password</label>
+                <label for="retype-pass">{{ gettext('Retype new password') }}</label>
                 <input type="password" name="retype-pass" />
             </div>
         </div>
@@ -40,23 +43,28 @@
 
     {% if true %}
     <div class="section">
-        <h2>Change E-mail Address</h2>
+        <h2>{{ gettext('Change E-mail Address') }}</h2>
         
         <div>
             <div>
-                <label>Current e-mail</label>
+                <label>{{ gettext('Current e-mail') }}</label>
                 {{ email_address }} {{ email_confirmed }}
             </div>
             <div>
-                <label for="new-email">New e-mail</label>
+                <label for="new-email">{{ gettext('New e-mail') }}</label>
                 <input type="text" name="new-email" class="c1" />
             </div>
         </div>
     </div>
     {% endif %}
+
+    {%- if auto_table %}
+    {{ auto_table }}
+    {%- endif %}
+    
     <div class="buttons">
-        <button type="submit">Save</button>
-        <a href="/"><button>Cancel</button></a>
+        <button type="submit">{{ gettext('Save') }}</button>
+        <a href="/"><button>{{ gettext('Cancel') }}</button></a>
     </div>
 </form>
 {% endblock %}

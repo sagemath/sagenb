@@ -142,7 +142,7 @@ try {
     uncomment_pat = new RegExp(uncomment_pat);
 } catch (e) {}
 
-var jsmath_font_msg = '<a href="{{ SAGE_URL }}/jsmath">Click to download and install tex fonts.</a><br>';
+var jsmath_font_msg = '<a href="{{ SAGE_URL }}/jsmath">' + translations["Click to download and install tex fonts."] + '</a><br>';
 // The global cell_writer target.
 var cell_writer = document;
 
@@ -311,7 +311,7 @@ function get_keyboard() {
     }
 
     if (!b || !o || warn) {
-        alert("Your browser / OS combination is not supported.  \nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.");
+        alert(translations['Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.']);
     }
 
     $.getScript('/javascript/sage/keyboard/' + b + o);
@@ -542,7 +542,7 @@ function hide_java_applets() {
         })
         me.after(
             $('<table><tbody><tr><td align="center" valign="middle">' + 
-              'Java Applet Hidden</td></tr></tbody></table>').css({
+              translations["Java Applet Hidden"] + '</td></tr></tbody></table>').css({
                 marginTop: '-' + height.toString() + 'px',
                 width: width.toString() + 'px',
                 height: height.toString() + 'px',
@@ -1167,7 +1167,7 @@ function update_introspection_text(id, text) {
             }
         }
 
-        introspect_div.find('.docstring').prepend('<div class="click-message" style="cursor: pointer">Click here to pop out</div><div class="unprinted-note">unprinted</div>');
+        introspect_div.find('.docstring').prepend('<div class="click-message" style="cursor: pointer">' + translations["Click here to pop out"] + '</div><div class="unprinted-note">' + translations["unprinted"] + '</div>');
 
         if (intr.replacing && !intr.docstring) {
             select_replacement_element(id, intr.replacement_row,
@@ -1447,7 +1447,7 @@ function worksheet_list_button_callback(status, response_text) {
             alert(response_text);
         }
     } else {
-        alert("Error applying function to worksheet(s)." + response_text);
+        alert(translations['Error applying function to worksheet(s).'] + response_text);
     }
     window.location.reload(true);
 }
@@ -1523,19 +1523,6 @@ function copy_worksheet() {
 }
 
 
-function rate_worksheet(rating) {
-    /*
-    Save the comment and rating that the uses chooses for a public worksheet.
-
-    INPUT:
-        rating -- integer
-    */
-    var comment = get_element("rating_comment").value;
-    window.location.replace(worksheet_command("rate?rating=" + rating +
-                                              "&comment=" + escape0(comment)));
-}
-
-
 function download_worksheet() {
     /*
     Download the current worksheet to the file with name select by the
@@ -1545,7 +1532,7 @@ function download_worksheet() {
     INPUT:
         base_filename
     */
-    var title = prompt("Title of saved worksheet", worksheet_name), winref;
+    var title = prompt(translations['Title of saved worksheet'], worksheet_name), winref;
     if (title) {
         winref = open(worksheet_command("download/" + title + '.sws'));
     }
@@ -1607,7 +1594,7 @@ function save_worksheet_callback(status, response_text) {
     Verify that saving the current worksheet worked.
     */
     if (status !== 'success') {
-        alert("Failed to save worksheet.");
+        alert(translations['Failed to save worksheet.']);
         return;
     }
 }
@@ -1673,10 +1660,10 @@ function rename_worksheet() {
             callback($(':text', form).attr('value'));
         }
     }, {
-        title: 'Rename worksheet',
-        message: 'Please enter a name for this worksheet.',
+        title: translations["Rename worksheet"],
+        message: translations['Please enter a name for this worksheet.'],
         'default': worksheet_name,
-        submit: 'Rename'
+        submit: translations["Rename"]
     });
 }
 
@@ -1761,7 +1748,7 @@ function delete_worksheet_callback(status, response_text) {
     if (status === "success") {
         window.location.replace("/?typ=trash");
     } else {
-        alert("Possible failure deleting worksheet.");
+        alert(translations['Possible failure deleting worksheet.']);
     }
 }
 
@@ -1780,14 +1767,10 @@ function go_option(form) {
       form -- DOM element; the drop-down form element
     */
     var action = form.options[form.selectedIndex].value;
-    action = action.slice(0, action.indexOf('('));
-
-    // This is safer than using eval.
-    if (action === 'delete_worksheet') {
-        delete_worksheet(worksheet_filename);
-    } else if (action !== '') {
-        window[action]();
-    }
+    // not safe, but more straigth forward than parsing
+    // what is basically an eval string and running the 
+    // corresponding function and arguments
+    eval(action);
     form.options[0].selected = 1;
 }
 
@@ -1828,10 +1811,10 @@ function list_rename_worksheet(filename, curname) {
     modal_prompt(function (form, prompt) {
         callback($(':text', form).attr('value'));
     }, {
-        title: 'Rename worksheet',
-        message: 'Please enter a name for this worksheet.',
+        title: translations["Rename worksheet"],
+        message: translations["Please enter a name for this worksheet."],
         'default': curname,
-        submit: 'Rename'
+        submit: translations["Rename"]
     });
 }
 
@@ -2078,7 +2061,7 @@ function evaluate_text_cell_callback(status, response_text) {
     if (X[0] === '-1') {
         // Something went wrong -- i.e., the requested cell doesn't
         // exist.
-        alert("You requested to evaluate a cell that, for some reason, the server is unaware of.");
+        alert(translations['You requested to evaluate a cell that, for some reason, the server is unaware of.']);
         return;
     }
     id = toint(X[0]);
@@ -2378,7 +2361,7 @@ function debug_input_key_event(e) {
         try {
             out = eval(debug_input.value);
         } catch (err) {
-            out = "Error: " + err.description;
+            out = translations["Error"] + ": " + err.description;
         } finally {
             debug_append(out);
             return false;
@@ -2998,7 +2981,11 @@ function worksheet_command(cmd) {
     OUTPUT:
         a string
     */
-    if (cmd === 'eval' || cmd === 'new_cell_before') {
+    if (cmd === 'eval' 
+	|| cmd === 'new_cell_before' 
+	|| cmd === 'new_cell_after'
+	|| cmd === 'new_text_cell_before'
+	|| cmd === 'new_text_cell_after') {
         state_number = parseInt(state_number, 10) + 1;
     }
     return ('/home/' + worksheet_filename + '/' + cmd);
@@ -3024,7 +3011,7 @@ function evaluate_cell(id, newcell) {
     var cell_input;
 
     if (worksheet_locked) {
-        alert("This worksheet is read only.  Please make a copy or contact the owner to change it.");
+        alert(translations['This worksheet is read only. Please make a copy or contact the owner to change it.']);
         return;
     }
 
@@ -3111,7 +3098,7 @@ function evaluate_cell_introspection(id, before, after) {
     }
 
     intr.loaded = false;
-    update_introspection_text(id, 'loading...');
+    update_introspection_text(id, translations["loading..."]);
     active_cell_list.push(id);
     cell_set_running(id);
 
@@ -3154,7 +3141,7 @@ function evaluate_cell_callback(status, response_text) {
     if (id === -1) {
         // Something went wrong -- i.e., the requested cell doesn't
         // exist.
-        alert("You requested to evaluate a cell that, for some reason, the server is unaware of.");
+        alert(translations['You requested to evaluate a cell that, for some reason, the server is unaware of.']);
         return;
     }
 
@@ -3410,8 +3397,8 @@ function check_for_cell_update_callback(status, response_text) {
             cancel_update_check();
             halt_active_cells();
             elapsed_time = update_error_count * update_error_delta / 1000;
-            msg = "Error updating cell output after " + elapsed_time + "s";
-            msg += "(canceling further update checks).";
+            msg = translations['Error updating cell output after '] + " " + elapsed_time + translations['s (canceling further update checks).'];
+            
             /* alert(msg); */
             return;
         }
@@ -4117,11 +4104,11 @@ function insert_new_cell_after_callback(status, response_text) {
     var id, new_html, new_id, X;
 
     if (status === "failure") {
-        alert("Problem inserting new input cell after current input cell.\n" + response_text);
+        alert(translations['Problem inserting new input cell after current input cell.\\n'] + response_text);
         return;
     }
     if (response_text === "locked") {
-        alert("Worksheet is locked.  Cannot insert cells.");
+        alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
@@ -4173,11 +4160,11 @@ function insert_new_text_cell_after_callback(status, response_text) {
     */
     var id, new_html, new_id, X;
     if (status === "failure") {
-        alert("Problem inserting new text cell before current input cell.");
+        alert(translations['Problem inserting new text cell before current input cell.'] );
         return;
     }
     if (response_text === "locked") {
-        alert("Worksheet is locked.  Cannot insert cells.");
+        alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
@@ -4260,11 +4247,11 @@ function insert_new_cell_before_callback(status, response_text) {
     */
     var id, new_html, new_id, X;
     if (status === "failure") {
-        alert("Problem inserting new input cell before current input cell.");
+        alert(translations['Problem inserting new input cell before current input cell.']);
         return;
     }
     if (response_text === "locked") {
-        alert("Worksheet is locked.  Cannot insert cells.");
+        alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
@@ -4304,11 +4291,11 @@ function insert_new_text_cell_before_callback(status, response_text) {
     */
     var id, new_html, new_id, X;
     if (status === "failure") {
-        alert("Problem inserting new text cell before current input cell.");
+        alert(translations['Problem inserting new text cell before current input cell.']);
         return;
     }
     if (response_text === "locked") {
-        alert("Worksheet is locked.  Cannot insert cells.");
+        alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
@@ -4404,14 +4391,14 @@ function interrupt_callback(status, response_text) {
     a alert and repeat after a timeout.  If the signal doesn't make
     it, we just reset any alerts.
     */
-    var is = interrupt_state, message, timeout = 5;
+    var is = interrupt_state, message;
+    {% set timeout = 5 %}
+    var timeout = {{ timeout }};
 
     if (response_text === 'failed') {
         if (!is.count) {
             is.count = 1;
-            message = 'Unable to interrupt calculation. ' +
-                'Trying again in ' + timeout + ' seconds... ' +
-                'Close this box to stop trying.';
+            message = translations['Unable to interrupt calculation.'] + " " + translations[timeout > 1 ? 2 : 1]['Trying again in %(num)d second...'](timeout) + ' ' + translations['Close this box to stop trying.'];
 
             is.alert = $.achtung({
                 className: 'interrupt-fail-notification',
@@ -4430,9 +4417,9 @@ function interrupt_callback(status, response_text) {
         }
 
         is.count += 1;
-        message = 'Interrupt attempt ' + is.count;
+        message = translations['Interrupt attempt'] + " " + is.count;
         if (is.count > 5) {
-            message += '. <a href="javascript:restart_sage();">Restart</a>, instead?';
+            message += ". " + translations["<a href='javascript:restart_sage();'>Restart</a>, instead?"];
         }
         is.alert.achtung('update', {
             message: message,
@@ -4799,7 +4786,7 @@ function empty_trash() {
       allowed by the server.
 
     */
-    if(confirm('Emptying the trash will permanently delete all items in the trash. Continue?')) {
+    if(confirm(translations["Emptying the trash will permanently delete all items in the trash. Continue?"])) {
         $('#empty-trash-form').submit();
     }
 }

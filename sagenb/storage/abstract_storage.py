@@ -28,6 +28,12 @@ class Datastore(object):
     def save_server_conf(self, server_conf):
         raise NotImplementedError
 
+    def load_openid(self):
+        raise NotImplementedError
+    
+    def save_openid(self, openid_dict):
+        raise NotImplementedError
+
     def load_users(self):
         """
         OUTPUT:

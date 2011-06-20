@@ -7,13 +7,13 @@ INPUT:
 - do_print - a boolean stating whether the file is for print mode
 #}
 
-{% block body_classes %}worksheet-online{% if not (worksheet.is_published() or notebook.user_is_guest(username) or worksheet.is_doc_worksheet()) %} active-worksheet-page{% endif %}{% endblock %}
+{% block body_classes %}worksheet-online{% if not (worksheet.is_published() or notebook.user_manager().user_is_guest(username) or worksheet.is_doc_worksheet()) %} active-worksheet-page{% endif %}{% endblock %}
 {% block page_id %}user-worksheet-index{% endblock %}
 
 {% block worksheet_main %}
 {% set toggle=true %}
 <div class="worksheet" id="worksheet">
-    {{ worksheet.html() }}
+    {{ worksheet.html(username=username) }}
     {% if do_print %}
     <script>
         jsMath.ProcessBeforeShowing();
@@ -24,7 +24,7 @@ INPUT:
         state_number = {{ worksheet.state_number() }};
         {% if not published %}
 	$(document).ready(function () {
-            if (worksheet_name === "Untitled") {
+            if (worksheet_name === "{{ gettext('Untitled') }}") {
                 rename_worksheet();
             }
          });

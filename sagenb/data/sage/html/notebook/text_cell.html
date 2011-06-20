@@ -16,10 +16,10 @@ INPUT:
     <div class="insert_new_cell" id="insert_new_cell_before{{ cell.id() }}">
     </div>
     <script type="text/javascript">
-        $("#insert_new_cell_before{{ cell.id() }}").plainclick(function (e) {
+        $("#insert_new_cell_before{{ cell.id() }}").bind("plainclick",function (e) {
             insert_new_cell_before({{ '%r'|format(cell.id()) }});
         });
-        $("#insert_new_cell_before{{ cell.id() }}").shiftclick(function (e) {
+        $("#insert_new_cell_before{{ cell.id() }}").bind("shiftclick",function (e) {
             insert_new_text_cell_before({{ '%r'|format(cell.id()) }});
         });
     </script>
@@ -33,7 +33,7 @@ INPUT:
     </div>
 {% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print %}
     <script type="text/javascript">
-        $("#cell_text_{{ cell.id() }}").unbind('dblclick').editable(function (value, settings) {
+       $("#cell_text_{{ cell.id() }}").unbind('dblclick').editable(function (value, settings) {
             evaluate_text_cell_input({{ '%r'|format(cell.id()) }}, value, settings);
             return(value);
         }, {
@@ -43,8 +43,8 @@ INPUT:
             type   : 'mce',
             onblur : 'ignore',
             select : false,
-            submit : 'Save changes',
-            cancel : 'Cancel changes',
+            submit : "{{ gettext('Save changes') }}",
+            cancel : "{{ gettext('Cancel changes') }}",
             event  : "dblclick",
             style  : "inherit",
 	    data   : {{ cell.plain_text()|repr_str }}

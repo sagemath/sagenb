@@ -2,32 +2,32 @@
 
 {% set select = "revisions" %}
 {% block sharebar_title %}
-Revision from {{ time_ago }} ago&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>Revision List</a>
+{{ gettext('Revision from %(ta)s ago')|format(ta=time_ago) }}&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>{{ gettext('Revision List') }}</a>
 {% endblock %}
 
 {% block page_id %}specific-revision-page{% endblock %}
 
 {% macro actions() %}
 {% if prev_rev %}
-    <a class="listcontrol" href="revisions?rev={{ prev_rev }}">Older</a>
+    <a class="listcontrol" href="revisions?rev={{ prev_rev }}">{{ gettext('Older') }}</a>
 {% else %}
-    Oldest
+    {{ gettext('Oldest') }}
 {% endif %}
 
 {% if next_rev %}
-    <a class="listcontrol" href="revisions?rev={{ next_rev }}">Newer</a>
+    <a class="listcontrol" href="revisions?rev={{ next_rev }}">{{ gettext('Newer') }}</a>
 {% else %}
-    Newest
+    {{ gettext('Newest') }}
 {% endif %}
 
-<a class="listcontrol" href="revisions?rev={{ rev }}&action=revert">Revert to this one</a> <span class="lastedit">(note that images are not recorded)</span>&nbsp;&nbsp;
-<a class="listcontrol" href="revisions?rev={{ rev }}&action=publish">Publish this one</a>
+<a class="listcontrol" href="revisions?rev={{ rev }}&action=revert">{{ gettext('Revert to this one') }}</a> <span class="lastedit">{{ gettext('(note that images are not recorded)') }}</span>&nbsp;&nbsp;
+<a class="listcontrol" href="revisions?rev={{ rev }}&action=publish">{{ gettext('Publish this one') }}</a>
 {% endmacro %}
 
 {% block after_sharebar %}
 {{ actions() }}
 <div id="revision-data">
-    {{ worksheet.html(do_print=true, publish=true) }}
+    {{ worksheet.html(do_print=true, publish=true, username=username) }}
 </div>
 {{ actions() }}
 <script type="text/javascript">

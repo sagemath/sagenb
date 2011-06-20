@@ -1,5 +1,5 @@
 {% extends "html/settings/base.html" %}
-{% block title %}Notebook Settings{% endblock %}
+{% block title %}{{ gettext('Notebook Settings') }}{% endblock %}
 
 {% block more_css %}
 <link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />  
@@ -13,18 +13,18 @@
 {% block page_id %}notebook-settings-page{% endblock %}
 
 {% block settings_main %}
-<form method="get" action="/notebooksettings">
+<form method="post" action="/notebooksettings">
   <input type="hidden" name="form" value="on" />
   <div class="buttons buttons-top">
-      <button type="submit">Save</button>
-      <a href="/"><button>Cancel</button></a>
+      <button type="submit">{{ gettext('Save') }}</button>
+      <a href="/"><button>{{ gettext('Cancel') }}</button></a>
   </div>
   {%- if auto_table %}
   {{ auto_table }}
   {%- endif %}
   <div class="buttons">
-      <button type="submit">Save</button>
-      <a href="/"><button>Cancel</button></a>
+      <button type="submit">{{ gettext('Save') }}</button>
+      <a href="/"><button>{{ gettext('Cancel') }}</button></a>
   </div>
 </form>
 {% endblock %}

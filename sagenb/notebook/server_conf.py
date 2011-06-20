@@ -1,12 +1,14 @@
-# -*- coding: utf-8 -*
+# -*- coding: utf-8 -*-
 """nodoctest
 """
-
+#from   template import language
 import copy
 
 import conf
 from conf import (DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
                   T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST)
+from sagenb.misc.misc import get_languages
+from flaskext.babel import gettext, lazy_gettext
 
 defaults = {'word_wrap_cols':72,
             'max_history_length':250,
@@ -30,113 +32,129 @@ defaults = {'word_wrap_cols':72,
 
             'accounts':False,
 
+            'openid':False,
+
             'challenge':False,
             'challenge_type':'simple',
             'recaptcha_public_key':'',
             'recaptcha_private_key':'',
+            'default_language': 'en_US',
             }
 
-G_APPEARANCE = 'Appearance'
-G_AUTH = 'Authentication'
-G_SERVER = 'Server'
+G_APPEARANCE = lazy_gettext('Appearance')
+G_AUTH = lazy_gettext('Authentication')
+G_SERVER = lazy_gettext('Server')
 
 defaults_descriptions = {
 
     'word_wrap_cols': {
-        DESC : 'Number of word-wrap columns',
+        DESC : lazy_gettext('Number of word-wrap columns'),
         GROUP : G_APPEARANCE,
         TYPE : T_INTEGER,
         },
 
     'max_history_length': {
-        DESC : 'Maximum history length',
+        DESC : lazy_gettext('Maximum history length'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
 
     'idle_timeout': {
-        DESC : 'Idle timeout (seconds)',
+        DESC : lazy_gettext('Idle timeout (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
 
     'idle_check_interval': {
-        DESC : 'Idle check interval (seconds)',
+        DESC : lazy_gettext('Idle check interval (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
 
     'save_interval': {
-        DESC : 'Save interval (seconds)',
+        DESC : lazy_gettext('Save interval (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
 
     'doc_pool_size': {
-        DESC : 'Doc pool size',
+        DESC : lazy_gettext('Doc pool size'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
 
     'server_pool': {
-        DESC : 'Worksheet process users (comma-separated list)',
+        DESC : lazy_gettext('Worksheet process users (comma-separated list)'),
         GROUP : G_SERVER,
         TYPE : T_LIST,
         },
 
     'system': {
-        DESC : 'Default system',
+        DESC : lazy_gettext('Default system'),
         GROUP : G_SERVER,
         TYPE : T_STRING,
         },
 
     'pretty_print': {
-        DESC : 'Pretty print (typeset) output',
+        DESC : lazy_gettext('Pretty print (typeset) output'),
         GROUP : G_APPEARANCE,
         TYPE : T_BOOL,
         },
 
     'ulimit': {
-        DESC : 'Worksheet process limits',
+        DESC : lazy_gettext('Worksheet process limits'),
         GROUP : G_SERVER,
         TYPE : T_STRING,
         },
 
     'email': {
-        DESC : 'Require e-mail for account registration',
+        DESC : lazy_gettext('Require e-mail for account registration'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'accounts': {
-        DESC : 'Enable user registration',
+        DESC : lazy_gettext('Enable user registration'),
+        GROUP : G_AUTH,
+        TYPE : T_BOOL,
+        },
+
+    'openid': {
+        DESC : lazy_gettext('Allow OpenID authentication (requires python ssl module)'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'challenge': {
-        DESC : 'Use a challenge for account registration',
+        DESC : lazy_gettext('Use a challenge for account registration'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'challenge_type': {
-        DESC : 'Type of challenge',
+        DESC : lazy_gettext('Type of challenge'),
         GROUP : G_AUTH,
         TYPE : T_CHOICE,
         CHOICES : ['simple', 'recaptcha'],
         },
 
     'recaptcha_public_key': {
-        DESC : 'reCAPTCHA public key',
+        DESC : lazy_gettext('reCAPTCHA public key'),
         GROUP : G_AUTH,
         TYPE : T_STRING,
         },
 
     'recaptcha_private_key': {
-        DESC : 'reCAPTCHA private key',
+        DESC : lazy_gettext('reCAPTCHA private key'),
         GROUP : G_AUTH,
         TYPE : T_STRING,
+        },
+
+    'default_language': {
+        DESC : lazy_gettext('Default Language'),
+        GROUP : G_APPEARANCE,
+        TYPE : T_CHOICE,
+        CHOICES : get_languages(),
         },
 }
 

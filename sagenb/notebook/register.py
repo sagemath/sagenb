@@ -12,30 +12,21 @@
 """
 Helper functions dealing with the verification of user  
 """
+from flaskext.babel import gettext as _
 
 def build_msg(key, username, addr, port, secure):
     url_prefix = "https" if secure else "http"
-    s  = "Hi %s!\n\n" % username
-    s += """\
-Thank you for registering for the Sage notebook. To complete your registration,
-copy and paste the following link into your browser:
+    s  = _("Hi %s!\n\n") % username
+    s += _('Thank you for registering for the Sage notebook. To complete your registration, copy and paste the following link into your browser:\n\n%s://%s:%s/confirm?key=%s\n\nYou will be taken to a page which will confirm that you have indeed registered.') % (url_prefix, addr, port, key)
 
-%s://%s:%s/confirm?key=%s
-
-You will be taken to a page which will confirm that you have indeed
-registered.""" % (url_prefix, addr, port, key)
-    return s
+    return s.encode('utf-8')
 
 def build_password_msg(key, username, addr, port, secure):
     url_prefix = "https" if secure else "http"
-    s  = "Hi %s!\n\n" % username
-    s += """\
-Your new password is %s
+    s  = _("Hi %s!\n\n") % username
+    s += _('Your new password is %s\n\nSign in at %s://%s:%s/\n\nMake sure to reset your password by going to Settings in the upper right bar.') % (key, url_prefix, addr, port)
 
-Sign in at %s://%s:%s/
-
-Make sure to reset your password by going to Settings in the upper right bar.""" % (key, url_prefix, addr, port)
-    return s
+    return s.encode('utf-8')
 
 def make_key():
     from random import randint

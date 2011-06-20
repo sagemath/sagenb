@@ -1,6 +1,6 @@
 {% extends "html/base_authenticated.html" %}
 
-{% block title %}{{ src_filename }} - Source Code{% endblock %}
+{% block title %}{{ src_filename }} - {{ gettext('Source Code') }}{% endblock %}
 
 {% block css %}main{% endblock %}
 
@@ -10,8 +10,8 @@
 
 {% block body %}
 <div>
-<h1>Sage Source Browser</h1>
-<h2 class="filename" >{{ src_filename }}  <a href="..">(browse directory)</a></h2>
+<h1>{{ gettext('Sage Source Browser') }}</h1>
+<h2 class="filename" >{{ src_filename }}  <a href="..">({{ gettext('browse directory') }})</a></h2>
 </div>
 
 <code id="code">{{ src }}</code>

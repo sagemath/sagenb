@@ -1,4 +1,6 @@
 # Boring file regexps:
+\.scssc$
+\.sassc$
 \.git$
 \.hi$
 \.mtl$
