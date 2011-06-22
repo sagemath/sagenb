@@ -3,6 +3,8 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required, with_lock
+from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+_ = gettext
 
 worksheet_listing = Module('flask_version.worksheet_listing')
 
@@ -277,6 +279,7 @@ def upload_worksheet():
                 W = g.notebook.import_worksheet(filename, g.username)
 
         except Exception, msg:
+            print 'error uploading worksheet', msg
             s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%(backlinks)s', backlinks=backlinks)
             return current_app.message(s, url_for('home', username=g.username))
         finally:
