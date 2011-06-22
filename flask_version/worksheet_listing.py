@@ -266,13 +266,16 @@ def upload_worksheet():
             if filename.endswith('.zip'):
                 # Extract all the .sws files from a zip file.
                 zip_file = zipfile.ZipFile(filename)
-                sws_file = os.path.join(dir, "tmp.sws")
-                for sws in zip_file.namelist():
-                    if sws.endswith('.sws'):
-                        open(sws_file, 'w').write(zip_file.read(sws)) # 2.6 zip_file.extract(sws, sws_file)
-                        W = g.notebook.import_worksheet(sws_file, g.username)
+                for subfilename in zip_file.namelist():
+                    prefix, extension = os.path.splitext(subfilename)
+                    if extension in ['.sws', '.html', '.txt', '.rst'] :
+                        tmpfilename = os.path.join(dir, "tmp" + extension)
+                        open(tmpfilename, 'w').write(zip_file.read(subfilename)) # 2.6 zip_file.extract(sws, tmpfilename)
+                        W = g.notebook.import_worksheet(tmpfilename, g.username)
                         if new_name:
                             W.set_name("%s - %s" % (new_name, W.name()))
+                    else:
+                        print "Unknown extension, file %s is ignored" % subfilename
                 return redirect(url_for('home', username=g.username))
 
             else:
