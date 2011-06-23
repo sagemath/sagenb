@@ -39,7 +39,7 @@ class SageNBFlask(Flask):
         DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
         self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
         self.add_static_path('/doc/static', DOC) 
-        self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'en', 'reference'))
+        self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'reference'))
 
     def create_jinja_environment(self):
         from sagenb.notebook.template import env
