@@ -1914,9 +1914,17 @@ class Worksheet(object):
         """
         # Load the worksheet data file from disk.
         filename = self.worksheet_html_filename()
-        r = (self.owner().lower() + ' ' + self.publisher().lower() + ' ' + self.name().lower())
+
         if os.path.exists(filename):
-            r += ' ' + open(filename).read().decode('utf-8', 'ignore').lower()
+            contents = open(filename).read().decode('utf-8', 'ignore')
+        else:
+            contents = u' '
+
+        try:
+            r = [unicode(x.lower()) for x in [self.owner(), self.publisher(), self.name(), contents]]
+            r = u" ".join(r)
+        except UnicodeDecodeError as e:
+            return False
 
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
