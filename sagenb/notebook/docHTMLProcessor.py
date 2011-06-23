@@ -250,7 +250,7 @@ class genericHTMLProcessor(SGMLParser):
             raise ValueError('unknown piece_type(=%s)' % piece_type)
 
     def get_cellcount(self):
-        """
+        r"""
         Return the current cell count and increment it by one.
 
         OUTPUT:
@@ -579,7 +579,7 @@ class genericHTMLProcessor(SGMLParser):
     ##############################################
     ## Specific tag handlers
     def start_body(self, attrs):
-        """
+        r"""
         Set ``self.keep_data`` to True upon finding the opening body tag.
 
         INPUT:
@@ -646,7 +646,7 @@ class genericHTMLProcessor(SGMLParser):
 
 class SphinxHTMLProcessor(genericHTMLProcessor):
     def reset(self):
-        """
+        r"""
         Initialize necessary variables.  Called by
         :meth:`SGMLParser.__init__`.
 
@@ -1083,7 +1083,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
 
     """
     def reset(self):
-        """
+        r"""
         Initialize necessary variables.  Called by
         :meth:`SGMLParser.__init__`.
 
