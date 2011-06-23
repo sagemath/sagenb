@@ -193,6 +193,7 @@ class Worksheet(object):
         EXAMPLES: We test the constructor via an indirect doctest::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: sagenb.notebook.twist.notebook = nb
             sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
             admin/0: [Cell 1; in=, out=]
@@ -898,8 +899,10 @@ class Worksheet(object):
             sage: W.notebook() is sagenb.notebook.twist.notebook
             True
         """
-        import twist
-        return twist.notebook
+        if not hasattr(self, '_notebook'):
+            import twist
+            self._notebook = twist.notebook
+        return self._notebook 
 
     def save(self, conf_only=False):
         self.notebook().save_worksheet(self, conf_only=conf_only)
@@ -1166,10 +1169,10 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('Publish Test', 'admin')
             sage: P = nb.publish_worksheet(W, 'admin')  # indirect test
             sage: W._Worksheet__published_version
-            'pub/1'
-            sage: W.set_published_version('pub/0')
-            sage: W._Worksheet__published_version
             'pub/0'
+            sage: W.set_published_version('pub/1')
+            sage: W._Worksheet__published_version
+            'pub/1'
         """
         self.__published_version = filename
 
@@ -1693,13 +1696,13 @@ class Worksheet(object):
             sage: W.cell_list()[0].evaluate()
             sage: W.check_comp()    # random output -- depends on computer speed
             sage: sorted(os.listdir(W.directory()))
-            ['cells', 'data']
+            ['cells', 'data', 'worksheet.html', 'worksheet_conf.pickle']
             sage: W.save_snapshot('admin')
             sage: sorted(os.listdir(W.directory()))
-            ['cells', 'data', 'snapshots', 'worksheet.html']
+            ['cells', 'data', 'snapshots', 'worksheet.html', 'worksheet_conf.pickle']
             sage: W.delete_cells_directory()
             sage: sorted(os.listdir(W.directory()))
-            ['data', 'snapshots', 'worksheet.html']
+            ['data', 'snapshots', 'worksheet.html', 'worksheet_conf.pickle']
             sage: W.quit()
             sage: nb.delete()
         """
@@ -2796,17 +2799,6 @@ class Worksheet(object):
                 continue
             if os.path.exists(dir) and not os.listdir(dir):
                 shutil.rmtree(dir, ignore_errors=True)
-
-
-
-
-
-
-
-
-
-
-
         self.notebook().quit_worksheet(self)
 
     def next_block_id(self):

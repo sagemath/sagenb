@@ -340,9 +340,9 @@ class Notebook(object):
             sage: nb.worksheet_names()
             ['Mark/0']
             sage: nb.publish_worksheet(nb.get_worksheet_with_filename('Mark/0'), 'Mark')
-            pub/1: [Cell 1; in=, out=]
+            pub/0: [Cell 1; in=, out=]
             sage: sorted(nb.worksheet_names())
-            ['Mark/0', 'pub/1']
+            ['Mark/0', 'pub/0']
         """
         for X in self.users_worksheets('pub'):
             if X.worksheet_that_was_published() == worksheet:
@@ -393,7 +393,8 @@ class Notebook(object):
 
         W.set_system(self.system(username))
         W.set_name(worksheet_name)
-        W.save()
+        self.save_worksheet(W)
+        self.__worksheets[W.filename()] = W
 
         return W
 
@@ -421,7 +422,6 @@ class Notebook(object):
         W.quit()
         shutil.rmtree(W.directory(), ignore_errors=False)
         self.deleted_worksheets()[filename] = W
-        del self.__worksheets[filename]
 
     def deleted_worksheets(self):
         try:
@@ -446,6 +446,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
+            sage: W._notebook = nb
             sage: W.move_to_trash('sage')
             sage: nb.worksheet_names()
             ['sage/0']
@@ -479,7 +480,7 @@ class Notebook(object):
             sage: nb.user_manager().add_user('wstein','sage','wstein@sagemath.org',force=True)
             sage: W2 = nb.new_worksheet_with_title_from_text('Elliptic Curves', owner='wstein')
             sage: nb.worksheet_names()
-            ['sage/0', 'wstein/1']
+            ['sage/0', 'wstein/0']
         """
         W = self.__worksheets.keys()
         W.sort()
@@ -853,7 +854,7 @@ class Notebook(object):
 
         Yes, it's there now (as admin/2)::
 
-            sage: [w.name() for w in nb.get_all_worksheets()]
+            sage: [w.filename() for w in nb.get_all_worksheets()]
             ['admin/0', 'admin/1']
         """
         id_number = self.new_id_number(username)
