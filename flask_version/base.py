@@ -181,7 +181,6 @@ def history():
 
 @base.route('/live_history')
 @login_required
-@with_lock
 def live_history():
     W = g.notebook.create_new_worksheet_from_history(gettext('Log'), g.username, 100)
     from worksheet import url_for_worksheet
@@ -288,9 +287,9 @@ def notebook_save_check():
 
     t = walltime()
     if t > last_save_time + save_interval:
-        with global_lock:
-            # check again because condition might have changed while waiting
-            if t > last_save_time + save_interval:
+        # check again because condition might have changed while waiting
+        if t > last_save_time + save_interval:
+            with global_lock:
                 notebook.save()
                 last_save_time = t
 
@@ -300,9 +299,9 @@ def notebook_idle_check():
 
     t = walltime()
     if t > last_idle_time + idle_interval:
-        with global_lock:
-            # check again because condition might have changed while waiting
-            if t > last_idle_time + idle_interval:
+        # check again because condition might have changed while waiting
+        if t > last_idle_time + idle_interval:
+            with global_lock:
                 notebook.update_worksheet_processes()
                 notebook.quit_idle_worksheet_processes()
                 last_idle_time = t

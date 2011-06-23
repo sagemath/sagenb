@@ -1163,12 +1163,12 @@ class Notebook(object):
         timeout = self.conf()['idle_timeout']
         if timeout == 0:
             # Quit only the doc browser worksheets
-            for W in self.__worksheets.itervalues():
+            for W in self.__worksheets.values():
                 if W.docbrowser() and W.compute_process_has_been_started():
                     W.quit_if_idle(DOC_TIMEOUT)
             return
 
-        for W in self.__worksheets.itervalues():
+        for W in self.__worksheets.values():
             if W.compute_process_has_been_started():
                 W.quit_if_idle(timeout)
 
@@ -1408,7 +1408,7 @@ class Notebook(object):
         S.save_server_conf(self.conf())
         self._user_manager.save(S)
         # Save the non-doc-browser worksheets.
-        for n, W in self.__worksheets.iteritems():
+        for n, W in self.__worksheets.items():
             if not n.startswith('doc_browser'):
                 S.save_worksheet(W)
         if hasattr(self, '_user_history'):
