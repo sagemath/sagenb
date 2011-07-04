@@ -1,17 +1,18 @@
 ///////////////////////////////////////////////////////////////////
 //
-// KeyCodes (auto-generated from config.py and user's sage config
+// "External" Javascript
 //
 ///////////////////////////////////////////////////////////////////
 
 
-{{ KEY_CODES }}
-
-{% include "js/jmol_lib.js" %}
-
-{% include "js/canvas3d_lib.js" %}
-
+// Key codes (auto-generated in js.py from config.py and user's sage
+// config).
+ {{ KEY_CODES }}
+ 
+// Other libraries.
 {% include "js/async_lib.js" %}
+{% include "js/canvas3d_lib.js" %}
+{% include "js/jmol_lib.js" %}
 
 function interrupt_callback(status, response_text) {
     /*

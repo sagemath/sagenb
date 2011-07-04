@@ -38,7 +38,7 @@ import traceback
 import locale
 
 # General sage library code
-from sagenb.misc.misc import (cython, load, save, 
+from sagenb.misc.misc import (cython, load, save,
                               alarm, cancel_alarm, verbose, DOT_SAGENB,
                               walltime, ignore_nonexistent_files,
                               set_restrictive_permissions,
@@ -204,10 +204,10 @@ class Worksheet(object):
             return
 
         # Record the basic properties of the worksheet
-        self.__system   = system
+        self.__system = system
         self.__pretty_print = pretty_print
-        self.__owner         = owner
-        self.__viewers       = []
+        self.__owner = owner
+        self.__viewers = []
         self.__collaborators = []
         self.__autopublish = auto_publish
         self.__saved_by_info = {}
@@ -238,7 +238,8 @@ class Worksheet(object):
             self.__state_number = 0
 
     def state_number(self):
-        if self.is_published(): return 0
+        if self.is_published(): 
+            return 0
         try:
             return self.__state_number
         except AttributeError:
@@ -302,41 +303,41 @@ class Worksheet(object):
 
         d = {#############
              # basic identification
-             'name':self.name(),
-             'id_number':int(self.id_number()),
+             'name': self.name(),
+             'id_number': int(self.id_number()),
 
              #############
              # default type of computation system that evaluates cells
-             'system':self.system(),
+             'system': self.system(),
 
              #############
              # permission: who can look at the worksheet
-             'owner':self.owner(),
-             'viewers':self.viewers(),
-             'collaborators':self.collaborators(),
+             'owner': self.owner(),
+             'viewers': self.viewers(),
+             'collaborators': self.collaborators(),
 
              #############
              # publishing worksheets (am I published?); auto-publish me?
              # If this worksheet is published, then the published_id_number
              # is the id of the published version of this worksheet. Otherwise,
              # it is None.
-             'published_id_number':published_id_number,
+             'published_id_number': published_id_number,
              # If this is a published worksheet, then ws_pub
              # is a 2-tuple ('username', id_number) of a non-published
              # worksheet.  Otherwise ws_pub is None.
-             'worksheet_that_was_published':ws_pub,
+             'worksheet_that_was_published': ws_pub,
              # Whether or not this worksheet should automatically be
              # republished when changed.
-             'auto_publish':self.is_auto_publish(),
+             'auto_publish': self.is_auto_publish(),
 
              # Appearance: e.g., whether to pretty print this
              # worksheet by default
-             'pretty_print':self.pretty_print(),
+             'pretty_print': self.pretty_print(),
 
              # what other users think of this worksheet: list of
              # triples
              #       (username, rating, comment)
-             'ratings':self.ratings(),
+             'ratings': self.ratings(),
 
              #???
              'saved_by_info':saved_by_info,
@@ -347,12 +348,12 @@ class Worksheet(object):
              #   0,1,2 (=ARCHIVED,ACTIVE,TRASH),
              # or a string (not yet supported).
              # This is used for now to fill in the __user_views.
-             'tags':self.tags(),
+             'tags': self.tags(),
 
              # information about when this worksheet was last changed,
              # and by whom:
              #     last_change = ('username', time.time())
-             'last_change':self.last_change(),
+             'last_change': self.last_change(),
              }
         return d
 
@@ -405,9 +406,9 @@ class Worksheet(object):
             elif key == 'tags':
                 self.set_tags(value)
             elif key == 'last_change':
-                self.set_last_change(value[0],value[1])
+                self.set_last_change(value[0], value[1])
             elif key == 'published_id_number' and value is not None:
-                self.set_published_version('pub/%s'%value)
+                self.set_published_version('pub/%s' % value)
             elif key == 'worksheet_that_was_published':
                 self.set_worksheet_that_was_published(value)
         self.create_directories()
@@ -1028,11 +1029,11 @@ class Worksheet(object):
             sage: nb.delete()
         """
         if check == 'false':
-            check=False
+            check = False
         else:
-            check=True
+            check = True
         self.__pretty_print = check
-        self.eval_asap_no_output("pretty_print_default(%r)"%(check))
+        self.eval_asap_no_output("pretty_print_default(%r)" % check)
 
     ##########################################################
     # Publication
@@ -1091,7 +1092,7 @@ class Worksheet(object):
             True
         """
         try:
-            return self.notebook().get_worksheet_with_filename('%s/%s'%self.__worksheet_came_from)
+            return self.notebook().get_worksheet_with_filename('%s/%s' % self.__worksheet_came_from)
         except Exception:  # things can go wrong (especially with old migrated
                            # Sage notebook servers!), but we don't want such
                            # problems to crash the notebook server.
@@ -1194,7 +1195,7 @@ class Worksheet(object):
             True
         """
         try:
-            filename =self.__published_version
+            filename = self.__published_version
             try:
                 W = self.notebook().get_worksheet_with_filename(filename)
                 return W
@@ -1366,7 +1367,7 @@ class Worksheet(object):
         if len(r) == 0:
             rating = -1    # means "not rated"
         else:
-            rating = float(sum(r))/float(len(r))
+            rating = float(sum(r)) / float(len(r))
         return rating
 
     ##########################################################
@@ -1503,7 +1504,7 @@ class Worksheet(object):
             True
         """
         if not isinstance(user, (str, unicode)):
-            raise TypeError, "user (=%s) must be a string"%user
+            raise TypeError("user (=%s) must be a string" % user)
         try:
             self.__user_view[user] = x
         except (KeyError, AttributeError):
@@ -1945,11 +1946,12 @@ class Worksheet(object):
     # Saving
     ##########################################################
     def save_snapshot(self, user, E=None):
-        if not self.body_is_loaded(): return
+        if not self.body_is_loaded(): 
+            return
         self.uncache_snapshot_data()
         path = self.snapshot_directory()
         basename = str(int(time.time()))
-        filename = os.path.join(path, '%s.bz2'%basename)
+        filename = os.path.join(path, '%s.bz2' % basename)
         if E is None:
             E = self.edit_text()
         worksheet_html = self.worksheet_html_filename()
@@ -1990,7 +1992,7 @@ class Worksheet(object):
 
     def revert_to_snapshot(self, name):
         path = self.snapshot_directory()
-        filename = os.path.join(path, '%s.txt'%name)
+        filename = os.path.join(path, '%s.txt' % name)
         E = bz2.decompress(open(filename).read())
         self.edit_save(E)
 
@@ -1998,7 +2000,7 @@ class Worksheet(object):
         try:
             u = self.__saved_by_info[x]
             return u
-        except (KeyError,AttributeError):
+        except (KeyError, AttributeError):
             return ''
 
     def snapshot_data(self):
@@ -2082,9 +2084,9 @@ class Worksheet(object):
         """
         s = ''
         if banner:
-            s += "#"*80 + '\n'
-            s += "# Worksheet: %s"%self.name() + '\n'
-            s += "#"*80+ '\n\n'
+            s += "#" * 80 + '\n'
+            s += "# Worksheet: %s" % self.name() + '\n'
+            s += "#" * 80 + '\n\n'
 
         for C in self.cell_list():
             t = C.plain_text(prompts=prompts).strip('\n')
@@ -2111,7 +2113,8 @@ class Worksheet(object):
         s = ''
         for C in self.cell_list():
             t = C.edit_text().strip()
-            if t: s += '\n\n' + t
+            if t: 
+                s += '\n\n' + t
         return s
 
     def set_body(self, body):
@@ -2150,7 +2153,7 @@ class Worksheet(object):
             return
 
     def edit_save_old_format(self, text, username=None):
-        text.replace('\r\n','\n')
+        text.replace('\r\n', '\n')
 
         name, i = extract_name(text)
         self.set_name(name)
@@ -2166,9 +2169,9 @@ class Worksheet(object):
 
     def edit_save(self, text, ignore_ids=False):
         r"""
-        Set the contents of this worksheet to the worksheet defined by the
-        plain text string text, which should be a sequence of html and 's
-        code blocks.
+        Set the contents of this worksheet to the worksheet defined by
+        the plain text string text, which should be a sequence of HTML
+        and code blocks.
 
         INPUT:
 
@@ -2232,7 +2235,7 @@ class Worksheet(object):
 
         self.reset_interact_state()
 
-        text.replace('\r\n','\n')
+        text.replace('\r\n', '\n')
 
         data = []
         while True:
@@ -2242,14 +2245,15 @@ class Worksheet(object):
                 data.append(('plain', T))
             try:
                 meta, input, output, i = extract_first_compute_cell(text)
-                data.append(('compute', (meta,input,output)))
+                data.append(('compute', (meta, input, output)))
             except EOFError, msg:
-                #print msg   # -- don't print msg, just outputs a blank line every time,
-                #                 which makes for an ugly and unprofessional log.
+                #print msg # -- don't print msg, just outputs a blank
+                #                 line every time, which makes for an
+                #                 ugly and unprofessional log.
                 break
             text = text[i:]
 
-        ids = set([x[0]['id'] for typ, x in data if typ == 'compute' and  x[0].has_key('id')])
+        ids = set([x[0]['id'] for typ, x in data if typ == 'compute' and  'id' in x[0]])
         used_ids = set([])
 
         cells = []
@@ -2262,7 +2266,7 @@ class Worksheet(object):
                     used_ids.add(id)
             elif typ == 'compute':
                 meta, input, output = T
-                if not ignore_ids and meta.has_key('id'):
+                if not ignore_ids and 'id' in meta:
                     id = meta['id']
                     if id in used_ids:
                         # In this case don't reuse, since ids must be unique.
@@ -2277,7 +2281,7 @@ class Worksheet(object):
                 try:
                     self.__cells
                     C = self.get_cell_with_id(id = id)
-                    if isinstance(C, TextCell):
+                    if C.is_text_cell():
                         C = self._new_cell(id)
                 except AttributeError:
                     C = self._new_cell(id)
@@ -2293,7 +2297,7 @@ class Worksheet(object):
         self.set_cell_counter()
 
         # There must be at least one cell.
-        if len(cells) == 0 or isinstance(cells[-1], TextCell):
+        if len(cells) == 0 or cells[-1].is_text_cell():
             self.append_new_cell()
 
         if not self.is_published():
@@ -2429,7 +2433,8 @@ class Worksheet(object):
             time.struct_time(tm_year=2009, tm_mon=10, ...)
             sage: t = W.time_since_last_edited() # just test that call works
         """
-        username = str(username); tm = float(tm)
+        username = str(username)
+        tm = float(tm)
         self.__date_edited = (time.localtime(tm), username)
         self.__last_edited = (tm, username)
 
@@ -2472,7 +2477,8 @@ class Worksheet(object):
         return time.time() - self.last_edited()
 
 
-    def warn_about_other_person_editing(self,username, threshold = WARN_THRESHOLD):
+    def warn_about_other_person_editing(self, username, 
+                                        threshold = WARN_THRESHOLD):
         r"""
         Check to see if another user besides username was the last to edit
         this worksheet during the last ``threshold`` seconds.
@@ -2702,7 +2708,7 @@ class Worksheet(object):
         for i in range(len(cells)):
             if cells[i].id() == id:
                 C = self._new_cell(input=input)
-                cells.insert(i+1, C)
+                cells.insert(i + 1, C)
                 return C
         C = self._new_cell(input=input)
         cells.append(C)
@@ -2728,7 +2734,7 @@ class Worksheet(object):
         for i in range(len(cells)):
             if cells[i].id() == id:
                 C = self._new_text_cell(plain_text=input)
-                cells.insert(i+1, C)
+                cells.insert(i + 1, C)
                 return C
         C = self._new_text_cell(plain_text=input)
         cells.append(C)
@@ -2759,7 +2765,7 @@ class Worksheet(object):
                 # Delete this cell from the list of cells in this worksheet:
                 del cells[i]
                 if i > 0:
-                    return cells[i-1].id()
+                    return cells[i - 1].id()
                 else:
                     break
         return cells[0].id()
@@ -2770,7 +2776,7 @@ class Worksheet(object):
     def clear(self):
         self.__comp_is_running = False
         self.__queue = []
-        self.__cells = [ ]
+        self.__cells = []
         for i in range(INITIAL_NUM_CELLS):
             self.append_new_cell()
 
@@ -2799,7 +2805,7 @@ class Worksheet(object):
         try:
             S.quit()
         except AttributeError, msg:
-            print "WARNING: %s"%msg
+            print "WARNING: %s" % msg
         except Exception, msg:
             print msg
             print "WARNING: Error deleting Sage object!"
@@ -2901,7 +2907,8 @@ except (KeyError, IOError):
             return None
         try:
             S = self.__sage
-            if S.is_started(): return S
+            if S.is_started(): 
+                return S
         except AttributeError:
             pass
         self.__sage = self.notebook().new_worksheet_process()
@@ -2943,7 +2950,6 @@ except (KeyError, IOError):
             # don't actually compute
             return
 
-
         if cell_system == 'sage' and C.introspect():
             before_prompt, after_prompt = C.introspect()
             I = before_prompt
@@ -2952,8 +2958,9 @@ except (KeyError, IOError):
             if I in ['restart', 'quit', 'exit']:
                 self.restart_sage()
                 S = self.system()
-                if S is None: S = 'sage'
-                C.set_output_text('Exited %s process'%S,'')
+                if S is None: 
+                    S = 'sage'
+                C.set_output_text('Exited %s process' % S,'')
                 return
 
         #Handle any percent directives
@@ -2973,8 +2980,8 @@ except (KeyError, IOError):
         if C.time():
             input += '__SAGE_t__=cputime()\n__SAGE_w__=walltime()\n'
 
-        # If the input ends in a question mark and is *not* a comment line,
-        # then we introspect on it.
+        # If the input ends in a question mark and is *not* a comment
+        # line, then we introspect on it.
         if cell_system == 'sage' and len(I) != 0:
             #Get the last line of a possible multiline input
             Istrip = I.strip().split('\n').pop()
@@ -3048,6 +3055,7 @@ except (KeyError, IOError):
             return 'e', None
         S = self.sage()
         C = self.__queue[0]
+
         if C.interrupted():
             self.__comp_is_running = False
             del self.__queue[0]
@@ -3056,7 +3064,7 @@ except (KeyError, IOError):
         try:
             output_status = S.output_status()
         except RuntimeError, msg:
-            verbose("Computation was interrupted or failed. Restarting.\n%s"%msg)
+            verbose("Computation was interrupted or failed. Restarting.\n%s" % msg)
             self.__comp_is_running = False
             self.start_next_comp()
             return 'w', C
@@ -3078,7 +3086,8 @@ except (KeyError, IOError):
                         if os.path.split(X)[1] == CODE_PY:
                             continue
                         target = os.path.join(cell_dir, os.path.split(X)[1])
-                        if os.path.exists(target): os.unlink(target)
+                        if os.path.exists(target): 
+                            os.unlink(target)
                         os.symlink(X, target)
                 ########################################################
             return 'w', C
@@ -3116,8 +3125,10 @@ except (KeyError, IOError):
                 if os.path.split(X)[-1] != CODE_PY:
                     Y = os.path.join(d, X)
                     if os.path.isfile(Y):
-                        try: os.unlink(Y)
-                        except: pass
+                        try: 
+                            os.unlink(Y)
+                        except: 
+                            pass
                     else:
                         shutil.rmtree(Y, ignore_errors=True)
             return 'd', C
@@ -3145,8 +3156,10 @@ except (KeyError, IOError):
                             shutil.copy(X, target)
                         set_restrictive_permissions(target)
                         if os.path.isfile(X):
-                            try: os.unlink(X)
-                            except: pass
+                            try: 
+                                os.unlink(X)
+                            except: 
+                                pass
                         else:
                             shutil.rmtree(X, ignore_errors=True)
                     except Exception, msg:
@@ -3240,7 +3253,7 @@ except (KeyError, IOError):
 
     def worksheet_command(self, cmd):
         # return URL in the web browser of the given cmd
-        return '/home/%s/%s'%(self.filename(), cmd)
+        return '/home/%s/%s' % (self.filename(), cmd)
 
     ##########################################################
     # Idle timeout
@@ -3254,7 +3267,7 @@ except (KeyError, IOError):
         browser) is also considered idle, even if code is running.
         """
         if self.time_idle() > timeout:
-            print "Quitting ignored worksheet process for '%s'."%self.name()
+            print "Quitting ignored worksheet process for '%s'." % self.name()
             self.quit()
 
     def time_idle(self):
@@ -3310,10 +3323,10 @@ except (KeyError, IOError):
         if self.is_published():
             return
         self._record_that_we_are_computing(username)
-        if not isinstance(C, Cell):
+        if not C.is_compute_cell():
             raise TypeError
         if C.worksheet() != self:
-            raise ValueError, "C must be have self as worksheet."
+            raise ValueError("C must be have self as worksheet.")
 
         # Now enqueue the requested cell.
         if not (C in self.__queue):
@@ -3450,17 +3463,17 @@ except (KeyError, IOError):
         completions = s.split()
 
         n = len(completions)
-        l = n/cols + n%cols
+        l = n / cols + n % cols
 
         if n == 1:
             return '' # don't show a window, just replace it
 
         rows = []
-        for r in range(0,l):
+        for r in range(0, l):
             row = []
             for c in range(cols):
                 try:
-                    cell = completions[r + l*c]
+                    cell = completions[r + l * c]
                     row.append(cell)
                 except:
                     row.append('')
@@ -3486,10 +3499,10 @@ except (KeyError, IOError):
         i = 0
         while i < len(after_prompt):
             if after_prompt[i] == '?':
-                if i < len(after_prompt)-1 and after_prompt[i+1] == '?':
+                if i < len(after_prompt)-1 and after_prompt[i + 1] == '?':
                     i += 1
-                before_prompt += after_prompt[:i+1]
-                after_prompt = after_prompt[i+1:]
+                before_prompt += after_prompt[:i + 1]
+                after_prompt = after_prompt[i + 1:]
                 C.set_introspect(before_prompt, after_prompt)
                 break
             elif after_prompt[i] in ['"', "'", ' ', '\t', '\n']:
@@ -3497,14 +3510,14 @@ except (KeyError, IOError):
             i += 1
         if before_prompt.endswith('??'):
             input = self._get_last_identifier(before_prompt[:-2])
-            input = 'print _support_.source_code("%s", globals(), system="%s")'%(input, self.system())
+            input = 'print _support_.source_code("%s", globals(), system="%s")' % (input, self.system())
         elif before_prompt.endswith('?'):
             input = self._get_last_identifier(before_prompt[:-1])
-            input = 'print _support_.docstring("%s", globals(), system="%s")'%(input, self.system())
+            input = 'print _support_.docstring("%s", globals(), system="%s")' % (input, self.system())
         else:
             input = self._get_last_identifier(before_prompt)
             C._word_being_completed = input
-            input = 'print "\\n".join(_support_.completions("%s", globals(), system="%s"))'%(input, self.system())
+            input = 'print "\\n".join(_support_.completions("%s", globals(), system="%s"))' % (input, self.system())
         return input
 
     def preparse_nonswitched_input(self, input):
@@ -3524,19 +3537,21 @@ except (KeyError, IOError):
         return input
 
     def _strip_synchro_from_start_of_output(self, s):
-        z = SAGE_BEGIN+str(self.synchro())
+        z = SAGE_BEGIN + str(self.synchro())
         i = s.find(z)
         if i == -1:
-            # did not find any synchronization info in the output stream
+            # Did not find any synchronization info in the output
+            # stream.
             j = s.find('Traceback')
             if j != -1:
                 # Probably there was an error; better not hide it.
                 return s[j:]
             else:
-                # Maybe we just read too early -- suppress displaying anything yet.
+                # Maybe we just read too early -- suppress displaying
+                # anything yet.
                 return ''
         else:
-            return s[i+len(z):]
+            return s[i + len(z):]
 
     def postprocess_output(self, out, C):
         if C.introspect():
@@ -3609,7 +3624,7 @@ except (KeyError, IOError):
             else:
                 if new_tm > tm:
                     A[F] = new_tm
-                    s = 'load %s\n'%F + s
+                    s = 'load %s\n' % F + s
         return s
 
     def attached_files(self):
@@ -3626,8 +3641,7 @@ except (KeyError, IOError):
         try:
             A[filename] = os.path.getmtime(filename)
         except OSError:
-            print "WARNING: File %s vanished"%filename
-            pass
+            print "WARNING: File %s vanished" % filename
 
     def detach(self, filename):
         A = self.attached_files()
@@ -3928,7 +3942,7 @@ except (KeyError, IOError):
             sage: nb.delete()
         """
         if not self.user_can_edit(username):
-            raise ValueError, "user '%s' not allowed to edit this worksheet"%username
+            raise ValueError("user '%s' not allowed to edit this worksheet" % username)
         for C in self.cell_list():
             C.delete_output()
 
@@ -4015,7 +4029,7 @@ def extract_first_compute_cell(text):
     k = text[i:].find('|')
     if k != -1 and k < j:
         try:
-            meta = dictify(text[i+3:i+k])
+            meta = dictify(text[i + 3:i + k])
         except TypeError:
             meta = {}
         i += k + 1
@@ -4029,14 +4043,14 @@ def extract_first_compute_cell(text):
     else:
         j += i
     k = text[i:].find('\n///')
-    if k == -1 or k+i > j:
+    if k == -1 or k + i > j:
         input = text[i:j]
         output = ''
     else:
-        input = text[i:i+k].strip()
-        output = text[i+k+4:j]
+        input = text[i:i + k].strip()
+        output = text[i + k + 4:j]
 
-    return meta, input.strip(), output, j+4
+    return meta, input.strip(), output, j + 4
 
 def after_first_word(s):
     r"""
@@ -4061,7 +4075,7 @@ def after_first_word(s):
     i = whitespace.search(s)
     if i is None:
         return ''
-    return s[i.start()+1:]
+    return s[i.start() + 1:]
 
 def first_word(s):
     r"""
@@ -4114,11 +4128,11 @@ def extract_name(text):
         i = i.start()
         j = text[i:].find('\n')
         if j != -1:
-            name = text[i:i+j]
-            n = j+1
+            name = text[i:i + j]
+            n = j + 1
         else:
             name = text[i:]
-            n = len(text)-1
+            n = len(text) - 1
     return name.strip(), n
 
 def extract_system(text):
@@ -4132,11 +4146,11 @@ def extract_system(text):
             return 'sage', 0
         j = text[i:].find('\n')
         if j != -1:
-            system = text[i:i+j][7:].strip()
-            n = j+1
+            system = text[i:i + j][7:].strip()
+            n = j + 1
         else:
             system = text[i:][7:].strip()
-            n = len(text)-1
+            n = len(text) - 1
         return system, n
 
 def dictify(s):
@@ -4232,7 +4246,7 @@ def split_search_string_into_keywords(s):
 def _get_next(s, quote='"'):
     i = s.find(quote)
     if i != -1:
-        j = s[i+1:].find(quote)
+        j = s[i + 1:].find(quote)
         if j != -1:
-            return s[i+1:i+1+j].strip(), i+1+j
+            return s[i + 1:i + 1 + j].strip(), i + 1 + j
     return None, -1

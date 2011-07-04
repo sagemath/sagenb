@@ -297,15 +297,6 @@ a.file_link { text-decoration: underline; }
 div.insert_new_cell { height: 6px; display: block; margin: 3px; }
 div.insert_new_cell:hover { background-color: #8888fe; margin: 3px; }
 
-/* *********** DEBUG WINDOW ************************* */
-div.debug_window_active { background-color: white; border: 1px solid #fe8888; overflow: auto; padding-left: 3px; padding-top: 0px; padding-bottom: 0px; }
-div.debug_window_inactive { background-color: white; border: 1px solid #888888; overflow: auto; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; }
-div.debug_output { background-color: white; border: 0px; font-family: monospace; font-size: 10pt; overflow: scroll; padding-left: 3px; padding-top: 0px; padding-bottom: 0px; height: 10em; }
-
-textarea.debug_input { background-color: white; border: 1px solid #8888fe; font-family: monospace; font-size: 12pt; overflow: scroll; padding-left: 3px; padding-top: 0px; padding-bottom: 0px; }
-
-span.red { color: red; }
-
 /* ***************** Other ************* */
 a.worksheetname { text-decoration: none; font-weight: bold; font-size: 14px; color: #222222; }
 a.worksheetname:visited { color: #222222; }

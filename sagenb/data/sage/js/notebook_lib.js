@@ -181,9 +181,7 @@ var modal_prompt_element =
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // Cross-Browser Stuff
-//
 ///////////////////////////////////////////////////////////////////
 function toint(x) {
     /*
@@ -234,8 +232,8 @@ function initialize_the_notebook() {
         os_win = (((nav.indexOf('Win') !== -1) ||
                    (nav.indexOf('NT') !== -1)) && !os_mac) ? true : false;
         os_lin = (nua.indexOf('Linux') !== -1);
-    } catch (e2) {
-        alert(e2);
+    } catch (e) {
+        alert(e);
     }
 
     // Get the keyboard codes for our browser/os combination.
@@ -244,7 +242,7 @@ function initialize_the_notebook() {
     // Attempt to render any jsmath in this page.
     jsmath_init();
 
-    // Parse the cell ID list.
+    // Parse the cell IDs.
     cell_id_list = $.map(cell_id_list, function (id) {
         // Reset each cell's introspection variables.
         if (is_compute_cell(id)) {
@@ -288,7 +286,6 @@ function get_keyboard() {
 
     input_keypress = cell_input_key_event;
     input_keydown = true_function;
-    debug_keypress = debug_input_key_event;
 
     if (browser_op) {
         b = "o";
@@ -296,12 +293,10 @@ function get_keyboard() {
         b = "i";
         input_keypress = true_function;
         input_keydown = cell_input_key_event;
-        debug_keypress = true_function;
     } else if (browser_saf) {
         b = "s";
         input_keypress = true_function;
         input_keydown = cell_input_key_event;
-        debug_keypress = true_function;
     } else if (browser_konq) {
         b = "k";
         warn = true;
@@ -531,9 +526,7 @@ function set_cursor_position(cell, n) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // Misc page functions -- for making the page work nicely
-//
 ///////////////////////////////////////////////////////////////////
 function hide_java_applets() {
     /*
@@ -841,7 +834,7 @@ function resize_all_cells() {
 
 function input_keyup(id, event) {
     /*
-    Resize the cell once in a while and auto-indent.  Not too often.
+    Resizes and auto-idents cells on key up.
 
     INPUT:
         id -- integer or string; cell id
@@ -921,9 +914,7 @@ function input_keyup(id, event) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // Completions interface stuff
-//
 ///////////////////////////////////////////////////////////////////
 function handle_introspection(id, cell_input, event) {
     /*
@@ -1215,9 +1206,7 @@ function halt_introspection(id) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // Paren Matching
-//
 ///////////////////////////////////////////////////////////////////
 function paren_jump(cell, i, c, eat) {
     /*
@@ -1350,9 +1339,8 @@ function paren_match(cell) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
-// WORKSHEET functions -- for switching between and managing worksheets
-//
+// WORKSHEET functions -- for switching between and managing 
+// worksheets
 ///////////////////////////////////////////////////////////////////
 function new_worksheet() {
     /*
@@ -1439,22 +1427,22 @@ function worksheet_list_button(action) {
 }
 
 
-function worksheet_list_button_callback(status, response_text) {
+function worksheet_list_button_callback(status, response) {
     /*
     Handle result of performing some action on a list of worksheets.
 
     INPUT:
-        status, response_text -- standard AJAX return values
+        status, response -- standard AJAX return values
     OUTPUT:
         display an alert if something goes wrong; refresh this browser
         window no matter what.
     */
     if (status === 'success') {
-        if (response_text !== '') {
+        if (response !== '') {
             alert(response_text);
         }
     } else {
-        alert(translations['Error applying function to worksheet(s).'] + response_text);
+        alert(translations['Error applying function to worksheet(s).'] + response);
     }
     window.location.reload(true);
 }
@@ -1596,7 +1584,7 @@ function save_worksheet() {
 }
 
 
-function save_worksheet_callback(status, response_text) {
+function save_worksheet_callback(status, response) {
     /*
     Verify that saving the current worksheet worked.
     */
@@ -1607,13 +1595,13 @@ function save_worksheet_callback(status, response_text) {
 }
 
 
-function close_callback(status, response_text) {
+function close_callback(status, response) {
     /*
     Called when we successfully close the current worksheet and want
     to display the user home screen (i.e., worksheet list).
     */
     if (status !== 'success') {
-        alert(response_text);
+        alert(response);
         return;
     }
     window.location.replace('/home/' + user_name);
@@ -1746,7 +1734,7 @@ function delete_worksheet(name) {
 }
 
 
-function delete_worksheet_callback(status, response_text) {
+function delete_worksheet_callback(status, response) {
     /*
     Replace the current page by a page that shows the worksheet in the
     trash, or if the delete worksheet function failed display an
@@ -1761,10 +1749,8 @@ function delete_worksheet_callback(status, response_text) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // WORKSHEET list functions -- i.e., functions on a specific
 // worksheet in the list of worksheets display.
-//
 ///////////////////////////////////////////////////////////////////
 function go_option(form) {
     /*
@@ -1793,6 +1779,7 @@ function link_datafile(target_worksheet_filename, filename) {
        to link this file to
        filename -- string; the name of this file
      */
+    // TODO: What is process?
     open(worksheet_command("link_datafile?filename=" + escape0(filename) +
                            "&target=" + escape0(target_worksheet_filename)),
          process = false);
@@ -1891,9 +1878,7 @@ function list_revisions_of_worksheet(filename) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // Server pinging support, so server knows page is being viewed.
-//
 ///////////////////////////////////////////////////////////////////
 function server_ping_while_alive() {
     /*
@@ -1907,7 +1892,7 @@ function server_ping_while_alive() {
 }
 
 
-function server_ping_while_alive_callback(status, response_text) {
+function server_ping_while_alive_callback(status, response) {
     /*
     Whenever the server ping callback occurs, this function runs, and
     setsif the server didn't respond it calls server_down(); otherwise it
@@ -1926,7 +1911,7 @@ function server_ping_while_alive_callback(status, response_text) {
         set_class('ping', 'pingdown');
     } else {
         set_class('ping', 'ping');
-        if (state_number >= 0 && parseInt(response_text, 10) > state_number) {
+        if (state_number >= 0 && parseInt(response, 10) > state_number) {
             // Force a refresh of just the cells in the body.
             refresh_cell_list();
         }
@@ -1935,9 +1920,7 @@ function server_ping_while_alive_callback(status, response_text) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // CELL functions -- for the individual cells
-//
 ///////////////////////////////////////////////////////////////////
 function get_cell(id) {
     /*
@@ -1954,6 +1937,7 @@ function get_cell(id) {
     var v;
     id = toint(id);
 
+    // TODO: Just use jQuery with context?
     v = cell_element_cache[id];
     if (!v) {
         v = get_element('cell_input_' + id);
@@ -2048,14 +2032,15 @@ function evaluate_text_cell_input(id, value, settings) {
 }
 
 
-function evaluate_text_cell_callback(status, response_text) {
+function evaluate_text_cell_callback(status, response) {
     /*
     Display the new content of a text cell, parsing for math if
     needed.
 
     INPUT:
         status -- string
-        response_text -- string that is of the form [id][cell_html]
+        response -- string that is of the form [id][cell_html]
+
              id -- string (integer) of the current text cell
              cell_html -- the html to put in the cell
     */
@@ -2064,7 +2049,7 @@ function evaluate_text_cell_callback(status, response_text) {
         // Failure evaluating a cell.
         return;
     }
-    X = response_text.split(SEP);
+    X = response.split(SEP);
     if (X[0] === '-1') {
         // Something went wrong -- i.e., the requested cell doesn't
         // exist.
@@ -2090,34 +2075,6 @@ function evaluate_text_cell_callback(status, response_text) {
 }
 
 
-function debug_focus() {
-    /*
-    Called when the Javascript debugging window gets focus.  This
-    window is displayed when the notebook server is run with the
-    show_debug option.
-    */
-    var w;
-    in_debug_input = true;
-    w = get_element('debug_window');
-    if (w) {
-        w.className = 'debug_window_active';
-    }
-}
-
-
-function debug_blur() {
-    /*
-    Called when the Javascript debugging window looses focus.
-    */
-    var w;
-    in_debug_input = false;
-    w = get_element('debug_window');
-    if (w) {
-        w.className = 'debug_window_inactive';
-    }
-}
-
-
 function cell_focus(id, leave_cursor) {
     /*
     Set the focus on the cell with the given id.
@@ -2136,15 +2093,17 @@ function cell_focus(id, leave_cursor) {
     id = toint(id);
     cell = get_cell(id);
 
-    if (cell) {
-        // Focus on the cell with the given id and resize it.
-        cell_input_resize(id);
-        cell.focus();
+    if (!cell) {
+        return true;
+    }
 
-        // Possibly also move the cursor to the top left in this cell.
-        if (!leave_cursor) {
-            move_cursor_to_top_of_cell(cell);
-        }
+    // Focus on the cell with the given id and resize it.
+    cell_input_resize(id);
+    cell.focus();
+
+    // Possibly also move the cursor to the top left in this cell.
+    if (!leave_cursor) {
+        set_cursor_position(cell, 0);
     }
     // Set since we're now in a new cell, whose state hasn't changed
     // yet.
@@ -2184,16 +2143,6 @@ function cell_focused(cell, id) {
 }
 
 
-function move_cursor_to_top_of_cell(cell) {
-    /* Move the cursor to the first position in the given input cell.
-
-    INPUT:
-        cell -- an input cell as a DOM element
-    */
-    set_cursor_position(cell, 0);
-}
-
-
 function cell_input_resize(id) {
     /*
     Resize the given input cell so that it has the right number of
@@ -2216,6 +2165,9 @@ function cell_input_resize(id) {
         return;
     }
 
+    // TODO: This isn't quite accurate for the most common sorts of
+    // input cells.  In particular, backslashes appear to cause
+    // miscalculation.  Perhaps scrollTop is a viabl alternative?
     resizer.style.width = cell_input.offsetWidth + 'px';
     resizer.innerHTML = cell_input.value
         .replace(/&/g, '&amp;')
@@ -2253,7 +2205,7 @@ function cell_delete(id) {
 }
 
 
-function cell_delete_callback(status, response_text) {
+function cell_delete_callback(status, response) {
     /*
     When a cell is deleted this callback is called after the server
     hopefully does the deletion.  This function then removes the cell
@@ -2261,7 +2213,7 @@ function cell_delete_callback(status, response_text) {
 
     INPUT:
         status -- string
-        response_text -- string with the format [command]SEP[id]
+        response -- string with the format [command]SEP[id]
                command -- empty or 'ignore'
                id -- id of cell being deleted.
     */
@@ -2270,7 +2222,7 @@ function cell_delete_callback(status, response_text) {
     if (status === "failure") {
         return;
     }
-    X = response_text.split(SEP);
+    X = response.split(SEP);
     if (X[0] === 'ignore') {
         return;
         /* do not delete, for some reason */
@@ -2314,14 +2266,14 @@ function cell_delete_output(id) {
 }
 
 
-function cell_delete_output_callback(status, response_text) {
+function cell_delete_output_callback(status, response) {
     /*
     Callback for after the server deletes a cell's output.  This
     function removes the cell's output from the DOM.
 
     INPUT:
         status -- string ('success' or 'failure')
-        response_text -- [command]SEP[id]
+        response -- [command]SEP[id]
                command -- string ('delete_output')
                id -- id of cell whose output is deleted.
     */
@@ -2330,7 +2282,7 @@ function cell_delete_output_callback(status, response_text) {
         // Do not delete output, for some reason.
         return;
     }
-    id = toint(response_text.split(SEP)[1]);
+    id = toint(response.split(SEP)[1]);
 
     // Delete the output.
     get_element('cell_output_' + id).innerHTML = "";
@@ -2339,41 +2291,6 @@ function cell_delete_output_callback(status, response_text) {
 
     // Set the cell to not evaluated.
     cell_set_not_evaluated(id);
-}
-
-
-function debug_input_key_event(e) {
-    /*
-    Handle an input key even when we're in debug mode.
-
-    INPUT:
-        e -- key event
-    */
-    var after, debug_input, i, out;
-    e = new key_event(e);
-    debug_input = get_element('debug_input');
-
-    if (key_down_arrow(e)) {
-        after = text_cursor_split(debug_input)[1];
-        i = after.indexOf('\n');
-        if (i === -1 || after === '') {
-            jump_to_cell(extreme_compute_cell(1), 0);
-            return false;
-        } else {
-            return true;
-        }
-    }
-    if (key_send_input(e)) {
-        out = "";
-        try {
-            out = eval(debug_input.value);
-        } catch (err) {
-            out = translations["Error"] + ": " + err.description;
-        } finally {
-            debug_append(out);
-            return false;
-        }
-    }
 }
 
 
@@ -2397,6 +2314,7 @@ function cell_input_key_event(id, e) {
             - cell delete
             - a cell may be evaluated
     */
+    // TODO: Use js-hotkeys?
     var after, before, cell_input, i, selection_is_empty, selection_range;
 
     if (browser_iphone) {
@@ -2521,6 +2439,7 @@ function cell_input_key_event(id, e) {
     } else if (key_request_history(e)) {
         history_window();
     } else if (key_request_log(e)) {
+        // TODO: Write a function text_log_window or do ...?
         text_log_window(worksheet_filename);
     } else if (key_fix_paren(e)) {
         paren_match(cell_input);
@@ -2608,7 +2527,7 @@ function id_of_cell_delta(id, delta, all_cells) {
     i = $.inArray(id, cell_id_list);
     if (i === -1) {
         return id;
-        /* Better not to move. */
+        // Better not to move.
     } else {
         if (delta < 0) {
             delta = -delta;
@@ -2634,34 +2553,6 @@ function id_of_cell_delta(id, delta, all_cells) {
         return cell_id_list[i];
     }
 }
-
-
-function debug_clear() {
-    /*
-    Clear the debug window.
-    */
-    var output = get_element("debug_output");
-    if (!output) {
-        return;
-    }
-    output.innerHTML = "";
-}
-
-
-function debug_append(txt) {
-    /*
-    Append output to the debug window.
-
-    INPUT:
-        txt -- string
-    */
-    var output = get_element("debug_output");
-    if (!output) {
-        return;
-    }
-    output.innerHTML = txt + "\n" + output.innerHTML;
-}
-
 
 function jump_to_cell(id, delta, bottom) {
     /*
@@ -2714,9 +2605,8 @@ function escape0(input) {
         input -- string
     OUTPUT:
         a string
-
-    TODO: Use the built-in encodeURIComponent function.
     */
+    //TODO: Use the built-in encodeURIComponent function.
     input = escape(input);
     input = input.replace(/\+/g, "%2B");
     return input;
@@ -3215,7 +3105,7 @@ function cell_output_set_type(id, typ, do_async) {
         typ = "hidden";
     }
 
-    /* OK, now set the sell output type. */
+    /* OK, now set the cell output type. */
     set_class('cell_div_output_' + id, 'cell_div_output_' + typ);
     set_class('cell_output_' + id, 'cell_output_' + typ);
     set_class('cell_output_nowrap_' + id, 'cell_output_nowrap_' + typ);
@@ -4359,9 +4249,7 @@ function append_new_text_cell(id, html) {
 
 
 ///////////////////////////////////////////////////////////////////
-//
 // CONTROL functions
-//
 ///////////////////////////////////////////////////////////////////
 function interrupt() {
     /*
@@ -4561,9 +4449,7 @@ function login(username, password) {
 }
 
 ///////////////////////////////////////////////////////////////////
-//
 // Various POPUP WINDOWS
-//
 ///////////////////////////////////////////////////////////////////
 function history_window() {
     /*
@@ -4579,7 +4465,7 @@ function print_worksheet() {
     Display a version of this worksheet that is suitable for printing.
     */
     window.open(worksheet_command("print"), "",
-                      "menubar=1,scrollbars=1,width=800,height=600,toolbar=1,  resizable=1");
+                "menubar=1,scrollbars=1,width=800,height=600,toolbar=1,  resizable=1");
 }
 
 
@@ -4588,7 +4474,7 @@ function help() {
     Popup the help window.
     */
     window.open("/help", "",
-                      "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
+                "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
 }
 
 
@@ -4747,242 +4633,3 @@ function empty_trash() {
         $('#empty-trash-form').submit();
     }
 }
-
-// This is purely for debugging, diagnostics, etc.  Pass the options
-// dictionary as the argument below.
-(function debugging(options) {
-    // One way to get function names:
-    //    sed -nre "s/^function\s+(\w+)\s*\(.*/\1/p" notebook_lib.js
-    // From JS, filtered coarsely:
-    /*
-    var funcs = [];
-    for (x in window) {
-        if (typeof(window[x]) === 'function') {
-            if (x.slice(0, 4) !== 'key_' &&
-                x.slice(0, 4) !== 'jmol' &&
-                x.slice(0,5) !== '_jmol') {
-                funcs.push(x);
-            }
-        }
-    }
-    */
-
-    var funcs = [
-        // 'toint',
-        // 'initialize_the_notebook',
-        // 'true_function',
-        // 'get_keyboard',
-        // 'jsmath_init',
-        // 'get_element',
-        // 'set_class',
-        // 'key_event',
-        // 'time_now',
-        // 'current_selection',
-        // 'get_selection_range',
-        // 'set_selection_range',
-        // 'get_cursor_position',
-        // 'set_cursor_position',
-        // 'modal_prompt',
-        // 'refresh',
-        // 'refresh_cell_list',
-        // 'refresh_cell_list_callback',
-        // 'is_whitespace',
-        // 'first_variable_name_in_string',
-        // 'lstrip',
-        // 'resize_all_cells',
-        // 'input_keyup',
-        // 'handle_introspection',
-        // 'do_replacement',
-        // 'get_replacement_element',
-        // 'replacement_element_exists',
-        // 'select_replacement_element',
-        // 'update_introspection_text',
-        // 'halt_introspection',
-        // 'paren_jump',
-        // 'paren_match',
-        // 'new_worksheet',
-        // 'set_worksheet_list_checks',
-        // 'checked_worksheet_filenames',
-        // 'worksheet_list_button',
-        // 'worksheet_list_button_callback',
-        // 'delete_button',
-        // 'make_active_button',
-        // 'archive_button',
-        // 'stop_worksheets_button',
-        // 'download_worksheets_button',
-        // 'history_window',
-        // 'upload_worksheet_button',
-        // 'copy_worksheet',
-        // 'rate_worksheet',
-        // 'download_worksheet',
-        // 'worksheet_settings',
-        // 'share_worksheet',
-        // 'publish_worksheet',
-        // 'save_as',
-        // 'edit_worksheet',
-        // 'save_worksheet',
-        // 'save_worksheet_callback',
-        // 'close_callback',
-        // 'save_worksheet_and_close',
-        // 'worksheet_discard',
-        // 'rename_worksheet',
-        // 'go_system_select',
-        // 'system_select',
-        // 'pretty_print_check',
-        // 'handle_data_menu',
-        // 'delete_worksheet',
-        // 'delete_worksheet_callback',
-        // 'go_option',
-        // 'link_datafile',
-        // 'list_rename_worksheet',
-        // 'list_edit_worksheet',
-        // 'list_copy_worksheet',
-        // 'list_share_worksheet',
-        // 'list_publish_worksheet',
-        // 'list_revisions_of_worksheet',
-        // 'server_ping_while_alive',
-        // 'server_ping_while_alive_callback',
-        // 'get_cell',
-        // 'cell_blur',
-        // 'send_cell_input',
-        // 'evaluate_text_cell_input',
-        // 'evaluate_text_cell_callback',
-        // 'debug_focus',
-        // 'debug_blur',
-        // 'cell_focus',
-        // 'cell_focused',
-        // 'move_cursor_to_top_of_cell',
-        // 'cell_input_resize',
-        // 'cell_delete',
-        // 'cell_delete_callback',
-        // 'debug_input_key_event',
-        // 'cell_input_key_event',
-        // 'is_compute_cell',
-        // 'extreme_compute_cell',
-        // 'id_of_cell_delta',
-        // 'debug_clear',
-        // 'debug_append',
-        // 'jump_to_cell',
-        // 'escape0',
-        // 'text_cursor_split',
-        // 'indent_cell',
-        // 'unindent_cell',
-        // 'comment_cell',
-        // 'uncomment_cell',
-        // 'join_cell',
-        // 'split_cell',
-        // 'worksheet_command',
-         'evaluate_cell',
-         'evaluate_cell_introspection',
-        // 'evaluate_cell_callback',
-        // 'is_interacting_cell',
-        // 'cell_output_set_type',
-        // 'cycle_cell_output_type',
-        // 'cell_set_evaluated',
-        // 'cell_set_not_evaluated',
-        // 'cell_set_running',
-        // 'cell_set_done',
-        // 'check_for_cell_update',
-        // 'check_for_cell_update_callback',
-        // 'continue_update_check',
-        // 'start_update_check',
-        // 'cancel_update_check',
-        // 'contains_jsmath',
-        // 'set_output_text',
-        // 'set_input_text',
-        // 'CellWriter',
-        // 'eval_script_tags',
-        // 'separate_script_tags',
-        // 'slide_mode',
-        // 'cell_mode',
-        // 'slide_hide',
-        // 'slide_show',
-        // 'slide_first',
-        // 'slide_last',
-        // 'slide_next',
-        // 'slide_prev',
-        // 'jump_to_slide',
-        // 'update_slideshow_progress',
-        // 'make_new_cell',
-        // 'make_new_text_cell',
-        // 'do_insert_new_cell_before',
-        // 'do_insert_new_text_cell_before',
-        // 'insert_new_cell_after',
-        // 'insert_new_cell_after_callback',
-        // 'insert_new_text_cell_after',
-        // 'insert_new_text_cell_after_callback',
-        // 'do_insert_new_cell_after',
-        // 'do_insert_new_text_cell_after',
-        // 'insert_new_cell_before',
-        // 'insert_new_cell_before_callback',
-        // 'insert_new_text_cell_before',
-        // 'insert_new_text_cell_before_callback',
-        // 'append_new_cell',
-        // 'append_new_text_cell',
-        // 'interrupt',
-        // 'interrupt_callback',
-        // 'evaluate_all',
-        // 'hide_all',
-        // 'show_all',
-        // 'delete_all_output',
-        // 'halt_active_cells',
-        // 'set_all_cells_to_be_not_evaluated',
-        // 'restart_sage',
-        // 'quit_sage',
-        // 'login',
-        // 'history_window',
-        // 'print_worksheet',
-        // 'help',
-        // 'bugreport',
-         'interact',
-        // 'encode64',
-        // 'decode64',
-        // 'empty_trash'
-        ''
-    ], i, s;
-
-    if (!window.console) {
-        window.console = {};
-        if (window.opera) {
-            window.console.log = opera.postError;
-        } else {
-            window.console.log = function () {};
-        }
-    }
-
-    // TODO: Display a live call stack of wrapped functions in a
-    // floating div.
-
-    // Wrap selected functions in proxies.  This allows us to log
-    // their arguments, globals, etc., when they're called.
-    if (options.proxify === true) {
-        for (i = 0; i < funcs.length; i += 1) {
-            if (typeof(window[funcs[i]]) !== 'function') {
-                continue;
-            }
-
-            // Evaluate here, for immediate closure.
-            window[funcs[i]] = (function () {
-                // Private variables.
-                var name = funcs[i], orig = window[funcs[i]];
-
-                return function () {
-                    // Is logging on or off?  Check a global variable.
-                    // This allows us to toggle logging w/o reloading.
-                    if (sage_debug_log) {
-                        console.log('active_cell_list', active_cell_list);
-
-                        if (this !== window) {
-                            console.log(name, this, arguments);
-                        } else {
-                            console.log(name, arguments);
-                        }
-                    }
-                    return orig.apply(this, arguments);
-                };
-            }());
-        }
-    }
-
-// Change the settings to false for releases!
-}({proxify: false}));

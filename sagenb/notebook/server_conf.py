@@ -19,6 +19,7 @@ defaults = {'word_wrap_cols':72,
             'save_interval':360,        # seconds
 
             'doc_pool_size':128,
+            'doc_timeout': 120,
 
             'server_pool':[],
 
@@ -78,7 +79,13 @@ defaults_descriptions = {
         },
 
     'doc_pool_size': {
-        DESC : lazy_gettext('Doc pool size'),
+        DESC : lazy_gettext('Doc worksheet pool size'),
+        GROUP : G_SERVER,
+        TYPE : T_INTEGER,
+        },
+
+    'doc_timeout': {
+        DESC : lazy_gettext('Doc worksheet idle timeout (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },

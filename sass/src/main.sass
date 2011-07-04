@@ -1108,53 +1108,6 @@ div
       :background-color #8888fe
       :margin 3px
 
-/************ DEBUG WINDOW **************************/
-
-div
-  &.debug_window_active
-    :background-color white
-    :border 1px solid #fe8888
-    :overflow auto
-    :padding-left 3px
-    :padding-top 0px
-    :padding-bottom 0px
-
-  &.debug_window_inactive
-    :background-color white
-    :border 1px solid #888888
-    :overflow auto
-    :padding-left 0px
-    :padding-top 0px
-    :padding-bottom 0px
-
-  &.debug_output
-    :background-color white
-    :border 0px
-    +monospace-stack
-    :font-size 10pt
-    :overflow scroll
-    :padding-left 3px
-    :padding-top 0px
-    :padding-bottom 0px
-    :height 10em
-
-
-textarea.debug_input
-  :background-color white
-  :border 1px solid #8888fe
-  +monospace-stack
-  :font-size 12pt
-  :overflow scroll
-  :padding-left 3px
-  :padding-top 0px
-  :padding-bottom 0px
-
-
-span.red
-  :color red
-
-/****************** Other **************/
-
 a
   &.worksheetname
     :text-decoration none

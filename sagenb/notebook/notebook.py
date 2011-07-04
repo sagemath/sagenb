@@ -85,8 +85,6 @@ JSMATH = True
 
 JEDITABLE_TINYMCE  = True
 
-DOC_TIMEOUT = 120
-
 class WorksheetDict(dict):
     def __init__(self, notebook, *args, **kwds):
         self.notebook = notebook
@@ -121,7 +119,7 @@ class Notebook(object):
             dir = dir[:-1]
 
         if not dir.endswith('.sagenb'):
-            raise ValueError, "dir (=%s) must end with '.sagenb'"%dir
+            raise ValueError("dir (=%s) must end with '.sagenb'" % dir)
 
         self._dir = dir
 
@@ -387,7 +385,7 @@ class Notebook(object):
 
     def create_new_worksheet(self, worksheet_name, username, add_to_list=True):
         if username!='pub' and self.user_manager().user_is_guest(username):
-            raise ValueError, "guests cannot create new worksheets"
+            raise ValueError("guests cannot create new worksheets")
 
         W = self.worksheet(username)
 
@@ -401,7 +399,7 @@ class Notebook(object):
     def copy_worksheet(self, ws, owner):
         W = self.create_new_worksheet('default', owner)
         self._initialize_worksheet(ws, W)
-        name = "Copy of %s"%ws.name()
+        name = "Copy of %s" % ws.name()
         W.set_name(name)
         return W
 
@@ -512,7 +510,7 @@ class Notebook(object):
         if P is None or len(P) == 0:
             return None
         try:
-            self.__server_number = (self.__server_number + 1)%len(P)
+            self.__server_number = (self.__server_number + 1) % len(P)
             i = self.__server_number
         except AttributeError:
             self.__server_number = 0
@@ -544,12 +542,13 @@ class Notebook(object):
         #    -t -- > max_walltime
 
         max_vmem = max_cputime = max_walltime = None
-        tbl = {'v':None, 'u':None, 't':None}
+        tbl = {'v': None, 'u': None, 't': None}
         for x in ulimit.split('-'):
             for k in tbl.keys():
-                if x.startswith(k): tbl[k] = int(x.split()[1].strip())
+                if x.startswith(k): 
+                    tbl[k] = int(x.split()[1].strip())
         if tbl['v'] is not None:
-            tbl['v'] = tbl['v']/1000.0
+            tbl['v'] = tbl['v'] / 1000.0
 
 
         process_limits = ProcessLimits(max_vmem=tbl['v'], max_walltime=tbl['t'],
@@ -570,8 +569,10 @@ class Notebook(object):
     def _python_command(self):
         """
         """
-        try: return self.__python_command
-        except AttributeError: pass
+        try: 
+            return self.__python_command
+        except AttributeError: 
+            pass
 
 
 
@@ -605,7 +606,7 @@ class Notebook(object):
             self.__color = 'default'
             return self.__color
 
-    def set_color(self,color):
+    def set_color(self, color):
         self.__color = color
 
     ##########################################################
@@ -614,7 +615,7 @@ class Notebook(object):
     def user_history(self, username):
         if not hasattr(self, '_user_history'):
             self._user_history = {}
-        if self._user_history.has_key(username):
+        if 'username' in self._user_history:
             return self._user_history[username]
         history = []
         for hunk in self.__storage.load_user_history(username):
@@ -661,7 +662,8 @@ class Notebook(object):
         S = self.__storage
         W = self.get_worksheet_with_filename(worksheet_filename)
         S.save_worksheet(W)
-        username = W.owner(); id_number = W.id_number()
+        username = W.owner()
+        id_number = W.id_number()
         S.export_worksheet(username, id_number, output_filename, title=title)
 
     def worksheet(self, username, id_number=None):
@@ -742,7 +744,7 @@ class Notebook(object):
             [TextCell 0: foo, Cell 1: in=2+3, out=]
         """
         if not os.path.exists(filename):
-            raise ValueError, "no file %s"%filename
+            raise ValueError("no file %s" % filename)
 
         # Figure out the file extension
         ext = os.path.splitext(filename)[1]
@@ -1125,9 +1127,9 @@ class Notebook(object):
             if j != -1:
                 name = name[:j].rstrip()
             i = 2
-            while name + " (%s)"%i in display_names:
+            while name + " (%s)" % i in display_names:
                 i += 1
-            name = name + " (%s)"%i
+            name = name + " (%s)" % i
             worksheet.set_name(name)
 
 
@@ -1166,7 +1168,7 @@ class Notebook(object):
             # Quit only the doc browser worksheets
             for W in self.__worksheets.values():
                 if W.docbrowser() and W.compute_process_has_been_started():
-                    W.quit_if_idle(DOC_TIMEOUT)
+                    W.quit_if_idle(self.conf()['idle_timeout'])
             return
 
         for W in self.__worksheets.values():
@@ -1270,12 +1272,13 @@ class Notebook(object):
         for i in range(len(data)):
             if data[i][1] == rev:
                 if i > 0:
-                    prev_rev = data[i-1][1]
+                    prev_rev = data[i - 1][1]
                 if i < len(data)-1:
-                    next_rev = data[i+1][1]
+                    next_rev = data[i + 1][1]
                 break
 
-        return template(os.path.join("html", "notebook", "specific_revision.html"),
+        return template(os.path.join("html", "notebook", 
+                                     "specific_revision.html"),
                         worksheet = ws,
                         username = username, rev = rev, prev_rev = prev_rev,
                         next_rev = next_rev, time_ago = time_ago)
@@ -1303,13 +1306,13 @@ class Notebook(object):
         """
         U = self.user_manager().users()
         other_users = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
-        other_users.sort(lambda x,y: cmp(x.lower(), y.lower()))
+        other_users.sort(lambda x, y: cmp(x.lower(), y.lower()))
 
         return template(os.path.join("html", "notebook", "worksheet_share.html"),
                         worksheet = worksheet,
                         notebook = self,
                         username = username, other_users = other_users)
-    
+
     def html_download_or_delete_datafile(self, ws, username, filename):
         r"""
         Return the HTML for the download or delete datafile page.
@@ -1658,7 +1661,7 @@ def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None
             try:
                 nb = migrate_old_notebook_v1(dir)
             except KeyboardInterrupt:
-                raise KeyboardInterrupt, "Interrupted notebook migration.  Delete the directory '%s' and try again."%(os.path.abspath(dir+'.sagenb'))
+                raise KeyboardInterrupt("Interrupted notebook migration.  Delete the directory '%s' and try again." % (os.path.abspath(dir+'.sagenb')))
             return nb
         dir += '.sagenb'
 
@@ -1690,32 +1693,32 @@ def migrate_old_notebook_v1(dir):
     ######################################################################
 
     print ""
-    print "*"*80
+    print "*" * 80
     print "*"
     print "* The Sage notebook at"
     print "*"
-    print "*      '%s'"%os.path.abspath(dir)
+    print "*      '%s'" % os.path.abspath(dir)
     print "*"
     print "* will be upgraded to a new format and stored in"
     print "*"
-    print "*      '%s.sagenb'."%os.path.abspath(dir)
+    print "*      '%s.sagenb'." % os.path.abspath(dir)
     print "*"
     print "* Your existing notebook will not be modified in any way."
     print "*"
-    print "*"*80
+    print "*" * 80
     print ""
     ans = raw_input("Would like to continue? [YES or no] ").lower()
     if ans not in ['', 'y', 'yes']:
-        raise RuntimeError, "User aborted upgrade."
+        raise RuntimeError("User aborted upgrade.")
 
     # Create new notebook
-    new_nb = Notebook(dir+'.sagenb')
+    new_nb = Notebook(dir + '.sagenb')
 
     # Define a function for transfering the attributes of one object to another.
     def transfer_attributes(old, new, attributes):
         for attr_old, attr_new in attributes:
             if hasattr(old, attr_old):
-                setattr(new, attr_new,  getattr(old, attr_old))
+                setattr(new, attr_new, getattr(old, attr_old))
 
     # Transfer all the notebook attributes to our new notebook object
 
@@ -1725,7 +1728,7 @@ def migrate_old_notebook_v1(dir):
             new_nb.conf().confs[t] = getattr(old_nb, '_Notebook__' + t)
 
     # Now update the user data from the old notebook to the new one:
-    print "Migrating %s user accounts..."%len(old_nb.user_manager().users())
+    print "Migrating %s user accounts..." % len(old_nb.user_manager().users())
     users = new_nb.user_manager().users()
     for username, old_user in old_nb.user_manager().users().iteritems():
         new_user = user.User(old_user.username(), '',
@@ -1757,7 +1760,7 @@ def migrate_old_notebook_v1(dir):
         tags = {}
         try:
             for user, val in old_ws._Worksheet__user_view.iteritems():
-                if isinstance(user,str):
+                if isinstance(user, str):
                     # There was a bug in the old notebook where sometimes the
                     # user was the *module* "user", so we don't include that
                     # invalid data.
@@ -1772,15 +1775,17 @@ def migrate_old_notebook_v1(dir):
             published_id_number = None
 
         ws_pub = old_ws.worksheet_that_was_published().filename().split('/')
-        ws_pub = (ws_pub[0],int(ws_pub[1]))
+        ws_pub = (ws_pub[0], int(ws_pub[1]))
 
-        obj = {'name':old_ws.name(), 'system':old_ws.system(),
-               'viewers':old_ws.viewers(), 'collaborators':old_ws.collaborators(),
-               'pretty_print':old_ws.pretty_print(), 'ratings':old_ws.ratings(),
-               'auto_publish':old_ws.is_auto_publish(), 'tags':tags,
-               'last_change':last_change,
-               'published_id_number':published_id_number,
-               'worksheet_that_was_published':ws_pub
+        obj = {'name': old_ws.name(), 'system': old_ws.system(),
+               'viewers': old_ws.viewers(), 
+               'collaborators' :old_ws.collaborators(),
+               'pretty_print': old_ws.pretty_print(), 
+               'ratings': old_ws.ratings(),
+               'auto_publish': old_ws.is_auto_publish(), 'tags': tags,
+               'last_change': last_change,
+               'published_id_number': published_id_number,
+               'worksheet_that_was_published': ws_pub
                }
 
         new_ws.reconstruct_from_basic(obj)
@@ -1791,14 +1796,17 @@ def migrate_old_notebook_v1(dir):
             text = open(worksheet_file).read()
             # delete first two lines -- we don't embed the title or
             # system in the worksheet text anymore.
-            i = text.find('\n'); text=text[i+1:]
-            i = text.find('\n'); text=text[i+1:]
+            i = text.find('\n')
+            text=text[i+1:]
+            i = text.find('\n')
+            text=text[i+1:]
             new_ws.edit_save(text)
 
         # copy over the DATA directory and cells directories
         try:
             dest = new_ws.data_directory()
-            if os.path.exists(dest): shutil.rmtree(dest)
+            if os.path.exists(dest): 
+                shutil.rmtree(dest)
             shutil.copytree(old_ws.data_directory(), dest)
         except Exception, msg:
             print msg
@@ -1806,7 +1814,8 @@ def migrate_old_notebook_v1(dir):
         try:
             if os.path.exists(old_ws.cells_directory()):
                 dest = new_ws.cells_directory()
-                if os.path.exists(dest): shutil.rmtree(dest)
+                if os.path.exists(dest): 
+                    shutil.rmtree(dest)
                 shutil.copytree(old_ws.cells_directory(), dest)
         except Exception, msg:
             print msg
@@ -1816,19 +1825,19 @@ def migrate_old_notebook_v1(dir):
 
     worksheets = WorksheetDict(new_nb)
     num_worksheets = len(old_nb._Notebook__worksheets)
-    print "Migrating (at most) %s worksheets..."%num_worksheets
+    print "Migrating (at most) %s worksheets..." % num_worksheets
     from sage.misc.misc import walltime
     tm = walltime()
     i = 0
     for ws_name, old_ws in old_nb._Notebook__worksheets.iteritems():
         if old_ws.docbrowser(): continue
         i += 1
-        if i%25==0:
-            percent = i/float(num_worksheets)
+        if i % 25==0:
+            percent = i / float(num_worksheets)
             # total_time * percent = time_so_far, so
             # remaining_time = total_time - time_so_far = time_so_far*(1/percent - 1)
-            print "    Migrated %s (of %s) worksheets (about %.0f seconds remaining)"%(
-                i, num_worksheets, walltime(tm)*(1/percent-1))
+            print "    Migrated %s (of %s) worksheets (about %.0f seconds remaining)" % (
+                i, num_worksheets, walltime(tm) * (1 / percent - 1))
         new_ws = migrate_old_worksheet(old_ws)
         worksheets[new_ws.filename()] = new_ws
     new_nb._Notebook__worksheets = worksheets
@@ -1889,17 +1898,17 @@ def sort_worksheet_list(v, sort, reverse):
             return -cmp(a.last_edited(), b.last_edited())
         f = c
     elif sort == 'name':
-        def c(a,b):
+        def c(a, ):
             return cmp((a.name().lower(), -a.last_edited()), (b.name().lower(), -b.last_edited()))
         f = c
     elif sort == 'owner':
-        def c(a,b):
+        def c(a, b):
             return cmp((a.owner().lower(), -a.last_edited()), (b.owner().lower(), -b.last_edited()))
         f = c
     elif sort == "rating":
-        def c(a,b):
+        def c(a, b):
             return -cmp((a.rating(), -a.last_edited()), (b.rating(), -b.last_edited()))
         f = c
     else:
-        raise ValueError, "invalid sort key '%s'"%sort
+        raise ValueError("invalid sort key '%s'" % sort)
     v.sort(cmp = f, reverse=reverse)
