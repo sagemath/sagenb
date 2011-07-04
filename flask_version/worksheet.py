@@ -795,22 +795,26 @@ def worksheet_print(worksheet):
     return g.notebook.html(worksheet.filename(), do_print=True)
 
 
-#######################
-# Live documentation #
-######################
-doc_worksheet_number = 0
+#######################################################
+# Live "docbrowser" worksheets from HTML documentation
+#######################################################
+doc_worksheet_number = -1
 def doc_worksheet():
     global doc_worksheet_number
-    worksheets = g.notebook.users_worksheets('_sage_')
-    name = 'doc_browser_%s'%doc_worksheet_number
     doc_worksheet_number = doc_worksheet_number % g.notebook.conf()['doc_pool_size']
-    for W in worksheets:
-        if name == W.name():
+    W = None
+    for X in g.notebook.users_worksheets('_sage_'):
+        if X.compute_process_has_been_started():
+            continue
+        if X.id_number() == doc_worksheet_number:
+            W = X
             W.clear()
             break
-    else:
-        W = g.notebook.create_new_worksheet(name, '_sage_')
 
+    if W is None:
+        # The first argument here is the worksheet's title, which the
+        # caller should set with W.set_name.
+        W = g.notebook.create_new_worksheet('', '_sage_')
     return W
 
 def extract_title(html_page):
@@ -824,7 +828,7 @@ def extract_title(html_page):
 
 @login_required
 def worksheet_file(path):
-    # Create a live Sage worksheet out of path and render it.
+    # Create a live Sage worksheet from the given path.
     if not os.path.exists(path):
         return current_app.message('Document does not exist.')
 
@@ -832,19 +836,20 @@ def worksheet_file(path):
     from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
     doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
 
-    title = extract_title(doc_page_html).replace('&mdash;','--')
-    doc_page = title + '\nsystem:sage\n\n' + doc_page
+    title = (extract_title(doc_page_html).replace('&mdash;', '--') or
+             'Live Sage Documentation')
 
     W = doc_worksheet()
     W.edit_save(doc_page)
+    W.set_system('sage')
+    W.set_name(title)
     W.save()
     W.quit()
 
-    #FIXME: For some reason, an extra cell gets added
-    #so we remove it here.
-    cells = W.cell_list()
-    cells.pop()
+    # FIXME: For some reason, an extra cell gets added so we
+    # remove it here.
+    W.cell_list().pop()
     
     return g.notebook.html(worksheet_filename=W.filename(),
-                         username=g.username)
+                           username=g.username)
 
