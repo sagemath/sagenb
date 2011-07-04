@@ -62,7 +62,7 @@ function interrupt_callback(status, response_text) {
         });
     } else if (status === 'success') {
         // halt_active_cells calls reset_interrupts.
-        halt_active_cells();
+        halt_queued_cells();
     } else {
         reset_interrupts();
     }

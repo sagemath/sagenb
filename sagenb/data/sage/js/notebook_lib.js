@@ -48,9 +48,9 @@
 //
 ///////////////////////////////////////////////////////////////////
 
-// Cell lists and cache.
-var cell_id_list;
-var active_cell_list = [];
+// Cell lists, maps, and cache.
+var cell_id_list = [];
+var queue_id_list = [];
 var cell_element_cache = {};
 
 // Worksheet information from worksheet.py
@@ -244,6 +244,17 @@ function initialize_the_notebook() {
         }
         return toint(id);
     });
+
+    // Parse active cell IDs and mark these cells as running.  We
+    // don't use $.map here, to avoid the possibility of overwriting a
+    // debug version of the list.  See debug.js for details.
+    for (i = 0; i < queue_id_list.length; i += 1) {
+       queue_id_list[i] = toint(queue_id_list[i]);
+       cell_set_running(queue_id_list[i]);
+    }
+    if (queue_id_list.length) {
+        start_update_check();
+    }
 
     // Resize and paste events.
     window.onresize = resize_all_cells;
@@ -2187,7 +2198,7 @@ function cell_delete(id) {
     INPUT:
         id -- integer or string; cell id
     */
-    if ($.inArray(id, active_cell_list) !== -1) {
+    if ($.inArray(id, queue_id_list) !== -1) {
         // Deleting a running cell causes evaluation to be
         // interrupted.  In most cases this avoids potentially tons of
         // confusion.
@@ -2248,7 +2259,7 @@ function cell_delete_output(id) {
     */
     id = toint(id);
 
-    if ($.inArray(id, active_cell_list) !== -1) {
+    if ($.inArray(id, queue_id_list) !== -1) {
         // Deleting a running cell causes evaluation to be interrupted.
         // In most cases this avoids potentially tons of confusion.
         async_request(worksheet_command('interrupt'));
@@ -2906,27 +2917,27 @@ function evaluate_cell(id, newcell) {
         return;
     }
 
-    // Append that cell id is currently having some sort of
-    // computation possibly occurring.  Note that active_cell_list is
-    // a global variable.
+    // Does the input cell exist?
     id = toint(id);
-    active_cell_list.push(id);
+    cell_input = get_cell(id);
+    if (!cell_input) {
+        return;
+    }
 
-    // Stop from sending the input again to the server when we leave
-    // focus and the send_cell_input function is called.
-    cell_has_changed = false;
-
-    // Clear the output text and set the CSS to indicate that this is
-    // a running cell.
+    queue_id_list.push(id);
     cell_set_running(id);
 
-    // Finally make the request back to the server to do the actual calculation.
-    cell_input = get_cell(id);
-    if (newcell) {
-        newcell = 1;
-    } else {
+    // Request a new cell to insert after this one?
+    newcell = (newcell || (id === extreme_compute_cell(-1))) ? 1 : 0;
+    if (evaluating_all) {
         newcell = 0;
     }
+
+    // Don't resend the input to the server upon leaving focus (see
+    // send_cell_input).
+    cell_has_changed = false;
+
+    // Ask the server to start computing.
     async_request(worksheet_command('eval'), evaluate_cell_callback, {
         newcell: newcell,
         id: id,
@@ -2990,7 +3001,7 @@ function evaluate_cell_introspection(id, before, after) {
 
     intr.loaded = false;
     update_introspection_text(id, translations["loading..."]);
-    active_cell_list.push(id);
+    queue_id_list.push(id);
     cell_set_running(id);
 
     async_request(worksheet_command('introspect'), evaluate_cell_callback, {
@@ -3220,14 +3231,14 @@ function check_for_cell_update() {
     an output cell.
 
     OUTPUT:
-        * if the active cell list is empty, cancel update checking.
+        * if the queued cell list is empty, cancel update checking.
         * makes an async request
         * causes the title bar compute spinner to spin
     */
     var cell_id;
 
     // Cancel update checks if no cells are doing computations.
-    if (active_cell_list.length === 0) {
+    if (queue_id_list.length === 0) {
         cancel_update_check();
         return;
     }
@@ -3236,7 +3247,7 @@ function check_for_cell_update() {
     update_time = time_now();
 
     // Check on the cell currently computing to see what's up.
-    cell_id = active_cell_list[0];
+    cell_id = queue_id_list[0];
 
     async_request(worksheet_command('cell_update'),
                   check_for_cell_update_callback, { id: cell_id });
@@ -3286,7 +3297,7 @@ function check_for_cell_update_callback(status, response_text) {
         // A problem occured -- stop trying to evaluate.
         if (update_error_count > update_error_threshold) {
             cancel_update_check();
-            halt_active_cells();
+            halt_queued_cells();
             elapsed_time = update_error_count * update_error_delta / 1000;
             msg = translations['Error updating cell output after '] + " " + elapsed_time + translations['s (canceling further update checks).'];
             
@@ -3319,7 +3330,7 @@ function check_for_cell_update_callback(status, response_text) {
 
     if (stat === 'e') {
         cancel_update_check();
-        halt_active_cells();
+        halt_queued_cells();
         return;
     }
 
@@ -3337,7 +3348,7 @@ function check_for_cell_update_callback(status, response_text) {
 
     if (stat === 'd') {
         cell_set_done(id);
-        active_cell_list.splice($.inArray(id, active_cell_list), 1);
+        queue_id_list.splice($.inArray(id, queue_id_list), 1);
 
         if (interrupted === 'restart') {
             restart_sage();
@@ -3345,10 +3356,10 @@ function check_for_cell_update_callback(status, response_text) {
             cell_set_evaluated(id);
         } else {
             cancel_update_check();
-            halt_active_cells();
+            halt_queued_cells();
         }
 
-        if (active_cell_list.length === 0) {
+        if (queue_id_list.length === 0) {
             cancel_update_check();
         }
 
@@ -4368,17 +4379,20 @@ function delete_all_output() {
 }
 
 
-function halt_active_cells() {
+function halt_queued_cells() {
     /*
     Set all cells so they do not look like they are being evaluates or
     queued up for evaluation, and empty the list of active cells from
-    the global active_cell_list variable.
+    the global queue_id_list variable.
     */
     var i;
-    for (i = 0; i < active_cell_list.length; i += 1) {
-        cell_set_not_evaluated(active_cell_list[i]);
+    for (i = 0; i < queue_id_list.length; i += 1) {
+        cell_set_not_evaluated(queue_id_list[i]);
     }
-    active_cell_list = [];
+
+    // We use splice here, so that we can "overload" the list for
+    // debugging.  See debug.js.
+    queue_id_list.splice(0, queue_id_list.length);
 
     reset_interrupts();
 }
@@ -4409,7 +4423,7 @@ function restart_sage() {
     message back to the server requesting that the worksheet Sage
     process actually be stopped.
     */
-    halt_active_cells();
+    halt_queued_cells();
     set_all_cells_to_be_not_evaluated();
     async_request(worksheet_command('restart_sage'));
 }
@@ -4421,7 +4435,7 @@ function quit_sage() {
     computing cells are stopped, and a request is sent to the server
     to quit the worksheet process.
     */
-    halt_active_cells();
+    halt_queued_cells();
     set_all_cells_to_be_not_evaluated();
     async_request(worksheet_command('quit_sage'));
 }
@@ -4496,7 +4510,7 @@ function interact(id, input) {
     var cell_number;
 
     id = toint(id);
-    active_cell_list.push(id);
+    queue_id_list.push(id);
 
     cell_has_changed = false;
     current_cell = id;

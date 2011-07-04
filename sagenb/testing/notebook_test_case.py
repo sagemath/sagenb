@@ -133,7 +133,7 @@ class NotebookTestCase(unittest.TestCase):
         id = str(id)
         sel.type("cell_input_"+id, text)
         self.evaluate(id)
-        self.wait_for_no_active_cells()
+        self.wait_for_no_queued_cells()
         if output:
             return self.get_cell_output(id)
 
@@ -175,12 +175,12 @@ class NotebookTestCase(unittest.TestCase):
         out = out.strip()
         return out
 
-    def wait_for_no_active_cells(self, timeout=20000):
+    def wait_for_no_queued_cells(self, timeout=20000):
         """
-        Tells Selenium to wait until they're are no active cells on
+        Tells Selenium to wait until they're are no queued cells on
         the worksheet.
         """
-        self.selenium.wait_for_condition("selenium.browserbot.getCurrentWindow().active_cell_list.length == 0", "%s"%timeout)
+        self.selenium.wait_for_condition("selenium.browserbot.getCurrentWindow().queue_id_list.length == 0", "%s"%timeout)
 
     def enter(self, locator):
         """
