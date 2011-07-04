@@ -71,6 +71,13 @@ var server_ping_time = 10000;
 // Encoding separator must match server's separator.
 var SEP = '___S_A_G_E___';
 
+// Interact constants.  See interact.py and related files.
+// Present in wrapped output, forces re-evaluation of ambient cell.
+var INTERACT_RESTART = '__SAGE_INTERACT_RESTART__';
+// Delimit updated markup.
+var INTERACT_START = '<?__SAGE__START>';
+var INTERACT_END = '<?__SAGE__END>';
+
 // Browser & OS identification.
 var browser_op, browser_saf, browser_konq, browser_moz, browser_ie, browser_iphone;
 var os_mac, os_lin, os_win;
@@ -3608,8 +3615,8 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
             return false;
         }
 
-        i = output_text_wrapped.indexOf('<?__SAGE__START>');
-        j = output_text_wrapped.indexOf('<?__SAGE__END>');
+        i = output_text_wrapped.indexOf(INTERACT_START);
+        j = output_text_wrapped.indexOf(INTERACT_END);
         if (i === -1 || j === -1) {
             return false;
         }
@@ -3620,7 +3627,7 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
         // An error occurred accessing the data for this cell.  Just
         // force reload of the cell, which will certainly define that
         // data.
-        if (new_interact_output.indexOf('__SAGE_INTERACT_RESTART__') !== -1) {
+        if (new_interact_output.indexOf(INTERACT_RESTART) !== -1) {
             return 'restart_interact';
         } else {
             cell_interact = get_element('cell-interact-' + id);

@@ -162,6 +162,22 @@ from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
 # evaluated.
 SAGE_CELL_ID = 0
 
+# Prefixed to cell input, signals an interact update.  Used in
+# notebook_lib.js and twist.py.
+INTERACT_UPDATE_PREFIX = '%__sage_interact__'
+
+# If this special message appears in an interact cell's output, it
+# should trigger an automatic re-evaluation of the ambient cell.
+INTERACT_RESTART = '__SAGE_INTERACT_RESTART__'
+
+# Place-holder markers/fields, replaced in cell.py and
+# notebook_lib.js.
+INTERACT_START = '<?__SAGE__START>'
+INTERACT_TEXT = '<?__SAGE__TEXT>'
+INTERACT_HTML = '<?__SAGE__HTML>'
+INTERACT_END = '<?__SAGE__END>'
+
+
 # Dictionary that stores the state of all active interact cells. 
 state = {}
 
@@ -1979,13 +1995,22 @@ class InteractCanvas:
 
             sage: B = sagenb.notebook.interact.InputBox('x',2)
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render_output()
-            '<div id="cell-interact...</div>'
+            '...div...interact...3...'
         """
-        return """<div id="cell-interact-{0}"><?__SAGE__START>
-        <table border=0 bgcolor="white" width=100%>
-        <tr><td bgcolor="white" align=left valign=top><pre><?__SAGE__TEXT></pre></td></tr>
-        <tr><td  align=left valign=top><?__SAGE__HTML></td></tr>
-        </table><?__SAGE__END></div>""".format(self.cell_id())
+        return """
+        <div id="cell-interact-{0}">{1}
+          <table border=0 bgcolor="white" width=100%>
+            <tr>
+              <td bgcolor="white" align=left valign=top>
+                <pre>{2}</pre>
+              </td>
+            </tr>
+            <tr>
+              <td align=left valign=top>{3}</td>
+            </tr>
+          </table>{4}
+        </div>""".format(self.cell_id(), INTERACT_START, INTERACT_TEXT,
+                         INTERACT_HTML, INTERACT_END)
 
     def render_controls(self, side='top'):
         """
@@ -3731,7 +3756,7 @@ def update(cell_id, var, adapt, value, globs):
         S["variables"][var] = adapt_function(value, globs)
     except KeyError:
         # If you change this, make sure to change js.py as well.
-        print "__SAGE_INTERACT_RESTART__"
+        print INTERACT_RESTART
 
 def recompute(cell_id):
     """
@@ -3766,5 +3791,5 @@ def recompute(cell_id):
         S['function']()
     except KeyError:
         # If you change this, make sure to change js.py as well.
-        print "__SAGE_INTERACT_RESTART__"
+        print INTERACT_RESTART
         
