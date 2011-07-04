@@ -340,7 +340,7 @@ class Notebook(object):
             sage: nb.worksheet_names()
             ['Mark/0']
             sage: nb.publish_worksheet(nb.get_worksheet_with_filename('Mark/0'), 'Mark')
-            pub/0: [Cell 1; in=, out=]
+            pub/0: [Cell 1: in=, out=]
             sage: sorted(nb.worksheet_names())
             ['Mark/0', 'pub/0']
         """
@@ -739,7 +739,7 @@ class Notebook(object):
             sage: W.name()
             u'foo'
             sage: W.cell_list()
-            [TextCell 0: foo, Cell 1; in=2+3, out=]
+            [TextCell 0: foo, Cell 1: in=2+3, out=]
         """
         if not os.path.exists(filename):
             raise ValueError, "no file %s"%filename
@@ -804,7 +804,7 @@ class Notebook(object):
             sage: name = tmp_filename() + '.txt'
             sage: open(name,'w').write('foo\n{{{\na = 10\n}}}')
             sage: W = nb._import_worksheet_txt(name, 'admin'); W
-            admin/0: [TextCell 0: foo, Cell 1; in=a = 10, out=]
+            admin/0: [TextCell 0: foo, Cell 1: in=a = 10, out=]
         """
         # Open the worksheet txt file and load it in.
         worksheet_txt = open(filename).read()

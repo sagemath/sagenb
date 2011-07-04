@@ -196,7 +196,7 @@ class Worksheet(object):
             sage: sagenb.notebook.twist.notebook = nb
             sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
-            admin/0: [Cell 1; in=, out=]
+            admin/0: [Cell 1: in=, out=]
         """
         if name is None:
             # A fresh worksheet
@@ -374,21 +374,23 @@ class Worksheet(object):
             sage: import sagenb.notebook.worksheet
             sage: W = sagenb.notebook.worksheet.Worksheet('test', 0, tmp_dir(), system='gap', owner='sageuser', pretty_print=True, auto_publish=True)
             sage: W.new_cell_after(0)
-            Cell 1; in=, out=
+            Cell 1: in=, out=
             sage: b = W.basic()
             sage: W0 = sagenb.notebook.worksheet.Worksheet()
             sage: W0.reconstruct_from_basic(b, tmp_dir())
             sage: W0.basic() == W.basic()
             True
         """
-        try: del self.__cells
-        except AttributeError: pass
+        try: 
+            del self.__cells
+        except AttributeError: 
+            pass
         for key, value in obj.iteritems():
             if key == 'name':
                 self.set_name(value)
             elif key == 'id_number':
                 self.__id_number = value
-                if obj.has_key('owner'):
+                if 'owner' in obj:
                     owner = obj['owner']
                     self.__owner = owner
                     filename = os.path.join(owner, str(value))
@@ -450,10 +452,10 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.__repr__()
-            'admin/0: [Cell 1; in=, out=]'
+            'admin/0: [Cell 1: in=, out=]'
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
             sage: W.__repr__()
-            'admin/0: [Cell 0; in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
+            'admin/0: [Cell 0: in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
         """
         return '%s/%s: %s' % (self.owner(), self.id_number(), self.cell_list())
     def __len__(self):
@@ -2192,8 +2194,8 @@ class Worksheet(object):
 
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}\n{{{\n2+8\n///\n10\n}}}')
             sage: W
-            sage/0: [Cell 0; in=2+3, out=
-            5, Cell 1; in=2+8, out=
+            sage/0: [Cell 0: in=2+3, out=
+            5, Cell 1: in=2+8, out=
             10]
             sage: W.name()
             u'Test Edit Save'
@@ -2562,11 +2564,11 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('Test Edit Save', 'admin')
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}\n{{{\n2+8\n///\n10\n}}}')
             sage: v = W.cell_list(); v
-            [Cell 0; in=2+3, out=
-            5, Cell 1; in=2+8, out=
+            [Cell 0: in=2+3, out=
+            5, Cell 1: in=2+8, out=
             10]
             sage: v[0]
-            Cell 0; in=2+3, out=
+            Cell 0: in=2+3, out=
             5
         """
         try:
@@ -2579,6 +2581,29 @@ class Worksheet(object):
             else:
                 self.set_body(open(worksheet_html).read())
             return self.__cells
+
+    def compute_cell_list(self):
+        r"""
+        Returns a list of this worksheet's compute cells.
+
+        OUTPUT:
+
+        - a list of :class:`sagenb.notebook.cell.Cell` instances
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: W = nb.create_new_worksheet('Test', 'admin')
+            sage: W.edit_save('foo\n{{{\n2+3\n///\n5\n}}}bar\n{{{\n2+8\n///\n10\n}}}')
+            sage: v = W.compute_cell_list(); v
+            [Cell 1: in=2+3, out=
+            5, Cell 3: in=2+8, out=
+            10]
+            sage: v[0]
+            Cell 1: in=2+3, out=
+            5
+        """
+        return [C for C in self.cell_list() if C.is_compute_cell()]
 
     def append_new_cell(self):
         """
@@ -2594,11 +2619,11 @@ class Worksheet(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: W = nb.create_new_worksheet('Test Edit Save', 'admin')
             sage: W
-            admin/0: [Cell 1; in=, out=]
+            admin/0: [Cell 1: in=, out=]
             sage: W.append_new_cell()
-            Cell 2; in=, out=
+            Cell 2: in=, out=
             sage: W
-            admin/0: [Cell 1; in=, out=, Cell 2; in=, out=]
+            admin/0: [Cell 1: in=, out=, Cell 2: in=, out=]
         """
         C = self._new_cell()
         self.cell_list().append(C)
@@ -3012,7 +3037,7 @@ except (KeyError, IOError):
             sage: W.edit_save('{{{\n3^20\n}}}')
             sage: W.cell_list()[0].evaluate()
             sage: W.check_comp()     # random output -- depends on computer speed
-            ('d', Cell 0; in=3^20, out=
+            ('d', Cell 0: in=3^20, out=
             3486784401
             )
             sage: W.quit()
@@ -3160,7 +3185,7 @@ except (KeyError, IOError):
         It's running still::
 
             sage: W.check_comp()
-            ('w', Cell 0; in=factor(2^997-1), out=...)
+            ('w', Cell 0: in=factor(2^997-1), out=...)
 
         We interrupt it successfully.
 
@@ -3783,12 +3808,12 @@ except (KeyError, IOError):
 
             sage: c0.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
-            ('d', Cell 0; in=2+3, out=
+            ('d', Cell 0: in=2+3, out=
             5
             )
             sage: c1.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
-            ('d', Cell 1; in=%gap
+            ('d', Cell 1: in=%gap
             SymmetricGroup(5), out=
             Sym( [ 1 .. 5 ] )
             )
@@ -3806,13 +3831,13 @@ except (KeyError, IOError):
             (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__)")
             sage: c0.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
-            ('d', Cell 0; in=%sage
+            ('d', Cell 0: in=%sage
             2+3, out=
             5
             )
             sage: c1.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
-            ('d', Cell 1; in=SymmetricGroup(5), out=
+            ('d', Cell 1: in=SymmetricGroup(5), out=
             Sym( [ 1 .. 5 ] )
             )
             sage: W.quit()
@@ -3876,7 +3901,7 @@ except (KeyError, IOError):
         ::
 
             sage: W.cell_list()
-            [Cell 0; in=2+3, out=
+            [Cell 0: in=2+3, out=
             5]
 
         We now delete the output, observe that it is gone.
@@ -3885,7 +3910,7 @@ except (KeyError, IOError):
 
             sage: W.delete_all_output('sage')
             sage: W.cell_list()
-            [Cell 0; in=2+3, out=]
+            [Cell 0: in=2+3, out=]
 
         If an invalid user tries to delete all, a ValueError is raised.
 

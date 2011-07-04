@@ -534,7 +534,7 @@ class FilesystemDatastore(Datastore):
             sage: DS = FilesystemDatastore(tmp)
             sage: DS.save_worksheet(W)
             sage: DS.worksheets('sageuser')
-            [sageuser/2: [Cell 0; in=, out=]]
+            [sageuser/2: [Cell 0: in=, out=]]
         """
         path = self._abspath(self._user_path(username))
         if not os.path.exists(path): return []

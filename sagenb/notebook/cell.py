@@ -19,9 +19,11 @@ import shutil
 from cgi import escape
 
 from jsmath import math_parse
-from sagenb.misc.misc import (word_wrap, SAGE_DOC, strip_string_literals,
+from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
+from interact import (INTERACT_RESTART, INTERACT_UPDATE_PREFIX,
+                      INTERACT_TEXT, INTERACT_HTML)
 
 # Maximum number of characters allowed in output.  This is needed
 # avoid overloading web browser.  For example, it should be possible
@@ -50,10 +52,379 @@ JEDITABLE_TINYMCE = True
 ###########################
 # Generic (abstract) cell #
 ###########################
-class Cell_generic:
+class Cell_generic(object):
+    def __init__(self, id, worksheet):
+        """
+        Creates a new generic cell.
+
+        INPUT:
+
+        - ``id`` - an integer or string; this cell's ID
+
+        - ``worksheet`` - a
+          :class:`sagenb.notebook.worksheet.Worksheet` instance; this
+          cell's parent worksheet
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: isinstance(C, sagenb.notebook.cell.Cell_generic)
+            True
+            sage: isinstance(C, sagenb.notebook.cell.TextCell)
+            False
+            sage: isinstance(C, sagenb.notebook.cell.Cell)
+            False
+        """
+        try:
+            self._id = int(id)
+        except ValueError:
+            self._id = id
+
+        self._worksheet = worksheet
+
+    def __repr__(self):
+        """
+        Returns a string representation of this generic cell.
+
+        OUTPUT:
+
+        - a string
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: C.__repr__()
+            'Cell_generic 0'
+        """
+        return "Cell_generic %s" % self._id
+
+    def __cmp__(self, right):
+        """
+        Compares generic cells by ID.
+
+        INPUT:
+
+        - ``right`` - a :class:`Cell_generic` instance; the cell to
+          compare to this cell
+
+        OUTPUT:
+
+        - a boolean
+
+        EXAMPLES::
+
+            sage: C1 = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: C2 = sagenb.notebook.cell.Cell_generic(1, None)
+            sage: C3 = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: [C1 == C2, C1 == C3, C2 == C3]
+            [False, True, False]
+            sage: C1 = sagenb.notebook.cell.TextCell('bagel', 'abc', None)
+            sage: C2 = sagenb.notebook.cell.TextCell('lox', 'abc', None)
+            sage: C3 = sagenb.notebook.cell.TextCell('lox', 'xyz', None)
+            sage: [C1 == C2, C1 == C3, C2 == C3]
+            [False, False, True]
+            sage: C1 = sagenb.notebook.cell.Cell(7, '3+2', '5', None)
+            sage: C2 = sagenb.notebook.cell.Cell(7, '3+2', 'five', None)
+            sage: C3 = sagenb.notebook.cell.Cell('7', '2+3', '5', None)
+            sage: [C1 == C2, C1 == C3, C2 == C3]
+            [True, True, True]
+        """
+        return cmp(self.id(), right.id())
+
+    def id(self):
+        """
+        Returns this generic cell's ID.
+
+        OUTPUT:
+
+        - an integer or string
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: C.id()
+            0
+            sage: C = sagenb.notebook.cell.Cell('blue', '2+3', '5', None)
+            sage: C.id()
+            'blue'
+            sage: C = sagenb.notebook.cell.TextCell('yellow', '2+3', None)
+            sage: C.id()
+            'yellow'
+        """
+        return self._id
+
+    def set_id(self, id):
+        """
+        Sets this generic cell's ID.
+
+        INPUT:
+
+        - ``id`` - an integer or string; the new ID
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: C.id()
+            0
+            sage: C.set_id('phone')
+            sage: C.id()
+            'phone'
+        """
+        try:
+            self._id = int(id)
+        except ValueError:
+            self._id = id
+
+    def proxied_id(self):
+        """
+        Returns the ID of the cell for which this generic cell is a
+        proxy.  If this cell does not have such an ID, it returns the
+        cell's own ID.
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic('self_stand_in', None)
+            sage: [C.id(), C.proxied_id()]
+            ['self_stand_in', 'self_stand_in']
+        """
+        try:
+            return self._proxied_id
+        except AttributeError:
+            return self._id
+
+    def set_proxied_id(self, proxied_id):
+        """
+        Sets, for this generic cell, the ID of the cell that it
+        proxies.
+
+        INPUT:
+
+        - ``proxied_id`` - an integer or string; the proxied cell's ID
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic('understudy', None)
+            sage: [C.id(), C.proxied_id()]
+            ['understudy', 'understudy']
+            sage: C.set_proxied_id('principal')
+            sage: [C.id(), C.proxied_id()]
+            ['understudy', 'principal']
+        """
+        self._proxied_id = proxied_id
+
+    def worksheet(self):
+        """
+        Returns this generic cell's worksheet object.
+
+        OUTPUT:
+
+        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic(0, 'worksheet object')
+            sage: C.worksheet()
+            'worksheet object'
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: W = nb.create_new_worksheet('Test', 'admin')
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
+            sage: C.worksheet() is W
+            True
+            sage: nb.delete()
+        """
+        return self._worksheet
+
+    def set_worksheet(self, worksheet, id=None):
+        """
+        Sets this generic cell's worksheet object and, optionally, its
+        ID.
+
+        INPUT:
+
+        - ``worksheet`` - a
+          :class:`sagenb.notebook.worksheet.Worksheet` instance; the
+          cell's new worksheet object
+
+        - ``id`` - an integer or string (default: None); the cell's
+          new ID
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: W = "worksheet object"
+            sage: C.set_worksheet(W)
+            sage: C.worksheet()
+            'worksheet object'
+        """
+        self._worksheet = worksheet
+        if id is not None:
+            self.set_id(id)
+
+    def worksheet_filename(self):
+        """
+        Returns the filename of this generic cell's worksheet object.
+
+        - ``publish`` - a boolean (default: False); whether to render
+          a published cell
+
+        OUTPUT:
+
+        - a string
+
+        EXAMPLES::
+
+        
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
+            sage: C.worksheet_filename()
+            'sage/0'
+            sage: nb.delete()
+         """
+        return self._worksheet.filename()
+
+    def notebook(self):
+        """
+        Returns this generic cell's associated notebook object.
+
+        OUTPUT:
+
+        - a :class:`sagenb.notebook.notebook.Notebook` instance
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
+            sage: C.notebook() is nb
+            True
+            sage: nb.delete()
+        """
+        return self._worksheet.notebook()
+
+    def is_last(self):
+        """
+        Returns whether this generic cell is the last cell in its
+        worksheet object.
+
+        OUTPUT:
+
+        - a boolean
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = W.new_cell_after(0, "2^2"); C
+            Cell 2: in=2^2, out=
+            sage: C.is_last()
+            True
+            sage: C = W.get_cell_with_id(0)
+            sage: C.is_last()
+            False
+            sage: nb.delete()
+        """
+        return self._worksheet.cell_list()[-1] == self
+
+    def next_id(self):
+        """
+        Returns the ID of the next cell in this generic cell's
+        worksheet object.  If this cell is *not* in the worksheet, it
+        returns the ID of the worksheet's *first* cell.  If this *is*
+        the last cell, it returns its *own* ID.
+
+        OUTPUT:
+
+        - an integer or string
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = W.new_cell_after(1, "2^2")
+            sage: C = W.get_cell_with_id(1)
+            sage: C.next_id()
+            2
+            sage: C = W.get_cell_with_id(2)
+            sage: C.next_id()
+            2
+            sage: nb.delete()
+        """
+        L = self._worksheet.cell_list()
+        try:
+            k = L.index(self)
+        except ValueError:
+            print "Warning -- cell %s no longer exists" % self.id()
+            return L[0].id()
+        try:
+            return L[k + 1].id()
+        except IndexError:
+            return self.id()
+
+    def is_text_cell(self):
+        """
+        Returns whether this generic cell is a text cell, i.e., an
+        instance of :class:`TextCell`.
+
+        OUTPUT:
+
+        - a boolean
+
+        EXAMPLES::
+
+            sage: G = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: T = sagenb.notebook.cell.TextCell(0, 'hello!', None)
+            sage: C = sagenb.notebook.cell.Cell(0, '2+4', '6', None)
+            sage: [X.is_text_cell() for X in (G, T, C)]
+            [False, True, False]
+        """
+        return isinstance(self, TextCell)
+
+    def is_compute_cell(self):
+        """
+        Returns whether this generic cell is a compute cell, i.e., an
+        instance of :class:`Cell`.
+
+        OUTPUT:
+
+        - a boolean
+
+        EXAMPLES::
+
+            sage: G = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: T = sagenb.notebook.cell.TextCell(0, 'hello!', None)
+            sage: C = sagenb.notebook.cell.Cell(0, '2+4', '6', None)
+            sage: [X.is_compute_cell() for X in (G, T, C)]
+            [False, False, True]
+        """
+        return isinstance(self, Cell)
+
+    def is_auto_cell(self):
+        """
+        Returns whether this is an automatically evaluated generic
+        cell.  This is always false for :class:`Cell_generic`\ s and
+        :class:`TextCell`\ s.
+
+        OUTPUT:
+
+        - a boolean
+
+        EXAMPLES::
+
+            sage: G = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: T = sagenb.notebook.cell.TextCell(0, 'hello!', None)
+            sage: [X.is_auto_cell() for X in (G, T)]
+            [False, False]
+        """
+        return False
+
     def is_interactive_cell(self):
         """
-        Returns whether this cell uses
+        Returns whether this generic cell uses
         :func:`sagenb.notebook.interact.interact` as a function call
         or decorator.
 
@@ -62,33 +433,13 @@ class Cell_generic:
         - a boolean
 
         EXAMPLES::
-
-            sage: from sagenb.notebook.cell import Cell_generic
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
-            sage: Cell_generic.is_interactive_cell(C)
-            False
+        
+            sage: G = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: T = sagenb.notebook.cell.TextCell(0, 'hello!', None)
+            sage: [X.is_auto_cell() for X in (G, T)]
+            [False, False]
         """
         return False
-
-    def delete_output(self):
-        """
-        Delete all output in this cell. This is not executed - it is an
-        abstract function that must be overwritten in a derived class.
-
-        EXAMPLES:
-
-        This function just raises a NotImplementedError, since it must
-        be defined in a derived class.
-
-        ::
-
-            sage: C = sagenb.notebook.cell.Cell_generic()
-            sage: C.delete_output()
-            Traceback (most recent call last):
-            ...
-            NotImplementedError
-        """
-        raise NotImplementedError
 
 
 #############
@@ -107,7 +458,7 @@ class TextCell(Cell_generic):
 
         - ``worksheet`` - a
           :class:`sagenb.notebook.worksheet.Worksheet` instance; this
-          cells parent worksheet
+          cell's parent worksheet
 
         EXAMPLES::
 
@@ -116,13 +467,9 @@ class TextCell(Cell_generic):
             True
         """
         text = unicode_str(text)
-        try:
-            self.__id = int(id)
-        except ValueError:
-            self.__id = id
-
-        self.__text = text
-        self.__worksheet = worksheet
+        self._text = text
+        
+        super(TextCell, self).__init__(id, worksheet)
 
     def __repr__(self):
         """
@@ -138,7 +485,7 @@ class TextCell(Cell_generic):
             sage: C.__repr__()
             'TextCell 0: 2+3'
         """
-        return "TextCell %s: %s"%(self.__id, encoded_str(self.__text))
+        return "TextCell %s: %s" % (self._id, encoded_str(self._text))
 
     def delete_output(self):
         """
@@ -174,56 +521,10 @@ class TextCell(Cell_generic):
             TextCell 0: 3+2
         """
         input_text = unicode_str(input_text)
-        self.__text = input_text
-
-    def set_worksheet(self, worksheet, id=None):
-        """
-        Updates this text cell's worksheet object and, optionally, its
-        ID.
-
-        INPUT:
-
-        - ``worksheet`` - a
-          :class:`sagenb.notebook.worksheet.Worksheet` instance; the
-          cell's new parent worksheet object
-
-        - ``id`` - an integer or string (default: None); the cell's
-          new ID
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
-            sage: W = "worksheet object"
-            sage: C.set_worksheet(W)
-            sage: C.worksheet()
-            'worksheet object'
-            sage: C.set_worksheet(None, id=2)
-            sage: C.id()
-            2
-        """
-        self.__worksheet = worksheet
-        if id is not None:
-            self.__id = id
-
-    def worksheet(self):
-        """
-        Returns this text cell's worksheet object
-
-        OUTPUT:
-
-        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
-
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', 'worksheet object')
-            sage: C.worksheet()
-            'worksheet object'
-        """
-        return self.__worksheet
+        self._text = input_text
 
     def html(self, wrap=None, div_wrap=True, do_print=False,
-             do_math_parse=True, editing=False):
+             do_math_parse=True, editing=False, publish=False):
         """
         Returns HTML code for this text cell, including its contents
         and associated script elements.
@@ -264,13 +565,14 @@ class TextCell(Cell_generic):
         """
         from template import template
         return template(os.path.join('html', 'notebook', 'text_cell.html'),
-                        cell = self, wrap = wrap, do_print = do_print,
-                        do_math_parse = do_math_parse, editing = editing,
-                        div_wrap=div_wrap)
+                        cell = self, wrap = wrap, div_wrap = div_wrap,
+                        do_print = do_print, do_math_parse = do_math_parse,
+                        editing = editing, publish = publish)
+
 
     def plain_text(self, prompts=False):
         ur"""
-        Returns a plain text version of this ext cell.
+        Returns a plain text version of this text cell.
 
         INPUT:
 
@@ -290,7 +592,7 @@ class TextCell(Cell_generic):
             sage: C.plain_text()
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
-        return self.__text
+        return self._text
 
     def edit_text(self):
         """
@@ -307,67 +609,7 @@ class TextCell(Cell_generic):
             sage: C.edit_text()
             u'2+3'
         """
-        return self.__text
-
-    def id(self):
-        """
-        Returns this text cell's ID.
-
-        OUTPUT:
-
-        - an integer or string
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
-            sage: C.id()
-            0
-        """
-        return self.__id
-
-    def is_auto_cell(self):
-        """
-        Returns whether this is an automatically evaluated text cell.
-        This is always false for :class:`TextCell`\ s.
-
-        OUTPUT:
-
-        - a boolean
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
-            sage: C.is_auto_cell()
-            False
-        """
-        return False
-
-    def __cmp__(self, right):
-        """
-        Compares text cells by ID.
-
-        INPUT:
-
-        - ``right`` - a :class:`TextCell` instance; the cell to
-          compare to this cell
-
-        OUTPUT:
-
-        - a boolean
-
-        EXAMPLES::
-
-            sage: C1 = sagenb.notebook.cell.TextCell(0, '2+3', None)
-            sage: C2 = sagenb.notebook.cell.TextCell(0, '3+2', None)
-            sage: C3 = sagenb.notebook.cell.TextCell(1, '2+3', None)
-            sage: C1 == C1
-            True
-            sage: C1 == C2
-            True
-            sage: C1 == C3
-            False
-        """
-        return cmp(self.id(), right.id())
+        return self._text
 
     def set_cell_output_type(self, typ='wrap'):
         """
@@ -388,7 +630,7 @@ class TextCell(Cell_generic):
 
 ################
 # Compute cell #
-###############
+################
 class Cell(Cell_generic):
     def __init__(self, id, input, out, worksheet):
         """
@@ -414,40 +656,31 @@ class Cell(Cell_generic):
         """
         out = unicode_str(out)
         input = unicode_str(input)
-        try:
-            self.__id = int(id)
-        except ValueError:
-            self.__id = id
 
-        self.__out   = out.replace('\r','')
-        self.__worksheet = worksheet
-        self.__interrupted = False
-        self.__completions = False
+        super(Cell, self).__init__(id, worksheet)
+
+        self._out   = out.replace('\r', '')
+        self._interrupted = False
         self.has_new_output = False
-        self.__no_output_cell = False
-        self.__asap = False
-        self.__version = -1
-        self.set_input_text(input.replace('\r',''))
+        self._asap = False
+        self._version = -1
+        self.set_input_text(input)
+  
 
-    def set_asap(self, asap):
+    def __repr__(self):
         """
-        Sets whether to evaluate this compute cell as soon as possible
-        (ASAP).
+        Returns a string representation of this compute cell.
 
-        INPUT:
+        OUTPUT:
 
-        - ``asap`` - a boolean convertible
+        - a string
 
         EXAMPLES::
 
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C.is_asap()
-            False
-            sage: C.set_asap(True)
-            sage: C.is_asap()
-            True
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None); C
+            Cell 0: in=2+3, out=5
         """
-        self.__asap = bool(asap)
+        return 'Cell %s: in=%s, out=%s' % (self.id(), self._in, self._out)
 
     def is_asap(self):
         """
@@ -468,10 +701,30 @@ class Cell(Cell_generic):
             True
         """
         try:
-            return self.__asap
+            return self._asap
         except AttributeError:
-            self.__asap = False
-            return self.__asap
+            self._asap = False
+            return self._asap
+
+    def set_asap(self, asap):
+        """
+        Sets whether to evaluate this compute cell as soon as possible
+        (ASAP).
+
+        INPUT:
+
+        - ``asap`` - a boolean convertible
+
+        EXAMPLES::
+
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
+            sage: C.is_asap()
+            False
+            sage: C.set_asap(True)
+            sage: C.is_asap()
+            True
+        """
+        self._asap = bool(asap)
 
     def delete_output(self):
         r"""
@@ -481,10 +734,10 @@ class Cell(Cell_generic):
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None); C
-            Cell 0; in=2+3, out=5
+            Cell 0: in=2+3, out=5
             sage: C.delete_output()
             sage: C
-            Cell 0; in=2+3, out=
+            Cell 0: in=2+3, out=
 
         When output is deleted, any files in the cell directory are deleted as well::
 
@@ -507,9 +760,9 @@ class Cell(Cell_generic):
             sage: W.quit()
             sage: nb.delete()
         """
-        self.__out = u''
-        self.__out_html = u''
-        self.__evaluated = False
+        self._out = u''
+        self._out_html = u''
+        self._evaluated = False
         self.delete_files()
 
     def evaluated(self):
@@ -530,19 +783,19 @@ class Cell(Cell_generic):
             sage: W.edit_save('{{{\n2+3\n///\n20\n}}}')
             sage: C = W.cell_list()[0]
             sage: C
-            Cell 0; in=2+3, out=
+            Cell 0: in=2+3, out=
             20
 
         We re-evaluate that input cell::
 
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('w', Cell 0; in=2+3, out=)
+            ('w', Cell 0: in=2+3, out=)
 
         Now the output is right::
 
             sage: C     # random output -- depends on computer speed
-            Cell 0; in=2+3, out=
+            Cell 0: in=2+3, out=
 
         And the cell is considered to have been evaluated.
 
@@ -558,7 +811,7 @@ class Cell(Cell_generic):
         """
         # Cells are never considered evaluated in a new session.
         if not self.worksheet().compute_process_has_been_started():
-            self.__evaluated = False
+            self._evaluated = False
             return False
 
         # Figure out if the worksheet is using the same sage
@@ -568,12 +821,12 @@ class Cell(Cell_generic):
         try:
             # Always not evaluated if sessions are different.
             if not same_session:
-                self.__evaluated = False
+                self._evaluated = False
                 return False
-            return self.__evaluated
+            return self._evaluated
         except AttributeError:
             # Default assumption is that cell has not been evaluated.
-            self.__evaluated = False
+            self._evaluated = False
             return False
 
     def set_no_output(self, no_output):
@@ -594,7 +847,7 @@ class Cell(Cell_generic):
             sage: C.is_no_output()
             True
         """
-        self.__no_output = bool(no_output)
+        self._no_output = bool(no_output)
 
     def is_no_output(self):
         """
@@ -615,29 +868,10 @@ class Cell(Cell_generic):
             True
         """
         try:
-            return self.__no_output
+            return self._no_output
         except AttributeError:
-            self.__no_output = False
-            return self.__no_output
-
-    def set_cell_output_type(self, typ='wrap'):
-        """
-        Sets this compute cell's output type.
-
-        INPUT:
-
-        - ``typ`` - a string (default: 'wrap'); the target output type
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C.cell_output_type()
-            'wrap'
-            sage: C.set_cell_output_type('nowrap')
-            sage: C.cell_output_type()
-            'nowrap'
-        """
-        self.__type = typ
+            self._no_output = False
+            return self._no_output
 
     def cell_output_type(self):
         """
@@ -657,55 +891,29 @@ class Cell(Cell_generic):
             'nowrap'
         """
         try:
-            return self.__type
+            return self._type
         except AttributeError:
-            self.__type = 'wrap'
-            return self.__type
+            self._type = 'wrap'
+            return self._type
 
-    def set_worksheet(self, worksheet, id=None):
+    def set_cell_output_type(self, typ='wrap'):
         """
-        Sets this compute cell's worksheet object and, optionally, its
-        ID.
+        Sets this compute cell's output type.
 
         INPUT:
 
-        - ``worksheet`` - a
-          :class:`sagenb.notebook.worksheet.Worksheet` instance; the
-          cell's new worksheet object
-
-        - ``id`` - an integer or string (default: None); the cell's
-          new ID
+        - ``typ`` - a string (default: 'wrap'); the target output type
 
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: W = "worksheet object"
-            sage: C.set_worksheet(W)
-            sage: C.worksheet()
-            'worksheet object'
-            sage: C.set_worksheet(None, id=2)
-            sage: C.id()
-            2
+            sage: C.cell_output_type()
+            'wrap'
+            sage: C.set_cell_output_type('nowrap')
+            sage: C.cell_output_type()
+            'nowrap'
         """
-        self.__worksheet = worksheet
-        if id is not None:
-            self.set_id(id)
-
-    def worksheet(self):
-        """
-        Returns this compute cell's worksheet object.
-
-        OUTPUT:
-
-        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', 'worksheet object')
-            sage: C.worksheet()
-            'worksheet object'
-        """
-        return self.__worksheet
+        self._type = typ
 
     def update_html_output(self, output=''):
         """
@@ -729,7 +937,7 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, 'plot(sin(x),0,5)', '', W)
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=plot(sin(x),0,5), out=
+            ('d', Cell 0: in=plot(sin(x),0,5), out=
             <html><font color='black'><img src='cell://sage0.png'></font></html>
             <BLANKLINE>
             )
@@ -740,102 +948,9 @@ class Cell(Cell_generic):
             sage: nb.delete()
         """
         if self.is_interactive_cell():
-            self.__out_html = u""
+            self._out_html = u""
         else:
-            self.__out_html = self.files_html(output)
-
-    def id(self):
-        """
-        Returns this compute cell's ID.
-
-        OUTPUT:
-
-        - an integer or string
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C.id()
-            0
-        """
-        return self.__id
-
-    def set_id(self, id):
-        """
-        Sets this compute cell's ID.
-
-        INPUT:
-
-        - ``id`` - an integer or string; the new ID
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C.set_id(2)
-            sage: C.id()
-            2
-        """
-        self.__id = id
-
-    def worksheet(self):
-        """
-        Returns this compute cell's worksheet object.
-
-        OUTPUT:
-
-        - a :class:`sagenb.notebook.worksheet.Worksheet` instance
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
-            sage: C.worksheet() is W
-            True
-            sage: nb.delete()
-        """
-        return self.__worksheet
-
-    def worksheet_filename(self):
-        """
-        Returns the filename of this compute cell's worksheet object.
-
-        OUTPUT:
-
-        - a string
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
-            sage: C.worksheet_filename()
-            'sage/0'
-            sage: nb.delete()
-        """
-        return self.__worksheet.filename()
-
-    def notebook(self):
-        """
-        Returns this compute cell's associated notebook object.
-
-        OUTPUT:
-
-        - a :class:`sagenb.notebook.notebook.Notebook` instance
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
-            sage: C.notebook() is nb
-            True
-            sage: nb.delete()
-        """
-        return self.__worksheet.notebook()
+            self._out_html = self.files_html(output)
 
     def directory(self):
         """
@@ -880,49 +995,8 @@ class Cell(Cell_generic):
             '.../home/sage/0/cells/0'
             sage: nb.delete()
         """
-        return os.path.join(self.__worksheet.directory(), 'cells', str(self.id()))
-
-    def __cmp__(self, right):
-        """
-        Compares compute cells by ID.
-
-        INPUT:
-
-        - ``right`` - a :class:`Cell` instance; the cell to compare
-          this this cell
-
-        OUTPUT:
-
-        - a boolean
-
-        EXAMPLES::
-
-            sage: C1 = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C2 = sagenb.notebook.cell.Cell(0, '3+2', '5', None)
-            sage: C3 = sagenb.notebook.cell.Cell(1, '2+3', '5', None)
-            sage: C1 == C1
-            True
-            sage: C1 == C2
-            True
-            sage: C1 == C3
-            False
-        """
-        return cmp(self.id(), right.id())
-
-    def __repr__(self):
-        """
-        Returns a string representation of this compute cell.
-
-        OUTPUT:
-
-        - a string
-
-        EXAMPLES::
-
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None); C
-            Cell 0; in=2+3, out=5
-        """
-        return 'Cell %s; in=%s, out=%s'%(self.__id, encoded_str(self.__in), encoded_str(self.__out))
+        return os.path.join(self._worksheet.directory(), 'cells',
+                            str(self.id()))
 
     def word_wrap_cols(self):
         """
@@ -981,9 +1055,9 @@ class Cell(Cell_generic):
             ncols = self.word_wrap_cols()
         s = u''
 
-        self.__in = unicode_str(self.__in)
+        self._in = unicode_str(self._in)
 
-        input_lines = self.__in
+        input_lines = self._in
 
         pr = 'sage: '
 
@@ -1019,14 +1093,14 @@ class Cell(Cell_generic):
                             in_loop = False
                         s += pr + v + '\n'
         else:
-            s += self.__in
+            s += self._in
 
         if prompts:
             msg = TRACEBACK
-            if self.__out.strip().startswith(msg):
-                v = self.__out.strip().splitlines()
+            if self._out.strip().startswith(msg):
+                v = self._out.strip().splitlines()
                 w = [msg, '...']
-                for i in range(1,len(v)):
+                for i in range(1, len(v)):
                     if not (len(v[i]) > 0 and v[i][0] == ' '):
                         w = w + v[i:]
                         break
@@ -1034,7 +1108,8 @@ class Cell(Cell_generic):
             else:
                 out = self.output_text(ncols, raw=True, html=False)
         else:
-            out = self.output_text(ncols, raw=True, html=False, allow_interact=False)
+            out = self.output_text(ncols, raw=True, html=False,
+                                   allow_interact=False)
             out = '///\n' + out.strip('\n')
 
         if not max_out is None and len(out) > max_out:
@@ -1079,39 +1154,15 @@ class Cell(Cell_generic):
             u'{{{id=0|\n\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e\n///\n\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e\n}}}'
         """
         s = self.plain_text(ncols, prompts, max_out)
-        return u'{{{id=%s|\n%s\n}}}'%(self.id(), s)
+        return u'{{{id=%s|\n%s\n}}}' % (self.id(), s)
 
-    def is_last(self):
+    def next_compute_id(self):
         """
-        Returns whether this compute cell is the last cell in its
-        worksheet object.
+        Returns the ID of the next compute cell in this compute cell's
+        worksheet object.  If this cell is *not* in the worksheet, it
+        returns the ID of the worksheet's *first* compute cell.  If
+        this *is* the last compute cell, it returns its *own* ID.
 
-        OUTPUT:
-
-        - a boolean
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = W.new_cell_after(0, "2^2"); C
-            Cell 2; in=2^2, out=
-            sage: C.is_last()
-            True
-            sage: C = W.get_cell_with_id(0)
-            sage: C.is_last()
-            False
-            sage: nb.delete()
-        """
-        return self.__worksheet.cell_list()[-1] == self
-
-    def next_id(self):
-        """
-        Returns the ID of the next cell in this compute cell's
-        worksheet object.  If this cell is not in the worksheet or is
-        the last cell, it returns the ID of the worksheet's first
-        cell.
 
         OUTPUT:
 
@@ -1120,27 +1171,24 @@ class Cell(Cell_generic):
         EXAMPLES::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = W.new_cell_after(1, "2^2")
-            sage: C = W.get_cell_with_id(1)
-            sage: C.next_id()
-            2
-            sage: C = W.get_cell_with_id(2)
-            sage: C.next_id()
-            1
-            sage: nb.delete()
+            sage: W = nb.create_new_worksheet('Test', 'admin')
+            sage: W.edit_save('foo\n{{{\n2+3\n///\n5\n}}}bar\n{{{\n2+8\n///\n10\n}}}')
+            sage: W.new_cell_after(1, "2^2")
+            Cell 4: in=2^2, out=
+            sage: [W.get_cell_with_id(i).next_compute_id() for i in [1, 4, 3]]
+            [4, 3, 3]
+
         """
-        L = self.__worksheet.cell_list()
+        L = self.worksheet().compute_cell_list()
         try:
             k = L.index(self)
         except ValueError:
-            print "Warning -- cell %s no longer exists"%self.id()
+            print "Warning -- cell %s no longer exists" % self.id()
             return L[0].id()
         try:
-            return L[k+1].id()
+            return L[k + 1].id()
         except IndexError:
-            return L[0].id()
+            return self.id()
 
     def interrupt(self):
         """
@@ -1159,8 +1207,8 @@ class Cell(Cell_generic):
             False
             sage: nb.delete()
         """
-        self.__interrupted = True
-        self.__evaluated = False
+        self._interrupted = True
+        self._evaluated = False
 
     def interrupted(self):
         """
@@ -1182,7 +1230,7 @@ class Cell(Cell_generic):
             True
             sage: nb.delete()
         """
-        return self.__interrupted
+        return self._interrupted
 
     def computing(self):
         """
@@ -1203,7 +1251,7 @@ class Cell(Cell_generic):
             False
             sage: nb.delete()
         """
-        return self in self.__worksheet.queue()
+        return self in self.worksheet().queue()
 
     def is_interactive_cell(self):
         r"""
@@ -1230,9 +1278,11 @@ class Cell(Cell_generic):
         """
         # Do *not* cache
         s = strip_string_literals(self.input_text())
-        if len(s) == 0: return False
+        if len(s) == 0:
+            return False
         s = s[0]
-        return bool(re.search('(?<!\w)interact\s*\(.*\).*', s) or re.search('\s*@\s*interact\s*\n', s))
+        return bool(re.search('(?<!\w)interact\s*\(.*\).*', s) or
+                    re.search('\s*@\s*interact\s*\n', s))
 
     def is_interacting(self):
         r"""
@@ -1282,7 +1332,7 @@ class Cell(Cell_generic):
             sage: C = W.new_cell_after(0, "2^2")
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('d', Cell 1; in=2^2, out=
+            ('d', Cell 1: in=2^2, out=
             4
             )
             sage: C.version()
@@ -1300,9 +1350,9 @@ class Cell(Cell_generic):
         # Stuff to deal with interact
         input = unicode_str(input)
 
-        if input.startswith('%__sage_interact__'):
-            self.interact = input[len('%__sage_interact__')+1:]
-            self.__version = self.version() + 1
+        if input.startswith(INTERACT_UPDATE_PREFIX):
+            self.interact = input[len(INTERACT_UPDATE_PREFIX)+1:]
+            self._version = self.version() + 1
             return
         elif self.is_interacting():
             try:
@@ -1313,9 +1363,9 @@ class Cell(Cell_generic):
 
         # We have updated the input text so the cell can't have
         # been evaluated.
-        self.__evaluated = False
-        self.__version = self.version() + 1
-        self.__in = input
+        self._evaluated = False
+        self._version = self.version() + 1
+        self._in = input
         if hasattr(self, '_html_cache'):
             del self._html_cache
 
@@ -1337,7 +1387,7 @@ class Cell(Cell_generic):
             sage: C.input_text()
             u'2+3'
         """
-        return self.__in
+        return self._in
 
     def cleaned_input_text(self):
         r"""
@@ -1417,7 +1467,11 @@ class Cell(Cell_generic):
             sage: C.percent_directives()
             [u'hide', u'maxima']
         """
-        return self._percent_directives
+        try:
+            return self._percent_directives
+        except AttributeError:
+            self._percent_directives = []
+            return []
 
     def system(self):
         r"""
@@ -1446,7 +1500,6 @@ class Cell(Cell_generic):
         self.parse_percent_directives()
         return self._system
 
-
     def is_auto_cell(self):
         r"""
         Returns whether this compute cell is evaluated automatically
@@ -1469,9 +1522,8 @@ class Cell(Cell_generic):
 
     def changed_input_text(self):
         """
-        Returns the changed input text for this compute cell.  If
-        there is any changed input text, it is reset to '' before this
-        method returns.
+        Returns the changed input text for this compute cell, deleting
+        any previously stored text.
 
         OUTPUT:
 
@@ -1493,8 +1545,8 @@ class Cell(Cell_generic):
             0
         """
         try:
-            t = self.__changed_input
-            del self.__changed_input
+            t = self._changed_input
+            del self._changed_input
             return t
         except AttributeError:
             return ''
@@ -1520,8 +1572,8 @@ class Cell(Cell_generic):
         """
         new_text = unicode_str(new_text)
 
-        self.__changed_input = new_text
-        self.__in = new_text
+        self._changed_input = new_text
+        self._in = new_text
 
     def set_output_text(self, output, html, sage=None):
         r"""
@@ -1547,7 +1599,7 @@ class Cell(Cell_generic):
         """
         output = unicode_str(output)
         html = unicode_str(html)
-        if output.count('<?__SAGE__TEXT>') > 1:
+        if output.count(INTERACT_TEXT) > 1:
             html = u'<h3><font color="red">WARNING: multiple @interacts in one cell disabled (not yet implemented).</font></h3>'
             output = u''
 
@@ -1555,36 +1607,46 @@ class Cell(Cell_generic):
         # (do not overwrite).
         if self.is_interacting():
             self._interact_output = (output, html)
+            if INTERACT_RESTART in output:
+                # We forfeit any interact output template (in
+                # self._out), so that the restart message propagates
+                # out.  When the set_output_text function in
+                # notebook_lib.js gets the message, it should
+                # re-evaluate the cell from scratch.
+                self._out = output
             return
 
         if hasattr(self, '_html_cache'):
             del self._html_cache
 
-        output = output.replace('\r','')
+        output = output.replace('\r', '')
         # We do not truncate if "notruncate" or "Output truncated!" already
         # appears in the output.  This notruncate tag is used right now
         # in sage.server.support.help.
-        if 'notruncate' not in output and 'Output truncated!' not in output and \
-               (len(output) > MAX_OUTPUT or output.count('\n') > MAX_OUTPUT_LINES):
+        if ('notruncate' not in output and
+            'Output truncated!' not in output
+            and
+            (len(output) > MAX_OUTPUT or
+             output.count('\n') > MAX_OUTPUT_LINES)):
             url = ""
             if not self.computing():
                 file = os.path.join(self.directory(), "full_output.txt")
-                open(file,"w").write(output.encode('utf-8', 'ignore'))
-                url = "<a target='_new' href='%s/full_output.txt' class='file_link'>full_output.txt</a>"%(
+                open(file, "w").write(encoded_str(output))
+                url = "<a target='_new' href='%s/full_output.txt' class='file_link'>full_output.txt</a>" % (
                     self.url_to_self())
-                html+="<br>" + url
+                html += "<br>" + url
             lines = output.splitlines()
             start = '\n'.join(lines[:MAX_OUTPUT_LINES/2])[:MAX_OUTPUT/2]
             end = '\n'.join(lines[-MAX_OUTPUT_LINES/2:])[-MAX_OUTPUT/2:]
             warning = 'WARNING: Output truncated!  '
             if url:
                 # make the link to the full output appear at the top too.
-                warning += '\n<html>%s</html>\n'%url
+                warning += '\n<html>%s</html>\n' % url
             output = warning + '\n\n' + start + '\n\n...\n\n' + end
-        self.__out = output
+        self._out = output
         if not self.is_interactive_cell():
-            self.__out_html = html
-        self.__sage = sage
+            self._out_html = html
+        self._sage = sage
 
     def sage(self):
         """
@@ -1601,7 +1663,7 @@ class Cell(Cell_generic):
             True
         """
         try:
-            return self.__sage
+            return self._sage
         except AttributeError:
             return None
 
@@ -1623,9 +1685,9 @@ class Cell(Cell_generic):
             u'<strong>5</strong>'
         """
         try:
-            return self.__out_html
+            return self._out_html
         except AttributeError:
-            self.__out_html = ''
+            self._out_html = ''
             return ''
 
     def process_cell_urls(self, urls):
@@ -1654,7 +1716,7 @@ class Cell(Cell_generic):
         end = '?%d' % self.version()
         begin = self.url_to_self()
         for s in re_cell.findall(urls) + re_cell_2.findall(urls):
-            urls = urls.replace(s,begin + s[7:-1] + end)
+            urls = urls.replace(s, begin + s[7:-1] + end)
         return urls
 
     def output_text(self, ncols=0, html=True, raw=False, allow_interact=True):
@@ -1699,16 +1761,16 @@ class Cell(Cell_generic):
         if allow_interact and hasattr(self, '_interact_output'):
             # Get the input template
             z = self.output_text(ncols, html, raw, allow_interact=False)
-            if not '<?__SAGE__TEXT>' in z or not '<?__SAGE__HTML>' in z:
+            if not INTERACT_TEXT in z or not INTERACT_HTML in z:
                 return z
             if ncols:
                 # Get the output template
                 try:
                     # Fill in the output template
-                    output,html = self._interact_output
+                    output, html = self._interact_output
                     output = self.parse_html(output, ncols)
-                    z = z.replace('<?__SAGE__TEXT>', output)
-                    z = z.replace('<?__SAGE__HTML>', html)
+                    z = z.replace(INTERACT_TEXT, output)
+                    z = z.replace(INTERACT_HTML, html)
                     return z
                 except (ValueError, AttributeError), msg:
                     print msg
@@ -1718,17 +1780,17 @@ class Cell(Cell_generic):
                 # wrong output location during interact.
                 return ''
 
-        self.__out = unicode_str(self.__out)
+        self._out = unicode_str(self._out)
 
         is_interact = self.is_interactive_cell()
         if is_interact and ncols == 0:
-            if 'Traceback (most recent call last)' in self.__out:
-                s = self.__out.replace('cell-interact','')
-                is_interact=False
+            if 'Traceback (most recent call last)' in self._out:
+                s = self._out.replace('cell-interact', '')
+                is_interact = False
             else:
                 return u'<h2>Click to the left again to hide and once more to show the dynamic interactive window</h2>'
         else:
-            s = self.__out
+            s = self._out
 
         if raw:
             return s
@@ -1789,9 +1851,9 @@ class Cell(Cell_generic):
             if j == -1:
                 t += format(s[:i])
                 break
-            t += format(s[:i]) + format_html(s[i+6:j])
-            s = s[j+7:]
-        t = t.replace('</html>','')
+            t += format(s[:i]) + format_html(s[i + 6:j])
+            s = s[j + 7:]
+        t = t.replace('</html>', '')
 
         # Get rid of the <script> tags, since we do not want them to
         # be evaluated twice.  They are only evaluated in the wrapped
@@ -1799,7 +1861,6 @@ class Cell(Cell_generic):
         if ncols == 0:
             t = re_script.sub('', t)
         return t
-
 
     def has_output(self):
         """
@@ -1818,7 +1879,7 @@ class Cell(Cell_generic):
             sage: C.has_output()
             False
         """
-        return len(self.__out.strip()) > 0
+        return len(self._out.strip()) > 0
 
     def is_html(self):
         r"""
@@ -1869,7 +1930,7 @@ class Cell(Cell_generic):
             False
             sage: C.evaluate(username='sage')
             sage: W.check_comp(9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=sage?, out=)
+            ('d', Cell 0: in=sage?, out=)
             sage: C.set_introspect_html('foobar')
             sage: C.introspect_html()
             u'foobar'
@@ -1883,8 +1944,7 @@ class Cell(Cell_generic):
             sage: nb.delete()
         """
         html = unicode_str(html)
-
-        self.__introspect_html = html
+        self._introspect_html = html
 
     def introspect_html(self):
         """
@@ -1905,7 +1965,7 @@ class Cell(Cell_generic):
             False
             sage: C.evaluate(username='sage')
             sage: W.check_comp(9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=sage?, out=)
+            ('d', Cell 0: in=sage?, out=)
             sage: C.introspect_html()     # random output -- depends on computer speed
             u'...<div class="docstring">...sage...</pre></div>...'
             sage: W.quit()
@@ -1914,9 +1974,9 @@ class Cell(Cell_generic):
         if not self.introspect():
             return ''
         try:
-            return self.__introspect_html
+            return self._introspect_html
         except AttributeError:
-            self.__introspect_html = u''
+            self._introspect_html = u''
             return u''
 
     def introspect(self):
@@ -1938,14 +1998,14 @@ class Cell(Cell_generic):
             False
             sage: C.evaluate(username='sage')
             sage: W.check_comp(9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=sage?, out=)
+            ('d', Cell 0: in=sage?, out=)
             sage: C.introspect()
             [u'sage?', '']
             sage: W.quit()
             sage: nb.delete()
         """
         try:
-            return self.__introspect
+            return self._introspect
         except AttributeError:
             return False
 
@@ -1963,7 +2023,7 @@ class Cell(Cell_generic):
             False
             sage: C.evaluate(username='sage')
             sage: W.check_comp(9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=sage?, out=)
+            ('d', Cell 0: in=sage?, out=)
             sage: C.introspect()
             [u'sage?', '']
             sage: C.unset_introspect()
@@ -1972,7 +2032,7 @@ class Cell(Cell_generic):
             sage: W.quit()
             sage: nb.delete()
         """
-        self.__introspect = False
+        self._introspect = False
 
     def set_introspect(self, before_prompt, after_prompt):
         """
@@ -1991,7 +2051,7 @@ class Cell(Cell_generic):
             sage: C.introspect()
             ['a', 'b']
         """
-        self.__introspect = [before_prompt, after_prompt]
+        self._introspect = [before_prompt, after_prompt]
 
     def evaluate(self, introspect=False, time=None, username=None):
         r"""
@@ -2018,14 +2078,14 @@ class Cell(Cell_generic):
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: W.edit_save('{{{\n3^5\n}}}')
             sage: C = W.cell_list()[0]; C
-            Cell 0; in=3^5, out=
+            Cell 0: in=3^5, out=
             sage: C.evaluate(username='sage')
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=3^5, out=
+            ('d', Cell 0: in=3^5, out=
             243
             )
             sage: C     # random output -- depends on computer speed
-            Cell 0; in=3^5, out=
+            Cell 0: in=3^5, out=
             243
             sage: W.quit()
             sage: nb.delete()
@@ -2034,13 +2094,13 @@ class Cell(Cell_generic):
             self.eval_method = 'introspect' # Run through TAB-introspection
         else:
             self.eval_method = 'eval' # Run through S-Enter, evaluate link, etc.
-        self.__interrupted = False
-        self.__evaluated = True
+        self._interrupted = False
+        self._evaluated = True
         if time is not None:
-            self.__time = time
-        self.__introspect = introspect
-        self.__worksheet.enqueue(self, username=username)
-        self.__type = 'wrap'
+            self._time = time
+        self._introspect = introspect
+        self.worksheet().enqueue(self, username=username)
+        self._type = 'wrap'
         dir = self.directory()
         for D in os.listdir(dir):
             F = os.path.join(dir, D)
@@ -2070,10 +2130,10 @@ class Cell(Cell_generic):
             1
         """
         try:
-            return self.__version
+            return self._version
         except AttributeError:
-            self.__version = 0
-            return self.__version
+            self._version = 0
+            return self._version
 
     def time(self):
         r"""
@@ -2095,9 +2155,9 @@ class Cell(Cell_generic):
         """
         return ('time' in self.percent_directives() or
                 'timeit' in self.percent_directives() or
-                getattr(self, '__time', False))
+                getattr(self, '_time', False))
 
-    def html(self, wrap=None, div_wrap=True, do_print=False):
+    def html(self, wrap=None, div_wrap=True, do_print=False, publish=False):
         r"""
         Returns the HTML for this compute cell.
 
@@ -2111,6 +2171,9 @@ class Cell(Cell_generic):
 
         - ``do_print`` - a boolean (default: False); whether to return
           output suitable for printing
+
+        - ``publish`` - a boolean (default: False); whether to render
+          a published cell
 
         OUTPUT:
 
@@ -2131,8 +2194,8 @@ class Cell(Cell_generic):
             wrap = self.notebook().conf()['word_wrap_cols']
 
         return template(os.path.join('html', 'notebook', 'cell.html'),
-                        cell=self, wrap=wrap,
-                        div_wrap=div_wrap, do_print=do_print)
+                        cell=self, wrap=wrap, div_wrap=div_wrap,
+                        do_print=do_print, publish=publish)
 
     def url_to_self(self):
         """
@@ -2152,10 +2215,11 @@ class Cell(Cell_generic):
             '/home/sage/0/cells/0'
         """
         try:
-            return self.__url_to_self
+            return self._url_to_self
         except AttributeError:
-            self.__url_to_self = '/home/%s/cells/%s'%(self.worksheet_filename(), self.id())
-            return self.__url_to_self
+            self._url_to_self = '/home/%s/cells/%s' % (
+                self.worksheet_filename(), self.id())
+            return self._url_to_self
 
     def files(self):
         """
@@ -2174,7 +2238,7 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, 'plot(sin(x),0,5)', '', W)
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=plot(sin(x),0,5), out=
+            ('d', Cell 0: in=plot(sin(x),0,5), out=
             <html><font color='black'><img src='cell://sage0.png'></font></html>
             <BLANKLINE>
             )
@@ -2199,7 +2263,7 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, 'plot(sin(x),0,5)', '', W)
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=plot(sin(x),0,5), out=
+            ('d', Cell 0: in=plot(sin(x),0,5), out=
             <html><font color='black'><img src='cell://sage0.png'></font></html>
             <BLANKLINE>
             )
@@ -2240,7 +2304,7 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, 'plot(sin(x),0,5)', '', W)
             sage: C.evaluate()
             sage: W.check_comp(wait=9999)     # random output -- depends on computer speed
-            ('d', Cell 0; in=plot(sin(x),0,5), out=
+            ('d', Cell 0: in=plot(sin(x),0,5), out=
             <html><font color='black'><img src='cell://sage0.png'></font></html>
             <BLANKLINE>
             )
@@ -2255,30 +2319,32 @@ class Cell(Cell_generic):
         if len(D) == 0:
             return ''
         images = []
-        files  = []
+        files = []
 
         from worksheet import CODE_PY
-        # The question mark trick here is so that images will be reloaded when
-        # the async request requests the output text for a computation.
-        # This is inspired by http://www.irt.org/script/416.htm/.
+        # The question mark trick here is so that images will be
+        # reloaded when the async request requests the output text for
+        # a computation.  This is inspired by
+        # http://www.irt.org/script/416.htm/.
         for F in D:
-            if os.path.split(F)[-1] == CODE_PY or 'cell://%s'%F in out:
+            if os.path.split(F)[-1] == CODE_PY or 'cell://%s' % F in out:
                 continue
             url = os.path.join(self.url_to_self(), F)
-            if F.endswith('.png') or F.endswith('.bmp') or \
-                    F.endswith('.jpg') or F.endswith('.gif'):
-                images.append('<img src="%s?%d">'%(url, time.time()))
+            if (F.endswith('.png') or F.endswith('.bmp') or
+                F.endswith('.jpg') or F.endswith('.gif')):
+                images.append('<img src="%s?%d">' % (url, time.time()))
             elif F.endswith('.obj'):
-                images.append("""<a href="javascript:sage3d_show('%s', '%s_%s', '%s');">Click for interactive view.</a>"""%(url, self.__id, F, F[:-4]))
+                images.append("""<a href="javascript:sage3d_show('%s', '%s_%s', '%s');">Click for interactive view.</a>""" % (url, self._id, F, F[:-4]))
             elif F.endswith('.mtl') or F.endswith(".objmeta"):
                 pass # obj data
             elif F.endswith('.svg'):
-                images.append('<embed src="%s" type="image/svg+xml" name="emap">'%url)
+                images.append('<embed src="%s" type="image/svg+xml" name="emap">' % url)
             elif F.endswith('.jmol'):
-                # If F ends in -size500.jmol then we make the viewer applet with size 500.
+                # If F ends in -size500.jmol then we make the viewer
+                # applet with size 500.
                 i = F.rfind('-size')
                 if i != -1:
-                    size = F[i+5:-5]
+                    size = F[i + 5:-5]
                 else:
                     size = 500
 
@@ -2305,15 +2371,15 @@ class Cell(Cell_generic):
                 link_text = str(F)
                 if len(link_text) > 40:
                     link_text = link_text[:10] + '...' + link_text[-20:]
-                files.append('<a target="_new" href="%s" class="file_link">%s</a>'%(url, link_text))
+                files.append('<a target="_new" href="%s" class="file_link">%s</a>' % (url, link_text))
         if len(images) == 0:
             images = ''
         else:
-            images = "%s"%'<br>'.join(images)
-        if len(files)  == 0:
-            files  = ''
+            images = "%s" % '<br>'.join(images)
+        if len(files) == 0:
+            files = ''
         else:
-            files  = ('&nbsp'*3).join(files)
+            files = ('&nbsp'*3).join(files)
 
         files = unicode_str(files)
         images = unicode_str(images)
@@ -2364,9 +2430,11 @@ def format_exception(s0, ncols):
         for k in range(len(w)):
             if TRACEBACK in w[k]:
                 break
-        s = '\n'.join(w[:k]) + '\nTraceback (click to the left of this block for traceback)' + '\n...\n' + w[-1]
+        s = ('\n'.join(w[:k]) +
+             '\nTraceback (click to the left of this block for traceback)' +
+             '\n...\n' + w[-1])
     else:
-        s = s.replace("exec compile(ur'","")
+        s = s.replace("exec compile(ur'", "")
         s = s.replace("' + '\\n', '', 'single')", "")
     return s
 
@@ -2399,5 +2467,5 @@ def number_of_rows(txt, ncols):
     rows = txt.splitlines()
     nrows = len(rows)
     for i in range(nrows):
-        nrows += int((len(rows[i])-1)/ncols)
+        nrows += int((len(rows[i]) - 1) / ncols)
     return nrows
