@@ -264,7 +264,10 @@ def upload_worksheet():
                     prefix, extension = os.path.splitext(subfilename)
                     if extension in ['.sws', '.html', '.txt', '.rst'] :
                         tmpfilename = os.path.join(dir, "tmp" + extension)
-                        open(tmpfilename, 'w').write(zip_file.read(subfilename)) # 2.6 zip_file.extract(sws, tmpfilename)
+                        try:
+                            zip_file.extract(sws, sws_file)
+                        except AttributeError:
+                            open(sws_file, 'w').write(zip_file.read(sws))
                         W = g.notebook.import_worksheet(tmpfilename, g.username)
                         if new_name:
                             W.set_name("%s - %s" % (new_name, W.name()))
