@@ -14,6 +14,10 @@
 {% include "js/canvas3d_lib.js" %}
 {% include "js/jmol_lib.js" %}
 
+{%- if debug_mode %}
+{% include "js/debug.js" %}
+{% endif %}
+
 function interrupt_callback(status, response_text) {
     /*
     Callback called after we send the interrupt signal to the server.

@@ -1584,8 +1584,8 @@ class Notebook(object):
         return template(os.path.join("html", "notebook", "upload_data_window.html"),
                         worksheet = ws, username = username)
 
-    def html(self, worksheet_filename=None, username='guest', show_debug=False,
-             admin=False, do_print=False):
+    def html(self, worksheet_filename=None, username='guest', admin=False, 
+             do_print=False):
         r"""
         Return the HTML for a worksheet's index page.
 
@@ -1594,8 +1594,6 @@ class Notebook(object):
         - ``worksheet_filename`` - a string (default: None)
 
         - ``username`` - a string (default: 'guest')
-
-        - ``show_debug`` - a bool (default: False)
 
         - ``admin`` - a bool (default: False)
 
@@ -1633,7 +1631,7 @@ class Notebook(object):
 
         return template(template_page, worksheet = W,
                         notebook = self, do_print=do_print,
-                        username = username, show_debug = show_debug)
+                        username = username)
 
 ####################################################################
 

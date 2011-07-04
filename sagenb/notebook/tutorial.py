@@ -410,8 +410,6 @@ notebook_help = [
        _('Click <a href="/history">log</a> commands you have entered in any worksheet of this notebook.')),
       (_('Typesetting All Output'),
        _('Type pretty_print_default() in an input cell and press shift-enter.  All future output will be typeset automatically.')),
-      # ('Javascript Debugger',
-      #  'Type ?debug at the end of a worksheet url to enable the javascript debugger.  A pair of textareas will appear at the top of the worksheet -- the upper of which is for output, the lower is a direct interface to the page\'s javascript environment.  Type any eval()-able javascript into the input box and press shift+enter to execute it.  Type debug_append(str) to print to, and debug_clear() to clear the debug output window.'),
     ]),
     (_('Files and Scripts'),
      [(_('Loading SAGE/Python Scripts'),

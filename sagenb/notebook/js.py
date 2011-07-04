@@ -32,15 +32,15 @@ from template import template
 from sagenb.misc.misc import SAGE_URL
 from compress.JavaScriptCompressor import JavaScriptCompressor
 
-# Debug mode?  If sagenb lives under SAGE_ROOT/, we minify and cache
+# Debug mode?  If sagenb lives under SAGE_ROOT/, we minify/pack and cache
 # the Notebook JS library.
 try:
     from sage.misc.misc import SAGE_ROOT
     from pkg_resources import Requirement, working_set
     sagenb_path = working_set.find(Requirement.parse('sagenb')).location
     debug_mode = SAGE_ROOT not in os.path.realpath(sagenb_path)
-except (AttributeError, ImportError):
-    debug_mode = False
+except Exception:
+    pass
 
 _cache_javascript = None
 def javascript():
@@ -67,15 +67,15 @@ def javascript():
         '/* JavaScriptCompressor 0.1 [w'
 
     """
-    global _cache_javascript
+    global _cache_javascript, debug_mode
     if _cache_javascript is not None:
         return _cache_javascript
 
     s = template(os.path.join('js', 'notebook_dynamic.js'),
                  SAGE_URL=SAGE_URL,
-                 KEY_CODES=keyhandler.all_tests())
+                 KEY_CODES=keyhandler.all_tests(),
+                 debug_mode=debug_mode)
 
-    global debug_mode
     if debug_mode:
         return s
 

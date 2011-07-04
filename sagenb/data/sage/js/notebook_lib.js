@@ -48,10 +48,6 @@
 //
 ///////////////////////////////////////////////////////////////////
 
-// This toggles a logger.  Please see the end of this file for
-// details.
-var sage_debug_log = true;
-
 // Cell lists and cache.
 var cell_id_list;
 var active_cell_list = [];
@@ -85,10 +81,8 @@ var os_mac, os_lin, os_win;
 // Functions assigned during keyboard setup.
 var input_keypress;
 var input_keydown;
-var debug_keypress;
 // Bug workaround.
 var skip_keyup = false;
-var in_debug_input = false;
 
 // Interrupts.
 var interrupt_state = {count: 0};
