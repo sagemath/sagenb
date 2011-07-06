@@ -296,19 +296,28 @@ class Notebook(object):
 
         - ``W`` - a new Worksheet instance; the target
         """
-        # Copy over images and other files
-        data = src.data_directory()
-        if os.path.exists(data):
-            target = os.path.join(W.directory(),'data')
-            if os.path.exists(target):
-                shutil.rmtree(target, ignore_errors=True)
-            shutil.copytree(data, target, ignore=ignore_nonexistent_files)
-        cells = src.cells_directory()
-        if os.path.exists(cells):
-            target = os.path.join(W.directory(),'cells')
-            if os.path.exists(target):
-                shutil.rmtree(target, ignore_errors=True)
-            shutil.copytree(cells, target, ignore=ignore_nonexistent_files)
+        # Note: Each Worksheet method *_directory actually creates a
+        # directory, if it doesn't already exist.
+
+        # More compact, but significantly less efficient?
+        #      shutil.rmtree(W.cells_directory(), ignore_errors=True)
+        #      shutil.rmtree(W.data_directory(), ignore_errors=True)
+        #      shutil.rmtree(W.snapshots_directory(), ignore_errors=True)
+        #      shutil.copytree(src.cells_directory(), W.cells_directory())
+        #      shutil.copytree(src.data_directory(), W.data_directory())
+
+        for sub in ['cells', 'data', 'snapshots']:
+            target_dir = os.path.join(W.directory(), sub)
+            if os.path.exists(target_dir):
+                shutil.rmtree(target_dir, ignore_errors=True)
+
+        # Copy images, data files, etc.
+        for sub in ['cells', 'data']:
+            source_dir = os.path.join(src.directory(), sub)
+            if os.path.exists(source_dir):
+                target_dir = os.path.join(W.directory(), sub)
+                shutil.copytree(source_dir, target_dir)
+
         W.edit_save(src.edit_text())
         W.save()
 
@@ -342,29 +351,22 @@ class Notebook(object):
             sage: sorted(nb.worksheet_names())
             ['Mark/0', 'pub/0']
         """
-        for X in self.users_worksheets('pub'):
-            if X.worksheet_that_was_published() == worksheet:
-                # Update X based on worksheet instead of creating something new
-                # 1. delete cells and data directories
-                # 2. copy them over
-                # 3. update worksheet text
-                if os.path.exists(X.data_directory()):
-                    shutil.rmtree(X.data_directory(), ignore_errors=True)
-                if os.path.exists(X.cells_directory()):
-                    shutil.rmtree(X.cells_directory(), ignore_errors=True)
-                if os.path.exists(X.snapshot_directory()):
-                    shutil.rmtree(X.snapshot_directory(), ignore_errors=True)
-                self._initialize_worksheet(worksheet, X)
-                X.set_worksheet_that_was_published(worksheet)
-                X.move_to_archive(username)
-                worksheet.set_published_version(X.filename())
-                X.record_edit(username)
-                X.set_name(worksheet.name())
-                return X
+        W = None
 
-        # Have to create a new worksheet
-        W = self.create_new_worksheet(worksheet.name(), 'pub')
+        # Reuse an existing published version
+        for X in self.__worksheets.itervalues():
+            if (X.is_published() and
+                X.worksheet_that_was_published() == worksheet):
+                W = X
+
+        # Or create a new one.
+        if W is None:
+            W = self.create_new_worksheet(worksheet.name(), 'pub')
+
+        # Copy cells, output, data, etc.
         self._initialize_worksheet(worksheet, W)
+
+        # Update metadata.
         W.set_worksheet_that_was_published(worksheet)
         W.move_to_archive(username)
         worksheet.set_published_version(W.filename())
@@ -1621,17 +1623,20 @@ class Notebook(object):
         if W is None:
             return current_app.message("The worksheet does not exist") #XXX: i18n
 
-        template_page = os.path.join("html", "notebook", "worksheet_page.html")
         if W.docbrowser():
-            template_page = os.path.join("html", "notebook", "doc_page.html")
+            if W.is_published() or self.user_manager().user_is_guest(username):
+                template_page = os.path.join('html', 'notebook', 'guest_worksheet_page.html')
+            else:
+                template_page = os.path.join("html", "notebook", "doc_page.html")
         elif do_print:
             template_page = os.path.join('html', 'notebook', 'print_worksheet.html')
-        elif W.is_published() or self.user_manager().user_is_guest(username):
-            template_page = os.path.join('html', 'notebook', 'guest_worksheet_page.html')
+        else:
+            template_page = os.path.join("html", "notebook", "worksheet_page.html")
 
         return template(template_page, worksheet = W,
                         notebook = self, do_print=do_print,
                         username = username)
+
 
 ####################################################################
 

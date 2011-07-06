@@ -10,9 +10,11 @@ INPUT:
 - do_math_parse -- whether to parse jsMath
 
 - editing -- whether user is editing the cell
+
+- publish - a boolean; whether this is a published cell
 #}
 <span id="cell_outer_{{ cell.id() }}">
-    {% if not do_print and not cell.worksheet().docbrowser() %}
+    {% if not do_print and not publish and not cell.worksheet().docbrowser() %}
     <div class="insert_new_cell" id="insert_new_cell_before{{ cell.id() }}">
     </div>
     <script type="text/javascript">
@@ -31,7 +33,7 @@ INPUT:
             {{ cell.plain_text() }}
     {% endif %}
     </div>
-{% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print %}
+{% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print and not publish %}
     <script type="text/javascript">
        $("#cell_text_{{ cell.id() }}").unbind('dblclick').editable(function (value, settings) {
             evaluate_text_cell_input({{ '%r'|format(cell.id()) }}, value, settings);

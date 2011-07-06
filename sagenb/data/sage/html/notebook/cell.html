@@ -10,6 +10,8 @@ INPUT:
 
         - ``do_print`` - a boolean stating whether the HTML is for
         print or not.
+
+        - ``publish`` - a boolean; whether this is a published cell
 #}
 {% if do_print %}
     {% set wrap_ = 68 %}
@@ -18,7 +20,7 @@ INPUT:
     {% set wrap_ = wrap %}
     {% set div_wrap_ = div_wrap %}
 {% endif %}
-{% set cell_cls = "cell_evaluated" if cell.evaluated() or do_print else "cell_not_evaluated" %}
+{% set cell_cls = "cell_evaluated" if cell.evaluated() or do_print or publish else "cell_not_evaluated" %}
 
 {% if div_wrap_ %}
 <div id="cell_outer_{{ cell.id() }}" class="cell_visible">
@@ -26,7 +28,7 @@ INPUT:
 {% endif %}
         {% if 'hideall' not in cell.percent_directives() %}
         {# input #}
-        {% if not do_print %}
+        {% if not do_print and not publish %}
             <div class="insert_new_cell" id="insert_new_cell_before{{ cell.id() }}">
             </div>
             <script type="text/javascript">
@@ -45,7 +47,22 @@ INPUT:
             {% else %}
                 {% set input_cls = 'cell_input' %}
             {% endif %}
-            {% if do_print %}
+            {% if publish and conf['pub_interact'] %}
+                {# We don't condition on interact cells here, for the sake of a uniform appearance. #}
+                <textarea class="{{ input_cls }}" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
+                          cols="80"
+                          readonly="yes"
+                          id="cell_input_{{ cell.id() }}"
+                          >{{ cell.input_text().rstrip() }}</textarea>
+                {% if cell.is_interactive_cell() %}
+                    <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
+                       class="eval_button_active"
+                       id="eval_button{{ cell.id() }}"
+                       alt="Click here to reset this interactive cell">
+                        reset
+                    </a>
+                {% endif %}
+            {% elif do_print or publish %}
                 <div class="cell_input_print">{{ cell.input_text().rstrip()|escape }}&nbsp;</div>
             {% else %}
                 <textarea class="{{ input_cls }}" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"

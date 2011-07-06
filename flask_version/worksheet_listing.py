@@ -141,8 +141,16 @@ def pub():
 @worksheet_listing.route('/home/pub/<id>/')
 @guest_or_login_required
 def public_worksheet(id):
+    from worksheet import pub_worksheet
     filename = 'pub' + '/' + id
-    return g.notebook.html(worksheet_filename=filename, username = g.username)
+    original_worksheet = g.notebook.get_worksheet_with_filename(filename)
+    worksheet = pub_worksheet(original_worksheet)
+
+    owner = worksheet.owner()
+    worksheet.set_owner('pub')
+    s = g.notebook.html(worksheet_filename=worksheet.filename())
+    worksheet.set_owner(owner)
+    return s
 
 @worksheet_listing.route('/home/pub/<id>/download/<path:title>')
 def public_worksheet_download(id, title):

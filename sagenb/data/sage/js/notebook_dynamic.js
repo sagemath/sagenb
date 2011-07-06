@@ -18,7 +18,7 @@
 {% include "js/debug.js" %}
 {% endif %}
 
-function interrupt_callback(status, response_text) {
+function interrupt_callback(status, response) {
     /*
     Callback called after we send the interrupt signal to the server.
     If the interrupt succeeds, we change the CSS/DOM to indicate that
@@ -30,7 +30,7 @@ function interrupt_callback(status, response_text) {
     {% set timeout = 5 %}
     var timeout = {{ timeout }};
 
-    if (response_text === 'failed') {
+    if (response === 'failed') {
         if (!is.count) {
             is.count = 1;
             message = translations['Unable to interrupt calculation.'] + " " + translations[timeout > 1 ? 2 : 1]['Trying again in %(num)d second...'](timeout) + ' ' + translations['Close this box to stop trying.'];
@@ -61,7 +61,6 @@ function interrupt_callback(status, response_text) {
             timeout: timeout
         });
     } else if (status === 'success') {
-        // halt_active_cells calls reset_interrupts.
         halt_queued_cells();
     } else {
         reset_interrupts();

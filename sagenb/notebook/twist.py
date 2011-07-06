@@ -34,18 +34,15 @@ reactor    = None
 
 ############################################################
 
-import os, shutil, time, urlparse
-import bz2
+import os, shutil, time, urlparse, json, zipfile, tempfile, bz2, urlparse
 from cgi import escape
 
 from twisted.python import log
 from twisted.web2 import server, http, resource, channel
 from twisted.web2 import static, http_headers, responsecode
 from twisted.web2.filter import gzip
-import zipfile
 
 import css, js, keyboards, challenge
-
 import notebook as _notebook
 
 from sagenb.notebook.template import template
@@ -73,24 +70,79 @@ waiting = {}
 from user_db import UserDatabase
 users = UserDatabase()
 
-############################
-# Encoding data to go between the server and client
-############################
-SEP = '___S_A_G_E___'
+###############################################
+# Encoding data sent between server and client
+###############################################
+def decode_response(s, **kwargs):
+    """
+    Decodes a string sent from a client into an object.  The current
+    implementation uses JSON.  See :mod:`json` for details.
 
-def encode_list(v):
-    seq = []
-    for x in v:
-        x = encoded_str(x)
-        seq.append(x)
-    return SEP.join(seq)
+    INPUT:
+
+    - ``s`` - a string
+
+    - ``kwargs`` - additional keyword arguments to pass to the
+      decoding function
+
+    OUTPUT:
+
+    an object
+
+    EXAMPLES::
+
+        sage: pass
+    """
+    return json.loads(s, **kwargs)
+
+def encode_response(obj, separators=(',', ':'), **kwargs):
+    """
+    Encodes response data to send to a client.  The current
+    implementation uses JSON.  See :mod:`json` for details.
+
+    INPUT:
+
+    - ``obj`` - an object comprised of basic Python types
+
+    - ``separators`` - a string 2-tuple (default: (',', ':'));
+      dictionary separators to use
+
+    - ``kwargs`` - additional keyword arguments to pass to the
+      encoding function
+
+    OUTPUT:
+
+    - a string
+
+    EXAMPLES::
+
+        sage: from sagenb.notebook.twist import encode_response
+        sage: o = [int(3), float(2), {'foo': 'bar'}, None]
+        sage: encode_response(o)
+        '[3,2.0,{"foo":"bar"},null]'
+        sage: d = {'AR': 'MA', int(11): 'foo', 'bar': float(1.0), None: 'blah'}
+        sage: encode_response(d, sort_keys = True)
+        '{"null":"blah","11":"foo","AR":"MA","bar":1.0}'
+        sage: d['archies'] = ['an', 'mon', 'hier']
+        sage: d['sub'] = {'shape': 'triangle', 'color': 'blue', 'sides': [int(3), int(4), int(5)]}
+        sage: encode_response(d, sort_keys = True)
+        '{"null":"blah","11":"foo","AR":"MA","archies":["an","mon","hier"],"bar":1.0,"sub":{"color":"blue","shape:"triangle","sides":[3,4,5]}}'
+        sage: print encode_response(d, separators = (', ', ': '), indent = 4)
+        {
+            "...": ...
+        }
+    """
+    # TODO: Serialize class attributes, so we can do, e.g., r_dict.foo
+    # = 'bar' instead of r_dict['foo'] = 'bar' below.
+
+    # TODO: Use cjson, simplejson instead?  Serialize Sage types,
+    # e.g., Integer, RealLiteral?
+    return json.dumps(obj, separators = separators, **kwargs)
 
 
-
-############################
-# Notebook autosave.
-############################
-# save if make a change to notebook and at least some seconds have elapsed since last save.
+############################################
+# Notebook autosave and idle process checks
+############################################
 def init_updates():
     global save_interval, idle_interval, last_save_time, last_idle_time
 

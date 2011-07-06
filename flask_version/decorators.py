@@ -15,7 +15,13 @@ def login_required(f):
                 session.modified = True
                 return f(*args, **kwds)
             else:
-                return redirect(url_for('base.index', next=request.url))
+                #XXX: Do we have to specify this for the publised
+                #worksheets here?
+                if request.path.startswith('/home/_sage_/'):
+                    g.username = 'guest'
+                    return f(*args, **kwds)
+                else:
+                    return redirect(url_for('base.index', next=request.url))
         else:
             g.username = session['username']
         return f(*args, **kwds)

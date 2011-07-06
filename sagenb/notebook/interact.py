@@ -31,7 +31,7 @@ NOTES:
      because there is no reason one would ever pickle anything in this
      file, since everything is associated with particular state
      information of a notebook.
- 
+
 BUGS:
 
    [x] have default values set from the get go
@@ -147,10 +147,10 @@ VERSION 3:
 """
 
 # Standard system libraries
-from base64 import standard_b64encode, standard_b64decode
 import inspect
 import math
 import types
+from base64 import standard_b64decode
 
 # Sage libraries
 from jsmath import math_parse
@@ -271,33 +271,66 @@ def html_slider(id, values, callback, steps, default=0, margin=0):
 
         sage: from sagenb.notebook.interact import html_slider, html
         sage: html(html_slider('slider-007', 'null', 'alert(position)', steps=5, default=2, margin=5))
-        <html>...</html>
+        <html>...slider...</html>
     """
-    s = """<table><tr><td>
-        <div id="%s" style="margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 15.0em;"></div>
-        </td>"""%(id,int(margin))
-    if values != "null":
-        s += '<td><font color="black" id="%s-lbl"></font></td>' % id
-    s += "</tr></table>"
+    val_html = ''
+    if values != 'null':
+        val_html = """
+            <td>
+              <font color="black" id="%s-lbl"></font>
+            </td>""" % id
+
+    s = """
+        <table>
+          <tr>
+            <td>
+              <div id="%s" style="margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 15.0em;"></div>
+            </td>
+            %s
+          </tr>
+        </table>""" % (id, int(margin), val_html)
 
     # We now generate javascript that gets run after the above div
     # gets inserted. This happens because of the setTimeout function
     # below which gets passed an anonymous function.
-    s += """<script>(function(){ var values = %(values)s; setTimeout(function() {
-    $('#%(id)s').slider({
-        step: 1, min: 0, max: %(maxvalue)s, value: %(startvalue)s,
-        change: function (e,ui) { var position = ui.value; if(values!=null) $('#%(id)s-lbl').text(values[position]); %(callback)s; },
-        slide: function(e,ui) { if(values!=null) $('#%(id)s-lbl').text(values[ui.value]); }
-    });
-    if(values != null) $('#%(id)s-lbl').text(values[$('#%(id)s').slider('value')]);
-    }, 1); })();</script>"""%{'values': values, 'id': id, 'maxvalue': steps-1, 'startvalue': default, 'callback': callback}
+    s += """<script>
+    (function() {
+        var values = %(values)s;
+        setTimeout(function() {
+            $('#%(id)s').slider({
+                step: 1,
+                min: 0,
+                max: %(maxvalue)s,
+                value: %(startvalue)s,
+                change: function (e, ui) {
+                    var position = ui.value;
+                    if (values != null) {
+                        $('#%(id)s-lbl').text(values[position]);
+                        %(callback)s;
+                    }
+                },
+                slide: function (e, ui) {
+                    if (values != null) {
+                        $('#%(id)s-lbl').text(values[ui.value]);
+                    }
+                }
+            });
+            if (values != null) {
+                $('#%(id)s-lbl').text(values[$('#%(id)s').slider('value')]);
+            }
+        }, 1);
+    })();
+    </script>""" % {'values': values, 'id': id, 'maxvalue': steps - 1,
+                    'startvalue': default, 'callback': callback}
+
     # change 'change' to 'slide' and it changes the slider every time it moves;
     # needs much more work to actually work, since server gets flooded by
     # requests.
-    
+
     return s
 
-def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, margin=0):
+def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, 
+                     margin=0):
     """
     Return the HTML representation of a jQuery range slider.
 
@@ -335,49 +368,65 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1, marg
 
         sage: from sagenb.notebook.interact import html_rangeslider, html
         sage: html(html_rangeslider('slider-007', 'null', 'alert(pos[0]+", "+pos[1])', steps=5, default_l=2, default_r=3, margin=5))
-        <html>...</html>
+        <html>...slider..range...</html>
     """
-    s = """<table><tr><td>
-        <div id="%s" style="margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 20.0em;"></div>
-        </td></tr>"""%(id,int(margin))
-    if values != "null":
-        s += '<tr><td><font color="black" id="%s-lbl"></font></td></tr>' % id
-    s += "</table>"
+    val_html = ''
+    if values != 'null':
+        val_html = """
+          <tr>
+            <td>
+              <font color="black" id="%s-lbl"></font>
+            </td>
+          </tr>""" % id
+
+    s = """
+        <table>
+          <tr>
+            <td>
+              <div id="%s" style="margin:%spx; margin-left: 1.0em; margin-right: 1.0em; width: 20.0em;"></div>
+            </td>
+          </tr>
+          %s
+        </table>
+        """ % (id, int(margin), val_html)
+
 
     # We now generate javascript that gets run after the above div
     # gets inserted. This happens because of the setTimeout function
     # below which gets passed an anonymous function.
-    s += """<script>(function()
-    {
-        var values = %s;
-        var pos = [%s, %s];
-        var sel = '#%s';
-        var updatePos = function()
-        {
-            pos[0]=$(sel).slider('values', 0);
-            pos[1]=$(sel).slider('values', 1);
-            if(values!=null) $(sel+'-lbl').text('('+values[pos[0]]+', '+values[pos[1]]+')');
-        };
-        setTimeout(function()
-        {
-            $(sel).slider(
-            {
-                range: true,
-                step: 1,
-                min: 0,
-                max: %s,
-                values: [%s, %s],
-                change: function(e,ui){ updatePos(); %s; },
-                slide: updatePos
-            });
-            updatePos();
-        }, 1);
-    })();</script>"""%(values, default_l, default_r, id, steps-1, default_l, default_r, callback)
+    s += """<script>
+         (function() {
+             var values = %s, pos = [%s, %s], sel = '#%s', updatePos;
+             updatePos = function() {
+                 pos[0] = $(sel).slider('values', 0);
+                 pos[1] = $(sel).slider('values', 1);
+                 if (values != null) {
+                     $(sel + '-lbl').text('(' + values[pos[0]] + ', ' +
+                                          values[pos[1]] + ')');
+                 }
+             };
+             setTimeout(function() {
+                 $(sel).slider({
+                     range: true,
+                     step: 1,
+                     min: 0,
+                     max: %s,
+                     values: [%s, %s],
+                     change: function (e, ui) {
+                         updatePos();
+                         %s;
+                     },
+                     slide: updatePos
+                 });
+                 updatePos();
+             }, 1);
+         })();
+         </script>""" % (values, default_l, default_r, id, steps - 1,
+                         default_l, default_r, callback)
 
-
-    # change 'change' to 'slide' and it changes the slider every time it moves;
-    # needs much more work to actually work, since server gets flooded by
-    # requests.
+    # Note: Change 'change' to 'slide' and it changes the slider every
+    # time it moves; needs much more work to actually work, since
+    # server gets flooded by requests.
     
     return s
 
@@ -488,39 +537,39 @@ def html_color_selector(id, change, input_change, default='000000',
                            id, style1, style2)
 
         # JS
-        s +="""<script>
-            setTimeout(function () {
-                var def = '%s'.slice(1), div = $('#%s-picker div'),
-                    input = $('#%s'), picker = $('#%s-picker');
-                input.css({
-                    backgroundColor: '%s',
-                    // Should be good enough:
-                    color: (parseInt(def.slice(0, 2), 16) + parseInt(def.slice(2, 4), 16) + parseInt(def.slice(4, 6), 16)) / 3 > 127 ? '#000000' : '#ffffff'
-                });
-                picker.ColorPicker({
-                    color : '%s',
-                    onShow : function (pkr) {
-                        $(pkr).css({zIndex: '10'}).show();
-                        return false;
-                    },
-                    onChange : function (hsb, hex, rgb) {
-                        color = '#' + hex;
-                        if (input.val() !== color) {
-                            input.val(color);
-                            input.css({
-                                backgroundColor: color,
-                                color: hsb.b > 50 ? '#000000' : '#ffffff'
-                            });
-                            div.css({backgroundColor: color});
-                            %s;
-                        }
-                    },
-                    onSubmit : function (hsb, hex, rgb, el) {
-                        $(el).ColorPickerHide();
-                    }
-                });
-            }, 1);
-            </script>""" % (default, id, id, id, default, default, change)
+        s += """<script>
+             setTimeout(function () {
+                 var def = '%s'.slice(1), div = $('#%s-picker div'),
+                     input = $('#%s'), picker = $('#%s-picker');
+                 input.css({
+                     backgroundColor: '%s',
+                     // Should be good enough:
+                     color: (parseInt(def.slice(0, 2), 16) + parseInt(def.slice(2, 4), 16) + parseInt(def.slice(4, 6), 16)) / 3 > 127 ? '#000000' : '#ffffff'
+                 });
+                 picker.ColorPicker({
+                     color : '%s',
+                     onShow : function (pkr) {
+                         $(pkr).css({zIndex: '10'}).show();
+                         return false;
+                     },
+                     onChange : function (hsb, hex, rgb) {
+                         color = '#' + hex;
+                         if (input.val() !== color) {
+                             input.val(color);
+                             input.css({
+                                 backgroundColor: color,
+                                 color: hsb.b > 50 ? '#000000' : '#ffffff'
+                             });
+                             div.css({backgroundColor: color});
+                             %s;
+                         }
+                     },
+                     onSubmit : function (hsb, hex, rgb, el) {
+                         $(el).ColorPickerHide();
+                     }
+                 });
+             }, 1);
+             </script>""" % (default, id, id, id, default, default, change)
 
     elif widget == 'jpicker':
         # HTML.
@@ -540,51 +589,55 @@ def html_color_selector(id, change, input_change, default='000000',
                 </td>
               </tr>
             </table>
-            """ % (id, input_change, id, default[1:], input_style, id)
+            """ % (id, input_change, id, default, input_style, id)
 
         # JS.  Note: jPicker uses, e.g., 'abcdef' instead of '#abcdef'
         # for bound input fields.  To maintain consistency with the
         # Farbtastic and ColorPicker implementations above, we do not
         # simply call $('#%s').jPicker({...}).
-        s +="""<script>
-            setTimeout(function () {
-                var input = $('#%(id)s'), picker = $('#%(id)s-picker');
-                picker.jPicker(
-                    // Settings.
-                    {
-                        window: {
-                            expandable: true,
-                            position: { x: 20, y: 20 },
-                            title: 'Select a color'
-                        },
-                        color: {
-                            active: new $.jPicker.Color({hex: '%(default)s'})
-                        },
-                        images: {
-                            clientPath: '/javascript/jquery/plugins/jpicker/images/'
-                        }
-                    },
-                    // commitCallback
-                    function (color) {},
-                    // liveCallback
-                    function (color_arg) {
-                        color = '#' + color_arg.val('hex');
-                        if (input.val() !== color) {
-                            input.val(color);
-                            input.css({
-                                backgroundColor: color,
-                                color: color_arg.val('v') > 50 ? '#000000' : '#ffffff'
-                            });
-                            %(change)s;
-                        }
-                    },
-                    // cancelCallback
-                    function (color) {}
-                );
-                // The 'change' event is still bound:
-                input.unbind('keyup');
-            }, 1);
-            </script>""" % dict(id=id, default=default, change=change)
+        s += """<script>
+             setTimeout(function () {
+                 var def = '%s'.slice(1), input = $('#%s'),
+                     picker = $('#%s-picker');
+                 input.css({
+                     backgroundColor: '%s',
+                     // Should be good enough:
+                     color: (parseInt(def.slice(0, 2), 16) + parseInt(def.slice(2, 4), 16) + parseInt(def.slice(4, 6), 16)) / 3 > 127 ? '#000000' : '#ffffff'
+                 });
+                 picker.jPicker(
+                     // Settings.
+                     {
+                         window: {
+                             expandable: true,
+                             position: { x: 20, y: 20 },
+                             title: 'Select a color'
+                         },
+                         color: {
+                             active: '%s'
+                         },
+                         images: {
+                             clientPath: '/javascript/jquery/plugins/jpicker/images/'
+                         }
+                     },
+                     // commitCallback
+                     function (color) {},
+                     // liveCallback
+                     function (color_arg) {
+                         color = '#' + color_arg.hex;
+                         if (input.val() !== color) {
+                             input.val(color);
+                             input.css({
+                                 backgroundColor: color,
+                                 color: color_arg.v > 50 ? '#000000' : '#ffffff'
+                             });
+                             %s;
+                         }
+                     },
+                     // cancelCallback
+                     function (color) {}
+                 );
+             }, 1);
+             </script>""" % (default, id, id, default, default, change)
 
     return s
 
@@ -840,7 +893,7 @@ class InteractControl(InteractElement):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InteractControl('x', 1).interact()
-            "interact(..., '_interact_.update(..., \\'x\\', ..., _interact_.standard_b64decode(\\''+encode64(NULL)+'\\'), globals()); _interact_.recompute(\\'0\\');')"
+            "...interact...x...1..."
         """
         # We have to do a try/except block here since the control may
         # not have a canvas associated with it.
@@ -849,18 +902,15 @@ class InteractControl(InteractElement):
         except ValueError:
             auto_update = True
 
-        # The following is a crazy line to read because of all the
-        # backslashes and try/except.  All it does is run the interact
-        # function once after setting exactly one dynamic variable.
-        # If setting the dynamic variable fails, due to a KeyError
-        python_string = """_interact_.update(\\'%s\\', \\'%s\\', %s, _interact_.standard_b64decode(\\''+encode64(%s)+'\\'), globals())""" % (
-            self.cell_id(), self.var(), self.adapt_number(), self.value_js(*args))
+        recompute = 0
 
         if auto_update:
-            python_string += """; _interact_.recompute(\\'%s\\');""" % self.cell_id()
-        
-        s = """interact(%r, '%s')""" % (self.cell_id(), python_string)
-        return s
+            recompute = 1
+
+        update = "{variable: '%s', adapt_number: %s, value: encode64(%s)}" % (
+            self.var(), self.adapt_number(), self.value_js(*args))
+
+        return "interact(%r, %s, %s)" % (self.cell_id(), update, recompute)
    
     def var(self):
         """
@@ -1019,7 +1069,7 @@ class InputBox(InteractControl):
         EXAMPLES::
 
             sage: sagenb.notebook.interact.InputBox('theta', 1).render()
-            '<input type="text" value="1" size=80 onchange="interact(0, \'_interact_.update(\\\'0\\\', \\\'theta\\\', ..., _interact_.standard_b64decode(\\\'\'+encode64(this.value)+\'\\\'), globals()); _interact_.recompute(\\\'0\\\');\')"></input>'
+            '...input...value="1"...theta...'
         """
         if self.__type is bool:
             return """<input type="checkbox" %s width=200px onchange="%s"></input>"""%(
@@ -1934,6 +1984,26 @@ class InteractCanvas(object):
         return "Interactive canvas in cell %s with %s controls" % (
             self.__cell_id, len(self.__controls))
 
+    def cell_id(self):
+        """
+        Return the ID of the cell that contains this :func:`interact` control.
+
+        OUTPUT:
+
+        - an integer or a string
+
+        EXAMPLES:
+
+        The output below should equal the ID of the current cell::
+
+            sage: B = sagenb.notebook.interact.InputBox('x',2)
+            sage: C = sagenb.notebook.interact.InteractCanvas([B], 3); C
+            Interactive canvas in cell 3 with 1 controls
+            sage: C.cell_id()
+            3
+        """
+        return self.__cell_id
+
     def is_auto_update(self):
         r"""
         Returns True if any change of the values for the controls on
@@ -1977,23 +2047,6 @@ class InteractCanvas(object):
         """
         return self.__controls
     
-    def cell_id(self):
-        """
-        Returns the ID of the cell that contains this interactive
-        canvas.
-
-        OUTPUT:
-
-        - an integer or a string
-
-        EXAMPLES::
-
-            sage: B = sagenb.notebook.interact.InputBox('x',2)
-            sage: sagenb.notebook.interact.InteractCanvas([B], 3).cell_id()
-            3
-        """
-        return self.__cell_id
-
     def render_output(self):
         """
         Render in text (HTML) form the output portion of the
@@ -2078,21 +2131,27 @@ class InteractCanvas(object):
 
             sage: B = sagenb.notebook.interact.InputBox('x',2)
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).wrap_in_outside_frame('<!--inside-->')
-            '<!--notruncate--><div padding=6 id="div-interact-3"> ...</div>...'
+            '...notruncate...div...interact...table...inside...'
         """
-        return """<!--notruncate--><div padding=6 id="div-interact-{0}"> <table width={width} height=20px bgcolor="#c5c5c5"
-                 cellpadding=15><tr><td bgcolor="#f9f9f9" valign=top align=left>{1}</td>
-                 </tr></table></div>
-                 """.format(self.cell_id(), inside, width=self.__width)
+        return """<!--notruncate-->
+        <div padding=6 id="div-interact-%s">
+          <table width=800px height=20px bgcolor="#c5c5c5" cellpadding=15>
+            <tr>
+              <td bgcolor="#f9f9f9" valign=top align=left>%s</td>
+            </tr>
+          </table>
+        </div>""" % (self.cell_id(), inside)
 
-    # The following could be used to make the interact frame resizable and/or draggable.
-    # Neither effect is as cool as it sounds!
-##                  <script>
-##                  setTimeout(function() {
-##                  $('#div-interact-%s').resizable(); 
-##                  $('#div-interact-%s').draggable();
-##                  }, 1);</script>
-    
+    # The following could be used to make the interact frame resizable
+    # and/or draggable.  Neither effect is as cool as it sounds!
+
+    #    <script>
+    #        setTimeout(function() {
+    #            $('#div-interact-%s').resizable();
+    #            $('#div-interact-%s').draggable();
+    #        }, 1);
+    #    </script>
+
 
     def render(self):
         """
@@ -2172,7 +2231,7 @@ class UpdateButton(JavascriptCodeButton):
             sage: b.render()
             '...input...button...Update...0...'
         """
-        s = """interact(%r, '_interact_.recompute(\\'%s\\')')""" % (cell_id, cell_id)
+        s = "interact(%r, {}, 1)" % cell_id
         JavascriptCodeButton.__init__(self, "Update", s)
 
         self.__var = var

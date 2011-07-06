@@ -51,6 +51,7 @@
 // Cell lists, maps, and cache.
 var cell_id_list = [];
 var queue_id_list = [];
+var onload_id_list = [];
 var cell_element_cache = {};
 
 // Worksheet information from worksheet.py
@@ -64,8 +65,6 @@ var user_name = '';
 
 // Ping the server periodically for worksheet updates.
 var server_ping_time = 10000;
-// Encoding separator must match server's separator.
-var SEP = '___S_A_G_E___';
 
 // Interact constants.  See interact.py and related files.
 // Present in wrapped output, forces re-evaluation of ambient cell.
@@ -95,12 +94,15 @@ var cell_has_changed = false;
 var keypress_resize_delay = 250;
 var last_keypress_resize = 0;
 var will_resize_soon = false;
+var previous = {};
 
 // Are we're splitting a cell and evaluating it?
 var doing_split_eval = false;
 // Whether the the next call to jump_to_cell is ignored.  Used to
 // avoid changing focus.
 var ignore_next_jump = false;
+// Set to true for pages with public interacts.
+var ignore_all_jumps = false;
 var control_key_pressed = 0;
 var evaluating_all = false;
 
@@ -197,6 +199,41 @@ function toint(x) {
 }
 
 
+function decode_response(text) {
+    /*
+    Reconstructs a JSON-encoded object from a string.  We use this to
+    parse server responses into cell IDs, data, etc.  In particular,
+    any key in the reconstructed object that ends in 'id' is filtered
+    through toint.
+
+    INPUT:
+        text -- string
+    OUTPUT:
+        object
+    */
+    return JSON.parse(text, function (key, value) {
+        if (key.slice(-2) === 'id') {
+            return toint(value);
+        }
+        return value;
+    });
+}
+
+
+function encode_response(obj) {
+    /*
+    JSON-encodes a object to a string.
+
+    INPUT:
+        obj -- object
+    OUTPUT:
+        string
+    */
+    return JSON.stringify(obj);
+}
+
+
+
 function initialize_the_notebook() {
     /*
     Do the following:
@@ -205,7 +242,7 @@ function initialize_the_notebook() {
         2. Figure out which keyboard the user has.
         3. Initialize jsmath.
     */
-    var n, nav, nap, nua;
+    var i, n, nav, nap, nua;
 
     // TODO: Use js-hotkeys (http://code.google.com/p/js-hotkeys/)?
     // Determine the browser, OS and set global variables.
@@ -256,8 +293,44 @@ function initialize_the_notebook() {
         start_update_check();
     }
 
-    // Resize and paste events.
-    window.onresize = resize_all_cells;
+    // Parse active cell IDs and mark these cells as running.  We
+    // don't use $.map here, to avoid the possibility of overwriting a
+    // debug version of the list.  See debug.js for details.
+    for (i = 0; i < queue_id_list.length; i += 1) {
+       queue_id_list[i] = toint(queue_id_list[i]);
+       cell_set_running(queue_id_list[i]);
+    }
+    if (queue_id_list.length) {
+        start_update_check();
+    }
+
+    // Parse "onload" cell IDs and evaluate these cells.  Note: The
+    // server fires "%auto" cells, whereas the client fires "onload"
+    // cells.
+    onload_id_list = $.map(onload_id_list, function (id) {
+        id = toint(id);
+        evaluate_cell(id, 0);
+        return id;
+    });
+
+    // Resize all cells on window resize.
+    previous.height = $(document.documentElement).height();
+    previous.width = $(document.documentElement).width();
+    $(window).resize(function () {
+        var h, w;
+        h = $(document.documentElement).height();
+        w = $(document.documentElement).width();
+
+        // IE fires global resize *far* too often (e.g., on every cell
+        // focus/blur).
+        if ((h !== previous.height) || (w !== previous.width)) {
+            resize_all_cells();
+            previous.height = h;
+            previous.width = w;
+        }
+    });
+
+    // Resize and save on paste.
     $('textarea').live('paste', function () {
         var id = $(this).attr('id').slice(11);
         setTimeout(function () {
@@ -265,6 +338,15 @@ function initialize_the_notebook() {
             cell_input_resize(id);
         }, keypress_resize_delay);
     });
+
+    // Quit the sage process on close for doc/pub-browser worksheets.
+    i = worksheet_filename.indexOf('/');
+    if (i !== -1 && worksheet_filename.slice(0, i) === '_sage_') {
+	    $(window).unload(function () {
+	        quit_sage();
+	    });
+    }
+
 }
 
 
@@ -716,30 +798,35 @@ function refresh_cell_list() {
 }
 
 
-function refresh_cell_list_callback(status, response_text) {
+function refresh_cell_list_callback(status, response) {
     /*
     In conjunction with refresh_cell_list, this function does the
     actual update of the HTML of the list of cells.  Here
-    response_text is a pair consisting of the updated state_number and
+    response is a pair consisting of the updated state_number and
     the new HTML for the worksheet_cell_list div DOM element.
     */
-    var X, z, s;
-    if (status === 'success') {
-        X = response_text.split(SEP);
-        state_number = parseInt(X[0], 10);
-        /* Now we replace the HTML for every cell *except* the active
-           cell by the contents of X[1]. */
+
+    var s, X, z;
+    if (status !== 'success') {
+        return;
+    }
+    X = decode_response(response);
+    state_number = parseInt(X.state_number, 10);
+
+    // Now we replace the HTML for every cell *except* the current
+    // cell.
+    z = get_element(current_cell);
+    if (z) {
+        s = z.innerHTML;
+    }
+
+    refresh();
+
+    if (z) {
         z = get_element(current_cell);
-        if (z) {
-            s = z.innerHTML;
-        }
-        refresh();
-        if (z) {
-            z = get_element(current_cell);
-            z.innerHTML = s;
-            cell_input_resize(current_cell);
-            jump_to_cell(current_cell, 0);
-        }
+        z.innerHTML = s;
+        cell_input_resize(current_cell);
+        jump_to_cell(current_cell, 0);
     }
 }
 
@@ -2044,33 +2131,33 @@ function evaluate_text_cell_callback(status, response) {
 
     INPUT:
         status -- string
-        response -- string that is of the form [id][cell_html]
+        response -- string; encoded JSON object with parsed keys
 
-             id -- string (integer) of the current text cell
-             cell_html -- the html to put in the cell
+             id -- string or integer; evaluated cell's id
+             cell_html -- string; the cell's updated contents
     */
-    var id, new_html, text, text_cell, X;
+    var new_html, text_cell, X;
     if (status === "failure") {
         // Failure evaluating a cell.
         return;
     }
-    X = response.split(SEP);
-    if (X[0] === '-1') {
-        // Something went wrong -- i.e., the requested cell doesn't
+    X = decode_response(response);
+
+    if (X.id === -1) {
+        // Something went wrong, e.g., the requested cell doesn't
         // exist.
         alert(translations['You requested to evaluate a cell that, for some reason, the server is unaware of.']);
         return;
     }
-    id = toint(X[0]);
-    text = X[1];
-    text_cell = get_element('cell_outer_' + id);
-    new_html = separate_script_tags(text);
+
+    text_cell = get_element('cell_outer_' + X.id);
+    new_html = separate_script_tags(X.cell_html);
     $(text_cell).replaceWith(new_html[0]);
-    // Need to get the new text cell.
-    text_cell = get_element('cell_outer_' + id);
+    // Get the new text cell.
+    text_cell = get_element('cell_outer_' + X.id);
     setTimeout(new_html[1], 50);
 
-    if (contains_jsmath(text)) {
+    if (contains_jsmath(X.cell_html)) {
         try {
             jsMath.ProcessBeforeShowing(text_cell);
         } catch (e) {
@@ -2212,34 +2299,43 @@ function cell_delete(id) {
 
 function cell_delete_callback(status, response) {
     /*
-    When a cell is deleted this callback is called after the server
-    hopefully does the deletion.  This function then removes the cell
-    from the DOM and cell_id_list.
+    Deletes a cell (removes it from the DOM and cell_id_list),
+    depending on the server response.
 
     INPUT:
+
         status -- string
-        response -- string with the format [command]SEP[id]
-               command -- empty or 'ignore'
-               id -- id of cell being deleted.
+        response -- string; encoded JSON object with parsed keys
+
+            id -- string or integer; deleted cell's id
+            command -- string; 'delete' (delete the cell) or 'ignore'
+            (do nothing)
+            prev_id -- string or integer; id of preceding cell
+            cell_id_list -- list; updated cell id list
+
     */
-    var cell, id, X, worksheet;
+    var cell, X;
 
     if (status === "failure") {
         return;
     }
-    X = response.split(SEP);
-    if (X[0] === 'ignore') {
-        return;
-        /* do not delete, for some reason */
-    }
-    id = toint(X[1]);
-    cell = get_element('cell_outer_' + id);
-    worksheet = get_element('worksheet_cell_list');
-    worksheet.removeChild(cell);
-    cell_id_list.splice($.inArray(id, cell_id_list), 1);
 
-    delete introspect[id];
-    delete cell_element_cache[id];
+    X = decode_response(response);
+
+    if (X.command === 'ignore') {
+        // Don't delete, e.g., if there's only one compute cell left.
+        return;
+    }
+
+
+    cell = get_element('cell_outer_' + X.id);
+    if (!cell) {
+        return;
+    }
+    get_element('worksheet_cell_list').removeChild(cell);
+    cell_id_list.splice($.inArray(X.id, cell_id_list), 1);
+    delete introspect[X.id];
+    delete cell_element_cache[X.id];
 
     // If we are in slide mode, we call slide_mode() again to
     // recalculate the slides.
@@ -2282,20 +2378,20 @@ function cell_delete_output_callback(status, response) {
                command -- string ('delete_output')
                id -- id of cell whose output is deleted.
     */
-    var id;
+    var X;
     if (status !== 'success') {
         // Do not delete output, for some reason.
         return;
     }
-    id = toint(response.split(SEP)[1]);
+    X = decode_response(response);
 
     // Delete the output.
-    get_element('cell_output_' + id).innerHTML = "";
-    get_element('cell_output_nowrap_' + id).innerHTML = "";
-    get_element('cell_output_html_' + id).innerHTML = "";
+    get_element('cell_output_' + X.id).innerHTML = "";
+    get_element('cell_output_nowrap_' + X.id).innerHTML = "";
+    get_element('cell_output_html_' + X.id).innerHTML = "";
 
     // Set the cell to not evaluated.
-    cell_set_not_evaluated(id);
+    cell_set_not_evaluated(X.id);
 }
 
 
@@ -2584,6 +2680,10 @@ function jump_to_cell(id, delta, bottom) {
          Changes the focused cell.  Does not send any information back
          to the server.
      */
+    if (ignore_all_jumps) {
+        return;
+    }
+
     if (ignore_next_jump) {
         ignore_next_jump = false;
         return;
@@ -2896,19 +2996,12 @@ function worksheet_command(cmd) {
 
 function evaluate_cell(id, newcell) {
     /*
-    Evaluate the given cell, and if newcell is true (the default),
-    insert a new cell after the current one.
+    Evaluates a cell.
 
     INPUT:
         id -- integer or string; cell id
-        newcell -- whether to insert new cell after the current one
-    GLOBAL INPUT:
-        worksheet_locked -- if true, pop up an alert and return
-        immediately
-    OUTPUT:
-        a message is sent to the server and the "check for updates"
-        loop is started if it isn't already going; typically this will
-        result in output being generated that we get later
+        newcell -- boolean; whether to request insertion of a new cell
+                   after the current one
     */
     var cell_input;
 
@@ -2999,11 +3092,6 @@ function evaluate_cell_introspection(id, before, after) {
         }
     }
 
-    intr.loaded = false;
-    update_introspection_text(id, translations["loading..."]);
-    queue_id_list.push(id);
-    cell_set_running(id);
-
     async_request(worksheet_command('introspect'), evaluate_cell_callback, {
         id: id,
         before_cursor: before,
@@ -3012,67 +3100,100 @@ function evaluate_cell_introspection(id, before, after) {
 }
 
 
-function evaluate_cell_callback(status, response_text) {
+function evaluate_cell_callback(status, response) {
     /*
-    Update the focus and possibly add a new cell.  If evaluate all has
-    been clicked, start evaluating the next cell (and don't add a new
-    cell).
+    Updates the queued cell list, marks a cell as running, changes the
+    focus, inserts a new cell, and/or evaluates a subsequent cell,
+    depending on the server response.  Also starts the cell update
+    check.
 
     INPUT:
-        response_text -- string in the format
-             [id][command][new_html][new_cell_id]
+        status -- string
+        response -- string; encoded JSON object with parsed keys
 
-             id -- current cell id
-             command -- 'append_new_cell' or 'insert_cell' or
-             'no_new_cell' or 'introspect'
-             new_html -- optional new cell contents
-             new_cell_id -- optional (if command is 'insert_cell') id
-             of new cell to create
+            id -- string or integer; evaluated cell's id
+            command -- string; 'insert_cell', 'no_new_cell', or
+            'introspect'
+            next_id -- optional string or integer; next cell's id
+            interact -- optional boolean; whether we're updating an
+            interact
+            new_cell_html -- optional string; new cell's contents
+            new_cell_id -- optional string or integer; id of new cell
+            to create
+
     */
-    var command, id, next_id, new_cell_id, new_html, X;
+    var X;
     if (status === "failure") {
-        // Failure evaluating a cell.
+        // alert("Unable to evaluate cell.");
         return;
     }
-    X = response_text.split(SEP);
-    id = toint(X[0]);
-    command = X[1];
-    new_html = X[2];
-    new_cell_id = toint(X[3]);
 
-    if (id === -1) {
-        // Something went wrong -- i.e., the requested cell doesn't
-        // exist.
-        alert(translations['You requested to evaluate a cell that, for some reason, the server is unaware of.']);
+    X = decode_response(response);
+    X.interact = X.interact ? true : false;
+
+    if (X.id === -1) {
+        // Something went wrong, e.g., the evaluated cell doesn't
+        // exist.  TODO: Can we remove this?
         return;
+    }
+
+    if (X.command && (X.command.slice(0, 5) === 'error')) {
+	// TODO: (Re)use an unobtrusive jQuery UI dialog.
+    // console.log(X, X.id, X.command, X.message);
+        return;
+    }
+
+    // Given a "successful" server response, we update the queued cell
+    // list and mark the cell as running.
+    queue_id_list.push(X.id);
+    cell_set_running(X.id, X.interact);
+
+    function go_next(evaluate, jump) {
+        // Helper function that evaluates and/or jumps to a suggested
+        // or the next compute cell, unless it's the current cell or
+        // we're just updating an interact.
+        var i, id, candidates = [X.next_id, id_of_cell_delta(X.id, 1)];
+
+        if (X.interact) {
+            return true;
+        }
+        for (i = 0; i < candidates.length; i += 1) {
+            id = candidates[i];
+            if (id !== X.id && is_compute_cell(id)) {
+                if (evaluate) {
+                    evaluate_cell(id, false);
+                }
+                if (jump) {
+                    jump_to_cell(id, 0);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     if (evaluating_all) {
-        if (is_compute_cell(id)) {
-            evaluate_cell(id, false);
-        } else {
-            next_id = id_of_cell_delta(id, 1);
-            if (is_compute_cell(next_id)) {
-                evaluate_cell(next_id, false);
-            } else {
-                evaluating_all = false;
-            }
-        }
-    } else if (command === 'append_new_cell') {
-        // Add a new cell to the very end.
-        append_new_cell(id, new_html);
-    } else if (command === 'insert_cell') {
-        // Insert a new cell after the one with id new_cell_id.
-        do_insert_new_cell_after(new_cell_id, id, new_html);
-        jump_to_cell(id, 0);
-    } else if (command !== 'introspect' && !in_slide_mode &&
-               !doing_split_eval) {
-        // Move to the next cell after the one that we just evaluated,
-        // unless it's an interact
-        if (!is_interacting_cell(current_cell)) {
-            jump_to_cell(current_cell, 1);
+        // Evaluate the suggested next cell, another cell, or stop.
+        if (!go_next(true, false)) {
+            evaluating_all = false;
         }
     }
+
+    if (X.command === 'insert_cell') {
+        // Insert a new cell after the evaluated cell.
+        do_insert_new_cell_after(X.id, X.new_cell_id, X.new_cell_html);
+        jump_to_cell(X.new_cell_id, 0);
+    } else if (X.command === 'introspect') {
+	    introspect[X.id].loaded = false;
+	    update_introspection_text(X.id, 'loading...');
+    } else if (in_slide_mode || doing_split_eval ||
+	           is_interacting_cell(X.id)) {
+        // Don't jump.
+    } else {
+        // "Plain" evaluation.  Jump to a later cell.
+        go_next(false, true);
+    }
+
     start_update_check();
 }
 
@@ -3180,29 +3301,37 @@ function cell_set_not_evaluated(id) {
 }
 
 
-function cell_set_running(id) {
+function cell_set_running(id, interact) {
     /*
-    Start the cell with given id running -- this is purely a style and
-    content; the server is not contacted by this function.
+    Clears a cell's output and marks it as running.  This does not
+    contact the server.
 
     INPUT:
         id -- integer or string; cell id
+        interact -- boolean; whether we're just updating an interact
     */
-    var cell_div, cell_number;
+    var cell_div, cell_number, out;
     id = toint(id);
 
-    // Blank the output text. The true means not @interact.
-    set_output_text(id, '', '', '', '', '', true);
+    if (interact) {
+        // Delete links to files output by earlier computations.
+        out = get_element('cell_output_html_' + id);
+        if (out) {
+            out.innerHTML = '';
+        }
+    } else {
+        // Delete all output. The true means not @interact.
+        set_output_text(id, '', '', '', '', '', true);
 
-    // If the output type is hidden, toggle it to be visible.
-    // Otherwise we leave it alone.
-    if (get_element('cell_div_output_' + id).className === 'cell_div_output_hidden') {
-        cycle_cell_output_type(id);
+        // If the output type is hidden, make it visible.
+        cell_div = get_element('cell_div_output_' + id);
+        if (cell_div.className ===  'cell_div_output_hidden') {
+            cycle_cell_output_type(id);
+        }
+        // Now set it running.
+        cell_div.className = 'cell_output_running';
     }
 
-    // Set the CSS.
-    cell_div = get_element('cell_div_output_' + id);
-    cell_div.className = 'cell_output_running';
     cell_number = get_element('cell_number_' + id);
     cell_number.className = 'cell_number_running';
 }
@@ -3235,7 +3364,7 @@ function check_for_cell_update() {
         * makes an async request
         * causes the title bar compute spinner to spin
     */
-    var cell_id;
+    var cell_id, busy_text, num_queued;
 
     // Cancel update checks if no cells are doing computations.
     if (queue_id_list.length === 0) {
@@ -3246,50 +3375,49 @@ function check_for_cell_update() {
     // Record in a global variable when the last update occurred.
     update_time = time_now();
 
-    // Check on the cell currently computing to see what's up.
+    // Check on the "lead" cell currently computing to see what's up.
     cell_id = queue_id_list[0];
 
     async_request(worksheet_command('cell_update'),
-                  check_for_cell_update_callback, { id: cell_id });
+                  check_for_cell_update_callback, { 
+                      id: cell_id 
+                  });
 
     // Spin the little title spinner in the title bar.
     try {
         title_spinner_i = (title_spinner_i + 1) % title_spinner.length;
-        document.title = title_spinner[title_spinner_i] + original_title;
+        busy_text = title_spinner[title_spinner_i] + original_title;
+        num_queued = queue_id_list.length;
+        if (num_queued > 1) {
+            busy_text = num_queued + ' ' + busy_text;
+        }
+        document.title = busy_text;
     } catch (e) {}
 }
 
 
-function check_for_cell_update_callback(status, response_text) {
+function check_for_cell_update_callback(status, response) {
     /*
-    Callback after the server responds for our request for updates.
+    Updates cell data from the server
 
     INPUT:
         status -- string
-        response_text -- string in the format (no []'s):
+        response -- string; encoded JSON object with parsed keys
 
-            [status (1-letter)][id][encoded_output]
-
-             status --    'e' -- empty; no more cells in the queue
-                          'd' -- done; actively computing cell just finished
-                          'w' -- still working
-             id -- cell id
-             encoded_output -- the output:
-
-                 output_text -- the output text so far
-                 output_text_wrapped -- word wrapped version of output
-                 text
-                 output_html -- html output
-                 new_cell_input -- if the input to the cell should be
-                 changed (e.g., when doing a tab completion), this
-                 gives the new input
-                 interrupted -- 'restart' or 'false'; whether the
-                 computation of this cell was interrupted and if so
-                 why.
-                 introspect_html -- new introspection html to be
-                 placed in the introspection window
+            id -- string or integer; queried cell's id
+            status -- string; 'e' (empty queue), 'd' (done with
+                      queried cell), or 'w' (still working)
+            output -- string; cell's latest output text
+            output_wrapped -- string; word-wrapped output
+            output_html -- string; HTML output
+            new_input -- string; updated input (e.g., from tab
+                         completion)
+            interrupted -- string; 'restart', 'false', or 'true',
+                           whether/how the cell's computation was 
+                           interrupted
+            introspect_html -- string; updated introspection text
     */
-    var D, elapsed_time, i, id, interact_hook, interrupted, introspect_html, msg, new_cell_input, output_html, output_text, output_text_wrapped, stat;
+    var elapsed_time, eval_hook, msg, X;
 
     // Make sure the update happens again in a few hundred
     // milliseconds, unless a problem occurs below.
@@ -3317,43 +3445,33 @@ function check_for_cell_update_callback(status, response_text) {
         }
     }
 
-    if (response_text === 'empty') {
+    if (response === '') {
         // If the server returns nothing, we just ignore that response
         // and try again later.
         continue_update_check();
         return;
     }
 
-    i = response_text.indexOf(' ');
-    id = toint(response_text.substring(1, i));
-    stat = response_text.substring(0, 1);
+    X = decode_response(response);
 
-    if (stat === 'e') {
+    if (X.status === 'e') {
         cancel_update_check();
         halt_queued_cells();
         return;
     }
 
-    D = response_text.slice(i + 1).split(SEP);
-    output_text = D[0] + ' ';
-    output_text_wrapped = D[1] + ' ';
-    output_html = D[2];
-    new_cell_input = D[3];
-    interrupted = D[4];
-    introspect_html = D[5];
-
     // Evaluate and update the cell's output.
-    interact_hook = set_output_text(id, stat, output_text, output_text_wrapped,
-                                    output_html, introspect_html, false);
+    eval_hook = set_output_text(X.id, X.status, X.output, X.output_wrapped,
+                                X.output_html, X.introspect_html, false);
 
-    if (stat === 'd') {
-        cell_set_done(id);
-        queue_id_list.splice($.inArray(id, queue_id_list), 1);
+    if (X.status === 'd') {
+        cell_set_done(X.id);
+        queue_id_list.splice($.inArray(X.id, queue_id_list), 1);
 
-        if (interrupted === 'restart') {
+        if (X.interrupted === 'restart') {
             restart_sage();
-        } else if (interrupted === 'false') {
-            cell_set_evaluated(id);
+        } else if (X.interrupted === 'false') {
+            cell_set_evaluated(X.id);
         } else {
             cancel_update_check();
             halt_queued_cells();
@@ -3363,8 +3481,8 @@ function check_for_cell_update_callback(status, response_text) {
             cancel_update_check();
         }
 
-        if (new_cell_input !== '') {
-            set_input_text(id, new_cell_input);
+        if (X.new_input !== '') {
+            set_input_text(X.id, X.new_input);
         }
 
         update_count = 0;
@@ -3381,12 +3499,10 @@ function check_for_cell_update_callback(status, response_text) {
         }
     }
 
-    if (interact_hook === 'trigger_interact') {
-        // We treat the id here as a string.  The interact module's
-        // recompute function will attempt cast it to an integer.
-        interact(id, '_interact_.recompute("' + id + '")');
-    } else if (interact_hook === 'restart_interact') {
-        evaluate_cell(id, 0);
+    if (eval_hook === 'trigger_interact') {
+         interact(X.id, {}, 1);
+    } else if (eval_hook === 'restart_interact') {
+        evaluate_cell(X.id, 0);
     }
 
     continue_update_check();
@@ -3469,14 +3585,14 @@ function contains_jsmath(text) {
 }
 
 
-function set_output_text(id, stat, output_text, output_text_wrapped,
+function set_output_text(id, status, output_text, output_text_wrapped,
                          output_html, introspect_html, no_interact) {
     /*
     Evaluate and update a cell's output.
 
     INPUT:
         id -- integer or string; cell id
-        stat -- string; 'd' (done) or anything else (still working)
+        status -- string; 'd' (done) or anything else (still working)
         output_text -- string
         output_text_wrapped -- string; word wrapped version of text
         output_html -- string; html formatted output
@@ -3497,21 +3613,27 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
     }
 
     // Evaluate javascript, but *only* after the entire cell output
-    // has been loaded (hence the stat === 'd') below.
-    if (stat === 'd' && !is_interacting_cell(id)) {
+    // has been loaded (hence the status === 'd') below.
+    if (status === 'd' && !is_interacting_cell(id)) {
         output_text_wrapped = eval_script_tags(output_text_wrapped);
         output_html = eval_script_tags(output_html);
     }
 
     // Handle an interact update.
     if (!no_interact && is_interacting_cell(id)) {
-        // Uncomment to change so that only show output at the end.
-        if (stat !== 'd') {
+        // Comment this out to show output only at the end.
+        if (status !== 'd') {
             return false;
         }
 
         i = output_text_wrapped.indexOf(INTERACT_START);
         j = output_text_wrapped.indexOf(INTERACT_END);
+        // An error occurred accessing the data for this cell.  Just
+        // force reload of the cell, which will certainly define that
+        // data.
+        if (output_text_wrapped.indexOf(INTERACT_RESTART) !== -1) {
+            return 'restart_interact';
+        }
         if (i === -1 || j === -1) {
             return false;
         }
@@ -3519,18 +3641,16 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
         new_interact_output = output_text_wrapped.slice(i + 16, j);
         new_interact_output = eval_script_tags(new_interact_output);
 
-        // An error occurred accessing the data for this cell.  Just
-        // force reload of the cell, which will certainly define that
-        // data.
-        if (new_interact_output.indexOf(INTERACT_RESTART) !== -1) {
-            return 'restart_interact';
-        } else {
-            cell_interact = get_element('cell-interact-' + id);
-            cell_interact.innerHTML = new_interact_output;
-            if (contains_jsmath(new_interact_output)) {
-                jsMath.ProcessBeforeShowing(cell_interact);
-            }
+        cell_interact = get_element('cell-interact-' + id);
+        cell_interact.innerHTML = new_interact_output;
+        if (contains_jsmath(new_interact_output)) {
+            jsMath.ProcessBeforeShowing(cell_interact);
         }
+
+	setTimeout(function () {
+	    var ci = $(cell_interact);
+	    ci.height('auto').height(ci.height());
+	}, 100);
 
         return false;
     }
@@ -3553,7 +3673,7 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
     cell_output_html.innerHTML = output_html;
 
     // Call jsMath on the final output.
-    if (stat === 'd' && contains_jsmath(output_text)) {
+    if (status === 'd' && contains_jsmath(output_text)) {
         try {
             jsMath.ProcessBeforeShowing(cell_output);
         } catch (e) {
@@ -3564,7 +3684,7 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
     }
 
     // Update introspection.
-    if (stat === 'd') {
+    if (status === 'd') {
         if (introspect_html !== '') {
             introspect[id].loaded = true;
             update_introspection_text(id, introspect_html);
@@ -3574,7 +3694,7 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
     }
 
     // Trigger a new interact cell?
-    if (stat === 'd' && introspect_html === '' && is_interacting_cell(id)) {
+    if (status === 'd' && introspect_html === '' && is_interacting_cell(id)) {
         // This is the first time that the underlying Python interact
         // function (i.e., interact.recompute) is actually called!
         if (contains_jsmath(output_text_wrapped)) {
@@ -3584,7 +3704,7 @@ function set_output_text(id, stat, output_text, output_text_wrapped,
                 // Do nothing.
             }
         }
-        return 'trigger_interact';
+        return 'interact_recompute';
     }
 
     return false;
@@ -3987,43 +4107,35 @@ function insert_new_cell_after(id, input) {
 }
 
 
-function insert_new_cell_after_callback(status, response_text) {
+function insert_new_cell_after_callback(status, response) {
     /*
     Callback that is called when the server inserts a new cell after a
     given cell.
 
     INPUT:
         status -- string
-        response_text -- string; 'locked' (user is not allowed to
-        insert new cells into this worksheet) OR with the format
+        response -- string; 'locked' (user not allowed to insert new
+        cells) or encoded JSON object with parsed keys
 
-            [new_id]SEP[new_html]SEP[id]
+            id -- string or integer; preceding cell's id
+            new_id -- string or integer; new cell's id
+            new_html -- string; new cell's HTML
 
-            new_id -- new cell's id
-            new_html -- new cell's HTML
-            id -- preceding cell's id
     */
-    var id, new_html, new_id, X;
+    var X;
 
     if (status === "failure") {
-        alert(translations['Problem inserting new input cell after current input cell.\\n'] + response_text);
+        alert(translations['Problem inserting new input cell after current input cell.\\n'] + response);
         return;
     }
-    if (response_text === "locked") {
+    if (response === "locked") {
         alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
-    // Extract the input variables that are encoded in the
-    // response_text.
-    X = response_text.split(SEP);
-    new_id = toint(X[0]);
-    new_html = X[1];
-    id = toint(X[2]);
-
-    // Insert a new cell _after_ a cell.
-    do_insert_new_cell_after(id, new_id, new_html);
-    jump_to_cell(new_id, 0);
+    X = decode_response(response);
+    do_insert_new_cell_after(X.id, X.new_id, X.new_html);
+    jump_to_cell(X.new_id, 0);
 }
 
 
@@ -4044,38 +4156,33 @@ function insert_new_text_cell_after(id, input) {
 }
 
 
-function insert_new_text_cell_after_callback(status, response_text) {
+function insert_new_text_cell_after_callback(status, response) {
     /*
     Callback that is called when the server inserts a new cell after a
     given cell.
 
     INPUT:
         status -- string
-        response_text -- string; 'locked' (user is not allowed to
-        insert new cells into this worksheet) OR in the format
+        response -- string; 'locked' (user not allowed to insert new
+        cells) or encoded JSON object with parsed keys
 
-            [new_id]SEP[new_html]SEP[id]
+            id -- string or integer; preceding cell's id
+            new_id -- string or integer; new cell's id
+            new_html -- string; new cell's HTML
 
-            new_id -- new cell's id
-            new_html -- new cell's HTML
-            id -- preceding cell's id
     */
-    var id, new_html, new_id, X;
+    var X;
     if (status === "failure") {
         alert(translations['Problem inserting new text cell before current input cell.'] );
         return;
     }
-    if (response_text === "locked") {
+    if (response === "locked") {
         alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
-    // Insert a new cell _before_ a cell.
-    X = response_text.split(SEP);
-    new_id = toint(X[0]);
-    new_html = X[1];
-    id = toint(X[2]);
-    do_insert_new_text_cell_after(id, new_id, new_html);
+    X = decode_response(response);
+    do_insert_new_text_cell_after(X.id, X.new_id, X.new_html);
 }
 
 
@@ -4142,28 +4249,25 @@ function insert_new_cell_before(id, input) {
 }
 
 
-function insert_new_cell_before_callback(status, response_text) {
+function insert_new_cell_before_callback(status, response) {
     /*
     See the documentation for insert_new_cell_after_callback, since
-    response_text is encoded in exactly the same way there.
+    response is encoded in exactly the same way there.
     */
-    var id, new_html, new_id, X;
+    var X;
     if (status === "failure") {
-        alert(translations['Problem inserting new input cell before current input cell.']);
+        alert(translations['Problem inserting new input cell before current input cell.\\n'] + response);
         return;
     }
-    if (response_text === "locked") {
+    if (response === "locked") {
         alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
-    // Insert a new cell _before_ a cell.
-    X = response_text.split(SEP);
-    new_id = toint(X[0]);
-    new_html = X[1];
-    id = toint(X[2]);
-    do_insert_new_cell_before(id, new_id, new_html);
-    jump_to_cell(new_id, 0);
+    X = decode_response(response);
+    do_insert_new_cell_before(X.id, X.new_id, X.new_html);
+    jump_to_cell(X.new_id, 0);
+
 }
 
 
@@ -4186,27 +4290,23 @@ function insert_new_text_cell_before(id, input) {
 }
 
 
-function insert_new_text_cell_before_callback(status, response_text) {
+function insert_new_text_cell_before_callback(status, response) {
     /*
     See the documentation for insert_new_text_cell_after_callback,
-    since response_text is encoded in exactly the same way there.
+    since response is encoded in exactly the same way there.
     */
-    var id, new_html, new_id, X;
+    var X;
     if (status === "failure") {
-        alert(translations['Problem inserting new text cell before current input cell.']);
+        alert(translations['Problem inserting new text cell before current input cell.\\n'] + response);
         return;
     }
-    if (response_text === "locked") {
+    if (response === "locked") {
         alert(translations['Worksheet is locked. Cannot insert cells.']);
         return;
     }
 
-    // Insert a new cell _before_ a cell.
-    X = response_text.split(SEP);
-    new_id = toint(X[0]);
-    new_html = X[1];
-    id = toint(X[2]);
-    do_insert_new_text_cell_before(id, new_id, new_html);
+    X = decode_response(response);
+    do_insert_new_text_cell_before(X.id, X.new_id, X.new_html);
 }
 
 
@@ -4497,36 +4597,34 @@ function bugreport() {
 ///////////////////////////////////////////////////////////////////
 // Interact
 ///////////////////////////////////////////////////////////////////
-function interact(id, input) {
+function interact(id, update, recompute) {
     /*
-    Cancels any current computations, then sends an interact request
-    back to the server.  This is called by individual interact
-    controls.
+    Sends an interact request back to the server.  This is called by
+    individual interact controls.
 
     INPUT:
         id -- integer or string; cell id
-        input -- string
+        update -- dictionary; data to update
+            variable -- string; name of variable to update
+            adapt_number -- integer; number of control to update
+            value -- string; updated value, base-64 encoded
+        recompute -- integer; whether to recompute the interact
     */
-    var cell_number;
-
     id = toint(id);
-    queue_id_list.push(id);
 
     cell_has_changed = false;
     current_cell = id;
 
-    // Delete the old images, etc., that might be sitting in the
-    // output from the previous evaluation of this cell.
-    get_element('cell_output_html_' + id).innerHTML = "";
+    update = update || {};
 
-    cell_number = get_element('cell_number_' + id);
-    cell_number.className = 'cell_number_running';
-
-    // The '__sage_interact__' string appears also in cell.py.
     async_request(worksheet_command('eval'), evaluate_cell_callback, {
-        newcell: 0,
         id: id,
-        input: '%__sage_interact__\n' + input
+        interact: 1,
+        variable: update.variable || '',
+        adapt_number: update.adapt_number || -1,
+        value: update.value || '',
+        recompute: recompute,
+        newcell: 0
     });
 }
 

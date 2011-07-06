@@ -232,14 +232,18 @@ class Worksheet(object):
         self.clear()
 
     def increase_state_number(self):
+        if self.is_published() or self.docbrowser():
+            return
+
         try:
             self.__state_number += 1
         except AttributeError:
             self.__state_number = 0
 
     def state_number(self):
-        if self.is_published(): 
+        if self.is_published() or self.docbrowser(): 
             return 0
+
         try:
             return self.__state_number
         except AttributeError:
@@ -511,7 +515,7 @@ class Worksheet(object):
             sage: W.docbrowser()
             True
         """
-        return self.name().startswith('doc_browser') and self.owner() == '_sage_'
+        return self.owner() in ['_sage_', 'pub']
 
     ##########################################################
     # Basic properties
@@ -2546,9 +2550,23 @@ class Worksheet(object):
 
         OUTPUT:
 
-        - a new list of IDs integers and/or strings
+        - a new list of integers and/or strings
         """
-        return [C.id() for C in self.cell_list() if isinstance(C, Cell)]
+        return [C.id() for C in self.cell_list() if C.is_compute_cell()]
+
+    def onload_id_list(self):
+        """
+        Returns a list of ID's of cells the remote client should
+        evaluate after the worksheet loads.  Unlike '%auto' cells,
+        which the server chooses to evaluate, onload cells fire only
+        after the client sends a request.  Currently, we use onload
+        cells to set up published interacts.
+
+        OUTPUT:
+
+        - a new list of integer and/or string IDs
+        """
+        return [C.id() for C in self.cell_list() if C.is_interactive_cell()]
 
     def cell_list(self):
         r"""
@@ -2891,7 +2909,16 @@ except (KeyError, IOError):
         A = self.attached_files()
         for F in A.iterkeys():
             A[F] = 0  # expire all
-        self._enqueue_auto_cells()
+
+        # Check to see if the typeset/pretty print button is checked.
+        # If so, send code to initialize the worksheet to have the
+        # right pretty printing mode.
+        if self.pretty_print():
+            S.execute('pretty_print_default(True);')
+            
+        if not self.is_published():
+            self._enqueue_auto_cells()
+
         return S
 
     def sage(self):
@@ -2915,12 +2942,6 @@ except (KeyError, IOError):
         all_worksheet_processes.append(self.__sage)
         self.__next_block_id = 0
         self.initialize_sage()
-
-        # Check to see if the typeset/pretty print button is checked.
-        # If so, send code to initialize the worksheet to have the
-        # right pretty printing mode.
-        if self.pretty_print():
-            self.__sage.execute('pretty_print_default(True);')
 
         return self.__sage
 
@@ -3387,11 +3408,20 @@ except (KeyError, IOError):
     ##########################################################
     # Accessing existing cells
     ##########################################################
-    def get_cell_with_id(self, id):
+    def get_cell_with_id_or_none(self, id):
+        """
+        Gets a pre-existing cell with this id, or returns None. 
+        """
         for c in self.cell_list():
             if c.id() == id:
                 return c
-        return self._new_cell(id)
+        return None
+        
+    def get_cell_with_id(self, id):
+        """
+        Get a pre-existing cell with this id, or creates a new one with it.
+        """
+        return self.get_cell_with_id_or_none(id) or self._new_cell(id)
 
     def synchronize(self, s):
         try:

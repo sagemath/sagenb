@@ -6,6 +6,8 @@ from collections import defaultdict
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
+from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
+
 ws = Module('flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
 
@@ -71,11 +73,12 @@ def new_worksheet():
 @ws.route('/home/<username>/<id>/')
 @worksheet_view
 def worksheet(username, id, worksheet=None):
+    # /home/pub/* is handled in worksheet_listing.py
+    assert worksheet is not None
     worksheet.sage()
     s = g.notebook.html(worksheet_filename=worksheet.filename(),
-                          username=username)
+                        username=username)
     return s
-
 
 def worksheet_command(target, **route_kwds):
     if 'methods' not in route_kwds:
@@ -88,7 +91,17 @@ def worksheet_command(target, **route_kwds):
         def wrapper(*args, **kwds):
             #We remove the first two arguments corresponding to the
             #username and the worksheet id
+            username_id = args[:2]
             args = args[2:]
+
+            #####################
+            # Public worksheets #
+            #####################
+            if username_id and username_id[0] in ['_sage_']:
+                if target not in ['alive', 'cells', 'cell_update', 'data', 'download',
+                                  'edit_published_page', 'eval', 'quit_sage', 'rate',
+                                  'rating_info']:
+                    raise NotImplementedError
             
             #Make worksheet a non-keyword argument appearing before the
             #other non-keyword arguments.
@@ -193,9 +206,14 @@ def worksheet_cell_list(worksheet):
     Return the state number and the HTML for the main body of the
     worksheet, which consists of a list of cells.
     """
+    r = {}
+    r['state_number'] = worksheet.state_number()
     # TODO: Send and actually use the body's HTML.
-    from sagenb.notebook.twist import encode_list
-    return encode_list([worksheet.state_number(), ''])
+    r['html_cell_list'] = ''
+    #r['html_cell_list'] = W.html_cell_list()
+
+    from sagenb.notebook.twist import encode_response
+    return encode_response(r)
 
 ########################################################
 # Set output type of a cell
@@ -222,51 +240,67 @@ from sagenb.misc.misc import unicode_str
 @worksheet_command('new_cell_before')
 def worksheet_new_cell_before(worksheet):
     """Add a new cell before a given cell."""
-    id = get_cell_id()
+    r = {}
+    r['id'] =  id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_cell_before(id, input=input)
     worksheet.increase_state_number()
     
-    from sagenb.notebook.twist import encode_list
-    return encode_list([cell.id(), cell.html(div_wrap=False), id])
+    r['new_id'] = cell.id()
+    r['new_html'] = cell.html(div_wrap=False)
+
+    from sagenb.notebook.twist import encode_response
+    return encode_response(r)
 
 @worksheet_command('new_text_cell_before')
 def worksheet_new_text_cell_before(worksheet):
     """Add a new text cell before a given cell."""
-    id = get_cell_id()
+    r = {}
+    r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_text_cell_before(id, input=input)
     worksheet.increase_state_number()
     
-    from sagenb.notebook.twist import encode_list
+    r['new_id'] = cell.id()
+    r['new_html'] = cell.html(editing=True)
+
+    from sagenb.notebook.twist import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
     # to centralize that code.
-    return encode_list([cell.id(), cell.html(editing=True), id])
+    return encode_response(r)
 
 
 @worksheet_command('new_cell_after')
 def worksheet_new_cell_after(worksheet):
     """Add a new cell after a given cell."""
-    id = get_cell_id()
+    r = {}
+    r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_cell_after(id, input=input)
     worksheet.increase_state_number()
-    
-    from sagenb.notebook.twist import encode_list
-    return encode_list([cell.id(), cell.html(div_wrap=False), id])
+
+    r['new_id'] = cell.id()
+    r['new_html'] = cell.html(div_wrap=True)
+
+    from sagenb.notebook.twist import encode_response
+    return encode_response(r)
 
 @worksheet_command('new_text_cell_after')
 def worksheet_new_text_cell_after(worksheet):
-    """Add a new text cell after a given cell."""    
-    id = get_cell_id()
+    """Add a new text cell after a given cell."""
+    r = {}
+    r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_text_cell_after(id, input=input)
     worksheet.increase_state_number()
     
-    from sagenb.notebook.twist import encode_list
+    r['new_id'] = cell.id()
+    r['new_html'] = cell.html(editing=True)
+
+    from sagenb.notebook.twist import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
     # to centralize that code.
-    return encode_list([cell.id(), cell.html(editing=True), id])
+    return encode_response(r)
 
 ########################################################
 # Cell deletion
@@ -275,30 +309,33 @@ def worksheet_new_text_cell_after(worksheet):
 @worksheet_command('delete_cell')
 def worksheet_delete_cell(worksheet):
     """
-    Deletes a notebook cell.
-
-    If there is only one cell left in a given worksheet, the request to
-    delete that cell is ignored because there must be a least one cell
-    at all times in a worksheet. (This requirement exists so other
-    functions that evaluate relative to existing cells will still work,
-    and so one can add new cells.)
+    Deletes a worksheet cell, unless there's only one compute cell
+    left.  This allows functions which evaluate relative to existing
+    cells, e.g., inserting a new cell, to continue to work.
     """
-    id = get_cell_id()
+    r = {}
+    r['id'] = id = get_cell_id()
     if len(worksheet.compute_cell_id_list()) <= 1:
-        return 'ignore'
+        r['command'] = 'ignore'
     else:
         prev_id = worksheet.delete_cell_with_id(id)
-        from sagenb.notebook.twist import encode_list
-        return encode_list(['delete', id, prev_id, worksheet.cell_id_list()])
+        r['command'] = 'delete'
+        r['prev_id'] = worksheet.delete_cell_with_id(id)
+        r['cell_id_list'] = worksheet.cell_id_list()
+
+    from sagenb.notebook.twist import encode_response
+    return encode_response(r)
 
 @worksheet_command('delete_cell_output')
 def worksheet_delete_cell_output(worksheet):
     """Delete's a cell's output."""
-    id = get_cell_id()
+    r = {}
+    r['id'] = id = get_cell_id()
     worksheet.get_cell_with_id(id).delete_output()
+    r['command'] = 'delete_output'
 
-    from sagenb.notebook.twist import encode_list
-    return encode_list(['delete_output', id])
+    from sagenb.notebook.twist import encode_response
+    return encode_response(r)
 
 ########################################################
 # Evaluation and cell update
@@ -318,86 +355,117 @@ def worksheet_eval(worksheet):
     documentation of the function and the source code of the function
     respectively.
     """    
-    from sagenb.notebook.twist import encode_list
+    from sagenb.notebook.twist import encode_response
     from base import notebook_updates
     
-    id = get_cell_id()
-    input_text = unicode_str(request.values.get('input', '')).replace('\r\n', '\n') #DOS
+    r = {}
+
+    r['id'] = id = get_cell_id()
+    cell = worksheet.get_cell_with_id(id)
+    public = worksheet.tags().get('_pub_', [False])[0] #this is set in pub_worksheet
+
+    if public and not cell.is_interactive_cell():
+        r['command'] = 'error'
+        r['message'] = 'Cannot evaluate non-interactive public cell with ID %r.' % id
+        return encode_response(r)
 
     worksheet.increase_state_number()
 
-    cell = worksheet.get_cell_with_id(id)
+    if public:
+        # Make public input cells read-only.
+        input_text = cell.input_text()
+    else:
+        input_text = unicode_str(request.values.get('input', '')).replace('\r\n', '\n') #DOS
+
+    # Handle an updated / recomputed interact.  TODO: JSON encode
+    # the update data.
+    if 'interact' in request.values:
+        r['interact'] = 1
+        input_text = INTERACT_UPDATE_PREFIX
+        variable = request.values.get('variable', None)
+        if variable is not None:
+            adapt_number = int(request.values.get('adapt_number', -1))
+            value = request.values.get('value', '')
+            input_text += "\n_interact_.update('%s', '%s', %s, _interact_.standard_b64decode('%s'), globals())" % (id, variable, adapt_number, value)
+
+        if int(request.values.get('recompute', 0)):
+            input_text += "\n_interact_.recompute('%s')" % id
+
     cell.set_input_text(input_text)
 
-    if request.values.get('save_only', '0') == '1':
+    if int(request.values.get('save_only', '0')):
         notebook_updates()
-        return ''
-    elif request.values.get('text_only', '0') == '1':
+        return encode_response(r)
+    elif int(request.values.get('text_only', '0')):
         notebook_updates()
-        return encode_list([str(id), cell.html()])
-    else:
-        new_cell = int(request.values.get('newcell', 0)) #wheter to insert a new cell or not
+        r['cell_html'] = cell.html()
+        return encode_response(r)
 
     cell.evaluate(username=g.username)
 
-    if cell.is_last():
-        new_cell = worksheet.append_new_cell()
-        s = encode_list([new_cell.id(), 'append_new_cell', new_cell.html(div_wrap=False)])
-    elif new_cell:
+    new_cell = int(request.values.get('newcell', 0)) #whether to insert a new cell or not
+    if new_cell:
         new_cell = worksheet.new_cell_after(id)
-        s = encode_list([new_cell.id(), 'insert_cell', new_cell.html(div_wrap=False), str(id)])
+        r['command'] = 'insert_cell'
+        r['new_cell_id'] = new_cell.id()
+        r['new_cell_html'] = new_cell.html(div_wrap=False)
     else:
-        s = encode_list([cell.next_id(), 'no_new_cell', str(id)])
+        r['next_id'] = cell.next_compute_id()
 
     notebook_updates()
-    return s
+
+    return encode_response(r)
         
 
 @worksheet_command('cell_update')
 def worksheet_cell_update(worksheet):
     import time
-    from sagenb.notebook.twist import encode_list
-    
-    id = get_cell_id()
+    from sagenb.notebook.twist import encode_response
+
+    r = {}
+    r['id'] = id = get_cell_id()
 
     # update the computation one "step".
     worksheet.check_comp()
 
     # now get latest status on our cell
-    status, cell = worksheet.check_cell(id)
+    r['status'], cell = worksheet.check_cell(id)
 
-    if status == 'd':
-        new_input = cell.changed_input_text()
-        out_html = cell.output_html()
-        H = "Worksheet '%s' (%s)\n"%(worksheet.name(), time.strftime("%Y-%m-%d at %H:%M",time.localtime(time.time())))
+    if r['status'] == 'd':
+        r['new_input'] = cell.changed_input_text()
+        r['output_html'] = cell.output_html()
+
+        # Update the log.
+        t = time.strftime('%Y-%m-%d at %H:%M',
+                          time.localtime(time.time()))
+        H = "Worksheet '%s' (%s)\n" % (worksheet.name(), t)
         H += cell.edit_text(ncols=g.notebook.HISTORY_NCOLS, prompts=False,
                             max_out=g.notebook.HISTORY_MAX_OUTPUT)
         g.notebook.add_to_user_history(H, g.username)
     else:
-        new_input = ''
-        out_html = ''
+        r['new_input'] = ''
+        r['output_html'] = ''
 
     if cell.interrupted():
-        inter = 'true'
+        r['interrupted'] = 'true'
     else:
-        inter = 'false'
+        r['interrupted'] = 'false'
 
-    raw = cell.output_text(raw=True).split("\n")
-    if "Unhandled SIGSEGV" in raw:
-        inter = 'restart'
-        print "Segmentation fault detected in output!"
-        
-    msg = '%s%s %s'%(status, cell.id(),
-                   encode_list([cell.output_text(html=True),
-                                cell.output_text(g.notebook.conf()['word_wrap_cols'], html=True),
-                                out_html,
-                                new_input,
-                                inter,
-                                cell.introspect_html()]))
+    if 'Unhandled SIGSEGV' in cell.output_text(raw=True).split('\n'):
+        r['interrupted'] = 'restart'
+        print 'Segmentation fault detected in output!'
 
-    # There may be more computations left to do, so start one if there is one.
+
+    r['output'] = cell.output_text(html=True) + ' '
+    r['output_wrapped'] = cell.output_text(g.notebook.conf()['word_wrap_cols'],
+                                           html=True) + ' '
+    r['introspect_html'] = cell.introspect_html()
+
+    # Compute 'em, if we got 'em.
     worksheet.start_next_comp()
-    return msg
+
+    return encode_response(r)
+
 
 ########################################################
 # Cell introspection
@@ -408,14 +476,22 @@ def worksheet_introspect(worksheet):
     Cell introspection. This is called when the user presses the tab
     key in the browser in order to introspect.
     """
-    id = get_cell_id()
+    r = {}
+    r['id'] = id = get_cell_id()
+
+    if worksheet.tags().get('_pub_', [False])[0]: #tags set in pub_worksheet
+        r['command'] = 'error'
+        r['message'] = 'Cannot evaluate public cell introspection.'
+        return encode_response(r)
+    
     before_cursor = request.values.get('before_cursor', '')
     after_cursor = request.values.get('after_cursor', '')
     cell = worksheet.get_cell_with_id(id)
     cell.evaluate(introspect=[before_cursor, after_cursor])
 
-    from sagenb.notebook.twist import encode_list
-    return encode_list([cell.next_id(), 'introspect', id])
+    from sagenb.notebook.twist import encode_response
+    r['command'] = 'introspect'
+    return encode_response(r)
 
 ########################################################
 # Edit the entire worksheet
@@ -853,3 +929,16 @@ def worksheet_file(path):
     return g.notebook.html(worksheet_filename=W.filename(),
                            username=g.username)
 
+
+####################
+# Public Worksheets
+####################
+def pub_worksheet(source):
+    # TODO: Independent pub pool and server settings.
+    proxy = doc_worksheet()
+    proxy.set_name(source.name())
+    proxy.set_last_change(*source.last_change())
+    g.notebook._initialize_worksheet(source, proxy)
+    proxy.set_tags({'_pub_': [True]})
+    proxy.save()
+    return proxy

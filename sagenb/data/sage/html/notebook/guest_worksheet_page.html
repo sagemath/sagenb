@@ -7,10 +7,12 @@ INPUT:
 #}
 
 {% block javascript %}
+{{ super() }}
 <script src="/javascript/sage/js/published_worksheet.js"></script>
 {% endblock %}
 
 {% block page_id %}guest-worksheet-page{% endblock %}
+{% block body_classes %}{% if conf['pub_interact'] %}active-worksheet{% endif %}{% endblock %}
 
 {% set original_worksheet = worksheet.worksheet_that_was_published() %}
 {% if original_worksheet.is_collaborator(username) or original_worksheet.is_owner(username) %}
@@ -55,8 +57,19 @@ INPUT:
 <h1 class="title">{{ worksheet.name() }}</h1>
 <h2 class="lastedit">{{ worksheet.html_time_since_last_edited() }}</h2>
 {{ worksheet.html(do_print=false, publish=true, username=username) }}
+<script>
+{%- if conf['pub_interact'] %}
+    cell_id_list = {{ worksheet.cell_id_list() }};
+    onload_id_list = {{ worksheet.onload_id_list() }};
+    ignore_all_jumps = true;
+{%- else %}
+    jsMath.ProcessBeforeShowing();
+{%- endif %}
+</script>
+
+
 <hr class="usercontrol" />
-{% for i in range(10) %}
+{%- for i in range(10) %}
 &nbsp;
-{% endfor %}
+{%- endfor %}
 {% endblock %}

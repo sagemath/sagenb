@@ -21,6 +21,8 @@ defaults = {'word_wrap_cols':72,
             'doc_pool_size':128,
             'doc_timeout': 120,
 
+            'pub_interact':False,
+
             'server_pool':[],
 
             'system':'sage',
@@ -88,6 +90,12 @@ defaults_descriptions = {
         DESC : lazy_gettext('Doc worksheet idle timeout (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
+        },
+
+    'pub_interact': {
+        DESC : 'Enable published interacts',
+        GROUP : G_SERVER,
+        TYPE : T_BOOL,
         },
 
     'server_pool': {

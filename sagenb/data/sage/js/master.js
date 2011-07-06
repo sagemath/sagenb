@@ -12,7 +12,7 @@ var replicate_str = function(x, n) {
 $(function () {
     var body = $('body'), body_id = body.attr('id');
 
-    if (body.hasClass('worksheet-online')) {
+    if (body.hasClass('active-worksheet')) {
         initialize_the_notebook();
         $('.introspection .docstring .click-message', '#worksheet_cell_list')
             .live('click', function (e) {

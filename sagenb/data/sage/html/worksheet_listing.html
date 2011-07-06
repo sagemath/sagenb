@@ -20,6 +20,7 @@ INPUT:
 {% endblock %}
 
 {% block page_id %}worksheet-listing-page{% endblock %}
+{% block body_classes %}{% if pub %}public{% endif %}{% endblock %}
 
 {% block javascript %}
 {% if not pub %}

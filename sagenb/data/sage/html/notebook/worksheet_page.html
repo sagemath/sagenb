@@ -6,48 +6,39 @@ INPUT:
 - do_print - a boolean stating whether the file is for print mode
 #}
 
-{% block body_classes %}worksheet-online{% if not (worksheet.is_published() or notebook.user_manager().user_is_guest(username) or worksheet.docbrowser()) %} active-worksheet-page{% endif %}{% endblock %}
-{% block page_id %}user-worksheet-index{% endblock %}
-
+{% block page_id %}user-worksheet-page{% endblock %}
+{% block body_classes %}active-worksheet{% endblock %}
+ 
 {% block worksheet_main %}
 {% set toggle=true %}
 <div class="worksheet" id="worksheet">
     {{ worksheet.html(username=username) }}
-    {% if do_print %}
-    <script>
-        jsMath.ProcessBeforeShowing();
-    </script>
-    {% else %}
+    <div class="insert_new_cell" id="insert_last_cell"></div>  
     <script type="text/javascript">
-        cell_id_list = {{ worksheet.cell_id_list() }};
         state_number = {{ worksheet.state_number() }};
-        {% if not published %}
-	$(document).ready(function () {
+        cell_id_list = {{ worksheet.cell_id_list() }};
+        queue_id_list = {{ worksheet.queue_id_list() }};
+        {% if worksheet.is_only_viewer(username) %}
+        worksheet_locked = true;
+        {% else %}
+        worksheet_locked = false;
+	    {% endif %}
+
+        $(document).ready(function () {
             if (worksheet_name === "{{ gettext('Untitled') }}") {
                 rename_worksheet();
             }
          });
-	{% endif %}
+
+        $("#insert_last_cell").plainclick(function (e) {
+            insert_new_cell_after(cell_id_list[cell_id_list.length - 1]);
+        });
+    
+        {% if not worksheet.docbrowser() %}
+        $("#insert_last_cell").shiftclick(function (e) {
+            insert_new_text_cell_after(cell_id_list[cell_id_list.length - 1]);
+        });
+        {% endif %}
     </script>
-    {% endif %}
 </div>
-
-<script type="text/javascript">
-{% if worksheet.is_only_viewer(username) %}
-    worksheet_locked = true;
-{% else %}
-    worksheet_locked = false;
-{% endif %}
-</script>
-
-{% if worksheet.computing() %}
-<!-- Set the update checking back in motion. -->
-<script type="text/javascript">
-    active_cell_list = {{ worksheet.queue_id_list() }};
-    for (var i = 0; i < active_cell_list.length; i += 1) {
-        cell_set_running(active_cell_list[i]);
-    }
-    start_update_check();
-</script>
-{% endif %}
 {% endblock %}

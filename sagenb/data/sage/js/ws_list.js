@@ -66,7 +66,7 @@ function set_worksheet_list_checks() {
     cbox_checked = $('#controlbox')[0].checked;
     ws_len = worksheet_filenames.length;
     for (i = 0; i < ws_len; i += 1) {
-        ws_name = worksheet_filenames[i].replace(/[\/@.]/g, '-');
+        ws_name = worksheet_filenames[i].replace(/[^\-A-Za-z_0-9]/g, '-');
         $('#' + ws_name)[0].checked = cbox_checked;
     }
 }
@@ -91,7 +91,7 @@ function checked_worksheet_filenames() {
     // together separated by the separator string.
     for (i = 0; i < ws_len; i += 1) {
         ws_name = worksheet_filenames[i];
-        ws_box = $('#' + ws_name.replace(/[\/@.]/g, '-'))[0];
+        ws_box = $('#' + ws_name.replace(/[^\-A-Za-z_0-9]/g, '-'))[0];
         if (ws_box.checked) {
             filenames.push(ws_name);
             ws_box.checked = 0;
