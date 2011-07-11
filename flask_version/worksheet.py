@@ -559,7 +559,8 @@ def worksheet_datafile(worksheet):
     if request.values.get('action', '') == 'delete':
         path = os.path.join(dir, filename)
         os.unlink(path)
-        return current_app.message(_("Successfully deleted '%(filename)s'", filename=filename))
+        return current_app.message("Successfully deleted '%s'"%filename,
+                                   cont=url_for_worksheet(worksheet)) #XXX: i18n
     else:
         return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
