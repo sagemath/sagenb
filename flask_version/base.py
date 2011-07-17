@@ -24,7 +24,6 @@ class SageNBFlask(Flask):
 
         self.add_static_path('/css', os.path.join(DATA, "sage", "css"))        
         self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
-        self.add_static_path('/javascript/sage', os.path.join(DATA, "sage", "js"))
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
@@ -122,21 +121,21 @@ def index():
 ######################
 # Dynamic Javascript #
 ######################
-@base.route('/javascript/sage/main.js')
-def main_js():
+@base.route('/javascript/dynamic/notebook_dynamic.js')
+def dynamic_js():
     from sagenb.notebook.js import javascript
     response = make_response(javascript())
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
-@base.route('/javascript/sage/localization.js')
+@base.route('/javascript/dynamic/localization.js')
 def localization_js():
     response = make_response(render_template(os.path.join('js/localization.js')))
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
 
-@base.route('/javascript/sage/jsmath.js')
+@base.route('/javascript/dynamic/jsmath.js')
 def jsmath_js():
     from sagenb.misc.misc import jsmath_macros
     response = make_response(render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
@@ -144,7 +143,7 @@ def jsmath_js():
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
-@base.route('/javascript/sage/keyboard/<browser_os>')
+@base.route('/javascript/dynamic/keyboard/<browser_os>')
 def keyboard_js(browser_os):
     from sagenb.notebook.keyboards import get_keyboard
     response = make_response(get_keyboard(browser_os))

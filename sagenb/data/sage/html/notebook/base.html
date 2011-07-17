@@ -31,12 +31,13 @@ INPUT:
 <script type="text/javascript" src="/javascript/jquery/plugins/achtung/ui.achtung-mod.min.js"></script>
 
 {% if not worksheet.is_published() %}
-<script type="text/javascript" src="/javascript/sage/main.js"></script>
+<script type="text/javascript" src="/javascript/sage/js/notebook_lib.js"></script>
+<script type="text/javascript" src="/javascript/dynamic/notebook_dynamic.js"></script>
 {% endif %}
 
 {% if JSMATH %}
 <!-- jsMath - typeset mathematics -->
-<script type="text/javascript" src="/javascript/sage/jsmath.js"></script>
+<script type="text/javascript" src="/javascript/dynamic/jsmath.js"></script>
 {% endif %}
 
 <!-- Sage3d - accelerated 3D graphics -->
@@ -51,7 +52,7 @@ INPUT:
 <!-- TinyMCE and jEditable - in-place editing of text cells -->
 <script type="text/javascript" src="/javascript/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/jeditable/jquery.jeditable.mini.js" charset="utf-8"></script>
-<script type="text/javascript" src="/javascript/sage/tinymce.js"></script>
+<script type="text/javascript" src="/javascript/sage/js/tinymce.js"></script>
 <script type="text/javascript" src="/javascript/tiny_mce/plugins/media/js/embed.js"></script>
 {% endif %}
 
