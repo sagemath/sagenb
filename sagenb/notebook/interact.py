@@ -1905,7 +1905,7 @@ class InteractCanvas:
     def is_auto_update(self):
         r"""
         Returns True if any change of the values for the controls on
-        this canvas should cause an update.  If `auto_update=False` was
+        this canvas should cause an update.  If ``auto_update=False`` was
         not specified in the constructor for this canvas, then this
         will default to True.
 
