@@ -314,7 +314,7 @@ function get_keyboard() {
         alert(translations['Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.']);
     }
 
-    $.getScript('/javascript/sage/keyboard/' + b + o);
+    $.getScript('/javascript/dynamic/keyboard/' + b + o);
 }
 
 
@@ -4383,55 +4383,6 @@ function reset_interrupts() {
 }
 
 
-function interrupt_callback(status, response_text) {
-    /*
-    Callback called after we send the interrupt signal to the server.
-    If the interrupt succeeds, we change the CSS/DOM to indicate that
-    no cells are currently computing.  If it fails, we display/update
-    a alert and repeat after a timeout.  If the signal doesn't make
-    it, we just reset any alerts.
-    */
-    var is = interrupt_state, message;
-    {% set timeout = 5 %}
-    var timeout = {{ timeout }};
-
-    if (response_text === 'failed') {
-        if (!is.count) {
-            is.count = 1;
-            message = translations['Unable to interrupt calculation.'] + " " + translations[timeout > 1 ? 2 : 1]['Trying again in %(num)d second...'](timeout) + ' ' + translations['Close this box to stop trying.'];
-
-            is.alert = $.achtung({
-                className: 'interrupt-fail-notification',
-                message: message,
-                timeout: timeout,
-                hideEffects: false,
-                showEffects: false,
-                onCloseButton: function () {
-                    reset_interrupts();
-                },
-                onTimeout: function () {
-                    interrupt();
-                }
-            });
-            return;
-        }
-
-        is.count += 1;
-        message = translations['Interrupt attempt'] + " " + is.count;
-        if (is.count > 5) {
-            message += ". " + translations["<a href='javascript:restart_sage();'>Restart</a>, instead?"];
-        }
-        is.alert.achtung('update', {
-            message: message,
-            timeout: timeout
-        });
-    } else if (status === 'success') {
-        // halt_active_cells calls reset_interrupts.
-        halt_active_cells();
-    } else {
-        reset_interrupts();
-    }
-}
 
 
 function evaluate_all() {
@@ -4601,7 +4552,6 @@ function login(username, password) {
     document.cookie = "password=" + password;
     window.location = "/";
 }
-
 
 ///////////////////////////////////////////////////////////////////
 //
@@ -4790,23 +4740,6 @@ function empty_trash() {
         $('#empty-trash-form').submit();
     }
 }
-
-
-///////////////////////////////////////////////////////////////////
-//
-// KeyCodes (auto-generated from config.py and user's sage config
-//
-///////////////////////////////////////////////////////////////////
-
-
-{{ KEY_CODES }}
-
-{% include "js/jmol_lib.js" %}
-
-{% include "js/canvas3d_lib.js" %}
-
-{% include "js/async_lib.js" %}
-
 
 // This is purely for debugging, diagnostics, etc.  Pass the options
 // dictionary as the argument below.

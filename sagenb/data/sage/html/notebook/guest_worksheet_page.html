@@ -6,6 +6,10 @@ INPUT:
 - username - a string containing a username
 #}
 
+{% block javascript %}
+<script src="/javascript/sage/js/published_worksheet.js"></script>
+{% endblock %}
+
 {% block page_id %}guest-worksheet-page{% endblock %}
 
 {% set original_worksheet = worksheet.worksheet_that_was_published() %}
@@ -40,7 +44,7 @@ INPUT:
             {% for i in range(5) %}
             <input type="radio" name="rating" value={{ i }} > {{ i }}
             {% endfor %}
-                &nbsp;&nbsp; <input name="rating_comment" id="rating_comment" value="gettext('leave a comment')"/>
+            &nbsp;&nbsp; <input name="rating_comment" id="rating_comment" value="{{ gettext('leave a comment') }}"/>
             <input type="button" id="rate_button" name="rating" value= {{ gettext("Rerate") if worksheet.is_rater(username) else gettext("Rate") }} > 
         {% endif %}
     </li>

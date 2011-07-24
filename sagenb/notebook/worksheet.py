@@ -159,7 +159,7 @@ def Worksheet_from_basic(obj, notebook_worksheet_directory):
 class Worksheet(object):
     def __init__(self, name=None, id_number=None,
                  notebook_worksheet_directory=None, system=None,
-                 owner=None, docbrowser=False, pretty_print=False,
+                 owner=None, pretty_print=False,
                  auto_publish=False, create_directories=True):
         ur"""
         Create and initialize a new worksheet.
@@ -182,9 +182,6 @@ class Worksheet(object):
         -  ``owner`` - string; username of the owner of this
            worksheet
 
-        -  ``docbrowser`` - bool (default: False); whether this
-           is a docbrowser worksheet
-
         -  ``pretty_print`` - bool (default: False); whether
            all output is pretty printed by default.
 
@@ -196,6 +193,7 @@ class Worksheet(object):
         EXAMPLES: We test the constructor via an indirect doctest::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: sagenb.notebook.twist.notebook = nb
             sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
             admin/0: [Cell 1; in=, out=]
@@ -211,7 +209,6 @@ class Worksheet(object):
         self.__owner         = owner
         self.__viewers       = []
         self.__collaborators = []
-        self.__docbrowser = docbrowser
         self.__autopublish = auto_publish
         self.__saved_by_info = {}
 
@@ -500,23 +497,18 @@ class Worksheet(object):
         is of course False::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('_sage_', 'password', '', force=True)
             sage: W = nb.create_new_worksheet('test1', 'admin')
             sage: W.docbrowser()
             False
 
         We create a worksheet for which docbrowser is True::
 
-            sage: W = nb.create_new_worksheet('docs', 'admin', docbrowser=True)
+            sage: W = nb.create_new_worksheet('doc_browser_0', '_sage_')
             sage: W.docbrowser()
             True
         """
-        try:
-            return self.__docbrowser
-        except AttributeError:
-            return False
-
-    def set_docbrowser(self, x):
-        self.__docbrowser = x
+        return self.name().startswith('doc_browser') and self.owner() == '_sage_'
 
     ##########################################################
     # Basic properties
@@ -907,8 +899,10 @@ class Worksheet(object):
             sage: W.notebook() is sagenb.notebook.twist.notebook
             True
         """
-        import twist
-        return twist.notebook
+        if not hasattr(self, '_notebook'):
+            import twist
+            self._notebook = twist.notebook
+        return self._notebook 
 
     def save(self, conf_only=False):
         self.notebook().save_worksheet(self, conf_only=conf_only)
@@ -1175,10 +1169,10 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('Publish Test', 'admin')
             sage: P = nb.publish_worksheet(W, 'admin')  # indirect test
             sage: W._Worksheet__published_version
-            'pub/1'
-            sage: W.set_published_version('pub/0')
-            sage: W._Worksheet__published_version
             'pub/0'
+            sage: W.set_published_version('pub/1')
+            sage: W._Worksheet__published_version
+            'pub/1'
         """
         self.__published_version = filename
 
@@ -1702,13 +1696,13 @@ class Worksheet(object):
             sage: W.cell_list()[0].evaluate()
             sage: W.check_comp()    # random output -- depends on computer speed
             sage: sorted(os.listdir(W.directory()))
-            ['cells', 'data']
+            ['cells', 'data', 'worksheet.html', 'worksheet_conf.pickle']
             sage: W.save_snapshot('admin')
             sage: sorted(os.listdir(W.directory()))
-            ['cells', 'data', 'snapshots', 'worksheet.html']
+            ['cells', 'data', 'snapshots', 'worksheet.html', 'worksheet_conf.pickle']
             sage: W.delete_cells_directory()
             sage: sorted(os.listdir(W.directory()))
-            ['data', 'snapshots', 'worksheet.html']
+            ['data', 'snapshots', 'worksheet.html', 'worksheet_conf.pickle']
             sage: W.quit()
             sage: nb.delete()
         """
@@ -1923,9 +1917,17 @@ class Worksheet(object):
         """
         # Load the worksheet data file from disk.
         filename = self.worksheet_html_filename()
-        r = (self.owner().lower() + ' ' + self.publisher().lower() + ' ' + self.name().lower())
+
         if os.path.exists(filename):
-            r += ' ' + open(filename).read().decode('utf-8', 'ignore').lower()
+            contents = open(filename).read().decode('utf-8', 'ignore')
+        else:
+            contents = u' '
+
+        try:
+            r = [unicode(x.lower()) for x in [self.owner(), self.publisher(), self.name(), contents]]
+            r = u" ".join(r)
+        except UnicodeDecodeError as e:
+            return False
 
         # Check that every single word is in the file from disk.
         for W in split_search_string_into_keywords(search):
@@ -2378,15 +2380,6 @@ class Worksheet(object):
             name = name[:max] + ' ...'
         return name
 
-    def is_doc_worksheet(self):
-        try:
-            return self.__is_doc_worksheet
-        except AttributeError:
-            return False
-
-    def set_is_doc_worksheet(self, value):
-        self.__is_doc_worksheet = value
-
     ##########################################################
     # Last edited
     ##########################################################
@@ -2775,6 +2768,7 @@ class Worksheet(object):
             S = self.__sage
         except AttributeError:
             # no sage running anyways!
+            self.notebook().quit_worksheet(self)
             return
 
         try:
@@ -2796,6 +2790,16 @@ class Worksheet(object):
         self.save()
         self.clear_queue()
         del self.__cells
+
+        import shutil
+        for cell in self.cell_list():
+            try:
+                dir = cell._directory_name()
+            except AttributeError:
+                continue
+            if os.path.exists(dir) and not os.listdir(dir):
+                shutil.rmtree(dir, ignore_errors=True)
+        self.notebook().quit_worksheet(self)
 
     def next_block_id(self):
         try:

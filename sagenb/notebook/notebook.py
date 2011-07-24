@@ -87,6 +87,30 @@ JEDITABLE_TINYMCE  = True
 
 DOC_TIMEOUT = 120
 
+class WorksheetDict(dict):
+    def __init__(self, notebook, *args, **kwds):
+        self.notebook = notebook
+        self.storage = notebook._Notebook__storage
+        dict.__init__(self, *args, **kwds)
+
+    def __getitem__(self, item):
+        if item in self:
+            return dict.__getitem__(self, item)
+        else:
+            pass
+        try:
+            if '/' not in item:
+                raise KeyError, item
+        except TypeError:
+            raise KeyError, item
+
+        username, id = item.split('/')
+        worksheet = self.storage.load_worksheet(username, int(id))
+
+        dict.__setitem__(self, item, worksheet)
+        return worksheet
+        
+        
 class Notebook(object):
     HISTORY_MAX_OUTPUT = 92*5
     HISTORY_NCOLS = 90
@@ -112,7 +136,7 @@ class Notebook(object):
             self.__conf = S.load_server_conf()
         except IOError:
             # Worksheet has never been saved before, so the server conf doesn't exist.
-            self.__worksheets = {}
+            self.__worksheets = WorksheetDict(self)
 
         from user_manager import SimpleUserManager, OpenIDUserManager
         self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
@@ -124,11 +148,7 @@ class Notebook(object):
             pass
 
         # Set the list of worksheets
-        W = {}
-        for username in self._user_manager.users():
-            for w in S.worksheets(username):
-                W['%s/%s'%(username, w.id_number())] = w
-
+        W = WorksheetDict(self)
         self.__worksheets = W
 
         # Set the openid-user dict
@@ -294,6 +314,9 @@ class Notebook(object):
         W.edit_save(src.edit_text())
         W.save()
 
+    def users_worksheets(self, username):
+        return self.__storage.worksheets(username)
+
     def publish_worksheet(self, worksheet, username):
         r"""
         Publish a user's worksheet.  This creates a new worksheet in
@@ -317,12 +340,12 @@ class Notebook(object):
             sage: nb.worksheet_names()
             ['Mark/0']
             sage: nb.publish_worksheet(nb.get_worksheet_with_filename('Mark/0'), 'Mark')
-            pub/1: [Cell 1; in=, out=]
+            pub/0: [Cell 1; in=, out=]
             sage: sorted(nb.worksheet_names())
-            ['Mark/0', 'pub/1']
+            ['Mark/0', 'pub/0']
         """
-        for X in self.__worksheets.itervalues():
-            if X.is_published() and X.worksheet_that_was_published() == worksheet:
+        for X in self.users_worksheets('pub'):
+            if X.worksheet_that_was_published() == worksheet:
                 # Update X based on worksheet instead of creating something new
                 # 1. delete cells and data directories
                 # 2. copy them over
@@ -362,19 +385,17 @@ class Notebook(object):
             self.__scratch_worksheet = W
             return W
 
-    def create_new_worksheet(self, worksheet_name, username,
-                             docbrowser=False, add_to_list=True):
+    def create_new_worksheet(self, worksheet_name, username, add_to_list=True):
         if username!='pub' and self.user_manager().user_is_guest(username):
             raise ValueError, "guests cannot create new worksheets"
 
         W = self.worksheet(username)
 
         W.set_system(self.system(username))
-        W.set_docbrowser(docbrowser)
         W.set_name(worksheet_name)
+        self.save_worksheet(W)
+        self.__worksheets[W.filename()] = W
 
-        if add_to_list:
-            self.__worksheets[W.filename()] = W
         return W
 
     def copy_worksheet(self, ws, owner):
@@ -393,14 +414,14 @@ class Notebook(object):
 
         - ``filename`` - a string
         """
-        if not (filename in self.__worksheets.keys()):
-            print self.__worksheets.keys()
+        try:
+            W = self.__worksheets[filename]
+        except KeyError:
             raise KeyError, "Attempt to delete missing worksheet '%s'"%filename
-        W = self.__worksheets[filename]
+        
         W.quit()
         shutil.rmtree(W.directory(), ignore_errors=False)
         self.deleted_worksheets()[filename] = W
-        del self.__worksheets[filename]
 
     def deleted_worksheets(self):
         try:
@@ -425,6 +446,7 @@ class Notebook(object):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
+            sage: W._notebook = nb
             sage: W.move_to_trash('sage')
             sage: nb.worksheet_names()
             ['sage/0']
@@ -458,7 +480,7 @@ class Notebook(object):
             sage: nb.user_manager().add_user('wstein','sage','wstein@sagemath.org',force=True)
             sage: W2 = nb.new_worksheet_with_title_from_text('Elliptic Curves', owner='wstein')
             sage: nb.worksheet_names()
-            ['sage/0', 'wstein/1']
+            ['sage/0', 'wstein/0']
         """
         W = self.__worksheets.keys()
         W.sort()
@@ -658,7 +680,9 @@ class Notebook(object):
         S = self.__storage
         if id_number is None:
             id_number = self.new_id_number(username)
-        return S.load_worksheet(username, id_number)
+        W = S.load_worksheet(username, id_number)
+        self.__worksheets[W.filename()] = W
+        return W
 
     def new_id_number(self, username):
         """
@@ -830,7 +854,7 @@ class Notebook(object):
 
         Yes, it's there now (as admin/2)::
 
-            sage: nb.worksheet_names()
+            sage: [w.filename() for w in nb.get_all_worksheets()]
             ['admin/0', 'admin/1']
         """
         id_number = self.new_id_number(username)
@@ -1130,7 +1154,7 @@ class Notebook(object):
             W.set_not_computing()
 
     def quit(self):
-        for W in self.__worksheets.itervalues():
+        for W in self.__worksheets.values():
             W.quit()
 
     def update_worksheet_processes(self):
@@ -1140,21 +1164,26 @@ class Notebook(object):
         timeout = self.conf()['idle_timeout']
         if timeout == 0:
             # Quit only the doc browser worksheets
-            for W in self.__worksheets.itervalues():
+            for W in self.__worksheets.values():
                 if W.docbrowser() and W.compute_process_has_been_started():
                     W.quit_if_idle(DOC_TIMEOUT)
             return
 
-        for W in self.__worksheets.itervalues():
+        for W in self.__worksheets.values():
             if W.compute_process_has_been_started():
                 W.quit_if_idle(timeout)
 
+    def quit_worksheet(self, W):
+        try:
+            del self.__worksheets[W.filename()]
+        except KeyError:
+            pass
 
     ##########################################################
     # Worksheet HTML generation
     ##########################################################
     def worksheet_list_for_public(self, username, sort='last_edited', reverse=False, search=None):
-        W = [x for x in self.__worksheets.itervalues() if x.is_published() and not x.is_trashed(user)]
+        W = self.users_worksheets('pub')
 
         if search:
             W = [x for x in W if x.satisfies_search(search)]
@@ -1327,38 +1356,27 @@ class Notebook(object):
     # Accessing all worksheets with certain properties.
     ##########################################################
     def active_worksheets_for(self, username):
-        return [ws for ws in self.get_worksheets_with_viewer(username) if ws.is_active(username)]
+        return self.users_worksheets(username)
+        #return [ws for ws in self.get_worksheets_with_viewer(username) if ws.is_active(username)]
     
     def get_all_worksheets(self):
-        return [x for x in self.__worksheets.itervalues() if not x.owner() in ['_sage_', 'pub']]
+        """
+        We should never call this!
+        """
+        all_worksheets = []
+        for username in self._user_manager.users():
+            if username in ['_sage_', 'pub']:
+                continue
+            for w in self.users_worksheets(username):
+                all_worksheets.append(w)
+        return all_worksheets
 
-    def get_worksheets_with_collaborator(self, user):
-        if self._user_manager.user_is_admin(user): return self.get_all_worksheets()
-        return [w for w in self.__worksheets.itervalues() if w.is_collaborator(user)]
-
-    def get_worksheet_names_with_collaborator(self, user):
-        if self._user_manager.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
-        return [W.name() for W in self.get_worksheets_with_collaborator(user)]
-
-    def get_worksheets_with_viewer(self, user):
-        if self._user_manager.user_is_admin(user): return self.get_all_worksheets()
-        return [w for w in self.__worksheets.itervalues() if w.is_viewer(user)]
+    def get_worksheets_with_viewer(self, username):
+        if self._user_manager.user_is_admin(username): return self.get_all_worksheets()
+        return self.users_worksheets(username)
 
     def get_worksheets_with_owner(self, owner):
-        return [w for w in self.__worksheets.itervalues() if w.owner() == owner]
-
-    def get_worksheets_with_owner_that_are_viewable_by_user(self, owner, user):
-        return [w for w in self.get_worksheets_with_owner(owner) if w.is_viewer(user)]
-
-    def get_worksheet_names_with_viewer(self, user):
-        if self._user_manager.user_is_admin(user): return [W.name() for W in self.get_all_worksheets()]
-        return [W.name() for W in self.get_worksheets_with_viewer(user) if not W.docbrowser()]
-
-    def get_worksheet_with_name(self, name):
-        for W in self.__worksheets.itervalues():
-            if W.name() == name:
-                return W
-        raise KeyError, "No worksheet with name '%s'"%name
+        return self.users_worksheets(owner)
 
     def get_worksheet_with_filename(self, filename):
         """
@@ -1373,9 +1391,10 @@ class Notebook(object):
 
         - a Worksheet instance
         """
-        if self.__worksheets.has_key(filename):
+        try:
             return self.__worksheets[filename]
-        raise KeyError, "No worksheet with filename '%s'"%filename
+        except KeyError:
+            raise KeyError, "No worksheet with filename '%s'"%filename
 
     ###########################################################
     # Saving the whole notebook
@@ -1390,7 +1409,7 @@ class Notebook(object):
         S.save_server_conf(self.conf())
         self._user_manager.save(S)
         # Save the non-doc-browser worksheets.
-        for n, W in self.__worksheets.iteritems():
+        for n, W in self.__worksheets.items():
             if not n.startswith('doc_browser'):
                 S.save_worksheet(W)
         if hasattr(self, '_user_history'):
@@ -1400,11 +1419,17 @@ class Notebook(object):
     def save_worksheet(self, W, conf_only=False):
         self.__storage.save_worksheet(W, conf_only=conf_only)
 
+    def logout(self, username):
+        if username is None:
+            return
+        for filename, W in self.__worksheets.items():
+            if filename.startswith(username + "/"):
+                W.quit()
+
     def delete_doc_browser_worksheets(self):
-        names = self.worksheet_names()
-        for n in self.__worksheets.keys():
-            if n.startswith('doc_browser'):
-                self.delete_worksheet(n)
+        for w in self.users_worksheets('_sage_'):
+            if w.name().startswith('doc_browser'):
+                self.delete_worksheet(w.filename())
 
     ###########################################################
     # HTML -- generate most html related to the whole notebook page
@@ -1789,14 +1814,14 @@ def migrate_old_notebook_v1(dir):
 
         return new_ws
 
-    worksheets = {}
+    worksheets = WorksheetDict(new_nb)
     num_worksheets = len(old_nb._Notebook__worksheets)
     print "Migrating (at most) %s worksheets..."%num_worksheets
     from sage.misc.misc import walltime
     tm = walltime()
     i = 0
     for ws_name, old_ws in old_nb._Notebook__worksheets.iteritems():
-        if old_ws.is_doc_worksheet(): continue
+        if old_ws.docbrowser(): continue
         i += 1
         if i%25==0:
             percent = i/float(num_worksheets)

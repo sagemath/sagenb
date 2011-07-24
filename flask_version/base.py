@@ -24,7 +24,6 @@ class SageNBFlask(Flask):
 
         self.add_static_path('/css', os.path.join(DATA, "sage", "css"))        
         self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
-        self.add_static_path('/javascript/sage', os.path.join(DATA, "sage", "js"))
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
@@ -39,7 +38,7 @@ class SageNBFlask(Flask):
         DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
         self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
         self.add_static_path('/doc/static', DOC) 
-        self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'en', 'reference'))
+        #self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'reference'))
 
     def create_jinja_environment(self):
         from sagenb.notebook.template import env
@@ -122,21 +121,21 @@ def index():
 ######################
 # Dynamic Javascript #
 ######################
-@base.route('/javascript/sage/main.js')
-def main_js():
+@base.route('/javascript/dynamic/notebook_dynamic.js')
+def dynamic_js():
     from sagenb.notebook.js import javascript
     response = make_response(javascript())
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
-@base.route('/javascript/sage/localization.js')
+@base.route('/javascript/dynamic/localization.js')
 def localization_js():
     response = make_response(render_template(os.path.join('js/localization.js')))
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
 
-@base.route('/javascript/sage/jsmath.js')
+@base.route('/javascript/dynamic/jsmath.js')
 def jsmath_js():
     from sagenb.misc.misc import jsmath_macros
     response = make_response(render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
@@ -144,7 +143,7 @@ def jsmath_js():
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
-@base.route('/javascript/sage/keyboard/<browser_os>')
+@base.route('/javascript/dynamic/keyboard/<browser_os>')
 def keyboard_js(browser_os):
     from sagenb.notebook.keyboards import get_keyboard
     response = make_response(get_keyboard(browser_os))
@@ -181,7 +180,6 @@ def history():
 
 @base.route('/live_history')
 @login_required
-@with_lock
 def live_history():
     W = g.notebook.create_new_worksheet_from_history(gettext('Log'), g.username, 100)
     from worksheet import url_for_worksheet
@@ -288,9 +286,9 @@ def notebook_save_check():
 
     t = walltime()
     if t > last_save_time + save_interval:
-        with global_lock:
-            # check again because condition might have changed while waiting
-            if t > last_save_time + save_interval:
+        # check again because condition might have changed while waiting
+        if t > last_save_time + save_interval:
+            with global_lock:
                 notebook.save()
                 last_save_time = t
 
@@ -300,9 +298,9 @@ def notebook_idle_check():
 
     t = walltime()
     if t > last_idle_time + idle_interval:
-        with global_lock:
-            # check again because condition might have changed while waiting
-            if t > last_idle_time + idle_interval:
+        # check again because condition might have changed while waiting
+        if t > last_idle_time + idle_interval:
+            with global_lock:
                 notebook.update_worksheet_processes()
                 notebook.quit_idle_worksheet_processes()
                 last_idle_time = t

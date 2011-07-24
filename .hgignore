@@ -68,3 +68,4 @@ sage_notebook*
 sagenb/data/jmol
 ^sagenb.egg-info
 setup.cfg
+sagenb/data/jsmath/fonts

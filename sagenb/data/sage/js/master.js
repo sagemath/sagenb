@@ -12,10 +12,6 @@ var replicate_str = function(x, n) {
 $(function () {
     var body = $('body'), body_id = body.attr('id');
 
-    if (body_id === 'worksheet-listing-page') {
-        checkForGearsInstalled();
-    }
-
     if (body.hasClass('worksheet-online')) {
         initialize_the_notebook();
         $('.introspection .docstring .click-message', '#worksheet_cell_list')

@@ -5,7 +5,7 @@
 import copy
 
 import conf
-from conf import (DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
+from conf import (POS, DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
                   T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST)
 from sagenb.misc.misc import get_languages
 from flaskext.babel import gettext, lazy_gettext
@@ -108,30 +108,35 @@ defaults_descriptions = {
         },
 
     'email': {
+        POS : 3,
         DESC : lazy_gettext('Require e-mail for account registration'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'accounts': {
+        POS : 2,
         DESC : lazy_gettext('Enable user registration'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'openid': {
+        POS: 1,
         DESC : lazy_gettext('Allow OpenID authentication (requires python ssl module)'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'challenge': {
+        POS : 4,
         DESC : lazy_gettext('Use a challenge for account registration'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
 
     'challenge_type': {
+        POS : 4,
         DESC : lazy_gettext('Type of challenge'),
         GROUP : G_AUTH,
         TYPE : T_CHOICE,

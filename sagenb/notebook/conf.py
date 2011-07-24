@@ -11,6 +11,7 @@ Configuration
 #############################################################################
 from flaskext.babel import gettext, lazy_gettext
 
+POS = 'pos'
 DESC = 'desc'
 GROUP = 'group'
 TYPE = 'type'
@@ -23,6 +24,8 @@ T_REAL = 3
 T_COLOR = 4
 T_STRING = 5
 T_LIST = 6
+
+POS_DEFAULT = 100
 
 class Configuration(object):
     
@@ -152,7 +155,14 @@ class Configuration(object):
             s += u'<div class="section">\n  <h2>%s</h2>\n  <table>\n' % lazy_gettext(group)
 
             opts = G[group]
-            opts.sort()
+            def sortf(x, y):
+                wx = DS[x].get(POS, POS_DEFAULT)
+                wy = DS[y].get(POS, POS_DEFAULT)
+                if wx == wy:
+                    return cmp(x, y)
+                else:
+                    return cmp(wx, wy)
+            opts.sort(sortf)
             for o in opts:
                 s += u'    <tr>\n      <td>%s</td>\n      <td>\n' % lazy_gettext(DS[o][DESC])
                 input_type = 'text'

@@ -4,9 +4,7 @@
 var edge_list = [], nodes = [], NODES, EDGES, SIZE, NEW_RADIUS,
     DOUBLECLICK, LIVE, SPRING, FIXED_LENGTH,
     selected_node, dragged_node, dragging_flag, last_click_time,
-    initial_x, initial_y
-
-var edges = [], num_vertices = null, pos = null;
+    initial_x, initial_y, p, edges = [], num_vertices = null, pos = null;
 
 NODES = 10;
 EDGES = 20;

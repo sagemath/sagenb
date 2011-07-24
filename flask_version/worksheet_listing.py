@@ -94,7 +94,6 @@ def get_worksheets_from_request():
 
 @worksheet_listing.route('/send_to_trash', methods=['POST'])
 @login_required
-@with_lock
 def send_worksheet_to_trash():
     for W in get_worksheets_from_request():
         W.move_to_trash(g.username)
@@ -102,7 +101,6 @@ def send_worksheet_to_trash():
 
 @worksheet_listing.route('/send_to_archive', methods=['POST'])
 @login_required
-@with_lock
 def send_worksheet_to_archive():
     for W in get_worksheets_from_request():
         W.move_to_archive(g.username)
@@ -110,7 +108,6 @@ def send_worksheet_to_archive():
 
 @worksheet_listing.route('/send_to_active', methods=['POST'])
 @login_required
-@with_lock
 def send_worksheet_to_active():
     for W in get_worksheets_from_request():
         W.set_active(g.username)
@@ -118,7 +115,6 @@ def send_worksheet_to_active():
 
 @worksheet_listing.route('/send_to_stop', methods=['POST'])
 @login_required
-@with_lock
 def send_worksheet_to_stop():
     for W in get_worksheets_from_request():
         W.quit()
@@ -126,7 +122,6 @@ def send_worksheet_to_stop():
 
 @worksheet_listing.route('/emptytrash', methods=['POST'])
 @login_required
-@with_lock
 def empty_trash():
     g.notebook.empty_trash(g.username)
     if 'referer' in request.headers:
@@ -225,7 +220,6 @@ def upload():
 
 @worksheet_listing.route('/upload_worksheet', methods=['GET', 'POST'])
 @login_required
-@with_lock
 def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
     from werkzeug import secure_filename

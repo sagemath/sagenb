@@ -190,15 +190,15 @@ class RedirectResponse(http.Response):
 doc_worksheet_number = 0
 def doc_worksheet():
     global doc_worksheet_number
-    wnames = notebook.worksheet_names()
+    worksheets = notebook.users_worksheets('_sage_')
     name = 'doc_browser_%s'%doc_worksheet_number
     doc_worksheet_number = doc_worksheet_number % notebook.conf()['doc_pool_size']
-    if name in wnames:
-        W = notebook.get_worksheet_with_name(name)
-        W.clear()
+    for W in worksheets:
+        if name == W.name():
+            W.clear()
+            break
     else:
-        W = notebook.create_new_worksheet(name, '_sage_', docbrowser=True)
-    W.set_is_doc_worksheet(True)
+        W = notebook.create_new_worksheet(name, '_sage_')
     return W
 
 

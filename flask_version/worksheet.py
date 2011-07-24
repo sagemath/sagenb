@@ -64,7 +64,6 @@ def get_cell_id():
 ##############################
 @ws.route('/new_worksheet')
 @login_required
-@with_lock
 def new_worksheet():
     W = g.notebook.create_new_worksheet(gettext("Untitled"), g.username)
     return redirect(url_for_worksheet(W))
@@ -560,7 +559,8 @@ def worksheet_datafile(worksheet):
     if request.values.get('action', '') == 'delete':
         path = os.path.join(dir, filename)
         os.unlink(path)
-        return current_app.message(_("Successfully deleted '%(filename)s'", filename=filename))
+        return current_app.message("Successfully deleted '%s'"%filename,
+                                   cont=url_for_worksheet(worksheet)) #XXX: i18n
     else:
         return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
@@ -799,18 +799,18 @@ def worksheet_print(worksheet):
 # Live documentation #
 ######################
 doc_worksheet_number = 0
-@with_lock
 def doc_worksheet():
     global doc_worksheet_number
-    wnames = g.notebook.worksheet_names()
+    worksheets = g.notebook.users_worksheets('_sage_')
     name = 'doc_browser_%s'%doc_worksheet_number
     doc_worksheet_number = doc_worksheet_number % g.notebook.conf()['doc_pool_size']
-    if name in wnames:
-        W = g.notebook.get_worksheet_with_name(name)
-        W.clear()
+    for W in worksheets:
+        if name == W.name():
+            W.clear()
+            break
     else:
-        W = g.notebook.create_new_worksheet(name, '_sage_', docbrowser=True)
-    W.set_is_doc_worksheet(True)
+        W = g.notebook.create_new_worksheet(name, '_sage_')
+
     return W
 
 def extract_title(html_page):
@@ -837,12 +837,14 @@ def worksheet_file(path):
 
     W = doc_worksheet()
     W.edit_save(doc_page)
+    W.save()
+    W.quit()
 
     #FIXME: For some reason, an extra cell gets added
     #so we remove it here.
     cells = W.cell_list()
     cells.pop()
-
+    
     return g.notebook.html(worksheet_filename=W.filename(),
                          username=g.username)
 

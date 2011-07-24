@@ -71,7 +71,7 @@ def javascript():
     if _cache_javascript is not None:
         return _cache_javascript
 
-    s = template(os.path.join('js', 'notebook_lib.js'),
+    s = template(os.path.join('js', 'notebook_dynamic.js'),
                  SAGE_URL=SAGE_URL,
                  KEY_CODES=keyhandler.all_tests())
 

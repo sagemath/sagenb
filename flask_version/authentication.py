@@ -70,7 +70,8 @@ def login(template_dict={}):
 
 @authentication.route('/logout/')
 def logout():
-    session.pop('username', None)
+    username = session.pop('username', None)
+    g.notebook.logout(username)
     return redirect(url_for('base.index'))
 
 
