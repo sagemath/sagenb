@@ -98,9 +98,9 @@ def worksheet_command(target, **route_kwds):
             # Public worksheets #
             #####################
             if username_id and username_id[0] in ['_sage_']:
-                if target not in ['alive', 'cells', 'cell_update', 'data', 'download',
-                                  'edit_published_page', 'eval', 'quit_sage', 'rate',
-                                  'rating_info']:
+                if target.split('/')[0] not in ['alive', 'cells', 'cell_update',
+                          'data', 'download', 'edit_published_page', 'eval',
+                          'quit_sage', 'rate', 'rating_info']:
                     raise NotImplementedError
             
             #Make worksheet a non-keyword argument appearing before the
