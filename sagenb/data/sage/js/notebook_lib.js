@@ -145,7 +145,6 @@ try {
     uncomment_pat = new RegExp(uncomment_pat);
 } catch (e) {}
 
-var jsmath_font_msg = '<a href="{{ SAGE_URL }}/jsmath">' + translations["Click to download and install tex fonts."] + '</a><br>';
 // The global cell_writer target.
 var cell_writer = document;
 
@@ -2990,7 +2989,7 @@ function worksheet_command(cmd) {
 	|| cmd === 'new_text_cell_after') {
         state_number = parseInt(state_number, 10) + 1;
     }
-    return ('/home/' + worksheet_filename + '/' + cmd);
+    return (cmd);
 }
 
 
