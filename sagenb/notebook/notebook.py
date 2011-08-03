@@ -859,7 +859,7 @@ class Notebook(object):
         Yes, it's there now (as admin/2)::
 
             sage: [w.filename() for w in nb.get_all_worksheets()]
-            ['admin/0', 'admin/1']
+            ['admin/1', 'admin/0']
         """
         id_number = self.new_id_number(username)
         worksheet = self.__storage.import_worksheet(username, id_number, filename)
@@ -930,7 +930,7 @@ class Notebook(object):
                       <div class="body">
             <p>Here are some computations:</p>
             <BLANKLINE>
-            <div class="highlight-python">, Cell 0; in=1+1, out=
+            <div class="highlight-python">, Cell 0: in=1+1, out=
             2, TextCell 2: </div>
             <BLANKLINE>
             </div></div></div></div>]
@@ -1003,8 +1003,8 @@ class Notebook(object):
             sage: W.cell_list()
             [TextCell 2: <h1 class="title">Test Notebook</h1>
             <BLANKLINE>
-            <p>Let's do some computations:</p>, Cell 0; in=2+2, out=
-            4, Cell 1; in=x^2, out=
+            <p>Let's do some computations:</p>, Cell 0: in=2+2, out=
+            4, Cell 1: in=x^2, out=
             x^2]
             sage: cell = W.cell_list()[1]
             sage: cell.input_text()
@@ -1086,8 +1086,8 @@ class Notebook(object):
             sage: W.cell_list()
             [TextCell 2: <h1 class="title">Test Notebook</h1>
             <BLANKLINE>
-            <p>Let's do some computations:</p>, Cell 0; in=2+2, out=
-            4, Cell 1; in=x^2, out=
+            <p>Let's do some computations:</p>, Cell 0: in=2+2, out=
+            4, Cell 1: in=x^2, out=
             x^2]
             sage: cell = W.cell_list()[1]
             sage: cell.input_text()

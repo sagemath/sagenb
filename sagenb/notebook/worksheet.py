@@ -460,7 +460,7 @@ class Worksheet(object):
             'admin/0: [Cell 1: in=, out=]'
             sage: W.edit_save('{{{\n2+3\n///\n5\n}}}\n{{{id=10|\n2+8\n///\n10\n}}}')
             sage: W.__repr__()
-            'admin/0: [Cell 0: in=2+3, out=\n5, Cell 10; in=2+8, out=\n10]'
+            'admin/0: [Cell 0: in=2+3, out=\n5, Cell 10: in=2+8, out=\n10]'
         """
         return '%s/%s: %s' % (self.owner(), self.id_number(), self.cell_list())
     def __len__(self):

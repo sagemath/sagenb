@@ -368,7 +368,7 @@ def html_rangeslider(id, values, callback, steps, default_l=0, default_r=1,
 
         sage: from sagenb.notebook.interact import html_rangeslider, html
         sage: html(html_rangeslider('slider-007', 'null', 'alert(pos[0]+", "+pos[1])', steps=5, default_l=2, default_r=3, margin=5))
-        <html>...slider..range...</html>
+        <html>...slider...range...</html>
     """
     val_html = ''
     if values != 'null':
@@ -1862,7 +1862,7 @@ class RangeSlider(SliderGeneric):
             '...table...slider...["1","2","3","4","5"]...range...'
 
             sage: sagenb.notebook.interact.RangeSlider('x', [1..5], (2,3), 'alpha', display_value=False).render()
-            '...table...slider...null..range..
+            '...table...slider...null...range...
         """
         
         return html_rangeslider('slider-%s-%s'%(self.var(), self.cell_id()),
