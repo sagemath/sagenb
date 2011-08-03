@@ -78,11 +78,10 @@ def get_worksheets_from_request():
     if 'filename' in request.form:
         filenames = [request.form['filename']]
     elif 'filenames' in request.form:
-        sep = request.form['sep']
-        filenames = [x for x in request.form['filenames'].split(sep) if x.strip()]
+        import json
+        filenames = json.loads(request.form['filenames'])
     else:
         filenames = []
-
     worksheets = []
     for filename in filenames:
         W = g.notebook.get_worksheet_with_filename(filename)

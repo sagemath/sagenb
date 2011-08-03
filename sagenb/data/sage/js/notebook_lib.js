@@ -1470,14 +1470,10 @@ function checked_worksheet_filenames() {
 
     GLOBAL INPUT:
         worksheet_filenames -- list of strings
-        SEP -- separator string used when encoding tuples of data to
-        send back to the server.
     OUTPUT:
-        string of worksheet filenames that are checked, separated by
-        SEP
+        string of worksheet filenames that are checked, encoded as JSON
     */
-    var i, id, X, filenames;
-    filenames = "";
+    var i, id, X, checked_filenames = [];
 
     // Concatenate the list of all worksheet filenames that are
     // checked together separated by the separator string.
@@ -1485,11 +1481,11 @@ function checked_worksheet_filenames() {
         id = worksheet_filenames[i].replace(/[^\-A-Za-z_0-9]/g, '-');
         X = get_element(id);
         if (X.checked) {
-            filenames = filenames + worksheet_filenames[i] + SEP;
+            checked_filenames.push(worksheet_filenames[i]);
             X.checked = 0;
         }
     }
-    return filenames;
+    return encode_response(checked_filenames);
 }
 
 
@@ -1503,8 +1499,6 @@ function worksheet_list_button(action) {
         action -- URL that defines a message to send to the server
     GLOBAL INPUT:
         worksheet_filenames -- list of strings
-        SEP -- separator string used when encoding tuples of data to
-        send back to the server.
     OUTPUT:
         calls the server and requests an action be performed on all
         the listed worksheets
@@ -1513,7 +1507,6 @@ function worksheet_list_button(action) {
     // the server.
     async_request(action, worksheet_list_button_callback, {
         filenames: checked_worksheet_filenames(),
-        sep: SEP
     });
 }
 
@@ -1530,7 +1523,7 @@ function worksheet_list_button_callback(status, response) {
     */
     if (status === 'success') {
         if (response !== '') {
-            alert(response_text);
+            alert(response);
         }
     } else {
         alert(translations['Error applying function to worksheet(s).'] + response);
