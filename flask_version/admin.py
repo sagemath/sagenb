@@ -66,7 +66,7 @@ def add_user():
 
         message = gettext('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
                           username=username, password=password)
-        return current_app.message(message='/adduser', title=_('New User'))
+        return current_app.message(message, cont='/adduser', title=_('New User'))
     else:
         return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
                                **template_dict)
