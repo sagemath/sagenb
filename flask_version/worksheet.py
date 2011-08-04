@@ -726,7 +726,7 @@ def worksheet_do_upload_data(worksheet):
 ################################
 #Publishing
 ################################
-@worksheet_command('publish/')
+@worksheet_command('publish')
 def worksheet_publish(worksheet):
     """
     This provides a frontend to the management of worksheet

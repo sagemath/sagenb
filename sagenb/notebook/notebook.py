@@ -354,9 +354,8 @@ class Notebook(object):
         W = None
 
         # Reuse an existing published version
-        for X in self.__worksheets.itervalues():
-            if (X.is_published() and
-                X.worksheet_that_was_published() == worksheet):
+        for X in self.get_worksheets_with_owner('pub'):
+            if (X.worksheet_that_was_published() == worksheet):
                 W = X
 
         # Or create a new one.
@@ -371,6 +370,9 @@ class Notebook(object):
         W.move_to_archive(username)
         worksheet.set_published_version(W.filename())
         W.record_edit(username)
+        W.set_name(worksheet.name())
+        self.__worksheets[W.filename()] = W
+        W.save()
         return W
 
     ##########################################################
