@@ -375,7 +375,10 @@ class NotebookTestCase(unittest.TestCase):
         sel.click("link=Published")
         sel.wait_for_page_to_load("30000")
         sel.click("name-pub-"+id)
-        sel.wait_for_condition('selenium.browserbot.getCurrentWindow().worksheet_filename == "%s"'%('pub/'+id), 30000)
+        sel.wait_for_page_to_load("30000")
+        #broken by public interacts, worksheet_filename changes at every viewing
+        #to allow for independent interacts
+        #sel.wait_for_condition('selenium.browserbot.getCurrentWindow().worksheet_filename == "%s"'%('pub/'+id), 30000)
 
     def open_worksheet_with_name(self, name):
         """
