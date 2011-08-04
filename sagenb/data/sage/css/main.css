@@ -235,7 +235,7 @@ div.docstring-introspection-dialog { font-size: inherit; font-family: "Arial", "
 .docstring .unprinted-note { float: right; clear: both; font-size: 0.6em; }
 
 /* line 464, ../../../../sass/src/main.sass */
-.active-worksheet.interrupt-fail-notification { background-color: #b22222; }
+.active-worksheet .interrupt-fail-notification { background-color: #b22222; }
 
 /* line 467, ../../../../sass/src/main.sass */
 span.pane div.worksheets_topbar { color: black; height: 3ex; top: 0ex; background: url("/images/corner.png") no-repeat top left; background-color: #cccccc; text-decoration: none; font-size: 15px; padding-left: 10px; padding-top: 10px; width: 174px; }

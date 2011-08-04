@@ -147,7 +147,8 @@ def public_worksheet(id):
 
     owner = worksheet.owner()
     worksheet.set_owner('pub')
-    s = g.notebook.html(worksheet_filename=worksheet.filename())
+    s = g.notebook.html(worksheet_filename=worksheet.filename(),
+                        username=g.username)
     worksheet.set_owner(owner)
     return s
 
