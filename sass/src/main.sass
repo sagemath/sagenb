@@ -3,8 +3,8 @@
 /*  when they are next generated. Please edit the SASS source located at */
 /* <sagenb-spkg-root>/sass/src. Kindly refer to the readme for editing */
 /* instructions at <sagenb-spkg-root>/sass */
-@import compass/utilities/general.sass
-@import compass/utilities/lists.sass
+@import compass/utilities/general
+@import compass/utilities/lists
 @import partials/base.sass
 @import partials/mixins.sass
 @import typography/base.sass
@@ -411,7 +411,7 @@ div.variable_name
 
 
 span
-  &.varname
+  //&.varname
   &.vartype
     :color #657d6c
 
@@ -461,7 +461,7 @@ div.docstring-introspection-dialog
     :clear both
     :font-size 0.6em
 
-.worksheet-online .interrupt-fail-notification
+.active-worksheet.interrupt-fail-notification
   :background-color #B22222
 
 span.pane div.worksheets_topbar
@@ -785,7 +785,7 @@ div.banner a.banner
     :border none
     :margin-top 2px
 
-  &:hover
+  //&:hover
 
 input.btn
   +monospace-stack
@@ -843,7 +843,7 @@ td
     &:hover
       :cursor wait
 
-  &.output_cell
+  //&.output_cell
 
 div.cellbox
   :z-index 2
@@ -1128,7 +1128,6 @@ span.worksheet_buttons
   :position relative
   :top -20ex
   :right 0ex
-t
 
 .thin-right
   :position absolute
