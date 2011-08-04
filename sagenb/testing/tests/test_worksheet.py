@@ -74,7 +74,7 @@ class TestWorksheet(NotebookTestCase):
 
     def test_edit(self):
         sel = self.selenium
-        sel.click('link=Edit')
+        sel.click('link=Plain View')
         sel.wait_for_page_to_load("30000")
 
         sel.type('//textarea[@id="cell_intext"]',

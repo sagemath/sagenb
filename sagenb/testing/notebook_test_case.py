@@ -332,7 +332,7 @@ class NotebookTestCase(unittest.TestCase):
         sel.wait_for_page_to_load("30000")
         sel.click("//input[@value='Yes']")
         sel.wait_for_page_to_load("30000")
-        sel.click("link=Worksheet")
+        sel.click("link=Worksheet View")
         sel.wait_for_page_to_load("30000")
 
     def republish_worksheet(self):
@@ -345,7 +345,7 @@ class NotebookTestCase(unittest.TestCase):
         sel.wait_for_page_to_load("30000")
         sel.click("//button[text()='Re-publish worksheet']")
         sel.wait_for_page_to_load("30000")
-        sel.click("link=Worksheet")
+        sel.click("link=Worksheet View")
         sel.wait_for_page_to_load("30000")
 
     def goto_published_worksheets(self):
