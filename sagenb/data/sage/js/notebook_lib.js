@@ -1651,15 +1651,6 @@ function save_as(typ) {
     open(worksheet_command('save_as') + '?typ=' + typ);
 }
 
-
-function edit_worksheet() {
-    /*
-    Edit the current worksheet as a plain text file.
-    */
-    window.location.replace(worksheet_command(""));
-}
-
-
 function save_worksheet() {
     /*
     Save a snapshot of the current worksheet.
