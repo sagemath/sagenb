@@ -30,12 +30,12 @@ INPUT:
             }
          });
 
-        $("#insert_last_cell").plainclick(function (e) {
+        $("#insert_last_cell").bind("plainclick", function (e) {
             insert_new_cell_after(cell_id_list[cell_id_list.length - 1]);
         });
     
         {% if not worksheet.docbrowser() %}
-        $("#insert_last_cell").shiftclick(function (e) {
+        $("#insert_last_cell").bind("shiftclick", function (e) {
             insert_new_text_cell_after(cell_id_list[cell_id_list.length - 1]);
         });
         {% endif %}
