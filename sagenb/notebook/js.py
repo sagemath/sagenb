@@ -34,6 +34,7 @@ from compress.JavaScriptCompressor import JavaScriptCompressor
 
 # Debug mode?  If sagenb lives under SAGE_ROOT/, we minify/pack and cache
 # the Notebook JS library.
+debug_mode = False
 try:
     from sage.misc.misc import SAGE_ROOT
     from pkg_resources import Requirement, working_set
