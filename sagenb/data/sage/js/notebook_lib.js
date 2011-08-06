@@ -2973,7 +2973,9 @@ function worksheet_command(cmd) {
 	|| cmd === 'new_text_cell_after') {
         state_number = parseInt(state_number, 10) + 1;
     }
-    return (cmd);
+    // worksheet_filename differs from actual url for public interacts
+    // users see /home/pub but worksheet_filename is /home/_sage_
+    return ('/home/' + worksheet_filename + '/' + cmd);
 }
 
 
