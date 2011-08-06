@@ -187,10 +187,10 @@ def download_worksheets():
     # child
     worksheet_names = set()
     if 'filenames' in request.values:
-        sep = request.values['sep']
+        import json
+        filenames = json.loads(request.values['filenames'])
         worksheets = [g.notebook.get_worksheet_with_filename(x.strip())
-                      for x in request.values['filenames'].split(sep)
-                      if len(x.strip()) > 0]
+                      for x in filenames if len(x.strip()) > 0]
     else:
         worksheets = g.notebook.worksheet_list_for_user(g.username)
 

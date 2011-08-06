@@ -71,9 +71,7 @@ INPUT:
         {% endif %}
 
         <button onClick="stop_worksheets_button();" title="{{ gettext('Stop selected worksheets') }}">{{ gettext('Stop') }}</button>
-        {% if not accounts %}
         <button onClick="download_worksheets_button();" title="{{ gettext('Download selected worksheets') }}">{{ gettext('Download') }}</button>
-        {% endif %}
     </div>
     <div class="folders">
         {{ gettext('Current Folder') }}:
