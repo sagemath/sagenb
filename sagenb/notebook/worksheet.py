@@ -307,7 +307,7 @@ class Worksheet(object):
 
         d = {#############
              # basic identification
-             'name': self.name(),
+             'name': unicode(self.name()),
              'id_number': int(self.id_number()),
 
              #############
@@ -392,6 +392,8 @@ class Worksheet(object):
             pass
         for key, value in obj.iteritems():
             if key == 'name':
+                if repr(value) == '<_LazyString broken>':
+                    value = ''
                 self.set_name(value)
             elif key == 'id_number':
                 self.__id_number = value
@@ -708,7 +710,7 @@ class Worksheet(object):
         try:
             return self.__name
         except AttributeError:
-            self.__name = lazy_gettext("Untitled")
+            self.__name = gettext("Untitled")
             return self.__name
 
     def set_name(self, name):
@@ -728,7 +730,7 @@ class Worksheet(object):
             u'A renamed worksheet'
         """
         if len(name.strip()) == 0:
-            name = lazy_gettext('Untitled')
+            name = gettext('Untitled')
         name = unicode_str(name)
         self.__name = name
 
