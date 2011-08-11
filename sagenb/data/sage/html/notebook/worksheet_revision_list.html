@@ -19,7 +19,7 @@
     <tbody>
         {% for desc, key in worksheet.snapshot_data()|reverse %}
         <tr>
-            <td><a href="revisions?rev={{ key }}">{{ gettext('Revision %(lr)s')|format(lr=loop.revindex0) }}</a></td>
+            <td><a href="revisions?rev={{ key }}">{{ gettext('Revision %(lr)s', lr=loop.revindex0) }}</a></td>
             <td><span class="revs">{{ desc }}</span></td>
         </tr>
         {% endfor %}

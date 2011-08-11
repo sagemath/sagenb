@@ -2,7 +2,7 @@
 
 {% set select = "revisions" %}
 {% block sharebar_title %}
-{{ gettext('Revision from %(ta)s ago')|format(ta=time_ago) }}&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>{{ gettext('Revision List') }}</a>
+{{ gettext('Revision from %(ta)s ago', ta=time_ago) }}&nbsp;&nbsp;&nbsp;&nbsp;<a href='revisions'>{{ gettext('Revision List') }}</a>
 {% endblock %}
 
 {% block page_id %}specific-revision-page{% endblock %}

@@ -1,9 +1,9 @@
 {% extends "html/base.html" %}
 
-{% block title %}{{ gettext('Ratings for %(wn)s')|format(wn=worksheet.name()) }}{% endblock %}
+{% block title %}{{ gettext('Ratings for %(wn)s', wn=worksheet.name()) }}{% endblock %}
 
 {% block body %}
-<h2 align=center>{{ gettext('Ratings for %(wn)s')|format(wn=worksheet.name()) }}</h2>
+<h2 align=center>{{ gettext('Ratings for %(wn)s', wn=worksheet.name()) }}</h2>
 <h3 align=center><a href='/home/{{ worksheet.filename() }}'>{{ gettext('Go to the worksheet.') }}</a>
 <table width=70%%align=center border=1 cellpadding=10 cellspacing=0>
     <tr bgcolor="#7799bb"><td width=30em>{{ gettext('User') }}</td><td width=10em align=center>{{ gettext('Rating') }}</td><td width=10em align=center width=60em>{{ gettext('Comment') }}</td></tr>

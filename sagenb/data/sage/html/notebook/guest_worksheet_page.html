@@ -37,7 +37,7 @@ INPUT:
     <li>
         {% if worksheet.rating() != -1 %}
             <a class="usercontrol" href="rating_info">
-                {{ gettext('This page is rated %(wr).1f.')|format(wr=worksheet.rating()) }}
+                {{ gettext('This page is rated %(wr).1f.', wr=worksheet.rating()) }}
             </a>
         {% endif %}
         {% if not (notebook.user_manager().user_is_guest(username) or worksheet.is_publisher(username)) %}

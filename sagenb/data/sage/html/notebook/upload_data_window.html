@@ -4,7 +4,7 @@
 {% block page_id %}upload-data-page{% endblock %}
 
 {% block sharebar_title %}
-{{ gettext('Upload or Create Data File to attach to worksheet "%(wn)s"')|format(wn=worksheet.name()) }}
+{{ gettext('Upload or Create Data File to attach to worksheet "%(wn)s"', wn=worksheet.name()) }}
 {% endblock %}
 
 {% block after_sharebar %}

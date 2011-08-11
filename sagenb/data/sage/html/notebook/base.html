@@ -123,7 +123,7 @@ INPUT:
         {% if not worksheet.docbrowser() %}
         <select onchange="go_system_select(this, {{ worksheet.system_index() }});" class="worksheet" id="systems-menu">
             {% for system_name in worksheet.notebook().systems(username) %}
-            <option title="{{ gettext('Evaluate all input cells using %(i)s')|format(i=system_names[loop.index0]) }}"
+            <option title="{{ gettext('Evaluate all input cells using %(i)s', i=system_names[loop.index0]) }}"
                     {{ "selected" if worksheet.system_index() == loop.index0 else "" }} value="{{ system_names[loop.index0] }}">
                 {{ system_name }}
             </option>

@@ -7,7 +7,7 @@
     <h1>{{ gettext('User Management') }}</h1>
     <a href="/adduser" class="boldusercontrol">{{ gettext('Add User') }}</a>
     {% if reset %}
-    <p>{{ gettext('The password for the user %(u)s has been reset to <strong>%(p)s</strong>')|format(u=reset[0], p=reset[1]) }}</p>
+    <p>{{ gettext('The password for the user %(u)s has been reset to <strong>%(p)s</strong>', u=reset[0], p=reset[1]) }}</p>
     {% endif %}
     <table>
       <tr><th>{{ gettext('Users') }}</th><th>{{ gettext('Password') }}</th><th>{{ gettext('Suspension') }}</th></tr>

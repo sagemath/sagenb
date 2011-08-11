@@ -5,8 +5,8 @@
 {% set checked = 'checked="true"' if worksheet.is_auto_publish() else '' %}
 
 {% block sharebar_title %}
-<p>{{ gettext('Worksheet is publicly viewable at <a href="%(u)s" style="color:#FFF" target="_blank">%(u)s')|format(u=url) }}</a></p>
-<p>{{ gettext('Published on %(t)s')|format(t=time) }}</p>
+<p>{{ gettext('Worksheet is publicly viewable at <a href="%(u)s" style="color:#FFF" target="_blank">%(u)s', u=url) }}</a></p>
+<p>{{ gettext('Published on %(t)s', t=time) }}</p>
 <div>
     <a href="publish?re"><button>{{ gettext('Re-publish worksheet') }}</button></a>
     <a onClick="parent.location+='?stop'"><button>{{ gettext('Stop publishing') }}</button></p></a>
