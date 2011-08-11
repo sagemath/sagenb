@@ -1903,7 +1903,7 @@ def sort_worksheet_list(v, sort, reverse):
             return -cmp(a.last_edited(), b.last_edited())
         f = c
     elif sort == 'name':
-        def c(a, ):
+        def c(a, b):
             return cmp((a.name().lower(), -a.last_edited()), (b.name().lower(), -b.last_edited()))
         f = c
     elif sort == 'owner':
