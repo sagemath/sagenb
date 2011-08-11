@@ -97,10 +97,12 @@ def worksheet_command(target, **route_kwds):
             #####################
             # Public worksheets #
             #####################
+            #_sage_ is used by live docs and published interacts
             if username_id and username_id[0] in ['_sage_']:
                 if target.split('/')[0] not in ['alive', 'cells', 'cell_update',
                           'data', 'download', 'edit_published_page', 'eval',
-                          'quit_sage', 'rate', 'rating_info']:
+                          'quit_sage', 'rate', 'rating_info', 'new_cell_before',
+                          'new_cell_after']:
                     raise NotImplementedError
             
             #Make worksheet a non-keyword argument appearing before the
