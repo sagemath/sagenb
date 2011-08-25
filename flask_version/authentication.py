@@ -88,7 +88,7 @@ waiting = {}
 @authentication.route('/register', methods = ['GET','POST'])
 @with_lock
 def register():
-    from sagenb.notebook.twist import is_valid_username, is_valid_password, \
+    from sagenb.notebook.misc import is_valid_username, is_valid_password, \
     is_valid_email, do_passwords_match
     from sagenb.notebook.challenge import challenge
 

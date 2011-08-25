@@ -80,9 +80,9 @@ class User(object):
         try:
             return self.history
         except AttributeError:
-            import twist   # late import
-            if twist.notebook is None: return []       
-            history_file = "%s/worksheets/%s/history.sobj"%(twist.notebook.directory(), self._username)
+            import misc   # late import
+            if misc.notebook is None: return []       
+            history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
             if os.path.exists(history_file):
                 try:
                     self.history = cPickle.load(open(history_file))
@@ -96,9 +96,9 @@ class User(object):
     def save_history(self):
         if not hasattr(self, 'history'):
             return
-        import twist   # late import
-        if twist.notebook is None: return
-        history_file = "%s/worksheets/%s/history.sobj"%(twist.notebook.directory(), self._username)
+        import misc   # late import
+        if misc.notebook is None: return
+        history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
         try:
             #print "Dumping %s history to '%s'"%(self.__username, history_file)
             his = cPickle.dumps(self.history)

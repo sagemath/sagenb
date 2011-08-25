@@ -46,7 +46,7 @@ def users():
 @admin_required
 @with_lock
 def add_user():
-    from sagenb.notebook.twist import is_valid_username
+    from sagenb.notebook.misc import is_valid_username
     template_dict = {'admin': g.notebook.user_manager().user(g.username).is_admin(),
                      'username': g.username}
     if 'username' in request.values:

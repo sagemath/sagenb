@@ -5,6 +5,12 @@ Simple Sage Server API
 This module provides a very simple API for interacting with a Sage session
 over HTTP. It runs as part of the notebook server. 
 
+.. warning:: 
+
+    This code currently doesn't work, since the notebook moved to a
+    flask-based architecture. Volunteers are welcome to port this to
+    the new flask notebook.
+
 .. note::
  
     The exact data in the JSON header may vary over time (for example,

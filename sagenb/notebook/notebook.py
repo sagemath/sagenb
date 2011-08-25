@@ -974,7 +974,7 @@ class Notebook(object):
         # if the html file does not contain a Sphinx HTML page?
         doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
 
-        from twist import extract_title
+        from misc import extract_title
         title = extract_title(doc_page_html).replace('&mdash;','--')
 
         worksheet = self.create_new_worksheet(title, owner)
@@ -1755,12 +1755,12 @@ def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None
     nb.secure = secure
 
 
-    # Install this copy of the notebook in twist.py as *the*
+    # Install this copy of the notebook in misc.py as *the*
     # global notebook object used for computations.  This is
     # mainly to avoid circular references, etc.  This also means
     # only one notebook can actually be used at any point.
-    import sagenb.notebook.twist
-    sagenb.notebook.twist.notebook = nb
+    import sagenb.notebook.misc
+    sagenb.notebook.misc.notebook = nb
 
     return nb
 

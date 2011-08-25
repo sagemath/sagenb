@@ -136,7 +136,7 @@ def template(filename, **user_context):
         True
     """
     from sagenb.notebook.notebook import JSMATH, JEDITABLE_TINYMCE
-    from twist import notebook
+    from misc import notebook
     #A dictionary containing the default context
     default_context = {'sitename': gettext('Sage Notebook'),
                        'sage_version': SAGE_VERSION,

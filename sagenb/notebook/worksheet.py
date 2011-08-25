@@ -193,7 +193,7 @@ class Worksheet(object):
         EXAMPLES: We test the constructor via an indirect doctest::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: sagenb.notebook.twist.notebook = nb
+            sage: sagenb.notebook.misc.notebook = nb
             sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
             admin/0: [Cell 1: in=, out=]
@@ -884,7 +884,7 @@ class Worksheet(object):
         .. note::
 
            This really returns the Notebook object that is set as a
-           global variable of the twist module.  This is done *even*
+           global variable of the misc module.  This is done *even*
            in the Flask version of the notebook as it is set in
            func:`sagenb.notebook.notebook.load_notebook`.
 
@@ -894,12 +894,12 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.notebook()
             <...sagenb.notebook.notebook.Notebook...>
-            sage: W.notebook() is sagenb.notebook.twist.notebook
+            sage: W.notebook() is sagenb.notebook.misc.notebook
             True
         """
         if not hasattr(self, '_notebook'):
-            import twist
-            self._notebook = twist.notebook
+            import misc
+            self._notebook = misc.notebook
         return self._notebook 
 
     def save(self, conf_only=False):
@@ -2860,7 +2860,7 @@ class Worksheet(object):
     def initialize_sage(self):
         S = self.__sage
         try:
-            import twist
+            import misc
             cmd = """
 import base64
 import sagenb.misc.support as _support_
@@ -2883,7 +2883,7 @@ try:
     attach(os.path.join(os.environ['DOT_SAGE'], 'init.sage'))
 except (KeyError, IOError):
     pass
-    """ % (os.path.join(os.path.abspath(self.data_directory()),''), twist.DIR)
+    """ % (os.path.join(os.path.abspath(self.data_directory()),''), misc.DIR)
             S.execute(cmd)
             S.output_status()
 

@@ -229,7 +229,7 @@ def set_profiles():
     if not g.notebook.conf()['openid']:
         return redirect(url_for('base.index'))
     if request.method == 'GET' and 'openid_response' in session:
-        from sagenb.notebook.twist import valid_username_chars
+        from sagenb.notebook.misc import valid_username_chars
         re_invalid_username_chars = re.compile('[^(%s)]' % valid_username_chars)
         openid_resp = session['openid_response']
         openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
@@ -241,7 +241,7 @@ def set_profiles():
             resp = session['openid_response']
             username = request.form.get('username')
             from sagenb.notebook.user import User
-            from sagenb.notebook.twist import is_valid_username, is_valid_email
+            from sagenb.notebook.misc import is_valid_username, is_valid_email
             if not is_valid_username(username):
                 parse_dict['username_invalid'] = True
                 raise ValueError 

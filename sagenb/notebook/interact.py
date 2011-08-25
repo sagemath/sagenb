@@ -162,8 +162,7 @@ from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
 # evaluated.
 SAGE_CELL_ID = 0
 
-# Prefixed to cell input, signals an interact update.  Used in
-# notebook_lib.js and twist.py.
+# Prefixed to cell input, signals an interact update.
 INTERACT_UPDATE_PREFIX = '%__sage_interact__'
 
 # If this special message appears in an interact cell's output, it

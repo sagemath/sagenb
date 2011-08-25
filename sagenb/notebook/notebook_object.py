@@ -95,20 +95,6 @@ class NotebookObject:
           separate user (chosen from the list in the ``server_pool``
           -- see below).
 
-        - ``subnets`` -- list of strings (default: None) a list of
-          strings that define subnets; if given, requests to the
-          notebook server from ip addresses that are not in any of the
-          listed subnets are ignored.  See `this Wikipedia article`_
-          more about subnets.  An example input is
-          ``subnets=['192.168.1.0/24', '216.34.0.0/16']``, which
-          accepts any address of the form ``192.168.1.*`` or of the
-          form ``216.34.*.*``.  For serious use, you may want to
-          instead use your operating system's firewall, which is
-          probably more robust and reduces the load on the server.
-          Note that ``127.0.0.1`` is always allowed no matter what.
-
-    .. _this Wikipedia article: http://en.wikipedia.org/wiki/Subnetwork
-
     .. note:: 
 
        If you have problems with the server certificate hostname not

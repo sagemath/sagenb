@@ -26,11 +26,11 @@ MORE DETAILS:
       * Jinja-1.2-py2.6-macosx-10.3-i386.egg
       * Pygments-1.1.1-py2.6.egg
       * Sphinx-0.5.1-py2.6.egg
-      * Twisted-8.2.0-py2.6.egg-info + TwistedWeb2
+      * Twisted 11
       * docutils-0.5-py2.6.egg
       * zope.interface-3.3.0-py2.6.egg-info
 
-   Note that pexpect is not required, but highly recommended.  Note that twisted.web2 is required.  The
+   Note that pexpect is not required, but highly recommended.  The
    only easy way to get the above is probably just to start with a Sage install.
 
    2. In the current directory, type:
