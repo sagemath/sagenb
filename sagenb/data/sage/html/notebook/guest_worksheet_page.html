@@ -18,6 +18,7 @@ INPUT:
 {% if original_worksheet.is_collaborator(username) or original_worksheet.is_owner(username) %}
     {% set edit_text = "Edit this." %}
     {% set edit_text = gettext('Edit this.') %}
+    {% set url           = original_worksheet.worksheet_command('') %}
 {% elif notebook.user_manager().user_is_guest(username) %}
     {% set edit_text = gettext('Log in to edit a copy.') %}
     {% set url       = "/" %}

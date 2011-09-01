@@ -940,6 +940,7 @@ def pub_worksheet(source):
     proxy = doc_worksheet()
     proxy.set_name(source.name())
     proxy.set_last_change(*source.last_change())
+    proxy.set_worksheet_that_was_published(source._Worksheet__worksheet_came_from)
     g.notebook._initialize_worksheet(source, proxy)
     proxy.set_tags({'_pub_': [True]})
     proxy.save()
