@@ -1506,7 +1506,7 @@ function worksheet_list_button(action) {
     // Send the list of worksheet names and requested action back to
     // the server.
     async_request(action, worksheet_list_button_callback, {
-        filenames: checked_worksheet_filenames(),
+        filenames: checked_worksheet_filenames()
     });
 }
 
