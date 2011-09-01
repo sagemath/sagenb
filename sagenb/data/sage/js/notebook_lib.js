@@ -211,7 +211,7 @@ function decode_response(text) {
         object
     */
     return JSON.parse(text, function (key, value) {
-        if (key.slice(-2) === 'id') {
+        if (typeof(key) === 'string' && key.slice(-2) === 'id') {
             return toint(value);
         }
         return value;
