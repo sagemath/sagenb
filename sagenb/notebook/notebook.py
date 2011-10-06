@@ -581,29 +581,31 @@ class Notebook(object):
 
 
     ##########################################################
-    # The default math software system for new worksheets for
-    # a given user or the whole notebook (if username is None).
+    # Configuration settings.
     ##########################################################
-
     def system(self, username=None):
+        """
+        The default math software system for new worksheets for a
+        given user or the whole notebook (if username is None).
+        """
         return self.user(username).conf()['default_system']
 
-    ##########################################################
-    # The default typeset setting for new worksheets for
-    # a given user or the whole notebook (if username is None).
-    ##########################################################
-
-    # TODO -- only implemented for the notebook right now
     def pretty_print(self, username=None):
+        """
+        The default typeset setting for new worksheets for
+        a given user or the whole notebook (if username is None).
+
+        TODO -- only implemented for the notebook right now
+        """
         return self.user(username).conf()['default_pretty_print']
 
     def set_pretty_print(self, pretty_print):
         self.__pretty_print = pretty_print
 
-    ##########################################################
-    # The default color scheme for the notebook.
-    ##########################################################
     def color(self):
+        """
+        The default color scheme for the notebook.
+        """
         try:
             return self.__color
         except AttributeError:
@@ -1137,9 +1139,9 @@ class Notebook(object):
             worksheet.set_name(name)
 
 
-##########################################################
-# Server configuration
-##########################################################
+    ##########################################################
+    # Server configuration
+    ##########################################################
 
     def conf(self):
         try:
@@ -1750,8 +1752,6 @@ def migrate_old_notebook_v1(dir):
     ######################################################################
     # Set the worksheets of the new notebook equal to the ones from
     # the old one.
-    ######################################################################
-
     ######################################################################
 
     def migrate_old_worksheet(old_worksheet):
