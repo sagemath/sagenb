@@ -286,9 +286,12 @@ def notebook_save_check():
 
     t = walltime()
     if t > last_save_time + save_interval:
-        # check again because condition might have changed while waiting
-        if t > last_save_time + save_interval:
-            with global_lock:
+        with global_lock:
+            # if someone got the lock before we did, they might have saved,
+            # so we check against the last_save_time again
+            # we don't put the global_lock around the outer loop since we don't need
+            # it unless we are actually thinking about saving.
+            if t > last_save_time + save_interval:
                 notebook.save()
                 last_save_time = t
 
@@ -297,10 +300,14 @@ def notebook_idle_check():
     from sagenb.misc.misc import walltime
 
     t = walltime()
+
     if t > last_idle_time + idle_interval:
-        # check again because condition might have changed while waiting
-        if t > last_idle_time + idle_interval:
-            with global_lock:
+        with global_lock:
+            # if someone got the lock before we did, they might have already idled,
+            # so we check against the last_idle_time again
+            # we don't put the global_lock around the outer loop since we don't need
+            # it unless we are actually thinking about quitting worksheets
+            if t > last_idle_time + idle_interval:
                 notebook.update_worksheet_processes()
                 notebook.quit_idle_worksheet_processes()
                 last_idle_time = t
