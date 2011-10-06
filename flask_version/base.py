@@ -314,6 +314,10 @@ notebook = None
 
 #CLEAN THIS UP!
 def create_app(path_to_notebook, *args, **kwds):
+    """
+    This is the main method to create a running notebook. This is
+    called from the process spawned in run_notebook.py
+    """
     global notebook
     startup_token = kwds.pop('startup_token', None)
     
@@ -369,6 +373,7 @@ def create_app(path_to_notebook, *args, **kwds):
 
     #autoindex v0.3 doesnt seem to work with modules
     #routing with app directly does the trick
+    #TODO: Check to see if autoindex 0.4 works with modules
     idx = AutoIndex(app, browse_root=SRC)
     @app.route('/src/')
     @app.route('/src/<path:path>')
