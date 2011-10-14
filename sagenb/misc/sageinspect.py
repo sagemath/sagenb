@@ -133,8 +133,6 @@ def isclassinstance(obj):
         False
         sage: isclassinstance(FreeModule)
         True
-        sage: isclassinstance(SteenrodAlgebra)
-        True
         sage: class myclass: pass
         sage: isclassinstance(myclass)
         False
@@ -615,8 +613,8 @@ def sage_getfile(obj):
         sage: from sagenb.misc.sageinspect import sage_getfile
         sage: sage_getfile(sage.rings.rational)[-23:]
         'sage/rings/rational.pyx'
-        sage: sage_getfile(Sq)[-41:]
-        'sage/algebras/steenrod_algebra_element.py'
+        sage: sage_getfile(Sq)[-42:]
+        'sage/algebras/steenrod/steenrod_algebra.py'
 
     AUTHOR:
     - Nick Alexander
