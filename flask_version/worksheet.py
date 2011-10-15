@@ -384,8 +384,8 @@ def worksheet_eval(worksheet):
     if 'interact' in request.values:
         r['interact'] = 1
         input_text = INTERACT_UPDATE_PREFIX
-        variable = request.values.get('variable', None)
-        if variable is not None:
+        variable = request.values.get('variable', '')
+        if variable!='':
             adapt_number = int(request.values.get('adapt_number', -1))
             value = request.values.get('value', '')
             input_text += "\n_interact_.update('%s', '%s', %s, _interact_.standard_b64decode('%s'), globals())" % (id, variable, adapt_number, value)

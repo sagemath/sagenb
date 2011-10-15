@@ -3689,7 +3689,7 @@ function set_output_text(id, status, output_text, output_text_wrapped,
                 // Do nothing.
             }
         }
-        return 'interact_recompute';
+        return 'trigger_interact';
     }
 
     return false;
