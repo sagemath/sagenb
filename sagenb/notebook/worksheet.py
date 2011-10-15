@@ -595,21 +595,10 @@ class Worksheet(object):
             sage: W.collaborators()
             ['hilbert', 'sage']
         """
-        n = self.notebook()
-        U = n.user_manager().users().keys()
-        L = [x.lower() for x in U]
+        users = self.notebook().user_manager().users()
         owner = self.owner()
-        self.__collaborators = []
-        for x in v:
-            y = x.lower()
-            try:
-                i = L.index(y)
-                z = U[i]
-                if z != owner and z not in self.__collaborators:
-                    self.__collaborators.append(z)
-            except ValueError:
-                pass
-        self.__collaborators.sort()
+        collaborators = set([u for u in v if u in users and u != owner])
+        self.__collaborators = sorted(collaborators)
 
     def viewers(self):
         """
