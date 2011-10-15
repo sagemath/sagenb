@@ -67,8 +67,9 @@ class NotebookObject:
 
               from sagenb.notebook.notebook import load_notebook
               nb = load_notebook(dir)
-              nb.set_accounts(True)
-              nb.add_user("username", "password", "email@place", "user")
+              user_manager = nb.user_manager()
+              user_manager.set_accounts(True)
+              user_manager.add_user("username", "password", "email@place", "user")
               nb.save()
               
         - ``open_viewer`` -- boolean (default: True) whether to pop up
