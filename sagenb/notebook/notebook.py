@@ -1370,7 +1370,7 @@ class Notebook(object):
     
     def get_all_worksheets(self):
         """
-        We should never call this!
+        We should only call this if the user is admin!
         """
         all_worksheets = []
         for username in self._user_manager.users():
