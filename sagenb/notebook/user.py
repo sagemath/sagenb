@@ -15,7 +15,7 @@ def User_from_basic(basic):
     Create a user from a basic data structure.
     """
     user = User(basic['username'])
-    user.__dict__ = dict([('_' + x, y) for x, y in basic.iteritems()])
+    user.__dict__.update(dict([('_' + x, y) for x, y in basic.iteritems()]))
     user._conf = user_conf.UserConfiguration_from_basic(user._conf)
     return user
 
