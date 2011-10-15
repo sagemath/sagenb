@@ -556,8 +556,27 @@ def worksheet_share(worksheet):
 
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
-    collaborators = [u.strip() for u in request.values.get('collaborators', '').split(',')]
+    owner = worksheet.owner()
+    id_number = worksheet.id_number()
+    old_collaborators = set(worksheet.collaborators())
+    collaborators = set([u.strip() for u in request.values.get('collaborators', '').split(',') if u!=owner])
     worksheet.set_collaborators(collaborators)
+    user_manager = g.notebook.user_manager()
+    # add worksheet to new collaborators
+    for u in collaborators-old_collaborators:
+        try:
+            user_manager.user(u).viewable_worksheets().add((owner, id_number))
+        except KeyError:
+            # user doesn't exist
+            pass
+    # remove worksheet from ex-collaborators
+    for u in old_collaborators-collaborators:
+        try:
+            user_manager.user(u).viewable_worksheets().discard((owner, id_number))
+        except KeyError:
+            # user doesn't exist
+            pass
+
     return redirect(url_for_worksheet(worksheet))
     
 ########################################################

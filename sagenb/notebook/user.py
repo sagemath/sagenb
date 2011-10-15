@@ -38,6 +38,7 @@ class User(object):
         self._conf = user_conf.UserConfiguration()
         self._temporary_password = ''
         self._is_suspended = False
+        self._viewable_worksheets = set()
 
     def __eq__(self, other):
         if self.__class__ is not other.__class__:
@@ -322,3 +323,12 @@ class User(object):
             self._is_suspended = False if self._is_suspended else True
         except AttributeError:
             self._is_suspended = True
+
+    def viewable_worksheets(self):
+        """
+        Returns the (mutable) set of viewable worksheets.
+
+        The elements of the set are of the form ('owner',id),
+        identifying worksheets the user is able to view.
+        """
+        return self._viewable_worksheets

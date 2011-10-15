@@ -322,7 +322,22 @@ class Notebook(object):
         W.save()
 
     def users_worksheets(self, username):
+        r"""
+        Returns all worksheets owned by `username`
+        """
         return self.__storage.worksheets(username)
+
+    def users_worksheets_view(self, username):
+        r"""
+        Returns all worksheets viewable by `username`
+        """
+        worksheets=self.__storage.worksheets(username)
+        user=self.user_manager().user(username)
+        viewable_worksheets=[self.__storage.load_worksheet(owner, id) for owner,id in user.viewable_worksheets()]
+        # we double-check that we can actually view these worksheets
+        # just in case someone forgets to update the map
+        worksheets.extend([w for w in viewable_worksheets if w.is_viewer(username)])
+        return worksheets
 
     def publish_worksheet(self, worksheet, username):
         r"""
@@ -1365,8 +1380,9 @@ class Notebook(object):
     # Accessing all worksheets with certain properties.
     ##########################################################
     def active_worksheets_for(self, username):
-        return self.users_worksheets(username)
+        # TODO: check if the worksheets are active
         #return [ws for ws in self.get_worksheets_with_viewer(username) if ws.is_active(username)]
+        return self.users_worksheets_view(username)
     
     def get_all_worksheets(self):
         """
@@ -1382,7 +1398,7 @@ class Notebook(object):
 
     def get_worksheets_with_viewer(self, username):
         if self._user_manager.user_is_admin(username): return self.get_all_worksheets()
-        return self.users_worksheets(username)
+        return self.users_worksheets_view(username)
 
     def get_worksheets_with_owner(self, owner):
         return self.users_worksheets(owner)
