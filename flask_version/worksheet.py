@@ -12,6 +12,11 @@ ws = Module('flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
 
 def worksheet_view(f):
+    """
+    The `username` in the wrapper function is the username in the URL to the worksheet, which normally
+    is the owner of the worksheet.  Don't confuse this with `g.username`, the actual username of the 
+    user looking at the worksheet.
+    """
     @login_required
     @wraps(f)
     def wrapper(username, id, **kwds):
@@ -45,7 +50,7 @@ def url_for_worksheet(worksheet):
     """
     Returns the url for a given worksheet.
     """
-    return url_for('worksheet.worksheet', username=g.username,
+    return url_for('worksheet.worksheet', username=worksheet.owner(),
                    id=worksheet.filename_without_owner())
 
 
@@ -73,11 +78,15 @@ def new_worksheet():
 @ws.route('/home/<username>/<id>/')
 @worksheet_view
 def worksheet(username, id, worksheet=None):
+    """
+    username is the owner of the worksheet
+    id is the id of the worksheet
+    """
     # /home/pub/* is handled in worksheet_listing.py
     assert worksheet is not None
     worksheet.sage()
     s = g.notebook.html(worksheet_filename=worksheet.filename(),
-                        username=username)
+                        username=g.username)
     return s
 
 def worksheet_command(target, **route_kwds):
