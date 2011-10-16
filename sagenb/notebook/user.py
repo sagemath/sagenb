@@ -72,7 +72,7 @@ class User(object):
         Return a basic Python data structure from which self can be
         reconstructed.
         """
-        d = dict([ (x[1:],y) for x,y in self.__dict__.iteritems()])
+        d = dict([ (x[1:],y) for x,y in self.__dict__.iteritems() if x[0]=='_'])
         d['conf'] = self._conf.basic()
         return d
 
