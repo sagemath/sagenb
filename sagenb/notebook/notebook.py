@@ -325,19 +325,25 @@ class Notebook(object):
         r"""
         Returns all worksheets owned by `username`
         """
-        return self.__storage.worksheets(username)
+        worksheets = self.__storage.worksheets(username)
+        # if a worksheet has already been loaded in self.__worksheets, return that instead
+        # since worksheets that are already running should be noted as such
+        return [self.__worksheets[w.filename()] if w.filename() in self.__worksheets else w for w in worksheets]
 
     def users_worksheets_view(self, username):
         r"""
         Returns all worksheets viewable by `username`
         """
+        # Should return worksheets from self.__worksheets if possible
         worksheets=self.__storage.worksheets(username)
         user=self.user_manager().user(username)
         viewable_worksheets=[self.__storage.load_worksheet(owner, id) for owner,id in user.viewable_worksheets()]
         # we double-check that we can actually view these worksheets
         # just in case someone forgets to update the map
         worksheets.extend([w for w in viewable_worksheets if w.is_viewer(username)])
-        return worksheets
+        # if a worksheet has already been loaded in self.__worksheets, return that instead
+        # since worksheets that are already running should be noted as such
+        return [self.__worksheets[w.filename()] if w.filename() in self.__worksheets else w for w in worksheets]
 
     def publish_worksheet(self, worksheet, username):
         r"""
