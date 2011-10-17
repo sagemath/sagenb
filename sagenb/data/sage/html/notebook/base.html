@@ -140,8 +140,8 @@ INPUT:
         {{ "control-select" if x == select else "control" }}
         {% endmacro %}
         <a title="{{ gettext('Print this worksheet') }}" class="control" onClick="print_worksheet()">{{ gettext('Print') }}</a>
-        <a class="{{ cls('use') }}" title="{{ gettext('Interactively use this worksheet') }}" href="./">{{ gettext('Worksheet View') }}</a>        
-        <a class="{{ cls('edit') }}" title="{{ gettext('Edit text version of this worksheet') }}" href="edit">{{ gettext('Plain View') }}</a>
+        <a class="{{ cls('use') }}" title="{{ gettext('Interactively use this worksheet') }}" href="./">{{ gettext('Worksheet') }}</a>        
+        <a class="{{ cls('edit') }}" title="{{ gettext('Edit text version of this worksheet') }}" href="edit">{{ gettext('Edit') }}</a>
         <a class="{{ cls('text') }}" title="{{ gettext('View plain text version of this worksheet') }}" href="text">{{ gettext('Text') }}</a>
         <a class="{{ cls('undo') }}" title="{{ gettext('View changes to this worksheet over time') }}" href="revisions">{{ gettext('Revisions') }}</a>
         <a class="{{ cls('share') }}" title="{{ gettext('Let others edit this worksheet') }}" href="share">{{ gettext('Share') }}</a>
