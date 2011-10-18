@@ -141,7 +141,7 @@ def template(filename, **user_context):
     default_context = {'sitename': gettext('Sage Notebook'),
                        'sage_version': SAGE_VERSION,
                        'JSMATH': JSMATH,
-                       #'gettext': lambda x: x,
+                       'gettext': gettext,
                        'JEDITABLE_TINYMCE': JEDITABLE_TINYMCE,
                        'conf': notebook.conf() if notebook else None}
     try:
