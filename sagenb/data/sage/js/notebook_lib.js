@@ -3632,11 +3632,6 @@ function set_output_text(id, status, output_text, output_text_wrapped,
             jsMath.ProcessBeforeShowing(cell_interact);
         }
 
-	setTimeout(function () {
-	    var ci = $(cell_interact);
-	    ci.height('auto').height(ci.height());
-	}, 100);
-
         return false;
     }
 
