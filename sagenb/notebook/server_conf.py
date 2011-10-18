@@ -6,7 +6,7 @@ import copy
 
 import conf
 from conf import (POS, DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
-                  T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST)
+                  T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST, T_INFO)
 from sagenb.misc.misc import get_languages
 from flaskext.babel import gettext, lazy_gettext
 
@@ -42,6 +42,7 @@ defaults = {'word_wrap_cols':72,
             'recaptcha_public_key':'',
             'recaptcha_private_key':'',
             'default_language': 'en_US',
+            'model_version': 0,
             }
 
 G_APPEARANCE = lazy_gettext('Appearance')
@@ -176,6 +177,11 @@ defaults_descriptions = {
         TYPE : T_CHOICE,
         CHOICES : get_languages(),
         },
+    'model_version': {
+        DESC : lazy_gettext('Model Version'),
+        GROUP : G_SERVER,
+        TYPE : T_INFO,
+        }
 }
 
 

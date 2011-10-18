@@ -24,6 +24,7 @@ T_REAL = 3
 T_COLOR = 4
 T_STRING = 5
 T_LIST = 6
+T_INFO = 7
 
 POS_DEFAULT = 100
 
@@ -187,6 +188,8 @@ class Configuration(object):
                         s += u'          <option value="%s"%s>%s</option>\n' % (c, selected, lazy_gettext(c))
                     s += u'        </select>\n'
 
+                elif DS[o][TYPE] == T_INFO:
+                    s += u'        <span>%s</span>'%input_value
                 else:
                     s += u'        <input type="%s" name="%s" id="%s" value="%s"%s>\n' % (input_type, o, o, input_value, extra)
 

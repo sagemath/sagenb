@@ -334,6 +334,9 @@ def notebook_twisted(self,
         os.unlink('%s/nb-older-backup.sobj' % directory)
         print "Updating to new format complete."
 
+
+    nb.upgrade_model()
+
     nb.save()
     del nb
 

@@ -1665,7 +1665,28 @@ class Notebook(object):
                         notebook = self, do_print=do_print,
                         username = username)
 
+    def upgrade_model(self):
+        """
+        Upgrade the model, if needed.
 
+        - Version 0 (or non-existent model version): Original flask notebook
+        - Version 1: shared worksheet data cached in the User object
+        """
+        if self.conf()['model_version']<1:
+            print "Upgrading model version to version 1"
+            for w in self.get_all_worksheets():
+                owner = w.owner()
+                id_number = w.id_number()
+                collaborators = w.collaborators()
+                user_manager = self.user_manager()
+                for u in collaborators:
+                    try:
+                        user_manager.user(u).viewable_worksheets().add((owner, id_number))
+                    except KeyError:
+                        # user doesn't exist
+                        pass
+            self.conf()['model_version'] = 1
+        
 ####################################################################
 
 def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None):
