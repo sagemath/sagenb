@@ -870,6 +870,8 @@ class Notebook(object):
             sage: W = nb.import_worksheet(name, 'admin')
             sage: W.filename()
             'admin/0'
+            sage: sorted([w.filename() for w in nb.get_all_worksheets()])
+            ['admin/0']
 
         We then export the worksheet to an sws file.::
 
@@ -881,10 +883,10 @@ class Notebook(object):
             sage: W = nb._import_worksheet_sws(sws, 'admin')
             sage: nb._Notebook__worksheets[W.filename()] = W
 
-        Yes, it's there now (as admin/2)::
+        Yes, it's there now (as a new worksheet)::
 
-            sage: [w.filename() for w in nb.get_all_worksheets()]
-            ['admin/1', 'admin/0']
+            sage: sorted([w.filename() for w in nb.get_all_worksheets()])
+            ['admin/0', 'admin/1']
         """
         id_number = self.new_id_number(username)
         worksheet = self.__storage.import_worksheet(username, id_number, filename)
