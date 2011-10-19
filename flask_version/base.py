@@ -42,6 +42,7 @@ class SageNBFlask(Flask):
 
     def create_jinja_environment(self):
         from sagenb.notebook.template import env
+        env.globals.update(url_for=url_for)
         return env
 
     def static_view_func(self, root_path, filename):
