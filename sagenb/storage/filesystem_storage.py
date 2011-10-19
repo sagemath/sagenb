@@ -99,6 +99,8 @@ class FilesystemDatastore(Datastore):
         # There are weird cases, e.g., old notebook server migration
         # where username is None, and if we don't string it here,
         # saving can be broken (at a bad moment!).
+        
+        # There are also some cases where the username could have unicode in it.
         username = str(username)
         path = self._abspath(os.path.join(self._home_path, username))
         if not os.path.islink(path):

@@ -1674,17 +1674,32 @@ class Notebook(object):
         """
         if self.conf()['model_version']<1:
             print "Upgrading model version to version 1"
-            for w in self.get_all_worksheets():
-                owner = w.owner()
-                id_number = w.id_number()
-                collaborators = w.collaborators()
-                user_manager = self.user_manager()
-                for u in collaborators:
-                    try:
-                        user_manager.user(u).viewable_worksheets().add((owner, id_number))
-                    except KeyError:
-                        # user doesn't exist
-                        pass
+            # this uses code from get_all_worksheets()
+            user_manager = self.user_manager()
+            num_users=0
+            for username in self._user_manager.users():
+                num_users+=1
+                if num_users%1000==0:
+                    print 'Upgraded %d users%'%num_users
+                if username in ['_sage_', 'pub']:
+                    continue
+                try:
+                    for w in self.users_worksheets(username):
+                        owner = w.owner()
+                        id_number = w.id_number()
+                        collaborators = w.collaborators()
+                        for u in collaborators:
+                            try:
+                                user_manager.user(u).viewable_worksheets().add((owner, id_number))
+                            except KeyError:
+                                # user doesn't exist
+                                pass
+                except UnicodeEncodeError:
+                    import sys
+                    print >> sys.stderr, 'Error on username %s'%username.encode('utf8')
+                    print >> sys.stderr, traceback.format_exc()
+                    pass
+            print 'Done upgrading to model version 1'
             self.conf()['model_version'] = 1
         
 ####################################################################
