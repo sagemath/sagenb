@@ -1680,7 +1680,7 @@ class Notebook(object):
             for username in self._user_manager.users():
                 num_users+=1
                 if num_users%1000==0:
-                    print 'Upgraded %d users%'%num_users
+                    print 'Upgraded %d users'%num_users
                 if username in ['_sage_', 'pub']:
                     continue
                 try:
@@ -1694,8 +1694,15 @@ class Notebook(object):
                             except KeyError:
                                 # user doesn't exist
                                 pass
-                except UnicodeEncodeError:
+                except (UnicodeEncodeError,OSError):
+                    # Catch UnicodeEncodeError because sometimes a username has a non-ascii character
+                    # Catch OSError since sometimes when moving user directories (which happens
+                    #   automatically when getting user's worksheets), OSError: [Errno 39] Directory not empty
+                    #   is thrown (we should be using shutil.move instead, probably)
+                    # users with these problems won't have their sharing cached, but they will probably have
+                    # problems logging in anyway, so they probably won't notice not having shared worksheets
                     import sys
+                    import traceback
                     print >> sys.stderr, 'Error on username %s'%username.encode('utf8')
                     print >> sys.stderr, traceback.format_exc()
                     pass
