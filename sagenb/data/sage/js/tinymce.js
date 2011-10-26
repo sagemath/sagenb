@@ -32,6 +32,7 @@ tinyMCE.init({
     theme_advanced_buttons3 : "",
     theme_advanced_resizing : true,
     theme_advanced_show_current_color: true,
+    theme_advanced_default_background_color : "#FFCC99",
 
     setup : function (ed) {
         // Make ctrl-shift-enter insert a line break.  In some
