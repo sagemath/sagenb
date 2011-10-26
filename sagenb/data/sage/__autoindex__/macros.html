@@ -36,9 +36,9 @@
     {%- endif -%}
     {%- if sort_by == key -%}
       {%- if order > 0 -%}
-        <img src="{{ url_for("static", filename="asc.gif") }}" alt="ASC" />
+        <img src="/css/autoindex/asc.gif" alt="ASC" />
       {%- elif order < 0 -%}
-        <img src="{{ url_for("static", filename="desc.gif") }}" alt="DESC" />
+        <img src="/css/autoindex/desc.gif" alt="DESC" />
       {%- endif -%}
     {%- endif -%}
   </th>
