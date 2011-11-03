@@ -1068,7 +1068,7 @@ class Worksheet(object):
 
     def worksheet_that_was_published(self):
         """
-        Return owner and id_number of the worksheet that was published
+        Return a fresh copy of the worksheet that was published
         to get this worksheet, if this worksheet was
         published. Otherwise just return this worksheet.
 
