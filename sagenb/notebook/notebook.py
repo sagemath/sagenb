@@ -1669,10 +1669,11 @@ class Notebook(object):
         """
         Upgrade the model, if needed.
 
-        - Version 0 (or non-existent model version): Original flask notebook
+        - Version 0 (or non-existent model version, which defaults to 0): Original flask notebook
         - Version 1: shared worksheet data cached in the User object
         """
-        if self.conf()['model_version']<1:
+        model_version=self.conf()['model_version']
+        if model_version is None or model_version<1:
             print "Upgrading model version to version 1"
             # this uses code from get_all_worksheets()
             user_manager = self.user_manager()
