@@ -119,7 +119,7 @@ class Configuration(object):
                 else:
                     val = val.split(',')
 
-            if self[key] != val:
+            if typ != T_INFO and self[key] != val:
                 self[key] = val
                 updated[key] = ('updated', gettext('Updated'))
 
@@ -175,10 +175,6 @@ class Configuration(object):
                     if input_value:
                         extra = 'checked="checked"'
 
-                if DS[o][TYPE] == T_INFO:
-                    input_type = 'text'
-                    extra = 'readonly="readonly"'
-
                 if DS[o][TYPE] == T_LIST:
                     if input_value is not None:
                         input_value = ','.join(input_value)
@@ -191,6 +187,9 @@ class Configuration(object):
                             selected = u' selected="selected"'
                         s += u'          <option value="%s"%s>%s</option>\n' % (c, selected, lazy_gettext(c))
                     s += u'        </select>\n'
+
+                elif DS[o][TYPE] == T_INFO:
+                    s += u'        <span>%s</span>'%input_value
 
                 else:
                     s += u'        <input type="%s" name="%s" id="%s" value="%s" %s>\n' % (input_type, o, o, input_value, extra)
