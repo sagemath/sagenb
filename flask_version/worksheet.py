@@ -112,7 +112,7 @@ def worksheet_command(target, **route_kwds):
                           'data', 'download', 'edit_published_page', 'eval',
                           'quit_sage', 'rate', 'rating_info', 'new_cell_before',
                           'new_cell_after']:
-                    raise NotImplementedError
+                    raise NotImplementedError("User _sage_ can not access URL %s"%target)
             
             #Make worksheet a non-keyword argument appearing before the
             #other non-keyword arguments.
