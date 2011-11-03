@@ -173,7 +173,11 @@ class Configuration(object):
                 if DS[o][TYPE] == T_BOOL:
                     input_type = 'checkbox'
                     if input_value:
-                        extra = ' checked="checked"'
+                        extra = 'checked="checked"'
+
+                if DS[o][TYPE] == T_INFO:
+                    input_type = 'text'
+                    extra = 'readonly="readonly"'
 
                 if DS[o][TYPE] == T_LIST:
                     if input_value is not None:
@@ -188,10 +192,8 @@ class Configuration(object):
                         s += u'          <option value="%s"%s>%s</option>\n' % (c, selected, lazy_gettext(c))
                     s += u'        </select>\n'
 
-                elif DS[o][TYPE] == T_INFO:
-                    s += u'        <span>%s</span>'%input_value
                 else:
-                    s += u'        <input type="%s" name="%s" id="%s" value="%s"%s>\n' % (input_type, o, o, input_value, extra)
+                    s += u'        <input type="%s" name="%s" id="%s" value="%s" %s>\n' % (input_type, o, o, input_value, extra)
 
                     if DS[o][TYPE] == T_COLOR:
                         s += u'        <div id="picker_%s"></div>\n' % color_picker
