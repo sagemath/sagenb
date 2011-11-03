@@ -232,7 +232,8 @@ def set_profiles():
         from sagenb.notebook.misc import valid_username_chars
         re_invalid_username_chars = re.compile('[^(%s)]' % valid_username_chars)
         openid_resp = session['openid_response']
-        openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
+        if openid_resp.fullname is not None:
+            openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
         return render_template('html/accounts/openid_profile.html', resp=openid_resp)
 
     if request.method == 'POST':
