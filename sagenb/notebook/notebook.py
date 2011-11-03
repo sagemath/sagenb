@@ -1171,6 +1171,14 @@ class Notebook(object):
             return self.__conf
         except AttributeError:
             C = server_conf.ServerConfiguration()
+            # if we are newly creating a notebook, then we want to 
+            # have a default model version of 1, currently
+            # we can't just set the default value in server_conf.py 
+            # to 1 since it would then be 1 for notebooks without the
+            # model_version property
+            # TODO: distinguish between a new server config default values
+            #  and default values for missing properties
+            C['model_version']=1
             self.__conf = C
             return C
 
