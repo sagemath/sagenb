@@ -105,7 +105,7 @@ class WorksheetDict(dict):
         username, id = item.split('/')
         try:
             id=int(id)
-        except TypeError:
+        except ValueError:
             raise KeyError, item
         worksheet = self.storage.load_worksheet(username, id)
 
