@@ -94,7 +94,7 @@ defaults_descriptions = {
         },
 
     'pub_interact': {
-        DESC : 'Enable published interacts',
+        DESC : 'Enable published interacts (EXPERIMENTAL; USE AT YOUR OWN RISK)',
         GROUP : G_SERVER,
         TYPE : T_BOOL,
         },
