@@ -103,7 +103,11 @@ class WorksheetDict(dict):
             raise KeyError, item
 
         username, id = item.split('/')
-        worksheet = self.storage.load_worksheet(username, int(id))
+        try:
+            id=int(id)
+        except TypeError:
+            raise KeyError, item
+        worksheet = self.storage.load_worksheet(username, id)
 
         dict.__setitem__(self, item, worksheet)
         return worksheet

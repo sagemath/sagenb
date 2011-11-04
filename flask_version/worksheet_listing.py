@@ -144,8 +144,11 @@ def pub():
 @guest_or_login_required
 def public_worksheet(id):
     from worksheet import pub_worksheet
-    filename = 'pub' + '/' + id
-    original_worksheet = g.notebook.get_worksheet_with_filename(filename)
+    filename = 'pub/%s'%id
+    try:
+        original_worksheet = g.notebook.get_worksheet_with_filename(filename)
+    except KeyError:
+        return current_app.message(_("Requested public worksheet does not exist"))
     worksheet = pub_worksheet(original_worksheet)
 
     owner = worksheet.owner()
