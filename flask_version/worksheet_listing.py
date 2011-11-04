@@ -148,7 +148,7 @@ def public_worksheet(id):
     try:
         original_worksheet = g.notebook.get_worksheet_with_filename(filename)
     except KeyError:
-        return current_app.message(_("Requested public worksheet does not exist"))
+        return _("Requested public worksheet does not exist"), 404
     worksheet = pub_worksheet(original_worksheet)
 
     owner = worksheet.owner()
