@@ -145,17 +145,20 @@ def pub():
 def public_worksheet(id):
     from worksheet import pub_worksheet
     filename = 'pub/%s'%id
-    try:
-        original_worksheet = g.notebook.get_worksheet_with_filename(filename)
-    except KeyError:
-        return _("Requested public worksheet does not exist"), 404
-    worksheet = pub_worksheet(original_worksheet)
-
-    owner = worksheet.owner()
-    worksheet.set_owner('pub')
-    s = g.notebook.html(worksheet_filename=worksheet.filename(),
-                        username=g.username)
-    worksheet.set_owner(owner)
+    if g.notebook.conf()['pub_interact']:
+        try:
+            original_worksheet = g.notebook.get_worksheet_with_filename(filename)
+        except KeyError:
+            return _("Requested public worksheet does not exist"), 404
+        worksheet = pub_worksheet(original_worksheet)
+        
+        owner = worksheet.owner()
+        worksheet.set_owner('pub')
+        s = g.notebook.html(worksheet_filename=worksheet.filename(),
+                            username=g.username)
+        worksheet.set_owner(owner)
+    else:
+        s = g.notebook.html(worksheet_filename=filename, username = g.username)
     return s
 
 @worksheet_listing.route('/home/pub/<id>/download/<path:title>')
