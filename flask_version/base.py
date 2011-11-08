@@ -137,14 +137,15 @@ def dynamic_js():
         response.headers['Etag']=datahash
     return response
 
-_localization_cache = None
+_localization_cache = {}
 @base.route('/javascript/dynamic/localization.js')
 def localization_js():
     global _localization_cache
-    if _localization_cache is None:
+    locale=get_locale()
+    if _localization_cache.get(locale,None) is None:
         data= render_template(os.path.join('js/localization.js'))
-        _localization_cache = (data, sha1(data).hexdigest())
-    data,datahash = _localization_cache
+        _localization_cache[locale] = (data, sha1(repr(data)).hexdigest())
+    data,datahash = _localization_cache[locale]
 
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
