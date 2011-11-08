@@ -170,7 +170,7 @@ INPUT:
             </td>
 
             <td class="worksheet_link">
-                <a title="{{ worksheet.name() | escape }}" id="name-{{ name|css_escape }}" class="worksheetname" href="/home/{{ name }}">
+                <a title="{{ worksheet.name() | escape }}" id="name-{{ name|css_escape }}" class="worksheetname" href="/home/{{ name }}/">
                     {% if worksheet.compute_process_has_been_started() %}({{ gettext('running') }}){% endif %}
                     {{ worksheet.truncated_name(50) | escape}}
                 </a>
