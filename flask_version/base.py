@@ -128,7 +128,7 @@ def dynamic_js():
     from sagenb.notebook.js import javascript
     # the javascript() function is cached, so there shouldn't be a big slowdown calling it
     data = javascript()
-    datahash=sha1(data).hexdigest()
+    datahash=sha1(repr(data)).hexdigest()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
     else:
@@ -163,7 +163,7 @@ def jsmath_js():
         from sagenb.misc.misc import jsmath_macros
         data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
                                jsmath_image_fonts=jsmath_image_fonts)
-        _jsmath_js_cache = (data, sha1(data).hexdigest())
+        _jsmath_js_cache = (data, sha1(repr(data)).hexdigest())
     data,datahash = _jsmath_js_cache
 
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
@@ -178,7 +178,7 @@ def jsmath_js():
 def keyboard_js(browser_os):
     from sagenb.notebook.keyboards import get_keyboard
     data = get_keyboard(browser_os)
-    datahash=sha1(data).hexdigest()
+    datahash=sha1(repr(data)).hexdigest()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
     else:
@@ -194,7 +194,7 @@ def keyboard_js(browser_os):
 def main_css():
     from sagenb.notebook.css import css 
     data = css()
-    datahash=sha1(data).hexdigest()
+    datahash=sha1(repr(data)).hexdigest()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
     else:
