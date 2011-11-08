@@ -34,6 +34,8 @@ def css(color='default'):
         sage: type(c.css())
         <type 'str'>
     """
+    # TODO: the color argument does nothing right now, since 
+    # the main.css file does not use it at all
     global _css_cache
     if _css_cache is None:
         # TODO: Implement a theming system, with a register.
