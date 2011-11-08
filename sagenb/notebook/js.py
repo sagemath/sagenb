@@ -31,6 +31,7 @@ import keyboards
 from template import template
 from sagenb.misc.misc import SAGE_URL
 from compress.JavaScriptCompressor import JavaScriptCompressor
+from hashlib import sha1
 
 # Debug mode?  If sagenb lives under SAGE_ROOT/, we minify/pack and cache
 # the Notebook JS library.
@@ -55,6 +56,8 @@ def javascript():
     JavascriptCompressor to minimize the amount of data needed to be
     sent to the browser.
 
+    The code and a hash of the code is returned.
+
     .. note::
 
        This the output of this function is cached so that it only
@@ -64,7 +67,7 @@ def javascript():
 
         sage: from sagenb.notebook.js import javascript
         sage: s = javascript()
-        sage: s[:30]
+        sage: s[0][:30]
         '/* JavaScriptCompressor 0.1 [w'
 
     """
@@ -78,7 +81,9 @@ def javascript():
                  debug_mode=debug_mode)
 
     if debug_mode:
-        return s
+        # TODO: maybe we should return a random hash so that the code 
+        # is reloaded on every refresh
+        return s, sha1(s).hexdigest()
 
     # TODO: use minify here, which is more standard (and usually safer
     # and with gzip compression, smaller); But first inquire about the
@@ -87,9 +92,9 @@ def javascript():
     # distributing it (i.e., it adds an extra condition to the
     # software)?  See http://www.crockford.com/javascript/jsmin.py.txt
     s = JavaScriptCompressor().getPacked(s.encode('utf-8'))
-    _cache_javascript = s
+    _cache_javascript = (s, sha1(s).hexdigest())
 
-    return s
+    return _cache_javascript
 
 
 class JSKeyHandler:

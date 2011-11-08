@@ -15,6 +15,7 @@ import os
 
 from sagenb.misc.misc import DOT_SAGENB
 from sagenb.notebook.template import template
+from hashlib import sha1
 
 _css_cache = None
 def css(color='default'):
@@ -31,7 +32,7 @@ def css(color='default'):
     EXAMPLES::
     
         sage: import sagenb.notebook.css as c
-        sage: type(c.css())
+        sage: type(c.css()[0])
         <type 'str'>
     """
     # TODO: the color argument does nothing right now, since 
@@ -56,5 +57,6 @@ def css(color='default'):
         if os.path.exists(user_css_path):
             user_css = '\n' + open(user_css_path).read()
 
-        _css_cache = main_css + user_css
+        data = main_css + user_css
+        _css_cache = (data, sha1(data).hexdigest())
     return _css_cache

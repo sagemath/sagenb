@@ -127,8 +127,7 @@ from hashlib import sha1
 def dynamic_js():
     from sagenb.notebook.js import javascript
     # the javascript() function is cached, so there shouldn't be a big slowdown calling it
-    data = javascript()
-    datahash=sha1(repr(data)).hexdigest()
+    data,datahash = javascript()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
     else:
@@ -141,7 +140,7 @@ _localization_cache = {}
 @base.route('/javascript/dynamic/localization.js')
 def localization_js():
     global _localization_cache
-    locale=get_locale()
+    locale=repr(get_locale())
     if _localization_cache.get(locale,None) is None:
         data= render_template(os.path.join('js/localization.js'))
         _localization_cache[locale] = (data, sha1(repr(data)).hexdigest())
@@ -178,7 +177,7 @@ def jsmath_js():
 def keyboard_js(browser_os):
     from sagenb.notebook.keyboards import get_keyboard
     data = get_keyboard(browser_os)
-    datahash=sha1(repr(data)).hexdigest()
+    datahash=sha1(data).hexdigest()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
     else:
@@ -193,8 +192,7 @@ def keyboard_js(browser_os):
 @base.route('/css/main.css')
 def main_css():
     from sagenb.notebook.css import css 
-    data = css()
-    datahash=sha1(repr(data)).hexdigest()
+    data,datahash = css()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
     else:
