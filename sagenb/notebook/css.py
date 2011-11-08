@@ -16,6 +16,7 @@ import os
 from sagenb.misc.misc import DOT_SAGENB
 from sagenb.notebook.template import template
 
+_css_cache = None
 def css(color='default'):
     r"""
     Return the CSS header used by the Sage Notebook.
@@ -33,22 +34,25 @@ def css(color='default'):
         sage: type(c.css())
         <type 'str'>
     """
-    # TODO: Implement a theming system, with a register.
-    if color in ('default', 'grey', 'gmail', None):
-        color1 = None
-        color2 = None
-    elif isinstance(color, (tuple,list)):
-        color1, color2 = color
-    else:
-        raise ValueError, "unknown color scheme %s"%color
+    global _css_cache
+    if _css_cache is None:
+        # TODO: Implement a theming system, with a register.
+        if color in ('default', 'grey', 'gmail', None):
+            color1 = None
+            color2 = None
+        elif isinstance(color, (tuple,list)):
+            color1, color2 = color
+        else:
+            raise ValueError, "unknown color scheme %s"%color
 
-    main_css = template(os.path.join('css', 'main.css'),
-                        color1 = color1, color2 = color2,
-                        color_theme = color)
-    
-    user_css_path = os.path.join(DOT_SAGENB, 'notebook.css')
-    user_css = ''
-    if os.path.exists(user_css_path):
-        user_css = '\n' + open(user_css_path).read()
+        main_css = template(os.path.join('css', 'main.css'),
+                            color1 = color1, color2 = color2,
+                            color_theme = color)
 
-    return main_css + user_css
+        user_css_path = os.path.join(DOT_SAGENB, 'notebook.css')
+        user_css = ''
+        if os.path.exists(user_css_path):
+            user_css = '\n' + open(user_css_path).read()
+
+        _css_cache = main_css + user_css
+    return _css_cache

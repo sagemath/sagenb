@@ -125,22 +125,31 @@ def index():
 @base.route('/javascript/dynamic/notebook_dynamic.js')
 def dynamic_js():
     from sagenb.notebook.js import javascript
+    # the javascript() function is cached, so there shouldn't be a big slowdown calling it
     response = make_response(javascript())
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
+_localization_cache = None
 @base.route('/javascript/dynamic/localization.js')
 def localization_js():
-    response = make_response(render_template(os.path.join('js/localization.js')))
+    global _localization_cache
+    if _localization_cache is None:
+        _localization_cache = render_template(os.path.join('js/localization.js'))
+    response = make_response(_localization_cache)
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
 
+_jsmath_js_cache = None
 @base.route('/javascript/dynamic/jsmath.js')
 def jsmath_js():
-    from sagenb.misc.misc import jsmath_macros
-    response = make_response(render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
-                                             jsmath_image_fonts=jsmath_image_fonts))
+    global _jsmath_js_cache
+    if _jsmath_js_cache is None:
+        from sagenb.misc.misc import jsmath_macros
+        _jsmath_js_cache = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
+                                           jsmath_image_fonts=jsmath_image_fonts)
+    response = make_response(_jsmath_js_cache)
     response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
     return response
 
@@ -157,6 +166,7 @@ def keyboard_js(browser_os):
 @base.route('/css/main.css')
 def main_css():
     from sagenb.notebook.css import css 
+    # the css() function is cached, so there shouldn't be a big slowdown calling it
     response = make_response(css())
     response.headers['Content-Type'] = 'text/css; charset=utf-8'
     return response
