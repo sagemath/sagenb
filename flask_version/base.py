@@ -122,12 +122,19 @@ def index():
 ######################
 # Dynamic Javascript #
 ######################
+from hashlib import sha1
 @base.route('/javascript/dynamic/notebook_dynamic.js')
 def dynamic_js():
     from sagenb.notebook.js import javascript
     # the javascript() function is cached, so there shouldn't be a big slowdown calling it
-    response = make_response(javascript())
-    response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+    data = javascript()
+    datahash=sha1(data).hexdigest()
+    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+        response = make_response('',304)
+    else:
+        response = make_response(data)
+        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+        response.headers['Etag']=datahash
     return response
 
 _localization_cache = None
@@ -135,11 +142,17 @@ _localization_cache = None
 def localization_js():
     global _localization_cache
     if _localization_cache is None:
-        _localization_cache = render_template(os.path.join('js/localization.js'))
-    response = make_response(_localization_cache)
-    response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-    return response
+        data= render_template(os.path.join('js/localization.js'))
+        _localization_cache = (data, sha1(data).hexdigest())
+    data,datahash = _localization_cache
 
+    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+        response = make_response('',304)
+    else:
+        response = make_response(data)
+        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+        response.headers['Etag']=datahash
+    return response
 
 _jsmath_js_cache = None
 @base.route('/javascript/dynamic/jsmath.js')
@@ -147,17 +160,30 @@ def jsmath_js():
     global _jsmath_js_cache
     if _jsmath_js_cache is None:
         from sagenb.misc.misc import jsmath_macros
-        _jsmath_js_cache = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
-                                           jsmath_image_fonts=jsmath_image_fonts)
-    response = make_response(_jsmath_js_cache)
-    response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+        data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
+                               jsmath_image_fonts=jsmath_image_fonts)
+        _jsmath_js_cache = (data, sha1(data).hexdigest())
+    data,datahash = _jsmath_js_cache
+
+    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+        response = make_response('',304)
+    else:
+        response = make_response(data)
+        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+        response.headers['Etag']=datahash
     return response
 
 @base.route('/javascript/dynamic/keyboard/<browser_os>')
 def keyboard_js(browser_os):
     from sagenb.notebook.keyboards import get_keyboard
-    response = make_response(get_keyboard(browser_os))
-    response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+    data = get_keyboard(browser_os)
+    datahash=sha1(data).hexdigest()
+    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+        response = make_response('',304)
+    else:
+        response = make_response(data)
+        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+        response.headers['Etag']=datahash
     return response
 
 ###############
@@ -166,9 +192,14 @@ def keyboard_js(browser_os):
 @base.route('/css/main.css')
 def main_css():
     from sagenb.notebook.css import css 
-    # the css() function is cached, so there shouldn't be a big slowdown calling it
-    response = make_response(css())
-    response.headers['Content-Type'] = 'text/css; charset=utf-8'
+    data = css()
+    datahash=sha1(data).hexdigest()
+    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+        response = make_response('',304)
+    else:
+        response = make_response(data)
+        response.headers['Content-Type'] = 'text/css; charset=utf-8'
+        response.headers['Etag']=datahash
     return response
 
 ########
