@@ -159,11 +159,16 @@ class FilesystemDatastore(Datastore):
     # The input filename is always relative to self._path.
     #########################################################################
     def _load(self, filename):
-        return cPickle.load(open(self._abspath(filename)))
+        with open(self._abspath(filename)) as f:
+            result = cPickle.load(f)
+        return result
 
-    def _save(self, obj, filename, ):
+    def _save(self, obj, filename):
         s = cPickle.dumps(obj)
-        open(self._abspath(filename), 'w').write(s)
+        if len(s)==0:
+            raise ValueError("Invalid Pickle")
+        with open(self._abspath(filename), 'w') as f:
+            f.write(s)
 
     def _permissions(self, filename):
         f = self._abspath(filename)
@@ -343,7 +348,8 @@ class FilesystemDatastore(Datastore):
             # only save if loaded
             # todo -- add check if changed
             filename = self._worksheet_html_filename(username, id_number)
-            open(self._abspath(filename),'w').write(worksheet.body().encode('utf-8', 'ignore'))
+            with open(self._abspath(filename),'w') as f:
+                f.write(worksheet.body().encode('utf-8', 'ignore'))
 
     def load_worksheet(self, username, id_number):
         """
@@ -410,7 +416,9 @@ class FilesystemDatastore(Datastore):
         # notebook servers prior to sage-4.1.2.
         fd, worksheet_txt =  tempfile.mkstemp()
         old_heading = "%s\nsystem:%s\n"%(basic['name'], basic['system'])
-        open(worksheet_txt,'w').write(old_heading + open(worksheet_html).read())
+        with open(worksheet_txt,'w') as f:
+            with open(worksheet_html) as g:
+                f.write(old_heading + g.read())
         T.add(worksheet_txt,
               os.path.join('sage_worksheet','worksheet.txt'))
         os.unlink(worksheet_txt)
@@ -475,6 +483,8 @@ class FilesystemDatastore(Datastore):
         if os.path.exists(tmp):
             shutil.rmtree(tmp)
 
+        T.close()
+
         return W
             
 
@@ -489,15 +499,15 @@ class FilesystemDatastore(Datastore):
         os.makedirs(path)
         T = tarfile.open(filename, 'r:bz2')
         try:
-            open(self._abspath(self._worksheet_conf_filename(username, id_number)),'w').write(
-                T.extractfile(os.path.join('sage_worksheet','worksheet_conf.pickle')).read())
+            with open(self._abspath(self._worksheet_conf_filename(username, id_number)),'w') as f:
+                f.write(T.extractfile(os.path.join('sage_worksheet','worksheet_conf.pickle')).read())
         except KeyError:
             # Not a valid worksheet.  This might mean it is an old
             # worksheet from a previous version of Sage.
             return self._import_old_worksheet(username, id_number, filename)
-            
-        open(self._abspath(self._worksheet_html_filename(username, id_number)),'w').write(
-            T.extractfile(os.path.join('sage_worksheet','worksheet.html')).read())
+
+        with open(self._abspath(self._worksheet_html_filename(username, id_number)),'w') as f:
+            f.write(T.extractfile(os.path.join('sage_worksheet','worksheet.html')).read())
 
         base = os.path.join('sage_worksheet','data')
         members = [a for a in T.getmembers() if a.name.startswith(base) and is_safe(a.name)]
@@ -514,6 +524,8 @@ class FilesystemDatastore(Datastore):
         tmp = os.path.join(path, 'sage_worksheet')
         if os.path.exists(tmp):
             shutil.rmtree(tmp)
+        
+        T.close()
         
         return self.load_worksheet(username, id_number)
         
