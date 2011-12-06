@@ -209,6 +209,18 @@ class FilesystemDatastore(Datastore):
         """
         return worksheet.basic()
 
+    def _default_basic(self, owner, id_number):
+        """
+        Return a default basic worksheet representation.  This is useful
+        for the times when the basic worksheet configuration for a worksheet
+        is lost, but we still want to access its data.
+        """
+        from sagenb.notebook.worksheet import Worksheet
+        path = self._abspath(self._worksheet_path(owner))
+        W = Worksheet(name='', id_number=id_number, notebook_worksheet_directory=path, 
+                      owner=owner, create_directories=False)
+        return W.basic()
+
     #########################################################################
     # Now we implement the API we're supposed to implement
     #########################################################################
@@ -373,7 +385,13 @@ class FilesystemDatastore(Datastore):
             W = self._basic_to_worksheet({'owner':username, 'id_number':id_number})
             W.clear()
             return W
-        basic = self._load(self._worksheet_conf_filename(username, id_number))
+        try:
+            basic = self._load(self._worksheet_conf_filename(username, id_number))
+        except Exception:
+            #the worksheet conf loading didn't work, so we make up one
+            import traceback
+            print "Warning: problem loading config for %s/%s; using default config: %s"%(username, id_number, traceback.format_exc())
+            basic = self._default_basic(username, id_number)
         basic['owner'] = username
         basic['id_number'] = id_number
         W = self._basic_to_worksheet(basic)
@@ -557,8 +575,9 @@ class FilesystemDatastore(Datastore):
             if id_number.isdigit():
                 try:
                     v.append(self.load_worksheet(username, int(id_number)))
-                except Exception, msg:
-                    print "Warning: problem loading %s/%s: %s"%(username, id_number, msg)
+                except Exception:
+                    import traceback
+                    print "Warning: problem loading %s/%s: %s"%(username, id_number, traceback.format_exc())
         return v
 
     def delete(self):

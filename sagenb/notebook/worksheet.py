@@ -251,6 +251,7 @@ class Worksheet(object):
             return 0
 
     def create_directories(self):
+        # creating directories should be a function of the storage backend, not here
         if not os.path.exists(self.__dir):
             os.makedirs(self.__dir)
             set_restrictive_permissions(self.__dir, allow_execute=True)
