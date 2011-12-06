@@ -395,6 +395,7 @@ class FilesystemDatastore(Datastore):
             if username=='_sage_':
                 # save the default configuration, since this may be loaded by a random other user
                 # since *anyone* looking at docs will load all _sage_ worksheets
+                print "Saving default configuration (overwriting corrupt configuration) for %s/%s"%(username, id_number)
                 self._save(basic, self._worksheet_conf_filename(username, id_number))
 
         basic['owner'] = username
