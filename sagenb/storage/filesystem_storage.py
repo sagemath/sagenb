@@ -392,6 +392,11 @@ class FilesystemDatastore(Datastore):
             import traceback
             print "Warning: problem loading config for %s/%s; using default config: %s"%(username, id_number, traceback.format_exc())
             basic = self._default_basic(username, id_number)
+            if username=='_sage_':
+                # save the default configuration, since this may be loaded by a random other user
+                # since *anyone* looking at docs will load all _sage_ worksheets
+                self._save(basic, self._worksheet_conf_filename(username, id_number))
+
         basic['owner'] = username
         basic['id_number'] = id_number
         W = self._basic_to_worksheet(basic)
