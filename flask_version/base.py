@@ -400,25 +400,25 @@ def create_app(path_to_notebook, *args, **kwds):
     ########################
     # Register the modules #
     ########################
-    app.register_module(base)
+    app.register_blueprint(base)
 
     from worksheet_listing import worksheet_listing
-    app.register_module(worksheet_listing)  
+    app.register_blueprint(worksheet_listing)  
 
     from admin import admin
-    app.register_module(admin)
+    app.register_blueprint(admin)
 
     from authentication import authentication
-    app.register_module(authentication)
+    app.register_blueprint(authentication)
 
     from doc import doc
-    app.register_module(doc)
+    app.register_blueprint(doc)
 
     from worksheet import ws as worksheet
-    app.register_module(worksheet)
+    app.register_blueprint(worksheet)
 
     from settings import settings
-    app.register_module(settings)
+    app.register_blueprint(settings)
 
     #autoindex v0.3 doesnt seem to work with modules
     #routing with app directly does the trick
