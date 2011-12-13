@@ -207,7 +207,7 @@ def register():
         template_dict['username_taken'] = True
         template_dict['error'] = 'E '
 
-        form = template(os.path.join('html', 'accounts', 'registration.html'),
+        form = render_template(os.path.join('html', 'accounts', 'registration.html'),
                         **template_dict)
         return HTMLResponse(stream = form)
 
