@@ -36,13 +36,18 @@ def login(template_dict={}):
         if username == 'COOKIESDISABLED':
             return "Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again."
 
-        try:
-            U = g.notebook.user_manager().user(username)
-        except KeyError:
-            print "Login attempt by unknown user '%s'."%username
+        # we only handle ascii usernames.
+        from sagenb.notebook.misc import is_valid_username, is_valid_password
+        if is_valid_username(username):
+            try:
+                U = g.notebook.user_manager().user(username)
+            except KeyError:
+                U = None
+                template_dict['username_error'] = True
+        else:
             U = None
             template_dict['username_error'] = True
-            
+
         # It is critically important that it be impossible to login as the
         # pub, _sage_, or guest users.  This _sage_ user is a fake user that is used
         # internally by the notebook for the doc browser and other tasks.
@@ -52,7 +57,8 @@ def login(template_dict={}):
 
         if U is None:
             pass
-        elif g.notebook.user_manager().check_password(username, password):
+        elif (is_valid_password(password, username) and 
+              g.notebook.user_manager().check_password(username, password)):
             if U.is_suspended():
                 #suspended
                 return "Your account is currently suspended"
@@ -136,7 +142,7 @@ def register():
     if username:
         if not is_valid_username(username):
             template_dict['username_invalid'] = True
-        if g.notebook.user_manager().user_exists(username):
+        elif g.notebook.user_manager().user_exists(username):
             template_dict['username_taken'] = True
         else:
             template_dict['username'] = username
