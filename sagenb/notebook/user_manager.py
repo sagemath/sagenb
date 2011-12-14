@@ -485,6 +485,9 @@ class SimpleUserManager(UserManager):
         if username == "pub" or password == '':
             return False
         user_password = self.password(username)
+        if user_password is None:
+            print "User %s has None password"%username
+            return False
         if user_password.find('$') == -1:
             if user_password == crypt.crypt(password, user.SALT):
                 self.set_password(username, password)
