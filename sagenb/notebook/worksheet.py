@@ -3304,7 +3304,9 @@ except (KeyError, IOError):
         browser) is also considered idle, even if code is running.
         """
         if self.time_idle() > timeout:
-            print "Quitting ignored worksheet process for '%s'." % self.name()
+            # worksheet name may contain unicode, so we use %r, which prints
+            # the \xXX form for unicode characters
+            print "Quitting ignored worksheet process for %r." % self.name()
             self.quit()
 
     def time_idle(self):
