@@ -2922,6 +2922,11 @@ except (KeyError, IOError):
             del self.__sage
             raise RuntimeError, msg
 
+        # make sure we have a __sage attribute
+        # We do this to diagnose google issue 81; once we
+        # have fixed that issue, we can remove this next statement
+        T = self.__sage
+
         A = self.attached_files()
         for F in A.iterkeys():
             A[F] = 0  # expire all
@@ -2934,6 +2939,11 @@ except (KeyError, IOError):
             
         if not self.is_published():
             self._enqueue_auto_cells()
+
+        # make sure we have a __sage attribute
+        # We do this to diagnose google issue 81; once we
+        # have fixed that issue, we can remove this next statement
+        T = self.__sage
 
         return S
 
@@ -2957,7 +2967,18 @@ except (KeyError, IOError):
         self.__sage = self.notebook().new_worksheet_process()
         all_worksheet_processes.append(self.__sage)
         self.__next_block_id = 0
+        
+        # make sure we have a __sage attribute
+        # We do this to diagnose google issue 81; once we
+        # have fixed that issue, we can remove this next statement
+        S = self.__sage
+
         self.initialize_sage()
+
+        # make sure we have a __sage attribute
+        # We do this to diagnose google issue 81; once we
+        # have fixed that issue, we can remove this next statement
+        S = self.__sage
 
         return self.__sage
 
