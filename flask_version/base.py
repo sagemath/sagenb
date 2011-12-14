@@ -281,7 +281,11 @@ def set_profiles():
 
 
     if request.method == 'POST':
-        parse_dict = {'resp':session['openid_response']}
+        if 'openid_response' in session:
+            parse_dict = {'resp':session['openid_response']}
+        else:
+            return redirect(url_for('base.index'))
+
         try:
             resp = session['openid_response']
             username = request.form.get('username')
