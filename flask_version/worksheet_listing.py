@@ -36,13 +36,17 @@ def render_worksheet_list(args, pub, username):
     sort = args['sort'] if 'sort' in args else 'last_edited'
     reverse = (args['reverse'] == 'True') if 'reverse' in args else False
 
-    if not pub:
-        worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
-                                                          search=search, reverse=reverse)
-
-    else:
-        worksheets = g.notebook.worksheet_list_for_public(username, sort=sort,
-                                                            search=search, reverse=reverse)
+    try:
+        if not pub:
+            worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
+                                                              search=search, reverse=reverse)
+        else:
+            worksheets = g.notebook.worksheet_list_for_public(username, sort=sort,
+                                                                search=search, reverse=reverse)
+    except ValueError as E:
+        # for example, the sort key was not valid
+        print "Error displaying worksheet listing: ", E
+        return current_app.message(_("Error displaying worksheet listing."))
 
     worksheet_filenames = [x.filename() for x in worksheets]
 
@@ -52,7 +56,6 @@ def render_worksheet_list(args, pub, username):
     accounts = g.notebook.user_manager().get_accounts()
     sage_version = SAGE_VERSION
     return render_template('html/worksheet_listing.html', **locals())
-
 
 @worksheet_listing.route('/home/<username>/')
 @login_required
