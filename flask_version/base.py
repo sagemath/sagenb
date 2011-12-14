@@ -268,13 +268,17 @@ def create_or_login(resp):
 def set_profiles():
     if not g.notebook.conf()['openid']:
         return redirect(url_for('base.index'))
-    if request.method == 'GET' and 'openid_response' in session:
-        from sagenb.notebook.misc import valid_username_chars
-        re_invalid_username_chars = re.compile('[^(%s)]' % valid_username_chars)
-        openid_resp = session['openid_response']
-        if openid_resp.fullname is not None:
-            openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
-        return render_template('html/accounts/openid_profile.html', resp=openid_resp)
+    if request.method == 'GET':
+        if 'openid_response' in session:
+            from sagenb.notebook.misc import valid_username_chars
+            re_invalid_username_chars = re.compile('[^(%s)]' % valid_username_chars)
+            openid_resp = session['openid_response']
+            if openid_resp.fullname is not None:
+                openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
+            return render_template('html/accounts/openid_profile.html', resp=openid_resp)
+        else:
+            return redirect(url_for('base.index'))
+
 
     if request.method == 'POST':
         parse_dict = {'resp':session['openid_response']}
