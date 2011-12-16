@@ -663,9 +663,13 @@ class Cell(Cell_generic):
         self._interrupted = False
         self.has_new_output = False
         self._asap = False
-        self._version = -1
         self.set_input_text(input)
-  
+
+        # start with a random integer so that evaluations of the cell
+        # from different runs have different version numbers.
+        from sys import maxint
+        from random import randint
+        self._version = randint(0,maxint)
 
     def __repr__(self):
         """
@@ -1693,8 +1697,8 @@ class Cell(Cell_generic):
     def process_cell_urls(self, urls):
         """
         Processes this compute cell's ``'cell://.*?'`` URLs, replacing
-        the protocol with the cell's path and appending the cell's
-        version number.
+        the protocol with the cell's path and appending the version number
+        to prevent cached copies from shadowing the updated copy.
 
         INPUT:
 
@@ -2132,7 +2136,11 @@ class Cell(Cell_generic):
         try:
             return self._version
         except AttributeError:
-            self._version = 0
+            # start with a random integer so that evaluations of the cell
+            # from different runs have different version numbers.
+            from sys import maxint
+            from random import randint
+            self._version = randint(0,maxint)
             return self._version
 
     def time(self):
