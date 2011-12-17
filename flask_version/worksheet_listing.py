@@ -270,6 +270,9 @@ def upload_worksheet():
             return current_app.message(_("Please specify a worksheet to load.%(backlinks)s",backlinks=backlinks))
 
         filename = secure_filename(file.filename)
+        if len(filename)=0:
+            return current_app.message(_("Invalid filename.%(backlinks)s",backlinks=backlinks))
+
         filename = os.path.join(dir, filename)
         file.save(filename)
 
