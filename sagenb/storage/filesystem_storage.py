@@ -429,8 +429,7 @@ class FilesystemDatastore(Datastore):
         old_heading = "%s\nsystem:%s\n"%(basic['name'], basic['system'])
         with open(worksheet_txt,'w') as f:
             with open(worksheet_html) as g:
-                # this should possibly be encoded into 'ascii' instead
-                f.write((old_heading + g.read()).encode('utf-8','ignore'))
+                f.write(old_heading + g.read())
         T.add(worksheet_txt,
               os.path.join('sage_worksheet','worksheet.txt'))
         os.unlink(worksheet_txt)
