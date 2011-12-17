@@ -672,14 +672,15 @@ def worksheet_datafile(worksheet):
 
 @worksheet_command('savedatafile')
 def worksheet_savedatafile(worksheet):
+    filename = request.values['filename']
     if 'button_save' in request.values:
         text_field = request.values['textfield'] #XXX: Should this be text_field
-        filename = request.values['filename']
         dest = os.path.join(worksheet.data_directory(), filename) #XXX: Requires access to filesystem
         if os.path.exists(dest):
             os.unlink(dest)
         open(dest, 'w').write(text_field)
-        return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
+    return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
+        
 
 @worksheet_command('link_datafile')
 def worksheet_link_datafile(worksheet):
