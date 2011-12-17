@@ -1339,14 +1339,13 @@ class Cell(Cell_generic):
             ('d', Cell 1: in=2^2, out=
             4
             )
-            sage: C.version()
-            0
+            sage: initial_version=C.version()
             sage: C.set_input_text('3+3')
             sage: C.input_text()
             u'3+3'
             sage: C.evaluated()
             False
-            sage: C.version()
+            sage: C.version()-initial_version
             1
             sage: W.quit()
             sage: nb.delete()
@@ -1536,6 +1535,7 @@ class Cell(Cell_generic):
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
+            sage: initial_version=C.version()
             sage: C.changed_input_text()
             ''
             sage: C.set_changed_input_text('3+3')
@@ -1545,7 +1545,7 @@ class Cell(Cell_generic):
             u'3+3'
             sage: C.changed_input_text()
             ''
-            sage: C.version()
+            sage: C.version()-initial_version
             0
         """
         try:
@@ -1715,7 +1715,7 @@ class Cell(Cell_generic):
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
             sage: C.process_cell_urls('"cell://foobar"')
-            '/home/sage/0/cells/0/foobar?0'
+            '/home/sage/0/cells/0/foobar?...'
         """
         end = '?%d' % self.version()
         begin = self.url_to_self()
@@ -2127,10 +2127,9 @@ class Cell(Cell_generic):
         EXAMPLES::
 
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
-            sage: C.version()
-            0
+            sage: initial_version=C.version() #random
             sage: C.set_input_text('2+3')
-            sage: C.version()
+            sage: C.version()-initial_version
             1
         """
         try:
