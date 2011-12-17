@@ -242,7 +242,7 @@ def upload():
 @login_required
 def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
-    from werkzeug import secure_filename
+    from werkzeug.utils import secure_filename
     import zipfile
     
     backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")

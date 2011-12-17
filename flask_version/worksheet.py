@@ -705,7 +705,7 @@ def worksheet_upload_data(worksheet):
 
 @worksheet_command('do_upload_data')
 def worksheet_do_upload_data(worksheet):
-    from werkzeug import secure_filename
+    from werkzeug.utils import secure_filename
 
     worksheet_url = url_for_worksheet(worksheet)
     upload_url = worksheet_upload_data.url_for(worksheet)
