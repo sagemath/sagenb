@@ -742,7 +742,7 @@ class Notebook(object):
     def import_worksheet(self, filename, owner):
         r"""
         Import a worksheet with the given ``filename`` and set its
-        ``owner``.  If the file extension is not txt or sws, raise a
+        ``owner``.  If the file extension is not recognized, raise a
         ValueError.
 
         INPUT:
