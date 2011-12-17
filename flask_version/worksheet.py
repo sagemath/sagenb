@@ -691,8 +691,10 @@ def worksheet_link_datafile(worksheet):
     target = os.path.abspath(os.path.join(
         target_ws.data_directory(), data_filename))
     if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
-        return current_app.message(_("illegal link attempt!"))
-    os.system('ln "%s" "%s"'%(src, target))
+        return current_app.message(_("illegal link attempt!"), worksheet_datafile.url_for(worksheet, name=data_filename))
+    if os.path.exists(target):
+        return current_app.message(_("The data filename already exists in other worksheet\nDelete the file in the other worksheet before creating a link."), worksheet_datafile.url_for(worksheet, name=data_filename))
+    os.link(src,target)
     return redirect(worksheet_datafile.url_for(worksheet, name=data_filename))
     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
     
