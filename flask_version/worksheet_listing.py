@@ -267,11 +267,11 @@ def upload_worksheet():
         dir = tmp_dir()
         file = request.files['file']
         if file.filename is None:
-            return current_app.message(_("Please specify a worksheet to load.%(backlinks)s",backlinks=backlinks))
+            return current_app.message(_("Please specify a worksheet to load.\n%(backlinks)s",backlinks=backlinks))
 
         filename = secure_filename(file.filename)
-        if len(filename)=0:
-            return current_app.message(_("Invalid filename.%(backlinks)s",backlinks=backlinks))
+        if len(filename)==0:
+            return current_app.message(_("Invalid filename.\n%(backlinks)s",backlinks=backlinks))
 
         filename = os.path.join(dir, filename)
         file.save(filename)
@@ -303,7 +303,7 @@ def upload_worksheet():
 
         except Exception, msg:
             print 'error uploading worksheet', msg
-            s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%(backlinks)s', backlinks=backlinks)
+            s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!\n%(backlinks)s', backlinks=backlinks)
             return current_app.message(s, url_for('home', username=g.username))
         finally:
             # Clean up the temporarily uploaded filename.
