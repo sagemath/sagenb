@@ -92,7 +92,7 @@ def fetch_packages():
     required_packages = ('pytz>=2011n',
                          'Babel>=0.9.6',
                          'Werkzeug>=0.8.2',
-                         'speaklater>=1.2'
+                         'speaklater>=1.2',
                          'python-openid>=2.2.5',
                          'Flask>=0.8',
                          'Flask-Silk>=0.1.1',
