@@ -76,19 +76,30 @@ sys.stdout.flush()
 spkg_install = os.path.abspath(os.path.join(os.path.curdir, 'spkg-install'))
 spkg_install_fd = open(spkg_install, 'w')
 
+os.chdir(os.path.pardir) # cd .. (now in dist/)
 
 def fetch_packages():
-    # This block is here in case we ever need it again.
-    # XXX Then also make sure the easy_install commands
-    # XXX get written to the correct part of spkg-install!
-    # XXX (We currently use a single string for the whole file.)
+    """
+    Downloads the required dependencies and returns a string
+    which installs the dependencies using easy_install
+    """
     print "Fetching the required packages"
     pkg_index = PackageIndex()
 
     tmp_dir = mkdtemp()
 
-    required_packages = ()
-
+    # in order of dependencies
+    required_packages = ('pytz>=2011n',
+                         'Babel>=0.9.6',
+                         'Werkzeug>=0.8.2',
+                         'speaklater>=1.2'
+                         'python-openid>=2.2.5',
+                         'Flask>=0.8',
+                         'Flask-Silk>=0.1.1',
+                         'Flask-AutoIndex>=0.4.0',
+                         'Flask-Babel>=0.8',
+                         'Flask-OpenID>=1.0.1',
+                         )
     pkg_locations = []
 
     for pkg in required_packages:
@@ -97,17 +108,28 @@ def fetch_packages():
                                             True, True)
         pkg_locations.append(os.path.abspath(dist.location))
 
+    install_str = ''
     for location in pkg_locations:
         shutil.copy(location, 'src')
-        spkg_install_fd.write('easy_install %s\n' % os.path.basename(location))
 
+    return install_str
     return [os.path.basename(location) for location in pkg_locations]
-
-
-os.chdir(os.path.pardir) # cd .. (now in dist/)
 
 # Write the whole file from a single raw Python string:
 # (The #! has to be on the first line of the script.)
+
+install_dependencies=""
+for pkg_location in fetch_packages():
+    # --allow-hosts=None prevents downloading
+    install_dependencies += """
+easy_install --allow-hosts=None %(pkg)s
+if [ $? -ne 0 ]; then
+    echo >&2 "Error installing %(pkg)s."
+    exit 1
+fi
+
+""" % {'pkg': pkg_location}
+
 spkg_install_fd.write(
 r"""#!/usr/bin/env bash
 
@@ -119,6 +141,8 @@ if [ -z "$SAGE_LOCAL" ]; then
 fi
 
 cd src
+
+%(install_dependencies)
 
 cd sagenb
 python setup.py install
@@ -199,7 +223,7 @@ if [ $? -ne 0 ]; then
     echo >&2 "Error overwriting original 'easy-install.pth'."
     exit 1
 fi
-""")
+""" % {install_dependencies: install_dependencies})
 spkg_install_fd.close()
 os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
          stat.S_IROTH | stat.S_IXOTH) # -rwxr-xr-x
