@@ -22,11 +22,25 @@ GPLv2+
 
 == Dependencies ==
 
- * Python >= 2.6
- * jinja2 >= 2.1.1
- * Twisted >= 8.2
- * zope.testbrowser >= 3.8.1 (included)
- * Sphinx >= 0.6.3 (pretty docstrings)
+ * Python >= 2.6.4
+ * jinja2 >= 2.5.5
+ * Twisted >= 11.0.0
+ * Sphinx >= 1.0.4 (pretty docstrings)
+
+ Included dependencies (for specific version numbers, see the
+ spkg-dist file):
+
+ * pytz
+ * Babel
+ * Werkzeug
+ * speaklater
+ * python-openid
+ * Flask
+ * Flask-Silk
+ * Flask-AutoIndex
+ * Flask-Babel
+ * Flask-OpenID
+ * zope.testbrowser >= 3.8.1 (maybe not anymore?)
 
 == Special Update / Build Instructions ==
 
