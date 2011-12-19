@@ -142,7 +142,7 @@ fi
 
 cd src
 
-%(install_dependencies)
+%(install_dependencies)s
 
 cd sagenb
 python setup.py install
