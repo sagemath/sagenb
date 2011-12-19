@@ -76,7 +76,6 @@ sys.stdout.flush()
 spkg_install = os.path.abspath(os.path.join(os.path.curdir, 'spkg-install'))
 spkg_install_fd = open(spkg_install, 'w')
 
-os.chdir(os.path.pardir) # cd .. (now in dist/)
 
 def fetch_packages():
     """
@@ -110,18 +109,14 @@ def fetch_packages():
 
     install_str = ''
     for location in pkg_locations:
-        shutil.copy(location, 'src')
+        shutil.copy(location, os.path.join('src', os.path.basename(location)))
 
-    return install_str
     return [os.path.basename(location) for location in pkg_locations]
-
-# Write the whole file from a single raw Python string:
-# (The #! has to be on the first line of the script.)
 
 install_dependencies=""
 for pkg_location in fetch_packages():
     # --allow-hosts=None prevents downloading
-    install_dependencies += """
+    install_dependencies += r"""
 easy_install --allow-hosts=None %(pkg)s
 if [ $? -ne 0 ]; then
     echo >&2 "Error installing %(pkg)s."
@@ -130,6 +125,11 @@ fi
 
 """ % {'pkg': pkg_location}
 
+
+os.chdir(os.path.pardir) # cd .. (now in dist/)
+
+# Write the whole file from a single raw Python string:
+# (The #! has to be on the first line of the script.)
 spkg_install_fd.write(
 r"""#!/usr/bin/env bash
 
