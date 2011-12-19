@@ -624,7 +624,7 @@ def worksheet_revisions(worksheet):
             W.edit_save(txt)
             return redirect(url_for_worksheet(W))
         else:
-            return current_app.message('Error')
+            return current_app.message(_('Error'))
 
 
         
@@ -654,7 +654,7 @@ def worksheed_data_folder(worksheet,filename):
 def worksheet_data(worksheet, filename):
     dir = os.path.abspath(worksheet.data_directory())
     if not os.path.exists(dir):
-        return current_app.message('No data files')
+        return current_app.message(_('No data files'))
     else:
         from flask.helpers import send_from_directory
         return send_from_directory(worksheet.data_directory(), filename)
@@ -857,7 +857,7 @@ def unconditional_download(worksheet, title):
         #XXX: Accessing the hard disk.
         g.notebook.export_worksheet(worksheet.filename(), filename, title)
     except KeyError:
-        return current_app.message('No such worksheet.')
+        return current_app.message(_('No such worksheet.'))
 
     from flask.helpers import send_file
     return send_file(filename, mimetype='application/sage')
@@ -942,7 +942,7 @@ def extract_title(html_page):
 def worksheet_file(path):
     # Create a live Sage worksheet from the given path.
     if not os.path.exists(path):
-        return current_app.message('Document does not exist.')
+        return current_app.message(_('Document does not exist.'))
 
     doc_page_html = open(path).read()
     from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
