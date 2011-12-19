@@ -1345,14 +1345,10 @@ class Notebook(object):
             sage: nb.html_share(W, 'admin')
             u'...currently shared...add or remove collaborators...'
         """
-        U = self.user_manager().users()
-        other_users = [x for x, u in U.iteritems() if not u.is_guest() and not u.username() in [username, 'pub', '_sage_']]
-        other_users.sort(lambda x, y: cmp(x.lower(), y.lower()))
-
         return template(os.path.join("html", "notebook", "worksheet_share.html"),
                         worksheet = worksheet,
                         notebook = self,
-                        username = username, other_users = other_users)
+                        username = username)
 
     def html_download_or_delete_datafile(self, ws, username, filename):
         r"""
