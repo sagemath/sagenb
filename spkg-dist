@@ -223,7 +223,7 @@ if [ $? -ne 0 ]; then
     echo >&2 "Error overwriting original 'easy-install.pth'."
     exit 1
 fi
-""" % {install_dependencies: install_dependencies})
+""" % {'install_dependencies': install_dependencies})
 spkg_install_fd.close()
 os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
          stat.S_IROTH | stat.S_IXOTH) # -rwxr-xr-x
