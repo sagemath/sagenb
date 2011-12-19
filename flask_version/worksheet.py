@@ -569,6 +569,9 @@ def worksheet_invite_collab(worksheet):
     id_number = worksheet.id_number()
     old_collaborators = set(worksheet.collaborators())
     collaborators = set([u.strip() for u in request.values.get('collaborators', '').split(',') if u!=owner])
+    if len(collaborators-old_collaborators)>100:
+        # to prevent abuse, you can't add more than 100 collaborators at a time
+        return current_app.message(_("Error: can't add more than 100 collaborators at a time"), cont=url_for_worksheet(worksheet))
     worksheet.set_collaborators(collaborators)
     user_manager = g.notebook.user_manager()
     # add worksheet to new collaborators
