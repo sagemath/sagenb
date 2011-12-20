@@ -2,6 +2,7 @@
 \.scssc$
 \.sassc$
 \.git$
+\.gitignore$
 \.hi$
 \.mtl$
 \.obj$

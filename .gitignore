@@ -1,0 +1,23 @@
+# Boring file regexps:
+*.scssc
+*.sassc
+*~
+/.hg
+/.hgtags
+*.orig
+*.patch
+*.pyc
+*.pyo
+
+# sage files to ignore:
+/build
+/dist
+MANIFEST
+PKG-INFO
+release_notes.txt
+/sass/src/.sass-cache
+/sagenb/data/jmol
+/sagenb.egg-info
+sagenb/data/jsmath/fonts
+sagenb/data/MathJax
+/setup.cfg
