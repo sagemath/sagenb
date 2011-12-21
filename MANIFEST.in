@@ -5,4 +5,4 @@ recursive-include flask_version *
 include *.txt Makefile MANIFEST.in .hgignore .hgtags sdist spkg-dist SPKG.txt go .gitignore
 recursive-include .hg *
 prune .hg/git
-global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc
+global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc *.DS_Store
