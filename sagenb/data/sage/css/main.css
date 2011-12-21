@@ -1472,7 +1472,7 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 /* line 607, ../../../../sass/src/jquery-plugins/_ui.achtung.scss */
 .achtung .achtung-message-icon { margin-top: 0px; margin-left: -0.5em; margin-right: .5em; float: left; zoom: 1; }
 /* line 614, ../../../../sass/src/jquery-plugins/_ui.achtung.scss */
-.achtung .ui-icon.achtung-close-button { overflow: hidden; float: right; position: relative; top: -8px; right: -8px; cursor: pointer; background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_cccccc_256x240.png); }
+.achtung .ui-icon.achtung-close-button { overflow: hidden; float: right; position: relative; top: -8px; right: -8px; cursor: pointer; background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_888888_256x240.png); }
 /* line 622, ../../../../sass/src/jquery-plugins/_ui.achtung.scss */
 .achtung .ui-icon.achtung-close-button-hover { background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_ffffff_256x240.png); }
 
@@ -1490,10 +1490,10 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 .achtungWait { background-color: #658093; }
 
 /* line 642, ../../../../sass/src/jquery-plugins/_ui.achtung.scss */
-.achtungSuccess .ui-icon.achtung-close-button, .achtungFail .ui-icon.achtung-close-button { background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_444444_256x240.png); }
+.achtungSuccess .ui-icon.achtung-close-button, .achtungFail .ui-icon.achtung-close-button { background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_2e83ff_256x240.png); }
 
 /* line 645, ../../../../sass/src/jquery-plugins/_ui.achtung.scss */
-.achtungSuccess .ui-icon.achtung-close-button-hover, .achtungFail .ui-icon.achtung-close-button-hover { background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_000000_256x240.png); }
+.achtungSuccess .ui-icon.achtung-close-button-hover, .achtungFail .ui-icon.achtung-close-button-hover { background-image: url(/javascript/jqueryui/css/sage/images/ui-icons_222222_256x240.png); }
 
 /* line 649, ../../../../sass/src/jquery-plugins/_ui.achtung.scss */
 .achtung .wait-icon { background-image: url("/javascript/jqueryui/css/sage/images/wait.gif"); }
