@@ -46,6 +46,7 @@
 \#
 \.cvsignore$
 (^|/)Thumbs\.db$
+^\.gitk-tmp
 # sage files to ignore:
 (^|/).doctest*
 ^dist($|/)
