@@ -1,7 +1,8 @@
 recursive-include sagenb *
 recursive-include sass *
-recursive-include flask_version *
 prune sass/src/.sass-cache
-include *.txt Makefile MANIFEST.in .hgignore .hgtags sdist spkg-dist SPKG.txt go
+recursive-include flask_version *
+include *.txt Makefile MANIFEST.in .hgignore .hgtags sdist spkg-dist SPKG.txt go .gitignore
 recursive-include .hg *
+prune .hg/git
 global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc
