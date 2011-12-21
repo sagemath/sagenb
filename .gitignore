@@ -8,6 +8,7 @@
 *.patch
 *.pyc
 *.pyo
+/*.gitk-tmp*
 
 # sage files to ignore:
 /build
