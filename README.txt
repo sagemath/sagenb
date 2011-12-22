@@ -23,7 +23,7 @@ MORE DETAILS:
 
    1. Make sure you have Python 2.6 installed with the following packages:
 
-      * Jinja-1.2-py2.6-macosx-10.3-i386.egg
+      * Jinja2-2.5.5-py2.6.egg
       * Pygments-1.1.1-py2.6.egg
       * Sphinx-0.5.1-py2.6.egg
       * Twisted 11
