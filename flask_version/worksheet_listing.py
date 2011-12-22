@@ -261,7 +261,13 @@ def upload_worksheet():
             # Or shall we try to import the document as an sws in doubt?
             return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
         filename = tmp_filename()+extension
-        urllib.urlretrieve(url, filename)
+        try:
+            urllib.urlretrieve(url, filename)
+        except IOError as err:
+            if err.strerror == 'unknown url type' and err.filename == 'https':
+                return current_app.message(_("This Sage notebook is not configured to load worksheets from 'https' URLs. Try a different URL or download the worksheet and upload it directly from your computer.\n%(backlinks)s",backlinks=backlinks))
+            else:
+                raise
     else:
         #Uploading a file from the user's computer
         dir = tmp_dir()
