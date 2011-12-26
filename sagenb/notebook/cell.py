@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-A Cell.
+A Cell
 
 A cell is a single input/output block. Worksheets are built out of
 a list of cells.
