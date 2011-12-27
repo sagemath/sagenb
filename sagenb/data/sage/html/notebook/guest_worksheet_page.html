@@ -29,6 +29,10 @@ INPUT:
 
 {% set download_name = worksheet.download_name() %}
 
+{% block published_link_rel %}
+<link rel="alternate" type="application/sage" title="{{ render_title() }}" href="download/{{ download_name }}.sws" />
+{% endblock %}
+
 {% block body %}
 <ul class="controls">
     <li><a href="{{ url }}">{{ edit_text }}</a></li>
