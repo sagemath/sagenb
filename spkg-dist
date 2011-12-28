@@ -178,6 +178,12 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Create an appropriate hgrc file for the target
+cat > "$SAGE_ROOT/devel/sagenb-main/.hg/hgrc" <<"HEREDOC"
+[diff]
+git = true
+HEREDOC
+
 cd "$SAGE_ROOT/devel"
 ln -s sagenb-main sagenb # Create new symbolic link (deleted above)
 if [ $? -ne 0 ]; then
