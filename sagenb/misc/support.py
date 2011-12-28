@@ -232,6 +232,14 @@ def docstring(obj_name, globs, system='sage'):
     - William Stein: partly taken from IPython for use in Sage
 
     - Nick Alexander: extensions
+
+    TESTS:
+
+    Check that Trac 10860 is fixed and we can handle Unicode help
+    strings in the notebook::
+
+        sage: from sagenb.misc.support import docstring
+        sage: D = docstring("r.lm", globs=globals())
     """
     if system not in ['sage', 'python']:
         obj_name = system + '.' + obj_name
@@ -260,7 +268,7 @@ def docstring(obj_name, globs, system='sage'):
     s += newline
     s += sageinspect.sage_getdoc(obj, obj_name)
     s = s.rstrip()
-    return html_markup(s)
+    return html_markup(s.decode('utf-8'))
 
 def html_markup(s):
     try:
