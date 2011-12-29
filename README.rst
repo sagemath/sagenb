@@ -27,7 +27,7 @@ directory. Then run the notebook from within Sage as follows::
     sage: import sagenb.notebook.notebook_object as nb
     sage: nb.notebook(directory="mynotebook")
 
-This will create a directory mynotebook.sagenb, and all notebook data is
+This will create a directory ``mynotebook.sagenb``, and all notebook data is
 stored in that directory.
 
 SSL support
@@ -43,3 +43,13 @@ console. If you get an error, then do the following.
    one way to do this is to run ``sudo apt-get install libssl-dev``.
 2. Recompile Sage's internal Python interpreter by running ``sage -f
    python``.
+
+Development
+-----------
+
+Development of the sage notebook currently occurs on github using
+the git revision control system.  However, since Sage ships with
+Mercurial, a mercurial repository is provided in the spkg which
+mirrors the git repository.
+
+
