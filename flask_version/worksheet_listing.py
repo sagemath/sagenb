@@ -1,6 +1,7 @@
 """
 """
 import os
+import urllib, urlparse
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required, with_lock
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
@@ -238,6 +239,95 @@ def upload():
     return render_template(os.path.join('html', 'upload.html'),
                            username=g.username)
 
+class RetrieveError(Exception):
+    """
+    Use this in my_urlretrieve below, and when calling that function, do:
+
+    try:
+        my_urlretrive(...)
+    except RetrieveError as err:
+        return current_app.message(str(err))
+
+    This allows us to factor out all the error message handling into
+    my_urlretrieve.
+    """
+    pass
+
+def my_urlretrieve(url, *args, **kwargs):
+    """
+    Call urllib.urlretrieve and give friendly error messages depending
+    on the result. If successful, return exactly what urllib.urlretrieve
+    would. Arguments are exactly the same as urlretrieve, except that
+    you can also specify a ``backlinks`` keyword used in the error
+    message.
+
+    Raises RetrieveError when an error occurs for which we can figure
+    out a sensible error message.
+    """
+    try:
+        backlinks = kwargs.pop('backlinks')
+    except KeyError:
+        backlinks = ''
+    try:
+        return urllib.urlretrieve(url, *args, **kwargs)
+    except IOError as err:
+        if err.strerror == 'unknown url type' and err.filename == 'https':
+            raise RetrieveError(_("This Sage notebook is not configured to load worksheets from 'https' URLs. Try a different URL or download the worksheet and upload it directly from your computer.\n%(backlinks)s",backlinks=backlinks))
+        else:
+            raise
+
+def parse_link_rel(url, fn):
+    """
+    Read through html file ``fn`` downloaded from ``url``, looking for a
+    link tag of the form:
+
+    <link rel="alternate"
+          type="application/sage"
+          title="currently ignored"
+          href=".../example.sws" />
+
+    This function reads ``fn`` looking for such tags and returns a list
+    of dictionaries of the form
+
+    {'title': from title field in link, 'url': absolute URL to .sws file}
+
+    for the corresponding ``.sws`` files. Naturally if there are no
+    appropriate link tags found, the returned list is empty. If the HTML
+    parser raises an HTMLParseError, we simply return an empty list.
+    """
+    from HTMLParser import HTMLParser
+    class GetLinkRelWorksheets(HTMLParser):
+        def __init__(self):
+            HTMLParser.__init__(self)
+            self.worksheets = []
+
+        def handle_starttag(self, tag, attrs):
+            if (tag == 'link' and
+                ('rel', 'alternate') in attrs and
+                ('type', 'application/sage') in attrs):
+                self.worksheets.append({'title': [_ for _ in attrs if _[0] == 'title'][0][1],
+                                          'url': [_ for _ in attrs if _[0] == 'href'][0][1]})
+
+    parser = GetLinkRelWorksheets()
+    with open(fn) as f:
+        try:
+            parser.feed(f.read())
+        except HTMLParseError:
+            return []
+
+    ret = []
+    for d in parser.worksheets:
+        sws = d['url']
+        # is that link a relative URL?
+        if not urlparse.urlparse(sws).netloc:
+            # unquote-then-quote to avoid turning %20 into %2520, etc
+            ret.append({'url': urlparse.urljoin(url, urllib.quote(urllib.unquote(sws))),
+                        'title': d['title']})
+        else:
+            ret.append({'url': sws, 'title': d['title']})
+    print 'parsing found:', ret
+    return ret
+
 @worksheet_listing.route('/upload_worksheet', methods=['GET', 'POST'])
 @login_required
 def upload_worksheet():
@@ -251,17 +341,18 @@ def upload_worksheet():
     dir = ''
     if url:
         #Downloading a file from the internet
-        import urllib, urlparse
-        filename = tmp_filename() + ('.zip' if url.endswith('.zip') else '.sws')
         # The file will be downloaded from the internet and saved
         # to a temporary file with the same extension
         path = urlparse.urlparse(url).path
         extension = os.path.splitext(path)[1].lower()
-        if extension not in [".txt", ".sws", ".zip", ".html", ".rst"]:
-            # Or shall we try to import the document as an sws in doubt?
+        if extension not in ["", ".txt", ".sws", ".zip", ".html", ".rst"]:
+            # Or shall we try to import the document as an sws when in doubt?
             return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
         filename = tmp_filename()+extension
-        urllib.urlretrieve(url, filename)
+        try:
+            my_urlretrieve(url, filename, backlinks=backlinks)
+        except RetrieveError as err:
+            return current_app.message(str(err))
     else:
         #Uploading a file from the user's computer
         dir = tmp_dir()
@@ -299,8 +390,18 @@ def upload_worksheet():
                 return redirect(url_for('home', username=g.username))
 
             else:
+                if url and extension in ['', '.html']:
+                    linked_sws = parse_link_rel(url, filename)
+                    if linked_sws:
+                        # just grab 1st URL; perhaps later add interface for
+                        # downloading multiple linked .sws
+                        try:
+                            filename = my_urlretrieve(linked_sws[0]['url'], backlinks=backlinks)[0]
+                            print 'importing {0}, linked to from {1}'.format(linked_sws[0]['url'], url)
+                        except RetrieveError as err:
+                            return current_app.message(str(err))
+                print 'importing filename:', filename
                 W = g.notebook.import_worksheet(filename, g.username)
-
         except Exception, msg:
             print 'error uploading worksheet', msg
             s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!\n%(backlinks)s', backlinks=backlinks)
