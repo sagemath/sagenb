@@ -186,6 +186,10 @@ git = true
 
 [extensions]
 hggit=
+
+[git]
+intree = True
+
 HEREDOC
 
 cd "$SAGE_ROOT/devel"
