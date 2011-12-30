@@ -51,5 +51,3 @@ Development of the sage notebook currently occurs on github using
 the git revision control system.  However, since Sage ships with
 Mercurial, a mercurial repository is provided in the spkg which
 mirrors the git repository.
-
-
