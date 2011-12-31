@@ -27,8 +27,8 @@ directory. Then run the notebook from within Sage as follows::
     sage: import sagenb.notebook.notebook_object as nb
     sage: nb.notebook(directory="mynotebook")
 
-This will create a directory ``mynotebook.sagenb``, and all notebook data is
-stored in that directory.
+This will create a directory ``mynotebook.sagenb``, and all notebook
+data is stored in that directory.
 
 SSL support
 -----------
@@ -44,8 +44,10 @@ console. If you get an error, then do the following.
 2. Recompile Sage's internal Python interpreter by running ``sage -f
    python``.
 
+
+
 Development
------------
+===========
 
 Development of the sage notebook currently occurs on github using
 the git revision control system.  However, since Sage ships with
@@ -57,6 +59,7 @@ To update to the latest source, run the commands below.
 .. warning:: This will discard any changes you have made to the files.
 
 ::
+
     cd $SAGE_ROOT/devel/sagenb
     hg pull git://github.com/sagemath/sagenb.git
     hg update
@@ -68,6 +71,7 @@ after you have done the above.
    notebook files.
 
 ::
+
     git config --local core.bare false
     git reset --hard
     git remote add upstream git://github.com/sagemath/sagenb.git
