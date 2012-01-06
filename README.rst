@@ -49,30 +49,5 @@ console. If you get an error, then do the following.
 Development
 ===========
 
-Development of the sage notebook currently occurs on github using
-the git revision control system.  However, since Sage ships with
-Mercurial, a mercurial repository is provided in the spkg which
-mirrors the git repository.
-
-To update to the latest source, run the commands below.
-
-.. warning:: This will discard any changes you have made to the files.
-
-::
-
-    cd $SAGE_ROOT/devel/sagenb
-    hg pull git://github.com/sagemath/sagenb.git
-    hg update
-
-To switch to using git to manage the repository, do the following
-after you have done the above.
-
-.. warning:: This will discard any changes you have made to sage
-   notebook files.
-
-::
-
-    git config --local core.bare false
-    git reset --hard
-    git remote add upstream git://github.com/sagemath/sagenb.git
-    git pull upstream master
+See the Sage Developer's guide, part of the Sage documentation, for
+instructions.
