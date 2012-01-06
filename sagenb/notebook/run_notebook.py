@@ -108,8 +108,12 @@ class QuietSite(server.Site):
         "Override the logging so that requests are not logged"
         pass
 
-
+# Log only errors, not every page hit
 site = QuietSite(resource)
+
+# To log every single page hit, uncomment the following line
+#site = server.Site(resource)
+
 from twisted.application import service, strports
 application = service.Application("Sage Notebook")
 s = strports.service(%(strport)r, site)
