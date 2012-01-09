@@ -99,7 +99,8 @@ def fetch_packages():
                          'Flask-Babel>=0.8',
                          'Flask-OpenID>=1.0.1',
                          'dulwich>=0.8.0',
-                         'hg-git>=0.3.1')
+                         'hg-git>=0.3.1',
+                         'pyOpenSSL')
     pkg_locations = []
 
     for pkg in required_packages:
