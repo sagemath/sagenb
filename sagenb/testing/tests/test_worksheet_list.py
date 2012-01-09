@@ -34,7 +34,7 @@ class TestWorksheetList(NotebookTestCase):
         self.create_new_worksheet(u'Worksheet Creation - ΫäĻƾṀБ')
 
         # Verify that the page has all the requisite elements.
-        elements = ('link=Home', 'link=Help', 'link=Worksheet View', 'link=Sign out',
+        elements = ('link=Home', 'link=Help', 'link=Worksheet', 'link=Sign out',
                     'link=Toggle', 'link=Settings', 'link=Report a Problem',
                     'link=Log', 'link=Published', '//a[@id="worksheet_title"]',
                     '//button[@name="button_save"]')
