@@ -86,8 +86,12 @@ class SageNBFlask(Flask):
 
 #XXX: This should probably be made able to put in a "central" place
 #with all of the jsmath stuff rather than just a global variable here.
-from sagenb.misc.misc import is_package_installed
-jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
+# Image fonts are not needed with MathJax
+# they should be in the same spkg as MathJax routines
+# Commented out as part of conversion to Flask notebook
+#
+# from sagenb.misc.misc import is_package_installed
+# jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
 
 base = Module('flask_version.base')
 
@@ -155,15 +159,14 @@ def localization_js():
     return response
 
 _jsmath_js_cache = None
-@base.route('/javascript/dynamic/jsmath.js')
-def jsmath_js():
-    global _jsmath_js_cache
-    if _jsmath_js_cache is None:
-        from sagenb.misc.misc import jsmath_macros
-        data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
-                               jsmath_image_fonts=jsmath_image_fonts)
-        _jsmath_js_cache = (data, sha1(repr(data)).hexdigest())
-    data,datahash = _jsmath_js_cache
+@base.route('/javascript/dynamic/mathjax.js')
+def mathjax_js():
+    global _mathjax_js_cache
+    if _mathjax_js_cache is None:
+        from sagenb.misc.misc import mathjax_macros
+        data = render_template('js/mathjax.js', theme_mathjax_macros=mathjax_macros)
+        _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
+    data,datahash = _mathjax_js_cache
 
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)

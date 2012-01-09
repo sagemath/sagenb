@@ -91,7 +91,7 @@ def sphinxify(docstring, format='html'):
         suffix = '.txt'
     output_name = base_name + suffix
 
-    # This is needed for jsMath to work.
+    # This is needed for MathJax to work.
     docstring = docstring.replace('\\\\', '\\')
 
     filed = open(rst_name, 'w')
