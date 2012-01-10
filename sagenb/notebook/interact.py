@@ -155,6 +155,7 @@ from base64 import standard_b64decode
 # Sage libraries
 from jsmath import math_parse
 from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
+from sage.misc.cachefunc import cached_method
 
 # SAGE_CELL_ID is a module scope variable that is always set equal to
 # the current cell id (of the executing cell).  Code that sets this is
@@ -3148,61 +3149,64 @@ class slider_generic(control):
                  display_value=True):
         control.__init__(self, label=label)
         self.__display_value = display_value
-        if isinstance(vmin, list):
-            vals = vmin
-        else:
-            if vmax is None:
-                vmax = vmin
-                vmin = 0
+        self.__vmin = vmin
+        self.__vmax = vmax
+        self.__step_size = step_size
 
+    @cached_method
+    def values(self):
+        """
+        Returns list of values that this slider takes on, in order.
+        
+        OUTPUT:
+        
+        - a list
+        
+        .. note:: This is a reference to a mutable list.
+        
+        EXAMPLES::
+        
+        sage: sagenb.notebook.interact.slider(1,10,1/2).values()
+        [1, 3/2, 2, 5/2, 3, 7/2, 4, 9/2, 5, 11/2, 6, 13/2, 7, 15/2, 8, 17/2, 9, 19/2, 10]
+        """
+        if isinstance(self.__vmin, list):
+            vals = self.__vmin
+        else:
+            if self.__vmax is None:
+                self.__vmax = self.__vmin
+                self.__vmin = 0
+                
             # Compute step size; vmin and vmax are both defined here
             # 500 is the length of the slider (in px)
-            if step_size is None:
-                step_size = (vmax-vmin) / 499.0
-            elif step_size <= 0:
+            if self.__step_size is None:
+                self.__step_size = (self.__vmax-self.__vmin) / 499.0
+            elif self.__step_size <= 0:
                 raise ValueError, "invalid negative step size -- step size must be positive"
 
             #Compute list of values
-            num_steps = int(math.ceil((vmax-vmin)/float(step_size)))
+            num_steps = int(math.ceil((self.__vmax-self.__vmin)/float(self.__step_size)))
             if num_steps <= 2:
-                vals = [vmin, vmax]
+                vals = [self.__vmin, self.__vmax]
             else:
-                vals = srange(vmin, vmax, step_size, include_endpoint=True)
-                if vals[-1] != vmax:
+                vals = srange(self.__vmin, self.__vmax, self.__step_size, include_endpoint=True)
+                if vals[-1] != self.__vmax:
                     try:
-                        if vals[-1] > vmax:
-                            vals[-1] = vmax
+                        if vals[-1] > self.__vmax:
+                            vals[-1] = self.__vmax
                         else:
-                            vals.append(vmax)
+                            vals.append(self.__vmax)
                     except (ValueError, TypeError):
                         pass
                 
         # Is the list of values is small (len < =50), use the whole
         # list.  Otherwise, use part of the list.
         if len(vals) == 0:
-            self.__values = [0]   
+            return [0]
         elif(len(vals) <= 500):
-            self.__values = vals
+            return vals
         else:
             vlen = (len(vals)-1) / 499.0
-            self.__values = [vals[(int)(i * vlen)] for i in range(500)]
-
-    def values(self):
-        """
-        Returns list of values that this slider takes on, in order.
-
-        OUTPUT:
-
-        - a list
-
-        .. note:: This is a reference to a mutable list.
-
-        EXAMPLES::
-
-            sage: sagenb.notebook.interact.slider(1,10,1/2).values()
-            [1, 3/2, 2, 5/2, 3, 7/2, 4, 9/2, 5, 11/2, 6, 13/2, 7, 15/2, 8, 17/2, 9, 19/2, 10]
-        """
-        return self.__values
+            return [vals[(int)(i*vlen)] for i in range(500)]
 
     def display_value(self):
         """
@@ -3267,23 +3271,7 @@ class slider(slider_generic):
         """
         slider_generic.__init__(self, vmin, vmax, step_size, label, 
                                 display_value)
-        # Determine the best choice of index into the list of values
-        # for the user-selected default.
-        if default is None:
-            self.__default = 0
-        else:
-            try:
-                i = self.values().index(default)
-            except ValueError:
-                # Here no index matches -- which is best?
-                try:
-                    v = [(abs(default - self.values()[j]), j) for j in range(len(self.values()))]
-                    m = min(v)
-                    i = m[1]
-                except TypeError: 
-                    # abs not defined on everything, so give up
-                    i = 0
-            self.__default = i
+        self.__default = default
 
     def __repr__(self):
         """
@@ -3302,7 +3290,7 @@ class slider(slider_generic):
             self.label(), self.values()[0],
             self.values()[self.default_index()], self.values()[-1])
 
-
+    @cached_method
     def default_index(self):
         """
         Return default index into the list of values.
@@ -3316,7 +3304,22 @@ class slider(slider_generic):
             sage: slider(2, 5, 1/2, 3, 'alpha').default_index()
             2
         """
-        return self.__default
+        # determine the best choice of index into the list of values
+        # for the user-selected default
+        if self.__default is None:
+            return 0
+        else:
+            try:
+                i = self.values().index(self.__default)
+            except ValueError:
+                # here no index matches - which is best?
+                try:
+                    v = [(abs(self.__default - self.values()[j]), j) for j in range(len(self.values()))]
+                    m = min(v)
+                    i = m[1]
+                except TypeError: # abs not defined on everything, so give up
+                    i = 0
+            return i
 
     def render(self, var):
         """
@@ -3340,8 +3343,8 @@ class slider(slider_generic):
             sage: slider(2, 5, 2/7, 3, 'alpha').render('x')
             Slider Interact Control: alpha [2--|20/7|---5]
         """
-        return Slider(var, self.values(), self.__default, label=self.label(), 
-                      display_value=self.display_value())
+        return Slider(var, self.values(), self.default_index(),
+                      label=self.label(), display_value=self.display_value())
 
 
 class range_slider(slider_generic):
@@ -3385,29 +3388,7 @@ class range_slider(slider_generic):
         """
         slider_generic.__init__(self, vmin, vmax, step_size, label, 
                                 display_value)
-
-        # Determine the best choice of index into the list of values
-        # for the user-selected default.
-        if default is None:
-            self.__default = (0, 1)
-        elif not isinstance(default, tuple) or len(default) != 2:
-            raise TypeError("default value must be None or a 2-tuple.")
-        else:
-            dlist = []
-            for i in [0, 1]:
-                try:
-                    d = self.values().index(default[i])
-                except ValueError:
-                    # Here no index matches -- which is best?
-                    try:
-                        v = [(abs(default[i] - self.values()[j]), j) for j in range(len(self.values()))]
-                        m = min(v)
-                        d = m[1]
-                    except TypeError: 
-                        # abs not defined on everything, so give up
-                        d = 0
-                dlist.append(d)
-            self.__default = (dlist[0], dlist[1])
+        self.__default = default
 
     def __repr__(self):
         """
@@ -3426,7 +3407,8 @@ class range_slider(slider_generic):
             self.label(), self.values()[0],
             self.values()[self.default_index()[0]], 
             self.values()[self.default_index()[1]], self.values()[-1])
-
+    
+    @cached_method
     def default_index(self):
         """
         Return default index into the list of values.
@@ -3440,7 +3422,28 @@ class range_slider(slider_generic):
             sage: range_slider(2, 5, 1/2, (3,4), 'alpha').default_index()
             (2, 4)
         """
-        return self.__default
+        # Determine the best choice of index into the list of values
+        # for the user-selected default.
+        if self.__default is None:
+            return (0,1)
+        elif not isinstance(self.__default, tuple) or len(self.__default) != 2:
+            raise TypeError("default value must be None or a 2-tuple.")
+        else:
+            dlist = []
+            for i in [0, 1]:
+                try:
+                    d = self.values().index(self.__default[i])
+                except ValueError:
+                    # Here no index matches -- which is best?
+                    try:
+                        v = [(abs(self.__default[i] - self.values()[j]), j) for j in range(len(self.values()))]
+                        m = min(v)
+                        d = m[1]
+                    except TypeError:
+                        # abs not defined on everything, so give up
+                        d = 0
+                dlist.append(d)
+            return (dlist[0], dlist[1])
 
     def render(self, var):
         """
@@ -3464,8 +3467,8 @@ class range_slider(slider_generic):
             sage: range_slider(2, 5, 2/7, (3,4), 'alpha').render('x')
             Range Slider Interact Control: alpha [2--|20/7==4|---5]
         """
-        return RangeSlider(var, self.values(), self.__default, 
-                           label=self.label(), 
+        return RangeSlider(var, self.values(), self.default_index(),
+                           label=self.label(),
                            display_value=self.display_value())
 
         
