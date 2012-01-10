@@ -325,7 +325,6 @@ def parse_link_rel(url, fn):
                         'title': d['title']})
         else:
             ret.append({'url': sws, 'title': d['title']})
-    print 'parsing found:', ret
     return ret
 
 @worksheet_listing.route('/upload_worksheet', methods=['GET', 'POST'])
@@ -397,10 +396,9 @@ def upload_worksheet():
                         # downloading multiple linked .sws
                         try:
                             filename = my_urlretrieve(linked_sws[0]['url'], backlinks=backlinks)[0]
-                            print 'importing {0}, linked to from {1}'.format(linked_sws[0]['url'], url)
+                            print 'Importing {0}, linked to from {1}'.format(linked_sws[0]['url'], url)
                         except RetrieveError as err:
                             return current_app.message(str(err))
-                print 'importing filename:', filename
                 W = g.notebook.import_worksheet(filename, g.username)
         except Exception, msg:
             print 'error uploading worksheet', msg
