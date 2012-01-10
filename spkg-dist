@@ -98,7 +98,9 @@ def fetch_packages():
                          'Flask-AutoIndex>=0.4.0',
                          'Flask-Babel>=0.8',
                          'Flask-OpenID>=1.0.1',
-                         )
+                         'dulwich>=0.8.0',
+                         'hg-git>=0.3.1',
+                         'pyOpenSSL')
     pkg_locations = []
 
     for pkg in required_packages:
@@ -177,6 +179,18 @@ if [ $? -ne 0 ]; then
     echo >&2 "Error copying the new SageNB package."
     exit 1
 fi
+
+# Create an appropriate hgrc file for the target
+cat > "$SAGE_ROOT/devel/sagenb-main/.hg/hgrc" <<"HEREDOC"
+[diff]
+git = true
+
+[extensions]
+hggit=
+
+[git]
+intree = True
+HEREDOC
 
 cd "$SAGE_ROOT/devel"
 ln -s sagenb-main sagenb # Create new symbolic link (deleted above)

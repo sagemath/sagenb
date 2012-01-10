@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 r"""
-A Worksheet.
+A Worksheet
 
 A worksheet is embedded in a web page that is served by the Sage
 server. It is a linearly-ordered collections of numbered cells,
