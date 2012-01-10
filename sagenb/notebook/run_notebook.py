@@ -10,15 +10,8 @@ Server the Sage Notebook.
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-try:
-    # If Sage is installed, then we have gnutls, etc., and GPL'd code,
-    # so we prefer GNUtls.
-    import sage.misc.misc
-    protocol = 'tls'
-except ImportError:
-    # We are not in the presence of Sage, so we probably have SSL,
-    # which is better anyways.
-    protocol = 'ssl'
+# From 5.0 forward, no longer supporting GnuTLS, so only use SSL protocol from OpenSSL
+protocol = 'ssl'
 
 # System libraries
 import getpass
@@ -79,13 +72,6 @@ def my_sigint(x, n):
     
     
 signal.signal(signal.SIGINT, my_sigint)
-
-## Disable client-side certificate request for gnutls
-try:
-    import gnutls.connection
-    gnutls.connection.CERT_REQUEST = 0
-except (OSError, ImportError):
-    print "Note: GNUTLS not available."
 
 from twisted.web import server
 
