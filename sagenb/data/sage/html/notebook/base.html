@@ -35,8 +35,20 @@ INPUT:
 {% endif %}
 
 {% if JSMATH %}
-<!-- jsMath - typeset mathematics -->
-<script type="text/javascript" src="/javascript/dynamic/jsmath.js"></script>
+<!-- MathJax - typeset mathematics -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  extensions: ["jsMath2jax.js"],
+  styles: {
+    ".MathJax .mo, .MathJax .mi": {
+      color: "inherit ! important"
+    }
+  }
+});
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full"></script>
+<!-- Add http on /javascript/sage/mathjax.js when standalone mathJax -->
+<!--<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML-full,http://localhost:8000/javascript/dynamic/mathjax.js"></script>-->
 {% endif %}
 
 <!-- Sage3d - accelerated 3D graphics -->

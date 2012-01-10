@@ -18,7 +18,7 @@ import re
 import shutil
 from cgi import escape
 
-from jsmath import math_parse
+from mathjax import math_parse
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
@@ -541,8 +541,8 @@ class TextCell(Cell_generic):
           cell for printing
 
         - ``do_math_parse`` - a boolean (default: True); whether to
-          process the contents for JSMath (see
-          :func:`sagenb.notebook.jsmath.math_parse`)
+          process the contents for MathJax (see
+          :func:`sagenb.notebook.mathjax.math_parse`)
 
         - ``editing`` - a boolean (default: False); whether to open an
           editor for this cell
@@ -1864,6 +1864,15 @@ class Cell(Cell_generic):
         # version of the output.
         if ncols == 0:
             t = re_script.sub('', t)
+        #  This is a temporary hack
+        #re_inline = re.compile('<script type="math/tex">(.*?)</script>')
+        #re_display = re.compile('<script type="math/tex; mode=display">(.*?)</script>')
+        #t = re_inline.sub('<span class="math">\1</span>', t)
+        #t = re_display.sub('<div class="math">\1</div>', t)
+        #t = t.replace('<script type="math/tex">(.*?)</script>', '<span class="math">\1</span>')
+        #t = t.replace('<script type="math/tex; mode=display">(.*?)</script>', '<div class="math">\1</div>')
+        ####t = t.replace('<script type="math/tex">', '<span class="math">')
+        ####t = t.replace('</script>', '</span>')
         return t
 
     def has_output(self):

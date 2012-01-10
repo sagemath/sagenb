@@ -269,9 +269,6 @@ function initialize_the_notebook() {
     // Get the keyboard codes for our browser/os combination.
     get_keyboard();
 
-    // Attempt to render any jsmath in this page.
-    jsmath_init();
-
     // Parse the cell IDs.
     cell_id_list = $.map(cell_id_list, function (id) {
         // Reset each cell's introspection variables.
@@ -403,16 +400,6 @@ function get_keyboard() {
     }
 
     $.getScript('/javascript/dynamic/keyboard/' + b + o);
-}
-
-
-function jsmath_init() {
-    /*
-    Process all the jsmath in this page.
-    */
-    try {
-        jsMath.Process();
-    } catch (e) {}
 }
 
 
@@ -1250,7 +1237,7 @@ function update_introspection_text(id, text) {
         introspect_div.html(text);
         if (contains_jsmath(text)) {
             try {
-                jsMath.ProcessBeforeShowing(introspect_div.get(0));
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub,introspect_div.get(0)]);
             } catch (e) {
                 introspect_div.html(jsmath_font_msg + introspect_div.html());
             }
@@ -2142,7 +2129,7 @@ function evaluate_text_cell_callback(status, response) {
 
     if (contains_jsmath(X.cell_html)) {
         try {
-            jsMath.ProcessBeforeShowing(text_cell);
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,text_cell]);
         } catch (e) {
             text_cell.innerHTML = jsmath_font_msg + text_cell.innerHTML;
         }
@@ -3565,8 +3552,11 @@ function contains_jsmath(text) {
     */
     // TODO: Use a RegExp.
     text = text.toLowerCase();
+    // Mathjax - match math/tex and math/tex; mode=display
     return (text.indexOf('class="math"') !== -1 ||
-            text.indexOf("class='math'") !== -1);
+            text.indexOf("class='math'") !== -1 ||
+            text.indexOf('type="math/tex') !== -1 ||
+            text.indexOf("type='math/tex") !== -1);
 }
 
 
@@ -3629,12 +3619,11 @@ function set_output_text(id, status, output_text, output_text_wrapped,
         cell_interact = get_element('cell-interact-' + id);
         cell_interact.innerHTML = new_interact_output;
         if (contains_jsmath(new_interact_output)) {
-            jsMath.ProcessBeforeShowing(cell_interact);
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_interact]);
         }
 
         return false;
     }
-
     // Fill in output text got so far.
     cell_output = get_element('cell_output_' + id);
     if (!cell_output) {
@@ -3652,10 +3641,10 @@ function set_output_text(id, status, output_text, output_text_wrapped,
     cell_output_nowrap.innerHTML = output_text;
     cell_output_html.innerHTML = output_html;
 
-    // Call jsMath on the final output.
-    if (status === 'd' && contains_jsmath(output_text)) {
+    // Call MathJax on the final output.
+    if (status === 'd' && (contains_jsmath(output_text)||contains_jsmath(output_text_wrapped))) {
         try {
-            jsMath.ProcessBeforeShowing(cell_output);
+            MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
         } catch (e) {
             cell_output.innerHTML = jsmath_font_msg + cell_output.innerHTML;
             cell_output_nowrap.innerHTML = jsmath_font_msg +
@@ -3679,7 +3668,7 @@ function set_output_text(id, status, output_text, output_text_wrapped,
         // function (i.e., interact.recompute) is actually called!
         if (contains_jsmath(output_text_wrapped)) {
             try {
-                jsMath.ProcessBeforeShowing(cell_output);
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
             } catch (e2) {
                 // Do nothing.
             }
@@ -3744,32 +3733,44 @@ function eval_script_tags(text) {
     OUTPUT
         string with all script tags removed
     */
-    var code, i, j, k, left_tag, right_tag, s, script;
 
-    left_tag = new RegExp(/<(\s)*script.*?>/i);
+    var i, j, k, left_tag, right_tag, s, script, new_text, script_end, left_match;
+
+    left_tag = new RegExp(/<(\s)*script(.*)?>/i);
     right_tag = new RegExp(/<(\s*)\/(\s*)script(\s)*>/i);
 
     script = '';
+    new_text='';
     s = text;
     i = s.search(left_tag);
     while (i !== -1) {
+        left_match = s.match(left_tag);
         j = s.search(right_tag);
-        k = i + (s.match(left_tag)[0] + '').length;
+        k = i + (left_match[0] + '').length;
+	script_end=j + (s.match(right_tag)[0] + '').length;
         if (j === -1 || j < k) {
             break;
         }
-        code = s.slice(k, j);
-        try {
-            cell_writer = new CellWriter();
-            eval(code);
-        } catch (e) {
-            alert(e);
-        }
-        s = s.slice(0, i) + cell_writer.buffer +
-            s.slice(j + (s.match(right_tag)[0] + '').length);
+        // MathJax uses the script tag with a type='math/tex(display|inline)'
+        // to encode characters (as a sort of CDATA thing).  We *don't* want
+        // to execute these script tags since they need to appear inline.
+        if (!left_match[2] || left_match[2].indexOf('math/tex')===-1) {
+            code = s.slice(k, j);
+            try {
+		cell_writer = new CellWriter();
+		eval(code);
+            } catch (e) {
+		alert(e);
+            }
+            new_text += s.slice(0, i) + cell_writer.buffer;
+	} else {
+	    new_text += s.slice(0, script_end);
+	}
+        s = s.slice(script_end);
         i = s.search(left_tag);
     }
-    return s;
+    new_text+=s;
+    return new_text;
 }
 
 
@@ -3783,27 +3784,39 @@ function separate_script_tags(text) {
         text -- string
     OUTPUT
         list of two strings:
-            [text w/o script tags, content of script tags]
+            [text w/o script tags (but includes math/tex script tags), content of script tags]
     */
-    var i, j, k, left_tag, right_tag, s, script;
+    var i, j, k, left_tag, right_tag, s, script, new_text, script_end, left_match;
 
-    left_tag = new RegExp(/<(\s)*script.*?>/i);
+    left_tag = new RegExp(/<(\s)*script(.*)?>/i);
     right_tag = new RegExp(/<(\s*)\/(\s*)script(\s)*>/i);
 
     script = '';
+    new_text='';
     s = text;
     i = s.search(left_tag);
     while (i !== -1) {
+        left_match = s.match(left_tag);
         j = s.search(right_tag);
-        k = i + (s.match(left_tag)[0] + '').length;
+        k = i + (left_match[0] + '').length;
+	script_end=j + (s.match(right_tag)[0] + '').length;
         if (j === -1 || j < k) {
             break;
         }
-        script += s.slice(k, j);
-        s = s.slice(0, i) + s.slice(j + (s.match(right_tag)[0] + '').length);
+        // MathJax uses the script tag with a type='math/tex(display|inline)'
+        // to encode characters (as a sort of CDATA thing).  We *don't* want
+        // to extract these script tags since they need to appear inline.
+        if (!left_match[2] ||  left_match[2].indexOf('math/tex') === -1) {
+            script += s.slice(k, j);
+	    new_text += s.slice(0, i);
+	} else {
+	    new_text += s.slice(0, script_end);
+	}
+        s = s.slice(script_end);
         i = s.search(left_tag);
     }
-    return [s, script];
+    new_text+=s;
+    return [new_text, script];
 }
 
 
