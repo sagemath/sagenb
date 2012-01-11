@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*
 """
-jsMath support for the notebook
+MathJax support for the notebook
 
 Provides code to parse HTML, changing \$'s and \$\$'s to
-<span class="math"> tags to allow jsMath to process them.
+<script type="tex/math"> tags to allow MathJax to process them.
 
 AUTHORS:
 

@@ -6,8 +6,7 @@
  is in place becase pybabel canoot parse this Jinja for some reason. #}
 
 translations = {
-    {% for string in ["Click to download and install tex fonts.",
-                      'Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.',
+    {% for string in ['Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.',
                       "Java Applet Hidden",
                       "Click here to pop out",
                       'Error applying function to worksheet(s).',

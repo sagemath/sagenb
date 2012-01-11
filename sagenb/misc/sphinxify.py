@@ -180,8 +180,6 @@ import sys, os
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc']
 
-jsmath_path = 'easy/load.js'
-
 # The suffix of source filenames.
 source_suffix = '.rst'
 
@@ -254,13 +252,6 @@ html_style = 'default.css'
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 html_favicon = 'favicon.ico'
-
-# If we're using jsMath, we prepend its location to the static path
-# array.  We can override / overwrite selected files by putting them
-# in the remaining paths.
-if 'SAGE_DOC_JSMATH' in os.environ:
-    jsmath_static = os.path.join(SAGE_ROOT, 'local/notebook/javascript/jsmath')
-    html_static_path.insert(0, jsmath_static)
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -423,7 +414,7 @@ def setup(app):
 # Taken from `$SAGE_ROOT$/devel/sage/doc/en/introspect/conf.py` #
 #################################################################
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.jsmath']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.mathjax']
 
 templates_path = ['templates']
 html_static_path = ['static']
@@ -432,6 +423,62 @@ html_use_modindex = False
 html_use_index = False
 html_split_index = False
 html_copy_source = False
+
+# If we're using MathJax, we prepend its location to the static path
+# array.  We can override / overwrite selected files by putting them
+# in the remaining paths.  We also write the local config file,
+# containing Sage-specific macros and allowing the use of dollar signs
+# to delimit math.  We write the file to the directory
+#    sagenb/data/mathjax/config/local/mathjax_sage.js,
+# in the sagenb-... subdirectory of
+#    SAGE_ROOT/local/lib/python/site-libraries.
+# This is in the static path, so the file gets copied to the
+# appropriate place, allowing us to use the above setting for
+# mathjax_path.
+if (os.environ.get('SAGE_DOC_MATHJAX', False)
+    or os.environ.get('SAGE_DOC_JSMATH', False)):
+
+    # TODO MATHJAX (Jason): this option is used with the themes/sage/static/mathjax_sage.js_t
+    # template.  Either this method or the method below should be used, I think.
+
+    #from sage.misc.latex_macros import sage_mathjax_macros
+    #html_theme_options['mathjax_macros'] = sage_mathjax_macros
+
+    # TODO MATHJAX: OR do the following to write the configuration each time.
+
+    from pkg_resources import Requirement, working_set
+    from sage.misc.latex_macros import sage_mathjax_macros
+    sagenb_path = working_set.find(Requirement.parse('sagenb')).location
+    mathjax_static = os.path.join(sagenb_path, 'sagenb', 'data', 'mathjax')
+    # Write the local configuration file.  If it already exists,
+    # overwrite it (in case the macros have been modified since it was
+    # first created).
+    mathjax_configuration_string = """
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'],['\\(','\\)']],
+    processEscapes: true
+  },
+  styles: {
+    ".MathJax .mo, .MathJax .mi": {
+      color: "inherit ! important"
+    }
+  },
+  TeX: {
+    Macros: {
+     %s
+    }
+  }
+});
+
+MathJax.Ajax.loadComplete("[MathJax]/local/mathjax_sage.js")
+""" % ',\n'.join(sage_mathjax_macros)
+    config_file = os.path.join(mathjax_static, 'config', 'local',
+                               'mathjax_sage.js')
+    with open(config_file, 'w') as F:
+        F.write(mathjax_configuration_string)
+
+    html_static_path.insert(0, mathjax_static)
     '''
 
     # From SAGE_DOC/en/introspect/templates/layout.html:

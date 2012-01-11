@@ -153,7 +153,7 @@ import types
 from base64 import standard_b64decode
 
 # Sage libraries
-from jsmath import math_parse
+from mathjax import math_parse
 from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
 from sage.misc.cachefunc import cached_method
 

@@ -83,19 +83,7 @@ class SageNBFlask(Flask):
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
-
-#XXX: This should probably be made able to put in a "central" place
-#with all of the jsmath stuff rather than just a global variable here.
-# Image fonts are not needed with MathJax
-# they should be in the same spkg as MathJax routines
-# Commented out as part of conversion to Flask notebook
-#
-# from sagenb.misc.misc import is_package_installed
-# jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
-
 base = Module('flask_version.base')
-
-
 
 #############
 # Main Page #
@@ -158,7 +146,7 @@ def localization_js():
         response.headers['Etag']=datahash
     return response
 
-_jsmath_js_cache = None
+_mathjax_js_cache = None
 @base.route('/javascript/dynamic/mathjax.js')
 def mathjax_js():
     global _mathjax_js_cache
@@ -385,7 +373,7 @@ def create_app(path_to_notebook, *args, **kwds):
     # OLD STUFF #
     #############
     import sagenb.notebook.notebook as notebook
-    notebook.JSMATH = True
+    notebook.MATHJAX = True
     notebook = notebook.load_notebook(path_to_notebook, *args, **kwds)
     init_updates()
 

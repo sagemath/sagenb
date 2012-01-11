@@ -1,4 +1,4 @@
-/*global $, alert, async_request, clearTimeout, confirm, document, escape, jsMath, location, navigator, open, prompt, setTimeout, window, worksheet_filenames */
+/*global $, alert, async_request, clearTimeout, confirm, document, escape, location, navigator, open, prompt, setTimeout, window, worksheet_filenames */
 /*jslint maxerr: 10000, white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
@@ -239,7 +239,6 @@ function initialize_the_notebook() {
         1. Determine the browser OS, type e.g., opera, safari, etc.;
            we set global variables for each type.
         2. Figure out which keyboard the user has.
-        3. Initialize jsmath.
     */
     var i, n, nav, nap, nua;
 
@@ -1235,11 +1234,11 @@ function update_introspection_text(id, text) {
     
     if (intr.loaded) {
         introspect_div.html(text);
-        if (contains_jsmath(text)) {
+        if (contains_mathjax(text)) {
             try {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub,introspect_div.get(0)]);
             } catch (e) {
-                introspect_div.html(jsmath_font_msg + introspect_div.html());
+                introspect_div.html('Error typesetting mathematics' + introspect_div.html());
             }
         }
 
@@ -2127,11 +2126,11 @@ function evaluate_text_cell_callback(status, response) {
     text_cell = get_element('cell_outer_' + X.id);
     setTimeout(new_html[1], 50);
 
-    if (contains_jsmath(X.cell_html)) {
+    if (contains_mathjax(X.cell_html)) {
         try {
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,text_cell]);
         } catch (e) {
-            text_cell.innerHTML = jsmath_font_msg + text_cell.innerHTML;
+            text_cell.innerHTML = 'Error typesetting mathematics' + text_cell.innerHTML;
         }
     }
 }
@@ -3541,10 +3540,10 @@ function cancel_update_check() {
 }
 
 
-function contains_jsmath(text) {
+function contains_mathjax(text) {
     /*
-    Returns true if text contains some jsmath text.  This function
-    sucks, since it really just looks for class="math" and is easy to
+    Returns true if text contains some mathjax text.  This function
+    sucks, since it really just looks for class="math" or type="math/tex" and is easy to
     throw off.  Fix this!
 
     INPUT:
@@ -3618,7 +3617,7 @@ function set_output_text(id, status, output_text, output_text_wrapped,
 
         cell_interact = get_element('cell-interact-' + id);
         cell_interact.innerHTML = new_interact_output;
-        if (contains_jsmath(new_interact_output)) {
+        if (contains_mathjax(new_interact_output)) {
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_interact]);
         }
 
@@ -3642,12 +3641,12 @@ function set_output_text(id, status, output_text, output_text_wrapped,
     cell_output_html.innerHTML = output_html;
 
     // Call MathJax on the final output.
-    if (status === 'd' && (contains_jsmath(output_text)||contains_jsmath(output_text_wrapped))) {
+    if (status === 'd' && (contains_mathjax(output_text)||contains_mathjax(output_text_wrapped))) {
         try {
             MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
         } catch (e) {
-            cell_output.innerHTML = jsmath_font_msg + cell_output.innerHTML;
-            cell_output_nowrap.innerHTML = jsmath_font_msg +
+            cell_output.innerHTML = 'Error typesetting mathematics' + cell_output.innerHTML;
+            cell_output_nowrap.innerHTML = 'Error typesetting mathematics' +
                 cell_output_nowrap.innerHTML;
         }
     }
@@ -3666,7 +3665,7 @@ function set_output_text(id, status, output_text, output_text_wrapped,
     if (status === 'd' && introspect_html === '' && is_interacting_cell(id)) {
         // This is the first time that the underlying Python interact
         // function (i.e., interact.recompute) is actually called!
-        if (contains_jsmath(output_text_wrapped)) {
+        if (contains_mathjax(output_text_wrapped)) {
             try {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
             } catch (e2) {

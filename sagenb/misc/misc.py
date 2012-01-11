@@ -204,7 +204,7 @@ except ImportError:
         "Bold : ['{\\\\mathbf{#1}}', 1]"
         ]
 except Exception:
-    sage_jsmath_macros_easy = []
+    sage_mathjax_macros_easy = []
     raise
 finally:
     mathjax_macros = ',\n'.join(sage_mathjax_macros)

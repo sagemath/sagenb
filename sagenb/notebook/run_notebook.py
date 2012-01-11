@@ -46,7 +46,7 @@ from twisted.internet import reactor
 
 # Now set things up and start the notebook
 import sagenb.notebook.notebook
-sagenb.notebook.notebook.JSMATH=True
+sagenb.notebook.notebook.MATHJAX=True
 import sagenb.notebook.notebook as notebook
 import sagenb.notebook.worksheet as worksheet
 

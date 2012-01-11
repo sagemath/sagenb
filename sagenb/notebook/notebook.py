@@ -54,7 +54,8 @@ try:
     SYSTEMS = [('sage', False),
                ('gap', False),
                ('gp', False),
-               ('jsmath', False),
+               ('mathjax', False),
+               ('jsmath', False), # alias to mathjax
                ('html', False),
                ('latex', False),
                ('maxima', False),
@@ -81,7 +82,7 @@ except ImportError:
 # used in some of the html menus, etc.
 SYSTEM_NAMES = [v[0] for v in SYSTEMS]
 
-JSMATH = True
+MATHJAX = True
 
 JEDITABLE_TINYMCE  = True
 
@@ -1504,7 +1505,7 @@ class Notebook(object):
                         worksheet = worksheet,
                         notebook = self,
                         username = username, plain_text = plain_text,
-                        JSMATH = JSMATH, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
+                        MATHJAX = MATHJAX, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
     def html_edit_window(self, worksheet, username):
         r"""
