@@ -94,8 +94,7 @@ class WorksheetDict(dict):
     def __getitem__(self, item):
         if item in self:
             return dict.__getitem__(self, item)
-        else:
-            pass
+
         try:
             if '/' not in item:
                 raise KeyError, item
@@ -107,7 +106,10 @@ class WorksheetDict(dict):
             id=int(id)
         except ValueError:
             raise KeyError, item
-        worksheet = self.storage.load_worksheet(username, id)
+        try:
+            worksheet = self.storage.load_worksheet(username, id)
+        except ValueError:
+            raise KeyError, item
 
         dict.__setitem__(self, item, worksheet)
         return worksheet
@@ -713,7 +715,10 @@ class Notebook(object):
         S = self.__storage
         if id_number is None:
             id_number = self.new_id_number(username)
-        W = S.load_worksheet(username, id_number)
+        try:
+            W = S.load_worksheet(username, id_number)
+        except ValueError:
+            W = S.create_worksheet(username, id_number)
         self.__worksheets[W.filename()] = W
         return W
 
