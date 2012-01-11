@@ -153,6 +153,17 @@ class Notebook(object):
         W = WorksheetDict(self)
         self.__worksheets = W
 
+        # Store / Refresh public worksheets
+        for id_number in os.listdir(self.__storage._abspath(self.__storage._user_path("pub"))):
+            if id_number.isdigit():
+                a = "pub/"+str(id_number)
+                if a not in self.__worksheets:
+                    try:
+                        self.__worksheets[a] = self.__storage.load_worksheet("pub",int(id_number))
+                    except Exception:
+                        import traceback
+                        print "Warning: problem loading %s/%s: %s"%("pub", int(id_number), traceback.format_exc())
+
         # Set the openid-user dict
         try:
             self._user_manager.load(S)
@@ -325,13 +336,36 @@ class Notebook(object):
         W.edit_save(src.edit_text())
         W.save()
 
+    def pub_worksheets(self):
+        path = self.__storage._abspath(self.__storage._user_path("pub"))
+        v = []
+        a = ""
+        for id_number in os.listdir(path):
+            if id_number.isdigit():
+                a = "pub"+"/"+id_number
+                if a in self.__worksheets:
+                    v.append(self.__worksheets[a])
+                else:
+                    try:
+                        self.__worksheets[a] = self.__storage.load_worksheet("pub", int(id_number))
+                        v.append(self.__worksheets[a])
+                    except Exception:
+                        import traceback
+                        print "Warning: problem loading %s/%s: %s"%("pub", id_number, traceback.format_exc())
+        return v
+
     def users_worksheets(self, username):
         r"""
         Returns all worksheets owned by `username`
         """
+
+        if username == "pub":
+            return self.pub_worksheets()
+
         worksheets = self.__storage.worksheets(username)
-        # if a worksheet has already been loaded in self.__worksheets, return that instead
-        # since worksheets that are already running should be noted as such
+        # if a worksheet has already been loaded in self.__worksheets, return
+        # that instead since worksheets that are already running should be
+        # noted as such
         return [self.__worksheets[w.filename()] if w.filename() in self.__worksheets else w for w in worksheets]
 
     def users_worksheets_view(self, username):
