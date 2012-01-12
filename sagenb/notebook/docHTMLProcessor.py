@@ -370,8 +370,8 @@ class genericHTMLProcessor(SGMLParser):
                 elif p[:12] == '&gt;'*3 and output_flag:
                     piece += '\n}}}\n\n{{{id=%s|\n'%self.get_cellcount() + p[12:].lstrip() + '\n'
                     output_flag = False
-                elif p[:3] == '...':
-                    piece += p[3:] + '\n'
+                elif p[:4] == '... ':
+                    piece += p[4:] + '\n'
                 else:
                     # in an output string. replace escaped html
                     # strings so they don't get converted twice.

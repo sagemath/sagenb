@@ -122,18 +122,16 @@ print(13)
         sel = self.selenium
         out = self.eval_cell(1, "plot(x^2, x)")
 
-        # Browser contortions.  TODO: Use regular expressions?
-        try:
-            self.assertEqual(out.lower(), u'<font color="black"><img src="/home/admin/0/cells/1/sage0.png?1"></font>')
-        except AssertionError:
-            self.assertEqual(out.lower(), u'<font color=black><img src="/home/admin/0/cells/1/sage0.png?1"></font>')
+        self.assertTrue(u'<img src="/home/admin/0/cells/1/sage0.png?'
+                        in out.lower())
 
         self.save_and_quit()
 
         sel.click("id=name-admin-0")
         sel.wait_for_page_to_load("30000")
 
-        self.assertEqual(self.get_cell_output(1), u'<font color="black"><img src="/home/admin/0/cells/1/sage0.png?1"></font>')
+        self.assertTrue(u'<img src="/home/admin/0/cells/1/sage0.png?'
+                        in self.get_cell_output(1))
 
     def test_3711(self):
         """
