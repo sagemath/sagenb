@@ -11,5 +11,4 @@ MathJax.Hub.Config({
   }
 });
 
-// Remove http when standalone mathJax
-MathJax.Ajax.loadComplete("http://localhost:8000/javascript/sage/mathjax.js");
+MathJax.Ajax.loadComplete("/javascript/sage/mathjax.js");
