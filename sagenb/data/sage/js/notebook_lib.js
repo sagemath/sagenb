@@ -3784,10 +3784,14 @@ function separate_script_tags(text) {
     OUTPUT
         list of two strings:
             [text w/o script tags (but includes math/tex script tags), content of script tags]
+
+
+    This is similar to what jQuery does when inserting html.
+    See http://stackoverflow.com/questions/610995/jquery-cant-append-script-element
     */
     var i, j, k, left_tag, right_tag, s, script, new_text, script_end, left_match;
-
-    left_tag = new RegExp(/<(\s)*script(.*)?>/i);
+    
+    left_tag = new RegExp(/<(\s)*script([^>]*)?>/i);
     right_tag = new RegExp(/<(\s*)\/(\s*)script(\s)*>/i);
 
     script = '';
