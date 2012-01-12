@@ -1,4 +1,4 @@
-/*global $, alert, async_request, clearTimeout, confirm, document, escape, jsMath, location, navigator, open, prompt, setTimeout, window, worksheet_filenames */
+/*global $, alert, async_request, clearTimeout, confirm, document, escape, location, navigator, open, prompt, setTimeout, window, worksheet_filenames */
 /*jslint maxerr: 10000, white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
