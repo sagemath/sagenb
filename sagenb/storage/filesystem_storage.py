@@ -394,6 +394,12 @@ class FilesystemDatastore(Datastore):
 
             - a worksheet
         """
+        # Prevent arbitrary directories from being created by
+        # self.__worksheet_html_filename
+        dirname = self._worksheet_pathname(username, id_number)
+        if not os.path.exists(dirname):
+            raise ValueError("Worksheet %s/%s does not exist"%(username, id_number))
+        
         filename = self._worksheet_html_filename(username, id_number)
         html_file = self._abspath(filename)
         if not os.path.exists(html_file):
