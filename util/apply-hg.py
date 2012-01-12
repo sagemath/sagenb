@@ -1,5 +1,7 @@
 #! /usr/bin/python
 
+# Original script by Ondrej Certik: http://git.661346.n2.nabble.com/importing-mercurial-patch-td1484627.html
+
 import os
 import sys
 import re
