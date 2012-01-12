@@ -45,7 +45,9 @@ class NotebookObject:
 
         - ``secure`` -- boolean (default: ``False``) if True use https
           so all communication, e.g., logins and passwords, between
-          web browsers and the Sage notebook is encrypted via GNU TLS.
+          web browsers and the Sage notebook is encrypted via SSL.  You
+          must have OpenSSL installed to use this feature, or if you compile
+          Sage yourself, have the OpenSSL development libraries installed.
           *Highly recommended!*
 
         - ``require_login`` -- boolean (default: ``True``) if True
