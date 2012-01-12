@@ -373,7 +373,7 @@ class Notebook(object):
         Returns all worksheets viewable by `username`
         """
         # Should return worksheets from self.__worksheets if possible
-        worksheets=self.__storage.worksheets(username)
+        worksheets = self.users_worksheets(username)
         user=self.user_manager().user(username)
         viewable_worksheets=[self.__storage.load_worksheet(owner, id) for owner,id in user.viewable_worksheets()]
         # we double-check that we can actually view these worksheets
