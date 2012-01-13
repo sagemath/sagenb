@@ -54,8 +54,6 @@ try:
     SYSTEMS = [('sage', False),
                ('gap', False),
                ('gp', False),
-               ('mathjax', False),
-               ('jsmath', False), # alias to mathjax
                ('html', False),
                ('latex', False),
                ('maxima', False),
