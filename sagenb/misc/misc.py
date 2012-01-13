@@ -183,9 +183,9 @@ except ImportError:
 # TODO: Get macros from server and user settings.
 try:
     import sage.all
-    from sage.misc.latex_macros import sage_mathjax_macros
+    from sage.misc.latex_macros import sage_mathjax_macros as mathjax_macros
 except ImportError:
-    sage_mathjax_macros = [
+    mathjax_macros = [
         "ZZ : '{\\\\Bold{Z}}'",
         "RR : '{\\\\Bold{R}}'",
         "CC : '{\\\\Bold{C}}'",
@@ -206,9 +206,6 @@ except ImportError:
 except Exception:
     sage_mathjax_macros_easy = []
     raise
-finally:
-    mathjax_macros = ',\n'.join(sage_mathjax_macros)
-
 try:
     from sage.misc.session import init as session_init
 except ImportError:

@@ -35,19 +35,7 @@ INPUT:
 {% endif %}
 
 {% if MATHJAX %}
-<!-- MathJax - typeset mathematics -->
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  extensions: ["jsMath2jax.js"],
-  styles: {
-    ".MathJax .mo, .MathJax .mi": {
-      color: "inherit ! important"
-    }
-  }
-});
-</script>
-<script type="text/javascript" src="/javascript/mathjax/MathJax.js?config=TeX-AMS_HTML-full"></script>
-<script type="text/javascript" src="/javascript/dynamic/mathjax.js"></script>
+<script type="text/javascript" src="/javascript/mathjax/MathJax.js?config=TeX-AMS_HTML-full,../../dynamic/mathjax_sage.js"></script>
 {% endif %}
 
 <!-- Sage3d - accelerated 3D graphics -->

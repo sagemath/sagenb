@@ -147,12 +147,12 @@ def localization_js():
     return response
 
 _mathjax_js_cache = None
-@base.route('/javascript/dynamic/mathjax.js')
+@base.route('/javascript/dynamic/mathjax_sage.js')
 def mathjax_js():
     global _mathjax_js_cache
     if _mathjax_js_cache is None:
         from sagenb.misc.misc import mathjax_macros
-        data = render_template('js/mathjax.js', theme_mathjax_macros=mathjax_macros)
+        data = render_template('js/mathjax_sage.js', theme_mathjax_macros=mathjax_macros)
         _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
     data,datahash = _mathjax_js_cache
 
