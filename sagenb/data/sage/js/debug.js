@@ -177,7 +177,6 @@ var sagenb_debug = (function debugging(options) {
         // 'continue_update_check',
         // 'start_update_check',
         // 'cancel_update_check',
-        // 'contains_mathjax',
         // 'set_output_text',
         // 'set_input_text',
         // 'CellWriter',
