@@ -351,10 +351,11 @@ class FilesystemDatastore(Datastore):
             with open(self._abspath(filename),'w') as f:
                 f.write(worksheet.body().encode('utf-8', 'ignore'))
 
-    def load_worksheet(self, username, id_number):
+    def create_worksheet(self, username, id_number):
         """
-        Return worksheet with given id_number belonging to the given
-        user.
+        Create worksheet with given id_number belonging to the given user.
+
+        If the worksheet already exists, return ValueError.
 
         INPUT:
 
@@ -368,11 +369,42 @@ class FilesystemDatastore(Datastore):
         """
         filename = self._worksheet_html_filename(username, id_number)
         html_file = self._abspath(filename)
+        if os.path.exists(html_file):
+            raise ValueError("Worksheet %s/%s already exists"%(username, id_number))
+
+        # We create the worksheet
+        W = self._basic_to_worksheet({'owner':username, 'id_number':id_number})
+        W.clear()
+        return W
+
+    def load_worksheet(self, username, id_number):
+        """
+        Return worksheet with given id_number belonging to the given
+        user.
+
+        If the worksheet does not exist, return ValueError.
+
+        INPUT:
+
+            - ``username`` -- string
+
+            - ``id_number`` -- integer
+
+        OUTPUT:
+
+            - a worksheet
+        """
+        # Prevent arbitrary directories from being created by
+        # self.__worksheet_html_filename
+        dirname = self._worksheet_pathname(username, id_number)
+        if not os.path.exists(dirname):
+            raise ValueError("Worksheet %s/%s does not exist"%(username, id_number))
+        
+        filename = self._worksheet_html_filename(username, id_number)
+        html_file = self._abspath(filename)
         if not os.path.exists(html_file):
-            # We create the worksheet
-            W = self._basic_to_worksheet({'owner':username, 'id_number':id_number})
-            W.clear()
-            return W
+            raise ValueError("Worksheet %s/%s does not exist"%(username, id_number))
+
         try:
             basic = self._load(self._worksheet_conf_filename(username, id_number))
             basic['owner'] = username
