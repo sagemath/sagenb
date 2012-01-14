@@ -18,7 +18,6 @@ import re
 import shutil
 from cgi import escape
 
-from mathjax import math_parse
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
@@ -524,7 +523,7 @@ class TextCell(Cell_generic):
         self._text = input_text
 
     def html(self, wrap=None, div_wrap=True, do_print=False,
-             do_math_parse=True, editing=False, publish=False):
+             editing=False, publish=False):
         """
         Returns HTML code for this text cell, including its contents
         and associated script elements.
@@ -539,10 +538,6 @@ class TextCell(Cell_generic):
 
         - ``do_print`` - a boolean (default: False); whether to render the
           cell for printing
-
-        - ``do_math_parse`` - a boolean (default: True); whether to
-          process the contents for MathJax (see
-          :func:`sagenb.notebook.mathjax.math_parse`)
 
         - ``editing`` - a boolean (default: False); whether to open an
           editor for this cell
@@ -560,13 +555,11 @@ class TextCell(Cell_generic):
             sage: C.html()
             u'...text_cell...2+3...'
             sage: C.set_input_text("$2+3$")
-            sage: C.html(do_math_parse=True)
-            u'...text_cell...class="math"...2+3...'
         """
         from template import template
         return template(os.path.join('html', 'notebook', 'text_cell.html'),
                         cell = self, wrap = wrap, div_wrap = div_wrap,
-                        do_print = do_print, do_math_parse = do_math_parse,
+                        do_print = do_print,
                         editing = editing, publish = publish)
 
 

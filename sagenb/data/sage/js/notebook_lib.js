@@ -2126,13 +2126,8 @@ function evaluate_text_cell_callback(status, response) {
     text_cell = get_element('cell_outer_' + X.id);
     setTimeout(new_html[1], 50);
 
-    if (contains_mathjax(X.cell_html)) {
-        try {
-            MathJax.Hub.Queue(["Typeset",MathJax.Hub,text_cell]);
-        } catch (e) {
-            text_cell.innerHTML = 'Error typesetting mathematics' + text_cell.innerHTML;
-        }
-    }
+    try { MathJax.Hub.Queue(["Typeset",MathJax.Hub,text_cell]); 
+	} catch (e) { text_cell.innerHTML = 'Error typesetting mathematics' + text_cell.innerHTML; }
 }
 
 
