@@ -3735,7 +3735,7 @@ function eval_script_tags(text) {
 
     var i, j, k, left_tag, right_tag, s, script, new_text, script_end, left_match;
 
-    left_tag = new RegExp(/<(\s)*script(.*)?>/i);
+    left_tag = new RegExp(/<(\s)*script([^>]*)?>/i);
     right_tag = new RegExp(/<(\s*)\/(\s*)script(\s)*>/i);
 
     script = '';
