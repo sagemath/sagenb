@@ -13,6 +13,9 @@ MathJax.Hub.Config({
     Macros: {
      {{ theme_mathjax_macros|join(',\n') }}
     }
+  },
+  MathMenu: {
+    showFontMenu: true
   }
 });
 
