@@ -1,22 +1,28 @@
 MathJax.Hub.Config({
-  imageFont: null,
-  tex2jax: {
-    inlineMath: [['$','$'],['\\(','\\)']],
-    processEscapes: true,
-  },
-  styles: {
-    ".MathJax .mo, .MathJax .mi": {
-      color: "inherit ! important"
-    }
-  },
-  TeX: {
-    Macros: {
-     {{ theme_mathjax_macros|join(',\n') }}
-    }
-  },
-  MathMenu: {
-    showFontMenu: true
-  }
+    tex2jax: {
+	inlineMath: [['$','$'],['\\(','\\)']],
+	processEscapes: true,
+    },
+
+    styles: {
+	".MathJax .mo, .MathJax .mi": {
+	    color: "inherit ! important"
+	}
+    },
+
+    MathMenu: {showFontMenu: true},
+
+    "HTML-CSS": {
+	imageFont: null,
+	availableFonts: ["TeX"]
+    },
+
+    TeX: {
+	Macros: {
+	    {{ theme_mathjax_macros|join(',\n') }}
+	}
+    },
+
 });
 
 // This path is a little funny because we have to load our local
