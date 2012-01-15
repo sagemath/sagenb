@@ -168,7 +168,7 @@ def register():
     # Email address.
     email_address = ''
     if g.notebook.conf()['email']:
-        email_address = request.args.get('email', [None])[0]
+        email_address = request.values.get('email', None)
         if email_address:
             if not is_valid_email(email_address):
                 template_dict['email_invalid'] = True
