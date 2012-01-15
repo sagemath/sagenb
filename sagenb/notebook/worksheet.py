@@ -2505,6 +2505,20 @@ class Worksheet(object):
                         last_editor = self.last_to_edit(),
                         username=username)
 
+    def html_time_nice_edited(self, username=None):
+        """
+        Returns a "nice" html time since last edit.
+
+        If the last edit was in the last 24 hours, return a "x hours ago".
+        Otherwise, return a specific date.
+        """
+
+        t = self.time_since_last_edited()
+        if t < 3600*24:
+            return self.html_time_since_last_edited(username=username)
+        else:
+            return self.html_time_last_edited(username=username)
+
     ##########################################################
     # Managing cells and groups of cells in this worksheet
     ##########################################################
