@@ -2,6 +2,7 @@ MathJax.Hub.Config({
     tex2jax: {
 	inlineMath: [['$','$'],['\\(','\\)']],
 	processEscapes: true,
+	ignoreClass: 'cell_input_print', // "input cells" in published worksheets
     },
 
     styles: {
