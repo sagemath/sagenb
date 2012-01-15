@@ -214,11 +214,11 @@ SIMPLE_TEMPLATE = u"""<p>%(question)s</p>
 
 # A set of sample questions for :class:`SimpleChallenge`.
 QUESTIONS = {
-    lazy_gettext('Is pi > e?') : lazy_gettext('y|yes'),
-    lazy_gettext('What is 3 times 8?') : lazy_gettext('24|twenty-four'),
-    lazy_gettext('What is 2 plus 3?') : lazy_gettext('5|five'),    
-    lazy_gettext('How many bits are in one byte?') : lazy_gettext('8|eight'),
-    lazy_gettext('What is the largest prime factor of 15?') : lazy_gettext('5|five'),
+    'Is pi > e?' : lazy_gettext('y|yes'),
+    'What is 3 times 8?' : lazy_gettext('24|twenty-four'),
+    'What is 2 plus 3?' : lazy_gettext('5|five'),    
+    'How many bits are in one byte?' : lazy_gettext('8|eight'),
+    'What is the largest prime factor of 15?' : lazy_gettext('5|five'),
 #    'What is the smallest perfect number?' : r'6|six',
 #    'What is our class registration code?' : r'XYZ123',
 #    'What is the smallest integer expressible as the sum of two positive cubes in two distinct ways?' : r'1729',
@@ -335,11 +335,11 @@ class SimpleChallenge(AbstractChallenge):
             ''
 
         """
-        response_field = req_args.get('simple_response_field', [None])[0]
+        response_field = req_args.get('simple_response_field', None)
         if not (response_field and len(response_field)):
             return ChallengeResponse(None, '')
 
-        challenge_field = req_args.get('simple_challenge_field', [None])[0]
+        challenge_field = req_args.get('simple_challenge_field', None)
         if not (challenge_field and len(challenge_field)):
             return ChallengeResponse(False, '')
         if agree(response_field, gettext(QUESTIONS[challenge_field])):

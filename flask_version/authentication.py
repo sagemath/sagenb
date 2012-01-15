@@ -181,7 +181,7 @@ def register():
 
     # Challenge (e.g., reCAPTCHA).
     if g.notebook.conf()['challenge']:
-        status = chal.is_valid_response(req_args = request.args)
+        status = chal.is_valid_response(req_args = request.values)
         if status.is_valid is True:
             validated.add('challenge')
         elif status.is_valid is False:
