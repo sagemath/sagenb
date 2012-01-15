@@ -88,10 +88,30 @@ class Datastore(object):
         """
         raise NotImplementedError        
 
+    def create_worksheet(self, username, id_number):
+        """
+        Create worksheet with given id_number belonging to the given user.
+
+        If the worksheet already exists, return ValueError.
+
+        INPUT:
+
+            - ``username`` -- string
+
+            - ``id_number`` -- integer
+
+        OUTPUT:
+
+            - a worksheet
+        """
+        raise NotImplementedError
+
     def load_worksheet(self, username, id_number):
         """
         Return worksheet with given id_number belonging to the given
         user.
+
+        If the worksheet does not exist, return ValueError.
 
         INPUT:
 

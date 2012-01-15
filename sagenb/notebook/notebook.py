@@ -93,8 +93,7 @@ class WorksheetDict(dict):
     def __getitem__(self, item):
         if item in self:
             return dict.__getitem__(self, item)
-        else:
-            pass
+
         try:
             if '/' not in item:
                 raise KeyError, item
@@ -106,7 +105,10 @@ class WorksheetDict(dict):
             id=int(id)
         except ValueError:
             raise KeyError, item
-        worksheet = self.storage.load_worksheet(username, id)
+        try:
+            worksheet = self.storage.load_worksheet(username, id)
+        except ValueError:
+            raise KeyError, item
 
         dict.__setitem__(self, item, worksheet)
         return worksheet
@@ -151,6 +153,17 @@ class Notebook(object):
         # Set the list of worksheets
         W = WorksheetDict(self)
         self.__worksheets = W
+
+        # Store / Refresh public worksheets
+        for id_number in os.listdir(self.__storage._abspath(self.__storage._user_path("pub"))):
+            if id_number.isdigit():
+                a = "pub/"+str(id_number)
+                if a not in self.__worksheets:
+                    try:
+                        self.__worksheets[a] = self.__storage.load_worksheet("pub",int(id_number))
+                    except Exception:
+                        import traceback
+                        print "Warning: problem loading %s/%s: %s"%("pub", int(id_number), traceback.format_exc())
 
         # Set the openid-user dict
         try:
@@ -324,13 +337,36 @@ class Notebook(object):
         W.edit_save(src.edit_text())
         W.save()
 
+    def pub_worksheets(self):
+        path = self.__storage._abspath(self.__storage._user_path("pub"))
+        v = []
+        a = ""
+        for id_number in os.listdir(path):
+            if id_number.isdigit():
+                a = "pub"+"/"+id_number
+                if a in self.__worksheets:
+                    v.append(self.__worksheets[a])
+                else:
+                    try:
+                        self.__worksheets[a] = self.__storage.load_worksheet("pub", int(id_number))
+                        v.append(self.__worksheets[a])
+                    except Exception:
+                        import traceback
+                        print "Warning: problem loading %s/%s: %s"%("pub", id_number, traceback.format_exc())
+        return v
+
     def users_worksheets(self, username):
         r"""
         Returns all worksheets owned by `username`
         """
+
+        if username == "pub":
+            return self.pub_worksheets()
+
         worksheets = self.__storage.worksheets(username)
-        # if a worksheet has already been loaded in self.__worksheets, return that instead
-        # since worksheets that are already running should be noted as such
+        # if a worksheet has already been loaded in self.__worksheets, return
+        # that instead since worksheets that are already running should be
+        # noted as such
         return [self.__worksheets[w.filename()] if w.filename() in self.__worksheets else w for w in worksheets]
 
     def users_worksheets_view(self, username):
@@ -338,7 +374,7 @@ class Notebook(object):
         Returns all worksheets viewable by `username`
         """
         # Should return worksheets from self.__worksheets if possible
-        worksheets=self.__storage.worksheets(username)
+        worksheets = self.users_worksheets(username)
         user=self.user_manager().user(username)
         viewable_worksheets=[self.__storage.load_worksheet(owner, id) for owner,id in user.viewable_worksheets()]
         # we double-check that we can actually view these worksheets
@@ -712,7 +748,10 @@ class Notebook(object):
         S = self.__storage
         if id_number is None:
             id_number = self.new_id_number(username)
-        W = S.load_worksheet(username, id_number)
+        try:
+            W = S.load_worksheet(username, id_number)
+        except ValueError:
+            W = S.create_worksheet(username, id_number)
         self.__worksheets[W.filename()] = W
         return W
 
