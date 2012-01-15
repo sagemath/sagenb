@@ -60,7 +60,9 @@ INPUT:
 <script  type="text/javascript">
     worksheet_filename = "{{ worksheet.filename() }}";
     worksheet_name = {{ worksheet.name()|repr_str }};
-    server_ping_while_alive();
+    {% if not worksheet.is_published() or worksheet.notebook().conf()['pub_interact'] %}
+        server_ping_while_alive();
+    {% endif %}
 </script>
 {% endif %}
 
