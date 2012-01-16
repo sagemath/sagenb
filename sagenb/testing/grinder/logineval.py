@@ -19,7 +19,7 @@ class TestRunner:
         worksheet = '1'
         
         request = protectedResourceTest.wrap(
-            HTTPRequest(url="http://localhost:8000/"))
+            HTTPRequest(url="http://localhost:8080/"))
 
         result = request.GET()
         result = maybeAuthenticate(result)
@@ -27,7 +27,7 @@ class TestRunner:
         #print 'test sheet seen: ', (result.text.find('test') != -1)
         #print result.text
         
-        base_url = 'http://localhost:8000/home/%s/%s' % (user, worksheet)
+        base_url = 'http://localhost:8080/home/%s/%s' % (user, worksheet)
         request = newCellTest.wrap(HTTPRequest(url=base_url + "/new_cell_after"))
         result = request.POST((NVPair("id","0"),))
         new_cell = result.text.split()[0].rstrip('___S_A_G_E___')

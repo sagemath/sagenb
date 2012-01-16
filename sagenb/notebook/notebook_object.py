@@ -30,7 +30,7 @@ class NotebookObject:
           notebook files; the default is
           ``.sage/sage_notebook.sagenb``, in your home directory.
 
-        - ``port`` -- integer (default: ``8000``), port to serve the
+        - ``port`` -- integer (default: ``8080``), port to serve the
           notebook on.
 
         - ``interface`` -- string (default: ``'localhost'``), address

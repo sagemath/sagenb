@@ -41,16 +41,16 @@ def print_open_msg(address, port, secure=False, path=""):
     
     EXAMPLES::
 
-        sage: sage.server.misc.print_open_msg('localhost', 8000, True)
+        sage: sage.server.misc.print_open_msg('localhost', 8080, True)
         ****************************************************
         *                                                  *
-        * Open your web browser to https://localhost:8000  *
+        * Open your web browser to https://localhost:8080  *
         *                                                  *
         ****************************************************
-        sage: sage.server.misc.print_open_msg('sagemath.org', 8000, False)
+        sage: sage.server.misc.print_open_msg('sagemath.org', 8080, False)
         ******************************************************
         *                                                    *
-        * Open your web browser to http://sagemath.org:8000  *
+        * Open your web browser to http://sagemath.org:8080  *
         *                                                    *
         ******************************************************
         sage: sage.server.misc.print_open_msg('sagemath.org', 90, False)
