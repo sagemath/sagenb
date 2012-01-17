@@ -518,7 +518,7 @@ class Worksheet(object):
             sage: W.docbrowser()
             True
         """
-        return self.owner() in ['_sage_', 'pub']
+        return self.owner() == '_sage_'
 
     ##########################################################
     # Basic properties
