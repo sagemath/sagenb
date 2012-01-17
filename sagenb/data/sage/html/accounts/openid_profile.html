@@ -37,14 +37,26 @@
                 {% endif %}
                 {% if email_invalid %}
                 <p><span style="color:red">Error:</span> Invalid email address</p>
+	        {% endif %}
+	    </li>
+	    {% if challenge %}
+            <li>
+                <h2>Answer a challenge</h2>
+                {{ challenge_html }}
+                {% if challenge_missing %}
+                <p><span class="error">Error:</span> No challenge response given</p>
                 {% endif %}
-            </li>
-        <div>
-            <input type="hidden" name="next", value="{{next}}"/>
-            <button type="submit">Create profile</button>
-        </div>
-    </ol>
-    </form>
+                {% if challenge_invalid %}
+                <p><span class="error">Error:</span> Invalid challenge response</p>
+                {% endif %}
+	    </li>
+	    {% endif %}
+	  </ol>
+  <div>
+    <input type="hidden" name="next", value="{{next}}"/>
+    <button type="submit">Create profile</button>
+  </div>
+  </form>
 </div>
 {% endblock %}
 

@@ -4,7 +4,7 @@ from net.grinder.plugin.http import HTTPRequest
 from HTTPClient import NVPair
 
 # We declare a default URL for the HTTPRequest.
-request = HTTPRequest(url = "http://localhost:8000")
+request = HTTPRequest(url = "http://localhost:8080")
 
 def page1():
     request.GET('/')

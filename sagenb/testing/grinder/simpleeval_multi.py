@@ -14,7 +14,7 @@ class TestRunner:
         random = Random()
         worksheet = random.nextInt(10)
 
-        base_url = 'http://localhost:8000/home/admin/%s' % worksheet 
+        base_url = 'http://localhost:8080/home/admin/%s' % worksheet
         request = newCellTest.wrap(HTTPRequest(url=base_url + "/new_cell_after"))
         result = request.POST((NVPair("id","0"),))
         new_cell = result.text.split()[0].rstrip('___S_A_G_E___')

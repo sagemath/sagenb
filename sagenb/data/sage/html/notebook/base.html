@@ -29,10 +29,8 @@ INPUT:
 <script type="text/javascript" src="/javascript/jquery/plugins/colorpicker/js/colorpicker.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/achtung/ui.achtung-mod.min.js"></script>
 
-{% if not worksheet.is_published() or worksheet.notebook().conf()['pub_interact'] %}
 <script type="text/javascript" src="/javascript/sage/js/notebook_lib.js"></script>
 <script type="text/javascript" src="/javascript/dynamic/notebook_dynamic.js"></script>
-{% endif %}
 
 {% if MATHJAX %}
 <script type="text/javascript" src="/javascript/mathjax/MathJax.js?config=TeX-AMS_HTML-full,../../dynamic/mathjax_sage.js"></script>
@@ -75,13 +73,13 @@ INPUT:
            title="{{ gettext('Click to rename this worksheet') }}">
             {{ worksheet.name() }}
         </a>
-        <div><span class="lastedit">{{ worksheet.html_time_last_edited(username) }}</span></div>
-        {% if worksheet.warn_about_other_person_editing(username) and username != 'guest' and not worksheet.docbrowser() %}
+        <div><span class="lastedit">{{ gettext('last edited') }} {{ worksheet.html_time_last_edited(username) }}</span></div>
+        {% if worksheet.warn_about_other_person_editing(username) and username != 'guest' and not worksheet.docbrowser() and not worksheet.is_published() %}
         <span class="pingdown">({{ gettext('Someone else is viewing this worksheet') }})</span>
         {% endif %}
     </div>
     <div id="save-discard-buttons">
-        {% if not worksheet.docbrowser() %}
+        {% if not worksheet.docbrowser() and not worksheet.is_published() %}
         <button name="button_save" title="{{ gettext('Save changes') }}" onClick="save_worksheet();">{{ gettext('Save') }}</button><button title="{{ gettext('Save changes and close window') }}" onClick="save_worksheet_and_close();" name="button_save">{{ gettext('Save & quit') }}</button><button title="{{ gettext('Discard changes to this worksheet') }}" onClick="worksheet_discard();">{{ gettext('Discard & quit') }}</button>
         {% endif %}
     </div>
@@ -121,7 +119,7 @@ INPUT:
             {% endfor %}
         </select>
 
-        {% if not worksheet.docbrowser() %}
+        {% if not worksheet.docbrowser() and not worksheet.is_published() %}
         <select onchange="go_system_select(this, {{ worksheet.system_index() }});" class="worksheet" id="systems-menu">
             {% for system_name in worksheet.notebook().systems(username) %}
             <option title="{{ gettext('Evaluate all input cells using %(i)s', i=system_names[loop.index0]) }}"
@@ -136,7 +134,7 @@ INPUT:
         {% endif %}
     </div>
     <div id="share-publish-buttons">
-        {% if not worksheet.docbrowser() %}
+        {% if not worksheet.docbrowser() and not worksheet.is_published() %}
         {% macro cls(x) %}
         {{ "control-select" if x == select else "control" }}
         {% endmacro %}

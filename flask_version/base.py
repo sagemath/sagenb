@@ -27,7 +27,8 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
-        import mimetypes
+        self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
+	import mimetypes
         mimetypes.add_type('text/plain','.jmol')
 
         
@@ -259,6 +260,16 @@ def create_or_login(resp):
 def set_profiles():
     if not g.notebook.conf()['openid']:
         return redirect(url_for('base.index'))
+
+    from sagenb.notebook.challenge import challenge
+
+    
+    show_challenge=g.notebook.conf()['challenge']
+    if show_challenge:
+        chal = challenge(g.notebook.conf(),
+                         is_secure = g.notebook.secure,
+                         remote_ip = request.environ['REMOTE_ADDR'])
+
     if request.method == 'GET':
         if 'openid_response' in session:
             from sagenb.notebook.misc import valid_username_chars
@@ -266,7 +277,12 @@ def set_profiles():
             openid_resp = session['openid_response']
             if openid_resp.fullname is not None:
                 openid_resp.fullname = re.sub(re_invalid_username_chars, '_', openid_resp.fullname)
-            return render_template('html/accounts/openid_profile.html', resp=openid_resp)
+            template_dict={}
+            if show_challenge:
+                template_dict['challenge_html'] = chal.html()
+
+            return render_template('html/accounts/openid_profile.html', resp=openid_resp, 
+                                   challenge=show_challenge, **template_dict)
         else:
             return redirect(url_for('base.index'))
 
@@ -282,6 +298,23 @@ def set_profiles():
             username = request.form.get('username')
             from sagenb.notebook.user import User
             from sagenb.notebook.misc import is_valid_username, is_valid_email
+
+            if show_challenge:
+                parse_dict['challenge'] = True
+                status = chal.is_valid_response(req_args = request.values)
+                if status.is_valid is True:
+                    pass
+                elif status.is_valid is False:
+                    err_code = status.error_code
+                    if err_code:
+                        parse_dict['challenge_html'] = chal.html(error_code = err_code)
+                    else:
+                        parse_dict['challenge_invalid'] = True
+                    raise ValueError
+                else:
+                    parse_dict['challenge_missing'] = True
+                    raise ValueError
+
             if not is_valid_username(username):
                 parse_dict['username_invalid'] = True
                 raise ValueError 

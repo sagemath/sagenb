@@ -24,7 +24,7 @@ NB_OPTIONS = {
     'directory': '',          # Set automatically if empty.  Must end
                               # in '.sagenb'.
     'open_viewer': False,
-    'port': 8000,
+    'port': 8080,
     'secure': False
 }
 SEL_OPTIONS = {

@@ -214,7 +214,7 @@ def notebook_setup(self=None):
 
 def notebook_twisted(self,
              directory     = None,
-             port          = 8000,
+             port          = 8080,
              interface     = 'localhost',        
              address       = None,
              port_tries    = 50,
