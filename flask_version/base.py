@@ -27,7 +27,8 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
-        import mimetypes
+        self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
+	import mimetypes
         mimetypes.add_type('text/plain','.jmol')
 
         
