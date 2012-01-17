@@ -88,7 +88,8 @@ def fetch_packages():
     tmp_dir = mkdtemp()
 
     # in order of dependencies
-    required_packages = ('pytz>=2011n',
+    required_packages = ('twisted>=11.0.0',
+                         'pytz>=2011n',
                          'Babel>=0.9.6',
                          'Werkzeug>=0.8.2',
                          'speaklater>=1.2',

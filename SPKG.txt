@@ -24,12 +24,12 @@ GPLv2+
 
  * Python >= 2.6.4
  * jinja2 >= 2.5.5
- * Twisted >= 11.0.0
  * Sphinx >= 1.0.4 (pretty docstrings)
 
  Included dependencies (for specific version numbers, see the
  spkg-dist file):
 
+ * twisted
  * pytz
  * Babel
  * Werkzeug
