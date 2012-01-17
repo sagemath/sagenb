@@ -323,12 +323,12 @@ class SimpleChallenge(AbstractChallenge):
             How many bits are in one byte?
             sage: print ans
             8
-            sage: req['simple_response_field'] = [ans]
+            sage: req['simple_response_field'] = ans
             sage: chal.is_valid_response(req).is_valid
             False
             sage: chal.is_valid_response(req).error_code
             ''
-            sage: req['simple_challenge_field'] = [ques]
+            sage: req['simple_challenge_field'] = ques
             sage: chal.is_valid_response(req).is_valid
             True
             sage: chal.is_valid_response(req).error_code
