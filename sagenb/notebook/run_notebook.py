@@ -215,20 +215,21 @@ def notebook_setup(self=None):
 def notebook_twisted(self,
              directory     = None,
              port          = 8080,
-             interface     = 'localhost',        
+             interface     = 'localhost',
              address       = None,
              port_tries    = 50,
              secure        = False,
              reset         = False,
-             require_login = True, 
+             require_login = True,
              accounts      = None,
              openid        = None,
-                     
+
              server_pool   = None,
              ulimit        = '',
 
              timeout       = 0,
 
+             upload        = None,
              open_viewer   = True,
 
              sagetex_path  = "",
@@ -348,14 +349,19 @@ def notebook_twisted(self,
                 if str(e).startswith('Another twistd server is running,'):
                     print 'Another Sage Notebook server is running, PID %d.' % pid
                     old_interface, old_port, old_secure = get_old_settings(conf)
-                    if open_viewer and old_port:
+                    if old_port and (open_viewer or upload):
                         old_interface = old_interface or 'localhost'
+
+                        startpath = '/'
+                        if upload:
+                            import urllib
+                            startpath = '/upload_worksheet?url=file://%s' % (urllib.quote(upload))
 
                         print 'Opening web browser at http%s://%s:%s/ ...' % (
                             's' if old_secure else '', old_interface, old_port)
 
                         from sagenb.misc.misc import open_page as browse_to
-                        browse_to(old_interface, old_port, old_secure, '/')
+                        browse_to(old_interface, old_port, old_secure, 'startpath')
                         return
                     print '\nPlease either stop the old server or run the new server in a different directory.'
                     return
@@ -378,13 +384,24 @@ def notebook_twisted(self,
         notebook_opts = '"%s",interface="%s",port=%s,secure=%s' % (
             os.path.abspath(directory), interface, port, secure)
 
-        if open_viewer:
-            start_path = "'/?startup_token=%s' % startup_token"
+        if open_viewer or upload:
+            if require_login:
+                start_path = "'/?startup_token=%s' % startup_token"
+            elif upload:
+                start_path = "'/upload_worksheet?url=file://%s'" % upload
+            else:
+                start_path = "'/'"
             if interface:
                 hostname = interface
             else:
                 hostname = 'localhost'
-            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s)" % (hostname, port, secure, start_path)
+            open_page = "from sagenb.misc.misc import open_page; open_page('%s', %s, %s, %s);" % (hostname, port, secure, start_path)
+            # If we have to login and upload a file, then we do them
+            # in that order and hope that the login is fast enough.
+            if require_login and upload:
+                import urllib
+                open_page += "open_page('%s', %s, %s, '/upload_worksheet?url=file://%s');" % (hostname, port, secure, urllib.quote(upload))
+
         else:
             open_page = ''
 

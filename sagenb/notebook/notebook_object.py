@@ -22,10 +22,11 @@ class NotebookObject:
     r"""
     Start the Sage Notebook server.  More details about using these
     options, as well as tips and tricks, may be available at `this
-    Sage wiki page`_.
+    Sage wiki page`_.  If a notebook server is already running in the
+    directory, this will open a browser to the running notebook.
 
     INPUT:
-    
+
         - ``directory`` -- string; directory that contains the Sage
           notebook files; the default is
           ``.sage/sage_notebook.sagenb``, in your home directory.
@@ -73,17 +74,25 @@ class NotebookObject:
               user_manager.set_accounts(True)
               user_manager.add_user("username", "password", "email@place", "user")
               nb.save()
-              
+
         - ``open_viewer`` -- boolean (default: True) whether to pop up
           a web browser.  You can override the default browser by
           setting the ``SAGE_BROWSER`` environment variable, e.g., by
           putting
 
           ::
-          
+
               export SAGE_BROWSER="firefox"
-              
+
           in the file .bashrc in your home directory.
+
+        - ``upload`` -- string (default: None) Full path to a local file
+          (sws, txt, zip) to be uploaded and turned into a worksheet(s).
+          This is equivalent to manually uploading a file via
+          ``http://localhost:8000/upload`` or to fetching
+          ``http://localhost:8000/upload_worksheet?url=file:///...``
+          in a script except that (hopefully) you will already be
+          logged in.
 
         - ``timeout`` -- integer (default: 0) seconds until idle
           worksheet sessions automatically timeout, i.e., the

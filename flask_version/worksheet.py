@@ -746,10 +746,18 @@ def worksheet_do_upload_data(worksheet):
             return current_app.message(_('Suspicious filename "%(filename)s" encountered uploading file.%(backlinks)s', filename=filename, backlinks=backlinks), worksheet_url)
         os.unlink(dest)
 
-
     response = redirect(worksheet_datafile.url_for(worksheet, name=name))
 
-    if url != '':
+    if url != '' and url[0:7] == 'file://':
+        f = file(dest, 'wb')
+        fin = url[7:]
+        if fin.startswith('localhost'):
+            fin = fin[9:]
+        f.write(open(fin).read())
+        f.close()
+        return response
+
+    elif url != '':
         #XXX: Finish me!
         pass
     elif new_field:

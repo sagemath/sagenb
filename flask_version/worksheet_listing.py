@@ -244,12 +244,12 @@ def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
     from werkzeug.utils import secure_filename
     import zipfile
-    
+
     backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")
 
     url = request.values['url'].strip()
     dir = ''
-    if url:
+    if url != '' and url[0:7] != 'file://':
         #Downloading a file from the internet
         import urllib, urlparse
         filename = tmp_filename() + ('.zip' if url.endswith('.zip') else '.sws')
@@ -268,6 +268,27 @@ def upload_worksheet():
                 return current_app.message(_("This Sage notebook is not configured to load worksheets from 'https' URLs. Try a different URL or download the worksheet and upload it directly from your computer.\n%(backlinks)s",backlinks=backlinks))
             else:
                 raise
+
+    elif url != '':
+        if notebook.interface == 'localhost':
+            return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
+
+        # uploading a file from the user's computer (as a file url)
+        dir = tmp_dir()
+        fin = url[7:]
+        if fin.startswith('localhost'):
+            fin = fin[9:]
+        filename = fin.split('/')[-1]
+        if filename == '':
+            return HTMLResponse(stream=message("Please specify a worksheet to load.%s" % backlinks))
+        # Make tmp file in Sage temp directory
+        filename = os.path.join(dir, filename)
+        f = file(filename,'wb')
+        # Then download to that file.
+        f.write(open(fin).read())
+        # TODO: Server blocking issues (?!)
+        f.close()
+
     else:
         #Uploading a file from the user's computer
         dir = tmp_dir()
@@ -328,4 +349,3 @@ def upload_worksheet():
 
     from worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))
-        
