@@ -3166,8 +3166,8 @@ class slider_generic(control):
         
         EXAMPLES::
         
-        sage: sagenb.notebook.interact.slider(1,10,1/2).values()
-        [1, 3/2, 2, 5/2, 3, 7/2, 4, 9/2, 5, 11/2, 6, 13/2, 7, 15/2, 8, 17/2, 9, 19/2, 10]
+            sage: sagenb.notebook.interact.slider(1,10,1/2).values()
+            [1, 3/2, 2, 5/2, 3, 7/2, 4, 9/2, 5, 11/2, 6, 13/2, 7, 15/2, 8, 17/2, 9, 19/2, 10]
         """
         if isinstance(self.__vmin, list):
             vals = self.__vmin
