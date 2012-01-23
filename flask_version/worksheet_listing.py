@@ -250,9 +250,7 @@ def upload_worksheet():
     url = request.values['url'].strip()
     dir = ''
     if url != '':
-
-        interface = 'localhost'
-        if url[0:7] == 'file://' and interface != 'localhost':
+        if url[0:7] == 'file://' and g.notebook.interface != 'localhost':
             return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
 
         #Downloading a file from the internet
