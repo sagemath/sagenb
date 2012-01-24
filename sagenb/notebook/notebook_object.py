@@ -89,8 +89,8 @@ class NotebookObject:
         - ``upload`` -- string (default: None) Full path to a local file
           (sws, txt, zip) to be uploaded and turned into a worksheet(s).
           This is equivalent to manually uploading a file via
-          ``http://localhost:8000/upload`` or to fetching
-          ``http://localhost:8000/upload_worksheet?url=file:///...``
+          ``http://localhost:8080/upload`` or to fetching
+          ``http://localhost:8080/upload_worksheet?url=file:///...``
           in a script except that (hopefully) you will already be
           logged in.
 
