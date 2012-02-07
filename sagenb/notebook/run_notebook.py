@@ -438,14 +438,14 @@ def get_admin_passwd():
     print "Please choose a new password for the Sage Notebook 'admin' user."
     print "Do _not_ choose a stupid password, since anybody who could guess your password"
     print "and connect to your machine could access or delete your files."
-    print "NOTE: Only the md5 hash of the password you type is stored by Sage."
+    print "NOTE: Only the hash of the password you type is stored by Sage."
     print "You can change your password by typing notebook(reset=True)."
     print "\n" * 2
     while True:
         passwd = getpass.getpass("Enter new password: ")
         from sagenb.misc.misc import min_password_length
         if len(passwd) < min_password_length:
-            print "That password is way too short. Enter a password with at least 6 characters."
+            print "That password is way too short. Enter a password with at least %d characters."%min_password_length
             continue
         passwd2 = getpass.getpass("Retype new password: ")
         if passwd != passwd2:
