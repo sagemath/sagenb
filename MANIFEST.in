@@ -1,5 +1,6 @@
 recursive-include sagenb *
 recursive-include sass *
+recursive-include util *
 prune sass/src/.sass-cache
 recursive-include flask_version *
 include *.txt Makefile MANIFEST.in .hgignore .hgtags sdist spkg-dist SPKG.txt go .gitignore README.rst
