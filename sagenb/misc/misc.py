@@ -19,7 +19,7 @@ def stub(f):
     return g
 
 
-min_password_length = 1
+min_password_length = 6
 
 import os, cPickle, socket, sys
 
