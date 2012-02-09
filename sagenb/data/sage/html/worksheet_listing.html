@@ -128,7 +128,7 @@ INPUT:
         <button onClick="download_worksheets_button();" title="{{ gettext('Download selected worksheets') }}">{{ gettext('Download') }}</button>
     </div>
     <div class="folders">
-        {{ gettext('Current Folder') }}:{% if x == pages.number %} class="active" {% endif %}
+        {{ gettext('Current Folder') }}:
         <a class="{{ 'bold' if typ == 'active' else '' }}usercontrol" href=".">{{ gettext('Active') }}</a>
         <a class="{{ 'bold' if typ == 'archive' else '' }}usercontrol" href=".?typ=archive">{{ gettext('Archived') }}</a>
         <a class="{{ 'bold' if typ == 'trash' else '' }}usercontrol" href=".?typ=trash">{{ gettext('Trash') }}</a>
