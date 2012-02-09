@@ -3214,10 +3214,10 @@ except (KeyError, IOError):
                 # to clean up any cruft (like dead symbolic links
                 # to temporary files that were deleted, old files from old evaluations,
                 # and things like that.
-                shutil.rmtree(cell_dir)
-                #if not os.path.exists(cell_dir):
+                if os.path.exists(cell_dir):
+                    shutil.rmtree(cell_dir)
                 os.makedirs(cell_dir)
-                    
+
                 for X in filenames:
                     if os.path.split(X)[-1] == CODE_PY: continue
                     target = os.path.join(cell_dir, os.path.split(X)[1])
