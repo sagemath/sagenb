@@ -3210,17 +3210,25 @@ except (KeyError, IOError):
             if len(filenames) > 0:
                 # Move files to the cell directory
                 cell_dir = os.path.abspath(self.cell_directory(C))
-                if not os.path.exists(cell_dir):
-                    os.makedirs(cell_dir)
+                # we wipe the cell directory and make a new one
+                # to clean up any cruft (like dead symbolic links
+                # to temporary files that were deleted, old files from old evaluations,
+                # and things like that.
+                shutil.rmtree(cell_dir)
+                #if not os.path.exists(cell_dir):
+                os.makedirs(cell_dir)
+                    
                 for X in filenames:
                     if os.path.split(X)[-1] == CODE_PY: continue
                     target = os.path.join(cell_dir, os.path.split(X)[1])
                     try:
-                        if os.path.exists(target):
-                            if os.path.islink(target) or os.path.isfile(target):
-                                os.unlink(target)
-                            else:
-                                shutil.rmtree(target)
+                        # Since we now wipe the cell_dir above, the below should never
+                        # be triggered.
+                        #if os.path.exists(target):
+                        #    if os.path.islink(target) or os.path.isfile(target):
+                        #        os.unlink(target)
+                        #    else:
+                        #        shutil.rmtree(target)
                         if os.path.isdir(X):
                             shutil.copytree(X, target,
                                             ignore=ignore_nonexistent_files)
