@@ -162,7 +162,7 @@ def generate_configuration(directory):
         sage: tmpdir = tempfile.mkdtemp()
         sage: generate_configuration(tmpdir)
         sage: open(os.path.join(tmpdir, 'conf.py')).read()
-        '\n...extensions =...templates_path...source = False\n...'
+        '\n...extensions =...'
     """
     conf = r'''
 ###########################################################
