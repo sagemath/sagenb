@@ -1697,7 +1697,7 @@ class Notebook(object):
         if W is None:
             return current_app.message("The worksheet does not exist") #XXX: i18n
 
-        if W.docbrowser():
+        if W.docbrowser() or W.is_published():
             if W.is_published() or self.user_manager().user_is_guest(username):
                 template_page = os.path.join('html', 'notebook', 'guest_worksheet_page.html')
             else:

@@ -1154,7 +1154,7 @@ class Cell(Cell_generic):
         return u'{{{id=%s|\n%s\n}}}' % (self.id(), s)
 
     def next_compute_id(self):
-        """
+        r"""
         Returns the ID of the next compute cell in this compute cell's
         worksheet object.  If this cell is *not* in the worksheet, it
         returns the ID of the worksheet's *first* compute cell.  If

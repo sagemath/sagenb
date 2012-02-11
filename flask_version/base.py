@@ -455,7 +455,7 @@ def create_app(path_to_notebook, *args, **kwds):
     #autoindex v0.3 doesnt seem to work with modules
     #routing with app directly does the trick
     #TODO: Check to see if autoindex 0.4 works with modules
-    idx = AutoIndex(app, browse_root=SRC)
+    idx = AutoIndex(app, browse_root=SRC, add_url_rules=False)
     @app.route('/src/')
     @app.route('/src/<path:path>')
     @guest_or_login_required
@@ -465,7 +465,7 @@ def create_app(path_to_notebook, *args, **kwds):
             from cgi import escape
             src = escape(open(filename).read().decode('utf-8','ignore'))
             if (os.path.splitext(filename)[1] in 
-                ['.py','.c','.cc','.h','.hh','.pyx','.pyd']):
+                ['.py','.c','.cc','.h','.hh','.pyx','.pxd']):
                 return render_template(os.path.join('html', 'source_code.html'),
                                        src_filename=path, 
                                        src=src, username = g.username)

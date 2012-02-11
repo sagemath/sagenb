@@ -6,12 +6,18 @@ var jmol_count = 0;
 //var allowedJmolSize = [1, 2048, 300];
 function jmol_applet(size, url) {
     var s;
-    jmolSetDocument(cell_writer);
+    if (typeof(cell_writer) !== "undefined") {
+	jmolSetDocument(cell_writer);
+    }
     jmolSetAppletCssClass('jmol_applet');
     jmolApplet(size, "script " + url, jmol_count);
     s = ' <a href="#" onclick="jmol_image(' + jmol_count +
         ');return false;">' + translations["Get Image"] + '</a>';
-    cell_writer.write(s);
+
+    if (typeof(cell_writer) !== "undefined") {
+	cell_writer.write(s);
+    }
+
     jmol_count += 1;
     return s;
 }
