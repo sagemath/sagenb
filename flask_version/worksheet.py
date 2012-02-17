@@ -748,12 +748,11 @@ def worksheet_do_upload_data(worksheet):
 
     response = redirect(worksheet_datafile.url_for(worksheet, name=name))
 
-    if url != '' and url[0:7] == 'file://':
+    import re
+    matches = re.match("file://(?:localhost)?(/.+)", url)
+    if matches:
         f = file(dest, 'wb')
-        fin = url[7:]
-        if fin.startswith('localhost'):
-            fin = fin[9:]
-        f.write(open(fin).read())
+        f.write(open(matches.group(1)).read())
         f.close()
         return response
 

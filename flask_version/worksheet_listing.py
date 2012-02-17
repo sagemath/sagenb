@@ -250,9 +250,6 @@ def upload_worksheet():
     url = request.values['url'].strip()
     dir = ''
     if url != '':
-        if url[0:7] == 'file://' and g.notebook.interface != 'localhost':
-            return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
-
         #Downloading a file from the internet
         import urllib, urlparse
         filename = tmp_filename() + ('.zip' if url.endswith('.zip') else '.sws')
@@ -265,14 +262,16 @@ def upload_worksheet():
             return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
         filename = tmp_filename()+extension
         try:
-            if url[0:7] != 'file://':
-                urllib.urlretrieve(url, filename)
-            else:
-                fin = url[7:]
-                if fin.startswith('localhost'):
-                    fin = fin[9:]
+            import re
+            matches = re.match("file://(?:localhost)?(/.+)", url)
+            if matches:
+                if g.notebook.interface != 'localhost':
+                    return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
+
                 import shutil
-                shutil.copy(fin,filename)
+                shutil.copy(matches.group(1),filename)
+            else:
+                urllib.urlretrieve(url, filename)
 
         except IOError as err:
             if err.strerror == 'unknown url type' and err.filename == 'https':
