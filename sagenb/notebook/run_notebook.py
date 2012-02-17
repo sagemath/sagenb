@@ -361,7 +361,7 @@ def notebook_twisted(self,
                             's' if old_secure else '', old_interface, old_port)
 
                         from sagenb.misc.misc import open_page as browse_to
-                        browse_to(old_interface, old_port, old_secure, 'startpath')
+                        browse_to(old_interface, old_port, old_secure, startpath)
                         return
                     print '\nPlease either stop the old server or run the new server in a different directory.'
                     return
