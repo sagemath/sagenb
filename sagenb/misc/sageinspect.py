@@ -651,7 +651,8 @@ def sage_getargspec(obj):
         sage: sage_getargspec(identity_matrix)
         (['ring', 'n', 'sparse'], None, None, (0, False))
         sage: sage_getargspec(Poset)
-        (['data', 'element_labels', 'cover_relations'], None, None, (None, None, False))
+        (['data', 'element_labels', 'cover_relations', 'category', 'facade',
+          'key'], None, None, (None, None, False, None, None, None))
         sage: sage_getargspec(factor)
         (['n', 'proof', 'int_', 'algorithm', 'verbose'],
          None,
