@@ -648,11 +648,15 @@ def sage_getargspec(obj):
     EXAMPLES::
 
         sage: from sagenb.misc.sageinspect import sage_getargspec
+        sage: def f(x, y, z=1, t=2, *args, **keywords):
+        ...     pass
+        sage: sage_getargspec(f)
+        (['x', 'y', 'z', 't'], 'args', 'keywords', (1, 2))
+
+    We now run sage_getargspec on some functions from the Sage library::
+
         sage: sage_getargspec(identity_matrix)
         (['ring', 'n', 'sparse'], None, None, (0, False))
-        sage: sage_getargspec(Poset)
-        (['data', 'element_labels', 'cover_relations', 'category', 'facade',
-          'key'], None, None, (None, None, False, None, None, None))
         sage: sage_getargspec(factor)
         (['n', 'proof', 'int_', 'algorithm', 'verbose'],
          None,
