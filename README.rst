@@ -1,3 +1,5 @@
+.. nodoctest
+
 .. This README does not explain how to handle installation into versions
    of Sage which do not yet ship the flask notebook, as the packaging of
    the notebook's dependencies is still in flux. Please see
