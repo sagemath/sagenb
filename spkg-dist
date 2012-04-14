@@ -88,20 +88,21 @@ def fetch_packages():
     tmp_dir = mkdtemp()
 
     # in order of dependencies
-    required_packages = ('twisted>=11.0.0',
-                         'pytz>=2011n',
-                         'Babel>=0.9.6',
-                         'Werkzeug>=0.8.2',
-                         'speaklater>=1.2',
-                         'python-openid>=2.2.5',
-                         'Flask>=0.8',
-                         'Flask-Silk>=0.1.1',
-                         'Flask-AutoIndex>=0.4.0',
-                         'Flask-Babel>=0.8',
-                         'Flask-OpenID>=1.0.1',
-                         'dulwich>=0.8.0',
-                         'hg-git>=0.3.1',
-                         'pyOpenSSL')
+    required_packages = ( 'twisted>=11.0.0'
+                        , 'pytz>=2011n'
+                        , 'Babel>=0.9.6'
+                        , 'Werkzeug>=0.8.2'
+                        , 'speaklater>=1.2'
+                        , 'python-openid>=2.2.5'
+                        , 'Flask>=0.8'
+                        , 'Flask-Silk>=0.1.1'
+                        , 'Flask-AutoIndex>=0.4.0'
+                        , 'Flask-Babel>=0.8'
+                        , 'Flask-OpenID>=1.0.1'
+                        , 'dulwich>=0.8.0'
+                        , 'hg-git>=0.3.1'
+                        , 'pyOpenSSL<=0.12'
+                        )
     pkg_locations = []
 
     for pkg in required_packages:
