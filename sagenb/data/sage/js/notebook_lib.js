@@ -3002,9 +3002,6 @@ function evaluate_cell(id, newcell) {
         return;
     }
 
-    queue_id_list.push(id);
-    cell_set_running(id);
-
     // Request a new cell to insert after this one?
     newcell = (newcell || (id === extreme_compute_cell(-1))) ? 1 : 0;
     if (evaluating_all) {
