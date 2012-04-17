@@ -142,8 +142,8 @@ class Notebook(object):
             # Worksheet has never been saved before, so the server conf doesn't exist.
             self.__worksheets = WorksheetDict(self)
 
-        from user_manager import SimpleUserManager, OpenIDUserManager
-        self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
+        from user_manager import ExtAuthUserManager
+        self._user_manager = ExtAuthUserManager(conf=self.conf()) if user_manager is None else user_manager
 
         # Set the list of users
         try:
@@ -278,7 +278,7 @@ class Notebook(object):
         """
         return self.user_manager().user(username)
 
-    def valid_login_names(self):
+    def known_users(self):
         """
         Return a list of users that can log in.
 
@@ -290,15 +290,15 @@ class Notebook(object):
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
             sage: nb.create_default_users('password')
-            sage: nb.valid_login_names()
+            sage: nb.known_users()
             ['admin']
             sage: nb.user_manager().add_user('Mark', 'password', '', force=True)
             sage: nb.user_manager().add_user('Sarah', 'password', '', force=True)
             sage: nb.user_manager().add_user('David', 'password', '', force=True)
-            sage: sorted(nb.valid_login_names())
+            sage: sorted(nb.known_users())
             ['David', 'Mark', 'Sarah', 'admin']
         """
-        return self.user_manager().valid_login_names()
+        return self.user_manager().known_users()
 
     ##########################################################
     # Publishing worksheets
@@ -1363,7 +1363,7 @@ class Notebook(object):
                         username = username, rev = rev, prev_rev = prev_rev,
                         next_rev = next_rev, time_ago = time_ago)
 
-    def html_share(self, worksheet, username):
+    def html_share(self, worksheet, username, lookup=None):
         r"""
         Return the HTML for the "share" page of a worksheet.
 
@@ -1384,10 +1384,19 @@ class Notebook(object):
             sage: nb.html_share(W, 'admin')
             u'...currently shared...add or remove collaborators...'
         """
+
+        lookup_result = self.user_manager().user_lookup(lookup) if lookup else None
+        if lookup_result is not None:
+            lookup_result.sort(lambda x,y: cmp(x.lower(), y.lower()))
+            if username in lookup_result:
+                lookup_result.remove(username)
+
         return template(os.path.join("html", "notebook", "worksheet_share.html"),
                         worksheet = worksheet,
                         notebook = self,
-                        username = username)
+                        username = username,
+                        lookup = lookup,
+                        lookup_result = lookup_result)
 
     def html_download_or_delete_datafile(self, ws, username, filename):
         r"""

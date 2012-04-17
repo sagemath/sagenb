@@ -32,8 +32,8 @@ class User(object):
         self.set_password(password)
         self._email = email
         self._email_confirmed = False
-        if not account_type in ['admin', 'user', 'guest']:
-            raise ValueError("account type must be one of admin, user, or guest")
+        if not account_type in ['admin', 'user', 'guest', 'external' ]:
+            raise ValueError, "account type must be one of admin, user, guest or external"
         self._account_type = account_type
         self._conf = user_conf.UserConfiguration()
         self._temporary_password = ''
@@ -289,7 +289,13 @@ class User(object):
             False
         """
         return self._account_type == 'guest'
+
+    def may_change_email(self):
+        return self._account_type in ( 'user', 'admin' )
         
+    def may_change_password(self):
+        return self._account_type in ( 'user', 'admin' )
+
     def is_suspended(self):
         """
         EXAMPLES::

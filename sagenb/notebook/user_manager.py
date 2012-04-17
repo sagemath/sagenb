@@ -112,8 +112,16 @@ class UserManager(object):
             pass
 
         raise KeyError, "no user '%s'"%username
+
+    def user_lookup(self, search):
+        r = [x for x in self.users().keys() if search in x]
+        try:
+            r += [u for u in self._user_lookup(search) if u not in r]
+        except AttributeError:
+            pass
+        return r
             
-    def valid_login_names(self):
+    def known_users(self):
         """
         Return a list of users that can log in.
         """
@@ -492,11 +500,14 @@ class SimpleUserManager(UserManager):
             if user_password == crypt.crypt(password, user.SALT):
                 self.set_password(username, password)
                 return True
-            else:
-                return False
         else:
             salt, user_password = user_password.split('$')[1:]
-            return hashlib.sha256(salt + password).hexdigest() == user_password
+            if hashlib.sha256(salt + password).hexdigest() == user_password:
+                return True
+        try:
+            return self._check_password(username, password)
+        except AttributeError:
+            return False;
 
     def get_accounts(self):
         # need to use notebook's conf because those are already serialized
@@ -569,3 +580,197 @@ class OpenIDUserManager(SimpleUserManager):
         Return the user object corresponding ot a given identity_url
         """
         return self.user(self.get_username_from_openid(identity_url)) 
+
+
+class ExtAuthUserManager(OpenIDUserManager):
+    def __init__(self, conf=None, accounts=None):
+        OpenIDUserManager.__init__(self, accounts=accounts, conf=conf)
+        self._conf = conf
+        # currently only 'auth_ldap' here. the key must match to a T_BOOL option in server_config.py
+        # so we can turn this auth method on/off
+        self._auth_methods = {
+                    'auth_ldap': LdapAuth(conf=self._conf),
+                    }
+
+    def _user(self, username):
+        # check all auth methods that are enabled in the notebook's config
+        # if a valid username is found, a new User object will be created.
+        for a in self._auth_methods:
+            if self._conf[a]:
+                u = self._auth_methods[a].check_user(username)
+                if u:
+                    try:
+                        email = self._auth_methods[a].get_attrib(username, 'email')
+                    except KeyError:
+                        email = None
+
+                    self.add_user(username, password='', email=email, account_type='external', force=True)
+                    return self.users()[username]
+
+        return OpenIDUserManager._user(self, username)
+
+    def _check_password(self, username, password):
+        for a in self._auth_methods:
+            if self._conf[a]:
+                # users should be unique among auth methods
+                u = self._auth_methods[a].check_user(username)
+                if u:
+                    return self._auth_methods[a].check_password(username, password)
+        return OpenIDUserManager.check_password(self, username, password)
+
+    def _user_lookup(self, search):
+        """
+        Returns a list of usernames that are found when calling user_lookup on all enabled auth methods
+        """
+        r = []
+        for a in self._auth_methods:
+            if self._conf[a]:
+                r += [u for u in self._auth_methods[a].user_lookup(search) if u not in r]
+        return r
+
+    # the openid methods should not be callable if openid is disabled
+    def get_username_from_openid(self, identity_url):
+        if self._conf['openid']:
+            return OpenIDUserManager.get_username_from_openid(self, identity_url)
+        else:
+            raise RuntimeError
+
+    def create_new_openid(self, identity_url, username):
+        if self._conf['openid']:
+            OpenIDUserManager.create_new_openid(self, identity_url, username)
+        else:
+            raise RuntimeError
+
+    def get_user_from_openid(self, identity_url):
+        if self._conf['openid']:
+            return OpenIDUserManager.get_user_from_openid(self, identity_url)
+        else:
+            raise RuntimeError
+
+
+class AuthMethod():
+    """
+    Abstract class for authmethods that are used by ExtAuthUserManager
+    All auth methods must implement the following methods
+    """
+
+    def __init__(self, conf):
+        self._conf = conf
+
+    def check_user(self, username):
+        raise NotImplementedError
+
+    def check_password(self, username, password):
+        raise NotImplementedError
+
+    def get_attrib(self, username, attrib):
+        raise NotImplementedError
+
+
+class LdapAuth(AuthMethod):
+    """
+    Authentication via LDAP
+
+    User authentication works like this:
+    1a. bind to LDAP with a generic (configured) DN and password
+    1b. find the ldap object matching to username. return None when more than 1 object is found
+    2. if 1 succeeds, bind with the user DN and the supplied password
+
+    User lookup:
+    wildcard-match all configured "user lookup attributes" for
+    the given search string
+    """
+    def __init__(self, conf):
+        AuthMethod.__init__(self, conf)
+
+    def _ldap_search(self, query, attrlist=None):
+        """
+        runs any ldap query passed as arg
+        """
+        import ldap
+        conn = ldap.initialize(self._conf['ldap_uri'])
+        try:
+            conn.simple_bind_s(self._conf['ldap_binddn'], self._conf['ldap_bindpw'])
+        except ldap.LDAPError, e:
+            print e
+            raise
+        except ldap.INVALID_CREDENTIALS, e:
+            print e
+            raise ValueError, "invalid LDAP credentials"
+
+        result = conn.search_ext_s(self._conf['ldap_basedn'],
+                                     ldap.SCOPE_SUBTREE,
+                                     filterstr=query,
+                                     attrlist=attrlist,
+                                     # TODO:
+                                     #timeout=self._conf['ldap_timeout'],
+                                     #sizelimit=self._conf['ldap_sizelimit']
+                                     )
+        conn.unbind_s()
+        return result
+
+    def _get_ldapuser(self, username, attrlist=None):
+        from ldap import LDAPError
+        from ldap.filter import filter_format
+        # escape
+        try:
+            result = self._ldap_search(filter_format("(%s=%s)", [self._conf['ldap_username_attrib'], username]), attrlist)
+        except LDAPError, e:
+            print e
+            return None
+        # return None if more than 1 object found
+        return result[0] if len(result) == 1 else None
+
+    def user_lookup(self, search):
+        from ldap.filter import filter_format
+        from ldap import LDAPError
+        # build a ldap OR query
+        q = u''.join((
+            filter_format("(%s=*%s*)", [a, search])
+                for a in self._conf['ldap_lookup_attribs']
+        ))
+        q = q.join(('(|', ')'))
+
+        try:
+            r = self._ldap_search(q, attrlist=[str(self._conf['ldap_username_attrib'])])
+        except LDAPError, e:
+            print(e)
+            return []
+        except Exception, e:
+            print e
+            return []
+        # return a list of usernames
+        return [ x[1][self._conf['ldap_username_attrib']][0].lower()
+                    for x in r if x[1].has_key(self._conf['ldap_username_attrib']) ]
+
+    def check_user(self, username):
+        u = self._get_ldapuser(username)
+        return u is not None
+
+    def check_password(self, username, password):
+        import ldap
+        # retrieve username's DN
+        try:
+            u = self._get_ldapuser(username)
+            #u[0] is DN, u[1] is a dict with all other attributes
+            userdn = u[0]
+        except ValueError:
+            return False
+
+        # try to bind with that DN
+        try:
+            conn = ldap.initialize(uri=self._conf['ldap_uri'])
+            conn.simple_bind_s(userdn, password)
+            conn.unbind_s()
+            return True
+        except ldap.INVALID_CREDENTIALS:
+            return False
+
+    def get_attrib(self, username, attrib):
+        # translate some common attribute names to their ldap equivalents, i.e. "email" is "mail
+        attrib = 'mail' if attrib == 'email' else attrib
+
+        u = self._get_ldapuser(username)
+        if u is not None:
+            a = u[1][attrib][0] #if u[1].has_key(attrib) else ''
+            return a

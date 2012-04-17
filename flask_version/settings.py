@@ -71,6 +71,7 @@ def settings_page():
             td['email_confirmed'] = 'Not confirmed'
 
     td['admin'] = nu.is_admin()
+    td['form_email'] = nu.may_change_email()
 
     return render_template(os.path.join('html', 'settings', 'account_settings.html'), **td)
 
