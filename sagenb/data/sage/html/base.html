@@ -5,11 +5,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title>{{ render_title() }} -- Sage</title>
         {% block more_meta %}{% endblock %}
+	{% block published_link_rel %}{% endblock %}
         {% block pre_main_css %}{% endblock %}
         <link type="text/css" rel="stylesheet" href="/css/{% block css %}main{% endblock %}.css" />
         {% block more_css %}{% endblock %}
         {# jQuery and other universally used libraries #}
-        <script type="text/javascript" src="/javascript/jquery/jquery-1.5.2.min.js"></script>
+        <script type="text/javascript" src="/javascript/jquery/jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="/javascript/dynamic/localization.js"></script>
         <script type="text/javascript" src="/javascript/json/json2.min.js"></script>
         {% block javascript %}

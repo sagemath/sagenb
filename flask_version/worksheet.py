@@ -739,6 +739,15 @@ def worksheet_do_upload_data(worksheet):
     if not name:
         return current_app.message(_('Error uploading file (missing filename).%(backlinks)s', backlinks=backlinks), worksheet_url)
 
+    if url != '':
+        import urllib2
+        from urlparse import urlparse
+        # we normalize the url by parsing it first
+        parsedurl=urlparse(url)
+        if not parsedurl[0] in ('http','https','ftp'):
+            return current_app.message(_('URL must start with http, https, or ftp.%(backlinks)s', backlinks=backlinks), worksheet_url)
+        download = urllib2.urlopen(parsedurl.geturl())
+
     #XXX: disk access
     dest = os.path.join(worksheet.data_directory(), name)
     if os.path.exists(dest):
@@ -757,8 +766,9 @@ def worksheet_do_upload_data(worksheet):
         return response
 
     elif url != '':
-        #XXX: Finish me!
-        pass
+        with open(dest, 'w') as f:
+            f.write(download.read())
+        return response
     elif new_field:
         open(dest, 'w').close()
         return response
