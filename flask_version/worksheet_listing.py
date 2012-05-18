@@ -31,18 +31,11 @@ def render_worksheet_list(args, pub, username):
     
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
-    from sagenb.notebook.pagination import Paginator
-
+    
     typ = args['typ'] if 'typ' in args else 'active'
     search = unicode_str(args['search']) if 'search' in args else None
     sort = args['sort'] if 'sort' in args else 'last_edited'
     reverse = (args['reverse'] == 'True') if 'reverse' in args else False
-    page = 1
-    if 'page' in args:
-        try:
-            page = int(args['page'])
-        except ValueError as E:
-            print "Error improper page input", E
 
     try:
         if not pub:
@@ -55,19 +48,6 @@ def render_worksheet_list(args, pub, username):
         # for example, the sort key was not valid
         print "Error displaying worksheet listing: ", E
         return current_app.message(_("Error displaying worksheet listing."))
-
-    paginator = Paginator(worksheets, 25) #25 is number of items per page, change this value to change the number of objects per page.
-
-    try:
-        pages = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        pages = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        pages = paginator.page(paginator.num_pages)
-
-    worksheets = pages.object_list
 
     worksheet_filenames = [x.filename() for x in worksheets]
 

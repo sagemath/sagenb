@@ -25,60 +25,6 @@ INPUT:
 {% block javascript %}
 {% if not pub %}
 <link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.8.11.custom.css" />
-<style type="text/css">
-    .pagination {
-        text-align: center;
-    }
-    .pagination ul {
-        border: 0;
-        margin: 0;
-        padding: 0;
-        outline: 0;
-    }
-    .pagination li {
-        border: 0; margin: 0; padding: 0;
-        font-size: 11px;
-        list-style: none;
-        float: left;
-    }
-    .pagination a {
-        border: solid 1px #DDDDDD;
-        margin-right: 2px;
-    }
-    .step-links .previous-off, .step-links .next-off {
-        color: #666666;
-        display: inline-block;
-        float:left;
-        font-weight: bold;
-        padding:3px 4px;
-    }
-
-    .step-links .next, .step-links .previous {
-        font-weight: bold;
-        border: solid 1px #FFF;
-    }
-    .step-links a:hover {
-        background: #eee;
-    }
-    .pagination a, .pagination a:visited {
-        color: #0063e3;
-        display: block;
-        float:left;
-        padding:3px 6px;
-        text-decoration: none;
-    }
-    .pagination a:hover {
-        border:solid 1px #666666;
-    }
-    .pagination a.active {
-        color: #ff0084;
-        font-weight: bold;
-        display: inline-block;
-        float: left;
-        padding: 4px 6px;
-    }
-
-</style>
 <script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.8.11.custom.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/form/jquery.form.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/jquery.bgiframe.min.js"></script>
@@ -279,33 +225,4 @@ INPUT:
         {% endif %}
     </tbody>
 </table>
-<div class="pagination">
-    <ul class="step-links">
-        {% if pages.has_previous() %}
-            <li class="previous">
-                <a href="?page={{ pages.previous_page_number() }}&typ={{ typ }}&sort={{ sort }}&reverse={{ reverse }}">&lt;&lt; previous</a>
-            </li>
-        {% else %}
-            <li class="previous-off">
-                &lt;&lt; previous
-            </li>
-        {% endif %}
-
-        {% for x in paginator.page_range(pages.number) %}
-            <li>
-                <a href="?page={{x}}&typ={{ typ }}&sort={{ sort }}&reverse={{ reverse }}" {% if x == pages.number %} class="active" {% endif %}>{{x}}</a>
-            </li>
-        {% endfor %}
-
-        {% if pages.has_next() %}
-            <li class="next">
-                <a href="?page={{ pages.next_page_number() }}&typ={{ typ }}&sort={{ sort }}&reverse={{ reverse }}">next &gt;&gt;</a>
-            </li>
-        {% else %}
-            <li class="next-off">
-                next &gt;&gt;
-            </li>
-        {% endif %}
-    </ul>
-</div>
 {% endblock %}
