@@ -10,18 +10,13 @@ def login_required(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if 'username' not in session:
-            if not g.notebook.conf()['require_login']:
-                g.username = session['username'] = 'admin'
-                session.modified = True
+            #XXX: Do we have to specify this for the publised
+            #worksheets here?
+            if request.path.startswith('/home/_sage_/'):
+                g.username = 'guest'
                 return f(*args, **kwds)
             else:
-                #XXX: Do we have to specify this for the publised
-                #worksheets here?
-                if request.path.startswith('/home/_sage_/'):
-                    g.username = 'guest'
-                    return f(*args, **kwds)
-                else:
-                    return redirect(url_for('base.index', next=request.url))
+                return redirect(url_for('base.index', next=request.url))
         else:
             g.username = session['username']
         return f(*args, **kwds)

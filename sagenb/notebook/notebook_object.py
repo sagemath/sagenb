@@ -50,10 +50,6 @@ class NotebookObject:
           Sage yourself, have the OpenSSL development libraries installed.
           *Highly recommended!*
 
-        - ``require_login`` -- boolean (default: ``True``) if True
-          login is required else web user is automatically logged in
-          as user admin.
-
         - ``reset`` -- boolean (default: ``False``) if True allows you
           to set the admin password.  Use this if you forget your
           admin password.
@@ -74,16 +70,23 @@ class NotebookObject:
               user_manager.add_user("username", "password", "email@place", "user")
               nb.save()
               
-        - ``open_viewer`` -- boolean (default: True) whether to pop up
-          a web browser.  You can override the default browser by
-          setting the ``SAGE_BROWSER`` environment variable, e.g., by
-          putting
+        - ``automatic_login`` -- boolean (default: True) whether to pop up
+          a web browser and automatically log into the server as admin.  You can
+          override the default browser by setting the ``SAGE_BROWSER`` environment
+          variable, e.g., by putting
 
           ::
           
               export SAGE_BROWSER="firefox"
               
           in the file .bashrc in your home directory.
+
+   .. warning::
+
+      If you are running a server for others to log into, set `automatic_login=False`.
+      Otherwise, all of the worksheets on the entire server will be loaded when the server
+      automatically logs into the admin account.
+
 
         - ``timeout`` -- integer (default: 0) seconds until idle
           worksheet sessions automatically timeout, i.e., the
@@ -101,6 +104,11 @@ class NotebookObject:
 
        If you have problems with the server certificate hostname not
        matching, do ``notebook.setup()``.
+
+    .. note::
+
+       The ``require_login`` option has been removed.  Use `automatic_login` to control
+       automatic logins instead---`automatic_login=False` corresponds to `require_login=True`.
     
     EXAMPLES:
 
@@ -117,24 +125,14 @@ class NotebookObject:
        administrator password.  Use this to login. NOTE: You may have
        to run ``notebook.setup()`` again and change the hostname.
 
-    3. I just want to run the server locally on my laptop and do not
-       want to be bothered with having to log in::
- 
-           notebook(require_login=False)
-
-       Use this ONLY if you are *absolutely certain* that you are the
-       only user logged into the laptop and do not have to worry about
-       somebody else using the Sage notebook on localhost and deleting
-       your files.
-
-    4. I want to create a Sage notebook server that is open to anybody
+    3. I want to create a Sage notebook server that is open to anybody
        in the world to create new accounts. To run the Sage notebook
        publicly (1) at a minimum run it from a chroot jail or inside a
        virtual machine (see `this Sage wiki page`_) and (2) use a
        command like::
     
            notebook(interface='', server_pool=['sage1@localhost'],
-           ulimit='-v 500000', accounts=True)
+           ulimit='-v 500000', accounts=True, automatic_login=False)
 
        The server_pool option specifies that worksheet processes run
        as a separate user.  The ulimit option restricts the memory
@@ -254,7 +252,7 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
     nb.save()
     
     p = notebook(directory=directory, accounts=True, secure=secure, port=port,
-                 interface=interface, open_viewer=False, fork=True, quiet=True)
+                 interface=interface, automatic_login=False, fork=True, quiet=True)
     p.expect("Starting factory")
     def dispose():
         try:

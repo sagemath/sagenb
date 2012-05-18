@@ -82,8 +82,11 @@ import os
 flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_version')
 sys.path.append(flask_dir)
 import base as flask_base
+opts={}
 startup_token = '{0:x}'.format(random.randint(0, 2**128))
-flask_app = flask_base.create_app(%(notebook_opts)s, startup_token=startup_token)
+if %(login)s:
+    opts['startup_token'] = startup_token
+flask_app = flask_base.create_app(%(notebook_opts)s, **opts)
 sys.path.remove(flask_dir)
 
 from twisted.web.wsgi import WSGIResource
@@ -220,25 +223,30 @@ def notebook_twisted(self,
              port_tries    = 50,
              secure        = False,
              reset         = False,
-             require_login = True, 
              accounts      = None,
              openid        = None,
-                     
+
              server_pool   = None,
              ulimit        = '',
 
              timeout       = 0,
 
-             open_viewer   = True,
+             automatic_login = True,
 
-             sagetex_path  = "",
              start_path    = "",
              fork          = False,
              quiet         = False,
-             subnets = None):
+             
+             subnets = None,
+             require_login = None,
+             open_viewer = None):
 
     if subnets is not None:
         raise ValueError("""The subnets parameter is no longer supported. Please use a firewall to block subnets, or even better, volunteer to write the code to implement subnets again.""")
+    if require_login is not None or open_viewer is not None:
+        raise ValueError("The require_login and open_viewer parameters are no longer supported.  "
+                         "Please use automatic_login=True to automatically log in as admin, "
+                         "or use automatic_login=False to not automatically log in.")
 
     cwd = os.getcwd()
     # For backwards compatible, we still allow the address to be set
@@ -283,7 +291,6 @@ def notebook_twisted(self,
         print "The notebook files are stored in:", nb._dir
 
     nb.conf()['idle_timeout'] = int(timeout)
-    nb.conf()['require_login'] = require_login
 
     if openid is not None:
         nb.conf()['openid'] = openid 
@@ -348,7 +355,7 @@ def notebook_twisted(self,
                 if str(e).startswith('Another twistd server is running,'):
                     print 'Another Sage Notebook server is running, PID %d.' % pid
                     old_interface, old_port, old_secure = get_old_settings(conf)
-                    if open_viewer and old_port:
+                    if automatic_login and old_port:
                         old_interface = old_interface or 'localhost'
 
                         print 'Opening web browser at http%s://%s:%s/ ...' % (
@@ -378,7 +385,7 @@ def notebook_twisted(self,
         notebook_opts = '"%s",interface="%s",port=%s,secure=%s' % (
             os.path.abspath(directory), interface, port, secure)
 
-        if open_viewer:
+        if automatic_login:
             start_path = "'/?startup_token=%s' % startup_token"
             if interface:
                 hostname = interface
@@ -390,11 +397,9 @@ def notebook_twisted(self,
 
         config = open(conf, 'w')
 
-        config.write(FLASK_NOTEBOOK_CONFIG%{'notebook_opts': notebook_opts, 'sagetex_path': sagetex_path,
-                                            'do_not_require_login': not require_login,
-                                            'dir': os.path.abspath(directory), 'cwd':cwd, 
-                                            'strport': strport,
-                                            'open_page': open_page})
+        config.write(FLASK_NOTEBOOK_CONFIG%{'notebook_opts': notebook_opts,
+                                            'cwd':cwd, 'strport': strport,
+                                            'open_page': open_page, 'login': automatic_login})
 
 
         config.close()                     
@@ -429,8 +434,8 @@ def notebook_twisted(self,
             print "*" * 70
 
     port = find_next_available_port(interface, port, port_tries)
-    if open_viewer:
-        "Open viewer automatically isn't fully implemented.  You have to manually open your web browser to the above URL."
+    if automatic_login:
+        "Automatic login isn't fully implemented.  You have to manually open your web browser to the above URL."
     return run(port)
 
 def get_admin_passwd():
