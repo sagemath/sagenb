@@ -295,13 +295,15 @@ def notebook_twisted(self,
     if openid is not None:
         nb.conf()['openid'] = openid 
     elif not nb.conf()['openid']:
+        # What is the purpose behind this elif?  It seems rather pointless.
+        # all it appears to do is set the config to False if bool(config) is False
         nb.conf()['openid'] = False
 
     if accounts is not None:
         nb.user_manager().set_accounts(accounts)
-    elif not nb.conf()['accounts']:
-        nb.user_manager().set_accounts(True)
-    
+    else:
+        nb.user_manager().set_accounts(nb.conf()['accounts'])
+
     if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
         # This is here only for backward compatibility with one
         # version of the notebook.

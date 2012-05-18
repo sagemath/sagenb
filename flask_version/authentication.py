@@ -94,6 +94,8 @@ waiting = {}
 @authentication.route('/register', methods = ['GET','POST'])
 @with_lock
 def register():
+    if not g.notebook.user_manager().get_accounts():
+        return redirect(url_for('base.index'))
     from sagenb.notebook.misc import is_valid_username, is_valid_password, \
     is_valid_email, do_passwords_match
     from sagenb.notebook.challenge import challenge
