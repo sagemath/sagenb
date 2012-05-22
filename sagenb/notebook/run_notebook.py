@@ -76,9 +76,9 @@ else:
 
 import logging
 logger=logging.getLogger('werkzeug')
-#logger.setLevel(logging.WARNING)
+logger.setLevel(logging.WARNING)
 #logger.setLevel(logging.INFO) # to see page requests
-logger.setLevel(logging.DEBUG)
+#logger.setLevel(logging.DEBUG)
 logger.addHandler(logging.StreamHandler())
 
 if %(secure)s:
