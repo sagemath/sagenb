@@ -35,9 +35,7 @@ class NotebookObject:
 
         - ``interface`` -- string (default: ``'localhost'``), address
           of network interface to listen on; give ``''`` to listen on
-          all interfaces.  You may use ``address`` here for backwards
-          compatibility, but this is deprecated and will be removed in
-          the future.
+          all interfaces.
 
         - ``port_tries`` -- integer (default: ``0``), number of
           additional ports to try if the first one doesn't work (*not*
@@ -81,11 +79,11 @@ class NotebookObject:
               
           in the file .bashrc in your home directory.
 
-   .. warning::
+          .. warning::
 
-      If you are running a server for others to log into, set `automatic_login=False`.
-      Otherwise, all of the worksheets on the entire server will be loaded when the server
-      automatically logs into the admin account.
+              If you are running a server for others to log into, set `automatic_login=False`.
+              Otherwise, all of the worksheets on the entire server will be loaded when the server
+              automatically logs into the admin account.
 
 
         - ``timeout`` -- integer (default: 0) seconds until idle
@@ -203,7 +201,7 @@ class NotebookObject:
     def __call__(self, *args, **kwds):
         return self.notebook(*args, **kwds)
 
-    notebook = run_notebook.notebook_twisted
+    notebook = run_notebook.notebook_run
     setup    = run_notebook.notebook_setup
 
 notebook = NotebookObject()
