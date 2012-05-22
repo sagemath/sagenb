@@ -42,6 +42,12 @@ FLASK_NOTEBOOK_CONFIG = """
 # See http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html 
 #  (Serving WSGI Applications) for the basic ideas of the below code
 ####################################################################
+
+import sys
+if sys.platform.startswith('linux'):
+    from twisted.internet import epollreactor
+    epollreactor.install()
+
 from twisted.internet import reactor
 
 # Now set things up and start the notebook
