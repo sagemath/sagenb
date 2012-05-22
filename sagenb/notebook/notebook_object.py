@@ -164,6 +164,14 @@ class NotebookObject:
           now, so if the machines are separate the server machine must
           NSF export ``/tmp``.
 
+        - ``server`` -- string ("twistd" (default) or "flask").  The server
+          to use to server content.
+
+        - ``profile`` -- True, False, or file prefix (default: False - no profiling),
+          If True, profiling is saved to a randomly-named file like `sagenb-*-profile*.stats`
+          in the $DOT_SAGE directory.  If a string, that string is used as a
+          prefix for the pstats data file.
+
         - ``ulimit`` -- string (initial default: None -- leave as is),
           if given and ``server_pool`` is also given, the worksheet
           processes are run with these constraints. See the ulimit
