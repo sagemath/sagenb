@@ -225,7 +225,6 @@ def notebook_twisted(self,
              directory     = None,
              port          = 8080,
              interface     = 'localhost',        
-             address       = None,
              port_tries    = 50,
              secure        = False,
              reset         = False,
@@ -245,7 +244,9 @@ def notebook_twisted(self,
              
              subnets = None,
              require_login = None,
-             open_viewer = None):
+             open_viewer = None,
+             address = None,
+             ):
 
     if subnets is not None:
         raise ValueError("""The subnets parameter is no longer supported. Please use a firewall to block subnets, or even better, volunteer to write the code to implement subnets again.""")
@@ -253,15 +254,10 @@ def notebook_twisted(self,
         raise ValueError("The require_login and open_viewer parameters are no longer supported.  "
                          "Please use automatic_login=True to automatically log in as admin, "
                          "or use automatic_login=False to not automatically log in.")
+    if address is not None:
+        raise ValueError("Use 'interface' instead of 'address' when calling notebook(...).")
 
     cwd = os.getcwd()
-    # For backwards compatible, we still allow the address to be set
-    # instead of the interface argument
-    if address is not None:
-        from warnings import warn
-        message = "Use 'interface' instead of 'address' when calling notebook(...)."
-        warn(message, DeprecationWarning, stacklevel=3)
-        interface = address
 
     if directory is None:
         directory = '%s/sage_notebook' % DOT_SAGENB
