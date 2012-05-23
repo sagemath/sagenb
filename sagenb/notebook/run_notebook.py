@@ -107,7 +107,7 @@ atexit.register(partial(save_notebook,flask_base.notebook))
 
         port=kw['port']
         pidfile=kw['pidfile']
-        cmd = 'uwsgi --http :%s --file %s --callable flask_app --enable-threads --pidfile %s' % (port, run_file, pidfile)
+        cmd = 'uwsgi --single-interpreter --http :%s --file %s --callable flask_app --enable-threads --pidfile %s' % (port, run_file, pidfile)
         return cmd
 
 class NotebookRunFlask(NotebookRun):
