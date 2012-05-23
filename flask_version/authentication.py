@@ -21,7 +21,6 @@ def lookup_current_user():
 def login(template_dict={}):
     from sagenb.misc.misc import SAGE_VERSION
     template_dict.update({'accounts': g.notebook.user_manager().get_accounts(),
-                          'default_user': g.notebook.user_manager().default_user(),
                           'recovery': g.notebook.conf()['email'],
                           'next': request.values.get('next', ''), 
                           'sage_version': SAGE_VERSION,
@@ -245,7 +244,6 @@ def register():
     # Go to the login page.
     from sagenb.misc.misc import SAGE_VERSION
     template_dict = {'accounts': g.notebook.user_manager().get_accounts(),
-                     'default_user': g.notebook.user_manager().default_user(),
                      'welcome_user': username,
                      'recovery': g.notebook.conf()['email'],
                      'sage_version': SAGE_VERSION}
