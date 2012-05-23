@@ -44,6 +44,11 @@ FLASK_NOTEBOOK_CONFIG = """
 import sagenb.notebook.misc
 sagenb.notebook.misc.DIR = %(cwd)r #We should really get rid of this!
 
+import os
+with open(%(pidfile)r, 'w') as pidfile:
+    pidfile.write(str(os.getpid()))
+
+
 import signal, sys, random
 def save_notebook(notebook):
     print "Quitting all running worksheets..."
@@ -103,6 +108,7 @@ try:
                   ssl_context=ssl_context, debug=False)
 finally:
     save_notebook(flask_base.notebook)
+    os.unlink(%(pidfile)r)
 """
 
 TWISTD_NOTEBOOK_CONFIG = """
@@ -326,17 +332,16 @@ def notebook_run(self,
     cwd = os.getcwd()
 
     if directory is None:
-        directory = '%s/sage_notebook' % DOT_SAGENB
+        directory = '%s/sage_notebook.sagenb' % DOT_SAGENB
     else:
-        if (isinstance(directory, basestring) and len(directory) > 0 and
-           directory[-1] == "/"):
-            directory = directory[:-1]
+        directory = directory.rstrip('/')
 
     # First change to the directory that contains the notebook directory
     wd = os.path.split(directory)
     if wd[0]:
         os.chdir(wd[0])
     directory = wd[1]
+    pidfile = os.path.join(directory, 'twistd.pid')
 
     port = int(port)
 
@@ -434,7 +439,7 @@ def notebook_run(self,
                                             'cwd':cwd,
                                             'open_page': open_page, 'login': automatic_login,
                                             'secure': secure, 'pkey': private_pem, 'cert': public_pem,
-                                            'host': interface, 'port': port})
+            'host': interface, 'port': port, 'pidfile': pidfile})
 
         config.close()
 
@@ -456,7 +461,6 @@ def notebook_run(self,
         # Is a server already running? Check if a Twistd PID exists in
         # the given directory.
         conf = os.path.join(directory, 'twistedconf.tac')
-        pidfile = os.path.join(directory, 'twistd.pid')
         if platformType != 'win32':
             from twisted.scripts._twistd_unix import checkPID
             try:
