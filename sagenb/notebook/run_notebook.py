@@ -107,9 +107,10 @@ atexit.register(partial(save_notebook,flask_base.notebook))
 
         port=kw['port']
         pidfile=kw['pidfile']
-        cmd = 'uwsgi --single-interpreter --http :%s --file %s --callable flask_app --enable-threads --pidfile %s' % (port, run_file, pidfile)
+        cmd = 'uwsgi --single-interpreter --socket-timeout 30 --http-timeout 30 --listen 300 --http-socket :%s --file %s --callable flask_app --pidfile %s' % (port, run_file, pidfile)
         # Comment out the line below to turn on request logging
         cmd += ' --disable-logging'
+        cmd += ' --threads 4 --enable-threads'
         return cmd
 
 class NotebookRunFlask(NotebookRun):
