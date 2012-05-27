@@ -233,7 +233,7 @@ msgstr ""
 "href=\"http://groups.google.com/group/sage-support\">группу sage-"
 "support</a> и дайте ссылку на ваш рабочий лист. Как вариант, попробуйте "
 "взглянуть внутрь файла сами: sws файл — это просто текстовой файл в "
-"tar-архиве, скомпрессированный bzip2!\n"
+"tar-архиве, сжатом bzip2!\n"
 "%(backlinks)s"
 
 #: ../flask_version/worksheet_listing.py:436
@@ -491,7 +491,7 @@ msgstr ""
 
 #: ../sagenb/data/sage/html/login.html:43
 msgid "Use an Open Source Alternative"
-msgstr "Используйте свободную, открытую альтернативу"
+msgstr "Используйте свободную альтернативу"
 
 #: ../sagenb/data/sage/html/login.html:44
 msgid ""
@@ -1471,7 +1471,7 @@ msgid ""
 "This Sage Worksheet is currently shared with the people listed in the box"
 " below."
 msgstr ""
-"Этим рабочим листом Sage сейчас поделились с людьми, "
+"Этот рабочий лист на данный момент разделен с людьми, "
 "перечисленными в поле ниже."
 
 #: ../sagenb/data/sage/html/notebook/worksheet_share.html:30
@@ -1699,7 +1699,7 @@ msgstr "Переименовать"
 
 #: ../sagenb/data/sage/js/translated-messages.js:14
 msgid "Possible failure deleting worksheet."
-msgstr "Возможнo, была ошибка при удалении рабочего листа."
+msgstr "Возможнo, произошла ошибка при удалении рабочего листа."
 
 #: ../sagenb/data/sage/js/translated-messages.js:15
 msgid "unprinted"
