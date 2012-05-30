@@ -522,6 +522,12 @@ class TextCell(Cell_generic):
         """
         input_text = unicode_str(input_text)
         self._text = input_text
+        
+    def toJSON(self):
+        """
+        Returns the cell as a JSON object.
+        """
+        return "";
 
     def html(self, wrap=None, div_wrap=True, do_print=False,
              do_math_parse=True, editing=False, publish=False):
@@ -1670,6 +1676,12 @@ class Cell(Cell_generic):
             return self._sage
         except AttributeError:
             return None
+
+    def toJSON(self):
+        """
+        Returns the cell as a JSON object.
+        """
+        return "";
 
     def output_html(self):
         """

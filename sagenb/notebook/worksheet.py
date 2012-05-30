@@ -2338,6 +2338,12 @@ class Worksheet(object):
                 print msg
         return cells_html
 
+    def toJSON(self):
+        """
+        Returns the worksheet as a JSON object.
+        """
+        return "";
+
     def html(self, do_print=False, publish=False, username=None):
         r"""
         INPUT:
