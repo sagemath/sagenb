@@ -1622,7 +1622,7 @@ class Worksheet(object):
 
     def set_active(self, user):
         """
-        Set his worksheet to be active for the given user.
+        Set this worksheet to be active for the given user.
 
         INPUT:
 
