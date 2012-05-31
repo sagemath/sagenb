@@ -2338,11 +2338,12 @@ class Worksheet(object):
                 print msg
         return cells_html
 
-    def toJSON(self):
+    def to_json(self):
         """
         Returns the worksheet as a JSON object.
         """
-        return "";
+        from sagenb.notebook.misc import encode_response
+        return encode_response(self.basic())
 
     def html(self, do_print=False, publish=False, username=None):
         r"""

@@ -238,7 +238,20 @@ def worksheet_cell_list_json(worksheet):
     """
     print 'cell_list_json'
     r = {}
-    r['testing'] = "this was a test"
+    r['state_number'] = worksheet.state_number()
+    
+    cell_list = "["
+    
+    for cell in worksheet.cell_list():
+        cell_list += cell.to_json() + ","
+    
+    # drop the last ,
+    if len(worksheet.cell_list()) > 0:
+        cell_list = cell_list[:-1]
+    
+    cell_list += "]"
+    
+    r['cell_list'] = cell_list
     
     from sagenb.notebook.misc import encode_response
     return encode_response(r)
