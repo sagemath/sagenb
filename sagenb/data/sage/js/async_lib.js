@@ -2,10 +2,6 @@
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
-function generic_callback(status, response_text) {
-    /* do nothing */
-}
-
 function async_request(url, callback, postvars) {
     var settings = {
         url : url,

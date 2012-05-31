@@ -213,43 +213,54 @@ def worksheet_revert_to_last_saved_state(worksheet):
     return 'reverted'
 
 ########################################################
+# Worksheet properties
+########################################################
+@worksheet_command('worksheet_properties_json')
+def worksheet_worksheet_properties_json(worksheet):
+    """
+    Send worksheet properties as a JSON object
+    """
+    from sagenb.notebook.misc import encode_response
+    return encode_response(worksheet.basic())
+
+########################################################
 # Used in refreshing the cell list
 ########################################################
-@worksheet_command('cell_list')
-def worksheet_cell_list(worksheet):
-    """
-    Return the state number and the HTML for the main body of the
-    worksheet, which consists of a list of cells.
-    """
-    print 'cell_list'
-    r = {}
-    r['state_number'] = worksheet.state_number()
-    # TODO: Send and actually use the body's HTML.
-    r['html_cell_list'] = ''
-    #r['html_cell_list'] = W.html_cell_list()
+#@worksheet_command('cell_list')
+#def worksheet_cell_list(worksheet):
+#    """
+#    Return the state number and the HTML for the main body of the
+#    worksheet, which consists of a list of cells.
+#    """
+#    r = {}
+#    r['state_number'] = worksheet.state_number()
+#    # TODO: Send and actually use the body's HTML.
+#    r['html_cell_list'] = ''
+#     #r['html_cell_list'] = W.html_cell_list()
+#
+#    from sagenb.notebook.misc import encode_response
+#    return encode_response(r)
 
-    from sagenb.notebook.misc import encode_response
-    return encode_response(r)
-
+@worksheet_command('cell_json')
+def worksheet_cell_json(worksheet):
+    """
+    Return the cell with the given id as a JSON object
+    """
+    id = get_cell_id()
+    return worksheet.get_cell_with_id(id).to_json()
+    
 @worksheet_command('cell_list_json')
 def worksheet_cell_list_json(worksheet):
     """
     Return a list of cells in JSON format.
     """
-    print 'cell_list_json'
     r = {}
     r['state_number'] = worksheet.state_number()
     
-    cell_list = "["
+    cell_list = []
     
     for cell in worksheet.cell_list():
-        cell_list += cell.to_json() + ","
-    
-    # drop the last ,
-    if len(worksheet.cell_list()) > 0:
-        cell_list = cell_list[:-1]
-    
-    cell_list += "]"
+        cell_list.append(cell.to_dictionary())
     
     r['cell_list'] = cell_list
     
