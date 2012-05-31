@@ -99,6 +99,7 @@ base = Module('flask_version.base')
 #############
 @base.route('/')
 def index():
+    print 'index requested'
     if 'username' in session:
         response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:

@@ -441,6 +441,11 @@ class Cell_generic(object):
         """
         return False
 
+    def toJSON(self):
+        """
+        Returns the cell expressed as a JSON object.
+        """
+        return ""
 
 #############
 # Text cell #
@@ -525,9 +530,14 @@ class TextCell(Cell_generic):
         
     def toJSON(self):
         """
-        Returns the cell as a JSON object.
+        Returns the cell expressed as a JSON object.
         """
-        return "";
+        r = "{"
+        r += "id:" + self.id() + ","
+        r += "type:text,"
+        r += "input:" + self._text
+        r += "}"
+        return r
 
     def html(self, wrap=None, div_wrap=True, do_print=False,
              do_math_parse=True, editing=False, publish=False):
@@ -1681,7 +1691,30 @@ class Cell(Cell_generic):
         """
         Returns the cell as a JSON object.
         """
-        return "";
+        r = "{"
+        r += "\"id\":\"" + self.id() + "\","
+        r += "\"type\":\"evaluate\","
+        r += "\"input\":\"" + self._in + "\","
+        r += "\"output\":\"" + self._out + "\","
+        r += "\"percent_directives\":["
+        
+        # add in each percent directive
+        for directive in self.percent_directives():
+            r += "\"" + directive + "\","
+        
+        # lose the last ,
+        if len(self.percent_directives()) > 0:
+            r = r[:-1]
+        
+        r += "],"
+        r += "\"system\":\"" + self.system() + "\","
+        r += "\"auto\":\"" + self.is_auto_cell() + "\""
+        
+        # other properties go here
+        
+        r += "}"
+        
+        return r;
 
     def output_html(self):
         """
