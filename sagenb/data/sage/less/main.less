@@ -55,6 +55,11 @@ body {
 	}
 }
 
+.alert {
+	position: fixed;
+	top: 50px;
+}
+
 .the_container {
 	width: @the_container_width;
 	margin-left: auto;
@@ -79,6 +84,8 @@ body.single_cell_mode .the_page {
 it makes the page automatically fit the screen when the 
 screen width is less than the container width */
 @media (max-width: @the_container_width) {
+	/* here we may want to also change the body padding */
+
 	.the_container {
 		width: auto;
 		margin-left: 0px;
@@ -95,10 +102,10 @@ screen width is less than the container width */
 
 /* here we should also make another @media setup for printing */
 
-@title_font_size: 42px;
-h1.title {
-	font-size: @title_font_size;
-	line-height: @title_font_size + 6;
+@name_font_size: 42px;
+h1.name {
+	font-size: @name_font_size;
+	line-height: @name_font_size + 6;
 	/*margin-bottom: 25px;*/
 	
 	#unsaved_indicator {

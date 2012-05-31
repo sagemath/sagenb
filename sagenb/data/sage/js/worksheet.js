@@ -68,7 +68,42 @@ worksheetapp.cell = function(id) {
 								<div class=\"input_cell\">\
 								</div>\
 							</div> <!-- /cell -->");
-		
+			
+			//set up extraKeys array
+			var extrakeys = {};
+			
+			// set up autocomplete. we may want to use tab
+			extrakeys[ctrlkey + "-Space"] = "autocomplete";
+			
+			// backspace handler
+			extrakeys["Backspace"] = function(cm) {
+				// check if it is empty
+				// TODO: checking if it's the last cell should maybe be done by the nb
+			
+				// all of this is disabled for now
+				//if(cm.getValue() === "" && $(".cell").length > 1) {
+				if(false) {
+					// it's empty and not the only one -> delete it
+					deleteCell(id);
+				
+					/* TODO: now we should focus on the cell above instead of 
+					blurring everything and setting this back to -1 */
+					focused_texarea_id = -1;
+				} else {
+					// not empty -> pass to the default behaviour
+					throw CodeMirror.Pass;
+				}
+			};
+			
+			extrakeys["Shift-Enter"] = this_cell.evaluate;
+			
+			extrakeys[ctrlkey + "-N"] = this_cell.worksheet.new_worksheet;
+			extrakeys[ctrlkey + "-S"] = this_cell.worksheet.save;
+			extrakeys[ctrlkey + "-W"] = this_cell.worksheet.close;
+			extrakeys[ctrlkey + "-P"] = this_cell.worksheet.print;
+			
+			extrakeys["F1"] = this_cell.worksheet.open_help;
+			
 			// create the codemirror
 			this_cell.codemirror = CodeMirror($(container).find(".input_cell"), {
 				value: this_cell.input,
@@ -93,36 +128,7 @@ worksheetapp.cell = function(id) {
 					}
 				},
 			
-				extraKeys: {
-					ctrlkey + "-Space": "autocomplete",
-				
-					"Backspace": function(cm) {
-						// check if it is empty
-						// TODO: checking if it's the last cell should maybe be done by the nb
-					
-						// all of this is disabled for now
-						//if(cm.getValue() === "" && $(".cell").length > 1) {
-						if(false) {
-							// it's empty and not the only one -> delete it
-							deleteCell(id);
-						
-							/* TODO: now we should focus on the cell above instead of 
-							blurring everything and setting this back to -1 */
-							focused_texarea_id = -1;
-						} else {
-							// not empty -> pass to the default behaviour
-							throw CodeMirror.Pass;
-						}
-					},
-				
-					"Shift-Enter": this_cell.evaluate,
-				
-					ctrlkey + "-N": this_cell.worksheet.new_worksheet,
-					ctrlkey + "-S": this_cell.worksheet.save,
-					ctrlkey + "-W": this_cell.worksheet.close,
-					ctrlkey + "-P": this_cell.worksheet.print,
-					"F1": this_cell.worksheet.open_help
-				}
+				extraKeys: extrakeys
 			});
 		}
 		else {
@@ -156,7 +162,7 @@ worksheetapp.cell = function(id) {
 		this_cell.input = this_cell.codemirror.getValue();
 		
 		// update the server input property
-		async_request(worksheet_command("eval", this_cell.worksheet.generic_callback, {
+		async_request(this_cell.worksheet.worksheet_command("eval"), this_cell.worksheet.generic_callback, {
 			save_only: 1,
 			id: this_cell.id,
 			input: this_cell.input
@@ -165,7 +171,7 @@ worksheetapp.cell = function(id) {
 	this_cell.evaluate = function() {
 		// in the callback, I worry that this may not refer back the cell but instead the callback function
 		// we'll see if this is a problem
-		async_request(worksheet_command("eval", this_cell.worksheet.generic_callback(status, response, function(status, response) {
+		async_request(this_cell.worksheet.worksheet_command("eval", this_cell.worksheet.generic_callback(function(status, response) {
 			/* EVALUATION CALLBACK */
 		
 			var X = decode_response(response);
@@ -219,7 +225,7 @@ worksheetapp.cell = function(id) {
 		 * pause system like the last notebook had.
 		 */
 		function do_check() {
-			async_request(worksheet_command("cell_update"), this_cell.worksheet.generic_callback(status, response, function(status, response) {
+			async_request(this_cell.worksheet.worksheet_command("cell_update"), this_cell.worksheet.generic_callback(function(status, response) {
 				/* we may want to implement an error threshold system for errors 
 				like the old notebook had. that would go here */
 				
@@ -343,7 +349,7 @@ worksheetapp.cell = function(id) {
 	};
 };
 
-worksheetapp.worksheet = function() {
+worksheetapp.worksheet = function(props) {
 	/* this allows us to access this cell object from 
 	 * inner functions
 	 */
@@ -385,120 +391,64 @@ worksheetapp.worksheet = function() {
 	
 	///////////////// INSTANTIATE ////////////////
 	
-	// load in the worksheet details
-	async_request(worksheet_command("worksheet_properties_json"), this_worksheet.generic_callback(status, response, function(status, response) {
-		var X = decode_response(response);
-		
-		this_worksheet.id = X.id_number;
-		this_worksheet.name = X.name;
-		this_worksheet.owner = X.owner;
-		this_worksheet.system = X.system;
-	}));
-	
-	// setup up the title stuff
-	
-	// start the ping interval
-	this_worksheet.ping_interval_id = window.setInterval(this_worksheet.server_ping_time, this_worksheet.ping_server);
-	
-	// set up codemirror autocomplete
-	// TODO set up autocomplete
-	/*CodeMirror.commands.autocomplete = function(cm) {
-		CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
-	};*/
-	
-	// load in cells
-	async_request(worksheet_command("cell_list_json"), this_worksheet.generic_callback(status, response, function(status, response) {
-		var X = decode_response(response);
-		
-		// set the state_number
-		this_worksheet.state_number = X.state_number;
-		
-		// add the first new cell button
-		this_worksheet.add_new_cell_button_before($(".the_page .name"));
-		
-		// set up temporary rendering area
-		var renderarea = $("body").append("<div></div>");
-		renderarea.hide();
-		
-		// load in cells
-		for(i in X.cell_list) {
-			var cell_obj = X.cell_list[i];
-			
-			// create the new cell
-			var newcell = new worksheetapp.cell(cell_obj.id);
-			
-			// set up all of the parameters
-			newcell.input = cell_obj.input;
-			newcell.output = cell_obj.output;
-			newcell.is_evaluate_cell = cell_obj.type === "evaluate" ? true : false;
-			
-			// connect it to this worksheet
-			this.worksheet = this_worksheet;
-			
-			// render it to the renderarea div
-			newcell.render(renderarea);
-			
-			// move it out of the renderarea and into the page
-			var cell_dom = renderarea.find("div.cell");
-			cell_dom.appendTo(".the_page");
-			
-			// add the next new cell button
-			this_worksheet.add_new_cell_button_after(cell_dom);
-			
-			// put the cell in the array
-			this_worksheet[cell_obj.id] = newcell;
+	///////////// COMMANDS ////////////
+	// this must be defined before it's called
+	this_worksheet.worksheet_command = function(cmd) {
+		/*
+		Create a string formatted as a URL to send back to the server and
+		execute the given cmd on the current worksheet.
+
+		INPUT:
+			cmd -- string
+		OUTPUT:
+			a string
+		*/
+		if (cmd === 'eval' 
+		|| cmd === 'new_cell_before' 
+		|| cmd === 'new_cell_after'
+		|| cmd === 'new_text_cell_before'
+		|| cmd === 'new_text_cell_after') {
+			this_worksheet.state_number = parseInt(this_worksheet.state_number, 10) + 1;
 		}
+		// worksheet_filename differs from actual url for public interacts
+		// users see /home/pub but worksheet_filename is /home/_sage_
+		return ('/home/' + this_worksheet.filename + '/' + cmd);
+	};
+	this_worksheet.generic_callback = function(extra_callback) {
+		return function(status, response) {
+			if(status !== "success") {
+				this_worksheet.show_connection_error();
+				
+				// don't continue to extra_callback
+				return;
+			} else {
+				// status was good, hide alert
+				this_worksheet.hide_connection_error();
+			}
 		
-		// remove the renderarea
-		renderarea.detach();
-	}));
-	
-	// check for # in url commands
-	if(window.location.hash) {
-		// there is some #hashanchor at the end of the url
-		var hash = window.location.hash.substring(1);
-		
-		// do stuff
-	}
-	
-	// load js-hotkeys
-	/* notes on hotkeys: these don't work on all browsers consistently
-	but they are included in the best case scenario that they are all 
-	accepted. I have not checked all of the official hotkeys for Sage NB
-	so this list may not be complete but will be updated later. */
-	$(document).bind("keydown", ctrlkey + "+N", function(evt) { this_worksheet.new_worksheet(); return false; });
-	$(document).bind("keydown", ctrlkey + "+S", function(evt) { this_worksheet.save(); return false; });
-	$(document).bind("keydown", ctrlkey + "+W", function(evt) { this_worksheet.close(); return false; });
-	$(document).bind("keydown", ctrlkey + "+P", function(evt) { this_worksheet.print(); return false; });
-	
-	$(document).bind("keydown", "F1", function(evt) { this_worksheet.open_help(); return false; });
-	
-	
-	// bind buttons to functions
+			// call the extra callback if it was given
+			if($.isFunction(extra_callback)) {
+				extra_callback(status, response);
+			}
+		}
+	};
 	
 	///////////////// PINGS //////////////////
-	this_worksheet.generic_callback = function(status, response, extra_callback) {
-		if(status !== "success") {
-			this_worksheet.show_connection_error();
-		} else {
-			// status was good, hide alert
-			this_worksheet.hide_connection_error();
-		}
-	
-		// call the extra callback if it was given
-		if($.isFunction(extra_callback)) {
-			extra_callback(status, response);
-		}
-	};
 	this_worksheet.show_connection_error = function() {
-		//
+		$(".alert").show();
 	};
 	this_worksheet.hide_connection_error = function() {
-		//
+		$(".alert").hide();
 	};
 	this_worksheet.ping_server = function() {
 		alert("ping");
 	};
+	
+	
+	
+	
+	
+	
 	
 	//////////// FILE MENU TYPE STUFF //////////
 	this_worksheet.new_worksheet = function() {
@@ -529,7 +479,7 @@ worksheetapp.worksheet = function() {
 	};
 	
 	////////// INSERT CELL //////////////
-	this_worksheet.add_new_cell_button_after(obj) {
+	this_worksheet.add_new_cell_button_after = function(obj) {
 		/* Add a new cell button after the given
 		 * DOM/jQuery object
 		 */
@@ -585,8 +535,121 @@ worksheetapp.worksheet = function() {
 	this_worksheet.new_after_before = function(id) {
 		
 	};
+	
+	
+	/////////////// WORKSHEET UPDATE //////////////////////
+	this_worksheet.worksheet_update = function() {
+		async_request(this_worksheet.worksheet_command("worksheet_properties_json"), this_worksheet.generic_callback(function(status, response) {
+			var X = decode_response(response);
+			
+			this_worksheet.id = X.id_number;
+			this_worksheet.name = X.name;
+			this_worksheet.owner = X.owner;
+			this_worksheet.system = X.system;
+			
+			// update the title
+			document.title = this_worksheet.name + " - Sage";
+			$(".name").html(this_worksheet.name);
+			
+			// TODO other stuff goes here, not sure what yet
+		}));
+	};
+	
+	
+	
+	
+	
+	
+	
+	//////////////// INITIALIZATION ////////////////////
+	this_worksheet.init = function() {
+		alert(this_worksheet.filename);
+		
+		// do the actual load
+		this_worksheet.worksheet_update();
+		
+		// setup up the title stuff
+		
+		
+		// start the ping interval
+		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.server_ping_time, this_worksheet.ping_server);
+		
+		// set up codemirror autocomplete
+		// TODO set up autocomplete
+		/*CodeMirror.commands.autocomplete = function(cm) {
+			CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
+		};*/
+		
+		// load in cells
+		async_request(this_worksheet.worksheet_command("cell_list_json"), this_worksheet.generic_callback(function(status, response) {
+			var X = decode_response(response);
+			
+			// set the state_number
+			this_worksheet.state_number = X.state_number;
+			
+			// add the first new cell button
+			this_worksheet.add_new_cell_button_after($(".the_page .name"));
+			
+			// set up temporary rendering area
+			var renderarea = $("<div></div>").appendTo("body");
+			renderarea.hide();
+			
+			// load in cells
+			for(i in X.cell_list) {
+				var cell_obj = X.cell_list[i];
+				
+				// create the new cell
+				var newcell = new worksheetapp.cell(cell_obj.id);
+				
+				// set up all of the parameters
+				newcell.input = cell_obj.input;
+				newcell.output = cell_obj.output;
+				newcell.is_evaluate_cell = cell_obj.type === "evaluate" ? true : false;
+				
+				// connect it to this worksheet
+				this.worksheet = this_worksheet;
+				
+				// render it to the renderarea div
+				newcell.render(renderarea);
+				
+				// move it out of the renderarea and into the page
+				var cell_dom = renderarea.find("div.cell");
+				cell_dom.appendTo(".the_page");
+				
+				// add the next new cell button
+				this_worksheet.add_new_cell_button_after(cell_dom);
+				
+				// put the cell in the array
+				this_worksheet[cell_obj.id] = newcell;
+			}
+			
+			// remove the renderarea
+			renderarea.detach();
+		}));
+		
+		// check for # in url commands
+		if(window.location.hash) {
+			// there is some #hashanchor at the end of the url
+			var hash = window.location.hash.substring(1);
+			
+			// do stuff
+		}
+		
+		// load js-hotkeys
+		/* notes on hotkeys: these don't work on all browsers consistently
+		but they are included in the best case scenario that they are all 
+		accepted. I have not checked all of the official hotkeys for Sage NB
+		so this list may not be complete but will be updated later. */
+		$(document).bind("keydown", ctrlkey + "+N", function(evt) { this_worksheet.new_worksheet(); return false; });
+		$(document).bind("keydown", ctrlkey + "+S", function(evt) { this_worksheet.save(); return false; });
+		$(document).bind("keydown", ctrlkey + "+W", function(evt) { this_worksheet.close(); return false; });
+		$(document).bind("keydown", ctrlkey + "+P", function(evt) { this_worksheet.print(); return false; });
+		
+		$(document).bind("keydown", "F1", function(evt) { this_worksheet.open_help(); return false; });
+		
+		
+		// bind buttons to functions
+		
+		
+	}
 };
-
-var cell1 = new worksheet.cell;
-cell1.input = "5+5";
-cell1.evaluate();

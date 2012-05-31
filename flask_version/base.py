@@ -32,6 +32,8 @@ class SageNBFlask(Flask):
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
         self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
+        
+        
         import mimetypes
         mimetypes.add_type('text/plain','.jmol')
 
@@ -120,31 +122,10 @@ def index():
     return login()
 
 ######################
-#    NEW UI STUFF    #
-######################
-
-# BOOTSTRAP
-#@base.route('/bootstrap/css/bootstrap.min.css')
-#def bootstrap_css():
-#    from flask.helpers import send_file
-#    return send_file(os.path.join(DATA, 'bootstrap', 'css', 'bootstrap.min.css'))
-
-#@base.route('/bootstrap/css/bootstrap-responsive.min.css')
-#def bootstrap_css():
-#    from flask.helpers import send_file
-#    return send_file(os.path.join(DATA, 'bootstrap', 'css', 'bootstrap-responsive.min.css'))
-
-#@base.route('/bootstrap/css/bootstrap.min.css')
-#def bootstrap_css():
-#    from flask.helpers import send_file
-#    return send_file(os.path.join(DATA, 'bootstrap', 'css', 'bootstrap.min.css'))
-
-
-
-######################
 # Dynamic Javascript #
 ######################
 from hashlib import sha1
+
 @base.route('/javascript/dynamic/notebook_dynamic.js')
 def dynamic_js():
     from sagenb.notebook.js import javascript
