@@ -22,7 +22,11 @@ class SageNBFlask(Flask):
 
         self.root_path = SAGENB_ROOT
 
+        # I think it would make more sense just to have one /data/ path and not do one for every kind of file
+        self.add_static_path('/data', os.path.join(DATA))
+        
         self.add_static_path('/css', os.path.join(DATA, "sage", "css"))
+        self.add_static_path('/less', os.path.join(DATA, "sage", "less"))
         self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
@@ -84,12 +88,6 @@ class SageNBFlask(Flask):
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
-
-#XXX: This should probably be made able to put in a "central" place
-#with all of the jsmath stuff rather than just a global variable here.
-from sagenb.misc.misc import is_package_installed
-jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
-
 base = Module('flask_version.base')
 
 
@@ -120,6 +118,28 @@ def index():
             return index()
 
     return login()
+
+######################
+#    NEW UI STUFF    #
+######################
+
+# BOOTSTRAP
+#@base.route('/bootstrap/css/bootstrap.min.css')
+#def bootstrap_css():
+#    from flask.helpers import send_file
+#    return send_file(os.path.join(DATA, 'bootstrap', 'css', 'bootstrap.min.css'))
+
+#@base.route('/bootstrap/css/bootstrap-responsive.min.css')
+#def bootstrap_css():
+#    from flask.helpers import send_file
+#    return send_file(os.path.join(DATA, 'bootstrap', 'css', 'bootstrap-responsive.min.css'))
+
+#@base.route('/bootstrap/css/bootstrap.min.css')
+#def bootstrap_css():
+#    from flask.helpers import send_file
+#    return send_file(os.path.join(DATA, 'bootstrap', 'css', 'bootstrap.min.css'))
+
+
 
 ######################
 # Dynamic Javascript #
@@ -156,52 +176,52 @@ def localization_js():
         response.headers['Etag']=datahash
     return response
 
-_jsmath_js_cache = None
-@base.route('/javascript/dynamic/jsmath.js')
-def jsmath_js():
-    global _jsmath_js_cache
-    if _jsmath_js_cache is None:
-        from sagenb.misc.misc import jsmath_macros
-        data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
-                               jsmath_image_fonts=jsmath_image_fonts)
-        _jsmath_js_cache = (data, sha1(repr(data)).hexdigest())
-    data,datahash = _jsmath_js_cache
+#_jsmath_js_cache = None
+#@base.route('/javascript/dynamic/jsmath.js')
+#def jsmath_js():
+#    global _jsmath_js_cache
+#    if _jsmath_js_cache is None:
+#        from sagenb.misc.misc import jsmath_macros
+#        data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
+#                               jsmath_image_fonts=jsmath_image_fonts)
+#        _jsmath_js_cache = (data, sha1(repr(data)).hexdigest())
+#    data,datahash = _jsmath_js_cache
+#
+#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+#        response = make_response('',304)
+#    else:
+#        response = make_response(data)
+#        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+#        response.headers['Etag']=datahash
+#    return response
 
-    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-        response = make_response('',304)
-    else:
-        response = make_response(data)
-        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-        response.headers['Etag']=datahash
-    return response
-
-@base.route('/javascript/dynamic/keyboard/<browser_os>')
-def keyboard_js(browser_os):
-    from sagenb.notebook.keyboards import get_keyboard
-    data = get_keyboard(browser_os)
-    datahash=sha1(data).hexdigest()
-    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-        response = make_response('',304)
-    else:
-        response = make_response(data)
-        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-        response.headers['Etag']=datahash
-    return response
+#@base.route('/javascript/dynamic/keyboard/<browser_os>')
+#def keyboard_js(browser_os):
+#    from sagenb.notebook.keyboards import get_keyboard
+#    data = get_keyboard(browser_os)
+#    datahash=sha1(data).hexdigest()
+#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+#        response = make_response('',304)
+#    else:
+#        response = make_response(data)
+#        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+#        response.headers['Etag']=datahash
+#    return response
 
 ###############
 # Dynamic CSS #
 ###############
-@base.route('/css/main.css')
-def main_css():
-    from sagenb.notebook.css import css
-    data,datahash = css()
-    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-        response = make_response('',304)
-    else:
-        response = make_response(data)
-        response.headers['Content-Type'] = 'text/css; charset=utf-8'
-        response.headers['Etag']=datahash
-    return response
+#@base.route('/css/main.css')
+#def main_css():
+#    from sagenb.notebook.css import css
+#    data,datahash = css()
+#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+#        response = make_response('',304)
+#    else:
+#        response = make_response(data)
+#        response.headers['Content-Type'] = 'text/css; charset=utf-8'
+#        response.headers['Etag']=datahash
+#    return response
 
 ########
 # Help #

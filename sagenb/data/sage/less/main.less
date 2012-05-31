@@ -1,0 +1,270 @@
+@background_color: #eee;
+@the_container_width: 700px;
+
+/* MIXINS */
+.rounded-corners (@radius: 5px) {
+	border-radius: @radius;
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+}
+
+.outer_shadow(@radius: 5px, @color: #aaa) {
+	-moz-box-shadow: 0 0 @radius @radius @color;
+	-webkit-box-shadow: 0 0 @radius @radius @color;
+	box-shadow: 0 0 @radius @radius @color;
+}
+
+.inner_shadow(@radius: 5px, @color: #aaa) {
+  -moz-box-shadow: inset 0 0 @radius @radius @color;
+  -webkit-box-shadow: inset 0 0 @radius @radius @color;
+  box-shadow: inset 0 0 @radius @radius @color;
+}
+
+
+body {
+	background-color: @background_color;
+
+	/* this is from the bootstrap template thing not sure if its necessary */
+	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+}
+
+.navbar {
+	a {
+		/* take off the margin on the form labels inside the nav dropdown */
+		label {
+			margin-bottom: 0;
+		}
+		
+		/* change the color on hover, so labels behave like other buttons */
+		&:hover label {
+			color: white;
+		}
+	}
+	
+	/* makes the labels responsive to collapse */
+	.in a label {
+		font-weight: bold;
+		color: #999;
+		margin-bottom: 0;
+	}
+	
+	/* makes the icons white when they are on the collapsed black background */
+	.in li a i {
+		/* this is identical to adding the class icon-white */
+		background-image: url("bootstrap/img/glyphicons-halflings-white.png");
+	}
+}
+
+.the_container {
+	width: @the_container_width;
+	margin-left: auto;
+	margin-right: auto;
+	
+	.the_page {
+		.rounded-corners(3px);
+		.outer_shadow(3px, #ccc);
+		min-height: 700px;
+		margin-bottom: 100px;
+		margin-top: 50px;
+		background-color: #fff;
+		padding: 25px;
+	}
+}
+
+body.single_cell_mode .the_page {
+	margin-top: 0px;
+}
+
+/* this is the responsive styling for the page and container.
+it makes the page automatically fit the screen when the 
+screen width is less than the container width */
+@media (max-width: @the_container_width) {
+	.the_container {
+		width: auto;
+		margin-left: 0px;
+		margin-right: 0px;
+		
+		/* these styles are adjusted to create a 20px space 
+		around the page since the body has a 20px padding */
+		.the_page {
+			margin-top: 25px;
+			margin-bottom: 20px;
+		}
+	}
+}
+
+/* here we should also make another @media setup for printing */
+
+@title_font_size: 42px;
+h1.title {
+	font-size: @title_font_size;
+	line-height: @title_font_size + 6;
+	/*margin-bottom: 25px;*/
+	
+	#unsaved_indicator {
+		/*font-size: 48px;*/
+		font-weight: bold;
+		/*display: none;*/
+	}
+}
+
+/* -------- SHARING DIALOG ---- */
+#collaborators_textarea {
+	resize: vertical;
+	max-height: 200px;
+}
+
+/* -------- WORKSHEET --------- */
+@well_padding: 10px;
+@single_cell_controls_padding: 10px;
+
+.single_cell_controls {
+	display: none;
+	position: relative;
+	height: 30px;
+	padding-bottom: @single_cell_controls_padding;
+	padding-top: @single_cell_controls_padding;
+	opacity: 0.5;
+
+	&:hover {
+		opacity: 1.0;
+	}
+
+	.left_controls {
+		position: absolute;
+		left: 0;
+		top: @single_cell_controls_padding;
+		z-index: 1;
+	}
+	
+	.progress_text {
+		position: absolute;
+		top: @single_cell_controls_padding + 6px;
+		text-align: center;
+		width: 100%;
+		z-index: 0;
+		font-weight: bold;
+		font-size: 16px;
+	}
+	
+	.progress {
+		width: 50%;
+		height: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 0;
+		
+		.bar {
+			height: 100%;
+		}
+	}
+	
+	.right_controls {
+		position: absolute;
+		right: 0;
+		top: @single_cell_controls_padding;
+		z-index: 1;
+	}
+}
+
+body.single_cell_mode .single_cell_controls {
+	display: block;
+}
+
+
+.bootstrap_well {
+	min-height: 20px;
+	padding: 19px;
+	margin-bottom: 20px;
+	background-color: #f5f5f5;
+	border: 1px solid #eee;
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	-webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.the_well {
+	.bootstrap_well;
+	margin: 0;
+	/*min-height: 50px;*/
+	padding: @well_padding;
+}
+
+.cell {
+  .rounded-corners(10px);
+	background-color: #fafafa;
+	padding: @well_padding;
+	
+	.input_cell {
+		.rounded-corners(10px);
+		padding: @well_padding;
+		background-color: #ececea;
+		/*min-height: 50px;*/
+	}
+	
+	.output_cell {
+		.the_well;
+		margin-top: 10px;
+		/*.rounded-corners(10px);
+		padding: 10px;
+		background-color: #eaeaea;
+		min-height: 50px;*/
+	}
+}
+
+@new_cell_button_margin: 10px;
+.new_cell_button {
+	padding-top: @new_cell_button_margin;
+	padding-bottom: @new_cell_button_margin;
+	cursor: pointer;
+	
+	.line {
+		height: 2px;
+	}
+	
+	&:hover .line {
+		background-color: #eaeafc;
+	}
+}
+
+/* make cordemirror automatically resize the height */
+.CodeMirror-scroll {
+	height: auto;
+	overflow-y: hidden;
+	overflow-x: auto;
+	width: 100%
+}
+
+/* ----------- END WORKSHEET --------- */
+
+/* ----------- NOTEBOOK HOME --------- */
+#top_toolbar {
+	/*margin-bottom: 0;*/
+	
+	form {
+		margin-bottom: 0;
+	}
+}
+
+.worksheets_table {
+	margin-top: 15px;
+
+	.checkbox_cell {
+		width: 1%;
+	}
+	
+	.worksheet_name_cell {
+		font-weight: bold;
+		width: 40%
+	}
+	
+	.last_edit_cell {
+		font-size: 8pt;
+		color: #999;
+		width: 25%;
+	}
+}
