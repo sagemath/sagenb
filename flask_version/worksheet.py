@@ -231,6 +231,7 @@ def worksheet_cell_list(worksheet):
     from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
+@worksheet_command('cell_list_json')
 def worksheet_cell_list_json(worksheet):
     """
     Return a list of cells in JSON format.

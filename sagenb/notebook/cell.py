@@ -441,11 +441,18 @@ class Cell_generic(object):
         """
         return False
 
-    def toJSON(self):
+    def to_dictionary(self):
+        """
+        Returns the cell as a python object
+        """
+        return {}
+        
+    def to_json(self):
         """
         Returns the cell expressed as a JSON object.
         """
-        return ""
+        from sagenb.notebook.misc import encode_response
+        return encode_response(self.to_dictionary())
 
 #############
 # Text cell #
@@ -528,15 +535,16 @@ class TextCell(Cell_generic):
         input_text = unicode_str(input_text)
         self._text = input_text
         
-    def toJSON(self):
+    def to_dictionary(self):
         """
-        Returns the cell expressed as a JSON object.
+        Returns the cell as a python object
         """
-        r = "{"
-        r += "id:" + self.id() + ","
-        r += "type:text,"
-        r += "input:" + self._text
-        r += "}"
+        r = {}
+        
+        r['id'] = self.id()
+        r['type'] = 'text'
+        r['input'] = self._text
+        
         return r
 
     def html(self, wrap=None, div_wrap=True, do_print=False,
@@ -1687,34 +1695,22 @@ class Cell(Cell_generic):
         except AttributeError:
             return None
 
-    def toJSON(self):
+            
+    def to_dictionary(self):
         """
-        Returns the cell as a JSON object.
+        Returns the cell as a python object
         """
-        r = "{"
-        r += "\"id\":\"" + self.id() + "\","
-        r += "\"type\":\"evaluate\","
-        r += "\"input\":\"" + self._in + "\","
-        r += "\"output\":\"" + self._out + "\","
-        r += "\"percent_directives\":["
         
-        # add in each percent directive
-        for directive in self.percent_directives():
-            r += "\"" + directive + "\","
+        r = {}
+        r['id'] = self.id()
+        r['type'] = 'evaluate'
+        r['input'] = self._in
+        r['output'] = self._out
+        r['percent_directives'] = self.percent_directives()
+        r['system'] = self.system()
+        r['auto'] = self.is_auto_cell()
         
-        # lose the last ,
-        if len(self.percent_directives()) > 0:
-            r = r[:-1]
-        
-        r += "],"
-        r += "\"system\":\"" + self.system() + "\","
-        r += "\"auto\":\"" + self.is_auto_cell() + "\""
-        
-        # other properties go here
-        
-        r += "}"
-        
-        return r;
+        return r
 
     def output_html(self):
         """
