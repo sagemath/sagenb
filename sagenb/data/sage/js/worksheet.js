@@ -152,6 +152,7 @@ worksheetapp.cell = function(id) {
 		else {
 			// its a text cell
 			// TODO
+			$(container).html("text cell");
 		}
 	};
 	
@@ -589,10 +590,14 @@ worksheetapp.worksheet = function() {
 			this_worksheet.add_new_cell_button_after($(".the_page .name"));
 			
 			// set up temporary rendering area
-			var renderarea = $("<div></div>").appendTo(".the_page");
+			//var renderarea = $("<div></div>").appendTo(".the_page");
 			
 			// load in cells
 			for(i in X.cell_list) {
+				// create wrapper
+				var wrapper = $("<div></div>").appendTo(".the_page");
+				wrapper.addClass("cell_wrapper");
+				
 				var cell_obj = X.cell_list[i];
 				
 				// create the new cell
@@ -601,27 +606,29 @@ worksheetapp.worksheet = function() {
 				// set up all of the parameters
 				newcell.input = cell_obj.input;
 				newcell.output = cell_obj.output;
-				newcell.is_evaluate_cell = cell_obj.type === "evaluate" ? true : false;
+				newcell.is_evaluate_cell = (cell_obj.type === "evaluate") ? true : false;
 				
 				// connect it to this worksheet
 				newcell.worksheet = this_worksheet;
 				
 				// render it to the renderarea div
-				newcell.render(renderarea);
+				newcell.render(wrapper);
+				
+				if(wrapper.html() === "") alert(cell_obj);
 				
 				// move it out of the renderarea and into the page
-				var cell_dom = renderarea.find("div.cell");
-				cell_dom.appendTo(".the_page");
+				//var cell_dom = renderarea.find("div.cell");
+				//cell_dom.appendTo(".the_page");
 				
 				// add the next new cell button
-				this_worksheet.add_new_cell_button_after(cell_dom);
+				this_worksheet.add_new_cell_button_after(wrapper);
 				
 				// put the cell in the array
-				this_worksheet[cell_obj.id] = newcell;
+				this_worksheet.cells[cell_obj.id] = newcell;
 			}
 			
 			// remove the renderarea
-			renderarea.detach();
+			//renderarea.detach();
 		}));
 	}
 	
