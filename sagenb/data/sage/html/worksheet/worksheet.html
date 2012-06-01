@@ -244,7 +244,23 @@
 			var the_worksheet = new worksheetapp.worksheet();
 
 			// set filename
-			the_worksheet.filename = "{{ worksheet.filename() }}";
+			// the_worksheet.filename = "\{\{\ worksheet.filename() \}\}\";
+			// template escaped
+
+			// grab the filename from the URL
+			var fn = window.location.pathname;
+
+			// take off /home/
+			fn = fn.substring(6);
+
+			// take off last /
+			if(fn.substring(fn.length - 1, fn.length) === "/") {
+				// some versions of IE don't support fn.substring(-1)
+				fn = fn.substring(0, fn.length - 1)
+			}
+
+			// set filename
+			the_worksheet.filename = fn;
 
 			// initialize
 			the_worksheet.init();
