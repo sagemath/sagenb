@@ -97,15 +97,25 @@ worksheetapp.cell = function(id) {
 			
 			extrakeys["Shift-Enter"] = this_cell.evaluate;
 			
-			extrakeys[ctrlkey + "-N"] = this_cell.worksheet.new_worksheet;
-			extrakeys[ctrlkey + "-S"] = this_cell.worksheet.save;
-			extrakeys[ctrlkey + "-W"] = this_cell.worksheet.close;
-			extrakeys[ctrlkey + "-P"] = this_cell.worksheet.print;
+			extrakeys[ctrlkey + "-N"] = function() {
+				this_cell.worksheet.new_worksheet();
+			};
+			extrakeys[ctrlkey + "-S"] = function() {
+				this_cell.worksheet.save();
+			};
+			extrakeys[ctrlkey + "-W"] = function() {
+				this_cell.worksheet.close();
+			};
+			extrakeys[ctrlkey + "-P"] = function() {
+				this_cell.worksheet.print();
+			};
 			
-			extrakeys["F1"] = this_cell.worksheet.open_help;
+			extrakeys["F1"] = function() {
+				this_cell.worksheet.open_help();
+			};
 			
 			// create the codemirror
-			this_cell.codemirror = CodeMirror($(container).find(".input_cell"), {
+			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
 				value: this_cell.input,
 				
 				/* some of these may need to be settings */
@@ -113,13 +123,19 @@ worksheetapp.cell = function(id) {
 				tabSize: 2,
 				lineNumbers: false,
 				matchBrackets: true,
-				autofocus: true,
+				
+				/* autofocus messes up when true */
+				autofocus: false,
 			
 				onFocus: function() {
 					// may need to make async_request here
+					if(!this_cell.worksheet) return;
+					
 					this_cell.worksheet.current_cell_id = this_cell.id;
 				},
 				onBlur: function() {
+					if(!this_cell.worksheet) return;
+					
 					this_cell.worksheet.current_cell_id = -1;
 					if(this_cell.input !== this_cell.codemirror.getValue()) {
 						// the input has changed since the user focused
@@ -130,6 +146,8 @@ worksheetapp.cell = function(id) {
 			
 				extraKeys: extrakeys
 			});
+			
+			/* we may want to focus this cell here */
 		}
 		else {
 			// its a text cell
@@ -171,6 +189,7 @@ worksheetapp.cell = function(id) {
 	this_cell.evaluate = function() {
 		// in the callback, I worry that this may not refer back the cell but instead the callback function
 		// we'll see if this is a problem
+		alert("eval" + this_cell.id);
 		async_request(this_cell.worksheet.worksheet_command("eval", this_cell.worksheet.generic_callback(function(status, response) {
 			/* EVALUATION CALLBACK */
 		
@@ -349,7 +368,7 @@ worksheetapp.cell = function(id) {
 	};
 };
 
-worksheetapp.worksheet = function(props) {
+worksheetapp.worksheet = function() {
 	/* this allows us to access this cell object from 
 	 * inner functions
 	 */
@@ -554,32 +573,7 @@ worksheetapp.worksheet = function(props) {
 			// TODO other stuff goes here, not sure what yet
 		}));
 	};
-	
-	
-	
-	
-	
-	
-	
-	//////////////// INITIALIZATION ////////////////////
-	this_worksheet.init = function() {
-		alert(this_worksheet.filename);
-		
-		// do the actual load
-		this_worksheet.worksheet_update();
-		
-		// setup up the title stuff
-		
-		
-		// start the ping interval
-		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.server_ping_time, this_worksheet.ping_server);
-		
-		// set up codemirror autocomplete
-		// TODO set up autocomplete
-		/*CodeMirror.commands.autocomplete = function(cm) {
-			CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
-		};*/
-		
+	this_worksheet.cell_list_update = function() {
 		// load in cells
 		async_request(this_worksheet.worksheet_command("cell_list_json"), this_worksheet.generic_callback(function(status, response) {
 			var X = decode_response(response);
@@ -587,12 +581,15 @@ worksheetapp.worksheet = function(props) {
 			// set the state_number
 			this_worksheet.state_number = X.state_number;
 			
+			// remove all previous cells
+			$(".cell").detach();
+			$(".new_cell_button").detach();
+			
 			// add the first new cell button
 			this_worksheet.add_new_cell_button_after($(".the_page .name"));
 			
 			// set up temporary rendering area
-			var renderarea = $("<div></div>").appendTo("body");
-			renderarea.hide();
+			var renderarea = $("<div></div>").appendTo(".the_page");
 			
 			// load in cells
 			for(i in X.cell_list) {
@@ -607,7 +604,7 @@ worksheetapp.worksheet = function(props) {
 				newcell.is_evaluate_cell = cell_obj.type === "evaluate" ? true : false;
 				
 				// connect it to this worksheet
-				this.worksheet = this_worksheet;
+				newcell.worksheet = this_worksheet;
 				
 				// render it to the renderarea div
 				newcell.render(renderarea);
@@ -626,6 +623,33 @@ worksheetapp.worksheet = function(props) {
 			// remove the renderarea
 			renderarea.detach();
 		}));
+	}
+	
+	
+	
+	
+	
+	
+	//////////////// INITIALIZATION ////////////////////
+	this_worksheet.init = function() {
+		// do the actual load
+		this_worksheet.worksheet_update();
+		
+		this_worksheet.cell_list_update();
+		
+		// setup up the title stuff
+		
+		
+		// start the ping interval
+		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.server_ping_time, this_worksheet.ping_server);
+		
+		// set up codemirror autocomplete
+		// TODO set up autocomplete
+		/*CodeMirror.commands.autocomplete = function(cm) {
+			CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
+		};*/
+		
+		
 		
 		// check for # in url commands
 		if(window.location.hash) {
