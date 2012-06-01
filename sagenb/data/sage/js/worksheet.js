@@ -70,10 +70,10 @@ worksheetapp.cell = function(id) {
 							</div> <!-- /cell -->");
 			
 			//set up extraKeys array
-			var extrakeys = {};
+			var extrakeys = new Object();
 			
 			// set up autocomplete. we may want to use tab
-			extrakeys[ctrlkey + "-Space"] = "autocomplete";
+			//extrakeys[ctrlkey + "-Space"] = "autocomplete";
 			
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
@@ -84,7 +84,7 @@ worksheetapp.cell = function(id) {
 				//if(cm.getValue() === "" && $(".cell").length > 1) {
 				if(false) {
 					// it's empty and not the only one -> delete it
-					deleteCell(id);
+					//deleteCell(id);
 				
 					/* TODO: now we should focus on the cell above instead of 
 					blurring everything and setting this back to -1 */
@@ -95,24 +95,28 @@ worksheetapp.cell = function(id) {
 				}
 			};
 			
-			extrakeys["Shift-Enter"] = this_cell.evaluate;
+			extrakeys["Shift-Enter"] = function(cm) {
+				this_cell.evaluate();
+			};
 			
-			extrakeys[ctrlkey + "-N"] = function() {
+			extrakeys[ctrlkey + "-N"] = function(cm) {
 				this_cell.worksheet.new_worksheet();
 			};
-			extrakeys[ctrlkey + "-S"] = function() {
+			extrakeys[ctrlkey + "-S"] = function(cm) {
 				this_cell.worksheet.save();
 			};
-			extrakeys[ctrlkey + "-W"] = function() {
+			extrakeys[ctrlkey + "-W"] = function(cm) {
 				this_cell.worksheet.close();
 			};
-			extrakeys[ctrlkey + "-P"] = function() {
+			extrakeys[ctrlkey + "-P"] = function(cm) {
 				this_cell.worksheet.print();
 			};
 			
 			extrakeys["F1"] = function() {
 				this_cell.worksheet.open_help();
 			};
+			
+			//extrakeys["fallthrough"] = "default";
 			
 			// create the codemirror
 			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
@@ -129,13 +133,9 @@ worksheetapp.cell = function(id) {
 			
 				onFocus: function() {
 					// may need to make async_request here
-					if(!this_cell.worksheet) return;
-					
 					this_cell.worksheet.current_cell_id = this_cell.id;
 				},
 				onBlur: function() {
-					if(!this_cell.worksheet) return;
-					
 					this_cell.worksheet.current_cell_id = -1;
 					if(this_cell.input !== this_cell.codemirror.getValue()) {
 						// the input has changed since the user focused
@@ -187,11 +187,9 @@ worksheetapp.cell = function(id) {
 			input: this_cell.input
 		});
 	};
-	this_cell.evaluate = function() {
-		// in the callback, I worry that this may not refer back the cell but instead the callback function
-		// we'll see if this is a problem
-		alert("eval" + this_cell.id);
-		async_request(this_cell.worksheet.worksheet_command("eval", this_cell.worksheet.generic_callback(function(status, response) {
+	this_cell.evaluate = function() {		
+		//alert("eval" + this_cell.id);
+		async_request(this_cell.worksheet.worksheet_command("eval"), this_cell.worksheet.generic_callback(function(status, response) {
 			/* EVALUATION CALLBACK */
 		
 			var X = decode_response(response);
@@ -212,7 +210,7 @@ worksheetapp.cell = function(id) {
 			}
 			
 			// not sure about these commands
-			if (X.command === 'insert_cell') {
+			/*if (X.command === 'insert_cell') {
 				// Insert a new cell after the evaluated cell.
 				//do_insert_new_cell_after(X.id, X.new_cell_id, X.new_cell_html);
 				//jump_to_cell(X.new_cell_id, 0);
@@ -224,15 +222,25 @@ worksheetapp.cell = function(id) {
 			} else {
 				// "Plain" evaluation.  Jump to a later cell.
 				//go_next(false, true);
-			}
-		},
+			}*/
+			
+			// start checking for output
+			this_cell.check_for_output();
+		}),
 		
 		/* REQUEST OPTIONS */
 		{
-			id: this_cell.id,
-			newcell: false, // this needs some conditional
-			input: this_cell.input
-		})));
+			// 0 = false, 1 = true this needs some conditional
+			newcell: 0,
+			
+			id: toint(this_cell.id),
+			
+			/* it's necessary to get the codemirror value because the user
+			 * may have made changes and not blurred the codemirror so the 
+			 * changes haven't been put in this_cell.input
+			 */
+			input: this_cell.codemirror.getValue()
+		});
 		
 		// mark the cell as running
 		$("#cell_" + this_cell.id).addClass("running");	
@@ -267,6 +275,9 @@ worksheetapp.cell = function(id) {
 				if(X.status === "d") {
 					// evaluation done
 					
+					// clear checking interval
+					this_cell.output_check_interval_id = window.clearInterval(this_cell.output_check_interval_id);
+					
 					// mark the cell as done
 					$("#cell_" + this_cell.id).removeClass("running");	
 					
@@ -288,6 +299,13 @@ worksheetapp.cell = function(id) {
 					if(X.new_input !== "") {
 						// update the input
 						this_cell.input = X.new_input;
+						
+						// update codemirror/tinymce
+						if(this_cell.is_evaluate_cell) {
+							this_cell.codemirror.setValue(this_cell.input);
+						} else {
+							// tinymce
+						}
 					}
 					
 					// update the output
@@ -330,7 +348,7 @@ worksheetapp.cell = function(id) {
 		// take the output off the dom
 		$("#cell_" + this_cell.id + " .output_cell").detach();
 	
-		if(this_cell.output === "") {
+		if(this_cell.output === " ") {
 			// if no output then don't do anything else
 			return;
 		}
