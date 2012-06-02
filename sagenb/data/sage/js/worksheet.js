@@ -148,6 +148,9 @@ worksheetapp.cell = function(id) {
 			});
 			
 			/* we may want to focus this cell here */
+			
+			// render the output
+			this_cell.render_output();
 		}
 		else {
 			// its a text cell
@@ -715,6 +718,13 @@ worksheetapp.worksheet = function() {
 		
 		// bind buttons to functions
 		
+		/////// FILE MENU ////////
+		$("#new_worksheet").click(this_worksheet.new_worksheet);
+		$("#save_worksheet").click(this_worksheet.save);
+		$("#close_worksheet").click(this_worksheet.close);
+		$("#export_to_file").click(this_worksheet.export_worksheet);
+		$("#import_from_file").click(this_worksheet.import_worksheet);
+		$("#print").click(this_worksheet.print);
 		
 	}
 };
