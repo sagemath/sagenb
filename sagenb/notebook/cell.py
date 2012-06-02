@@ -1707,7 +1707,7 @@ class Cell(Cell_generic):
         r['id'] = self.id()
         r['type'] = 'evaluate'
         r['input'] = self._in
-        r['output'] = self._out
+        r['output'] = self.output_text()
         r['percent_directives'] = self.percent_directives()
         r['system'] = self.system()
         r['auto'] = self.is_auto_cell()
