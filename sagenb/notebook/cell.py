@@ -18,7 +18,9 @@ import re
 import shutil
 from cgi import escape
 
-from jsmath import math_parse
+# we shouldn't need this anymore
+#from jsmath import math_parse
+
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
@@ -1844,9 +1846,11 @@ class Cell(Cell_generic):
             s = self.parse_html(s, ncols)
 
         if (not is_interact and not self.is_html() and len(s.strip()) > 0 and
-            '<div class="docstring">' not in s):
-            s = '<pre class="shrunk">' + s.strip('\n') + '</pre>'
-
+            '<div class="docstring">' not in s and '<div class="math">' not in s
+            and '<span class="math">' not in s):
+            # s = '<pre class="shrunk">' + s.strip('\n') + '-</pre>'
+            s = '<pre>' + s.strip('\n') + '</pre>'
+        
         return s.strip('\n')
 
     def parse_html(self, s, ncols):

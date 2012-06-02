@@ -342,13 +342,15 @@ worksheetapp.cell = function(id) {
 		
 	};
 	this_cell.output_contain_latex = function() {
-		return this_cell.output.indexOf("$$") !== -1;
+		return (this_cell.output.indexOf('<span class="math">') !== -1) ||
+			   (this_cell.output.indexOf('<div class="math">') !== -1);
 	};
 	this_cell.render_output = function() {
 		// take the output off the dom
 		$("#cell_" + this_cell.id + " .output_cell").detach();
-	
-		if(this_cell.output === " ") {
+		
+		// it may be better to send a no_output value instead here
+		if(lstrip(this_cell.output) === "") {
 			// if no output then don't do anything else
 			return;
 		}
@@ -360,8 +362,18 @@ worksheetapp.cell = function(id) {
 		}
 		
 		if(this_cell.output_contain_latex()) {
+			/* TODO: it would be better to send some cell property
+			 * that describes whether or not the output contains 
+			 * latex and drop the whole <span class="math"></span>
+			 * nonsense.
+			 */
+			
+			// scrap the span.math or div.math wrapper tags
+			var output_cell = $("#cell_" + this_cell.id + " .output_cell");
+			output_cell.html("\\[" + output_cell.find(".math").html() + "\\]");
+			
 			// mathjax the ouput
-			MathJax.Hub.Queue(["Typeset", MathJax.Hub, "output-" + id]);
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub, output_cell[0]]);
 		}
 	};
 	this_cell.set_output_loading = function() {
@@ -479,7 +491,11 @@ worksheetapp.worksheet = function() {
 		$(".alert").hide();
 	};
 	this_worksheet.ping_server = function() {
-		alert("ping");
+		/* TODO for some reason pinging doesn't work
+		 * instead of the callback showing an error
+		 * jQuery throws some error
+		 */
+		async_request(this_worksheet.worksheet_command('alive'), this_worksheet.generic_callback);
 	};
 	
 	
@@ -666,7 +682,7 @@ worksheetapp.worksheet = function() {
 		
 		
 		// start the ping interval
-		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.server_ping_time, this_worksheet.ping_server);
+		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.ping_server, this_worksheet.server_ping_time);
 		
 		// set up codemirror autocomplete
 		// TODO set up autocomplete

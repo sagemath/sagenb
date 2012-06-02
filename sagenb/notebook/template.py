@@ -21,7 +21,10 @@ import os, re, sys, json
 
 from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
-from sagenb.notebook.jsmath import math_parse
+
+# obsolete with MathJax
+# from sagenb.notebook.jsmath import math_parse
+
 from flaskext.babel import gettext, ngettext, lazy_gettext
 
 if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
@@ -101,7 +104,7 @@ env.filters['css_escape'] = css_escape
 env.filters['number_of_rows'] = number_of_rows
 env.filters['clean_name'] = clean_name
 env.filters['prettify_time_ago'] = prettify_time_ago
-env.filters['math_parse'] = math_parse
+# env.filters['math_parse'] = math_parse
 env.filters['max'] = max
 env.filters['repr_str'] = lambda x: repr(unicode_str(x))[1:]
 env.filters['tojson'] = json.dumps

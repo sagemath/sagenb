@@ -20,7 +20,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 ########################################################################
 
-
+# This function is obsolete with MathJax
 def math_parse(s):
     r"""
     Turn the HTML-ish string s that can have $$ and $'s in it into
@@ -58,6 +58,8 @@ def math_parse(s):
         sage: sage.misc.html.math_parse(r'This \$\$is $2+2$.')
         'This $$is <span class="math">2+2</span>.'    
     """
+    return s
+    
     # first replace \\[ and \\] by <div class="math"> and </div>, respectively.
     while True:
         i = s.find('\\[')
