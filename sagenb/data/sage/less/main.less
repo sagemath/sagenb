@@ -62,12 +62,19 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 
-	.alert {
+	.alert_container_inner {
 		position: fixed;
 		top: 50px;
 
 		/* -50 to adjust for padding */
 		width: @alert_width - 50;
+		
+		/* otherwise codemirror shows through */
+		z-index: 1;
+	}
+	
+	.alert {
+		
 	}
 }
 

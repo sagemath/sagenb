@@ -604,7 +604,17 @@ worksheetapp.worksheet = function() {
 		async_request(this_worksheet.worksheet_command("save_snapshot"), this_worksheet.generic_callback());
 	};
 	this_worksheet.close = function() {
-		
+		if(this_worksheet.name === "Untitled") {
+			$(".alert_rename").show();
+		} else {
+			// maybe other stuff here??
+			
+			// this is a hack which gets close working
+			window.open('', '_self', '');
+			close();
+			window.close();
+			self.close();
+		}
 	};
 	this_worksheet.print = function() {
 		/* here we may want to convert MathJax expressions into
@@ -821,6 +831,14 @@ worksheetapp.worksheet = function() {
 			this_worksheet.worksheet_update();
 		});
 		
+		
+		/////// RENAME ALERT //////
+		$(".alert_rename .rename").click(function(e) {
+			$(".worksheet_name").click();
+			$(".alert_rename").hide();
+			
+		});
+		$(".alert_rename .cancel").click(window.close);
 		
 		// start the ping interval
 		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.ping_server, this_worksheet.server_ping_time);
