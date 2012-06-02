@@ -157,7 +157,6 @@ worksheetapp.cell = function(id) {
 		}
 		else {
 			// its a text cell
-			// TODO
 			$(container).html("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
 									"<div class=\"view_text\">" + this_cell.input + "</div>" + 
 									"<div class=\"edit_text\">" + 
@@ -169,6 +168,9 @@ worksheetapp.cell = function(id) {
 									"</div>" + 
 								"</div> <!-- /cell -->");
 			
+			
+			// init tinyMCE
+			// we may want to customize the editor some to include other buttons/features
 			tinyMCE.init({
 				mode: "exact",
 				elements: ("text_cell_textarea_" + this_cell.id),
@@ -182,6 +184,9 @@ worksheetapp.cell = function(id) {
 			
 			this_cell_dom.dblclick(function(e) {
 				if(!this_cell.is_evaluate_cell) {
+					// set the current_cell_id
+					this_cell.worksheet.current_cell_id = this_cell.id;
+					
 					// lose any selection that was made
 					if (window.getSelection) {
 						window.getSelection().removeAllRanges();
@@ -235,17 +240,6 @@ worksheetapp.cell = function(id) {
 	
 	////// FOCUS/BLUR ///////
 	// not sure if we even need these methods
-	this_cell.focus = function() {
-		if(this_cell.is_evaluate_cell) {
-			this_cell.codemirror.focus();
-		}
-		else {
-			// do whatever for tinymce
-		}
-	};
-	this_cell.blur = function() {
-		// codemirror doesn't have blur
-	};
 	this_cell.is_focused = function() {
 		return this_cell.worksheet.current_cell_id === this_cell.id;
 	};
