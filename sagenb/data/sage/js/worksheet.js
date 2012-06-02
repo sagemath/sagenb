@@ -45,7 +45,6 @@ worksheetapp.cell = function(id) {
 	this_cell.is_evalute_cell = true;
 	
 	this_cell.codemirror = null;
-	this_cell.tinymce = null;
 	
 	this_cell.worksheet = null;
 	
@@ -64,10 +63,10 @@ worksheetapp.cell = function(id) {
 			// its an evaluate cell
 		
 			// render into the container
-			$(container).html("<div class=\"cell\" id=\"cell_" + this_cell.id + "\">\
-								<div class=\"input_cell\">\
-								</div>\
-							</div> <!-- /cell -->");
+			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
+								"<div class=\"input_cell\">" +
+								"</div>" +
+							"</div> <!-- /cell -->");
 			
 			//set up extraKeys object
 			/* because of some codemirror or chrome bug, we have to
@@ -159,7 +158,78 @@ worksheetapp.cell = function(id) {
 		else {
 			// its a text cell
 			// TODO
-			$(container).html("text cell");
+			$(container).html("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
+									"<div class=\"view_text\">" + this_cell.input + "</div>" + 
+									"<div class=\"edit_text\">" + 
+										"<textarea name=\"text_cell_textarea_" + this_cell.id + "\" id=\"text_cell_textarea_" + this_cell.id + "\">" + this_cell.input + "</textarea>" + 
+										"<div class=\"buttons\">" + 
+											"<button class=\"btn cancel_button\">Cancel</button>" + 
+											"<button class=\"btn btn-primary save_button\">Save</button>" + 
+										"</div>" + 
+									"</div>" + 
+								"</div> <!-- /cell -->");
+			
+			tinyMCE.init({
+				mode: "exact",
+				elements: ("text_cell_textarea_" + this_cell.id),
+				theme: "advanced",
+				
+				width: "100%",
+				height: "300"
+			});
+			
+			var this_cell_dom = $("#cell_" + this_cell.id)
+			
+			this_cell_dom.dblclick(function(e) {
+				if(!this_cell.is_evaluate_cell) {
+					// lose any selection that was made
+					if (window.getSelection) {
+						window.getSelection().removeAllRanges();
+					} else if (document.selection) {
+						document.selection.empty();
+					}
+					
+					// get tinymce instance
+					var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
+					
+					// hide progress
+					ed.setProgressState(0);
+					
+					// add the edit class
+					$("#cell_" + this_cell.id).addClass("edit");
+				}
+			});
+			
+			this_cell_dom.find(".cancel_button").click(function(e) {
+				// get tinymce instance
+				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
+				
+				// show progress
+				ed.setProgressState(1);
+				
+				// revert the text
+				ed.setContent(this_cell.input);
+				
+				// remove the edit class
+				$("#cell_" + this_cell.id).removeClass("edit");
+			});
+			
+			this_cell_dom.find(".save_button").click(function(e) {
+				// get tinymce instance
+				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
+				
+				// show progress
+				ed.setProgressState(1);
+				
+				// send input
+				this_cell.send_input();
+				
+				// update the cell
+				this_cell_dom.find(".view_text").html(this_cell.input);
+				
+				// remove the edit class
+				$("#cell_" + this_cell.id).removeClass("edit");
+			});
 		}
 	};
 	
@@ -180,12 +250,22 @@ worksheetapp.cell = function(id) {
 		return this_cell.worksheet.current_cell_id === this_cell.id;
 	};
 	
+	
+	
 	this_cell.send_input = function() {
 		// mark the cell as changed
 		$("#cell_" + this_cell.id).addClass("input_changed");
 		
 		// update the local input property
-		this_cell.input = this_cell.codemirror.getValue();
+		if(this_cell.is_evaluate_cell) {
+			this_cell.input = this_cell.codemirror.getValue();
+		} else {
+			// get tinymce instance
+			var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
+			
+			// set input
+			this_cell.input = ed.getContent();
+		}
 		
 		// update the server input property
 		async_request(this_cell.worksheet.worksheet_command("eval"), this_cell.worksheet.generic_callback, {
@@ -473,6 +553,16 @@ worksheetapp.worksheet = function() {
 		return ('/home/' + this_worksheet.filename + '/' + cmd);
 	};
 	this_worksheet.generic_callback = function(extra_callback) {
+		/* Constructs a generic callback function. The extra_callback
+		 * argument is optional. If the callback receives a "success"
+		 * status (and extra_callback is a function), extra_callback 
+		 * will be called and passed the status and response arguments.
+		 * If you use generic_callback with no extra_callback, you *must*
+		 * call generic_callback() not just generic_callback because 
+		 * this function is not a callback itself; it returns a callback
+		 * function.
+		 */
+		
 		return function(status, response) {
 			if(status !== "success") {
 				this_worksheet.show_connection_error();
@@ -514,16 +604,22 @@ worksheetapp.worksheet = function() {
 	
 	//////////// FILE MENU TYPE STUFF //////////
 	this_worksheet.new_worksheet = function() {
-		
+		window.open("/new_worksheet");
 	};
 	this_worksheet.save = function() {
-		
+		async_request(this_worksheet.worksheet_command("save_snapshot"), this_worksheet.generic_callback());
 	};
 	this_worksheet.close = function() {
 		
 	};
 	this_worksheet.print = function() {
-		
+		/* here we may want to convert MathJax expressions into
+		 * something more readily printable eg images. I think 
+		 * there may be some issues with printing using whatever 
+		 * we have as default. I haven't seen this issue yet
+		 * but it may exist.
+		 */
+		window.print();
 	};
 	this_worksheet.open_help = function() {
 		
@@ -651,7 +747,7 @@ worksheetapp.worksheet = function() {
 				var cell_obj = X.cell_list[i];
 				
 				// create the new cell
-				var newcell = new worksheetapp.cell(cell_obj.id);
+				var newcell = new worksheetapp.cell(toint(cell_obj.id));
 				
 				// set up all of the parameters
 				newcell.input = cell_obj.input;
