@@ -69,7 +69,11 @@ worksheetapp.cell = function(id) {
 								</div>\
 							</div> <!-- /cell -->");
 			
-			//set up extraKeys array
+			//set up extraKeys object
+			/* because of some codemirror or chrome bug, we have to
+			 * use = new Object(); instead of = {}; When we use = {};
+			 * all of the key events are automatically passed to codemirror.
+			 */
 			var extrakeys = new Object();
 			
 			// set up autocomplete. we may want to use tab
@@ -488,10 +492,10 @@ worksheetapp.worksheet = function() {
 	
 	///////////////// PINGS //////////////////
 	this_worksheet.show_connection_error = function() {
-		$(".alert").show();
+		$(".alert_connection").show();
 	};
 	this_worksheet.hide_connection_error = function() {
-		$(".alert").hide();
+		$(".alert_connection").hide();
 	};
 	this_worksheet.ping_server = function() {
 		/* TODO for some reason pinging doesn't work
@@ -515,9 +519,6 @@ worksheetapp.worksheet = function() {
 		
 	};
 	this_worksheet.close = function() {
-		
-	};
-	this_worksheet.rename = function(newname) {
 		
 	};
 	this_worksheet.print = function() {
@@ -547,7 +548,14 @@ worksheetapp.worksheet = function() {
 		button.insertAfter(obj);
 		button.click(function(event) {
 			/* BUTTON EVENT HANDLER */
-			alert("new cell");
+			
+			// TODO
+			
+			// get the cell above this button in the dom
+			// here 'this' references the button that was clicked
+			var after_cell_id = $(this).prev(".cell_wrapper").find(".cell").attr("id").substring(5);
+			
+			alert("new cell" + after_cell_id);
 		});
 	};
 	
@@ -606,7 +614,7 @@ worksheetapp.worksheet = function() {
 			
 			// update the title
 			document.title = this_worksheet.name + " - Sage";
-			$(".name").html(this_worksheet.name);
+			$(".worksheet_name h1").text(this_worksheet.name);
 			
 			// TODO other stuff goes here, not sure what yet
 		}));
@@ -624,7 +632,7 @@ worksheetapp.worksheet = function() {
 			$(".new_cell_button").detach();
 			
 			// add the first new cell button
-			this_worksheet.add_new_cell_button_after($(".the_page .name"));
+			this_worksheet.add_new_cell_button_after($(".the_page .worksheet_name"));
 			
 			// set up temporary rendering area
 			//var renderarea = $("<div></div>").appendTo(".the_page");
@@ -682,6 +690,33 @@ worksheetapp.worksheet = function() {
 		this_worksheet.cell_list_update();
 		
 		// setup up the title stuff
+		$(".worksheet_name").click(function(e) {
+			$(".worksheet_name input").val(this_worksheet.name);
+			$(".worksheet_name").addClass("edit");
+			$(".worksheet_name input").focus();
+		});
+		
+		
+		var worksheet_name_input_handler = function(e) {
+			$(".worksheet_name").removeClass("edit");
+			
+			if(this_worksheet.name !== $(".worksheet_name input").val()) {
+				// send to the server
+				async_request(this_worksheet.worksheet_command("rename"), this_worksheet.generic_callback(function(status, response) {
+					// update the title when we get good response
+					this_worksheet.worksheet_update();
+				}), {
+					name: $(".worksheet_name input").val()
+				});
+			}
+		};
+		
+		$(".worksheet_name input").blur(worksheet_name_input_handler).keypress(function(e) {
+			if(e.which === 13) {
+				// they hit enter
+				worksheet_name_input_handler(e);
+			}
+		});
 		
 		
 		// start the ping interval
@@ -726,5 +761,8 @@ worksheetapp.worksheet = function() {
 		$("#import_from_file").click(this_worksheet.import_worksheet);
 		$("#print").click(this_worksheet.print);
 		
+		////// VIEW //////
+		
+		// TODO
 	}
 };

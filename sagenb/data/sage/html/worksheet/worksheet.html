@@ -36,12 +36,6 @@
 		
 		<!-- javascript hinting. we'll have to create our own hinting presets but for testing we use js -->
 		<script type="text/javascript" src="/data/CodeMirror-2.25/lib/util/javascript-hint.js"></script>
-		
-		<script type="text/javascript">
-			CodeMirror.commands.autocomplete = function(cm) {
-				CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
-			}
-		</script>
 		<!-- END CodeMirror -->
 		
 		<!-- Less -->
@@ -146,12 +140,13 @@
 			</div><!--/.navbar-inner -->
 		</div><!--/.navbar -->
 
-		<div class="the_container">
-			<div class="alert alert-error hide">
-				<button class="close" data-dismiss="alert">&times;</button>
+		<div class="alert_container">
+			<div class="alert alert-error alert_connection hide">
 				<strong>Uh oh!</strong> The highly trained monkeys that run Sage Notebook aren't communicating well with Sage headquarters.
 			</div>
-			
+		</div>
+
+		<div class="the_container">
 			<div class="single_cell_controls">
 				<div class="left_controls">
 					<button type="button" class="btn" id="first_cell"><i class="icon-fast-backward"></i></button>
@@ -171,7 +166,11 @@
 			</div>
 		
 			<div class="the_page">
-				<h1 class="name"><!--Worksheet Name--></h1>
+				<div class="worksheet_name">
+					<h1><!--Worksheet Name--></h1>
+					<input type="text" />
+				</div>
+				
 				
 			</div> <!-- /the_page -->
 		</div> <!-- /the_container -->

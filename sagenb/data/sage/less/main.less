@@ -25,7 +25,7 @@ body {
 	background-color: @background_color;
 
 	/* this is from the bootstrap template thing not sure if its necessary */
-	padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+	/* padding-top: 60px; */ /* 60px to make the container go all the way to the bottom of the topbar */
 }
 
 .navbar {
@@ -51,13 +51,24 @@ body {
 	/* makes the icons white when they are on the collapsed black background */
 	.in li a i {
 		/* this is identical to adding the class icon-white */
-		background-image: url("bootstrap/img/glyphicons-halflings-white.png");
+		background-image: url("../../bootstrap/img/glyphicons-halflings-white.png");
 	}
 }
 
-.alert {
-	position: fixed;
-	top: 50px;
+/* the no connection alert */
+@alert_width: 550px;
+.alert_container {
+	width: @alert_width;
+	margin-left: auto;
+	margin-right: auto;
+
+	.alert {
+		position: fixed;
+		top: 50px;
+
+		/* -50 to adjust for padding */
+		width: @alert_width - 50;
+	}
 }
 
 .the_container {
@@ -70,7 +81,7 @@ body {
 		.outer_shadow(3px, #ccc);
 		min-height: 700px;
 		margin-bottom: 100px;
-		margin-top: 50px;
+		margin-top: 120px;
 		background-color: #fff;
 		padding: 25px;
 	}
@@ -102,18 +113,44 @@ screen width is less than the container width */
 
 /* here we should also make another @media setup for printing */
 
-@name_font_size: 42px;
-h1.name {
-	font-size: @name_font_size;
-	line-height: @name_font_size + 6;
-	/*margin-bottom: 25px;*/
-	
-	#unsaved_indicator {
-		/*font-size: 48px;*/
+@worksheet_name_font_size: 42px;
+.worksheet_name {
+	height: @worksheet_name_font_size + 6;
+
+	h1 {
+		font-size: @worksheet_name_font_size;
+		line-height: @worksheet_name_font_size + 6;
+	}
+
+	input {
+		/* -2 to account for padding */
+		height: @worksheet_name_font_size - 2;
+		width: 100%;
+
+		/* for now, this is a sloppy way to deal with padding issues */
+		padding-left: 0;
+		padding-right: 0;
+
+		display: none;
+		font-size: @worksheet_name_font_size;
 		font-weight: bold;
-		/*display: none;*/
+	}
+
+	&:hover {
+		background-color: #ffffcc;
+		cursor: text;
+	}
+
+	&.edit {
+		h1 {
+			display: none;
+		}
+		input {
+			display: block;
+		}
 	}
 }
+
 
 /* -------- SHARING DIALOG ---- */
 #collaborators_textarea {
@@ -211,6 +248,14 @@ body.single_cell_mode .single_cell_controls {
 		padding: @well_padding;
 		background-color: #ececea;
 		/*min-height: 50px;*/
+
+		/* make cordemirror automatically resize the height */
+		.CodeMirror-scroll {
+			height: auto;
+			overflow-y: hidden;
+			overflow-x: auto;
+			width: 100%
+		}
 	}
 	
 	.output_cell {
@@ -246,13 +291,7 @@ body.single_cell_mode .single_cell_controls {
 	}
 }
 
-/* make cordemirror automatically resize the height */
-.CodeMirror-scroll {
-	height: auto;
-	overflow-y: hidden;
-	overflow-x: auto;
-	width: 100%
-}
+
 
 /* ----------- END WORKSHEET --------- */
 
