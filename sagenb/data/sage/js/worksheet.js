@@ -426,6 +426,7 @@ worksheetapp.worksheet = function() {
 	this_worksheet.id = -1;
 	this_worksheet.is_published = false;
 	this_worksheet.system = "";
+	this_worksheet.pretty_print = false;
 	
 	// Ping the server periodically for worksheet updates.
 	this_worksheet.server_ping_time = 10000;
@@ -502,7 +503,7 @@ worksheetapp.worksheet = function() {
 		 * instead of the callback showing an error
 		 * jQuery throws some error
 		 */
-		async_request(this_worksheet.worksheet_command('alive'), this_worksheet.generic_callback);
+		async_request(this_worksheet.worksheet_command('alive'), this_worksheet.generic_callback());
 	};
 	
 	
@@ -611,10 +612,14 @@ worksheetapp.worksheet = function() {
 			this_worksheet.name = X.name;
 			this_worksheet.owner = X.owner;
 			this_worksheet.system = X.system;
+			this_worksheet.pretty_print = X.pretty_print;
 			
 			// update the title
 			document.title = this_worksheet.name + " - Sage";
 			$(".worksheet_name h1").text(this_worksheet.name);
+			
+			// update the typesetting checkbox
+			$("#typesetting_checkbox").prop("checked", this_worksheet.pretty_print);
 			
 			// TODO other stuff goes here, not sure what yet
 		}));
@@ -689,14 +694,14 @@ worksheetapp.worksheet = function() {
 		
 		this_worksheet.cell_list_update();
 		
-		// setup up the title stuff
+		/////////// setup up the title stuff ////////////
 		$(".worksheet_name").click(function(e) {
 			$(".worksheet_name input").val(this_worksheet.name);
 			$(".worksheet_name").addClass("edit");
 			$(".worksheet_name input").focus();
 		});
 		
-		
+		// this is the event handler for the input
 		var worksheet_name_input_handler = function(e) {
 			$(".worksheet_name").removeClass("edit");
 			
@@ -716,6 +721,14 @@ worksheetapp.worksheet = function() {
 				// they hit enter
 				worksheet_name_input_handler(e);
 			}
+		});
+		
+		////////// TYPESETTING CHECKBOX //////////
+		$("#typesetting_checkbox").change(function(e) {
+			async_request(this_worksheet.worksheet_command("pretty_print/" + $("#typesetting_checkbox").prop("checked")), this_worksheet.generic_callback());
+			
+			// update
+			this_worksheet.worksheet_update();
 		});
 		
 		
