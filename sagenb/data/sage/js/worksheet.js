@@ -824,10 +824,7 @@ worksheetapp.worksheet = function() {
 	};
 	
 	//// NEW CELL /////
-	this_worksheet.new_cell_before = function(id) {
-		
-	};
-	this_worksheet.new_after_before = function(id) {
+	this_worksheet.new_cell_after = function(id) {
 		
 	};
 	
@@ -851,6 +848,10 @@ worksheetapp.worksheet = function() {
 			$("#typesetting_checkbox").prop("checked", this_worksheet.pretty_print);
 			
 			// TODO other stuff goes here, not sure what yet
+			// lock stuff
+			if(this_worksheet.locked) {
+				// TODO
+			}
 		}));
 	};
 	this_worksheet.cell_list_update = function() {
@@ -906,33 +907,35 @@ worksheetapp.worksheet = function() {
 		this_worksheet.cell_list_update();
 		
 		/////////// setup up the title stuff ////////////
-		$(".worksheet_name").click(function(e) {
-			$(".worksheet_name input").val(this_worksheet.name);
-			$(".worksheet_name").addClass("edit");
-			$(".worksheet_name input").focus();
-		});
-		
-		// this is the event handler for the input
-		var worksheet_name_input_handler = function(e) {
-			$(".worksheet_name").removeClass("edit");
+		if(!this_worksheet.locked) {
+			$(".worksheet_name").click(function(e) {
+				$(".worksheet_name input").val(this_worksheet.name);
+				$(".worksheet_name").addClass("edit");
+				$(".worksheet_name input").focus();
+			});
 			
-			if(this_worksheet.name !== $(".worksheet_name input").val()) {
-				// send to the server
-				async_request(this_worksheet.worksheet_command("rename"), this_worksheet.generic_callback(function(status, response) {
-					// update the title when we get good response
-					this_worksheet.worksheet_update();
-				}), {
-					name: $(".worksheet_name input").val()
-				});
-			}
-		};
-		
-		$(".worksheet_name input").blur(worksheet_name_input_handler).keypress(function(e) {
-			if(e.which === 13) {
-				// they hit enter
-				worksheet_name_input_handler(e);
-			}
-		});
+			// this is the event handler for the input
+			var worksheet_name_input_handler = function(e) {
+				$(".worksheet_name").removeClass("edit");
+				
+				if(this_worksheet.name !== $(".worksheet_name input").val()) {
+					// send to the server
+					async_request(this_worksheet.worksheet_command("rename"), this_worksheet.generic_callback(function(status, response) {
+						// update the title when we get good response
+						this_worksheet.worksheet_update();
+					}), {
+						name: $(".worksheet_name input").val()
+					});
+				}
+			};
+			
+			$(".worksheet_name input").blur(worksheet_name_input_handler).keypress(function(e) {
+				if(e.which === 13) {
+					// they hit enter
+					worksheet_name_input_handler(e);
+				}
+			});
+		}
 		
 		////////// TYPESETTING CHECKBOX //////////
 		$("#typesetting_checkbox").change(function(e) {
