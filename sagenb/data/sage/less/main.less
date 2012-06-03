@@ -263,6 +263,13 @@ body.single_cell_mode .single_cell_controls {
 			overflow-x: auto;
 			width: 100%
 		}
+
+		&.input_hidden {
+			.CodeMirror-scroll {
+				max-height: 20px;
+				opacity: 0.5;
+			}
+		}
 	}
 	
 	.output_cell {

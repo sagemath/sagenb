@@ -102,15 +102,12 @@ worksheetapp.cell = function(id) {
 			}
 			
 			// if it's a %hide cell, hide it
-			// TODO
+			if(this_cell.is_hide()) {
+				$("#cell_" + this_cell.id + " .input_cell").addClass("input_hidden");
+			}
 			
 			if(render_container) {
 				this_cell.render(render_container);
-			}
-			
-			// if it's an auto cell, evaluate
-			if(this_cell.is_auto()) {
-				this_cell.evaluate();
 			}
 		}),
 		{
@@ -180,8 +177,6 @@ worksheetapp.cell = function(id) {
 				this_cell.worksheet.open_help();
 			};
 			
-			//extrakeys["fallthrough"] = "default";
-			
 			// create the codemirror
 			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
 				value: this_cell.input,
@@ -200,6 +195,9 @@ worksheetapp.cell = function(id) {
 				onFocus: function() {
 					// may need to make async_request here
 					this_cell.worksheet.current_cell_id = this_cell.id;
+					
+					// unhide
+					$("#cell_" + this_cell.id + " .input_cell").removeClass("input_hidden");
 				},
 				onBlur: function() {
 					this_cell.worksheet.current_cell_id = -1;
@@ -895,6 +893,12 @@ worksheetapp.worksheet = function() {
 				
 				// put the cell in the array
 				this_worksheet.cells[cell_obj.id] = newcell;
+				
+				
+				// if it's an auto cell, evaluate
+				if(newcell.is_auto()) {
+					newcell.evaluate();
+				}
 			}
 		}));
 	}
