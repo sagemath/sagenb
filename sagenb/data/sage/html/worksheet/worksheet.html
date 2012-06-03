@@ -50,15 +50,31 @@
 		<!-- <script type="text/javascript" src="mathjax-MathJax-07669ac/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 		<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 		
-
 		<!-- TinyMCE -->
 		<script type="text/javascript" src="/data/tinymce-3.5.2/jscripts/tiny_mce/tiny_mce.js" ></script>
+
+
+		<!-- Translations -->
+		<script type="text/javascript" src="/data/sage/js/localization.js"></script>
 
 		<!-- Misc Functions -->
 		<script type="text/javascript" src="/data/sage/js/misc.js"></script>
 
 		<!-- Async Requests -->
 		<script type="text/javascript" src="/data/sage/js/async_lib.js"></script>
+
+
+
+		<!-- JMol stuff -->
+		<script type="text/javascript" src="/data/sage/js/jmol_lib.js"></script>
+
+		<!-- Sage3d - accelerated 3D graphics -->
+		<script type="text/javascript" src="/data/sage3d/sage3d.js"></script>
+
+		<!-- Jmol - embedded 3D graphics -->
+		<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
+		<!-- This must stay in head -->
+		<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
 	</head>
 
 	<body>

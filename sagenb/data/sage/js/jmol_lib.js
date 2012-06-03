@@ -5,41 +5,42 @@
 var jmol_count = 0;
 //var allowedJmolSize = [1, 2048, 300];
 function jmol_applet(size, url) {
-    var s;
-    if (typeof(cell_writer) !== "undefined") {
-	jmolSetDocument(cell_writer);
-    }
-    jmolSetAppletCssClass('jmol_applet');
-    jmolApplet(size, "script " + url, jmol_count);
-    s = ' <a href="#" onclick="jmol_image(' + jmol_count +
-        ');return false;">' + translations["Get Image"] + '</a>';
+	//var s;
+	if (typeof(cell_writer) !== "undefined") {
+		jmolSetDocument(cell_writer);
+	}
+	jmolSetAppletCssClass('jmol_applet');
+	jmolApplet(size, "script " + url, jmol_count);
+	/*s = ' <a href="#" onclick="jmol_image(' + jmol_count +
+		');return false;">' + translations["Get Image"] + '</a>';*/
 
-    if (typeof(cell_writer) !== "undefined") {
-	cell_writer.write(s);
-    }
+	if (typeof(cell_writer) !== "undefined") {
+		/* TODO this crashes JMOL for some reason */
+		//cell_writer.write(s);
+	}
 
-    jmol_count += 1;
-    return s;
+	jmol_count += 1;
+	//return s;
 }
 
 function jmol_image(jmol_count) {
-    var myImage = jmolGetPropertyAsString("image", "", jmol_count), s;
-    mywindow = window.open("", translations['Jmol Image'],
-                           "menubar=no,width=600,height=600,toolbar=no");
-    s = '<HTML><TITLE>' + translations['Jmol Image'] + '</TITLE><BODY>';
-    s += '<img src="data:image/jpeg;base64,' + myImage + '">';
-    s += '<p>' + translations["To save this image, you can try right-clicking on the image to copy it or save it to a file, or you may be able to just drag the image to your desktop."] + '</p>';
-    s += '</BODY></HTML>';
-    mywindow.document.write(s);
+	var myImage = jmolGetPropertyAsString("image", "", jmol_count), s;
+	mywindow = window.open("", translations['Jmol Image'],
+						"menubar=no,width=600,height=600,toolbar=no");
+	s = '<HTML><TITLE>' + translations['Jmol Image'] + '</TITLE><BODY>';
+	s += '<img src="data:image/jpeg;base64,' + myImage + '">';
+	s += '<p>' + translations["To save this image, you can try right-clicking on the image to copy it or save it to a file, or you may be able to just drag the image to your desktop."] + '</p>';
+	s += '</BODY></HTML>';
+	mywindow.document.write(s);
 }
 
 function jmol_popup(url) {
-    var win = window.open("", "jmol viewer",
-                          "width=600,height=600,resizable=1,statusbar=0");
-    win.document.body.innerHTML = "";
-    win.document.title = "Sage 3d Viewer";
-    win.document.writeln("<h1 align=center>Sage 3d Viewer</h1>");
-    jmolSetDocument(win.document);
-    jmolApplet("100%", "script" + url, jmol_count);
-    win.focus();
+	var win = window.open("", "jmol viewer",
+							"width=600,height=600,resizable=1,statusbar=0");
+	win.document.body.innerHTML = "";
+	win.document.title = "Sage 3d Viewer";
+	win.document.writeln("<h1 align=center>Sage 3d Viewer</h1>");
+	jmolSetDocument(win.document);
+	jmolApplet("100%", "script" + url, jmol_count);
+	win.focus();
 }

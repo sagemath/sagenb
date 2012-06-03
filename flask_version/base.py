@@ -31,6 +31,8 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
+        
+        # this one is special though since it points to SAGE_ROOT
         self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
         
         
@@ -140,8 +142,10 @@ def dynamic_js():
     return response
 
 _localization_cache = {}
+@base.route('/data/sage/js/localization.js')
 @base.route('/javascript/dynamic/localization.js')
 def localization_js():
+    print 'localization_js'
     global _localization_cache
     locale=repr(get_locale())
     if _localization_cache.get(locale,None) is None:

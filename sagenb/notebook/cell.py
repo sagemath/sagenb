@@ -1708,6 +1708,7 @@ class Cell(Cell_generic):
         r['type'] = 'evaluate'
         r['input'] = self._in
         r['output'] = self.output_text()
+        r['output_html'] = self.output_html()
         r['percent_directives'] = self.percent_directives()
         r['system'] = self.system()
         r['auto'] = self.is_auto_cell()
