@@ -44,7 +44,7 @@ worksheetapp.cell = function(id) {
 	this_cell.system = "";
 	this_cell.percent_directives = null;
 	
-	this_cell.is_evalute_cell = true;
+	this_cell.is_evaluate_cell = true;
 	
 	this_cell.codemirror = null;
 	
@@ -59,11 +59,42 @@ worksheetapp.cell = function(id) {
 	
 	
 	
-	this_cell.update = function() {
-		async_request(this_worksheet.worksheet_command("cell_json"), this_worksheet.generic_callback(function(status, response) {
+	this_cell.update = function(render_container) {
+		/* Update cell properties. Updates the codemirror mode (if necessary)
+		 * and %hide stuff. Only performs rendering if a render_container is 
+		 * given.
+		 */
+		async_request(this_cell.worksheet.worksheet_command("cell_json"), this_cell.worksheet.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
-			this.input = X.input;
+			// set up all of the parameters
+			this_cell.input = X.input;
+			this_cell.output = X.output;
+			this_cell.system = X.system;
+			this_cell.percent_directives = X.percent_directives;
+			
+			// check for output_html
+			if(X.output_html && lstrip(X.output_html) !== "") {
+				this_cell.output = X.output_html;
+			}
+			
+			this_cell.is_evaluate_cell = (X.type === "evaluate") ? true : false;
+			
+			// change the codemirror mode
+			if(this_cell.codemirror) {
+				
+			}
+			
+			// if it's a %hide cell, hide it
+			// TODO
+			
+			if(render_container) {
+				this_cell.render(render_container);
+			}
+		}),
+		{
+			id: this_cell.id
+		});
 	};
 	
 	this_cell.render = function(container) {
@@ -153,6 +184,9 @@ worksheetapp.cell = function(id) {
 						// so we send it back to the server
 						this_cell.send_input();
 					}
+					
+					// update cell properties without rendering
+					this_cell.update();
 				},
 			
 				extraKeys: extrakeys
@@ -188,7 +222,7 @@ worksheetapp.cell = function(id) {
 				height: "300"
 			});
 			
-			var this_cell_dom = $("#cell_" + this_cell.id)
+			var this_cell_dom = $("#cell_" + this_cell.id);
 			
 			this_cell_dom.dblclick(function(e) {
 				if(!this_cell.is_evaluate_cell) {
@@ -245,13 +279,79 @@ worksheetapp.cell = function(id) {
 			});
 		}
 	};
+	this_cell.render_output = function() {
+		function output_contains_latex() {
+			return (this_cell.output.indexOf('<span class="math">') !== -1) ||
+				   (this_cell.output.indexOf('<div class="math">') !== -1);
+		}
+		
+		function output_contains_jmol() {
+			return (this_cell.output.indexOf('jmol_applet') !== -1);
+		}
+		
+		// take the output off the dom
+		$("#cell_" + this_cell.id + " .output_cell").detach();
+		
+		// it may be better to send a no_output value instead here
+		if(lstrip(this_cell.output) === "") {
+			// if no output then don't do anything else
+			return;
+		}
+		
+		// the .output_cell div needs to be created
+		var output_cell_dom = $("<div class=\"output_cell\" id=\"output_" + this_cell.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
+		
+		/* TODO scrap JMOL, use three.js. Right now using 
+		 applets screws up when you scoll an applet over the
+		 navbar. Plus three.js is better supported, more modern,
+		 etc.*/
+		/* This method creates an iframe inside the output_cell
+		 * and then dumps the output stuff inside the frame
+		 */
+		if(output_contains_jmol()) {
+			var jmol_frame = $("<iframe />").addClass("jmol_frame").appendTo(output_cell_dom);
+			window.cell_writer = jmol_frame[0].contentDocument;
+			
+			output_cell_dom.append(this.output);
+			
+			$(cell_writer.body).css("margin", "0");
+			$(cell_writer.body).css("padding", "0");
+			
+			$(cell_writer.body).find("object")[0].clip = "rect(50, 50, 100px, 50)"
+			
+			return;
+		}
+		
+		// insert the new output
+		output_cell_dom.html(this_cell.output);
+		
+		if(output_contains_latex()) {
+			/* TODO: it would be better to send some cell property
+			 * that describes whether or not the output contains 
+			 * latex and drop the whole <span class="math"></span>
+			 * nonsense.
+			 */
+			
+			// scrap the span.math or div.math wrapper tags
+			var output_cell = $("#cell_" + this_cell.id + " .output_cell");
+			output_cell.html("\\[" + output_cell.find(".math").html() + "\\]");
+			
+			// mathjax the ouput
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub, output_cell[0]]);
+		}
+	};
 	
 	////// FOCUS/BLUR ///////
 	// not sure if we even need these methods
 	this_cell.is_focused = function() {
 		return this_cell.worksheet.current_cell_id === this_cell.id;
 	};
-	
+	this_cell.is_auto = function() {
+		return (this_cell.percent_directives && $.inArray("auto", this_cell.percent_directives));
+	}
+	this_cell.is_hide = function() {
+		return (this_cell.percent_directives && $.inArray("hide", this_cell.percent_directives));
+	}
 	
 	
 	this_cell.send_input = function() {
@@ -429,76 +529,15 @@ worksheetapp.cell = function(id) {
 	
 	/////// OUTPUT ///////
 	this_cell.delete_output = function() {
-		
+		// TODO we should maybe interrupt the cell if its running here
+		async_request(this_cell.worksheet.worksheet_command('delete_cell_output'), this_cell.worksheet.generic_callback(function(status, response) {
+			this_cell.output = "";
+			this_cell.render_output();
+		}), {
+			id: toint(this_cell.id)
+		});
 	};
-	this_cell.hide_output = function() {
-		
-	};
-	this_cell.show_output = function() {
-		
-	};
-	this_cell.render_output = function() {
-		function output_contains_latex() {
-			return (this_cell.output.indexOf('<span class="math">') !== -1) ||
-				   (this_cell.output.indexOf('<div class="math">') !== -1);
-		}
-		
-		function output_contains_jmol() {
-			return (this_cell.output.indexOf('jmol_applet') !== -1);
-		}
-		
-		// take the output off the dom
-		$("#cell_" + this_cell.id + " .output_cell").detach();
-		
-		// it may be better to send a no_output value instead here
-		if(lstrip(this_cell.output) === "") {
-			// if no output then don't do anything else
-			return;
-		}
-		
-		// the .output_cell div needs to be created
-		var output_cell_dom = $("<div class=\"output_cell\" id=\"output_" + this_cell.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
-		
-		
-		/* TODO scrap JMOL, use three.js. Right now using 
-		 applets screws up when you scoll an applet over the
-		 navbar. Plus three.js is better supported, more modern,
-		 etc.*/
-		/* This method creates an iframe inside the output_cell
-		 * and then dumps the output stuff inside the frame
-		 */
-		if(output_contains_jmol()) {
-			var jmol_frame = $("<iframe />").addClass("jmol_frame").appendTo(output_cell_dom);
-			window.cell_writer = jmol_frame[0].contentDocument;
-			
-			output_cell_dom.append(this.output);
-			
-			$(cell_writer.body).css("margin", "0");
-			$(cell_writer.body).css("padding", "0");
-			
-			$(cell_writer.body).find("object")[0].clip = "rect(50, 50, 100px, 50)"
-			
-			return;
-		}
-		
-		// insert the new output
-		output_cell_dom.html(this_cell.output)
-		
-		if(output_contains_latex()) {
-			/* TODO: it would be better to send some cell property
-			 * that describes whether or not the output contains 
-			 * latex and drop the whole <span class="math"></span>
-			 * nonsense.
-			 */
-			
-			// scrap the span.math or div.math wrapper tags
-			var output_cell = $("#cell_" + this_cell.id + " .output_cell");
-			output_cell.html("\\[" + output_cell.find(".math").html() + "\\]");
-			
-			// mathjax the ouput
-			MathJax.Hub.Queue(["Typeset", MathJax.Hub, output_cell[0]]);
-		}
-	};
+	
 	this_cell.set_output_loading = function() {
 		this_cell.output = "<div class=\"progress progress-striped active\" style=\"width: 25%; margin: 0 auto;\">" + 
 								"<div class=\"bar\" style=\"width: 100%;\"></div>" + 
@@ -511,8 +550,20 @@ worksheetapp.cell = function(id) {
 		return this_cell.input.substring(0, 5) === "%hide";
 	};
 	
-	this_cell.remove = function() {
-		alert("delete" + this_cell.id);
+	this_cell.delete = function() {
+		// TODO we should maybe interrupt the cell if its running here
+		
+		async_request(this_cell.worksheet.worksheet_command('delete_cell'), this_cell.worksheet.generic_callback(function(status, response) {
+			X = decode_response(response);
+			
+			if(X.command === "ignore") return;
+			
+			this_cell.worksheet.cells[this_cell.id] = null;
+			
+			$("#cell_" + this_cell.id).detach();
+		}), {
+			id: toint(this_cell.id)
+		});
 	};
 };
 
@@ -698,29 +749,37 @@ worksheetapp.worksheet = function() {
 	
 	////////////// EVALUATION ///////////////
 	this_worksheet.evaluate_all = function() {
-		for(cellid in cells) {
+		// TODO
+		for(cellid in this_worksheet.cells) {
 			cells[cellid].evaluate();
 		}
 	};
 	this_worksheet.interrupt = function() {
-		
+		async_request(this_worksheet.worksheet_command('interrupt'), this_worksheet.generic_callback());
 	};
 	
 	//// OUTPUT STUFF ////
 	this_worksheet.hide_all_output = function() {
-		for(cellid in cells) {
-			cells[cellid].hide_output();
-		}
+		async_request(this_worksheet.worksheet_command('hide_all'), function(status, response) {
+			for(cellid in this_worksheet.cells) {
+				$("#cell_" + cellid + " .output_cell").hide();
+			}
+		});
 	};
 	this_worksheet.show_all_output = function() {
-		for(cellid in cells) {
-			cells[cellid].show_output();
-		}
+		async_request(this_worksheet.worksheet_command('show_all'), function(status, response) {
+			for(cellid in this_worksheet.cells) {
+				$("#cell_" + cellid + " .output_cell").show();
+			}
+		});
 	};
 	this_worksheet.delete_all_output = function() {
-		for(cellid in cells) {
-			cells[cellid].delete_output();
-		}
+		async_request(this_worksheet.worksheet_command('delete_all_output'), this_worksheet.generic_callback(function(status, response) {
+			for(cellid in this_worksheet.cells) {
+				cells[cellid].output = "";
+				cells[cellid].render_output();
+			}
+		}));
 	};
 	
 	this_worksheet.change_system = function(newsystem) {
@@ -785,22 +844,11 @@ worksheetapp.worksheet = function() {
 				// create the new cell
 				var newcell = new worksheetapp.cell(toint(cell_obj.id));
 				
-				// set up all of the parameters
-				newcell.input = cell_obj.input;
-				newcell.output = cell_obj.output;
-				
-				// check for output_html
-				if(cell_obj.output_html && lstrip(cell_obj.output_html) !== "") {
-					newcell.output = cell_obj.output_html;
-				}
-				
-				newcell.is_evaluate_cell = (cell_obj.type === "evaluate") ? true : false;
-				
 				// connect it to this worksheet
 				newcell.worksheet = this_worksheet;
 				
-				// render it to the renderarea div
-				newcell.render(wrapper);
+				// update all of the cell properties and render it into wrapper
+				newcell.update(wrapper);
 				
 				// add the next new cell button
 				this_worksheet.add_new_cell_button_after(wrapper);
@@ -860,6 +908,13 @@ worksheetapp.worksheet = function() {
 			this_worksheet.worksheet_update();
 		});
 		
+		////////// EVALUATION ///////////
+		$("#evaluate_all_cells").click();
+		$("#interrupt").click();
+		$("#restart_worksheet").click();
+		$("#hide_all_output").click(this_worksheet.hide_all_output);
+		$("#show_all_output").click(this_worksheet.show_all_output);
+		$("#delete_all_output").click(this_worksheet.delete_all_output);
 		
 		/////// RENAME ALERT //////
 		$(".alert_rename .rename").click(function(e) {

@@ -246,6 +246,7 @@ def worksheet_cell_json(worksheet):
     """
     Return the cell with the given id as a JSON object
     """
+    print "cell json"
     id = get_cell_id()
     return worksheet.get_cell_with_id(id).to_json()
     

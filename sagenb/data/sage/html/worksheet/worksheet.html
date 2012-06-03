@@ -264,7 +264,11 @@
 		<script type="text/javascript" src="/data/jeresig-jquery.hotkeys-0451de1/jquery.hotkeys.js"></script>
 		
 		<!-- Worksheet -->
-		<script src="/data/sage/js/worksheet.js" type="text/javascript" charset="utf-8"></script>
+		<!-- randomize the worksheet.js url for debugging -->
+		<script type="text/javascript">
+			document.write('<script type="text/javascript" charset="utf-8" src="/data/sage/js/worksheet.js?' + new Date().getTime() + '"><\/script>');
+		</script>
+		
 		<script type="text/javascript">
 			// create the worksheet
 			var the_worksheet = new worksheetapp.worksheet();
