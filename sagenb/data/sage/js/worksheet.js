@@ -1,7 +1,7 @@
 /*
- * Javascript functionality for the worksheet layout
+ * Javascript functionality for the worksheet page
  * 
- * AUTHOR - Samuel Ainsworth
+ * AUTHOR - Samuel Ainsworth (samuel_ainsworth@brown.edu)
  */
 
 // simulated namespace
@@ -58,6 +58,19 @@ worksheetapp.cell = function(id) {
 	this_cell.output_check_interval = 500;
 	
 	
+	this_cell.get_codemirror_mode = function() {
+		/* This is a utility function to get the correct
+		 * CodeMirror mode which this cell should be 
+		 * rendered in.
+		 */
+		if(this_cell.system !== "") {
+			// specific cell system
+			return system_to_codemirror_mode(this_cell.system);
+		} else {
+			// fall through to worksheet system
+			return system_to_codemirror_mode(this_cell.worksheet.system);
+		}
+	}
 	
 	this_cell.update = function(render_container) {
 		/* Update cell properties. Updates the codemirror mode (if necessary)
@@ -82,9 +95,9 @@ worksheetapp.cell = function(id) {
 			
 			// change the codemirror mode
 			if(this_cell.codemirror) {
-				if(system_to_codemirror_mode(this_cell.system) !== this_cell.codemirror.getOption("mode")) {
+				if(this_cell.get_codemirror_mode() !== this_cell.codemirror.getOption("mode")) {
 					// change the codemirror mode
-					this_cell.codemirror.setOption("mode", system_to_codemirror_mode(this_cell.system));
+					this_cell.codemirror.setOption("mode", this_cell.get_codemirror_mode());
 				}
 			}
 			
@@ -100,6 +113,7 @@ worksheetapp.cell = function(id) {
 		});
 	};
 	
+	//////// RENDER //////////
 	this_cell.render = function(container) {
 		if(this_cell.is_evaluate_cell) {
 			// its an evaluate cell
@@ -167,7 +181,7 @@ worksheetapp.cell = function(id) {
 			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
 				value: this_cell.input,
 				
-				mode: system_to_codemirror_mode(this_cell.system),
+				mode: this_cell.get_codemirror_mode(),
 				
 				/* some of these may need to be settings */
 				indentWithTabs: true,
@@ -367,7 +381,7 @@ worksheetapp.cell = function(id) {
 		return (this_cell.percent_directives && $.inArray("hide", this_cell.percent_directives));
 	}
 	
-	
+	/////// EVALUATION //////
 	this_cell.send_input = function() {
 		// mark the cell as changed
 		$("#cell_" + this_cell.id).addClass("input_changed");
