@@ -58,3 +58,38 @@ function lstrip(s) {
     }
     return s.slice(i);
 }
+
+
+function system_to_codemirror_mode(system) {
+	var mode = "";
+	
+	switch(system) {
+		case "sage":
+			/* TODO write a specific mode for sage
+			* for now, python and sage are so similar
+			* we don't bother making a difference.
+			*/
+			mode = "python";
+			break;
+		case "python":
+			mode = "python";
+			break;
+		case "r":
+			mode = "r";
+			break;
+		case "html":
+			mode = "htmlmixed";
+			break;
+		case "latex":
+			mode = "stex";
+			break;
+		case "sh":
+			mode = "shell";
+			break;
+		default:
+			mode = "python"
+			break;
+	}
+	
+	return mode;
+}

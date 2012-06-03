@@ -82,7 +82,10 @@ worksheetapp.cell = function(id) {
 			
 			// change the codemirror mode
 			if(this_cell.codemirror) {
-				
+				if(system_to_codemirror_mode(this_cell.system) !== this_cell.codemirror.getOption("mode")) {
+					// change the codemirror mode
+					this_cell.codemirror.setOption("mode", system_to_codemirror_mode(this_cell.system));
+				}
 			}
 			
 			// if it's a %hide cell, hide it
@@ -163,6 +166,8 @@ worksheetapp.cell = function(id) {
 			// create the codemirror
 			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
 				value: this_cell.input,
+				
+				mode: system_to_codemirror_mode(this_cell.system),
 				
 				/* some of these may need to be settings */
 				indentWithTabs: true,
