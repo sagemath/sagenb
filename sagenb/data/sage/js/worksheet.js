@@ -72,10 +72,11 @@ worksheetapp.cell = function(id) {
 		}
 	}
 	
-	this_cell.update = function(render_container) {
+	this_cell.update = function(render_container, auto_evaluate) {
 		/* Update cell properties. Updates the codemirror mode (if necessary)
 		 * and %hide stuff. Only performs rendering if a render_container is 
-		 * given.
+		 * given. If auto_evaluate is true and this is an #auto cell, it will
+		 * be evaluated.
 		 */
 		async_request(this_cell.worksheet.worksheet_command("cell_json"), this_cell.worksheet.generic_callback(function(status, response) {
 			var X = decode_response(response);
@@ -101,13 +102,18 @@ worksheetapp.cell = function(id) {
 				}
 			}
 			
+			if(render_container) {
+				this_cell.render(render_container);
+			}
+			
 			// if it's a %hide cell, hide it
 			if(this_cell.is_hide()) {
 				$("#cell_" + this_cell.id + " .input_cell").addClass("input_hidden");
 			}
 			
-			if(render_container) {
-				this_cell.render(render_container);
+			// if it's an auto cell, evaluate
+			if(auto_evaluate && this_cell.is_auto()) {
+				this_cell.evaluate();
 			}
 		}),
 		{
@@ -886,19 +892,13 @@ worksheetapp.worksheet = function() {
 				newcell.worksheet = this_worksheet;
 				
 				// update all of the cell properties and render it into wrapper
-				newcell.update(wrapper);
+				newcell.update(wrapper, true);
 				
 				// add the next new cell button
 				this_worksheet.add_new_cell_button_after(wrapper);
 				
 				// put the cell in the array
 				this_worksheet.cells[cell_obj.id] = newcell;
-				
-				
-				// if it's an auto cell, evaluate
-				if(newcell.is_auto()) {
-					newcell.evaluate();
-				}
 			}
 		}));
 	}
