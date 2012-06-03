@@ -166,7 +166,7 @@ worksheetapp.cell = function(id) {
 				
 				/* some of these may need to be settings */
 				indentWithTabs: true,
-				tabSize: 2,
+				tabSize: 4,
 				lineNumbers: false,
 				matchBrackets: true,
 				
@@ -279,21 +279,32 @@ worksheetapp.cell = function(id) {
 			});
 		}
 	};
-	this_cell.render_output = function() {
-		function output_contains_latex() {
-			return (this_cell.output.indexOf('<span class="math">') !== -1) ||
-				   (this_cell.output.indexOf('<div class="math">') !== -1);
+	this_cell.render_output = function(stuff_to_render) {
+		/* Renders stuff_to_render as the cells output, 
+		 * if given. If not, then it renders this_cell.output.
+		 */
+		
+		// don't do anything for text cells
+		if(!this_cell.is_evaluate_cell) return;
+		
+		var a = "";
+		if(this_cell.output) a = this_cell.output;
+		if(stuff_to_render) a = stuff_to_render;
+		
+		function output_contains_latex(b) {
+			return (b.indexOf('<span class="math">') !== -1) ||
+				   (b.indexOf('<div class="math">') !== -1);
 		}
 		
-		function output_contains_jmol() {
-			return (this_cell.output.indexOf('jmol_applet') !== -1);
+		function output_contains_jmol(b) {
+			return (b.indexOf('jmol_applet') !== -1);
 		}
 		
 		// take the output off the dom
 		$("#cell_" + this_cell.id + " .output_cell").detach();
 		
 		// it may be better to send a no_output value instead here
-		if(lstrip(this_cell.output) === "") {
+		if(lstrip(a) === "") {
 			// if no output then don't do anything else
 			return;
 		}
@@ -308,24 +319,22 @@ worksheetapp.cell = function(id) {
 		/* This method creates an iframe inside the output_cell
 		 * and then dumps the output stuff inside the frame
 		 */
-		if(output_contains_jmol()) {
+		if(output_contains_jmol(a)) {
 			var jmol_frame = $("<iframe />").addClass("jmol_frame").appendTo(output_cell_dom);
 			window.cell_writer = jmol_frame[0].contentDocument;
 			
-			output_cell_dom.append(this.output);
+			output_cell_dom.append(a);
 			
 			$(cell_writer.body).css("margin", "0");
 			$(cell_writer.body).css("padding", "0");
-			
-			$(cell_writer.body).find("object")[0].clip = "rect(50, 50, 100px, 50)"
 			
 			return;
 		}
 		
 		// insert the new output
-		output_cell_dom.html(this_cell.output);
+		output_cell_dom.html(a);
 		
-		if(output_contains_latex()) {
+		if(output_contains_latex(a)) {
 			/* TODO: it would be better to send some cell property
 			 * that describes whether or not the output contains 
 			 * latex and drop the whole <span class="math"></span>
@@ -539,12 +548,18 @@ worksheetapp.cell = function(id) {
 	};
 	
 	this_cell.set_output_loading = function() {
-		this_cell.output = "<div class=\"progress progress-striped active\" style=\"width: 25%; margin: 0 auto;\">" + 
-								"<div class=\"bar\" style=\"width: 100%;\"></div>" + 
-							"</div>";
-		this_cell.render_output();
+		this_cell.render_output("<div class=\"progress progress-striped active\" style=\"width: 25%; margin: 0 auto;\">" + 
+									"<div class=\"bar\" style=\"width: 100%;\"></div>" + 
+								"</div>");
 	};
-	
+	this_cell.set_output_hidden = function() {
+		if($("#cell_" + this_cell.id + " .output_cell").length > 0) {
+			this_cell.render_output("<hr>");
+		}
+	}
+	this_cell.set_output_visible = function() {
+		this_cell.render_output();
+	}
 	this_cell.has_input_hide = function() {
 		// connect with Cell.percent_directives
 		return this_cell.input.substring(0, 5) === "%hide";
@@ -762,14 +777,14 @@ worksheetapp.worksheet = function() {
 	this_worksheet.hide_all_output = function() {
 		async_request(this_worksheet.worksheet_command('hide_all'), function(status, response) {
 			for(cellid in this_worksheet.cells) {
-				$("#cell_" + cellid + " .output_cell").hide();
+				this_worksheet.cells[cellid].set_output_hidden();
 			}
 		});
 	};
 	this_worksheet.show_all_output = function() {
 		async_request(this_worksheet.worksheet_command('show_all'), function(status, response) {
 			for(cellid in this_worksheet.cells) {
-				$("#cell_" + cellid + " .output_cell").show();
+				this_worksheet.cells[cellid].set_output_visible();
 			}
 		});
 	};
