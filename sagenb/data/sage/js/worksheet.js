@@ -107,6 +107,11 @@ worksheetapp.cell = function(id) {
 			if(render_container) {
 				this_cell.render(render_container);
 			}
+			
+			// if it's an auto cell, evaluate
+			if(this_cell.is_auto()) {
+				this_cell.evaluate();
+			}
 		}),
 		{
 			id: this_cell.id
@@ -375,10 +380,10 @@ worksheetapp.cell = function(id) {
 		return this_cell.worksheet.current_cell_id === this_cell.id;
 	};
 	this_cell.is_auto = function() {
-		return (this_cell.percent_directives && $.inArray("auto", this_cell.percent_directives));
+		return (this_cell.percent_directives && $.inArray("auto", this_cell.percent_directives) >= 0);
 	}
 	this_cell.is_hide = function() {
-		return (this_cell.percent_directives && $.inArray("hide", this_cell.percent_directives));
+		return (this_cell.percent_directives && $.inArray("hide", this_cell.percent_directives) >= 0);
 	}
 	
 	/////// EVALUATION //////
@@ -785,7 +790,7 @@ worksheetapp.worksheet = function() {
 	this_worksheet.evaluate_all = function() {
 		// TODO
 		for(cellid in this_worksheet.cells) {
-			cells[cellid].evaluate();
+			this_worksheet.cells[cellid].evaluate();
 		}
 	};
 	this_worksheet.interrupt = function() {
@@ -810,8 +815,8 @@ worksheetapp.worksheet = function() {
 	this_worksheet.delete_all_output = function() {
 		async_request(this_worksheet.worksheet_command('delete_all_output'), this_worksheet.generic_callback(function(status, response) {
 			for(cellid in this_worksheet.cells) {
-				cells[cellid].output = "";
-				cells[cellid].render_output();
+				this_worksheet.cells[cellid].output = "";
+				this_worksheet.cells[cellid].render_output();
 			}
 		}));
 	};
