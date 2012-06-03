@@ -71,11 +71,11 @@ function system_to_codemirror_mode(system) {
 			*/
 			mode = "python";
 			break;
-		case "python":
-			mode = "python";
+		case "gap":
+			mode = "";
 			break;
-		case "r":
-			mode = "r";
+		case "gp":
+			mode = "";
 			break;
 		case "html":
 			mode = "htmlmixed";
@@ -83,9 +83,52 @@ function system_to_codemirror_mode(system) {
 		case "latex":
 			mode = "stex";
 			break;
+		case "maxima":
+			mode = "";
+			break;
+		case "python":
+			mode = "python";
+			break;
+		case "r":
+			mode = "r";
+			break;
 		case "sh":
 			mode = "shell";
 			break;
+		case "singular":
+			mode = "";
+			break;
+		case "axiom":
+			mode = "";
+			break;
+		case "kash":
+			mode = "";
+			break;
+		case "macaulay2":
+			mode = "";
+			break;
+		case "magma":
+			mode = "";
+			break;
+		case "maple":
+			mode = "";
+			break;
+		case "mathematica":
+			mode = "";
+			break;
+		case "matlab":
+			mode = "";
+			break;
+		case "mupad":
+			mode = "";
+			break;
+		case "octave":
+			mode = "";
+			break;
+		case "scilab":
+			mode = "";
+			break;
+		
 		default:
 			mode = "python"
 			break;
