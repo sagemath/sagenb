@@ -18,11 +18,12 @@ Medium Stuff
  * Help page
  * automatic minify on .js and .css files
    - Add a route in base.py or somewhere else
+ * Interrupt
+ * 
 
 Small Stuff
 -----------
 
- * Worksheet locked alert
  * Evaluate all cells
  * Restart sage
  * MathJax text cells

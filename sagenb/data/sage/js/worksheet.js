@@ -862,7 +862,7 @@ sagenb.worksheetapp.worksheet = function() {
 	this_worksheet.new_cell_before = function(id) {
 		async_request(this_worksheet.worksheet_command("new_cell_before"), function(status, response) {
 			if(response === "locked") {
-				// TODO
+				$(".alert_locked").show();
 				return;
 			}
 			
@@ -891,7 +891,7 @@ sagenb.worksheetapp.worksheet = function() {
 	this_worksheet.new_cell_after = function(id) {
 		async_request(this_worksheet.worksheet_command("new_cell_after"), function(status, response) {
 			if(response === "locked") {
-				// TODO
+				$(".alert_locked").show();
 				return;
 			}
 			
@@ -1027,6 +1027,11 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			// update
 			this_worksheet.worksheet_update();
+		});
+		
+		///////// LOCKED ALERT //////////
+		$(".alert_locked button").click(function(e) {
+			$(".alert_locked").hide();
 		});
 		
 		////////// EVALUATION ///////////
