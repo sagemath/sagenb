@@ -77,7 +77,6 @@ def sphinxify(docstring, format='html'):
         sage: sphinxify(':math:`x=y`', format='text')
         'x=y\n'
     """
-    print 'sphinxify'
     global Sphinx
     if not Sphinx:
         from sphinx.application import Sphinx

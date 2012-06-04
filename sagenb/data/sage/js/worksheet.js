@@ -363,18 +363,35 @@ worksheetapp.cell = function(id) {
 		output_cell_dom.html(a);
 		
 		if(output_contains_latex(a)) {
-			/* TODO: it would be better to send some cell property
-			 * that describes whether or not the output contains 
-			 * latex and drop the whole <span class="math"></span>
-			 * nonsense.
-			 */
+			/* \( \) is for inline and \[ \] is for block mathjax */
 			
-			// scrap the span.math or div.math wrapper tags
 			var output_cell = $("#cell_" + this_cell.id + " .output_cell");
-			output_cell.html("\\[" + output_cell.find(".math").html() + "\\]");
 			
-			// mathjax the ouput
-			MathJax.Hub.Queue(["Typeset", MathJax.Hub, output_cell[0]]);
+			if(output_cell.contents().length === 1) {
+				// only one piece of math, make it big
+				/* using contents instead of children guarantees that we
+				 * get all other types of nodes including text and comments.
+				 */
+				
+				output_cell.html("\\[" + output_cell.find(".math").html() + "\\]");
+				
+				// mathjax the ouput
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, output_cell[0]]);
+				
+				return;
+			}
+			
+			// mathjax each span with \( \)
+			output_cell.find("span.math").each(function(i, element) {
+				$(element).html("\\(" + $(element).html() + "\\)");
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
+			});
+			
+			// mathjax each div with \[ \]
+			output_cell.find("div.math").each(function(i, element) {
+				$(element).html("\\[" + $(element).html() + "\\]");
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
+			});
 		}
 	};
 	
