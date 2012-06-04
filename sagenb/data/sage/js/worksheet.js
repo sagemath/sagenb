@@ -78,7 +78,7 @@ worksheetapp.cell = function(id) {
 		 * given. If auto_evaluate is true and this is an #auto cell, it will
 		 * be evaluated.
 		 */
-		async_request(this_cell.worksheet.worksheet_command("cell_json"), this_cell.worksheet.generic_callback(function(status, response) {
+		async_request(this_cell.worksheet.worksheet_command("cell_properties"), this_cell.worksheet.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			// set up all of the parameters
@@ -88,7 +88,7 @@ worksheetapp.cell = function(id) {
 			this_cell.percent_directives = X.percent_directives;
 			
 			// check for output_html
-			if(X.output_html && lstrip(X.output_html) !== "") {
+			if(X.output_html && $.trim(X.output_html) !== "") {
 				this_cell.output = X.output_html;
 			}
 			
@@ -148,14 +148,13 @@ worksheetapp.cell = function(id) {
 				// TODO: checking if it's the last cell should maybe be done by the nb
 			
 				// all of this is disabled for now
-				//if(cm.getValue() === "" && $(".cell").length > 1) {
-				if(false) {
+				if(cm.getValue() === "" && this_cell.worksheet.cells.length > 0) {
 					// it's empty and not the only one -> delete it
-					//deleteCell(id);
+					this_cell.delete();
 				
 					/* TODO: now we should focus on the cell above instead of 
 					blurring everything and setting this back to -1 */
-					focused_texarea_id = -1;
+					this_cell.worksheet.focused_texarea_id = -1;
 				} else {
 					// not empty -> pass to the default behaviour
 					throw CodeMirror.Pass;
@@ -319,6 +318,8 @@ worksheetapp.cell = function(id) {
 		if(this_cell.output) a = this_cell.output;
 		if(stuff_to_render) a = stuff_to_render;
 		
+		a = $.trim(a);
+		
 		function output_contains_latex(b) {
 			return (b.indexOf('<span class="math">') !== -1) ||
 				   (b.indexOf('<div class="math">') !== -1);
@@ -332,7 +333,7 @@ worksheetapp.cell = function(id) {
 		$("#cell_" + this_cell.id + " .output_cell").detach();
 		
 		// it may be better to send a no_output value instead here
-		if(lstrip(a) === "") {
+		if(a === "") {
 			// if no output then don't do anything else
 			return;
 		}
@@ -396,7 +397,12 @@ worksheetapp.cell = function(id) {
 	};
 	
 	////// FOCUS/BLUR ///////
-	// not sure if we even need these methods
+	this_cell.focus = function() {
+		if(this_cell.is_evaluate_cell) {
+			this_cell.codemirror.focus();
+		}
+	}
+	
 	this_cell.is_focused = function() {
 		return this_cell.worksheet.current_cell_id === this_cell.id;
 	};
@@ -557,7 +563,7 @@ worksheetapp.cell = function(id) {
 					// check for output_html
 					// TODO it doesn't seem right to have a different property here
 					// it seems like X.output is sufficient
-					if(lstrip(X.output_html) !== "") {
+					if($.trim(X.output_html) !== "") {
 						this_cell.output = X.output_html;
 					}
 					
@@ -620,7 +626,8 @@ worksheetapp.cell = function(id) {
 			
 			this_cell.worksheet.cells[this_cell.id] = null;
 			
-			$("#cell_" + this_cell.id).detach();
+			$("#cell_" + this_cell.id).parent().next().detach();
+			$("#cell_" + this_cell.id).parent().detach();
 		}), {
 			id: toint(this_cell.id)
 		});
@@ -636,7 +643,6 @@ worksheetapp.worksheet = function() {
 	this_worksheet.cells = [];
 	
 	// Worksheet information from worksheet.py
-	this_worksheet.locked = false;
 	this_worksheet.state_number = -1;
 	
 	// Current worksheet info, set in notebook.py.
@@ -795,15 +801,20 @@ worksheetapp.worksheet = function() {
 		
 		button.insertAfter(obj);
 		button.click(function(event) {
-			/* BUTTON EVENT HANDLER */
-			
-			// TODO
-			
 			// get the cell above this button in the dom
 			// here 'this' references the button that was clicked
-			var after_cell_id = $(this).prev(".cell_wrapper").find(".cell").attr("id").substring(5);
-			
-			alert("new cell" + after_cell_id);
+			if($(this).prev(".cell_wrapper").find(".cell").length > 0) {
+				// this is not the first button
+				var after_cell_id = toint($(this).prev(".cell_wrapper").find(".cell").attr("id").substring(5));
+				
+				this_worksheet.new_cell_after(after_cell_id);
+			}
+			else {
+				// this is the first button
+				var before_cell_id = toint($(this).next(".cell_wrapper").find(".cell").attr("id").substring(5));
+				
+				this_worksheet.new_cell_before(before_cell_id);
+			}
 		});
 	};
 	
@@ -850,14 +861,69 @@ worksheetapp.worksheet = function() {
 	};
 	
 	//// NEW CELL /////
+	this_worksheet.new_cell_before = function(id) {
+		async_request(this_worksheet.worksheet_command("new_cell_before"), function(status, response) {
+			if(response === "locked") {
+				// TODO
+				return;
+			}
+			
+			var X = decode_response(response);
+			
+			var new_cell = new worksheetapp.cell(X.new_id);
+			
+			var a = $("#cell_" + X.id).parent().prev();
+			
+			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
+			
+			new_cell.worksheet = this_worksheet;
+			
+			new_cell.update(wrapper);
+			
+			// add the next new cell button
+			this_worksheet.add_new_cell_button_after(wrapper);
+			
+			// wait for the render to finish
+			setTimeout(new_cell.focus, 50);
+		},
+		{
+			id: id
+		});
+	};
 	this_worksheet.new_cell_after = function(id) {
-		
+		async_request(this_worksheet.worksheet_command("new_cell_after"), function(status, response) {
+			if(response === "locked") {
+				// TODO
+				return;
+			}
+			
+			var X = decode_response(response);
+			
+			var new_cell = new worksheetapp.cell(X.new_id);
+			
+			var a = $("#cell_" + X.id).parent().next();
+			
+			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
+			
+			new_cell.worksheet = this_worksheet;
+			
+			new_cell.update(wrapper);
+			
+			// add the next new cell button
+			this_worksheet.add_new_cell_button_after(wrapper);
+			
+			// wait for the render to finish
+			setTimeout(new_cell.focus, 50);
+		},
+		{
+			id: id
+		});
 	};
 	
 	
 	/////////////// WORKSHEET UPDATE //////////////////////
 	this_worksheet.worksheet_update = function() {
-		async_request(this_worksheet.worksheet_command("worksheet_properties_json"), this_worksheet.generic_callback(function(status, response) {
+		async_request(this_worksheet.worksheet_command("worksheet_properties"), this_worksheet.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			this_worksheet.id = X.id_number;
@@ -875,14 +941,11 @@ worksheetapp.worksheet = function() {
 			
 			// TODO other stuff goes here, not sure what yet
 			// lock stuff
-			if(this_worksheet.locked) {
-				// TODO
-			}
 		}));
 	};
 	this_worksheet.cell_list_update = function() {
 		// load in cells
-		async_request(this_worksheet.worksheet_command("cell_list_json"), this_worksheet.generic_callback(function(status, response) {
+		async_request(this_worksheet.worksheet_command("cell_list"), this_worksheet.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			// set the state_number
@@ -933,35 +996,33 @@ worksheetapp.worksheet = function() {
 		this_worksheet.cell_list_update();
 		
 		/////////// setup up the title stuff ////////////
-		if(!this_worksheet.locked) {
-			$(".worksheet_name").click(function(e) {
-				$(".worksheet_name input").val(this_worksheet.name);
-				$(".worksheet_name").addClass("edit");
-				$(".worksheet_name input").focus();
-			});
+		$(".worksheet_name").click(function(e) {
+			$(".worksheet_name input").val(this_worksheet.name);
+			$(".worksheet_name").addClass("edit");
+			$(".worksheet_name input").focus();
+		});
+		
+		// this is the event handler for the input
+		var worksheet_name_input_handler = function(e) {
+			$(".worksheet_name").removeClass("edit");
 			
-			// this is the event handler for the input
-			var worksheet_name_input_handler = function(e) {
-				$(".worksheet_name").removeClass("edit");
-				
-				if(this_worksheet.name !== $(".worksheet_name input").val()) {
-					// send to the server
-					async_request(this_worksheet.worksheet_command("rename"), this_worksheet.generic_callback(function(status, response) {
-						// update the title when we get good response
-						this_worksheet.worksheet_update();
-					}), {
-						name: $(".worksheet_name input").val()
-					});
-				}
-			};
-			
-			$(".worksheet_name input").blur(worksheet_name_input_handler).keypress(function(e) {
-				if(e.which === 13) {
-					// they hit enter
-					worksheet_name_input_handler(e);
-				}
-			});
-		}
+			if(this_worksheet.name !== $(".worksheet_name input").val()) {
+				// send to the server
+				async_request(this_worksheet.worksheet_command("rename"), this_worksheet.generic_callback(function(status, response) {
+					// update the title when we get good response
+					this_worksheet.worksheet_update();
+				}), {
+					name: $(".worksheet_name input").val()
+				});
+			}
+		};
+		
+		$(".worksheet_name input").blur(worksheet_name_input_handler).keypress(function(e) {
+			if(e.which === 13) {
+				// they hit enter
+				worksheet_name_input_handler(e);
+			}
+		});
 		
 		////////// TYPESETTING CHECKBOX //////////
 		$("#typesetting_checkbox").change(function(e) {

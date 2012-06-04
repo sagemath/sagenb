@@ -215,7 +215,7 @@ def worksheet_revert_to_last_saved_state(worksheet):
 ########################################################
 # Worksheet properties
 ########################################################
-@worksheet_command('worksheet_properties_json')
+@worksheet_command('worksheet_properties')
 def worksheet_worksheet_properties_json(worksheet):
     """
     Send worksheet properties as a JSON object
@@ -241,16 +241,15 @@ def worksheet_worksheet_properties_json(worksheet):
 #    from sagenb.notebook.misc import encode_response
 #    return encode_response(r)
 
-@worksheet_command('cell_json')
+@worksheet_command('cell_properties')
 def worksheet_cell_json(worksheet):
     """
     Return the cell with the given id as a JSON object
     """
-    print "cell json"
     id = get_cell_id()
     return worksheet.get_cell_with_id(id).to_json()
     
-@worksheet_command('cell_list_json')
+@worksheet_command('cell_list')
 def worksheet_cell_list_json(worksheet):
     """
     Return a list of cells in JSON format.

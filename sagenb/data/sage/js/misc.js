@@ -42,24 +42,6 @@ function decode_response(text) {
 	});
 }
 
-function lstrip(s) {
-    /*
-    Given a string s, strip leading whitespace from s and return the
-    resulting string.
-
-    INPUT:
-        s -- a string
-    OUTPUT:
-        a string
-    */
-    var i = 0, n = s.length;
-    while (i < n && (s[i] === ' ' || s[i] === '\n' || s[i] === '\t')) {
-        i = i + 1;
-    }
-    return s.slice(i);
-}
-
-
 function system_to_codemirror_mode(system) {
 	var mode = "";
 	
