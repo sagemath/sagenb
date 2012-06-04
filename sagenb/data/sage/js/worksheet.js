@@ -145,7 +145,6 @@ worksheetapp.cell = function(id) {
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
 				// check if it is empty
-				// TODO: checking if it's the last cell should maybe be done by the nb
 			
 				// all of this is disabled for now
 				if(cm.getValue() === "" && this_cell.worksheet.cells.length > 0) {
@@ -938,6 +937,9 @@ worksheetapp.worksheet = function() {
 			
 			// update the typesetting checkbox
 			$("#typesetting_checkbox").prop("checked", this_worksheet.pretty_print);
+			
+			// update username
+			$("#username").text(this_worksheet.username);
 			
 			// TODO other stuff goes here, not sure what yet
 			// lock stuff
