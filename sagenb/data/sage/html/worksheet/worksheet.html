@@ -259,6 +259,8 @@
 		<!-- Async Requests -->
 		<script type="text/javascript" src="/data/sage/js/async_lib.js"></script>
 
+		<!-- Sage NB -->
+		<script type="text/javascript" src="/data/sage/js/sagenb.js"></script>
 
 		<!-- Worksheet -->
 		<!-- randomize the worksheet.js url for debugging -->
@@ -267,8 +269,11 @@
 		</script>
 		
 		<script type="text/javascript">
+			// init notebook stuff
+			sagenb.init();
+
 			// create the worksheet
-			var the_worksheet = new worksheetapp.worksheet();
+			var the_worksheet = new sagenb.worksheetapp.worksheet();
 
 			// grab the filename from the URL
 			var fn = window.location.pathname;
@@ -282,11 +287,8 @@
 				fn = fn.substring(0, fn.length - 1);
 			}
 
-			var user = fn.split("/")[0];
-
 			// set filename
 			the_worksheet.filename = fn;
-			the_worksheet.username = user;
 
 			// initialize
 			the_worksheet.init();

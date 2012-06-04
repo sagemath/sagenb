@@ -16,6 +16,8 @@ Medium Stuff
 
  * Login page
  * Help page
+ * automatic minify on .js and .css files
+   - Add a route in base.py or somewhere else
 
 Small Stuff
 -----------

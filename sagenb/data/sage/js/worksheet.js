@@ -5,7 +5,7 @@
  */
 
 // simulated namespace
-var worksheetapp = {};
+sagenb.worksheetapp = {};
 
 /* We may wish to switch our object oriented approach 
 away from using functions and instead taking advantage
@@ -25,14 +25,8 @@ http://www.nczonline.net/blog/2009/04/13/computer-science-in-javascript-linked-l
  * WebSockets.
  */
 
-/* swap control/command on mac operating system */
-var ctrlkey = "Ctrl";
-if(navigator.userAgent.indexOf("Mac") !== -1) {
-	ctrlkey = "Cmd";
-}
-
 // the cell object
-worksheetapp.cell = function(id) {
+sagenb.worksheetapp.cell = function(id) {
 	/* this allows us to access this cell object from 
 	 * inner functions
 	 */
@@ -140,7 +134,7 @@ worksheetapp.cell = function(id) {
 			var extrakeys = new Object();
 			
 			// set up autocomplete. we may want to use tab
-			//extrakeys[ctrlkey + "-Space"] = "autocomplete";
+			//extrakeys[sagenb.ctrlkey + "-Space"] = "autocomplete";
 			
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
@@ -164,16 +158,16 @@ worksheetapp.cell = function(id) {
 				this_cell.evaluate();
 			};
 			
-			extrakeys[ctrlkey + "-N"] = function(cm) {
+			extrakeys[sagenb.ctrlkey + "-N"] = function(cm) {
 				this_cell.worksheet.new_worksheet();
 			};
-			extrakeys[ctrlkey + "-S"] = function(cm) {
+			extrakeys[sagenb.ctrlkey + "-S"] = function(cm) {
 				this_cell.worksheet.save();
 			};
-			extrakeys[ctrlkey + "-W"] = function(cm) {
+			extrakeys[sagenb.ctrlkey + "-W"] = function(cm) {
 				this_cell.worksheet.close();
 			};
-			extrakeys[ctrlkey + "-P"] = function(cm) {
+			extrakeys[sagenb.ctrlkey + "-P"] = function(cm) {
 				this_cell.worksheet.print();
 			};
 			
@@ -639,7 +633,7 @@ worksheetapp.cell = function(id) {
 	};
 };
 
-worksheetapp.worksheet = function() {
+sagenb.worksheetapp.worksheet = function() {
 	/* this allows us to access this cell object from 
 	 * inner functions
 	 */
@@ -653,7 +647,6 @@ worksheetapp.worksheet = function() {
 	// Current worksheet info, set in notebook.py.
 	this_worksheet.filename = "";
 	this_worksheet.name = "";
-	this_worksheet.username = "";
 	this_worksheet.owner = "";
 	this_worksheet.id = -1;
 	this_worksheet.is_published = false;
@@ -875,7 +868,7 @@ worksheetapp.worksheet = function() {
 			
 			var X = decode_response(response);
 			
-			var new_cell = new worksheetapp.cell(X.new_id);
+			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
 			
 			var a = $("#cell_" + X.id).parent().prev();
 			
@@ -904,7 +897,7 @@ worksheetapp.worksheet = function() {
 			
 			var X = decode_response(response);
 			
-			var new_cell = new worksheetapp.cell(X.new_id);
+			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
 			
 			var a = $("#cell_" + X.id).parent().next();
 			
@@ -944,11 +937,7 @@ worksheetapp.worksheet = function() {
 			// update the typesetting checkbox
 			$("#typesetting_checkbox").prop("checked", this_worksheet.pretty_print);
 			
-			// update username
-			$("#username").text(this_worksheet.username);
-			
 			// TODO other stuff goes here, not sure what yet
-			// lock stuff
 		}));
 	};
 	this_worksheet.cell_list_update = function() {
@@ -974,7 +963,7 @@ worksheetapp.worksheet = function() {
 				var cell_obj = X.cell_list[i];
 				
 				// create the new cell
-				var newcell = new worksheetapp.cell(toint(cell_obj.id));
+				var newcell = new sagenb.worksheetapp.cell(toint(cell_obj.id));
 				
 				// connect it to this worksheet
 				newcell.worksheet = this_worksheet;
@@ -1080,10 +1069,10 @@ worksheetapp.worksheet = function() {
 		but they are included in the best case scenario that they are all 
 		accepted. I have not checked all of the official hotkeys for Sage NB
 		so this list may not be complete but will be updated later. */
-		$(document).bind("keydown", ctrlkey + "+N", function(evt) { this_worksheet.new_worksheet(); return false; });
-		$(document).bind("keydown", ctrlkey + "+S", function(evt) { this_worksheet.save(); return false; });
-		$(document).bind("keydown", ctrlkey + "+W", function(evt) { this_worksheet.close(); return false; });
-		$(document).bind("keydown", ctrlkey + "+P", function(evt) { this_worksheet.print(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { this_worksheet.new_worksheet(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { this_worksheet.save(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { this_worksheet.close(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { this_worksheet.print(); return false; });
 		
 		$(document).bind("keydown", "F1", function(evt) { this_worksheet.open_help(); return false; });
 		
