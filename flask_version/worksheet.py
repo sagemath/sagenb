@@ -300,7 +300,7 @@ def worksheet_new_cell_before(worksheet):
     worksheet.increase_state_number()
     
     r['new_id'] = cell.id()
-    r['new_html'] = cell.html(div_wrap=False)
+    #r['new_html'] = cell.html(div_wrap=False)
 
     from sagenb.notebook.misc import encode_response
     return encode_response(r)
@@ -316,7 +316,7 @@ def worksheet_new_text_cell_before(worksheet):
     worksheet.increase_state_number()
     
     r['new_id'] = cell.id()
-    r['new_html'] = cell.html(editing=True)
+    #r['new_html'] = cell.html(editing=True)
 
     from sagenb.notebook.misc import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
@@ -335,7 +335,7 @@ def worksheet_new_cell_after(worksheet):
     worksheet.increase_state_number()
 
     r['new_id'] = cell.id()
-    r['new_html'] = cell.html(div_wrap=True)
+    #r['new_html'] = cell.html(div_wrap=True)
 
     from sagenb.notebook.misc import encode_response
     return encode_response(r)
@@ -351,7 +351,7 @@ def worksheet_new_text_cell_after(worksheet):
     worksheet.increase_state_number()
     
     r['new_id'] = cell.id()
-    r['new_html'] = cell.html(editing=True)
+    #r['new_html'] = cell.html(editing=True)
 
     from sagenb.notebook.misc import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try

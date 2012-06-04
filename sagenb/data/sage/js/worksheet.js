@@ -224,6 +224,7 @@ sagenb.worksheetapp.cell = function(id) {
 									"<div class=\"edit_text\">" + 
 										"<textarea name=\"text_cell_textarea_" + this_cell.id + "\" id=\"text_cell_textarea_" + this_cell.id + "\">" + this_cell.input + "</textarea>" + 
 										"<div class=\"buttons\">" + 
+											"<button class=\"btn btn-danger delete_button pull-left\">Delete</button>" + 
 											"<button class=\"btn cancel_button\">Cancel</button>" + 
 											"<button class=\"btn btn-primary save_button\">Save</button>" + 
 										"</div>" + 
@@ -267,8 +268,12 @@ sagenb.worksheetapp.cell = function(id) {
 					
 					// add the edit class
 					$("#cell_" + this_cell.id).addClass("edit");
+					
+					//tinyMCE.execCommand('mceFocus', false, "text_cell_textarea_" + this_cell.id);
 				}
 			});
+			
+			this_cell_dom.find(".delete_button").click(this_cell.delete);
 			
 			this_cell_dom.find(".cancel_button").click(function(e) {
 				// get tinymce instance
@@ -399,6 +404,9 @@ sagenb.worksheetapp.cell = function(id) {
 	this_cell.focus = function() {
 		if(this_cell.is_evaluate_cell) {
 			this_cell.codemirror.focus();
+		} else {
+			// edit the tinyMCE
+			$("#cell_" + this_cell.id).dblclick();
 		}
 	}
 	
@@ -805,13 +813,21 @@ sagenb.worksheetapp.worksheet = function() {
 				// this is not the first button
 				var after_cell_id = toint($(this).prev(".cell_wrapper").find(".cell").attr("id").substring(5));
 				
-				this_worksheet.new_cell_after(after_cell_id);
+				if(event.shiftKey) {
+					this_worksheet.new_text_cell_after(after_cell_id);
+				} else {
+					this_worksheet.new_cell_after(after_cell_id);
+				}
 			}
 			else {
 				// this is the first button
 				var before_cell_id = toint($(this).next(".cell_wrapper").find(".cell").attr("id").substring(5));
 				
-				this_worksheet.new_cell_before(before_cell_id);
+				if(event.shiftKey) {
+					this_worksheet.new_text_cell_before(after_cell_id);
+				} else {
+					this_worksheet.new_cell_before(before_cell_id);
+				}
 			}
 		});
 	};
@@ -890,6 +906,65 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	this_worksheet.new_cell_after = function(id) {
 		async_request(this_worksheet.worksheet_command("new_cell_after"), function(status, response) {
+			if(response === "locked") {
+				$(".alert_locked").show();
+				return;
+			}
+			
+			var X = decode_response(response);
+			
+			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
+			
+			var a = $("#cell_" + X.id).parent().next();
+			
+			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
+			
+			new_cell.worksheet = this_worksheet;
+			
+			new_cell.update(wrapper);
+			
+			// add the next new cell button
+			this_worksheet.add_new_cell_button_after(wrapper);
+			
+			// wait for the render to finish
+			setTimeout(new_cell.focus, 50);
+		},
+		{
+			id: id
+		});
+	};
+	
+	this_worksheet.new_text_cell_before = function(id) {
+		async_request(this_worksheet.worksheet_command("new_text_cell_before"), function(status, response) {
+			if(response === "locked") {
+				$(".alert_locked").show();
+				return;
+			}
+			
+			var X = decode_response(response);
+			
+			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
+			
+			var a = $("#cell_" + X.id).parent().prev();
+			
+			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
+			
+			new_cell.worksheet = this_worksheet;
+			
+			new_cell.update(wrapper);
+			
+			// add the next new cell button
+			this_worksheet.add_new_cell_button_after(wrapper);
+			
+			// wait for the render to finish
+			setTimeout(new_cell.focus, 50);
+		},
+		{
+			id: id
+		});
+	};
+	this_worksheet.new_text_cell_after = function(id) {
+		async_request(this_worksheet.worksheet_command("new_text_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
