@@ -250,6 +250,9 @@ worksheetapp.cell = function(id) {
 			
 			var this_cell_dom = $("#cell_" + this_cell.id);
 			
+			// MathJax the text
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub, this_cell_dom.find(".view_text")[0]]);
+			
 			this_cell_dom.dblclick(function(e) {
 				if(!this_cell.is_evaluate_cell) {
 					// set the current_cell_id
@@ -299,6 +302,9 @@ worksheetapp.cell = function(id) {
 				
 				// update the cell
 				this_cell_dom.find(".view_text").html(this_cell.input);
+				
+				// MathJax the text
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, this_cell_dom.find(".view_text")[0]]);
 				
 				// remove the edit class
 				$("#cell_" + this_cell.id).removeClass("edit");
