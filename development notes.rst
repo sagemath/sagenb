@@ -12,8 +12,8 @@ Big Stuff
  * Data dialog
  * Use three.js instead of Jmol
  * Use WebSockets instead of async_request
-   - use tornado web server
-   - Wait until WebSockets are more fully supported. Browser support as of this writing is not sufficient to switch yet.
+     - use tornado web server
+     - Wait until WebSockets are more fully supported. Browser support as of this writing is not sufficient to switch yet.
 
 Medium Stuff
 ------------
@@ -22,8 +22,8 @@ Medium Stuff
  * Help page
  * Log dialog
  * automatic minify on .js and .css files
-   - Add a route in base.py or somewhere else
-   - Make sure it's disabled in debug mode
+     - Add a route in base.py or somewhere else
+     - Make sure it's disabled in debug mode
  * Create automatic print-friendly option
  * Template the different html files. For example create a base template which worksheet.html and the worksheet listing page extend.
 
@@ -38,9 +38,9 @@ Small Stuff
  * Add grab image button to Jmol
  * Clean up LESS
  * Clean up javascript
-   - maybe use prototypes
-   - maybe separate the different cell types.. not sure if this is a good idea or not
-   - incorporate some of the innovations used by IPython
+     - maybe use prototypes
+     - maybe separate the different cell types.. not sure if this is a good idea or not
+     - incorporate some of the innovations used by IPython
 
 Files
 =====
