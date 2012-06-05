@@ -50,22 +50,9 @@ sagenb.worksheetapp.cell = function(id) {
 	
 	// the amount of time in millisecs between update checks
 	this_cell.output_check_interval = 500;
+
 	
-	
-	this_cell.get_codemirror_mode = function() {
-		/* This is a utility function to get the correct
-		 * CodeMirror mode which this cell should be 
-		 * rendered in.
-		 */
-		if(this_cell.system !== "") {
-			// specific cell system
-			return system_to_codemirror_mode(this_cell.system);
-		} else {
-			// fall through to worksheet system
-			return system_to_codemirror_mode(this_cell.worksheet.system);
-		}
-	}
-	
+	///////////// UPDATING /////////////
 	this_cell.update = function(render_container, auto_evaluate) {
 		/* Update cell properties. Updates the codemirror mode (if necessary)
 		 * and %hide stuff. Only performs rendering if a render_container is 
@@ -89,12 +76,7 @@ sagenb.worksheetapp.cell = function(id) {
 			this_cell.is_evaluate_cell = (X.type === "evaluate") ? true : false;
 			
 			// change the codemirror mode
-			if(this_cell.codemirror) {
-				if(this_cell.get_codemirror_mode() !== this_cell.codemirror.getOption("mode")) {
-					// change the codemirror mode
-					this_cell.codemirror.setOption("mode", this_cell.get_codemirror_mode());
-				}
-			}
+			this_cell.update_codemirror_mode();
 			
 			if(render_container) {
 				this_cell.render(render_container);
@@ -114,6 +96,27 @@ sagenb.worksheetapp.cell = function(id) {
 			id: this_cell.id
 		});
 	};
+	this_cell.get_codemirror_mode = function() {
+		/* This is a utility function to get the correct
+		 * CodeMirror mode which this cell should be 
+		 * rendered in.
+		 */
+		if(this_cell.system !== "" && this_cell.system !== null) {
+			// specific cell system
+			return system_to_codemirror_mode(this_cell.system);
+		} else {
+			// fall through to worksheet system
+			return system_to_codemirror_mode(this_cell.worksheet.system);
+		}
+	}
+	this_cell.update_codemirror_mode = function() {
+		if(this_cell.codemirror) {
+			if(this_cell.get_codemirror_mode() !== this_cell.codemirror.getOption("mode")) {
+				// change the codemirror mode
+				this_cell.codemirror.setOption("mode", this_cell.get_codemirror_mode());
+			}
+		}
+	}
 	
 	//////// RENDER //////////
 	this_cell.render = function(container) {
@@ -868,7 +871,15 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	
 	this_worksheet.change_system = function(newsystem) {
-		
+		async_request(this_worksheet.worksheet_command("system/" + newsystem), this_worksheet.generic_callback(function(status, response) {
+			this_worksheet.system = newsystem;
+			
+			$.each(this_worksheet.cells, function(i, cell) {
+				if(cell && cell.update_codemirror_mode) {
+					cell.update_codemirror_mode();
+				}
+			});
+		}));
 	};
 	this_worksheet.set_pretty_print = function(s) {
 		async_request(this_worksheet.worksheet_command("pretty_print/" + s), this_worksheet.generic_callback());
@@ -1108,6 +1119,9 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#evaluate_all_cells").click();
 		$("#interrupt").click();
 		$("#restart_worksheet").click();
+		$("#change_system").click(function(e) {
+			$("#system_select").val(this_worksheet.system);
+		});
 		$("#hide_all_output").click(this_worksheet.hide_all_output);
 		$("#show_all_output").click(this_worksheet.show_all_output);
 		$("#delete_all_output").click(this_worksheet.delete_all_output);
@@ -1123,6 +1137,11 @@ sagenb.worksheetapp.worksheet = function() {
 		///////// LOCKED ALERT //////////
 		$(".alert_locked button").click(function(e) {
 			$(".alert_locked").hide();
+		});
+		
+		/////// CHANGE SYSTEM DIALOG //////////
+		$("#system_modal .btn-primary").click(function(e) {
+			this_worksheet.change_system($("#system_select").val());
 		});
 		
 		// start the ping interval
