@@ -49,9 +49,9 @@ Files
 Frontend
 ========
 
-The frontend of the Sage Notebook is built on Twitter's Bootstrap framework, MathJax, LESS, TinyMCE, and CodeMirror.
+The frontend of the Sage Notebook is built on Twitter's Bootstrap framework, MathJax, LESS, TinyMCE, and CodeMirror. Content is loaded dynamically -- no more sending HTML back-and-forth between the server and the browser. All communication is done with JSON using the encode_response and decode_response functions.
 
 CSS vs LESS vs SASS/SCSS
 ------------------------
 
-Although some have suggested that we stick to plain CSS, CSS preprocessing is the future and significantly speeds up development. The choice between LESS and SASS is trickier. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
+Although plain CSS is more standard, CSS preprocessing is very similar and significantly speeds up development. The choice between LESS and SASS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
