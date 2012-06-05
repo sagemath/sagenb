@@ -221,7 +221,20 @@ def worksheet_worksheet_properties_json(worksheet):
     Send worksheet properties as a JSON object
     """
     from sagenb.notebook.misc import encode_response
-    return encode_response(worksheet.basic())
+    
+    r = worksheet.basic()
+    
+    if worksheet.has_published_version():
+        hostname = request.headers.get('host', g.notebook.interface + ':' + str(g.notebook.port))
+        
+        r['published_url'] = 'http%s://%s/home/%s' % ('' if not g.notebook.secure else 's',
+                                            hostname,
+                                            worksheet.published_version().filename())
+        
+        from time import strftime
+        r['published_time'] = time = strftime("%B %d, %Y %I:%M %p", worksheet.published_version().date_edited())
+    
+    return encode_response(r)
 
 ########################################################
 # Used in refreshing the cell list
@@ -870,7 +883,7 @@ def worksheet_publish(worksheet):
         else:
             return g.notebook.html_beforepublish_window(worksheet, g.username)
 
-############################################    
+############################################
 # Ratings
 ############################################
 @worksheet_command('rating_info')

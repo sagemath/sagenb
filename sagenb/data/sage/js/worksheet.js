@@ -664,6 +664,13 @@ sagenb.worksheetapp.worksheet = function() {
 	this_worksheet.system = "";
 	this_worksheet.pretty_print = false;
 	
+	// sharing
+	this_worksheet.collaborators = [];
+	this_worksheet.auto_publish = false;
+	this_worksheet.published_id_number = -1;
+	this_worksheet.published_url = null;
+	this_worksheet.published_time = null;
+	
 	// Ping the server periodically for worksheet updates.
 	this_worksheet.server_ping_time = 10000;
 	
@@ -682,11 +689,7 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	// other variables go here
 	
-	
-	///////////////// INSTANTIATE ////////////////
-	
 	///////////// COMMANDS ////////////
-	// this must be defined before it's called
 	this_worksheet.worksheet_command = function(cmd) {
 		/*
 		Create a string formatted as a URL to send back to the server and
@@ -875,7 +878,7 @@ sagenb.worksheetapp.worksheet = function() {
 			this_worksheet.system = newsystem;
 			
 			$.each(this_worksheet.cells, function(i, cell) {
-				if(cell && cell.update_codemirror_mode) {
+				if(cell) {
 					cell.update_codemirror_mode();
 				}
 			});
@@ -1016,12 +1019,43 @@ sagenb.worksheetapp.worksheet = function() {
 			this_worksheet.system = X.system;
 			this_worksheet.pretty_print = X.pretty_print;
 			
+			this_worksheet.collaborators = X.collaborators;
+			this_worksheet.auto_publish = X.auto_publish;
+			this_worksheet.published_id_number = X.published_id_number;
+			if(X.published_url) {
+				this_worksheet.published_url = X.published_url;
+			}
+			if(X.published_time) {
+				this_worksheet.published_time = X.published_time;
+			}
+			
 			// update the title
 			document.title = this_worksheet.name + " - Sage";
 			$(".worksheet_name h1").text(this_worksheet.name);
 			
 			// update the typesetting checkbox
 			$("#typesetting_checkbox").prop("checked", this_worksheet.pretty_print);
+			
+			// set the system select
+			$("#system_select").val(this_worksheet.system);
+			
+			if(this_worksheet.published_id_number !== null && this_worksheet.published_id_number >= 0) {
+				$("#publish_checkbox").prop("checked", true);
+				$("#auto_republish_checkbox").removeAttr("disabled");
+				
+				$("#auto_republish_checkbox").prop("checked", this_worksheet.auto_publish);
+				
+				$("#worksheet_url a").text(this_worksheet.published_url);
+				$("#worksheet_url").show();
+			} else {
+				$("#publish_checkbox").prop("checked", false);
+				$("#auto_republish_checkbox").prop("checked", false);
+				$("#auto_republish_checkbox").attr("disabled", true);
+				
+				$("#worksheet_url").hide();
+			}
+			
+			$("#collaborators").val(this_worksheet.collaborators.join(", "));
 			
 			// TODO other stuff goes here, not sure what yet
 		}));
@@ -1119,9 +1153,7 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#evaluate_all_cells").click();
 		$("#interrupt").click();
 		$("#restart_worksheet").click();
-		$("#change_system").click(function(e) {
-			$("#system_select").val(this_worksheet.system);
-		});
+		//$("#change_system").click(function(e) {});
 		$("#hide_all_output").click(this_worksheet.hide_all_output);
 		$("#show_all_output").click(this_worksheet.show_all_output);
 		$("#delete_all_output").click(this_worksheet.delete_all_output);
@@ -1142,6 +1174,32 @@ sagenb.worksheetapp.worksheet = function() {
 		/////// CHANGE SYSTEM DIALOG //////////
 		$("#system_modal .btn-primary").click(function(e) {
 			this_worksheet.change_system($("#system_select").val());
+		});
+		
+		
+		//////// SHARING DIALOG ///////////
+		$("#sharing_dialog .btn-primary").click(function(e) {
+			async_request(this_worksheet.worksheet_command("invite_collab"), this_worksheet.generic_callback(), {
+				collaborators: $("#collaborators").val()
+			});
+		});
+		$("#publish_checkbox").change(function(e) {
+			var command;
+			if($("#publish_checkbox").prop("checked")) {
+				command = this_worksheet.worksheet_command("publish?yes");
+			} else {
+				command = this_worksheet.worksheet_command("publish?stop");
+			}
+			
+			async_request(command, this_worksheet.generic_callback(function(status, response) {
+				this_worksheet.worksheet_update();
+			}));
+		});
+		$("#auto_republish_checkbox").change(function(e) {
+			// for some reason, auto is a toggle command
+			async_request(this_worksheet.worksheet_command("publish?auto"), this_worksheet.generic_callback(function(status, response) {
+				this_worksheet.worksheet_update();
+			}))
 		});
 		
 		// start the ping interval

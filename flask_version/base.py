@@ -25,12 +25,12 @@ class SageNBFlask(Flask):
         # I think it would make more sense just to have one /data/ path and not do one for every kind of file
         self.add_static_path('/data', os.path.join(DATA))
         
-        self.add_static_path('/css', os.path.join(DATA, "sage", "css"))
-        self.add_static_path('/less', os.path.join(DATA, "sage", "less"))
-        self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
-        self.add_static_path('/javascript', DATA)
-        self.add_static_path('/static', DATA)
-        self.add_static_path('/java', DATA)
+        #self.add_static_path('/css', os.path.join(DATA, "sage", "css"))
+        #self.add_static_path('/less', os.path.join(DATA, "sage", "less"))
+        #self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
+        #self.add_static_path('/javascript', DATA)
+        #self.add_static_path('/static', DATA)
+        #self.add_static_path('/java', DATA)
         
         # this one is special though since it points to SAGE_ROOT
         self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
@@ -101,7 +101,6 @@ base = Module('flask_version.base')
 #############
 @base.route('/')
 def index():
-    print 'index requested'
     if 'username' in session:
         response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:

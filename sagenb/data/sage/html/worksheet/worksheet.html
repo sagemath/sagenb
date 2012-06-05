@@ -177,7 +177,7 @@
 						<div class="control-group">
 							<label for="" class="control-label">Sharing</label>
 							<div class="controls">
-								<textarea name="collaborators_textarea" id="collaborators_textarea" class="input-xlarge"></textarea>
+								<textarea name="collaborators" id="collaborators" class="input-xlarge"></textarea>
 								<p class="help-block">Add/remove collaborators by entering their user names separated by commas.</p>
 							</div>
 						</div>
@@ -186,7 +186,7 @@
 							<div class="controls">
 								<label for="publish_checkbox" class="checkbox"><input type="checkbox" id="publish_checkbox"> Publish this worksheet</label>
 								<label for="auto_republish_checkbox" class="checkbox"><input type="checkbox" id="auto_republish_checkbox"> Re-publish this worksheet when it changes</label>
-								<p class="help-block">Worksheet viewable at <a href="#">http://insert/url/here</a></p>
+								<p class="help-block" id="worksheet_url">Worksheet viewable at <a href="#">http://insert/url/here</a></p>
 							</div>
 						</div>
 					</fieldset>
@@ -194,7 +194,7 @@
 			</div>
 			<div class="modal-footer">
 				<a href="#" class="btn" data-dismiss="modal">Cancel</a>
-				<a href="#" class="btn btn-primary">Save changes</a>
+				<a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
 			</div>
 		</div>
 		
