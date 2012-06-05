@@ -33,17 +33,6 @@
 		
 		<!-- Less -->
 		<link rel="stylesheet/less" type="text/css" href="/data/sage/less/main.less">
-		
-		<!-- JMol stuff -->
-		<script type="text/javascript" src="/data/sage/js/jmol_lib.js"></script>
-
-		<!-- Sage3d - accelerated 3D graphics -->
-		<script type="text/javascript" src="/data/sage3d/sage3d.js"></script>
-
-		<!-- Jmol - embedded 3D graphics -->
-		<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
-		<!-- This must stay in head -->
-		<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
 	</head>
 
 	<body>
@@ -80,9 +69,6 @@
 									<li><a href="#"><label for="typesetting_checkbox" class="checkbox"><input name="typesetting_checkbox" type="checkbox" id="typesetting_checkbox"> Typesetting</label></a></li>
 									<li class="divider"></li>
 									<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="single_cell_mode_radio" value="single"> Single-cell Mode</label></a></li>
-									
-									<!-- here we make the default state checked for the demo
-									when integrating with sage nb this might need to be changed, not sure -->
 									<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="multi_cell_mode_radio" value="multi" checked> Multi-cell Mode</label></a></li>
 								</ul>
 							</li>
@@ -92,10 +78,9 @@
 									<li><a href="#" id="evaluate_all_cells"><i class="icon-play"></i> Evaluate all Cells</a></li>
 									<li><a href="#" id="interrupt"><i class="icon-stop"></i> Interrupt</a></li>
 									<li><a href="#" id="restart_worksheet"><i class="icon-refresh"></i> Restart Worksheet</a></li>
-									<!-- not exactly sure what the point of a save and quit button is???? -->
-									<!-- <li><a href="#" id="save_and_quit_worksheet"><i class="icon-remove"></i> Save and quit Worksheet</a></li>-->
 									<li class="divider"></li>
-									<!-- <li class="nav-header">Nav header</li> -->
+									<li><a href="#system_modal" id="change_system" data-toggle="modal"><i class="icon-cog"></i> Change system</a></li>
+									<li class="divider"></li>
 									<li><a href="#" id="hide_all_output"><i class="icon-eye-close"></i> Hide all output</a></li>
 									<li><a href="#" id="show_all_output"><i class="icon-eye-open"></i> Show all output</a></li>
 									<li><a href="#" id="delete_all_output"><i class="icon-remove"></i> Delete all output</a></li>
@@ -184,7 +169,6 @@
 		<!-- Modal Magic -->
 		<div class="modal hide" id="sharing_modal">
 			<div class="modal-header">
-				<!--<button class="close" data-dismiss="modal">×</button>-->
 				<h3>Sharing</h3>
 			</div>
 			<div class="modal-body">
@@ -214,6 +198,41 @@
 			</div>
 		</div>
 		
+		<!-- Worksheet system modal -->
+		<div class="modal hide" id="system_modal">
+			<div class="modal-header">
+				<h3>Worksheet System</h3>
+			</div>
+			<div class="modal-body" style="text-align: center">
+				<select>
+					<option value="sage">Sage</option>
+					<option value="gap">GAP</option>
+					<option value="gp">GP</option>
+					<option value="html">HTML</option>
+					<option value="latex">Latex</option>
+					<option value="maxima">Maxima</option>
+					<option value="python">Python</option>
+					<option value="r">R</option>
+					<option value="sh">Shell script</option>
+					<option value="singular">Singular</option>
+					<option value="axiom">Axiom (optional)</option>
+					<option value="kash">Kash (optional)</option>
+					<option value="macaulay2">Macaulay2 (optional)</option>
+					<option value="magma">Magma (optional)</option>
+					<option value="maple">Maple (optional)</option>
+					<option value="mathematica">Mathematica (optional)</option>
+					<option value="matlab">Matlab (optional)</option>
+					<option value="mupad">Mupad (optional)</option>
+					<option value="octave">Octave (optional)</option>
+					<option value="scilab">Scilab (optional)</option>
+				</select>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn" data-dismiss="modal">Cancel</a>
+				<a href="#" class="btn btn-primary">Change system</a>
+			</div>
+		</div>
+
 
 		<!-- Le javascript
 		================================================== -->
@@ -266,6 +285,17 @@
 
 		<!-- Async Requests -->
 		<script type="text/javascript" src="/data/sage/js/async_lib.js"></script>
+
+		<!-- JMol stuff -->
+		<script type="text/javascript" src="/data/sage/js/jmol_lib.js"></script>
+
+		<!-- Sage3d - accelerated 3D graphics -->
+		<script type="text/javascript" src="/data/sage3d/sage3d.js"></script>
+
+		<!-- Jmol - embedded 3D graphics -->
+		<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
+		<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
+
 
 		<!-- Sage NB -->
 		<script type="text/javascript" src="/data/sage/js/sagenb.js"></script>

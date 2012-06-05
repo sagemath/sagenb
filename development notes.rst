@@ -33,6 +33,7 @@ Small Stuff
  * Logout
  * Report a problem dialog
  * Evaluate all cells
+ * Change worksheet system dialog
  * Restart sage
  * Interrupt
  * Add grab image button to Jmol
@@ -55,3 +56,8 @@ CSS vs LESS vs SASS/SCSS
 ------------------------
 
 Although plain CSS is more standard, CSS preprocessing is very similar and significantly speeds up development. The choice between LESS and SASS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
+
+Backend
+=======
+
+I'm not completely familiar with all of the backend structure. If someone would be interested helping write this, please do.

@@ -1104,11 +1104,6 @@ sagenb.worksheetapp.worksheet = function() {
 			this_worksheet.worksheet_update();
 		});
 		
-		///////// LOCKED ALERT //////////
-		$(".alert_locked button").click(function(e) {
-			$(".alert_locked").hide();
-		});
-		
 		////////// EVALUATION ///////////
 		$("#evaluate_all_cells").click();
 		$("#interrupt").click();
@@ -1124,6 +1119,11 @@ sagenb.worksheetapp.worksheet = function() {
 			
 		});
 		$(".alert_rename .cancel").click(window.close);
+		
+		///////// LOCKED ALERT //////////
+		$(".alert_locked button").click(function(e) {
+			$(".alert_locked").hide();
+		});
 		
 		// start the ping interval
 		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.ping_server, this_worksheet.server_ping_time);
