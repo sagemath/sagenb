@@ -850,18 +850,22 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	//// OUTPUT STUFF ////
 	this_worksheet.hide_all_output = function() {
-		async_request(this_worksheet.worksheet_command('hide_all'), function(status, response) {
-			for(cellid in this_worksheet.cells) {
-				this_worksheet.cells[cellid].set_output_hidden();
-			}
-		});
+		async_request(this_worksheet.worksheet_command('hide_all'), this_worksheet.generic_callback(function(status, response) {
+			$.each(this_worksheet.cells, function(i, cell) {
+				if(cell) {
+					cell.set_output_hidden();
+				}
+			});
+		}));
 	};
 	this_worksheet.show_all_output = function() {
-		async_request(this_worksheet.worksheet_command('show_all'), function(status, response) {
-			for(cellid in this_worksheet.cells) {
-				this_worksheet.cells[cellid].set_output_visible();
-			}
-		});
+		async_request(this_worksheet.worksheet_command('show_all'), this_worksheet.generic_callback(function(status, response) {
+			$.each(this_worksheet.cells, function(i, cell) {
+				if(cell) {
+					cell.set_output_visible();
+				}
+			});
+		}));
 	};
 	this_worksheet.delete_all_output = function() {
 		async_request(this_worksheet.worksheet_command('delete_all_output'), this_worksheet.generic_callback(function(status, response) {
