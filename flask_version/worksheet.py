@@ -356,7 +356,7 @@ def worksheet_new_cell_after(worksheet):
 @worksheet_command('new_text_cell_after')
 def worksheet_new_text_cell_after(worksheet):
     """Add a new text cell after a given cell."""
-    print 'new text cell before'
+    print 'new text cell after'
     r = {}
     r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))

@@ -264,15 +264,13 @@ sagenb.worksheetapp.cell = function(id) {
 					}
 					
 					// get tinymce instance
-					var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
+					//var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
 					
 					// hide progress
-					ed.setProgressState(0);
+					//ed.setProgressState(0);
 					
 					// add the edit class
 					$("#cell_" + this_cell.id).addClass("edit");
-					
-					//tinyMCE.execCommand('mceFocus', false, "text_cell_textarea_" + this_cell.id);
 				}
 			});
 			
@@ -410,6 +408,7 @@ sagenb.worksheetapp.cell = function(id) {
 		} else {
 			// edit the tinyMCE
 			$("#cell_" + this_cell.id).dblclick();
+			tinyMCE.execCommand('mceFocus', false, "text_cell_textarea_" + this_cell.id);
 		}
 	}
 	
@@ -830,7 +829,7 @@ sagenb.worksheetapp.worksheet = function() {
 				var before_cell_id = toint($(this).next(".cell_wrapper").find(".cell").attr("id").substring(5));
 				
 				if(event.shiftKey) {
-					this_worksheet.new_text_cell_before(after_cell_id);
+					this_worksheet.new_text_cell_before(before_cell_id);
 				} else {
 					this_worksheet.new_cell_before(before_cell_id);
 				}
