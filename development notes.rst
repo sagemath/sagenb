@@ -19,6 +19,7 @@ Medium Stuff
 ------------
 
  * Login page
+ * Import worksheet dialog/page
  * Help page
  * Log dialog
  * automatic minify on .js and .css files
@@ -42,6 +43,7 @@ Small Stuff
      - maybe use prototypes
      - maybe separate the different cell types.. not sure if this is a good idea or not
      - incorporate some of the innovations used by IPython
+ * Clean up base.py and worksheet.py in flask_version/
 
 Files
 =====

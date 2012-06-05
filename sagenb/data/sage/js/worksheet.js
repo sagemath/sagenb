@@ -796,7 +796,7 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	//////// EXPORT/IMPORT ///////
 	this_worksheet.export_worksheet = function() {
-	
+		window.open(this_worksheet.worksheet_command("download/" + this_worksheet.name + ".sws"));
 	};
 	this_worksheet.import_worksheet = function() {
 	
