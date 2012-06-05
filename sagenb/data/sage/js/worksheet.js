@@ -649,6 +649,11 @@ sagenb.worksheetapp.worksheet = function() {
 	 */
 	var this_worksheet = this;
 	
+	/* Array of all of the cells. This is a sparse array because 
+	 * cells get deleted etc. Because it is sparse, you have to 
+	 * use a conditional when you loop over each element. See
+	 * hide_all_output, show_all_output, etc.
+	 */
 	this_worksheet.cells = [];
 	
 	// Worksheet information from worksheet.py
@@ -710,6 +715,7 @@ sagenb.worksheetapp.worksheet = function() {
 		// users see /home/pub but worksheet_filename is /home/_sage_
 		return ('/home/' + this_worksheet.filename + '/' + cmd);
 	};
+	// this may need to go somewhere else
 	this_worksheet.generic_callback = function(extra_callback) {
 		/* Constructs a generic callback function. The extra_callback
 		 * argument is optional. If the callback receives a "success"
@@ -869,10 +875,12 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	this_worksheet.delete_all_output = function() {
 		async_request(this_worksheet.worksheet_command('delete_all_output'), this_worksheet.generic_callback(function(status, response) {
-			for(cellid in this_worksheet.cells) {
-				this_worksheet.cells[cellid].output = "";
-				this_worksheet.cells[cellid].render_output();
-			}
+			$.each(this_worksheet.cells, function(i, cell) {
+				if(cell) {
+					cell.output = "";
+					cell.render_output();
+				}
+			});
 		}));
 	};
 	

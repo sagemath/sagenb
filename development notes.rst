@@ -6,14 +6,16 @@ Big Stuff
 
  * Interact cells
  * Single-cell mode
+     - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
  * Testing, testing, testing
  * Code completion
  * Sharing dialog
  * Data dialog
- * Use three.js instead of Jmol
- * Use WebSockets instead of async_request
-     - use tornado web server
-     - Wait until WebSockets are more fully supported. Browser support as of this writing is not sufficient to switch yet.
+ * Use three.js or something else instead of Jmol
+ * Use sockets.io instead of async_request
+     - use TornadIO2 https://github.com/MrJoes/tornadio2
+ * Add option to store the notebook in a database instead of filesystem.
+     - figure out which database systems to support
 
 Medium Stuff
 ------------
