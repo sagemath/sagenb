@@ -1080,6 +1080,11 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			$("#collaborators").val(this_worksheet.collaborators.join(", "));
 			
+			// IMPORT MODAL
+			$("#import_modal .btn-primary").click(function(e) {
+				$("#import_modal .tab-pane.active form").submit();
+			});
+			
 			// TODO other stuff goes here, not sure what yet
 		}));
 	};

@@ -21,7 +21,7 @@
 
 				<li class="divider"></li>
 				<li><a href="#" id="export_to_file"><i class="icon-download"></i> Export to File</a></li>
-				<li><a href="#" id="import_from_file"><i class="icon-upload"></i> Import from File</a></li>
+				<li><a href="#import_modal" id="import_from_file" data-toggle="modal"><i class="icon-upload"></i> Import from File</a></li>
 
 				<li class="divider"></li>
 				<li><a href="#" id="print"><i class="icon-print"></i> Print</a></li>
@@ -100,6 +100,7 @@
 {% block after_container %}
 	{% include 'html/modals/sharing_modal.html' %}
 	{% include 'html/modals/system_modal.html' %}
+	{% include 'html/modals/import_modal.html' %}
 {% endblock after_container %}
 
 {% block extra_javascript %}
