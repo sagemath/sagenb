@@ -1084,6 +1084,11 @@ sagenb.worksheetapp.worksheet = function() {
 			$("#import_modal .btn-primary").click(function(e) {
 				$("#import_modal .tab-pane.active form").submit();
 			});
+			$("#import_modal .btn").click(function(e) {
+				$.each($("#import_modal form"), function(i, form) {
+					form.reset();
+				});
+			});
 			
 			// TODO other stuff goes here, not sure what yet
 		}));
