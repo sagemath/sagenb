@@ -39,6 +39,7 @@ sagenb.worksheetapp.cell = function(id) {
 	this_cell.percent_directives = null;
 	
 	this_cell.is_evaluate_cell = true;
+	this_cell.is_evaluating = false;
 	
 	this_cell.codemirror = null;
 	
@@ -468,11 +469,10 @@ sagenb.worksheetapp.cell = function(id) {
 			}
 			
 			// not sure about these commands
-			/*if (X.command === 'insert_cell') {
+			if (X.command === 'insert_cell') {
 				// Insert a new cell after the evaluated cell.
-				//do_insert_new_cell_after(X.id, X.new_cell_id, X.new_cell_html);
-				//jump_to_cell(X.new_cell_id, 0);
-			} else if (X.command === 'introspect') {
+				this_cell.worksheet.new_cell_after(this_cell.id);
+			} /*else if (X.command === 'introspect') {
 				//introspect[X.id].loaded = false;
 				//update_introspection_text(X.id, 'loading...');
 			} else if (in_slide_mode || doing_split_eval || is_interacting_cell(X.id)) {
@@ -481,6 +481,12 @@ sagenb.worksheetapp.cell = function(id) {
 				// "Plain" evaluation.  Jump to a later cell.
 				//go_next(false, true);
 			}*/
+			
+			this_cell.is_evaluating = true;
+			
+			// mark the cell as running
+			$("#cell_" + this_cell.id).addClass("running");	
+			this_cell.set_output_loading();
 			
 			// start checking for output
 			this_cell.check_for_output();
@@ -499,10 +505,6 @@ sagenb.worksheetapp.cell = function(id) {
 			 */
 			input: this_cell.codemirror.getValue()
 		});
-		
-		// mark the cell as running
-		$("#cell_" + this_cell.id).addClass("running");	
-		this_cell.set_output_loading();
 	};
 	this_cell.check_for_output = function() {
 		/* Currently, this function uses a setInterval command
@@ -510,6 +512,16 @@ sagenb.worksheetapp.cell = function(id) {
 		 * In the future, we may want to implement an exponential
 		 * pause system like the last notebook had.
 		 */
+		function stop_checking() {
+			this_cell.is_evaluating = false;
+			
+			// mark the cell as done
+			$("#cell_" + this_cell.id).removeClass("running");	
+			
+			// clear interval
+			this_cell.output_check_interval_id = window.clearInterval(this_cell.output_check_interval_id);
+		}
+		
 		function do_check() {
 			async_request(this_cell.worksheet.worksheet_command("cell_update"), this_cell.worksheet.generic_callback(function(status, response) {
 				/* we may want to implement an error threshold system for errors 
@@ -526,18 +538,14 @@ sagenb.worksheetapp.cell = function(id) {
 				if(X.status === "e") {
 					// there was an error, stop checking
 					this_cell.worksheet.show_connection_error();
-					this_cell.output_check_interval_id = window.clearInterval(this_cell.output_check_interval_id);
+					stop_checking();
 					return;
 				}
 				
 				if(X.status === "d") {
 					// evaluation done
 					
-					// clear checking interval
-					this_cell.output_check_interval_id = window.clearInterval(this_cell.output_check_interval_id);
-					
-					// mark the cell as done
-					$("#cell_" + this_cell.id).removeClass("running");	
+					stop_checking();
 					
 					/* NOTE I'm not exactly sure what the interrupted property is for 
 					* so I'm not sure that this is necessary 
@@ -627,6 +635,10 @@ sagenb.worksheetapp.cell = function(id) {
 	
 	this_cell.delete = function() {
 		// TODO we should maybe interrupt the cell if its running here
+		if(this_cell.is_evaluating) {
+			// interrupt
+			async_request(this_cell.worksheet.worksheet_command('interrupt'));
+		}
 		
 		async_request(this_cell.worksheet.worksheet_command('delete_cell'), this_cell.worksheet.generic_callback(function(status, response) {
 			X = decode_response(response);
