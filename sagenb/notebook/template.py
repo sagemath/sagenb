@@ -27,6 +27,9 @@ from sagenb.notebook.cell import number_of_rows
 
 from flaskext.babel import gettext, ngettext, lazy_gettext
 
+from webassets.ext.jinja2 import AssetsExtension
+from webassets import Environment as AssetsEnvironment
+
 if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
     if not os.path.isdir(os.environ['SAGENB_TEMPLATE_PATH']):
         raise ValueError("Enviromental variable SAGENB_TEMPLATE_PATH points to\
@@ -34,7 +37,9 @@ if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
     TEMPLATE_PATH = os.environ['SAGENB_TEMPLATE_PATH']
 else:
     TEMPLATE_PATH = os.path.join(DATA, 'sage')
-env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_PATH))
+
+env = jinja2.Environment(loader=jinja2.FileSystemLoader(TEMPLATE_PATH), extensions=[AssetsExtension])
+env.assets_environment = AssetsEnvironment(DATA, '/data')
 
 css_illegal_re = re.compile(r'[^-A-Za-z_0-9]')
 
