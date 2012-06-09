@@ -23,6 +23,13 @@ happen on the sage-notebook_ mailing list.
 Installation
 ============
 
+Note: This rewrite takes advantage of the webassets library. To install
+webassets run ``./sage -sh`` and in the Sage shell::
+
+    $ easy_install webassets
+- OR -
+    $ pip install webassets
+
 Install Sage, then do ``sage -python setup.py install`` in the current
 directory. Then run the notebook from within Sage as follows::
 
@@ -31,6 +38,9 @@ directory. Then run the notebook from within Sage as follows::
 
 This will create a directory ``mynotebook.sagenb``, and all notebook
 data is stored in that directory.
+
+If you are interested in developing the Sage Notebook, run 
+``sage -python setup.py develop`` instead of ``sage -python setup.py install``
 
 SSL support
 -----------

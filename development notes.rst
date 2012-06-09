@@ -64,4 +64,4 @@ Although plain CSS is more standard, CSS preprocessing is very similar and signi
 Backend
 =======
 
-I'm not completely familiar with all of the backend structure. If someone would be interested helping write this, please do.
+I'm somewhat familiar backend structure. If someone would be interested helping write this, please do.

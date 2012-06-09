@@ -24,3 +24,4 @@ release_notes.txt
 sagenb/data/jsmath/fonts
 sagenb/data/MathJax
 /setup.cfg
+/sagenb/data/.webassets-cache
