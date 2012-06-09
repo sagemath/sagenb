@@ -27,7 +27,9 @@ Note: This rewrite takes advantage of the webassets library. To install
 webassets run ``./sage -sh`` and in the Sage shell::
 
     $ easy_install webassets
+    
 or::
+
     $ pip install webassets
 
 Install Sage, then do ``sage -python setup.py install`` in the current
