@@ -58,7 +58,7 @@ INPUT:
                     <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
                        class="eval_button_active"
                        id="eval_button{{ cell.id() }}"
-                       alt="Click here to reset this interactive cell">
+                       title="Click here to reset this interactive cell">
                         reset
                     </a>
                 {% endif %}
@@ -77,7 +77,7 @@ INPUT:
                 <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
                    class="eval_button"
                    id="eval_button{{ cell.id() }}" 
-                   alt="{{ gettext('Click here or press shift-return to evaluate') }}">
+                   title="{{ gettext('Click here or press shift-return to evaluate') }}">
                     {{ gettext('evaluate') }}
                 </a>
             {% endif %}
