@@ -6,6 +6,7 @@ Big Stuff
 
 * Interact cells
 * Single-cell mode
+
   - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
   - Hash tag routes should probably reference cell id's not their order. That way when the worksheet is changed all of the links still work as expected
 * Testing, testing, testing
@@ -14,7 +15,6 @@ Big Stuff
 * Use sockets.io instead of async_request
 
   - use TornadIO2 https://github.com/MrJoes/tornadio2
-
 * Add option to store the notebook in a database instead of filesystem.
 
   - figure out which database systems to support
@@ -22,27 +22,27 @@ Big Stuff
 Medium Stuff
 ------------
 
- * Login page
- * Help page
- * Log dialog
- * Create automatic print-friendly option
+* Login page
+* Help page
+* Log dialog
+* Create automatic print-friendly option
 
 Small Stuff
 -----------
 
- * Logout
- * Report a problem dialog
- * Evaluate all cells
- * Restart sage
- * Interrupt
- * Add grab image button to Jmol
- * Clean up LESS
- * Clean up javascript
+* Logout
+* Report a problem dialog
+* Evaluate all cells
+* Restart sage
+* Interrupt
+* Add grab image button to Jmol
+* Clean up LESS
+* Clean up javascript
 
-     - maybe use prototypes
-     - maybe separate the different cell types.. not sure if this is a good idea or not
-     - incorporate some of the innovations used by IPython
- * Clean up base.py and worksheet.py in flask_version/
+  - maybe use prototypes
+  - maybe separate the different cell types.. not sure if this is a good idea or not
+  - incorporate some of the innovations used by IPython
+* Clean up base.py and worksheet.py in flask_version/
 
 Files
 =====
