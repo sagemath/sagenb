@@ -29,6 +29,7 @@ Medium Stuff
 * Login page
 * Help page
 * Log dialog
+* Evaluate all cells
 * Create automatic print-friendly option
 
 Small Stuff
@@ -36,7 +37,6 @@ Small Stuff
 
 * Logout
 * Report a problem dialog
-* Evaluate all cells
 * Restart sage
 * Interrupt
 * Add grab image button to Jmol
@@ -44,8 +44,11 @@ Small Stuff
 * Clean up javascript
 
   - maybe use prototypes
+
   - maybe separate the different cell types.. not sure if this is a good idea or not
+
   - incorporate some of the innovations used by IPython
+
 * Clean up base.py and worksheet.py in flask_version/
 
 Files
@@ -104,4 +107,4 @@ OTHER STUFF...
 Backend
 =======
 
-If someone would be interested helping write this, please do.
+If someone would be interested helping write this, go for it.
