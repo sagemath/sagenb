@@ -100,4 +100,4 @@ OTHER STUFF...
 Backend
 =======
 
-I'm somewhat familiar backend structure. If someone would be interested helping write this, please do.
+If someone would be interested helping write this, please do.
