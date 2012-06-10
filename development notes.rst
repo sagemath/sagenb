@@ -8,13 +8,16 @@ Big Stuff
 * Single-cell mode
 
   - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
+
   - Hash tag routes should probably reference cell id's not their order. That way when the worksheet is changed all of the links still work as expected
+
 * Testing, testing, testing
 * Code completion
 * Use three.js or something else instead of Jmol
 * Use sockets.io instead of async_request
 
   - use TornadIO2 https://github.com/MrJoes/tornadio2
+
 * Add option to store the notebook in a database instead of filesystem.
 
   - figure out which database systems to support
