@@ -1127,6 +1127,12 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	
 	this_worksheet.on_load_done = function() {
+		/* This is the stuff that gets done
+		 * after the entire worksheet and all 
+		 * of the cells are loaded into the 
+		 * DOM.
+		 */
+		
 		// check for # in url commands
 		if(window.location.hash) {
 			// there is some #hashanchor at the end of the url
