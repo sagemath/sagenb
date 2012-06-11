@@ -121,14 +121,11 @@ sagenb.worksheetapp.cell = function(id) {
 	
 	//////// RENDER //////////
 	this_cell.render = function(container) {
-		// erase contianer and put in anchor
-		$(container).html("<a name=\"cell" + this_cell.id + "\"></a>");
-		
 		if(this_cell.is_evaluate_cell) {
 			// its an evaluate cell
 		
 			// render into the container
-			$(container).append("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
+			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
 								"<div class=\"input_cell\">" +
 								"</div>" +
 							"</div> <!-- /cell -->");
@@ -226,7 +223,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		else {
 			// its a text cell
-			$(container).append("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
+			$(container).html("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
 									"<div class=\"view_text\">" + this_cell.input + "</div>" + 
 									"<div class=\"edit_text\">" + 
 										"<textarea name=\"text_cell_textarea_" + this_cell.id + "\" id=\"text_cell_textarea_" + this_cell.id + "\">" + this_cell.input + "</textarea>" + 
@@ -1083,15 +1080,6 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			$("#collaborators").val(this_worksheet.collaborators.join(", "));
 			
-			// IMPORT MODAL
-			$("#import_modal .btn-primary").click(function(e) {
-				$("#import_modal .tab-pane.active form").submit();
-			});
-			$("#import_modal .btn").click(function(e) {
-				$.each($("#import_modal form"), function(i, form) {
-					form.reset();
-				});
-			});
 			
 			// TODO other stuff goes here, not sure what yet
 		}));
@@ -1138,7 +1126,35 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	
 	
-	
+	this_worksheet.on_load_done = function() {
+		// check for # in url commands
+		if(window.location.hash) {
+			// there is some #hashanchor at the end of the url
+			// #hashtext -> hashtext
+			var hash = window.location.hash.substring(1);
+			
+			// do stuff
+			// something like #single_cell#cell8
+			var splithash = hash.split("#");
+			
+			if($.inArray("single_cell", splithash) >= 0) {
+				// #single_cell is in hash
+				// TODO
+			}
+			
+			$.each(splithash, function(i, e) {
+				if(e.substring(0, 4) === "cell") {
+					$('html, body').animate({
+						// -40 for navbar and -20 extra
+						scrollTop: $("#cell_" + e.substring(4)).offset().top - 60
+					}, "slow");
+					
+					// break each loop
+					return false;
+				}
+			});
+		}
+	}
 	
 	
 	//////////////// INITIALIZATION ////////////////////
@@ -1240,6 +1256,17 @@ sagenb.worksheetapp.worksheet = function() {
 			}))
 		});
 		
+		// IMPORT DIALOG
+		$("#import_modal .btn-primary").click(function(e) {
+			$("#import_modal .tab-pane.active form").submit();
+		});
+		$("#import_modal .btn").click(function(e) {
+			$.each($("#import_modal form"), function(i, form) {
+				form.reset();
+			});
+		});
+			
+		
 		// start the ping interval
 		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.ping_server, this_worksheet.server_ping_time);
 		
@@ -1250,14 +1277,20 @@ sagenb.worksheetapp.worksheet = function() {
 		};*/
 		
 		
-		
-		// check for # in url commands
-		if(window.location.hash) {
-			// there is some #hashanchor at the end of the url
-			var hash = window.location.hash.substring(1);
+		var load_done_interval = setInterval(function() {
+			var numcells = 0;
 			
-			// do stuff
-		}
+			$.each(this_worksheet.cells, function(i, e) {
+				if(e) numcells++;
+			});
+			
+			if(numcells > 0 && numcells === $(".cell").length) {
+				this_worksheet.on_load_done();
+				clearInterval(load_done_interval);
+			}
+		},
+			1000
+		);
 		
 		// load js-hotkeys
 		/* notes on hotkeys: these don't work on all browsers consistently
