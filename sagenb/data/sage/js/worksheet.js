@@ -936,6 +936,8 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
+			
+			this_worksheet.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
@@ -965,6 +967,8 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
+			
+			this_worksheet.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
@@ -995,6 +999,8 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
+			
+			this_worksheet.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
@@ -1024,6 +1030,8 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
+			
+			this_worksheet.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id

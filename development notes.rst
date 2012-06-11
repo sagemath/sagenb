@@ -48,6 +48,12 @@ Medium Stuff
 
   - We cannot just run through every cell and call cell.evaluate(). Each cell has to be evaluated one at time. This means creating some sort of queue.
 
+* Add some better styling to ? and ?? introspections
+
+  - For styling code, see http://twitter.github.com/bootstrap/base-css.html#code
+
+  - See main.less 
+
 * Add grab image button to Jmol
 
   - I don't think this is high priority (unless someone really needs it). Hopefully, we'll get rid of Jmol soon anyways
