@@ -6,6 +6,23 @@
 
 {% block main %}
 
+{% if "url" in request.args: %}
+<div>
+    <h2>Upload worksheet to the Sage Notebook</h2>
+    <form method="POST" action="upload_worksheet"
+          name="upload" enctype="multipart/form-data">
+       <div>
+            <label for="url">URL of file on web</label> <input size="50" type="text"
+            name="url" value="{{ request.args["url"] }}" />
+        </div>
+        <div>
+            <label for="name">What do you want to call it? (if different than the original name)</label>
+            <input size="50" type="text" name="name" />
+        </div>
+        <button type="submit">Upload Worksheet</button>
+    </form>
+</div>
+{% else: %}
 <div>
     <h2>Upload worksheet to the Sage Notebook</h2>
     <p>Supported file formats:</p>
@@ -28,7 +45,7 @@
             can be a direct link to any of the above kinds of files, or
             the URL of any HTML page that supports "linked worksheet
             autodiscovery".</label> <input size="50" type="text"
-            name="url" value="{{ request.args["sws"] }}" />
+            name="url" />
         </div>
         <div>
             <label for="name">What do you want to call it? (if different than the original name)</label>
@@ -37,4 +54,6 @@
         <button type="submit">Upload Worksheet</button>
     </form>
 </div>
+{% endif %}
+
 {% endblock %}
