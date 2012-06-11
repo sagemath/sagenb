@@ -102,6 +102,7 @@ def fetch_packages():
                         , 'dulwich>=0.8.0'
                         , 'hg-git>=0.3.1'
                         , 'pyOpenSSL<=0.12'
+                        , 'webassets>=0.7.1'
                         )
     pkg_locations = []
 
