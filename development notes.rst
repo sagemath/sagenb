@@ -63,8 +63,12 @@ Medium Stuff
 Small Stuff
 -----------
 
+* Don't enable webassets bundling when in development mode
+
 * Logout
+
 * Restart sage
+
 * Make checking for output occur on an exponential timer not every X seconds
 
   - See cell.check_for_output() in worksheet.js
