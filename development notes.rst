@@ -6,7 +6,9 @@ Big Stuff
 ---------
 
 * Interact cells
+
 * Code completion
+
 * Single-cell mode
 
   - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
@@ -20,7 +22,11 @@ Big Stuff
   - check out sagenb/storage/abstract_storage.py
 
 * Testing, testing, testing
+
 * Use three.js or something else instead of Jmol
+
+  - See https://groups.google.com/forum/?fromgroups#!topic/sage-notebook/97AGs2hN3po
+
 * Use sockets.io instead of async_request
 
   - use TornadIO2 https://github.com/MrJoes/tornadio2
@@ -29,25 +35,44 @@ Medium Stuff
 ------------
 
 * Login page
-* Report a problem dialog
-* Add grab image button to Jmol
 
-  - I don't think this is high priority (unless someone really needs it). Hopefully, we'll get rid of Jmol soon
+* Report a problem dialog
 
 * Help page
-* Log dialog
+
+  - Choose between a popup window or a docked thing on the page or both.
+
+* Log dialog/page
+
 * Evaluate all cells
 
-  - We cannot just run through every cell and call evaluate. Each cell has to be evaluated one at time.
+  - We cannot just run through every cell and call cell.evaluate(). Each cell has to be evaluated one at time. This means creating some sort of queue.
+
+* Add grab image button to Jmol
+
+  - I don't think this is high priority (unless someone really needs it). Hopefully, we'll get rid of Jmol soon anyways
 
 * Create automatic print-friendly option
+
+* Fix unfixable Jmol z-index bug
+
+  - Try opening some Jmol plot and then scrolling down so that the Jmol appears over the navbar.
+
+  - I've tried *almost* every iframe over applet trick out there but I think the most promising (and so far untried hack) would be to create an iframe inside the iframe which Jmol is in. Give the iframe in the iframe full width and the height of the navbar. Then, set the position of the iframe in the iframe to be the same as the position of the navbar (ie. when the iframe is below the navbar the iframe in the iframe would have a negative y value, because the y vale or css top property is relative to its parent iframe). Dynamically update the position of the iframe in the iframe when the user scrolls. It would be a horrible hack and it may just be easier to get rid of Jmol.
 
 Small Stuff
 -----------
 
 * Logout
 * Restart sage
+* Make checking for output occur on an exponential timer not every X seconds
+
+  - See cell.check_for_output() in worksheet.js
+
 * Interrupt
+
+  - See worksheet.interrupt() and cell.check_for_output() in worksheet.js
+
 * Clean up LESS
 
   - see sagenb/data/sage/less/
