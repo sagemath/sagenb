@@ -862,11 +862,10 @@ div {
 textarea.cell_input:hover {
   cursor: text; }
 
-a {
-  &.eval_button {
+input {
+  &.eval_button, &.hide_button {
     display: none; }
-  &.eval_button_active {
-    display: block;
+  &.eval_button_active, &.hide_button_active {
     position: relative;
     top: 2px;
     margin: 0px;

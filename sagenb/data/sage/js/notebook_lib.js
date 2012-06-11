@@ -345,7 +345,64 @@ function initialize_the_notebook() {
 	        quit_sage();
 	    });
     }
+    bind_events();
+}
 
+
+function bind_events() {
+    $('.eval_button').click(function () {
+        //get the cell_id from the button's id attribute
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        evaluate_cell(cell_id, 0);
+    });
+
+    $('.hide_button').click(function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        var cell = get_cell(cell_id);
+        cell.className = 'cell_input_hide';
+        cell.style.height = '1em';   
+    });
+
+    $('.cell_input').focus(function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_focused(this, cell_id);
+        return true;
+    });
+    $('.cell_input').blur(function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_blur(cell_id);
+        return true;
+    });
+    $('.cell_input').keyup(function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keyup(cell_id, event);
+    });
+    $('.cell_input').keydown(function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keydown(cell_id, event);
+    });
+    $('.cell_input').keypress(function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keypress(cell_id, event);
+    });
+}
+
+
+function get_cell_id_from_id(id) {
+    /*
+     * A function to get the cell_id from the button's id attribute
+     */
+    var num_re = /[0-9]+/;
+    var match_result = num_re.exec(id);
+    var cell_id = toint(match_result[0]);
+    return cell_id;
 }
 
 
@@ -2212,9 +2269,11 @@ function cell_focused(cell, id) {
     }
     if (current_cell !== -1) {
         set_class("eval_button" + current_cell, "eval_button");
+        set_class("hide_button" + current_cell, "hide_button");
     }
     current_cell = id;
     set_class("eval_button" + id, "eval_button_active");
+    set_class("hide_button" + id, "hide_button_active");
 }
 
 
