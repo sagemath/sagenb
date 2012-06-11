@@ -1275,6 +1275,9 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		
 		var load_done_interval = setInterval(function() {
+			/* because the cells array is sparse we need this.
+			 * it may be easier/faster to use $.grep either way...
+			 */
 			var numcells = 0;
 			
 			$.each(this_worksheet.cells, function(i, e) {

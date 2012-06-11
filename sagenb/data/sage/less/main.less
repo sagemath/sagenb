@@ -275,14 +275,14 @@ body.single_cell_mode .single_cell_controls {
 	.output_cell {
 		.the_well;
 		margin-top: 10px;
-		
-		/* for applet z-index hack */
-		position: relative;
 
 		/*.rounded-corners(10px);
 		padding: 10px;
 		background-color: #eaeaea;
 		min-height: 50px;*/
+
+		max-height: 500px;
+		overflow: auto;
 
 		pre {
 			padding: 0;
@@ -290,14 +290,6 @@ body.single_cell_mode .single_cell_controls {
 			border: none;
 			background-color: transparent;
 			font-size: 14px;
-		}
-
-		.z_index_hack {
-			position: absolute;
-			z-index: 1;
-			width: 100%;
-			height: 500px;
-			border: none;
 		}
 
 		.jmol_frame {
