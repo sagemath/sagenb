@@ -64,4 +64,4 @@ Development
 ===========
 
 See the Sage Developer's guide, part of the Sage documentation, for
-instructions.
+instructions. Also see development notes.rst.
