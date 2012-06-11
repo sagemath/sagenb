@@ -1147,9 +1147,11 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		/////////// setup up the title stuff ////////////
 		$(".worksheet_name").click(function(e) {
-			$(".worksheet_name input").val(this_worksheet.name);
-			$(".worksheet_name").addClass("edit");
-			$(".worksheet_name input").focus();
+			if(!$(".worksheet_name").hasClass("edit")) {
+				$(".worksheet_name input").val(this_worksheet.name);
+				$(".worksheet_name").addClass("edit");
+				$(".worksheet_name input").focus();
+			}
 		});
 		
 		// this is the event handler for the input
