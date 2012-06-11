@@ -58,7 +58,7 @@ Medium Stuff
 
   - Try opening some Jmol plot and then scrolling down so that the Jmol appears over the navbar.
 
-  - I've tried *almost* every iframe over applet trick out there but I think the most promising (and so far untried hack) would be to create an iframe inside the iframe which Jmol is in. Give the iframe in the iframe full width and the height of the navbar. Then, set the position of the iframe in the iframe to be the same as the position of the navbar (ie. when the iframe is below the navbar the iframe in the iframe would have a negative y value, because the y vale or css top property is relative to its parent iframe). Dynamically update the position of the iframe in the iframe when the user scrolls. It would be a horrible hack and it may just be easier to get rid of Jmol.
+  - I've tried *almost* every iframe over applet trick out there but I think the most promising (and so far untried hack) would be to create an iframe inside the iframe which Jmol is in. Give the iframe in the iframe full width and the height of the navbar. Then, set the position of the iframe in the iframe to be the same as the position of the navbar (ie. when the iframe is below the navbar the iframe in the iframe would have a negative y value, because the y value or css top property is relative to its parent iframe). Dynamically update the position of the iframe in the iframe when the user scrolls. It would be a horrible hack and it may just be easier to get rid of Jmol.
 
 Small Stuff
 -----------
