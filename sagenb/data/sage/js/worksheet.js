@@ -296,7 +296,7 @@ sagenb.worksheetapp.cell = function(id) {
 				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
 				
 				// show progress
-				ed.setProgressState(1);
+				// ed.setProgressState(1);
 				
 				// send input
 				this_cell.send_input();
