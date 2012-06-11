@@ -4,9 +4,9 @@
 
 function async_request(url, callback, postvars) {
     var settings = {
-        url : url,
-        async : true,
-        cache : false,
+        url: url,
+        async: true,
+        cache: false,
         dataType: "text"
     };
 

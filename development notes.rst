@@ -87,7 +87,7 @@ Small Stuff
 
   - maybe use prototypes
 
-  - maybe separate the different cell types.. this sounds easy but I'm not sure what kind of nasty issues there might be yet
+  - maybe separate the different cell types.. this sounds easy but I'm not sure what kind of nasty issues we may run into
 
   - checkout some of IPython's code
 
@@ -119,6 +119,8 @@ Files
 						**worksheet.html** - html for the worksheet page
 
 				**js/** - javascript
+
+					**async_lib.js** - creates the async_request function
 
 					**worksheet.js** - all of the javascript for the new worksheet page
 

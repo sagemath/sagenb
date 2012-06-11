@@ -765,9 +765,8 @@ sagenb.worksheetapp.worksheet = function() {
 		$(".alert_connection").hide();
 	};
 	this_worksheet.ping_server = function() {
-		/* TODO for some reason pinging doesn't work
-		 * instead of the callback showing an error
-		 * jQuery throws some error
+		/* TODO for some reason pinging doesn't work well.
+		 * the callback goes but jQuery throws a 404 error.
 		 */
 		async_request(this_worksheet.worksheet_command('alive'), this_worksheet.generic_callback());
 	};
