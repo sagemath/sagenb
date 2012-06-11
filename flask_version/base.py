@@ -25,6 +25,7 @@ class SageNBFlask(Flask):
         # I think it would make more sense just to have one /data/ path and not do one for every kind of file
         self.add_static_path('/data', os.path.join(DATA))
         
+        ##### remove these when we don't need them anymore
         #self.add_static_path('/css', os.path.join(DATA, "sage", "css"))
         #self.add_static_path('/less', os.path.join(DATA, "sage", "less"))
         #self.add_static_path('/images', os.path.join(DATA, "sage", "images"))

@@ -268,7 +268,7 @@ sagenb.worksheetapp.cell = function(id) {
 					//var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
 					
 					// hide progress
-					//ed.setProgressState(0);
+					// ed.setProgressState(0);
 					
 					// add the edit class
 					$("#cell_" + this_cell.id).addClass("edit");
@@ -282,7 +282,7 @@ sagenb.worksheetapp.cell = function(id) {
 				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
 				
 				// show progress
-				ed.setProgressState(1);
+				// ed.setProgressState(1);
 				
 				// revert the text
 				ed.setContent(this_cell.input);

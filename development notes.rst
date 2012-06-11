@@ -6,48 +6,61 @@ Big Stuff
 ---------
 
 * Interact cells
+* Code completion
 * Single-cell mode
 
   - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
 
   - Hash tag routes should probably reference cell id's not their order. That way when the worksheet is changed all of the links still work as expected
 
+* Add option to store the notebook in a database instead of filesystem.
+
+  - figure out which database systems to support
+
+  - check out sagenb/storage/abstract_storage.py
+
 * Testing, testing, testing
-* Code completion
 * Use three.js or something else instead of Jmol
 * Use sockets.io instead of async_request
 
   - use TornadIO2 https://github.com/MrJoes/tornadio2
 
-* Add option to store the notebook in a database instead of filesystem.
-
-  - figure out which database systems to support
-
 Medium Stuff
 ------------
 
 * Login page
+* Report a problem dialog
+* Add grab image button to Jmol
+
+  - I don't think this is high priority (unless someone really needs it). Hopefully, we'll get rid of Jmol soon
+
 * Help page
 * Log dialog
 * Evaluate all cells
+
+  - We cannot just run through every cell and call evaluate. Each cell has to be evaluated one at time.
+
 * Create automatic print-friendly option
 
 Small Stuff
 -----------
 
 * Logout
-* Report a problem dialog
 * Restart sage
 * Interrupt
-* Add grab image button to Jmol
 * Clean up LESS
+
+  - see sagenb/data/sage/less/
+
 * Clean up javascript
+
+  - see sagenb/data/sage/js/
 
   - maybe use prototypes
 
-  - maybe separate the different cell types.. not sure if this is a good idea or not
+  - maybe separate the different cell types.. this sounds easy but I'm not sure what kind of nasty issues there might be yet
 
-  - incorporate some of the innovations used by IPython
+  - checkout some of IPython's code
 
 * Clean up base.py and worksheet.py in flask_version/
 
@@ -100,7 +113,7 @@ The frontend of the Sage Notebook is built on Twitter's Bootstrap framework, Mat
 CSS vs LESS vs SASS/SCSS
 ------------------------
 
-Although plain CSS is more standard, CSS preprocessing is very similar and significantly speeds up development. The choice between LESS and SASS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
+CSS preprocessing is very similar to CSS and significantly speeds up development. The choice between LESS and SASS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
 
 OTHER STUFF...
 
