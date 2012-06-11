@@ -9,7 +9,6 @@
 *.pyc
 *.pyo
 *.kate-swp
-*.js~
 /*.gitk-tmp*
 
 # sage files to ignore:
