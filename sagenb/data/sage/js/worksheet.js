@@ -1209,15 +1209,6 @@ sagenb.worksheetapp.worksheet = function() {
 			this_worksheet.worksheet_update();
 		});
 		
-		////////// EVALUATION ///////////
-		$("#evaluate_all_cells").click();
-		$("#interrupt").click();
-		$("#restart_worksheet").click();
-		//$("#change_system").click(function(e) {});
-		$("#hide_all_output").click(this_worksheet.hide_all_output);
-		$("#show_all_output").click(this_worksheet.show_all_output);
-		$("#delete_all_output").click(this_worksheet.delete_all_output);
-		
 		/////// RENAME ALERT //////
 		$(".alert_rename .rename").click(function(e) {
 			$(".worksheet_name").click();
@@ -1322,6 +1313,16 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#print").click(this_worksheet.print);
 		
 		////// VIEW //////
+		
+		
+		////////// EVALUATION ///////////
+		$("#evaluate_all_cells").click();
+		$("#interrupt").click(this_worksheet.interrupt);
+		$("#restart_worksheet").click();
+		// change system doesn't require event handler here
+		$("#hide_all_output").click(this_worksheet.hide_all_output);
+		$("#show_all_output").click(this_worksheet.show_all_output);
+		$("#delete_all_output").click(this_worksheet.delete_all_output);
 		
 		// TODO
 	}
