@@ -121,11 +121,14 @@ sagenb.worksheetapp.cell = function(id) {
 	
 	//////// RENDER //////////
 	this_cell.render = function(container) {
+		// erase contianer and put in anchor
+		$(container).html("<a name=\"cell" + this_cell.id + "\"></a>");
+		
 		if(this_cell.is_evaluate_cell) {
 			// its an evaluate cell
 		
 			// render into the container
-			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
+			$(container).append("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
 								"<div class=\"input_cell\">" +
 								"</div>" +
 							"</div> <!-- /cell -->");
@@ -223,7 +226,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		else {
 			// its a text cell
-			$(container).html("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
+			$(container).append("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
 									"<div class=\"view_text\">" + this_cell.input + "</div>" + 
 									"<div class=\"edit_text\">" + 
 										"<textarea name=\"text_cell_textarea_" + this_cell.id + "\" id=\"text_cell_textarea_" + this_cell.id + "\">" + this_cell.input + "</textarea>" + 
