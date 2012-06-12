@@ -178,7 +178,18 @@ instead of this::
 
 Also, it takes as many things out of the global scope as possible which is a good thing. It's certainly not a flawless approach but hopefully it helps.
 
-See
+We may wish to switch our object oriented approach 
+away from using functions and instead taking advantage
+of prototypes. Supposedly, there may be some memory 
+advantages to prototypes over functions but this is not 
+clear. I'm not convinced right now but it doesn't really matter. See
+
+* http://stackoverflow.com/questions/1441212/javascript-instance-functions-versus-prototype-functions
+* http://stackoverflow.com/questions/310870/use-of-prototype-vs-this-in-javascript
+* http://blogs.msdn.com/b/kristoffer/archive/2007/02/13/javascript-prototype-versus-closure-execution-speed.aspx
+* http://www.nczonline.net/blog/2009/04/13/computer-science-in-javascript-linked-list/
+
+For OOP javascript resources, see
 
 * https://developer.mozilla.org/en/Introduction_to_Object-Oriented_JavaScript
 
