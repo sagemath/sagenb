@@ -22,23 +22,23 @@ class SageNBFlask(Flask):
 
         self.root_path = SAGENB_ROOT
 
-        self.add_static_path('/css', os.path.join(DATA, "sage", "css"))        
+        self.add_static_path('/css', os.path.join(DATA, "sage", "css"))
         self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
         self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
-	import mimetypes
+        import mimetypes
         mimetypes.add_type('text/plain','.jmol')
 
-        
+
         #######
         # Doc #
         #######
         #These "should" be in doc.py
         DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
         self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
-        self.add_static_path('/doc/static', DOC) 
+        self.add_static_path('/doc/static', DOC)
         #self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'reference'))
 
     def create_jinja_environment(self):
@@ -100,14 +100,14 @@ def index():
             response.set_cookie('nb_session_%s'%g.notebook.port)
         response.set_cookie('cookie_test_%s'%g.notebook.port, expires=1)
         return response
-        
+
     from authentication import login
-    
+
     if current_app.startup_token is not None and 'startup_token' in request.args:
         if request.args['startup_token'] == current_app.startup_token:
-            g.username = session['username'] = 'admin' 
+            g.username = session['username'] = 'admin'
             session.modified = True
-            current_app.startup_token = -1 
+            current_app.startup_token = None
             return index()
 
     return login()
@@ -183,7 +183,7 @@ def keyboard_js(browser_os):
 ###############
 @base.route('/css/main.css')
 def main_css():
-    from sagenb.notebook.css import css 
+    from sagenb.notebook.css import css
     data,datahash = css()
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
@@ -251,7 +251,7 @@ def create_or_login(resp):
         session['username'] = g.username = username
         session.modified = True
     except KeyError:
-        session['openid_response'] = resp 
+        session['openid_response'] = resp
         session.modified = True
         return redirect(url_for('set_profiles'))
     return redirect(request.values.get('next', url_for('base.index')))
@@ -263,7 +263,7 @@ def set_profiles():
 
     from sagenb.notebook.challenge import challenge
 
-    
+
     show_challenge=g.notebook.conf()['challenge']
     if show_challenge:
         chal = challenge(g.notebook.conf(),
@@ -317,14 +317,14 @@ def set_profiles():
 
             if not is_valid_username(username):
                 parse_dict['username_invalid'] = True
-                raise ValueError 
+                raise ValueError
             if g.notebook.user_manager().user_exists(username):
                 parse_dict['username_taken'] = True
-                raise ValueError 
+                raise ValueError
             if not is_valid_email(request.form.get('email')):
                 parse_dict['email_invalid'] = True
                 raise ValueError
-            try: 
+            try:
                 new_user = User(username, '', email = resp.email, account_type='user') 
                 g.notebook.user_manager().add_user_object(new_user)
             except ValueError:
@@ -348,7 +348,7 @@ def set_profiles():
 def init_updates():
     global save_interval, idle_interval, last_save_time, last_idle_time
     from sagenb.misc.misc import walltime
-    
+
     save_interval = notebook.conf()['save_interval']
     idle_interval = notebook.conf()['idle_check_interval']
     last_save_time = walltime()
@@ -401,7 +401,7 @@ def create_app(path_to_notebook, *args, **kwds):
     """
     global notebook
     startup_token = kwds.pop('startup_token', None)
-    
+
     #############
     # OLD STUFF #
     #############
@@ -427,7 +427,7 @@ def create_app(path_to_notebook, *args, **kwds):
     ####################################
     babel = Babel(app, default_locale=notebook.conf()['default_language'],
                   default_timezone='UTC',
-                  date_formats=None, configure_jinja=True)        
+                  date_formats=None, configure_jinja=True)
 
     ########################
     # Register the modules #
@@ -435,7 +435,7 @@ def create_app(path_to_notebook, *args, **kwds):
     app.register_blueprint(base)
 
     from worksheet_listing import worksheet_listing
-    app.register_blueprint(worksheet_listing)  
+    app.register_blueprint(worksheet_listing)
 
     from admin import admin
     app.register_blueprint(admin)
@@ -464,10 +464,10 @@ def create_app(path_to_notebook, *args, **kwds):
         if os.path.isfile(filename):
             from cgi import escape
             src = escape(open(filename).read().decode('utf-8','ignore'))
-            if (os.path.splitext(filename)[1] in 
+            if (os.path.splitext(filename)[1] in
                 ['.py','.c','.cc','.h','.hh','.pyx','.pxd']):
                 return render_template(os.path.join('html', 'source_code.html'),
-                                       src_filename=path, 
+                                       src_filename=path,
                                        src=src, username = g.username)
             return src
         return idx.render_autoindex(path)

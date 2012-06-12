@@ -203,34 +203,6 @@ class UserManager(object):
         self.add_user('guest', '', '', account_type='guest', force=True)
         self.add_user('admin', passwd, '', account_type='admin', force=True)
 
-    def default_user(self):
-        """
-        Return a default login name that the user will see when confronted with the
-        Sage notebook login page.
-
-        Currently this returns 'admin' if that is the *only* user.  Otherwise it
-        returns the string ''.
-
-        OUTPUT:
-            string
-
-        EXAMPLES:
-            sage: from sagenb.notebook.user_manager import SimpleUserManager
-            sage: U = SimpleUserManager(accounts=True)
-            sage: U.create_default_users('password')
-            sage: U.default_user()
-            'admin'
-            sage: U.add_user('william', '', '')
-            sage: U.default_user()
-            ''
-
-        """
-        usernames = [x for x in self.usernames() if not x in ['guest', '_sage_', 'pub']]
-        if usernames == ['admin']:
-            return 'admin'
-        else:
-            return ''
-
     def delete_user(self, username):
         """
         Deletes the user username from the users dictionary.

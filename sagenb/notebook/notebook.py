@@ -681,7 +681,7 @@ class Notebook(object):
     def user_history(self, username):
         if not hasattr(self, '_user_history'):
             self._user_history = {}
-        if 'username' in self._user_history:
+        if username in self._user_history:
             return self._user_history[username]
         history = []
         for hunk in self.__storage.load_user_history(username):

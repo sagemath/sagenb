@@ -28,36 +28,38 @@ def all_files(dir, lstrip):
     
 
 code = setup(name = 'sagenb',
-      version     = '0.9.0',  # the spkg-dist script assumes single quotes here
+      version     = '0.9.1',  # the spkg-dist script assumes single quotes here
       description = 'The Sage Notebook',
       license     = 'GNU Public License (GPL) v2+',
       author      = 'William Stein et al.',
       author_email= 'http://groups.google.com/group/sage-notebook',
       url         = 'http://code.google.com/p/sagenb',
-      install_requires = ['twisted>=11.0.0',
-                          'flask',
-                          'flask-openid',
-                          'flask-autoindex',
-                          'babel',
-                          'flask-babel',
-                          'hg-git',
-                          'pyOpenSSL'],
+      install_requires = [ 'twisted>=11.0.0'
+                         , 'flask'
+                         , 'flask-openid'
+                         , 'flask-autoindex'
+                         , 'babel'
+                         , 'flask-babel'
+                         , 'hg-git'
+                         , 'pyOpenSSL<=0.12'
+                         , 'webassets'
+                         ],
       test_suite = 'sagenb.testing.run_tests.all_tests',
-      packages    = ['sagenb',
-                     'sagenb.interfaces',
-                     'sagenb.misc',                                 
-                     'sagenb.notebook',
-                     'sagenb.notebook.compress',
-                     'sagenb.simple',
-                     'sagenb.storage',
-                     'sagenb.testing',
-                     'sagenb.testing.tests',
-                     'sagenb.testing.selenium'
-                     ],
+      packages    = [ 'sagenb'
+                    , 'sagenb.interfaces'
+                    , 'sagenb.misc'
+                    , 'sagenb.notebook'
+                    , 'sagenb.notebook.compress'
+                    , 'sagenb.simple'
+                    , 'sagenb.storage'
+                    , 'sagenb.testing'
+                    , 'sagenb.testing.tests'
+                    , 'sagenb.testing.selenium'
+                    ],
       scripts      = [ 'sagenb/data/sage3d/sage3d',
                      ],
       package_data = {'sagenb':
                           all_files('sagenb/data', 'sagenb/') +
                           all_files('sagenb/translations', 'sagenb/')
-                      },
+                     },
       )
