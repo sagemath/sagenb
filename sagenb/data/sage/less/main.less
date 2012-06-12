@@ -173,18 +173,34 @@ screen width is less than the container width */
 			padding-right: 5px;
 			overflow-y: scroll;
 		}
-		ul li {
-			.explanation {
-				color: #bbb;
-				font-size: 10px;
-				margin-right: 10px;
-				margin-top: 2px;
-				float: left;
-				display: none;
-			}
+		ul {
+			margin-bottom: 0px;
 
-			&:hover .explanation {
-				display: inline;
+			li {
+				a {
+					span.filename {
+						
+					}
+					
+					/* The stuff on the right */
+					& > .pull-right {
+						display: none;
+						
+						/* click for this text */
+						.explanation {
+							color: #bbb;
+							font-size: 10px;
+							margin-right: 10px;
+							margin-top: 2px;
+							float: left;
+						}
+					}
+				}
+				
+
+				&:hover div {
+					display: block;
+				}
 			}
 		}
 	}
