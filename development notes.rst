@@ -178,6 +178,16 @@ instead of this::
 
 Also, it takes as many things out of the global scope as possible which is a good thing. It's certainly not a flawless approach but hopefully it helps.
 
+See
+
+* https://developer.mozilla.org/en/Introduction_to_Object-Oriented_JavaScript
+  - In this one, they use prototyping which is a little bit different
+* http://www.javascriptkit.com/javatutors/oopjs.shtml
+  - this looks like it may have been in the stone ages so maybe it shouldn't be trusted but i used it anyways
+* http://killdream.github.com/blog/2011/10/understanding-javascript-oop/
+* http://net.tutsplus.com/tutorials/javascript-ajax/the-basics-of-object-oriented-javascript/
+
+
 OTHER STUFF...
 
 Backend
