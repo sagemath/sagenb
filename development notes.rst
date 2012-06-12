@@ -18,6 +18,10 @@ Big Stuff
 
     + This already works for multi-cell mode. see worksheet.on_load_done()
 
+* Settings page
+
+  - Include option for soft/real tabs
+
 * Add option to store the notebook in a database instead of filesystem.
 
   - figure out which database systems to support
