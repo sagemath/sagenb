@@ -4052,15 +4052,7 @@ except (KeyError, IOError):
             C.delete_output()
 
 
-__internal_test1 = '''
-def foo(x):
-    "
-    EXAMPLES:
-        sage: 2+2
-        4
-    "
-    return x
-'''.lstrip()
+__internal_test1 = 'def foo(x):\n    """\n    EXAMPLES:\n        sage: 2+2\n        4\n    """\n    return x\n'.lstrip()
 
 __internal_test2 = '''
 sage: 2 + 2
