@@ -7,6 +7,10 @@ Big Stuff
 
 * Interact cells
 
+* Data dialog
+
+  - Fix the tab error. When you click on the upload file button, it doesn't go to that tab.
+
 * Code completion
 
 * Single-cell mode
@@ -79,9 +83,7 @@ Small Stuff
 
   - See cell.check_for_output() in worksheet.js
 
-* Interrupt
-
-  - See worksheet.interrupt() and cell.check_for_output() in worksheet.js
+* Get rid of the obsolete <tt> tags in the import dialog. Use css instead.
 
 * Clean up LESS
 

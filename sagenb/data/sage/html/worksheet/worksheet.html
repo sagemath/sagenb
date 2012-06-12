@@ -51,12 +51,7 @@
 			</ul>
 		</li>
 		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Data <b class="caret"></b></a>
-			<ul class="dropdown-menu">
-				<li><a href="#" id="new_file"><i class="icon-file"></i> New file</a></li>
-				<li><a href="#" id="upload_file"><i class="icon-upload"></i> Upload file</a></li>
-				<li><a href="#" id="file_from_url"><i class="icon-globe"></i> File from URL</a></li>
-			</ul>
+			<a href="#data_modal" data-toggle="modal">Data</a>
 		</li>
 		<li><a href="#sharing_modal" id="sharing" data-toggle="modal">Sharing</a></li>
 	</ul>
@@ -101,6 +96,7 @@
 	{% include 'html/modals/sharing_modal.html' %}
 	{% include 'html/modals/system_modal.html' %}
 	{% include 'html/modals/import_modal.html' %}
+	{% include 'html/modals/data_modal.html' %}
 {% endblock after_container %}
 
 {% block extra_javascript %}
