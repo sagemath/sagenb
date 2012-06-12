@@ -12,18 +12,23 @@ if os.environ.get("SAGE_SETUPTOOLS_DEBUG","no")=="yes":
     distutils.log.set_threshold(distutils.log.DEBUG)
 
 
-def all_files(dir, lstrip):
+def lremove(string, prefix):
+    while string.startswith(prefix):
+        string = string[len(prefix):]
+
+def all_files(dir, prefix):
     """
-    Return list of all filenames in the given directory, with lstrip
+    Return list of all filenames in the given directory, with prefix
     stripped from the left of the filenames.
     """
+
     X = []
     for F in os.listdir(dir):
         ab = dir+'/'+F
         if os.path.isfile(ab):
-            X.append((ab).lstrip(lstrip))
+            X.append(lremove(ab, prefix))
         elif os.path.isdir(ab):
-            X.extend(all_files(ab, lstrip))
+            X.extend(all_files(ab, prefix))
     return X
     
 
