@@ -16,7 +16,7 @@ Big Stuff
 
   - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
 
-  - Hash tag routes should probably reference cell id's not their order. That way when the worksheet is changed all of the links still work as expected
+    + This already works for multi-cell mode. see worksheet.on_load_done()
 
 * Add option to store the notebook in a database instead of filesystem.
 
