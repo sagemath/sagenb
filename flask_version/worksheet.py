@@ -26,7 +26,7 @@ def worksheet_view(f):
         except KeyError:
             return current_app.message(_("You do not have permission to access this worksheet"))
         
-        #with worksheet_locks[worksheet]:
+        with worksheet_locks[worksheet]:
             owner = worksheet.owner()
 
             if owner != '_sage_' and g.username != owner:
@@ -704,7 +704,7 @@ def worksheet_cells(worksheet, filename):
 ##############################################
 # Data
 ##############################################
-@worksheet_command('<path:filename>')
+#@worksheet_command('<path:filename>')
 #def worksheet_data_legacy(worksheet, filename):
     # adhering to old behavior, should be removed eventually
 #    return worksheet_data(worksheet, filename)
