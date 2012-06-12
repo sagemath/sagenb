@@ -68,7 +68,7 @@ INPUT:
     onload_id_list = {{ worksheet.onload_id_list() }};
     ignore_all_jumps = true;
 {%- else %}
-    jsMath.ProcessBeforeShowing();
+    MathJax.Hub.Process();
 {%- endif %}
 </script>
 
