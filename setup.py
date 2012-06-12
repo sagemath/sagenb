@@ -42,6 +42,7 @@ code = setup(name = 'sagenb',
                          , 'flask-babel'
                          , 'hg-git'
                          , 'pyOpenSSL<=0.12'
+                         , 'webassets'
                          ],
       test_suite = 'sagenb.testing.run_tests.all_tests',
       packages    = [ 'sagenb'
