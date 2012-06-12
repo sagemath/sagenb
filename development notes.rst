@@ -154,6 +154,30 @@ CSS vs LESS vs SASS/SCSS
 
 CSS preprocessing is very similar to CSS and significantly speeds up development. The choice between LESS and SASS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
 
+OOP Javascript
+--------------
+
+(The "I" here is Sam.)
+
+When I began re-writing everything, I looked at backbone.js (a popular MVC library for javascript) but I figured that using backbone would be a little bit of overkill, so I settled on just creating the javascript "classes." Actually, they are functions and worksheet.js takes advantage of a lot of sneaky functional programming tricks in javascript. Because functions in javascript are actually a type of Object, we can assign values and other functions to them. More importantly, because those functions (inside the "class" functions) are in the scope/closure of an Object they can reference all of the properties of that instance of that object. This lets you do things like this::
+
+    this_cell.render = function(container) {
+        this_cell.id
+        this_cell.input
+        this_cell.output
+    }
+
+instead of this::
+
+    function get_cell_input(id) { /* ... */ }
+    function get_cell_output(id) { /* ... */ }
+    function render_cell(cell_id, container) {
+        get_cell_input(cell_id)
+        get_cell_output(cell_id)
+    }
+
+Also, it takes as many things out of the global scope as possible which is a good thing. It's certainly not a flawless approach but hopefully it helps.
+
 OTHER STUFF...
 
 Backend

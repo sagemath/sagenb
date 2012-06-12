@@ -1,0 +1,127 @@
+{% extends 'html/modals/modal_base.html' %}
+
+{% block modal_id %}data_modal{% endblock modal_id %}
+
+{% block modal_title %}Data{% endblock modal_title %}
+
+{% block modal_content %}
+
+<div class="tabbable">
+
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#manage_tab" data-toggle="tab">Manage</a></li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Import <b class="caret"></b></a>
+
+			<ul class="dropdown-menu">
+				<li><a href="#new_file_tab" id="new_file" data-toggle="tab"><i class="icon-file"></i> New file</a></li>
+				<li><a href="#upload_data_file_tab" id="upload_file" data-toggle="tab"><i class="icon-upload"></i> Upload file</a></li>
+				<li><a href="#file_from_url_tab" id="file_from_url" data-toggle="tab"><i class="icon-globe"></i> File from URL</a></li>
+			</ul>
+		</li>
+	</ul>
+
+	<div class="tab-content" style="padding-top: 0px">
+
+		<div class="tab-pane active" id="manage_tab">
+			<div class="data_list">
+				<ul class="nav nav-tabs nav-stacked">
+					<li>
+						<a href="#"><span class="filename">Filename</span>
+							<div class="pull-right">
+								<span class="explanation">click to insert path</span>
+								<div class="btn-group pull-right">
+									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
+									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="tab-pane" id="new_file_tab">
+			<form class="form-horizontal" method="post" action="do_upload_data" name="upload" enctype="multipart/form-data" target="_blank">
+				<input type="hidden" name="file" value="">
+				<input type="hidden" name="url" value="">
+				<input type="hidden" name="name" value="">
+
+				<fieldset>
+
+					<div class="control-group">
+						<label class="control-label" for="new">Name</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="new" name="new">
+							<p class="help-block">Pick a name for the file.</p>
+						</div>
+					</div>
+
+				</fieldset>
+			</form>
+		</div>
+
+		<div class="tab-pane" id="upload_data_file_tab">
+			<form class="form-horizontal" method="post" action="do_upload_data" name="upload" enctype="multipart/form-data" target="_blank">
+				<input type="hidden" name="url" value="">
+				<input type="hidden" name="new" value="">
+
+				<fieldset>
+
+					<div class="control-group">
+						<label class="control-label" for="file">File</label>
+						<div class="controls">
+							<input class="input-file" id="file" name="file" type="file">
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="name">New name</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="name" name="name">
+							<p class="help-block">Optional. Pick a new name for the file.</p>
+						</div>
+					</div>
+
+				</fieldset>
+			</form>
+		</div>
+
+		<div class="tab-pane" id="file_from_url_tab">
+			<form class="form-horizontal" method="post" action="do_upload_data" name="upload" enctype="multipart/form-data" target="_blank">
+				<input type="hidden" name="file" value="">
+				<input type="hidden" name="new" value="">
+
+				<fieldset>
+
+					<div class="control-group">
+						<label class="control-label" for="url">URL</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="url" name="url">
+							<p class="help-block">URL of the file you would like to import.</p>
+						</div>
+					</div>
+
+					<div class="control-group">
+						<label class="control-label" for="name">New name</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" id="name" name="name">
+							<p class="help-block">Optional. Pick a new name for the file.</p>
+						</div>
+					</div>
+
+				</fieldset>
+			</form>
+		</div>
+
+	</div>
+
+
+
+</div>
+
+{% endblock modal_content %}
+
+{% block modal_footer %}
+<a href="#" class="btn btn-primary" data-dismiss="modal">Done</a>
+{% endblock modal_footer %}
