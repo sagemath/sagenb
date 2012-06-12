@@ -2329,7 +2329,11 @@ class Cell(Cell_generic):
             return ''
         images = []
         files = []
-
+        #Flags to allow processing of old worksheets that include Jmol
+        hasjmol = False
+        jmoldatafile=''
+        hasjmolimages = False
+        jmolimagebase=''
         from worksheet import CODE_PY
         # The question mark trick here is so that images will be
         # reloaded when the async request requests the output text for
@@ -2374,13 +2378,17 @@ class Cell(Cell_generic):
                 image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
                 script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
                 images.append(script)
+                jmolimagebase = F
+                hasjmol=True
             elif F.endswith('.jmol.zip'):
-                pass # jmol data
+                # jmol data
+                jmoldatafile=os.path.join(self.directory(),F)
             elif F.endswith('.canvas3d'):
                 script = '<div><script>canvas3d.viewer("%s");</script></div>' % url
                 images.append(script)
             elif F.startswith('.jmol_'):
-                 pass # static jmol data and images
+                # static jmol data and images
+                hasjmolimages=True
             else:
                 link_text = str(F)
                 if len(link_text) > 40:
@@ -2397,6 +2405,38 @@ class Cell(Cell_generic):
 
         files = unicode_str(files)
         images = unicode_str(images)
+
+        if(hasjmol and not hasjmolimages):
+            # This is probably an old worksheet. Generate the missing jmol static image(s)
+            # Note: this is problematic in the notebook as it uses tools from Sage to
+            # generate the images.
+            head,tail = os.path.split(jmoldatafile)
+            # The path in the launch script file needs to be fixed.
+            worksheet, cellnum=os.path.split(head)
+            path = "cells/%s/%s"  %(cellnum, tail)
+            f = open(os.path.join(head,jmolimagebase),'w')
+            f.write('set defaultdirectory "%s"\n' %path)
+            f.write('script SCRIPT\n')
+            f.close()
+
+            #name image file
+            png_path = os.path.realpath(os.path.join(head,'.jmol_images'))
+            if  not os.path.exists(png_path):
+                os.mkdir(png_path)
+            png_name = os.path.join(png_path,jmolimagebase)
+            #test for JavaVM
+            from sage.interfaces.jmoldata import JmolData
+            jdata = JmolData()
+            if (jdata.is_jvm_available()):
+                # make the image with Jmol
+                png_fullpath=png_name+".png"
+                #print png_fullpath
+                script = 'set defaultdirectory \"'+jmoldatafile+'\"\n script SCRIPT\n'
+                #print script
+                jdata.export_image(targetfile = png_fullpath,datafile=script,image_type="PNG", figsize = 4)
+            else:
+                images.append('Java Virtual Machine Unavailable.  Cannot make image from old data.  Please reevaluate cell.')
+
 
         return images + files
 
