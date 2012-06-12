@@ -3824,7 +3824,7 @@ except (KeyError, IOError):
         return u"print _support_.syseval(%s, %r, __SAGE_TMP_DIR__)"%(system, cmd)
 
     ##########################################################
-    # Parsing the %cython, %jsmath, %python, etc., extension.
+    # Parsing the %cython, %mathjax, %python, etc., extension.
     ##########################################################
     def get_cell_system(self, cell):
         r"""

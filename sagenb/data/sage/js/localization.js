@@ -1,4 +1,4 @@
-/*global $, alert, async_request, clearTimeout, confirm, document, escape, jsMath, location, navigator, open, prompt, setTimeout, window, worksheet_filenames */
+/*global $, alert, async_request, clearTimeout, confirm, document, escape, location, navigator, open, prompt, setTimeout, window, worksheet_filenames */
 /*jslint maxerr: 10000, white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
@@ -6,8 +6,7 @@
  is in place becase pybabel canoot parse this Jinja for some reason. #}
 
 translations = {
-    {% for string in ["Click to download and install tex fonts.",
-                      'Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.',
+    {% for string in ['Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.',
                       "Java Applet Hidden",
                       "Click here to pop out",
                       'Error applying function to worksheet(s).',

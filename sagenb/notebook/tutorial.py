@@ -139,12 +139,12 @@ pulling in objects and evaluating code in Sage by typing
 "sage(...)" inside the input block.  This is planned.)
 
 \subsubsection{Typesetting Mathematics}
-SAGE \emph{includes} jsMath, which is an implementation of the TeX
+SAGE \emph{includes} MathJax, which is an implementation of the TeX
 math layout engine in javascript.  If you use the show or view
-commands, they display a given Sage object typeset using jsmath.
-Moreover, if you put \code{\%jsmath} at the beginning of an input
-cell, the whole cell will be typeset using jsmath.  Also, you can type
-\code{jsmath(obj)} to typeset a given object obj using jsmath.
+commands, they display a given Sage object typeset using MathJax.
+Moreover, if you put \code{\%mathjax} at the beginning of an input
+cell, the whole cell will be typeset using MathJax.  Also, you can type
+\code{mathjax(obj)} to typeset a given object obj using MathJax.
 
  
 \subsubsection{Adding and Removing Cells}

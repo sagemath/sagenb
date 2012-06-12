@@ -7,8 +7,6 @@ INPUT:
 
 - do_print -- whether to display for printing
 
-- do_math_parse -- whether to parse jsMath
-
 - editing -- whether user is editing the cell
 
 - publish - a boolean; whether this is a published cell
@@ -27,11 +25,7 @@ INPUT:
     </script>
     {% endif %}
     <div class="text_cell" id="cell_text_{{ cell.id() }}">
-        {% if do_math_parse %}
-            {{ cell.plain_text()|math_parse }}
-        {% else %}
-            {{ cell.plain_text() }}
-    {% endif %}
+      {{ cell.plain_text() }}
     </div>
 {% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print and not publish %}
     <script type="text/javascript">

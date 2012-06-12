@@ -17,11 +17,12 @@ update:
 	$(HG) pull http://boxen.math.washington.edu:8100
 	$(HG) update
 
-doc:	doc-jsmath
+doc:	doc-mathjax
 doc-pngmath:
 	$(SAGE) -docbuild reference html $(OPTS)
-doc-jsmath:
+doc-mathjax:
 	$(SAGE) -docbuild reference html -j $(OPTS)
+doc-jsmath: doc-mathjax # for backwards compatibility
 
 test:
 	$(SAGE) -t -sagenb $(OPTS)

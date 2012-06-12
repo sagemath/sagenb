@@ -18,8 +18,6 @@
 {% include "js/debug.js" %}
 {% endif %}
 
-var jsmath_font_msg = '<a href="{{ SAGE_URL }}/jsmath">' + translations["Click to download and install tex fonts."] + '</a><br>';
-
 function interrupt_callback(status, response) {
     /*
     Callback called after we send the interrupt signal to the server.
