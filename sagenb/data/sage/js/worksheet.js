@@ -1217,6 +1217,23 @@ sagenb.worksheetapp.worksheet = function() {
 			this_worksheet.worksheet_update();
 		});
 		
+		////////// LINE NUMBERS CHECKBOX //////////
+		$("#line_numbers_checkbox").change(function(e) {
+			if ($("#line_numbers_checkbox").prop("checked")) {
+				$.each(this_worksheet.cells, function(index, cell) {
+					if (cell && cell.is_evaluate_cell) {
+						cell.codemirror.setOption("lineNumbers", true);
+					}
+				});
+			} else {
+				$.each(this_worksheet.cells, function(index, cell) {
+					if (cell && cell.is_evaluate_cell) {
+						cell.codemirror.setOption("lineNumbers", false);
+					}
+				});
+			}
+		});
+		
 		/////// RENAME ALERT //////
 		$(".alert_rename .rename").click(function(e) {
 			$(".worksheet_name").click();
@@ -1258,7 +1275,7 @@ sagenb.worksheetapp.worksheet = function() {
 			// for some reason, auto is a toggle command
 			async_request(this_worksheet.worksheet_command("publish?auto"), this_worksheet.generic_callback(function(status, response) {
 				this_worksheet.worksheet_update();
-			}))
+			}));
 		});
 		
 		// IMPORT DIALOG
