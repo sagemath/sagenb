@@ -21,8 +21,7 @@
   height: 100%;
 }
 .CodeMirror-gutter-text {
-  color: #999999;
-  background-color: #ECECEA;
+  color: #aaa;
   text-align: right;
   padding: .4em .2em .4em .4em;
   white-space: pre !important;
