@@ -11,7 +11,7 @@ die () {
 
 cd ${0%/*}
 
-git diff --quiet ||
+git diff --quiet && git diff --cached --quiet ||
     die "Uncommitted changes in sagenb - please commit, stash, or discard"
 
 rm -rf dist
@@ -28,6 +28,7 @@ mv .git .git-backup
 git init
 git fetch .git-backup
 git branch -f master FETCH_HEAD
+git reset --mixed
 git gc --aggressive --prune=0
 
 echo "Moving sanitized sagenb git repo to dist/"
