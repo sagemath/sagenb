@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 Downloads certain (sub)dependencies of sagenb into the given directory
-and returns a list of their names. This script is run from spkg-dist,
+and returns a list of their names. This script is run from depdist.sh,
 and need not be run independently.
 """
 # These are linearly ordered such that no package depends on something
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print "Please supply a destination directory for the fetched packages!"
         sys.exit(1)
-    dest_dir = sys.argv[1]
+    dest_dir = os.path.abspath(sys.argv[1])
 
     print "Fetching the required packages"
     pkg_index = PackageIndex()
