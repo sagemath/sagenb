@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
 Downloads certain (sub)dependencies of sagenb into the given directory
-and returns a list of their names. This script is run from depdist.sh,
-and need not be run independently.
+and returns a list of their names. This script is run from dist.sh, and
+need not be run independently.
 """
 # These are linearly ordered such that no package depends on something
 # lower than it in the list (or not in the list).

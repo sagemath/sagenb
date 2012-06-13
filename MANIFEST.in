@@ -3,6 +3,6 @@ recursive-include sass *
 recursive-include util *
 prune sass/src/.sass-cache
 recursive-include flask_version *
-include *.txt Makefile MANIFEST.in .gitignore sdist spkg-dist SPKG.txt go .gitignore README.rst
+include *.txt MANIFEST.in .gitignore dist.sh README.rst
 recursive-include .git *
 global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc *.DS_Store
