@@ -1,8 +1,8 @@
-recursive-include sagenb *
-recursive-include sass *
-recursive-include util *
+graft sagenb
+graft sass
+graft util
 prune sass/src/.sass-cache
-recursive-include flask_version *
+graft flask_version
 include *.txt MANIFEST.in .gitignore dist.sh README.rst
-recursive-include .git *
+prune .git
 global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc *.DS_Store
