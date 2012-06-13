@@ -27,7 +27,9 @@ echo "Sanitizing sagenb git repo (with backup)"
 mv .git .git-backup
 git init
 git fetch .git-backup
+git remote add sagemath https://github.com/sagemath/sagenb
 git branch -f master FETCH_HEAD
+git branch --set-upstream master sagemath/master
 git reset --mixed
 git gc --aggressive --prune=0
 
