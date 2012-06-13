@@ -71,7 +71,7 @@ def sphinxify(docstring, format='html'):
         sage: sphinxify('**Testing**\n`monospace`')
         '\n<div class="docstring"...<strong>Testing</strong>\n<span class="math"...</p>\n\n\n</div>'
         sage: sphinxify('`x=y`')
-        '\n<div class="docstring">\n    \n  <p><span class="math">x=y</span></p>\n\n\n</div>'
+        '\n<div class="docstring">\n    \n  <p><span class="math">\\(x=y\\)</span></p>\n\n\n</div>'
         sage: sphinxify('`x=y`', format='text')
         'x=y\n'
         sage: sphinxify(':math:`x=y`', format='text')
