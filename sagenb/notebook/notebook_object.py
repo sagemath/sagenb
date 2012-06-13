@@ -36,9 +36,7 @@ class NotebookObject:
 
         - ``interface`` -- string (default: ``'localhost'``), address
           of network interface to listen on; give ``''`` to listen on
-          all interfaces.  You may use ``address`` here for backwards
-          compatibility, but this is deprecated and will be removed in
-          the future.
+          all interfaces.
 
         - ``port_tries`` -- integer (default: ``0``), number of
           additional ports to try if the first one doesn't work (*not*
@@ -50,10 +48,6 @@ class NotebookObject:
           must have OpenSSL installed to use this feature, or if you compile
           Sage yourself, have the OpenSSL development libraries installed.
           *Highly recommended!*
-
-        - ``require_login`` -- boolean (default: ``True``) if True
-          login is required else web user is automatically logged in
-          as user admin.
 
         - ``reset`` -- boolean (default: ``False``) if True allows you
           to set the admin password.  Use this if you forget your
@@ -75,10 +69,10 @@ class NotebookObject:
               user_manager.add_user("username", "password", "email@place", "user")
               nb.save()
 
-        - ``open_viewer`` -- boolean (default: True) whether to pop up
-          a web browser.  You can override the default browser by
-          setting the ``SAGE_BROWSER`` environment variable, e.g., by
-          putting
+        - ``automatic_login`` -- boolean (default: True) whether to pop up
+          a web browser and automatically log into the server as admin.  You can
+          override the default browser by setting the ``SAGE_BROWSER`` environment
+          variable, e.g., by putting
 
           ::
 
@@ -94,6 +88,13 @@ class NotebookObject:
           in a script except that (hopefully) you will already be
           logged in.
 
+          .. warning::
+
+              If you are running a server for others to log into, set `automatic_login=False`.
+              Otherwise, all of the worksheets on the entire server will be loaded when the server
+              automatically logs into the admin account.
+
+
         - ``timeout`` -- integer (default: 0) seconds until idle
           worksheet sessions automatically timeout, i.e., the
           corresponding Sage session terminates. 0 means "never
@@ -106,11 +107,16 @@ class NotebookObject:
           separate user (chosen from the list in the ``server_pool``
           -- see below).
 
-    .. note:: 
+    .. note::
 
        If you have problems with the server certificate hostname not
        matching, do ``notebook.setup()``.
-    
+
+    .. note::
+
+       The ``require_login`` option has been removed.  Use `automatic_login` to control
+       automatic logins instead---`automatic_login=False` corresponds to `require_login=True`.
+
     EXAMPLES:
 
     1. I just want to run the Sage notebook.  Type::
@@ -126,24 +132,14 @@ class NotebookObject:
        administrator password.  Use this to login. NOTE: You may have
        to run ``notebook.setup()`` again and change the hostname.
 
-    3. I just want to run the server locally on my laptop and do not
-       want to be bothered with having to log in::
- 
-           notebook(require_login=False)
-
-       Use this ONLY if you are *absolutely certain* that you are the
-       only user logged into the laptop and do not have to worry about
-       somebody else using the Sage notebook on localhost and deleting
-       your files.
-
-    4. I want to create a Sage notebook server that is open to anybody
+    3. I want to create a Sage notebook server that is open to anybody
        in the world to create new accounts. To run the Sage notebook
        publicly (1) at a minimum run it from a chroot jail or inside a
        virtual machine (see `this Sage wiki page`_) and (2) use a
        command like::
-    
+
            notebook(interface='', server_pool=['sage1@localhost'],
-           ulimit='-v 500000', accounts=True)
+           ulimit='-v 500000', accounts=True, automatic_login=False)
 
        The server_pool option specifies that worksheet processes run
        as a separate user.  The ulimit option restricts the memory
@@ -164,7 +160,7 @@ class NotebookObject:
           if given, should be a list like \['sage1@localhost',
           'sage2@localhost'\], where you have setup ssh keys so that
           typing::
-          
+
               ssh sage1@localhost
 
           logs in without requiring a password, e.g., by typing
@@ -177,6 +173,14 @@ class NotebookObject:
           now, so if the machines are separate the server machine must
           NSF export ``/tmp``.
 
+        - ``server`` -- string ("twistd" (default) or "flask").  The server
+          to use to server content.
+
+        - ``profile`` -- True, False, or file prefix (default: False - no profiling),
+          If True, profiling is saved to a randomly-named file like `sagenb-*-profile*.stats`
+          in the $DOT_SAGE directory.  If a string, that string is used as a
+          prefix for the pstats data file.
+
         - ``ulimit`` -- string (initial default: None -- leave as is),
           if given and ``server_pool`` is also given, the worksheet
           processes are run with these constraints. See the ulimit
@@ -184,10 +188,10 @@ class NotebookObject:
 
               - ``-t`` The maximum amount of cpu time in seconds.
                 NOTE: For Sage, ``-t`` is the wall time, not cpu time.
-                
+
               - ``-u`` The maximum number of processes available to a
                 single user.
-              
+
               - ``-v`` The maximum amount of virtual memory available
                 to the process.
 
@@ -195,13 +199,13 @@ class NotebookObject:
           is in seconds, and ``-u`` which is a positive
           integer. Example: ulimit="-v 400000 -t 30"
 
-    .. note:: 
+    .. note::
 
        The values of ``server_pool`` and ``ulimit`` default to what
        they were last time the notebook command was called.
 
     OTHER NOTES:
-    
+
        - If you create a file ``\\$DOT_SAGE/notebook.css`` then it
          will get applied when rendering the notebook HTML.  This
          allows notebook administrators to customize the look of the
@@ -214,7 +218,7 @@ class NotebookObject:
     def __call__(self, *args, **kwds):
         return self.notebook(*args, **kwds)
 
-    notebook = run_notebook.notebook_twisted
+    notebook = run_notebook.notebook_run
     setup    = run_notebook.notebook_setup
 
 notebook = NotebookObject()
@@ -232,9 +236,9 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
                   interface='localhost', verbose=False):
     """
     This function is used to test notebook server functions.
-    
+
     EXAMPLES::
-    
+
         sage: from sagenb.notebook.notebook_object import test_notebook
         sage: passwd = str(randint(1,1<<128))
         sage: nb = test_notebook(passwd, interface='localhost', port=8060)
@@ -247,12 +251,12 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
         sage: nb.dispose()
     """
     import socket, pexpect
-        
+
     if directory is None:
         directory = tmp_dir = tempfile.mkdtemp()
     else:
         tmp_dir = None
-        
+
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -261,9 +265,9 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
     nb.add_user('admin', admin_passwd, '')
     nb.set_accounts(False)
     nb.save()
-    
+
     p = notebook(directory=directory, accounts=True, secure=secure, port=port,
-                 interface=interface, open_viewer=False, fork=True, quiet=True)
+                 interface=interface, automatic_login=False, fork=True, quiet=True)
     p.expect("Starting factory")
     def dispose():
         try:

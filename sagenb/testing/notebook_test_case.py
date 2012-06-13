@@ -23,7 +23,7 @@ NB_OPTIONS = {
     'address': 'localhost',   # Should *not* be left empty.
     'directory': '',          # Set automatically if empty.  Must end
                               # in '.sagenb'.
-    'open_viewer': False,
+    'automatic_login': False,
     'port': 8080,
     'secure': False
 }

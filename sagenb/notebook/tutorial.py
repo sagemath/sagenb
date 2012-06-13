@@ -25,7 +25,7 @@ your web browser.  It provides you with Sage worksheets that you can
 edit and evaluate, which contain scalable typeset mathematics and
 beautiful antialised images.  To try it out immediately, do this:
 
-    sage: notebook(open_viewer=True)          # not tested
+    sage: notebook()          # not tested
     the sage notebook starts...
 
 \subsection{Supported Browsers}
