@@ -29,6 +29,7 @@ git init
 git fetch .git-backup
 git remote add sagemath https://github.com/sagemath/sagenb
 git branch -f master FETCH_HEAD
+git remote update sagemath
 git branch --set-upstream master sagemath/master
 git reset --mixed
 git gc --aggressive --prune=0
