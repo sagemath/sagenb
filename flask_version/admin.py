@@ -54,6 +54,20 @@ def del_user(user):
             pass
     return redirect(url_for("users"))
 
+@admin.route('/users/toggleadmin/<user>')
+@admin_required
+@with_lock
+def toggle_admin(user):
+    try:
+        U = g.notebook.user_manager().user(user)
+        if U.is_admin():
+            U.revoke_admin()
+        else:
+            U.grant_admin()
+    except KeyError:
+        pass
+    return redirect(url_for("users"))
+
 @admin.route('/adduser', methods = ['GET','POST'])
 @admin_required
 @with_lock
