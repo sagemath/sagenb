@@ -21,7 +21,6 @@ import os, re, sys, json
 
 from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
-from sagenb.notebook.jsmath import math_parse
 from flaskext.babel import gettext, ngettext, lazy_gettext
 
 if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
@@ -101,7 +100,6 @@ env.filters['css_escape'] = css_escape
 env.filters['number_of_rows'] = number_of_rows
 env.filters['clean_name'] = clean_name
 env.filters['prettify_time_ago'] = prettify_time_ago
-env.filters['math_parse'] = math_parse
 env.filters['max'] = max
 env.filters['repr_str'] = lambda x: repr(unicode_str(x))[1:]
 env.filters['tojson'] = json.dumps
@@ -135,12 +133,12 @@ def template(filename, **user_context):
         sage: 'Gr\xc3\xb6bner' in s.encode('utf-8')
         True
     """
-    from sagenb.notebook.notebook import JSMATH, JEDITABLE_TINYMCE
+    from sagenb.notebook.notebook import MATHJAX, JEDITABLE_TINYMCE
     from misc import notebook
     #A dictionary containing the default context
     default_context = {'sitename': gettext('Sage Notebook'),
                        'sage_version': SAGE_VERSION,
-                       'JSMATH': JSMATH,
+                       'MATHJAX': MATHJAX,
                        'gettext': gettext,
                        'JEDITABLE_TINYMCE': JEDITABLE_TINYMCE,
                        'conf': notebook.conf() if notebook else None}
