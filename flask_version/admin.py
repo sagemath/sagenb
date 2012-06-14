@@ -43,6 +43,17 @@ def suspend_user(user):
         pass
     return redirect(url_for("users"))
 
+@admin.route('/users/delete/<user>')
+@admin_required
+@with_lock
+def del_user(user):
+    if not user == 'admin':
+        try:
+            g.notebook.user_manager().delete_user(user)
+        except KeyError:
+            pass
+    return redirect(url_for("users"))
+
 @admin.route('/adduser', methods = ['GET','POST'])
 @admin_required
 @with_lock
