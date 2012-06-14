@@ -84,7 +84,7 @@ def save_notebook(notebook):
         elif kw['upload']:
             import urllib
             kw['start_path'] = "'/upload_worksheet?url=file://%s'" % (urllib.quote(kw['upload']))
-            kw['open_page'] = kw['open_page']+ "from sagenb.misc.misc import open_page; open_page('%(hostname)s', %(port)s, %(secure)s, %(start_path)s)" % kw
+            kw['open_page'] = "from sagenb.misc.misc import open_page; open_page('%(hostname)s', %(port)s, %(secure)s, %(start_path)s)" % kw
 
         else:
             kw['open_page'] = ''
