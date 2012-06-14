@@ -14,6 +14,7 @@
         <th>{{ gettext('User') }}</th>
         <th>{{ gettext('Password') }}</th>
         <th>{{ gettext('Suspension') }}</th>
+        <th>{{ gettext('Admin') }}</th>
         <th>{{ gettext('Delete') }}</th>
       </tr>
       {% for u in users %}
@@ -22,6 +23,7 @@
       <td><a href="/home/{{ u }}/">{{ u }}</a></td>
       <td><a href="{{ url_for('users', reset=u.username()) }}">{{ gettext('Reset') }}</a></td>
       <td><a href="{{ url_for('suspend_user', user=u.username()) }}">{% if u.is_suspended() %}{{ gettext('Unsuspend') }}{% else %}{{ gettext('Suspend') }}{% endif %}</a></td>
+      <td><a href="{{ url_for('toggle_admin', user=u.username()) }}">{% if u.is_admin() %}{{ gettext('Revoke') }}{% else %}{{ gettext('Grant') }}{% endif %}</a> </td>
       <td><a href="{{ url_for('del_user', user=u.username()) }} ">{{ gettext('Delete') }}</a></td>
       </tr>
       {% endif %}
