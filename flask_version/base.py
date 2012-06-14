@@ -95,8 +95,6 @@ class SageNBFlask(Flask):
 
 base = Module('flask_version.base')
 
-
-
 #############
 # Main Page #
 #############
@@ -161,16 +159,15 @@ def localization_js():
         response.headers['Etag']=datahash
     return response
 
-#_jsmath_js_cache = None
-#@base.route('/javascript/dynamic/jsmath.js')
-#def jsmath_js():
-#    global _jsmath_js_cache
-#    if _jsmath_js_cache is None:
-#        from sagenb.misc.misc import jsmath_macros
-#        data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
-#                               jsmath_image_fonts=jsmath_image_fonts)
-#        _jsmath_js_cache = (data, sha1(repr(data)).hexdigest())
-#    data,datahash = _jsmath_js_cache
+_mathjax_js_cache = None
+@base.route('/javascript/dynamic/mathjax_sage.js')
+def mathjax_js():
+    global _mathjax_js_cache
+    if _mathjax_js_cache is None:
+        from sagenb.misc.misc import mathjax_macros
+        data = render_template('js/mathjax_sage.js', theme_mathjax_macros=mathjax_macros)
+        _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
+    data,datahash = _mathjax_js_cache
 #
 #    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
 #        response = make_response('',304)
@@ -421,7 +418,7 @@ def create_app(path_to_notebook, *args, **kwds):
     # OLD STUFF #
     #############
     import sagenb.notebook.notebook as notebook
-    notebook.JSMATH = True
+    notebook.MATHJAX = True
     notebook = notebook.load_notebook(path_to_notebook, *args, **kwds)
     init_updates()
 

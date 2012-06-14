@@ -5,9 +5,9 @@
 {% block body %}
 <h1>{{ worksheet.name() }}</h1>
 {{ worksheet.html(do_print=true) }}
-<script>
-    jsMath.ProcessBeforeShowing();
-</script>
+<!--    <script>
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    </script>-->
 {% endblock %}
 
  

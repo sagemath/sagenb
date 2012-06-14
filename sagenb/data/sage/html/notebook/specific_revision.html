@@ -30,9 +30,9 @@
     {{ worksheet.html(do_print=true, publish=true, username=username) }}
 </div>
 {{ actions() }}
-<script type="text/javascript">
+<!--<script type="text/javascript">
   $(document).ready(function () {
-    jsMath.Process();
+    MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
   });
-</script>
+</script>-->
 {% endblock %}
