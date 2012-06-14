@@ -333,12 +333,12 @@ def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
     from werkzeug.utils import secure_filename
     import zipfile
-    
+
     backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")
 
     url = request.values['url'].strip()
     dir = ''
-    if url:
+    if url != '':
         #Downloading a file from the internet
         # The file will be downloaded from the internet and saved
         # to a temporary file with the same extension
@@ -349,9 +349,20 @@ def upload_worksheet():
             return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
         filename = tmp_filename()+extension
         try:
-            my_urlretrieve(url, filename, backlinks=backlinks)
+            import re
+            matches = re.match("file://(?:localhost)?(/.+)", url)
+            if matches:
+                if g.notebook.interface != 'localhost':
+                    return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
+
+                import shutil
+                shutil.copy(matches.group(1),filename)
+            else:
+                my_urlretrieve(url, filename, backlinks=backlinks)
+
         except RetrieveError as err:
             return current_app.message(str(err))
+
     else:
         #Uploading a file from the user's computer
         dir = tmp_dir()
@@ -421,4 +432,3 @@ def upload_worksheet():
 
     from worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))
-        

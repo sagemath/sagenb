@@ -755,10 +755,17 @@ def worksheet_do_upload_data(worksheet):
             return current_app.message(_('Suspicious filename "%(filename)s" encountered uploading file.%(backlinks)s', filename=filename, backlinks=backlinks), worksheet_url)
         os.unlink(dest)
 
-
     response = redirect(worksheet_datafile.url_for(worksheet, name=name))
 
-    if url != '':
+    import re
+    matches = re.match("file://(?:localhost)?(/.+)", url)
+    if matches:
+        f = file(dest, 'wb')
+        f.write(open(matches.group(1)).read())
+        f.close()
+        return response
+
+    elif url != '':
         with open(dest, 'w') as f:
             f.write(download.read())
         return response
