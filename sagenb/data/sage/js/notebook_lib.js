@@ -2088,6 +2088,8 @@ function evaluate_text_cell_input(id, value, settings) {
         id: id,
         input: value
     });
+    //update jmol applet list
+    jmol_delete_check();
 }
 
 
@@ -2256,6 +2258,8 @@ function cell_delete(id) {
     async_request(worksheet_command('delete_cell'), cell_delete_callback, {
         id: id
     });
+    //update jmol applet list
+    jmol_delete_check();
 }
 
 
@@ -2329,6 +2333,9 @@ function cell_delete_output(id) {
                   cell_delete_output_callback, {
                       id: id
                   });
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -3002,6 +3009,9 @@ function evaluate_cell(id, newcell) {
         id: id,
         input: cell_input.value
     });
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -3161,6 +3171,9 @@ function evaluate_cell_callback(status, response) {
     }
 
     start_update_check();
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 

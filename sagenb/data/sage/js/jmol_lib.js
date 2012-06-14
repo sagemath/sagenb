@@ -262,7 +262,7 @@ function makeCntrlPanels(url, n, functionnames){
     //spin on
     panelHTML +='<input class="worksheet" type="checkbox" value="spin on" onchange="jmol_spin(this.checked,'+n+');" title="Enable/disable spin"/>Spin on';
     //antialaisdisplay (smoothing of objects)
-    panelHTML +='<br/><input class="worksheet" type="checkbox" value="hi quality" onchange="jmol_antialias(this.checked,'+n+');" title="Enable/disable smoothing"/>High quality';
+    panelHTML +='<br/><input class="worksheet" type="checkbox" checked="true" value="hi quality" onchange="jmol_antialias(this.checked,'+n+');" title="Enable/disable smoothing"/>High quality';
     //background color
     panelHTML += '';
     panels[0] = new jmolCntrlPanel(0, panelID, tabID, "Display",panelHTML);
@@ -374,7 +374,7 @@ function jmolQueueWatcher(){
             //alert("About to launch applet #"+queued);
             var defaultdir = (jmolStatus.urls[queued]).substring(0,((jmolStatus.urls[queued]).lastIndexOf("?")));
             var scriptStr = 'set defaultdirectory "'+defaultdir+'";script "'+jmolStatus.urls[queued]+'"; isosurface fullylit; pmesh o* fullylit;';
-            scriptStr +='set antialiasdisplay off; set repaintWaitMs 1500;';
+            scriptStr +='set antialiasdisplay on; set repaintWaitMs 1500;';
             scriptStr +='x=defaultdirectory; data "directory @x";';
             scriptStr += 'set MessageCallback "jmolMessageHandler"; show defaultdirectory;';
             //alert("About to look for the div to put it in");
@@ -483,7 +483,7 @@ function getSurfacesFromJmol(n){
     if (scriptArray[0]==''||scriptArray[0]==null||scriptArray[0]=='null'||scriptArray[0]==undefined||scriptArray[0]=='undefined') {//no surfaces ?!
         dispStr = 'No surfaces recovered from Jmol.  Sorry.';
         }
-    dispStr +='<table style="border-width:thin;border-style:solid;border-collapse:collapse;"><tr>'+tdstr+'Function</td>'+tdstr+'Color</td>'+tdstr+'On?</td>'+tdstr+'Translucency</td>'+tdstr+'Mesh Color</td>'+tdstr+'Mesh on?</td></tr>';
+    dispStr +='<table style="border-width:thin;border-style:solid;border-collapse:collapse;"><tr>'+tdstr+'Function</td>'+tdstr+'Color</td>'+tdstr+'On?</td>'+tdstr+'Opacity</td>'+tdstr+'Mesh Color</td>'+tdstr+'Mesh on?</td></tr>';
     for (i in surfaceArray){
         dispStr +='<tr>';
         dispStr +=''+tdstr+''+surfaceArray[i].ID+'</td>';
@@ -499,24 +499,24 @@ function getSurfacesFromJmol(n){
         dispStr +=''+tdstr+'<select class="jmol" title ="Select transparency" onchange="jmolSurfColor(this.value,\''+surfaceArray[i].ID+'\','+n+');">';
         dispStr +='<option selected="" value ="'+surfaceArray[i].fillState+'">'+surfaceArray[i].fillState+'</option>';
         var fillState='opaque';
-        dispStr +='<option value = "'+ fillState +'">opaque</option>';
+        dispStr +='<option value = "'+ fillState +'">opacity 100%</option>';
         fillState = 'translucent 32';
-        dispStr +='<option value = "'+ fillState +'">translucent 32</option>';
+        dispStr +='<option value = "'+ fillState +'">opacity 80%</option>';
         fillState ='translucent 64';
-        dispStr +='<option value = "'+ fillState +'">translucent 64</option>';
+        dispStr +='<option value = "'+ fillState +'">opacity 60%</option>';
         fillState = 'translucent 96';
-        dispStr +='<option value = "'+ fillState +'">translucent 96</option>';
+        dispStr +='<option value = "'+ fillState +'">opacity 40%</option>';
         fillState ='translucent 128';
-        dispStr +='<option value = "'+ fillState +'">translucent 128</option>';
+        dispStr +='<option value = "'+ fillState +'">opacity 20%</option>';
         dispStr +='</';
         dispStr += 'select></td>';
         if (surfaceArray[i].mesh_ID ==''){//we don't have a mesh so  need to make one
             scriptStr = surfaceArray[i].type+' '+surfaceArray[i].ID+'_mesh '+surfaceArray[i].sourceType+' '+surfaceArray[i].source+'noFill mesh;';
             scriptStr += surfaceArray[i].type+' fullylit off;';
-            scriptStr += 'color '+surfaceArray[i].type+' opaque [x000000];';
+            scriptStr += 'color '+surfaceArray[i].type+' opaque [x000059];';
             result = jmolScriptWait(scriptStr, n);
             surfaceArray[i].mesh_ID=surfaceArray[i].ID+'_mesh';
-            surfaceArray[i].meshColor = '[x000000]';
+            surfaceArray[i].meshColor = '[x000059]';
             surfaceArray[i].mesh_visibility = 'off';
             //we've changed the state, so save
             jmolUpdateState(n);
@@ -991,7 +991,7 @@ function jmol_sleepall(){
         }
     }
 function jmol_help(){
-    win = window.open("/java/jmol/appletweb/JmolHelp.html","Jmol Help","width=400, height=600");
+    win = window.open("/java/jmol/appletweb/JmolHelp.html","Jmol Help","width=400, height=600, scrollbars=yes");
     win.focus();
 }
 
