@@ -152,10 +152,15 @@ Frontend
 
 The frontend of the Sage Notebook is built on Twitter's Bootstrap framework, MathJax, LESS, TinyMCE, and CodeMirror. Content is loaded dynamically -- no more sending HTML back-and-forth between the server and the browser. All communication is done with JSON using the encode_response and decode_response functions.
 
+Bootstrap
+---------
+
+Bootstrap is just a bunch of CSS and javascript which makes anything on the web look good. You can find everything there is to know on Bootstrap here: http://twitter.github.com/bootstrap/.
+
 CSS vs LESS vs SASS/SCSS
 ------------------------
 
-CSS preprocessing is very similar to CSS and significantly speeds up development. The choice between LESS and SASS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS.
+CSS preprocessing is very similar to CSS and significantly speeds up development. The choice between LESS and SASS/SCSS is tough. The Notebook is written in LESS for the time being primarily because the Bootstrap framework is built on LESS. I would certainly not be offended, however, if someone was interested in rewriting the stylesheet in SASS/SCSS.
 
 OOP Javascript
 --------------
@@ -200,7 +205,7 @@ For OOP javascript resources, see
 
 * http://www.javascriptkit.com/javatutors/oopjs.shtml
 
-  - this looks like it may have been in the stone ages so maybe it shouldn't be trusted but i used it anyways
+  - this looks like it may have been written in the stone ages so maybe it shouldn't be trusted but i used it anyways
 
 * http://killdream.github.com/blog/2011/10/understanding-javascript-oop/
 
