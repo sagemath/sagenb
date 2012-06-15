@@ -95,7 +95,6 @@ from tornado import web
 from tornado.wsgi import WSGIContainer
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado_version.tornado_handlers import *
 
 %(open_page)s
 wsgi_app = WSGIContainer(flask_app)
