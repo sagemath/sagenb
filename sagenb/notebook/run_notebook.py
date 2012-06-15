@@ -88,6 +88,33 @@ def save_notebook(notebook):
     def run_command(self, kw):
         raise NotImplementedError
 
+class NotebookRunTornado(NotebookRun):
+    name="tornado"
+    TORNADO_NOTEBOOK_CONFIG = """
+from tornado import web
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
+from tornado_version.tornado_handlers import *
+
+%(open_page)s
+wsgi_app = WSGIContainer(flask_app)
+http_server = HTTPServer(wsgi_app)
+http_server.listen(%(port)s)
+IOLoop.instance().start()
+"""
+    def run_command(self, kw):
+        """Run a tornado webserver."""
+        # TODO: Check to see if server is running already (PID file?)
+        self.prepare_kwds(kw)
+        run_file = os.path.join(kw['directory'], 'run_tornado')
+
+        with open(run_file, 'w') as script:
+            script.write((self.config_stub+self.TORNADO_NOTEBOOK_CONFIG)%kw)
+
+        cmd = 'python %s' % (run_file)
+        return cmd
+
 class NotebookRunuWSGI(NotebookRun):
     name="uWSGI"
     uWSGI_NOTEBOOK_CONFIG  = """
@@ -389,7 +416,7 @@ def notebook_setup(self=None):
 
     print "Successfully configured notebook."
 
-command={'flask': NotebookRunFlask, 'twistd': NotebookRunTwisted, 'uwsgi': NotebookRunuWSGI}
+command={'flask': NotebookRunFlask, 'twistd': NotebookRunTwisted, 'uwsgi': NotebookRunuWSGI, 'tornado': NotebookRunTornado}
 def notebook_run(self,
              directory     = None,
              port          = 8080,
