@@ -34,9 +34,11 @@ Big Stuff
 
   - See https://groups.google.com/forum/?fromgroups#!topic/sage-notebook/97AGs2hN3po
 
-* Use sockets.io instead of async_request
+* Use SockJS instead of async_request
 
-  - use TornadIO2 https://github.com/MrJoes/tornadio2
+  - I think Jason Yeo is working on this
+
+  - use sockjs-tornado
 
 Medium Stuff
 ------------

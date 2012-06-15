@@ -20,11 +20,6 @@ http://www.nczonline.net/blog/2009/04/13/computer-science-in-javascript-linked-l
 
 */
 
-/* At some point we may want to switch away from the 
- * current call/response system and instead use 
- * WebSockets.
- */
-
 sagenb.worksheetapp.worksheet = function() {
 	/* this allows us to access this cell object from 
 	 * inner functions
@@ -72,6 +67,10 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	// Single/Multi cell mode
 	this_worksheet.single_cell_mode = false;
+	
+	// Evaluate all
+	this_worksheet.is_evaluating_all = false;
+	
 	
 	// other variables go here
 	
@@ -126,6 +125,17 @@ sagenb.worksheetapp.worksheet = function() {
 			}
 		}
 	};
+	
+	//// MISC ////
+	this_worksheet.forEachCell = function(f) {
+		/* Execute the given function on all cells in 
+		 * this worksheet. This is useful since some values 
+		 * in this_worksheet.cells are null.
+		 */
+		$.each(this_worksheet.cells, function(i, cell) {
+			if(cell) f(cell);
+		});
+	}
 	
 	///////////////// PINGS //////////////////
 	this_worksheet.show_connection_error = function() {
@@ -229,9 +239,7 @@ sagenb.worksheetapp.worksheet = function() {
 	////////////// EVALUATION ///////////////
 	this_worksheet.evaluate_all = function() {
 		// TODO
-		for(cellid in this_worksheet.cells) {
-			this_worksheet.cells[cellid].evaluate();
-		}
+		
 	};
 	this_worksheet.interrupt = function() {
 		async_request(this_worksheet.worksheet_command('interrupt'), this_worksheet.generic_callback());
@@ -240,29 +248,23 @@ sagenb.worksheetapp.worksheet = function() {
 	//// OUTPUT STUFF ////
 	this_worksheet.hide_all_output = function() {
 		async_request(this_worksheet.worksheet_command('hide_all'), this_worksheet.generic_callback(function(status, response) {
-			$.each(this_worksheet.cells, function(i, cell) {
-				if(cell) {
-					cell.set_output_hidden();
-				}
+			this_worksheet.forEachCell(function(cell) {
+				cell.set_output_hidden();
 			});
 		}));
 	};
 	this_worksheet.show_all_output = function() {
 		async_request(this_worksheet.worksheet_command('show_all'), this_worksheet.generic_callback(function(status, response) {
-			$.each(this_worksheet.cells, function(i, cell) {
-				if(cell) {
-					cell.set_output_visible();
-				}
+			this_worksheet.forEachCell(function(cell) {
+				cell.set_output_visible();
 			});
 		}));
 	};
 	this_worksheet.delete_all_output = function() {
 		async_request(this_worksheet.worksheet_command('delete_all_output'), this_worksheet.generic_callback(function(status, response) {
-			$.each(this_worksheet.cells, function(i, cell) {
-				if(cell) {
-					cell.output = "";
-					cell.render_output();
-				}
+			this_worksheet.forEachCell(function(cell) {
+				cell.output = "";
+				cell.render_output();
 			});
 		}));
 	};
@@ -271,10 +273,8 @@ sagenb.worksheetapp.worksheet = function() {
 		async_request(this_worksheet.worksheet_command("system/" + newsystem), this_worksheet.generic_callback(function(status, response) {
 			this_worksheet.system = newsystem;
 			
-			$.each(this_worksheet.cells, function(i, cell) {
-				if(cell) {
-					cell.update_codemirror_mode();
-				}
+			this_worksheet.forEachCell(function(cell) {
+				cell.update_codemirror_mode();
 			});
 		}));
 	};
@@ -590,26 +590,17 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		////////// LINE NUMBERS CHECKBOX //////////
 		$("#line_numbers_checkbox").change(function(e) {
-			if ($("#line_numbers_checkbox").prop("checked")) {
-				$.each(this_worksheet.cells, function(index, cell) {
-					if (cell && cell.is_evaluate_cell) {
-						cell.codemirror.setOption("lineNumbers", true);
-					}
-				});
-			} else {
-				$.each(this_worksheet.cells, function(index, cell) {
-					if (cell && cell.is_evaluate_cell) {
-						cell.codemirror.setOption("lineNumbers", false);
-					}
-				});
-			}
+			this_worksheet.forEachCell(function(cell) {
+				if(cell.is_evaluate_cell) {
+					cell.codemirror.setOption("lineNumbers", $("#line_numbers_checkbox").prop("checked"));
+				}
+			});
 		});
 		
 		/////// RENAME ALERT //////
 		$(".alert_rename .rename").click(function(e) {
 			$(".worksheet_name").click();
 			$(".alert_rename").hide();
-			
 		});
 		$(".alert_rename .cancel").click(window.close);
 		
@@ -676,8 +667,8 @@ sagenb.worksheetapp.worksheet = function() {
 			 */
 			var numcells = 0;
 			
-			$.each(this_worksheet.cells, function(i, e) {
-				if(e) numcells++;
+			this_worksheet.forEachCell(function(cell) {
+				numcells++;
 			});
 			
 			if(numcells > 0 && numcells === $(".cell").length) {
