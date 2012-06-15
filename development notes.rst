@@ -8,8 +8,6 @@ Big Stuff
 
 * Data dialog
 
-  - Fix the tab error. When you click on the upload file button, it doesn't go to that tab.
-
 * Code completion
 
 * Single-cell mode
@@ -73,6 +71,10 @@ Medium Stuff
 
 Small Stuff
 -----------
+
+* dynamically load MathJax
+
+  - If running on localhost, load from the notebook. Otherwise, ping the CDN and load from there. If that fails load from notebook.
 
 * Don't enable webassets bundling when in development mode
 
