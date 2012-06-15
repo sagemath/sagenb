@@ -105,7 +105,6 @@ IOLoop.instance().start()
 """
     def run_command(self, kw):
         """Run a tornado webserver."""
-        # TODO: Check to see if server is running already (PID file?)
         self.prepare_kwds(kw)
         run_file = os.path.join(kw['directory'], 'run_tornado')
 
