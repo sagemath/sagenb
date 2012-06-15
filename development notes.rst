@@ -16,7 +16,7 @@ Big Stuff
 
   - Create hash tag routes (...#cell15, etc) so that someone can reference a single cell in a presentation with a url
 
-    + This already works for multi-cell mode. see `worksheet.on_load_done()`
+    + This already works for multi-cell mode. see ``worksheet.on_load_done()``
 
 * Settings page
 
@@ -53,15 +53,15 @@ Medium Stuff
 
 * Log dialog/page
 
-* Add some better styling to `?` and `??` introspections
+* Add some better styling to ``?`` and ``??`` introspections
 
   - For styling code, see http://twitter.github.com/bootstrap/base-css.html#code
 
-  - See `main.less` 
+  - See main.less 
 
 * Add grab image button to Jmol
 
-  - I don't think this is high priority (unless someone really needs it). Hopefully, we'll get rid of Jmol soon anyways
+  - I don't think this is high priority (as far as I know). Hopefully, we'll get rid of Jmol soon anyways
 
 * Create automatic print-friendly option
 
@@ -82,17 +82,17 @@ Small Stuff
 
 * Make checking for output occur on an exponential timer not every X seconds
 
-  - See `cell.check_for_output()` in worksheet.js
+  - See ``cell.check_for_output()`` in worksheet.js
 
-* Get rid of the obsolete `<tt>` tags in the import dialog. Use css instead.
+* Get rid of the obsolete ``<tt>`` tags in the import dialog. Use css instead.
 
 * Clean up LESS
 
-  - see `sagenb/data/sage/less/`
+  - see ``sagenb/data/sage/less/``
 
 * Clean up javascript
 
-  - see `sagenb/data/sage/js/`
+  - see ``sagenb/data/sage/js/``
 
   - maybe use prototypes
 
