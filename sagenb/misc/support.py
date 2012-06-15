@@ -62,7 +62,6 @@ def init(object_directory=None, globs={}):
     globals_at_init = globs.values()
     global_names_at_init = set(globs.keys())
     EMBEDDED_MODE = True
-    sageinspect.EMBEDDED_MODE = True
     
     setup_systems(globs)
     session_init(globs)
@@ -73,6 +72,13 @@ def init(object_directory=None, globs={}):
     try:
         import sage.server.support
         sage.server.support.EMBEDDED_MODE = True
+    except ImportError:
+        pass
+    # Also initialize EMBEDDED_MODE in Sage's misc.sageinspect module,
+    # which is used to format docstrings in the notebook.
+    try:
+        import sage.misc.sageinspect
+        sage.misc.sageinspect.EMBEDDED_MODE = True
     except ImportError:
         pass
 
@@ -339,7 +345,7 @@ def source_code(s, globs, system='sage'):
 
         filename = sageinspect.sage_getfile(obj)
         try:
-            lines, lineno = sageinspect.sage_getsourcelines(obj, is_binary=False)
+            lines, lineno = sageinspect.sage_getsourcelines(obj)
         except IOError as msg:
             return html_markup(str(msg))
         src = indent.join(lines)
