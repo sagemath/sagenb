@@ -220,12 +220,12 @@ sagenb.worksheetapp.cell = function(id) {
 				height: "300"
 			});
 			
-			var this_cell_dom = $("#cell_" + this_cell.id);
+			var $this_cell = $("#cell_" + this_cell.id);
 			
 			// MathJax the text
-			MathJax.Hub.Queue(["Typeset", MathJax.Hub, this_cell_dom.find(".view_text")[0]]);
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub, $this_cell.find(".view_text")[0]]);
 			
-			this_cell_dom.dblclick(function(e) {
+			$this_cell.dblclick(function(e) {
 				if(!this_cell.is_evaluate_cell) {
 					// set the current_cell_id
 					this_cell.worksheet.current_cell_id = this_cell.id;
@@ -248,9 +248,9 @@ sagenb.worksheetapp.cell = function(id) {
 				}
 			});
 			
-			this_cell_dom.find(".delete_button").click(this_cell.delete);
+			$this_cell.find(".delete_button").click(this_cell.delete);
 			
-			this_cell_dom.find(".cancel_button").click(function(e) {
+			$this_cell.find(".cancel_button").click(function(e) {
 				// get tinymce instance
 				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
 				
@@ -264,7 +264,7 @@ sagenb.worksheetapp.cell = function(id) {
 				$("#cell_" + this_cell.id).removeClass("edit");
 			});
 			
-			this_cell_dom.find(".save_button").click(function(e) {
+			$this_cell.find(".save_button").click(function(e) {
 				// get tinymce instance
 				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
 				
@@ -275,10 +275,10 @@ sagenb.worksheetapp.cell = function(id) {
 				this_cell.send_input();
 				
 				// update the cell
-				this_cell_dom.find(".view_text").html(this_cell.input);
+				$this_cell.find(".view_text").html(this_cell.input);
 				
 				// MathJax the text
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, this_cell_dom.find(".view_text")[0]]);
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, $this_cell.find(".view_text")[0]]);
 				
 				// remove the edit class
 				$("#cell_" + this_cell.id).removeClass("edit");
@@ -419,8 +419,14 @@ sagenb.worksheetapp.cell = function(id) {
 			input: this_cell.input
 		});
 	};
-	this_cell.evaluate = function() {		
-		//alert("eval" + this_cell.id);
+	this_cell.evaluate = function() {
+		if(!this_cell.is_evaluate_cell) {
+			// we're a text cell
+			this_cell.continue_evaluating_all();
+			return;
+		}
+		
+		// we're an evaluate cell
 		async_request(this_cell.worksheet.worksheet_command("eval"), this_cell.worksheet.generic_callback(function(status, response) {
 			/* EVALUATION CALLBACK */
 		
@@ -543,7 +549,7 @@ sagenb.worksheetapp.cell = function(id) {
 						if(this_cell.is_evaluate_cell) {
 							this_cell.codemirror.setValue(this_cell.input);
 						} else {
-							// tinymce
+							// TODO tinymce
 						}
 					}
 					
@@ -551,7 +557,7 @@ sagenb.worksheetapp.cell = function(id) {
 					this_cell.output = X.output;
 					
 					// check for output_html
-					// TODO it doesn't seem right to have a different property here
+					// it doesn't seem right to have a different property here
 					// it seems like X.output is sufficient
 					if($.trim(X.output_html) !== "") {
 						this_cell.output = X.output_html;
@@ -559,18 +565,37 @@ sagenb.worksheetapp.cell = function(id) {
 					
 					// render to the DOM
 					this_cell.render_output();
+					
+					// EVALUATE ALL STUFF
+					this_cell.continue_evaluating_all();
 				}
 			}),
 				{
 					id: this_cell.id
 				}
-				
 			);
 		}
 		
 		// start checking
 		this_cell.output_check_interval_id = window.setInterval(do_check, this_cell.output_check_interval);
 	};
+	
+	this_cell.continue_evaluating_all = function() {
+		if(this_cell.worksheet.is_evaluating_all) {
+			// go evaluate the next cell
+			var $nextcell = $("#cell_" + this_cell.id).parent().next().next().find(".cell");
+			
+			if($nextcell.length > 0) {
+				// we're not the last cell -> evaluate next
+				var nextcell_id = parseInt($nextcell.attr("id").substring(5));
+				
+				this_cell.worksheet.cells[nextcell_id].evaluate();
+			} else {
+				// we're the last cell -> stop evaluating all
+				this_cell.worksheet.is_evaluating_all = false;
+			}
+		}
+	}
 	
 	this_cell.is_interact_cell = function() {
 		

@@ -239,7 +239,14 @@ sagenb.worksheetapp.worksheet = function() {
 	////////////// EVALUATION ///////////////
 	this_worksheet.evaluate_all = function() {
 		// TODO
+		this_worksheet.is_evaluating_all = true;
 		
+		this_worksheet.forEachCell(function(cell) {
+			cell.set_output_loading();
+		});
+		
+		var firstcell_id = parseInt($(".cell").attr("id").substring(5));
+		this_worksheet.cells[firstcell_id].evaluate();
 	};
 	this_worksheet.interrupt = function() {
 		async_request(this_worksheet.worksheet_command('interrupt'), this_worksheet.generic_callback());
@@ -706,7 +713,7 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		
 		////////// EVALUATION ///////////
-		$("#evaluate_all_cells").click();
+		$("#evaluate_all_cells").click(this_worksheet.evaluate_all);
 		$("#interrupt").click(this_worksheet.interrupt);
 		$("#restart_worksheet").click();
 		// change system doesn't require event handler here

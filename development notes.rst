@@ -53,10 +53,6 @@ Medium Stuff
 
 * Log dialog/page
 
-* Evaluate all cells
-
-  - We cannot just run through every cell and call cell.evaluate(). Each cell has to be evaluated one at time. This means creating some sort of queue.
-
 * Add some better styling to ? and ?? introspections
 
   - For styling code, see http://twitter.github.com/bootstrap/base-css.html#code
