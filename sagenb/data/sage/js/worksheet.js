@@ -238,7 +238,6 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	////////////// EVALUATION ///////////////
 	this_worksheet.evaluate_all = function() {
-		// TODO
 		this_worksheet.is_evaluating_all = true;
 		
 		this_worksheet.forEachCell(function(cell) {
