@@ -11,6 +11,7 @@ import distutils.log
 def lremove(string, prefix):
     while string.startswith(prefix):
         string = string[len(prefix):]
+    return string
 
 def all_files(dir, prefix):
     """
