@@ -1,86 +1,86 @@
 {% extends "html/accounts/base.html" %}
 
-{% block title %}Sign up{% endblock %}
+{% block title %}{{ gettext('Sign up') }}{% endblock %}
 
 {% block page_id %}registration-page{% endblock %}
 
 {% block body %}
 <div id="wrapper">
-    <h1>Sign up for a Sage Notebook account</h1>
+    <h1>{{ gettext('Sign up for a Sage Notebook account') }}</h1>
     {% if error %}
     <h2 class="error_found">Error{{ error[1:] }}found</h2>
     {% endif %}
     <form method="POST" action="/register" id="registration-form">
         <ol>
             <li>
-                <h2>Create a username</h2>
-                <p>Your username must start with a letter and be between 3 and 64
-                characters long. You may only use letters, numbers, underscores, @,
-                and dots.</p>
+                <h2>{{ gettext('Create a username') }}</h2>
+                <p>{{ gettext('Your username must start with a letter and be between 3 and 64 '
+                'characters long. You may only use letters, numbers, underscores, @, '
+                'and dots.') }}</p>
                 <input type="text" name="username" value="{{ username }}" class="entry" tabindex="1" />
                 {% if username_missing %}
-                <p><span class="error">Error:</span> No username given</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('No username given') }}</p>
                 {% endif %}
                 {% if username_taken %}
-                <p><span class="error">Error:</span> Username already in use</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Username already in use')}}</p>
                 {% endif %}
                 {% if username_invalid %}
-                <p><span class="error">Error:</span> Bad username</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Bad username') }}</p>
                 {% endif %}
             </li>
             <li>
-                <h2>Create a good password</h2>
+                <h2>{{ gettext('Create a good password') }}</h2>
                 <p>
-                    Your password must have at least 4 characters.
-                    Your password can not contain your username or spaces.
+                    {{ gettext('Your password must have at least 4 characters. '
+                    'Your password can not contain your username or spaces.') }}
                 </p>
                 <input type="password" name="password" class="entry" tabindex="2" />
                 {% if password_missing %}
-                <p><span class="error">Error:</span> No password given</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('No password given') }}</p>
                 {% endif %}
                 {% if password_invalid %}
-                <p><span class="error">Error:</span> Bad password</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Bad password') }}</p>
                 {% endif %}
             </li>
             <li>
-                <h2>Re-type your password</h2>
+                <h2>{{ gettext('Re-type your password') }}</h2>
                 <input type="password" name="retype_password" class="entry" tabindex="3" />
                 {% if passwords_dont_match or retype_password_missing %}
-                <p><span class="error">Error:</span> Passwords didn't match</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Passwords didn\'t match') }}</p>
                 {% endif %}
             </li>
             {% if email or email_missing or email_invaild %}
             <li>
-                <h2>Enter your email address</h2>
+                <h2>{{ gettext('Enter your email address') }}</h2>
                 <p>
-                    Your email address is required for account
-                    confirmation and recovery. You will be emailed a confirmation link
-                    right after you successfully sign up.
+                    {{ gettext('Your email address is required for account '
+                    'confirmation and recovery. You will be emailed a confirmation link '
+                    'right after you successfully sign up.') }}
                 </p>
                 <input type="email" name="email" value="{{ email_address }}" class="entry" tabindex="4" />
                 {% if email_missing %}
-                <p><span class="error">Error:</span> No email address given</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('No email address given') }}</p>
                 {% endif %}
                 {% if email_invalid %}
-                <p><span class="error">Error:</span> Invalid email address</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Invalid email address') }}</p>
                 {% endif %}
             </li>
             {% endif %}
             {% if challenge %}
             <li>
-                <h2>Answer a challenge</h2>
+                <h2>{{ gettext('Answer a challenge') }}</h2>
                 {{ challenge_html }}
                 {% if challenge_missing %}
-                <p><span class="error">Error:</span> No challenge response given</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('No challenge response given') }}</p>
                 {% endif %}
                 {% if challenge_invalid %}
-                <p><span class="error">Error:</span> Invalid challenge response</p>
+                <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Invalid challenge response') }}</p>
                 {% endif %}
             </li>
             {% endif %}
         </ol>
-        <button type="submit" tabindex="100" id="create-account-button">Create account</button>
-        <a href="/"><button tabindex="101">Cancel</button></a>
+        <button type="submit" tabindex="100" id="create-account-button">{{ gettext('Create account') }}</button>
+        <a href="/"><button tabindex="101">{{ gettext('Cancel') }}</button></a>
     </form>
 </div> 
 {% endblock %}

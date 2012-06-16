@@ -62,15 +62,16 @@ def settings_page():
 
     td['autosave_intervals'] = ((i, ' selected') if nu['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))
 
-    td['email'] = g.notebook.conf()['email']
-    if td['email']:
-        td['email_address'] = nu.get_email() or 'None'
-        if nu.is_email_confirmed():
-            td['email_confirmed'] = 'Confirmed'
-        else:
-            td['email_confirmed'] = 'Not confirmed'
+    td['email_address'] = nu.get_email() or 'None'
+    if nu.is_email_confirmed():
+        td['email_confirmed'] = 'Confirmed'
+    else:
+        td['email_confirmed'] = 'Not confirmed'
 
     td['admin'] = nu.is_admin()
+    td['form_email'] = nu.may_change_email()
+    td['form_password'] = nu.may_change_password()
+
 
     return render_template(os.path.join('html', 'settings', 'account_settings.html'), **td)
 

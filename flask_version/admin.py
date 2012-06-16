@@ -34,8 +34,8 @@ def users():
         except KeyError:
             pass
 
-    template_dict['number_of_users'] = len(g.notebook.user_manager().valid_login_names()) if len(g.notebook.user_manager().valid_login_names()) > 1 else None
-    users = sorted(g.notebook.user_manager().valid_login_names())
+    template_dict['number_of_users'] = len(g.notebook.user_manager().known_users()) if len(g.notebook.user_manager().known_users()) > 1 else None
+    users = sorted(g.notebook.user_manager().known_users())
     del users[users.index('admin')]
     template_dict['users'] = [g.notebook.user_manager().user(username) for username in users]
     template_dict['admin'] = g.notebook.user_manager().user(g.username).is_admin()
@@ -64,7 +64,7 @@ def add_user():
                                    error='username_taken', username_input=username, **template_dict)
         g.notebook.user_manager().add_user(username, password, '', force=True)
 
-        message = gettext('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
+        message = _('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
                           username=username, password=password)
         return current_app.message(message, cont='/adduser', title=_('New User'))
     else:

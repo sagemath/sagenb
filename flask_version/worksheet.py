@@ -563,6 +563,10 @@ def worksheet_edit_published_page(worksheet):
 def worksheet_share(worksheet):
     return g.notebook.html_share(worksheet, g.username)
 
+@worksheet_command('search_collab')
+def worksheet_user_lookup(worksheet):
+    return g.notebook.html_share(worksheet, g.username, request.values.get('lookup'))
+
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
     owner = worksheet.owner()

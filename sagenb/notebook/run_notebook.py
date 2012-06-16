@@ -445,6 +445,16 @@ def notebook_run(self,
              accounts      = None,
              openid        = None,
 
+             ldap          = None,
+
+             auth_ldap      = False,
+             ldap_uri       = 'ldap://example.net:389/',
+             ldap_basedn    = 'ou=users,dc=example,dc=net',
+             ldap_binddn    = 'cn=manager,dc=example,dc=net',
+             ldap_bindpw    = 'secret',
+             ldap_username_attrib ='cn',
+             ldap_lookup_attribs = ('cn', 'sn', 'givenName', 'mail'),
+
              server_pool   = None,
              ulimit        = '',
 
@@ -525,6 +535,17 @@ def notebook_run(self,
         nb.user_manager().set_accounts(accounts)
     else:
         nb.user_manager().set_accounts(nb.conf()['accounts'])
+
+    if auth_ldap:
+        nb.conf()['auth_ldap'] = True
+        nb.conf()['ldap_uri'] = ldap_uri
+        nb.conf()['ldap_basedn'] = ldap_basedn
+        nb.conf()['ldap_binddn'] = ldap_binddn
+        nb.conf()['ldap_bindpw'] = ldap_bindpw
+        nb.conf()['ldap_username_attrib'] = ldap_username_attrib
+        nb.conf()['ldap_lookup_attribs'] = ldap_lookup_attribs
+    elif not nb.conf()['auth_ldap']:
+        nb.conf()['auth_ldap'] = False
 
     if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
         # This is here only for backward compatibility with one
