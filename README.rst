@@ -95,7 +95,8 @@ make sense in some cases.
 
       * Then, update the version in ``setup.py`` and commit this change.
 
-      * Run ``dist.sh``
+      * Run ``dist.sh``, optionally with a ``-g`` argument to package
+        the git repo too.
 
       * Copy the newly generated ``dist/`` directory from the sagenb
         repo to the SPKG's root directory and rename it ``src/``
