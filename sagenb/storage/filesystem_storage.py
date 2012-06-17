@@ -15,6 +15,7 @@ Sage notebook server::
          conf.pickle
          users.pickle
          openid.pickle (optional)
+         readonly.txt (optional)
          home/
              username0/
                 history.pickle
@@ -75,6 +76,9 @@ class FilesystemDatastore(Datastore):
         self._home_path = 'home'
         self._conf_filename = 'conf.pickle'
         self._users_filename = 'users.pickle'
+        self._readonly_filename = 'readonly.txt'
+        self._readonly_mtime = 0
+        self._readonly = None
 
     def __repr__(self):
         return "Filesystem Sage Notebook Datastore at %s"%self._path
@@ -604,6 +608,20 @@ class FilesystemDatastore(Datastore):
                     import traceback
                     print "Warning: problem loading %s/%s: %s"%(username, id_number, traceback.format_exc())
         return v
+
+    def readonly_user(self, username):
+        """
+        Each line of the readonly file has a username.
+        """
+        filename = os.path.join(self._path, self._readonly_filename)
+        if not os.path.exists(filename):
+            return False
+        mtime = os.path.getmtime(filename)
+        if mtime > self._readonly_mtime:
+            with open(filename) as f:
+                self._readonly = set(line for line in (l.strip() for l in f) if len(line)>0)
+            self._readonly_mtime = mtime
+        return username in self._readonly
 
     def delete(self):
         """
