@@ -1,0 +1,127 @@
+{% extends 'html/base_newui.html' %}
+
+{% block head %}
+	{{ super() }}
+{% endblock head %}
+
+{% block navbar %}
+{% endblock navbar %}
+
+{% block alerts %}
+	{% include 'html/alerts/worksheet_locked_alert.html' %}
+	{% include 'html/alerts/rename_alert.html' %}
+{% endblock alerts %}
+
+{% block before_page %}
+	<div class="single_cell_controls">
+		<div class="left_controls">
+			<button type="button" class="btn" id="first_cell"><i class="icon-fast-backward"></i></button>
+			<button type="button" class="btn" id="previous_cell"><i class="icon-step-backward"></i></button>
+		</div>
+		
+		<div class="progress_text">1/4</div>
+		
+		<div class="progress">
+			<div class="bar" style="width: 25%;"></div>
+		</div>
+		
+		<div class="right_controls">
+			<button type="button" class="btn" id="next_cell"><i class="icon-step-forward"></i></button>
+			<button type="button" class="btn" id="last_cell"><i class="icon-fast-forward"></i></button>
+		</div>
+	</div>
+{% endblock before_page %}
+
+
+{% block page %}
+	<h1 class="title">My Notebook</h1>
+
+	<div style="height: 10px;"></div>
+
+	<div class="btn-toolbar" id="top_toolbar">
+		<button type="button" class="btn btn-small0 btn-primary"><i class="icon-file icon-white"></i> New Worksheet</button>
+		<button type="button" class="btn btn-small0"><i class="icon-upload"></i> Upload</button>
+		<button type="button" class="btn btn-small0"><i class="icon-download"></i> Download All Active</button>
+	</div>
+
+	<div class="btn-toolbar" id="bottom_toolbar">
+		<div class="pull-left"><button type="button" class="btn btn-small">Archive</button>
+		<button type="button" class="btn btn-small">Delete</button>
+		<button type="button" class="btn btn-small">Stop</button>
+		<button type="button" class="btn btn-small">Download</button></div>
+		
+		
+		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:25px;">
+			<button type="button" class="btn btn-small0 active">Active</button>
+			<button type="button" class="btn btn-small0">Archive</button>
+			<button type="button" class="btn btn-small0">Trash</button>
+		</div>
+		
+		<form action="#" class="form-search pull-right" style="margin-bottom:0">
+			<div class="input-append">
+				<input type="search" class="input-medium search-query0" placeholder="Search ..." size="12"><button class="btn"><i class="icon-search"></i></button>
+			</div>
+		</form>
+	</div>
+
+	<div style="clear:both"></div>
+
+	<table class="table table-striped worksheets_table">
+		<thead>
+			<tr>
+				<th><input type="checkbox"></th>
+				<th>Worksheet</th>
+				<th>Owner/Collaborators</th>
+				<th>Last Edited</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="checkbox_cell"><input type="checkbox"></td>
+				<td class="worksheet_name_cell"><a href="#">Jeet Kune Do</a></td>
+				<td>Bruce Lee and <a href="#">2 others</a><span class="badge badge-info pull-right"><i class="icon-share-alt icon-white"></i></span></td>
+				<td class="last_edit_cell">15 mins ago</td>
+			</tr>
+			<tr>
+				<td class="checkbox_cell"><input type="checkbox"></td>
+				<td class="worksheet_name_cell"><a href="#">Astrophysics stuff</a><span class="label label-important pull-right">running</span></td>
+				<td>Stephen Hawking</td>
+				<td class="last_edit_cell">15 mins ago</td>
+			</tr>
+			<tr>
+				<td class="checkbox_cell"><input type="checkbox"></td>
+				<td class="worksheet_name_cell"><a href="#">Atom Bomb</a><span class="label label-important pull-right">running</span></td>
+				<td>Albert Einstein<span class="badge badge-info pull-right"><i class="icon-share-alt icon-white"></i></span></td>
+				<td class="last_edit_cell">15 mins ago</td>
+			</tr>
+			<tr>
+				<td class="checkbox_cell"><input type="checkbox"></td>
+				<td class="worksheet_name_cell"><a href="#">Worksheet #4</a></td>
+				<td>Someone Famous<span class="badge badge-info pull-right"><i class="icon-share-alt icon-white"></i></span></td>
+				<td class="last_edit_cell">15 mins ago</td>
+			</tr>
+			<tr>
+				<td class="checkbox_cell"><input type="checkbox"></td>
+				<td class="worksheet_name_cell"><a href="#">Worksheet #5</a></td>
+				<td>Bob Joe</td>
+				<td class="last_edit_cell">15 mins ago</td>
+			</tr>
+		</tbody>
+	</table>
+{% endblock page %}
+
+{% block after_container %}
+	{% include 'html/modals/sharing_modal.html' %}
+	{% include 'html/modals/import_modal.html' %}
+{% endblock after_container %}
+
+{% block extra_javascript %}
+	{# TODO: use webassets here #}
+	<!-- Worksheet related javascript -->
+	<script type="text/javascript" charset="utf-8" src="/data/sage/js/worksheet_list.js"></script>
+	
+	<script type="text/javascript">
+		// init notebook stuff
+		sagenb.init();
+	</script>
+{% endblock extra_javascript %}
