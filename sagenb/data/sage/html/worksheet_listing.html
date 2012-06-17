@@ -4,6 +4,7 @@ INPUT:
 - pub -- a boolean stating whether to show in public mode.
 - typ -- a string stating what kind of worksheets this listing shows
 - worksheets -- list of Worksheet objects
+- readonly -- a boolean stating whether the user is read only
 #}
 {% if pub %}
 {% set worksheet_heading=gettext('Published Worksheets') %}
@@ -40,6 +41,9 @@ INPUT:
 
 
 {% block main %}
+{% if readonly is defined and readonly %}
+<h1>{{ gettext('Account is read only.  You may download or delete worksheets or data.') }}</h1>
+{% endif %}
 <div id="user-main-controls" class="user-controls">
     {% if pub is not defined or not pub %}
     <a href="/new_worksheet" target="_blank">{{ gettext('New Worksheet') }}</a>
