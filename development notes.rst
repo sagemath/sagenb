@@ -41,6 +41,8 @@ Big Stuff
 Medium Stuff
 ------------
 
+* don't allow computations longer than X seconds
+
 * Login page
 
 * Report a problem dialog
@@ -71,10 +73,6 @@ Medium Stuff
 
 Small Stuff
 -----------
-
-* dynamically load MathJax
-
-  - If running on localhost, load from the notebook. Otherwise, ping the CDN and load from there. If that fails load from notebook.
 
 * Don't enable webassets bundling when in development mode
 
