@@ -615,7 +615,7 @@ class FilesystemDatastore(Datastore):
         """
         filename = os.path.join(self._path, self._readonly_filename)
         if not os.path.exists(filename):
-            return False, ''
+            return False
         mtime = os.path.getmtime(filename)
         if mtime > self._readonly_mtime:
             with open(filename) as f:
