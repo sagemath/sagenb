@@ -619,7 +619,7 @@ class FilesystemDatastore(Datastore):
         mtime = os.path.getmtime(filename)
         if mtime > self._readonly_mtime:
             with open(filename) as f:
-                self._readonly = set(line[:-1] for line in f if len(line[:-1])>0)
+                self._readonly = set(line for line in (l.strip() for l in f) if len(line)>0)
             self._readonly_mtime = mtime
         return username in self._readonly
 
