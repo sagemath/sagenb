@@ -120,18 +120,18 @@ screen width is less than the container width */
 
 /* here we should also make another @media setup for printing */
 
-@worksheet_name_font_size: 42px;
-.worksheet_name {
-	height: @worksheet_name_font_size + 6;
+@title_font_size: 42px;
+h1.title {
+	font-size: @title_font_size;
+	line-height: @title_font_size + 6;
+}
 
-	h1 {
-		font-size: @worksheet_name_font_size;
-		line-height: @worksheet_name_font_size + 6;
-	}
+.worksheet_name {
+	height: @title_font_size + 6;
 
 	input {
 		/* -2 to account for padding */
-		height: @worksheet_name_font_size - 2;
+		height: @title_font_size - 2;
 		width: 100%;
 
 		/* for now, this is a sloppy way to deal with padding issues */
@@ -139,7 +139,7 @@ screen width is less than the container width */
 		padding-right: 0;
 
 		display: none;
-		font-size: @worksheet_name_font_size;
+		font-size: @title_font_size;
 		font-weight: bold;
 	}
 
@@ -429,7 +429,7 @@ body.single_cell_mode .single_cell_controls {
 
 /* ----------- END WORKSHEET --------- */
 
-/* ----------- NOTEBOOK HOME --------- */
+/* ----------- WORKSHEET LIST --------- */
 #top_toolbar {
 	/*margin-bottom: 0;*/
 	
@@ -447,12 +447,12 @@ body.single_cell_mode .single_cell_controls {
 	
 	.worksheet_name_cell {
 		font-weight: bold;
-		width: 40%
+		width: 45%
 	}
 	
 	.last_edit_cell {
 		font-size: 8pt;
 		color: #999;
-		width: 25%;
+		width: 15%;
 	}
 }

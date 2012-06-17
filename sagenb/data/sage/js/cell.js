@@ -33,7 +33,7 @@ sagenb.worksheetapp.cell = function(id) {
 		 * given. If auto_evaluate is true and this is an #auto cell, it will
 		 * be evaluated.
 		 */
-		async_request(this_cell.worksheet.worksheet_command("cell_properties"), this_cell.worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_cell.worksheet.worksheet_command("cell_properties"), sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			// set up all of the parameters
@@ -168,7 +168,7 @@ sagenb.worksheetapp.cell = function(id) {
 				autofocus: false,
 			
 				onFocus: function() {
-					// may need to make async_request here
+					// may need to make sagenb.async_request here
 					this_cell.worksheet.current_cell_id = this_cell.id;
 					
 					// unhide
@@ -413,7 +413,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		
 		// update the server input property
-		async_request(this_cell.worksheet.worksheet_command("eval"), this_cell.worksheet.generic_callback, {
+		sagenb.async_request(this_cell.worksheet.worksheet_command("eval"), sagenb.generic_callback, {
 			save_only: 1,
 			id: this_cell.id,
 			input: this_cell.input
@@ -427,7 +427,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		
 		// we're an evaluate cell
-		async_request(this_cell.worksheet.worksheet_command("eval"), this_cell.worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_cell.worksheet.worksheet_command("eval"), sagenb.generic_callback(function(status, response) {
 			/* EVALUATION CALLBACK */
 		
 			var X = decode_response(response);
@@ -502,7 +502,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		
 		function do_check() {
-			async_request(this_cell.worksheet.worksheet_command("cell_update"), this_cell.worksheet.generic_callback(function(status, response) {
+			sagenb.async_request(this_cell.worksheet.worksheet_command("cell_update"), sagenb.generic_callback(function(status, response) {
 				/* we may want to implement an error threshold system for errors 
 				like the old notebook had. that would go here */
 				
@@ -605,7 +605,7 @@ sagenb.worksheetapp.cell = function(id) {
 	/////// OUTPUT ///////
 	this_cell.delete_output = function() {
 		// TODO we should maybe interrupt the cell if its running here
-		async_request(this_cell.worksheet.worksheet_command('delete_cell_output'), this_cell.worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_cell.worksheet.worksheet_command('delete_cell_output'), sagenb.generic_callback(function(status, response) {
 			this_cell.output = "";
 			this_cell.render_output();
 		}), {
@@ -632,13 +632,12 @@ sagenb.worksheetapp.cell = function(id) {
 	};
 	
 	this_cell.delete = function() {
-		// TODO we should maybe interrupt the cell if its running here
 		if(this_cell.is_evaluating) {
 			// interrupt
-			async_request(this_cell.worksheet.worksheet_command('interrupt'));
+			sagenb.async_request(this_cell.worksheet.worksheet_command('interrupt'));
 		}
 		
-		async_request(this_cell.worksheet.worksheet_command('delete_cell'), this_cell.worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_cell.worksheet.worksheet_command('delete_cell'), sagenb.generic_callback(function(status, response) {
 			X = decode_response(response);
 			
 			if(X.command === "ignore") return;

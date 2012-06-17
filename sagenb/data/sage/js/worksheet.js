@@ -97,34 +97,6 @@ sagenb.worksheetapp.worksheet = function() {
 		return ('/home/' + this_worksheet.filename + '/' + cmd);
 	};
 	// this may need to go somewhere else
-	this_worksheet.generic_callback = function(extra_callback) {
-		/* Constructs a generic callback function. The extra_callback
-		 * argument is optional. If the callback receives a "success"
-		 * status (and extra_callback is a function), extra_callback 
-		 * will be called and passed the status and response arguments.
-		 * If you use generic_callback with no extra_callback, you *must*
-		 * call generic_callback() not just generic_callback because 
-		 * this function is not a callback itself; it returns a callback
-		 * function.
-		 */
-		
-		return function(status, response) {
-			if(status !== "success") {
-				this_worksheet.show_connection_error();
-				
-				// don't continue to extra_callback
-				return;
-			} else {
-				// status was good, hide alert
-				this_worksheet.hide_connection_error();
-			}
-		
-			// call the extra callback if it was given
-			if($.isFunction(extra_callback)) {
-				extra_callback(status, response);
-			}
-		}
-	};
 	
 	//// MISC ////
 	this_worksheet.forEachCell = function(f) {
@@ -138,23 +110,13 @@ sagenb.worksheetapp.worksheet = function() {
 	}
 	
 	///////////////// PINGS //////////////////
-	this_worksheet.show_connection_error = function() {
-		$(".alert_connection").show();
-	};
-	this_worksheet.hide_connection_error = function() {
-		$(".alert_connection").hide();
-	};
 	this_worksheet.ping_server = function() {
 		/* for some reason pinging doesn't work well.
 		 * the callback goes but jQuery throws a 404 error.
 		 * this error may not be a bug, not sure...
 		 */
-		async_request(this_worksheet.worksheet_command('alive'), this_worksheet.generic_callback());
+		sagenb.async_request(this_worksheet.worksheet_command('alive'), sagenb.generic_callback());
 	};
-	
-	
-	
-	
 	
 	
 	
@@ -163,7 +125,7 @@ sagenb.worksheetapp.worksheet = function() {
 		window.open("/new_worksheet");
 	};
 	this_worksheet.save = function() {
-		async_request(this_worksheet.worksheet_command("save_snapshot"), this_worksheet.generic_callback());
+		sagenb.sagenb.async_request(this_worksheet.worksheet_command("save_snapshot"), sagenb.generic_callback());
 	};
 	this_worksheet.close = function() {
 		if(this_worksheet.name === "Untitled") {
@@ -248,26 +210,32 @@ sagenb.worksheetapp.worksheet = function() {
 		this_worksheet.cells[firstcell_id].evaluate();
 	};
 	this_worksheet.interrupt = function() {
-		async_request(this_worksheet.worksheet_command('interrupt'), this_worksheet.generic_callback());
+		sagenb.sagenb.async_request(this_worksheet.worksheet_command('interrupt'), sagenb.generic_callback());
+	};
+	this_worksheet.restart_sage = function() {
+		this_worksheet.forEachCell(function(cell) {
+			if(cell.is_evaluating) cell.render_output("");
+		});
+		sagenb.sagenb.async_request(this_worksheet.worksheet_command('restart_sage'), sagenb.generic_callback());
 	};
 	
 	//// OUTPUT STUFF ////
 	this_worksheet.hide_all_output = function() {
-		async_request(this_worksheet.worksheet_command('hide_all'), this_worksheet.generic_callback(function(status, response) {
+		sagenb.sagenb.async_request(this_worksheet.worksheet_command('hide_all'), sagenb.generic_callback(function(status, response) {
 			this_worksheet.forEachCell(function(cell) {
 				cell.set_output_hidden();
 			});
 		}));
 	};
 	this_worksheet.show_all_output = function() {
-		async_request(this_worksheet.worksheet_command('show_all'), this_worksheet.generic_callback(function(status, response) {
+		sagenb.sagenb.async_request(this_worksheet.worksheet_command('show_all'), sagenb.generic_callback(function(status, response) {
 			this_worksheet.forEachCell(function(cell) {
 				cell.set_output_visible();
 			});
 		}));
 	};
 	this_worksheet.delete_all_output = function() {
-		async_request(this_worksheet.worksheet_command('delete_all_output'), this_worksheet.generic_callback(function(status, response) {
+		sagenb.sagenb.async_request(this_worksheet.worksheet_command('delete_all_output'), sagenb.generic_callback(function(status, response) {
 			this_worksheet.forEachCell(function(cell) {
 				cell.output = "";
 				cell.render_output();
@@ -276,7 +244,7 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	
 	this_worksheet.change_system = function(newsystem) {
-		async_request(this_worksheet.worksheet_command("system/" + newsystem), this_worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("system/" + newsystem), sagenb.generic_callback(function(status, response) {
 			this_worksheet.system = newsystem;
 			
 			this_worksheet.forEachCell(function(cell) {
@@ -285,12 +253,12 @@ sagenb.worksheetapp.worksheet = function() {
 		}));
 	};
 	this_worksheet.set_pretty_print = function(s) {
-		async_request(this_worksheet.worksheet_command("pretty_print/" + s), this_worksheet.generic_callback());
+		sagenb.async_request(this_worksheet.worksheet_command("pretty_print/" + s), sagenb.generic_callback());
 	};
 	
 	//// NEW CELL /////
 	this_worksheet.new_cell_before = function(id) {
-		async_request(this_worksheet.worksheet_command("new_cell_before"), function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("new_cell_before"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -321,7 +289,7 @@ sagenb.worksheetapp.worksheet = function() {
 		});
 	};
 	this_worksheet.new_cell_after = function(id) {
-		async_request(this_worksheet.worksheet_command("new_cell_after"), function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("new_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -353,7 +321,7 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	
 	this_worksheet.new_text_cell_before = function(id) {
-		async_request(this_worksheet.worksheet_command("new_text_cell_before"), function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("new_text_cell_before"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -384,7 +352,7 @@ sagenb.worksheetapp.worksheet = function() {
 		});
 	};
 	this_worksheet.new_text_cell_after = function(id) {
-		async_request(this_worksheet.worksheet_command("new_text_cell_after"), function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("new_text_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -418,7 +386,7 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	/////////////// WORKSHEET UPDATE //////////////////////
 	this_worksheet.worksheet_update = function() {
-		async_request(this_worksheet.worksheet_command("worksheet_properties"), this_worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("worksheet_properties"), sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			this_worksheet.id = X.id_number;
@@ -471,7 +439,7 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	this_worksheet.cell_list_update = function() {
 		// load in cells
-		async_request(this_worksheet.worksheet_command("cell_list"), this_worksheet.generic_callback(function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command("cell_list"), sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			// set the state_number
@@ -545,11 +513,16 @@ sagenb.worksheetapp.worksheet = function() {
 				}
 			});
 		}
+		
+		sagenb.done_loading();
 	}
 	
 	
 	//////////////// INITIALIZATION ////////////////////
 	this_worksheet.init = function() {
+		// show the spinner
+		sagenb.start_loading();
+		
 		// do the actual load
 		this_worksheet.worksheet_update();
 		
@@ -570,7 +543,7 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			if(this_worksheet.name !== $(".worksheet_name input").val()) {
 				// send to the server
-				async_request(this_worksheet.worksheet_command("rename"), this_worksheet.generic_callback(function(status, response) {
+				sagenb.async_request(this_worksheet.worksheet_command("rename"), sagenb.generic_callback(function(status, response) {
 					// update the title when we get good response
 					this_worksheet.worksheet_update();
 				}), {
@@ -623,7 +596,7 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		//////// SHARING DIALOG ///////////
 		$("#sharing_dialog .btn-primary").click(function(e) {
-			async_request(this_worksheet.worksheet_command("invite_collab"), this_worksheet.generic_callback(), {
+			sagenb.async_request(this_worksheet.worksheet_command("invite_collab"), sagenb.generic_callback(), {
 				collaborators: $("#collaborators").val()
 			});
 		});
@@ -635,13 +608,13 @@ sagenb.worksheetapp.worksheet = function() {
 				command = this_worksheet.worksheet_command("publish?stop");
 			}
 			
-			async_request(command, this_worksheet.generic_callback(function(status, response) {
+			sagenb.async_request(command, sagenb.generic_callback(function(status, response) {
 				this_worksheet.worksheet_update();
 			}));
 		});
 		$("#auto_republish_checkbox").change(function(e) {
 			// for some reason, auto is a toggle command
-			async_request(this_worksheet.worksheet_command("publish?auto"), this_worksheet.generic_callback(function(status, response) {
+			sagenb.async_request(this_worksheet.worksheet_command("publish?auto"), sagenb.generic_callback(function(status, response) {
 				this_worksheet.worksheet_update();
 			}));
 		});

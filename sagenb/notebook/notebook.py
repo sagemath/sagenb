@@ -1707,8 +1707,8 @@ class Notebook(object):
         else:
             template_page = os.path.join("html", "notebook", "worksheet_page.html")
 
-        #this is TESTING!!!
-        template_page = os.path.join("html", "worksheet", "worksheet.html")
+        # this is for TESTING!!!
+        template_page = os.path.join("html", "worksheet.html")
         
         return template(template_page, worksheet = W,
                         notebook = self, do_print=do_print,

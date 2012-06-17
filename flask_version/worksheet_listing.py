@@ -9,9 +9,11 @@ _ = gettext
 
 worksheet_listing = Module('flask_version.worksheet_listing')
 
-def render_worksheet_list(args, pub, username):
+@worksheet_listing.route('/worksheet_list')
+@login_required
+def worksheet_list():
     """
-    Returns a rendered worksheet listing.
+    Returns a worksheet listing.
 
     INPUT:
 
@@ -31,41 +33,50 @@ def render_worksheet_list(args, pub, username):
     
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
+    from sagenb.notebook.misc import encode_response
     
-    typ = args['typ'] if 'typ' in args else 'active'
-    search = unicode_str(args['search']) if 'search' in args else None
-    sort = args['sort'] if 'sort' in args else 'last_edited'
-    reverse = (args['reverse'] == 'True') if 'reverse' in args else False
+    # TESTING
+    pub = False
+    
+    r = {}
+    
+    typ = request.args['typ'] if 'typ' in request.args else 'active'
+    search = unicode_str(request.args['search']) if 'search' in request.args else None
+    sort = request.args['sort'] if 'sort' in request.args else 'last_edited'
+    reverse = (request.args['reverse'] == 'True') if 'reverse' in request.args else False
 
     try:
         if not pub:
-            worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
-                                                              search=search, reverse=reverse)
+            r['worksheets'] = [x.basic() for x in g.notebook.worksheet_list_for_user(g.username, typ=typ, sort=sort, search=search, reverse=reverse)]
         else:
-            worksheets = g.notebook.worksheet_list_for_public(username, sort=sort,
-                                                                search=search, reverse=reverse)
+            r['worksheets'] = [x.basic() for x in g.notebook.worksheet_list_for_public(g.username, sort=sort, search=search, reverse=reverse)]
+
     except ValueError as E:
         # for example, the sort key was not valid
         print "Error displaying worksheet listing: ", E
         return current_app.message(_("Error displaying worksheet listing."))
 
-    worksheet_filenames = [x.filename() for x in worksheets]
+    # r['worksheet_filenames'] = [x.filename() for x in r['worksheets']]
 
-    if pub and (not username or username == tuple([])):
-        username = 'pub'
+    if pub and (not g.username or g.username == tuple([])):
+        r['username'] = 'pub'
 
-    accounts = g.notebook.user_manager().get_accounts()
-    sage_version = SAGE_VERSION
-    return render_template('html/worksheet_listing.html', **locals())
+    r['accounts'] = g.notebook.user_manager().get_accounts()
+    r['sage_version'] = SAGE_VERSION
+    r['pub'] = pub
+    # r['username'] = g.username
+    
+    return encode_response(r)
 
 @worksheet_listing.route('/home/<username>/')
 @login_required
 def home(username):
     if not g.notebook.user_manager().user_is_admin(g.username) and username != g.username:
         #XXX: i18n
-        return current_app.message("User '%s' does not have permission to view the home page of '%s'."%(g.username, username))
+        return current_app.message("User '%s' does not have permission to view the home page of '%s'." % (g.username, username))
     else:
-        return render_worksheet_list(request.args, pub=False, username=username)
+        # return render_worksheet_list(request.args, pub=False, username=username)
+        return render_template('html/worksheet_list.html')
 
 @worksheet_listing.route('/home/')
 @login_required
@@ -79,13 +90,23 @@ def bare_home():
 def get_worksheets_from_request():
     U = g.notebook.user_manager().user(g.username)
     
-    if 'filename' in request.form:
-        filenames = [request.form['filename']]
-    elif 'filenames' in request.form:
+    print 'values'
+    print request.values
+    print 'filenames'
+    print request.values['filenames[]']
+    print 'json'
+    print request.json
+    
+    if 'filename' in request.values:
+        filenames = [request.values['filename']]
+    elif 'filenames' in request.values:
+        print 'FILENAMES'
         import json
-        filenames = json.loads(request.form['filenames'])
+        print 'FILENAMES: ', request.values['filenames']
+        filenames = json.loads(request.values['filenames'])
     else:
         filenames = []
+    print filenames
     worksheets = []
     for filename in filenames:
         W = g.notebook.get_worksheet_with_filename(filename)
@@ -101,8 +122,10 @@ def get_worksheets_from_request():
 @worksheet_listing.route('/send_to_trash', methods=['POST'])
 @login_required
 def send_worksheet_to_trash():
+    print 'send to trash'
     for W in get_worksheets_from_request():
         W.move_to_trash(g.username)
+        print W.filename()
     return ''
 
 @worksheet_listing.route('/send_to_archive', methods=['POST'])
@@ -126,7 +149,7 @@ def send_worksheet_to_stop():
         W.quit()
     return ''
 
-@worksheet_listing.route('/emptytrash', methods=['POST'])
+@worksheet_listing.route('/empty_trash', methods=['POST'])
 @login_required
 def empty_trash():
     g.notebook.empty_trash(g.username)

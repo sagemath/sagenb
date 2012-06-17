@@ -359,6 +359,8 @@ class Worksheet(object):
              # and by whom:
              #     last_change = ('username', time.time())
              'last_change': self.last_change(),
+             
+             'filename': self.filename()
              }
         return d
 
