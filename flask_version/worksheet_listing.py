@@ -36,7 +36,7 @@ def render_worksheet_list(args, pub, username):
     search = unicode_str(args['search']) if 'search' in args else None
     sort = args['sort'] if 'sort' in args else 'last_edited'
     reverse = (args['reverse'] == 'True') if 'reverse' in args else False
-
+    readonly = g.notebook.readonly_user(g.username)
     try:
         if not pub:
             worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
