@@ -611,7 +611,7 @@ class FilesystemDatastore(Datastore):
 
     def readonly_user(self, username):
         """
-        Each line of the readonly file has format ``username:message``, where message could just be blank.  The colon is important.
+        Each line of the readonly file has a username.
         """
         filename = os.path.join(self._path, self._readonly_filename)
         if not os.path.exists(filename):
@@ -619,12 +619,9 @@ class FilesystemDatastore(Datastore):
         mtime = os.path.getmtime(filename)
         if mtime > self._readonly_mtime:
             with open(filename) as f:
-                self._readonly = dict(line[:-1].split(':',1) for line in f)
+                self._readonly = set(line[:-1] for line in f if len(line[:-1])>0)
             self._readonly_mtime = mtime
-        if username in self._readonly:
-            return True, self._readonly[username]
-        else:
-            return False, ''
+        return username in self._readonly
 
     def delete(self):
         """

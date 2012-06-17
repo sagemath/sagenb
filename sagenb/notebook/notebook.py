@@ -303,8 +303,7 @@ class Notebook(object):
         """
         Returns True if the user is supposed to only be a read-only user.
         """
-        readonly, message = self.__storage.readonly_user(username)
-        return readonly
+        return self.__storage.readonly_user(username)
 
     ##########################################################
     # Publishing worksheets
