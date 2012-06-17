@@ -15,6 +15,7 @@ Sage notebook server::
          conf.pickle
          users.pickle
          openid.pickle (optional)
+         readonly.txt (optional)
          home/
              username0/
                 history.pickle
@@ -75,6 +76,9 @@ class FilesystemDatastore(Datastore):
         self._home_path = 'home'
         self._conf_filename = 'conf.pickle'
         self._users_filename = 'users.pickle'
+        self._readonly_filename = 'readonly.txt'
+        self._readonly_mtime = 0
+        self._readonly = None
 
     def __repr__(self):
         return "Filesystem Sage Notebook Datastore at %s"%self._path
@@ -604,6 +608,23 @@ class FilesystemDatastore(Datastore):
                     import traceback
                     print "Warning: problem loading %s/%s: %s"%(username, id_number, traceback.format_exc())
         return v
+
+    def readonly_user(self, username):
+        """
+        Each line of the readonly file has format ``username:message``, where message could just be blank.  The colon is important.
+        """
+        filename = os.path.join(self._path, self._readonly_filename)
+        if not os.path.exists(filename):
+            return False, ''
+        mtime = os.path.getmtime(filename)
+        if mtime > self._readonly_mtime:
+            with open(filename) as f:
+                self._readonly = dict(line[:-1].split(':',1) for line in f)
+            self._readonly_mtime = mtime
+        if username in self._readonly:
+            return True, self._readonly[username]
+        else:
+            return False, ''
 
     def delete(self):
         """

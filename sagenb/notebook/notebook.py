@@ -299,6 +299,13 @@ class Notebook(object):
         """
         return self.user_manager().valid_login_names()
 
+    def readonly_user(self, username):
+        """
+        Returns True if the user is supposed to only be a read-only user.
+        """
+        readonly, message = self.__storage.readonly_user(username)
+        return readonly
+
     ##########################################################
     # Publishing worksheets
     ##########################################################
