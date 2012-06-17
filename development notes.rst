@@ -41,7 +41,7 @@ Big Stuff
 Medium Stuff
 ------------
 
-* don't allow computations longer than X seconds
+* Option that doesn't allow computations longer than X seconds
 
 * Login page
 
