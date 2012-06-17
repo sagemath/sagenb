@@ -47,7 +47,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		}
 		$this.find("td.owner_cell").html(owner_html);
 		
-		
+		$this.find("td.last_edit_cell").text(this_row.props.last_change_pretty + " ago");
 	};
 	
 	this_row.remove = function() {
@@ -107,12 +107,12 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	
 	////////// CHECKING //////////
 	this_list.check_all = function() {
-		this_list.for_each_listing(function(list_row) {
+		this_list.for_each_row(function(list_row) {
 			list_row.check();
 		});
 	};
 	this_list.check_none = function() {
-		this_list.for_each_listing(function(list_row) {
+		this_list.for_each_row(function(list_row) {
 			list_row.uncheck();
 		});
 	};

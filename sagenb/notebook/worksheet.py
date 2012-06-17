@@ -359,6 +359,7 @@ class Worksheet(object):
              # and by whom:
              #     last_change = ('username', time.time())
              'last_change': self.last_change(),
+             'last_change_pretty': prettify_time_ago(time.time() - self.last_change()[1]),
              
              'filename': self.filename()
              }
