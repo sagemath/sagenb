@@ -73,6 +73,9 @@ def get_cell_id():
 @ws.route('/new_worksheet')
 @login_required
 def new_worksheet():
+    if g.notebook.readonly_user(g.username):
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('worksheet_listing.home', username=g.username))
+
     W = g.notebook.create_new_worksheet(gettext("Untitled"), g.username)
     return redirect(url_for_worksheet(W))
 
@@ -89,6 +92,13 @@ def worksheet(username, id, worksheet=None):
     s = g.notebook.html(worksheet_filename=worksheet.filename(),
                         username=g.username)
     return s
+
+published_commands_allowed = set(['alive', 'cells', 'cell_update',
+                          'data', 'download', 'edit_published_page', 'eval',
+                          'quit_sage', 'rate', 'rating_info', 'new_cell_before',
+                          'new_cell_after'])
+
+readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download', 'quit_sage', 'rating_info', 'delete_all_output'])
 
 def worksheet_command(target, **route_kwds):
     if 'methods' not in route_kwds:
@@ -109,12 +119,12 @@ def worksheet_command(target, **route_kwds):
             #####################
             #_sage_ is used by live docs and published interacts
             if username_id and username_id[0] in ['_sage_']:
-                if target.split('/')[0] not in ['alive', 'cells', 'cell_update',
-                          'data', 'download', 'edit_published_page', 'eval',
-                          'quit_sage', 'rate', 'rating_info', 'new_cell_before',
-                          'new_cell_after']:
+                if target.split('/')[0] not in published_commands_allowed:
                     raise NotImplementedError("User _sage_ can not access URL %s"%target)
-            
+            if g.notebook.readonly_user(g.username):
+                if target.split('/')[0] not in readonly_commands_allowed:
+                    return current_app.message(_("Account is in read-only mode"), cont=url_for('worksheet_listing.home', username=g.username))
+
             #Make worksheet a non-keyword argument appearing before the
             #other non-keyword arguments.
             worksheet = kwds.pop('worksheet', None)

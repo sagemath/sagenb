@@ -236,6 +236,8 @@ def download_worksheets():
 @worksheet_listing.route('/upload')
 @login_required
 def upload():
+    if g.notebook.readonly_user(g.username):
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
     return render_template(os.path.join('html', 'upload.html'),
                            username=g.username)
 
@@ -333,6 +335,9 @@ def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
     from werkzeug.utils import secure_filename
     import zipfile
+
+    if g.notebook.readonly_user(g.username):
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
 
     backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")
 
