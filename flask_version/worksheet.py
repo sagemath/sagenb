@@ -7,6 +7,7 @@ from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
+from sagenb.notebook.misc import encode_response
 
 ws = Module('flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
@@ -223,7 +224,6 @@ def worksheet_cell_list(worksheet):
     r['html_cell_list'] = ''
     #r['html_cell_list'] = W.html_cell_list()
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 ########################################################
@@ -260,7 +260,6 @@ def worksheet_new_cell_before(worksheet):
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(div_wrap=False)
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 @worksheet_command('new_text_cell_before')
@@ -275,7 +274,6 @@ def worksheet_new_text_cell_before(worksheet):
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(editing=True)
 
-    from sagenb.notebook.misc import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
     # to centralize that code.
     return encode_response(r)
@@ -293,7 +291,6 @@ def worksheet_new_cell_after(worksheet):
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(div_wrap=True)
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 @worksheet_command('new_text_cell_after')
@@ -308,7 +305,6 @@ def worksheet_new_text_cell_after(worksheet):
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(editing=True)
 
-    from sagenb.notebook.misc import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
     # to centralize that code.
     return encode_response(r)
@@ -334,7 +330,6 @@ def worksheet_delete_cell(worksheet):
         r['prev_id'] = worksheet.delete_cell_with_id(id)
         r['cell_id_list'] = worksheet.cell_id_list()
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 @worksheet_command('delete_cell_output')
@@ -345,7 +340,6 @@ def worksheet_delete_cell_output(worksheet):
     worksheet.get_cell_with_id(id).delete_output()
     r['command'] = 'delete_output'
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 ########################################################
@@ -366,7 +360,6 @@ def worksheet_eval(worksheet):
     documentation of the function and the source code of the function
     respectively.
     """    
-    from sagenb.notebook.misc import encode_response
     from base import notebook_updates
     
     r = {}
@@ -431,7 +424,6 @@ def worksheet_eval(worksheet):
 @worksheet_command('cell_update')
 def worksheet_cell_update(worksheet):
     import time
-    from sagenb.notebook.misc import encode_response
 
     r = {}
     r['id'] = id = get_cell_id()
@@ -500,7 +492,6 @@ def worksheet_introspect(worksheet):
     cell = worksheet.get_cell_with_id(id)
     cell.evaluate(introspect=[before_cursor, after_cursor])
 
-    from sagenb.notebook.misc import encode_response
     r['command'] = 'introspect'
     return encode_response(r)
 
