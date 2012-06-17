@@ -42,6 +42,18 @@ function decode_response(text) {
 	});
 }
 
+function encode_response(obj) {
+    /*
+    JSON-encodes a object to a string.
+
+    INPUT:
+        obj -- object
+    OUTPUT:
+        string
+    */
+    return JSON.stringify(obj);
+}
+
 function system_to_codemirror_mode(system) {
 	var mode = "";
 	

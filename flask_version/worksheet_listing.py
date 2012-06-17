@@ -90,23 +90,13 @@ def bare_home():
 def get_worksheets_from_request():
     U = g.notebook.user_manager().user(g.username)
     
-    print 'values'
-    print request.values
-    print 'filenames'
-    print request.values['filenames[]']
-    print 'json'
-    print request.json
-    
     if 'filename' in request.values:
         filenames = [request.values['filename']]
     elif 'filenames' in request.values:
-        print 'FILENAMES'
         import json
-        print 'FILENAMES: ', request.values['filenames']
         filenames = json.loads(request.values['filenames'])
     else:
         filenames = []
-    print filenames
     worksheets = []
     for filename in filenames:
         W = g.notebook.get_worksheet_with_filename(filename)
@@ -122,10 +112,8 @@ def get_worksheets_from_request():
 @worksheet_listing.route('/send_to_trash', methods=['POST'])
 @login_required
 def send_worksheet_to_trash():
-    print 'send to trash'
     for W in get_worksheets_from_request():
         W.move_to_trash(g.username)
-        print W.filename()
     return ''
 
 @worksheet_listing.route('/send_to_archive', methods=['POST'])

@@ -143,7 +143,6 @@ _localization_cache = {}
 @base.route('/data/sage/js/localization.js')
 @base.route('/javascript/dynamic/localization.js')
 def localization_js():
-    print 'localization_js'
     global _localization_cache
     locale=repr(get_locale())
     if _localization_cache.get(locale,None) is None:

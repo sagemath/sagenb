@@ -34,7 +34,7 @@ sagenb.worksheetlistapp.list_row = function() {
 			this_row.checked = $this.find("input").prop("checked");
 		});
 		
-		$this.find("td.worksheet_name_cell").html('<a href="/home/' + sagenb.username + '/' + this_row.props.id_number + '">' + this_row.props.name + '</a>');
+		$this.find("td.worksheet_name_cell").html('<a href="/home/' + sagenb.username + '/' + this_row.props.id_number + '" target="_blank">' + this_row.props.name + '</a>');
 		
 		var owner_html = this_row.props.owner;
 		if(this.props.collaborators && this.props.collaborators.length) {
@@ -51,9 +51,9 @@ sagenb.worksheetlistapp.list_row = function() {
 	};
 	
 	this_row.remove = function() {
-		// TODO remove DOM
-		$this.slideUp("slow", function() {
+		$this.hide("slow", function() {
 			$this.detach();
+			delete this_row.list.rows[this_row.props.id_number];
 		});
 	}
 	
@@ -72,9 +72,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	var this_list = this;
 	
 	this_list.rows = [];
-	
-	// TODO get rid of this, use json array instead
-	var SEP = '___S_A_G_E___';
 	
 	this_list.init = function() {
 		this_list.load();
@@ -97,12 +94,12 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	
 	///////// FOR EACH ///////////
-	this_list.for_each_listing = function(f) {
+	this_list.for_each_row = function(f) {
 		$.each(this_list.rows, function(i, list_row) {
 			if(list_row) f(list_row);
 		});
 	};
-	this_list.for_each_checked_listing = function(f) {
+	this_list.for_each_checked_row = function(f) {
 		$.each(this_list.rows, function(i, list_row) {
 			if(list_row && list_row.checked) f(list_row);
 		});
@@ -123,7 +120,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	/////////// FILENAMES ////////////
 	this_list.checked_worksheet_filenames = function() {
 		var r = [];
-		this_list.for_each_checked_listing(function(list_row) {
+		this_list.for_each_checked_row(function(list_row) {
 			r.push(list_row.props.filename);
 		});
 		return r;
@@ -141,23 +138,26 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	
 	this_list.checked_action = function(action) {
-		alert(this_list.checked_worksheet_filenames());
 		sagenb.async_request(action, sagenb.generic_callback(), {
-			"filenames": this_list.checked_worksheet_filenames(),
-			"sep": SEP
+			filenames: encode_response(this_list.checked_worksheet_filenames())
 		});
 	}
 	this_list.archive = function() {
 		this_list.checked_action("/send_to_archive");
 	};
 	this_list.delete = function() {
+		//TODO Are you sure?
 		this_list.checked_action("/send_to_trash");
+		
+		this_list.for_each_checked_row(function(row) {
+			row.remove();
+		});
 	};
 	this_list.stop = function() {
 		this_list.checked_action("/send_to_stop");
 	};
 	this_list.download = function() {
-		window.location.replace("/download_worksheets?filenames=" + this_list.checked_worksheet_filenames() + "&sep=" + SEP);
+		window.location.replace("/download_worksheets.zip?filenames=" + encode_response(this_list.checked_worksheet_filenames()));
 	};
 	
 	this_list.clear_list = function() {
