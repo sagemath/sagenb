@@ -1114,7 +1114,7 @@ class Cell(Cell_generic):
 
         # Get rid of spurious carriage returns
         plaintext_output = plaintext_output.strip('\n')
-        out = out.strip('\n').strip('\r').strip('\r\n')
+        out = out.strip('\r\n')
         plaintext_output = plaintext_output + '\n' + out
 
         if not prompts:
