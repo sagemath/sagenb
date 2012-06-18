@@ -1050,7 +1050,7 @@ class Cell(Cell_generic):
         """
         if ncols == 0:
             ncols = self.word_wrap_cols()
-        s = u''
+        plaintext_output = u''
 
         self._in = unicode_str(self._in)
 
@@ -1072,7 +1072,7 @@ class Cell(Cell_generic):
                 input_lines = input_lines[1:]
 
             if has_prompt:
-                s += '\n'.join(input_lines) + '\n'
+                plaintext_output += '\n'.join(input_lines) + '\n'
             else:
                 in_loop = False
                 for v in input_lines:
@@ -1080,17 +1080,17 @@ class Cell(Cell_generic):
                         pass
                     elif len(v.lstrip()) != len(v):  # starts with white space
                         in_loop = True
-                        s += '...   ' + v + '\n'
+                        plaintext_output += '...   ' + v + '\n'
                     elif v[:5] == 'else:':
                         in_loop = True
-                        s += '...   ' + v + '\n'
+                        plaintext_output += '...   ' + v + '\n'
                     else:
                         if in_loop:
-                            s += '...\n'
+                            plaintext_output += '...\n'
                             in_loop = False
-                        s += pr + v + '\n'
+                        plaintext_output += pr + v + '\n'
         else:
-            s += self._in
+            plaintext_output += self._in
 
         if prompts:
             msg = TRACEBACK
@@ -1113,13 +1113,13 @@ class Cell(Cell_generic):
             out = out[:max_out] + '...'
 
         # Get rid of spurious carriage returns
-        s = s.strip('\n')
+        plaintext_output = plaintext_output.strip('\n')
         out = out.strip('\n').strip('\r').strip('\r\n')
-        s = s + '\n' + out
+        plaintext_output = plaintext_output + '\n' + out
 
         if not prompts:
-            s = s.rstrip('\n')
-        return s
+            plaintext_output = plaintext_output.rstrip('\n')
+        return plaintext_output
 
     def edit_text(self, ncols=0, prompts=False, max_out=None):
         ur"""
