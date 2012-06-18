@@ -1040,7 +1040,7 @@ class Cell(Cell_generic):
 
         OUTPUT:
 
-        - a string
+        - ``plaintext_output`` - Plaintext string of the cell
 
         EXAMPLES::
 
