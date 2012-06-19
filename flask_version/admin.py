@@ -90,7 +90,7 @@ def add_user():
                                    error='username_taken', username_input=username, **template_dict)
         g.notebook.user_manager().add_user(username, password, '', force=True)
 
-        message = gettext('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
+        message = _('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
                           username=username, password=password)
         return current_app.message(message, cont='/adduser', title=_('New User'))
     else:
