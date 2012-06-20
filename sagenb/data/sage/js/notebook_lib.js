@@ -2088,6 +2088,8 @@ function evaluate_text_cell_input(id, value, settings) {
         id: id,
         input: value
     });
+    //update jmol applet list
+    jmol_delete_check();
 }
 
 
@@ -2256,6 +2258,8 @@ function cell_delete(id) {
     async_request(worksheet_command('delete_cell'), cell_delete_callback, {
         id: id
     });
+    //update jmol applet list
+    jmol_delete_check();
 }
 
 
@@ -2304,6 +2308,9 @@ function cell_delete_callback(status, response) {
     if (in_slide_mode) {
         current_cell = -1;
         slide_mode();
+    //update jmol applet list
+    jmol_delete_check();
+
     }
 }
 
@@ -2326,6 +2333,9 @@ function cell_delete_output(id) {
                   cell_delete_output_callback, {
                       id: id
                   });
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -2354,6 +2364,8 @@ function cell_delete_output_callback(status, response) {
 
     // Set the cell to not evaluated.
     cell_set_not_evaluated(X.id);
+    //update list of jmol applets
+    jmol_delete_check();
 }
 
 
@@ -2997,6 +3009,9 @@ function evaluate_cell(id, newcell) {
         id: id,
         input: cell_input.value
     });
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -3156,6 +3171,9 @@ function evaluate_cell_callback(status, response) {
     }
 
     start_update_check();
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -4435,6 +4453,8 @@ function delete_all_output() {
     // delete from DOM then contact the server for maximum snappiness
     // of the user interface.
     async_request(worksheet_command('delete_all_output'));
+    //update jmol applet info
+    jmol_delete_all_output();
 }
 
 
