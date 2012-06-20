@@ -379,6 +379,11 @@ function bind_events() {
         var cell_id = get_cell_id_from_id(id);
         return input_keypress(cell_id, event);
     });
+    $('.eval_button').click(function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        evaluate_cell(cell_id, 0);
+    }
 }
 
 
