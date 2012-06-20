@@ -68,12 +68,11 @@ INPUT:
                 <textarea class="{{ input_cls }}" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
                           cols="80"
                           id="cell_input_{{ cell.id() }}">{{ cell.input_text().rstrip() }}</textarea>
-                <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
+                <input type="button"
                    class="eval_button"
                    id="eval_button{{ cell.id() }}" 
-                   title="{{ gettext('Click here or press shift-return to evaluate') }}">
-                    {{ gettext('evaluate') }}
-                </a>
+                   title="{{ gettext('Click here or press shift-return to evaluate') }}"
+                   value="{{ gettext('evaluate') }}" />
             {% endif %}
             {# end input #}
 
