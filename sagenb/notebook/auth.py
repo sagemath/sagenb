@@ -1,6 +1,6 @@
 class AuthMethod():
     """
-    Abstract class for authmethods that are used by ExtAuthUserManager 
+    Abstract class for authmethods that are used by ExtAuthUserManager
     All auth methods must implement the following methods
     """
 
@@ -18,12 +18,12 @@ class AuthMethod():
 
     def get_attrib(self, username, attrib):
         raise NotImplementedError
-        
+
 
 class LdapAuth(AuthMethod):
     """
     Authentication via LDAP
-    
+
     User authentication:
     1a. bind to LDAP with either
             - generic configured DN and password (simple bind)
@@ -46,7 +46,7 @@ class LdapAuth(AuthMethod):
         import ldap
         from ldap.sasl import gssapi
         conn = ldap.initialize(self._conf['ldap_uri'])
-        try: 
+        try:
             if self._conf['ldap_gssapi']:
                 token = gssapi()
                 conn.sasl_interactive_bind_s("", token)
@@ -113,10 +113,10 @@ class LdapAuth(AuthMethod):
 
         # try to bind with that DN
         conn = ldap.initialize(uri=self._conf['ldap_uri'])
-        try: 
+        try:
             conn.simple_bind_s(userdn, password)
             return True
-        except ldap.INVALID_CREDENTIALS: 
+        except ldap.INVALID_CREDENTIALS:
             return False
         finally:
             conn.unbind_s()
@@ -127,5 +127,5 @@ class LdapAuth(AuthMethod):
 
         u = self._get_ldapuser(username)
         if u is not None:
-            a = u[1][attrib][0] #if u[1].has_key(attrib) else ''  
+            a = u[1][attrib][0] #if u[1].has_key(attrib) else ''
             return a
