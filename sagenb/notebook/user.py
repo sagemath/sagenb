@@ -289,6 +289,12 @@ class User(object):
             False
         """
         return self._account_type == 'guest'
+
+    def is_external(self):
+        return self._external_auth is not None
+
+    def external_auth(self):
+        return self._external_auth
         
     def is_suspended(self):
         """

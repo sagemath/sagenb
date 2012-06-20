@@ -44,11 +44,23 @@ defaults = {'word_wrap_cols':72,
             'recaptcha_private_key':'',
             'default_language': 'en_US',
             'model_version': 0,
+
+            'auth_ldap':False,
+            'ldap_uri':'ldap://example.net:389/',
+            'ldap_basedn':'ou=users,dc=example,dc=net',
+            'ldap_binddn':'cn=manager,dc=example,dc=net',
+            'ldap_bindpw': 'secret',
+            'ldap_gssapi': False,
+            'ldap_username_attrib': 'cn',
+            'ldap_lookup_attribs': ['cn', 'sn', 'givenName', 'mail'],
+            'ldap_timeout': 5,
+            'ldap_sizelimit': 30,
             }
 
 G_APPEARANCE = _('Appearance')
 G_AUTH = _('Authentication')
 G_SERVER = _('Server')
+G_LDAP = _('LDAP')
 
 defaults_descriptions = {
 
@@ -182,6 +194,67 @@ defaults_descriptions = {
         DESC : _('Model Version'),
         GROUP : G_SERVER,
         TYPE : T_INFO,
+        },
+
+    'auth_ldap': {
+        POS : 1,
+        DESC : _('Enable LDAP Authentication'),
+        GROUP : G_LDAP,
+        TYPE : T_BOOL,
+        },
+    'ldap_uri': {
+        POS : 2,
+        DESC : _('LDAP URI'),
+        GROUP : G_LDAP,
+        TYPE : T_STRING,
+        },
+    'ldap_binddn': {
+        POS : 3,
+        DESC : _('Bind DN'),
+        GROUP : G_LDAP,
+        TYPE : T_STRING,
+        },
+    'ldap_bindpw': {
+        POS : 4,
+        DESC : _('Bind Password'),
+        GROUP : G_LDAP,
+        TYPE : T_STRING,
+        },
+    'ldap_gssapi': {
+        POS : 5,
+        DESC : _('Use GSSAPI instead of Bind DN/Password'),
+        GROUP : G_LDAP,
+        TYPE : T_BOOL,
+        },
+    'ldap_basedn': {
+        POS : 6,
+        DESC : _('Base DN'),
+        GROUP : G_LDAP,
+        TYPE : T_STRING,
+        },
+    'ldap_username_attrib': {
+        POS : 7,
+        DESC: _('Username Attribute (i.e. cn, uid or userPrincipalName)'),
+        GROUP : G_LDAP,
+        TYPE : T_STRING,
+        },
+    'ldap_lookup_attribs': {
+        POS : 8,
+        DESC: _('Attributes for user lookup'),
+        GROUP : G_LDAP,
+        TYPE : T_LIST,
+        },
+    'ldap_timeout': {
+        POS : 9,
+        DESC: _('Query timeout (seconds)'),
+        GROUP : G_LDAP,
+        TYPE : T_INTEGER,
+        },
+    'ldap_sizelimit': {
+        POS : 9,
+        DESC: _('Max. number of search results'),
+        GROUP : G_LDAP,
+        TYPE : T_INTEGER,
         },
 }
 

@@ -20,6 +20,7 @@
             </select>
         </div>
     </div>
+	{% if not external %}
     <div class="section">
         <h2>{{ gettext('Change Password') }}</h2>
         <div id="passwd">
@@ -41,7 +42,6 @@
         </div>
     </div>
 
-    {% if true %}
     <div class="section">
         <h2>{{ gettext('Change E-mail Address') }}</h2>
         
