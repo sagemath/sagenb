@@ -342,6 +342,54 @@ function initialize_the_notebook() {
 	    });
     }
 
+    //bind events to our DOM elements
+    bind_events();
+}
+
+
+function bind_events() {
+    /*
+     * Attaches events to DOM elements.
+     */
+
+    $('.cell_input').focus(function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_focused(this, cell_id);
+        return true;
+    });
+    $('.cell_input').blur(function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_blur(cell_id);
+        return true;
+    });
+    $('.cell_input').keyup(function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keyup(cell_id, event);
+    });
+    $('.cell_input').keydown(function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keydown(cell_id, event);
+    });
+    $('.cell_input').keypress(function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keypress(cell_id, event);
+    });
+}
+
+
+function get_cell_id_from_id(id) {
+    /*
+    * A function to get the cell_id from the button's id attribute
+    */
+    var num_re = /[0-9]+/;
+    var match_result = num_re.exec(id);
+    var cell_id = toint(match_result[0]);
+    return cell_id;
 }
 
 
