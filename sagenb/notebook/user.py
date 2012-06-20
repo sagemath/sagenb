@@ -27,7 +27,7 @@ def generate_salt():
 
     
 class User(object):
-    def __init__(self, username, password='', email='', account_type='admin'):
+    def __init__(self, username, password='', email='', account_type='admin', external_auth=None):
         self._username = username
         self.set_password(password)
         self._email = email
@@ -35,6 +35,7 @@ class User(object):
         if not account_type in ['admin', 'user', 'guest']:
             raise ValueError("account type must be one of admin, user, or guest")
         self._account_type = account_type
+        self._external_auth = external_auth
         self._conf = user_conf.UserConfiguration()
         self._temporary_password = ''
         self._is_suspended = False
