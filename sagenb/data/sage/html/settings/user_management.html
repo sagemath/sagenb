@@ -10,10 +10,18 @@
     <p>{{ gettext('The password for the user %(u)s has been reset to <strong>%(p)s</strong>', u=reset[0], p=reset[1]) }}</p>
     {% endif %}
     <table>
-      <tr><th>{{ gettext('Users') }}</th><th>{{ gettext('Password') }}</th><th>{{ gettext('Suspension') }}</th></tr>
+      <tr>
+        <th>{{ gettext('Users') }}</th>
+        <th>{{ gettext('Password') }}</th>
+        <th>{{ gettext('Suspension') }}</th>
+      </tr>
       {% for user in users %}
       {% if user != 'admin' %}
-      <tr><td><a href="/home/{{ user }}/">{{ user }}</a></td><td><a href="/users/?reset={{ user }}">{{ gettext('Reset') }}</a></td><td><a href="/users/?suspension={{ user }}">{% if user.is_suspended() %}{{ gettext('Unsuspend') }}{% else %}{{ gettext('Suspend') }}{% endif %}</td></tr>
+      <tr>
+        <td><a href="/home/{{ user }}/">{{ user }}</a></td>
+        <td>{% if not user.is_external() %}<a href="/users/?reset={{ user }}">{{ gettext('Reset') }}</a>{% endif %}</td>
+        <td><a href="/users/?suspension={{ user }}">{% if user.is_suspended() %}{{ gettext('Unsuspend') }}{% else %}{{ gettext('Suspend') }}{% endif %}</td>
+      </tr>
       {% endif %}
       {% endfor %}
     </table>
