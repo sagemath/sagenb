@@ -43,7 +43,6 @@ code = setup(name = 'sagenb',
                          , 'hg-git'
                          , 'pyOpenSSL<=0.12'
                          , 'webassets'
-                         , 'python-ldap'
                          ],
       test_suite = 'sagenb.testing.run_tests.all_tests',
       packages    = [ 'sagenb'
