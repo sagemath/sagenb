@@ -126,6 +126,12 @@ class Configuration(object):
         return updated
 
     def html_table(self, updated = {}):
+        from server_conf import G_LDAP
+        try:
+            from ldap import __version__ as ldap_version
+        except ImportError:
+            ldap_version = None
+
         # For now, we assume there's a description for each setting.
         D = self.defaults()
         DS = self.defaults_descriptions()
@@ -137,6 +143,8 @@ class Configuration(object):
         for key in K:
             try:
                 gp = DS[key][GROUP]
+                if gp == G_LDAP and ldap_version is None:
+                    continue
                 DS[key][DESC]
                 DS[key][TYPE]
             except KeyError:
