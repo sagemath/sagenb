@@ -37,13 +37,15 @@ if __name__ == '__main__':
         sys.exit(1)
     dest_dir = os.path.abspath(sys.argv[1])
 
-    print "Fetching the required packages"
+    print "Fetching packages:"
     pkg_index = PackageIndex()
     with open(os.path.join(dest_dir, 'install_order'), 'w') as fd:
         for pkg in required_packages:
+            print "(---  Processing requirement '{0}'".format(pkg)
             dist = pkg_index.fetch_distribution(Requirement.parse(pkg),
                                                 dest_dir, True, True)
             if dist is None:
                 die("Couldn't find package satisfying '{0}'!".format(pkg))
-            print "    Fetched {0} {1}".format(dist.project_name, dist.version)
+            print " ---) Fetched {0} {1}".format(dist.project_name,
+                    dist.version)
             fd.write(os.path.basename(dist.location) + '\n')
