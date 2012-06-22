@@ -21,9 +21,16 @@ try:
 except ImportError:
     raise ImportError, """BeautifulSoup must be installed.
 
-You might download a spkg from: 
+Please either install using Sage spkg installation
 
-http://trac.sagemath.org/sage_trac/raw-attachment/ticket/10637/beautifulsoup-3.2.0.p0.spkg
+    sage -i beautifulsoup
+
+or by using one of
+
+    pip install BeautifulSoup
+    easy_install BeautifulSoup
+
+in the Sage shell (sage --sh).
 """
 
 def preprocess_display_latex(text):
