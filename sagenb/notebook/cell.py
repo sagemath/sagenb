@@ -18,7 +18,6 @@ import re
 import shutil
 from cgi import escape
 
-from jsmath import math_parse
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
@@ -524,7 +523,7 @@ class TextCell(Cell_generic):
         self._text = input_text
 
     def html(self, wrap=None, div_wrap=True, do_print=False,
-             do_math_parse=True, editing=False, publish=False):
+             editing=False, publish=False):
         """
         Returns HTML code for this text cell, including its contents
         and associated script elements.
@@ -539,10 +538,6 @@ class TextCell(Cell_generic):
 
         - ``do_print`` - a boolean (default: False); whether to render the
           cell for printing
-
-        - ``do_math_parse`` - a boolean (default: True); whether to
-          process the contents for JSMath (see
-          :func:`sagenb.notebook.jsmath.math_parse`)
 
         - ``editing`` - a boolean (default: False); whether to open an
           editor for this cell
@@ -560,13 +555,11 @@ class TextCell(Cell_generic):
             sage: C.html()
             u'...text_cell...2+3...'
             sage: C.set_input_text("$2+3$")
-            sage: C.html(do_math_parse=True)
-            u'...text_cell...class="math"...2+3...'
         """
         from template import template
         return template(os.path.join('html', 'notebook', 'text_cell.html'),
                         cell = self, wrap = wrap, div_wrap = div_wrap,
-                        do_print = do_print, do_math_parse = do_math_parse,
+                        do_print = do_print,
                         editing = editing, publish = publish)
 
 
@@ -1864,6 +1857,15 @@ class Cell(Cell_generic):
         # version of the output.
         if ncols == 0:
             t = re_script.sub('', t)
+        #  This is a temporary hack
+        #re_inline = re.compile('<script type="math/tex">(.*?)</script>')
+        #re_display = re.compile('<script type="math/tex; mode=display">(.*?)</script>')
+        #t = re_inline.sub('<span class="math">\1</span>', t)
+        #t = re_display.sub('<div class="math">\1</div>', t)
+        #t = t.replace('<script type="math/tex">(.*?)</script>', '<span class="math">\1</span>')
+        #t = t.replace('<script type="math/tex; mode=display">(.*?)</script>', '<div class="math">\1</div>')
+        ####t = t.replace('<script type="math/tex">', '<span class="math">')
+        ####t = t.replace('</script>', '</span>')
         return t
 
     def has_output(self):
@@ -2327,7 +2329,11 @@ class Cell(Cell_generic):
             return ''
         images = []
         files = []
-
+        #Flags to allow processing of old worksheets that include Jmol
+        hasjmol = False
+        jmoldatafile=''
+        hasjmolimages = False
+        jmolimagebase=''
         from worksheet import CODE_PY
         # The question mark trick here is so that images will be
         # reloaded when the async request requests the output text for
@@ -2367,13 +2373,22 @@ class Cell(Cell_generic):
                     jmol_file.write(jmol_script)
                     jmol_file.close()
 
-                script = '<div><script>jmol_applet(%s, "%s?%d");</script></div>' % (size, url, time.time())
+                #script = '<div><script>jmol_applet(%s, "%s?%d");</script></div>' % (size, url, time.time())
+                script = '<div id = "jmol_static%s">Sleeping...<button onClick="javascript:void(jmol_launch(%s, \'%s?%d\', %s))">Make Interactive</button>'  % (self._id, size, url, time.time(), self._id)
+                image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
+                script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
                 images.append(script)
+                jmolimagebase = F
+                hasjmol=True
             elif F.endswith('.jmol.zip'):
-                pass # jmol data
+                # jmol data
+                jmoldatafile=os.path.join(self.directory(),F)
             elif F.endswith('.canvas3d'):
                 script = '<div><script>canvas3d.viewer("%s");</script></div>' % url
                 images.append(script)
+            elif F.startswith('.jmol_'):
+                # static jmol data and images
+                hasjmolimages=True
             else:
                 link_text = str(F)
                 if len(link_text) > 40:
@@ -2390,6 +2405,38 @@ class Cell(Cell_generic):
 
         files = unicode_str(files)
         images = unicode_str(images)
+
+        if(hasjmol and not hasjmolimages):
+            # This is probably an old worksheet. Generate the missing jmol static image(s)
+            # Note: this is problematic in the notebook as it uses tools from Sage to
+            # generate the images.
+            head,tail = os.path.split(jmoldatafile)
+            # The path in the launch script file needs to be fixed.
+            worksheet, cellnum=os.path.split(head)
+            path = "cells/%s/%s"  %(cellnum, tail)
+            f = open(os.path.join(head,jmolimagebase),'w')
+            f.write('set defaultdirectory "%s"\n' %path)
+            f.write('script SCRIPT\n')
+            f.close()
+
+            #name image file
+            png_path = os.path.realpath(os.path.join(head,'.jmol_images'))
+            if  not os.path.exists(png_path):
+                os.mkdir(png_path)
+            png_name = os.path.join(png_path,jmolimagebase)
+            #test for JavaVM
+            from sage.interfaces.jmoldata import JmolData
+            jdata = JmolData()
+            if (jdata.is_jvm_available()):
+                # make the image with Jmol
+                png_fullpath=png_name+".png"
+                #print png_fullpath
+                script = 'set defaultdirectory \"'+jmoldatafile+'\"\n script SCRIPT\n'
+                #print script
+                jdata.export_image(targetfile = png_fullpath,datafile=script,image_type="PNG", figsize = 4)
+            else:
+                images.append('Java Virtual Machine Unavailable.  Cannot make image from old data.  Please reevaluate cell.')
+
 
         return images + files
 

@@ -71,7 +71,7 @@ def sphinxify(docstring, format='html'):
         sage: sphinxify('**Testing**\n`monospace`')
         '\n<div class="docstring"...<strong>Testing</strong>\n<span class="math"...</p>\n\n\n</div>'
         sage: sphinxify('`x=y`')
-        '\n<div class="docstring">\n    \n  <p><span class="math">x=y</span></p>\n\n\n</div>'
+        '\n<div class="docstring">\n    \n  <p><span class="math">\\(x=y\\)</span></p>\n\n\n</div>'
         sage: sphinxify('`x=y`', format='text')
         'x=y\n'
         sage: sphinxify(':math:`x=y`', format='text')
@@ -91,7 +91,7 @@ def sphinxify(docstring, format='html'):
         suffix = '.txt'
     output_name = base_name + suffix
 
-    # This is needed for jsMath to work.
+    # This is needed for MathJax to work.
     docstring = docstring.replace('\\\\', '\\')
 
     filed = open(rst_name, 'w')
@@ -103,7 +103,8 @@ def sphinxify(docstring, format='html'):
     temp_confdir = False
     confdir = os.path.join(SAGE_DOC, 'en', 'introspect')
     if not SAGE_DOC and not os.path.exists(confdir):
-        # This may be inefficient.  TODO: Find a faster way to do this.
+        # If we don't have Sage, we need to do our own configuration
+        # This may be inefficient or broken.  TODO: Find a faster way to do this.
         temp_confdir = True
         confdir = mkdtemp()
         generate_configuration(confdir)
@@ -161,13 +162,14 @@ def generate_configuration(directory):
         sage: tmpdir = tempfile.mkdtemp()
         sage: generate_configuration(tmpdir)
         sage: open(os.path.join(tmpdir, 'conf.py')).read()
-        '\n...extensions =...templates_path...source = False\n...'
+        '\n...extensions =...'
     """
     conf = r'''
 ###########################################################
 # Taken from  `$SAGE_ROOT$/devel/sage/doc/common/conf.py` #
 ###########################################################
-import sys, os
+import sys, os, re
+
 # If your extensions are in another directory, add it here. If the directory
 # is relative to the documentation root, use os.path.abspath to make it
 # absolute, like shown here.
@@ -178,9 +180,9 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
-
-jsmath_path = 'easy/load.js'
+extensions = ['sage_autodoc',  'sphinx.ext.graphviz',
+              'sphinx.ext.inheritance_diagram', 'sphinx.ext.todo']
+#, 'sphinx.ext.intersphinx', 'sphinx.ext.extlinks']
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -190,7 +192,13 @@ master_doc = 'index'
 
 # General information about the project.
 project = u""
-copyright = u'2005--2009, The Sage Development Team'
+copyright = u'2005--2011, The Sage Development Team'
+
+# The version info for the project you're documenting, acts as replacement for
+# |version| and |release|, also used in various other places throughout the
+# built documents.
+#
+# The short X.Y version.
 
 #version = '3.1.2'
 # The full version, including alpha/beta/rc tags.
@@ -227,17 +235,30 @@ default_role = 'math'
 # output. They are ignored by default.
 #show_authors = False
 
-# The name of the Pygments (syntax highlighting) style to use.
+# The name of the Pygments (syntax highlighting) style to use.  NOTE:
+# This overrides a HTML theme's corresponding setting (see below).
 pygments_style = 'sphinx'
+
+# GraphViz includes dot, neato, twopi, circo, fdp.
+graphviz_dot = 'dot'
+inheritance_graph_attrs = { 'rankdir' : 'BT' }
+inheritance_node_attrs = { 'height' : 0.5, 'fontsize' : 12, 'shape' : 'oval' }
+inheritance_edge_attrs = {}
+
+# Extension configuration
+# -----------------------
+
+# include the todos
+todo_include_todos = True
+
 
 
 # Options for HTML output
 # -----------------------
 
-# The style sheet to use for HTML and HTML Help pages. A file of that name
-# must exist either in Sphinx' static/ path, or in one of the custom paths
-# given in html_static_path.
-html_style = 'default.css'
+# HTML style sheet NOTE: This overrides a HTML theme's corresponding
+# setting.
+#html_style = 'default.css'
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -255,12 +276,45 @@ html_style = 'default.css'
 # pixels large.
 html_favicon = 'favicon.ico'
 
-# If we're using jsMath, we prepend its location to the static path
+
+# If we're using MathJax, we prepend its location to the static path
 # array.  We can override / overwrite selected files by putting them
-# in the remaining paths.
-if 'SAGE_DOC_JSMATH' in os.environ:
-    jsmath_static = os.path.join(SAGE_ROOT, 'local/notebook/javascript/jsmath')
-    html_static_path.insert(0, jsmath_static)
+# in the remaining paths.  We also write the local config file,
+# containing Sage-specific macros and allowing the use of dollar signs
+# to delimit math.  We write the file to the directory
+#    sagenb/data/mathjax/config/local/mathjax_sage.js,
+# in the sagenb-... subdirectory of
+#    SAGE_ROOT/local/lib/python/site-libraries.
+# This is in the static path, so the file gets copied to the
+# appropriate place, allowing us to use the above setting for
+# mathjax_path.
+
+# The environment variable SAGE_DOC_MATHJAX may be set by the user or
+# by the file "builder.py".  If it's set, or if SAGE_DOC_JSMATH is set
+# (for backwards compatibility), use MathJax.
+if (os.environ.get('SAGE_DOC_MATHJAX', False)
+    or os.environ.get('SAGE_DOC_JSMATH', False)):
+
+    extensions.append('sphinx.ext.mathjax')
+    mathjax_path = 'MathJax.js?config=TeX-AMS_HTML-full,../mathjax_sage.js'
+
+    from sage.misc.latex_macros import sage_mathjax_macros
+    html_theme_options['mathjax_macros'] = sage_mathjax_macros
+
+    from pkg_resources import Requirement, working_set
+    sagenb_path = working_set.find(Requirement.parse('sagenb')).location
+    mathjax_relative = os.path.join('sagenb','data','mathjax')
+
+    # It would be really nice if sphinx would copy the entire mathjax directory, 
+    # (so we could have a _static/mathjax directory), rather than the contents of the directory
+
+    mathjax_static = os.path.join(sagenb_path, mathjax_relative)
+    html_static_path.append(mathjax_static)
+    exclude_patterns=['**/'+os.path.join(mathjax_relative, i) for i in ('docs', 'README*', 'test', 
+                                                                        'unpacked', 'LICENSE')]
+else:
+     extensions.append('sphinx.ext.pngmath')
+
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -300,12 +354,28 @@ if 'SAGE_DOC_JSMATH' in os.environ:
 
 # Options for LaTeX output
 # ------------------------
+# See http://sphinx.pocoo.org/config.html#confval-latex_elements
+latex_elements = {}
 
-# The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+# Extended UTF-8 scheme
+latex_elements['inputenc'] = '\\usepackage[utf8x]{inputenc}'
+
+# Prevent Sphinx from by default inserting the following LaTeX
+# declaration into the preamble of a .tex file:
+#
+# \DeclareUnicodeCharacter{00A0}{\nobreakspace}
+#
+# This happens in the file src/sphinx/writers/latex.py in the sphinx
+# spkg.  This declaration is known to result in a failure to build the
+# PDF version of a document in the Sage standard documentation. See
+# ticket #8183 for further information on this issue.
+latex_elements['utf8extra'] = ''
+
+# The paper size ('letterpaper' or 'a4paper').
+#latex_elements['papersize'] = 'letterpaper'
 
 # The font size ('10pt', '11pt' or '12pt').
-#latex_font_size = '10pt'
+#latex_elements['pointsize'] = '10pt'
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, document class [howto/manual]).
@@ -320,8 +390,7 @@ latex_documents = []
 #latex_use_parts = False
 
 # Additional stuff for the LaTeX preamble.
-#latex_preamble = ''
-latex_preamble = '\usepackage{amsmath}\n\usepackage{amsfonts}\n'
+latex_elements['preamble'] = '\usepackage{amsmath}\n\usepackage{amssymb}\n'
 
 # Documents to append as an appendix to all manuals.
 #latex_appendices = []
@@ -343,7 +412,7 @@ except NameError:
 
 for macro in sage_latex_macros:
     # used when building latex and pdf versions
-    latex_preamble += macro + '\n'
+    latex_elements['preamble'] += macro + '\n'
     # used when building html version
     pngmath_latex_preamble += macro + '\n'
 
@@ -403,36 +472,123 @@ def process_docstring_module_title(app, what, name, obj, options, docstringlines
         else:
             break
 
-def skip_NestedClass(app, what, name, obj, skip, options):
+skip_picklability_check_modules = [
+    #'sage.misc.nested_class_test', # for test only
+    'sage.misc.latex',
+    'sage.misc.explain_pickle',
+    '__builtin__',
+]
+
+def check_nested_class_picklability(app, what, name, obj, skip, options):
     """
-    Don't include the docstring for any class/function/object in
-    sage.misc.misc whose ``name`` contains "MainClass.NestedClass".
-    (This is to avoid some Sphinx warnings when processing
-    sage.misc.misc.)  Otherwise, abide by Sphinx's decision.
+    Print a warning if pickling is broken for nested classes.
     """
-    skip_nested = str(obj).find("sage.misc.misc") != -1 and name.find("MainClass.NestedClass") != -1
-    return skip or skip_nested
+    import types
+    if hasattr(obj, '__dict__') and hasattr(obj, '__module__'):
+        # Check picklability of nested classes.  Adapted from
+        # sage.misc.nested_class.modify_for_nested_pickle.
+        module = sys.modules[obj.__module__]
+        for (nm, v) in obj.__dict__.iteritems():
+            if (isinstance(v, (type, types.ClassType)) and
+                v.__name__ == nm and
+                v.__module__ == module.__name__ and
+                getattr(module, nm, None) is not v and
+                v.__module__ not in skip_picklability_check_modules):
+                # OK, probably this is an *unpicklable* nested class.
+                app.warn('Pickling of nested class %r is probably broken. '
+                         'Please set __metaclass__ of the parent class to '
+                         'sage.misc.nested_class.NestedClassMetaclass.' % (
+                        v.__module__ + '.' + name + '.' + nm))
+
+def skip_member(app, what, name, obj, skip, options):
+    """
+    To suppress Sphinx warnings / errors, we
+
+    - Don't include [aliases of] builtins.
+
+    - Don't include the docstring for any nested class which has been
+      inserted into its module by
+      :class:`sage.misc.NestedClassMetaclass` only for pickling.  The
+      class will be properly documented inside its surrounding class.
+
+    - Don't include
+      sagenb.notebook.twist.userchild_download_worksheets.zip.
+
+    - Optionally, check whether pickling is broken for nested classes.
+
+    - Optionally, include objects whose name begins with an underscore
+      ('_'), i.e., "private" or "hidden" attributes, methods, etc.
+
+    Otherwise, we abide by Sphinx's decision.  Note: The object
+    ``obj`` is excluded (included) if this handler returns True
+    (False).
+    """
+    if 'SAGE_CHECK_NESTED' in os.environ:
+        check_nested_class_picklability(app, what, name, obj, skip, options)
+
+    if getattr(obj, '__module__', None) == '__builtin__':
+        return True
+
+    if (hasattr(obj, '__name__') and obj.__name__.find('.') != -1 and
+        obj.__name__.split('.')[-1] != name):
+        return True
+
+    if name.find("userchild_download_worksheets.zip") != -1:
+        return True
+
+    if 'SAGE_DOC_UNDERSCORE' in os.environ:
+        if name.split('.')[-1].startswith('_'):
+            return False
+
+    return skip
+
+def process_dollars(app, what, name, obj, options, docstringlines):
+    r"""
+    Replace dollar signs with backticks.
+    See sage.misc.sagedoc.process_dollars for more information
+    """
+    if len(docstringlines) > 0 and name.find("process_dollars") == -1:
+        from sage.misc.sagedoc import process_dollars as sagedoc_dollars
+        s = sagedoc_dollars("\n".join(docstringlines))
+        lines = s.split("\n")
+        for i in range(len(lines)):
+            docstringlines[i] = lines[i]
+
+def process_inherited(app, what, name, obj, options, docstringlines):
+    """
+    If we're including inherited members, omit their docstrings.
+    """
+    if not options.get('inherited-members'):
+        return
+
+    if what in ['class', 'data', 'exception', 'function', 'module']:
+        return
+
+    name = name.split('.')[-1]
+
+    if what == 'method' and hasattr(obj, 'im_class'):
+        if name in obj.im_class.__dict__.keys():
+            return
+
+    if what == 'attribute' and hasattr(obj, '__objclass__'):
+        if name in obj.__objclass__.__dict__.keys():
+            return
+
+    for i in xrange(len(docstringlines)):
+        docstringlines.pop()
+
+from sage.misc.sageinspect import sage_getargspec
+autodoc_builtin_argspec = sage_getargspec
 
 def setup(app):
     app.connect('autodoc-process-docstring', process_docstring_cython)
     app.connect('autodoc-process-docstring', process_directives)
     app.connect('autodoc-process-docstring', process_docstring_module_title)
-    app.connect('autodoc-skip-member', skip_NestedClass)
-
-#################################################################
-# Taken from `$SAGE_ROOT$/devel/sage/doc/en/introspect/conf.py` #
-#################################################################
-
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.jsmath']
-
-templates_path = ['templates']
-html_static_path = ['static']
-
-html_use_modindex = False
-html_use_index = False
-html_split_index = False
-html_copy_source = False
+    app.connect('autodoc-process-docstring', process_dollars)
+    app.connect('autodoc-process-docstring', process_inherited)
+    app.connect('autodoc-skip-member', skip_member)
     '''
+
 
     # From SAGE_DOC/en/introspect/templates/layout.html:
     layout = r"""

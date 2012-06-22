@@ -31,19 +31,12 @@ def render_worksheet_list(args, pub, username):
     
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
-    from sagenb.notebook.pagination import Paginator
-
+    
     typ = args['typ'] if 'typ' in args else 'active'
     search = unicode_str(args['search']) if 'search' in args else None
     sort = args['sort'] if 'sort' in args else 'last_edited'
     reverse = (args['reverse'] == 'True') if 'reverse' in args else False
-    page = 1
-    if 'page' in args:
-        try:
-            page = int(args['page'])
-        except ValueError as E:
-            print "Error improper page input", E
-
+    readonly = g.notebook.readonly_user(g.username)
     try:
         if not pub:
             worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
@@ -55,19 +48,6 @@ def render_worksheet_list(args, pub, username):
         # for example, the sort key was not valid
         print "Error displaying worksheet listing: ", E
         return current_app.message(_("Error displaying worksheet listing."))
-
-    paginator = Paginator(worksheets, 25) #25 is number of items per page, change this value to change the number of objects per page.
-
-    try:
-        pages = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        pages = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        pages = paginator.page(paginator.num_pages)
-
-    worksheets = pages.object_list
 
     worksheet_filenames = [x.filename() for x in worksheets]
 
@@ -256,6 +236,8 @@ def download_worksheets():
 @worksheet_listing.route('/upload')
 @login_required
 def upload():
+    if g.notebook.readonly_user(g.username):
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
     return render_template(os.path.join('html', 'upload.html'),
                            username=g.username)
 
@@ -353,12 +335,15 @@ def upload_worksheet():
     from sage.misc.misc import tmp_filename, tmp_dir
     from werkzeug.utils import secure_filename
     import zipfile
-    
+
+    if g.notebook.readonly_user(g.username):
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
+
     backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")
 
     url = request.values['url'].strip()
     dir = ''
-    if url:
+    if url != '':
         #Downloading a file from the internet
         # The file will be downloaded from the internet and saved
         # to a temporary file with the same extension
@@ -369,9 +354,20 @@ def upload_worksheet():
             return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
         filename = tmp_filename()+extension
         try:
-            my_urlretrieve(url, filename, backlinks=backlinks)
+            import re
+            matches = re.match("file://(?:localhost)?(/.+)", url)
+            if matches:
+                if g.notebook.interface != 'localhost':
+                    return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
+
+                import shutil
+                shutil.copy(matches.group(1),filename)
+            else:
+                my_urlretrieve(url, filename, backlinks=backlinks)
+
         except RetrieveError as err:
             return current_app.message(str(err))
+
     else:
         #Uploading a file from the user's computer
         dir = tmp_dir()
@@ -441,4 +437,3 @@ def upload_worksheet():
 
     from worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))
-        

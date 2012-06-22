@@ -64,7 +64,7 @@
     <form method="POST" action="/login" id="sign-in-form">
         <div>
             <label for="email">{{ gettext('Username') }}</label>
-            <input type="text" name="email" value="{{ default_user }}" size="15" />
+            <input type="text" name="email" size="15" />
             {% if username_error %}
             <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Username is not in the system') }}
             {% endif %}

@@ -28,6 +28,7 @@ import os, random, re, urllib2, urllib
 
 from sagenb.notebook.template import template
 from flaskext.babel import gettext, lazy_gettext
+_ = lazy_gettext
 
 class ChallengeResponse(object):
     """
@@ -176,7 +177,7 @@ class NotConfiguredChallenge(AbstractChallenge):
             Please ask the server administrator to configure a challenge!
 
         """
-        return lazy_gettext("Please ask the server administrator to configure a challenge!")
+        return _("Please ask the server administrator to configure a challenge!")
 
     def is_valid_response(self, **kwargs):
         """
@@ -212,19 +213,28 @@ SIMPLE_TEMPLATE = u"""<p>%(question)s</p>
 <input type="hidden" value="%(untranslated_question)s" id="simple_challenge_field" name="simple_challenge_field" class="entry" />
 """
 
+old_tr = _
+_ = lambda s: s
+
 # A set of sample questions for :class:`SimpleChallenge`.
 QUESTIONS = {
-    'Is pi > e?' : lazy_gettext('y|yes'),
-    'What is 3 times 8?' : lazy_gettext('24|twenty-four'),
-    'What is 2 plus 3?' : lazy_gettext('5|five'),    
-    'How many bits are in one byte?' : lazy_gettext('8|eight'),
-    'What is the largest prime factor of 15?' : lazy_gettext('5|five'),
+    _('Is pi > e?') : _('y|yes'),
+    _('What is 3 times 8?') : _('24|twenty-four'),
+    _('What is 2 plus 3?') : _('5|five'),
+    _('How many bits are in one byte?') : _('8|eight'),
+    _('What is the largest prime factor of 15?') : _('5|five'),
 #    'What is the smallest perfect number?' : r'6|six',
 #    'What is our class registration code?' : r'XYZ123',
 #    'What is the smallest integer expressible as the sum of two positive cubes in two distinct ways?' : r'1729',
 #    'How many permutations of ABCD agree with it in no position? For example, BDCA matches ABCD only in position 3.' : r'9|nine',
 }
 
+# QUESTIONS is now dict of str->str
+#let's make answers lazy translated:
+for key in QUESTIONS: QUESTIONS[key] = old_tr(QUESTIONS[key])
+
+_ = old_tr
+del old_tr
 
 def agree(response, answer):
     """
