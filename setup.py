@@ -27,7 +27,7 @@ def all_files(dir, prefix):
         elif os.path.isdir(ab):
             X.extend(all_files(ab, prefix))
     return X
-    
+
 
 install_requires = [ 'twisted>=11.0.0'
                    , 'flask'
@@ -44,7 +44,7 @@ if __name__ == '__main__':
         distutils.log.set_threshold(distutils.log.DEBUG)
 
     code = setup(name = 'sagenb',
-          version     = '0.9.1',
+          version     = '0.10.0',
           description = 'The Sage Notebook',
           license     = 'GNU General Public License (GPL) v2+',
           author      = 'William Stein et al.',
