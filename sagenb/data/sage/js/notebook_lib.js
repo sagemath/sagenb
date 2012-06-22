@@ -383,7 +383,7 @@ function bind_events() {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         evaluate_cell(cell_id, 0);
-    }
+    });
 }
 
 
