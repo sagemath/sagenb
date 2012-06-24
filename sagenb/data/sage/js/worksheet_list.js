@@ -82,7 +82,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	this_list.rows = [];
 	
 	this_list.init = function() {
-		this_list.load();
+		this_list.show_active();
 		
 		$("#main_checkbox").change(function(e) {
 			if($("#main_checkbox").prop("checked")) {
@@ -98,6 +98,10 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$("#delete_button").click(this_list.delete);
 		$("#stop_button").click(this_list.stop);
 		$("#download_button").click(this_list.download);
+		
+		$("#show_active").click(this_list.show_active);
+		$("#show_archive").click(this_list.show_archive);
+		$("#show_trash").click(this_list.show_trash);
 		
 		// not going to mess with this for now
 		// $("#action_buttons button").addClass("disabled");
@@ -137,15 +141,15 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	
 	////////// COMMANDS //////////////
-	this_list.new_worksheet = function() {
+	/*this_list.new_worksheet = function() {
 		window.open("/new_worksheet");
-	};
+	};*/
 	/*this_list.upload_worksheet = function() {
 		// data-toggle takes care of this
 	};*/
-	this_list.download_all_active = function() {
-		
-	};
+	/*this_list.download_all_active = function() {
+		window.location.replace("/download_worksheets.zip");
+	};*/
 	
 	this_list.checked_action = function(action, extra_callback) {
 		// don't do anything if none are selected
@@ -172,8 +176,10 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	this_list.stop = function() {
 		this_list.checked_action("/send_to_stop", function(status, response) {
 			this_list.for_each_checked_row(function(row) {
-				$("#row_" + row.props.id_number + " running_label").detach();
-				row.uncheck();
+				$("#row_" + row.props.id_number + " .running_label").fadeOut('slow', function() {
+					$(this).detach();
+					row.uncheck();
+				});
 			});
 		});
 	};
@@ -188,10 +194,13 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$("table tbody tr").detach();
 		this_list.rows = [];
 	};
-	this_list.load = function() {
+	this_list.load = function(params) {
+		var url = "/worksheet_list";
+		if(params) url += "?" + encodeURI(params);
+		
 		this_list.clear_list();
 		
-		sagenb.async_request("/worksheet_list", sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(url, sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			for(i in X.worksheets) {
 				var row = new sagenb.worksheetlistapp.list_row();
@@ -203,6 +212,31 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 				
 				row.render();
 			}
+			
+			if($("table tbody tr").length === 0) {
+				// no rows
+				$("tbody").append('<tr class="empty_table_row">' + 
+					'<td colspan="4">Nothing here!</td>' + 
+				'</tr>');
+			}
 		}));
 	};
+	
+	//// VIEWS ////
+	this_list.show_active = function() {
+		this_list.load();
+		
+		$(".title").text("My Notebook");
+	};
+	this_list.show_archive = function() {
+		this_list.load("typ=archive");
+		
+		$(".title").text("My Notebook - Archive");
+	};
+	this_list.show_trash = function() {
+		this_list.load("typ=trash");
+		
+		$(".title").text("My Notebook - Trash");
+	};
+	
 };
