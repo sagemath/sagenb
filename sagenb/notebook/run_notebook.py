@@ -69,9 +69,23 @@ def save_notebook(notebook):
         kw['absdirectory']=os.path.abspath(kw['directory'])
         kw['notebook_opts'] = '"%(absdirectory)s",interface="%(interface)s",port=%(port)s,secure=%(secure)s'%kw
         kw['hostname'] = kw['interface'] if kw['interface'] else 'localhost'
+
         if kw['automatic_login']:
             kw['start_path'] = "'/?startup_token=%s' % startup_token"
             kw['open_page'] = "from sagenb.misc.misc import open_page; open_page('%(hostname)s', %(port)s, %(secure)s, %(start_path)s)" % kw
+
+            if kw['upload']:
+                import urllib
+                # If we have to login and upload a file, then we do them
+                # in that order and hope that the login is fast enough.
+                kw['start_path'] = "'/upload_worksheet?url=file://%s'" % (urllib.quote(kw['upload']))
+                kw['open_page'] = kw['open_page']+ "; open_page('%(hostname)s', %(port)s, %(secure)s, %(start_path)s)" % kw
+
+        elif kw['upload']:
+            import urllib
+            kw['start_path'] = "'/upload_worksheet?url=file://%s'" % (urllib.quote(kw['upload']))
+            kw['open_page'] = "from sagenb.misc.misc import open_page; open_page('%(hostname)s', %(port)s, %(secure)s, %(start_path)s)" % kw
+
         else:
             kw['open_page'] = ''
 
@@ -87,6 +101,31 @@ def save_notebook(notebook):
 
     def run_command(self, kw):
         raise NotImplementedError
+
+class NotebookRunTornado(NotebookRun):
+    name="tornado"
+    TORNADO_NOTEBOOK_CONFIG = """
+from tornado import web
+from tornado.wsgi import WSGIContainer
+from tornado.httpserver import HTTPServer
+from tornado.ioloop import IOLoop
+
+%(open_page)s
+wsgi_app = WSGIContainer(flask_app)
+http_server = HTTPServer(wsgi_app)
+http_server.listen(%(port)s)
+IOLoop.instance().start()
+"""
+    def run_command(self, kw):
+        """Run a tornado webserver."""
+        self.prepare_kwds(kw)
+        run_file = os.path.join(kw['directory'], 'run_tornado')
+
+        with open(run_file, 'w') as script:
+            script.write((self.config_stub+self.TORNADO_NOTEBOOK_CONFIG)%kw)
+
+        cmd = 'python %s' % (run_file)
+        return cmd
 
 class NotebookRunuWSGI(NotebookRun):
     name="uWSGI"
@@ -180,7 +219,7 @@ class NotebookRunTwisted(NotebookRun):
     name="twistd"
     TWISTD_NOTEBOOK_CONFIG = """
 ########################################################################
-# See http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html 
+# See http://twistedmatrix.com/documents/current/web/howto/using-twistedweb.html
 #  (Serving WSGI Applications) for the basic ideas of the below code
 ####################################################################
 
@@ -196,7 +235,7 @@ if (platform.system()=='Linux'
         epollreactor.install()
     except:
         pass
-#### END EPOLL 
+#### END EPOLL
 
 
 def save_notebook2(notebook):
@@ -244,6 +283,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', partial(save_notebook2, flas
         """Run a twistd webserver."""
         # Is a server already running? Check if a Twistd PID exists in
         # the given directory.
+
         self.prepare_kwds(kw)
         conf = os.path.join(kw['directory'], 'twistedconf.tac')
         if platformType != 'win32':
@@ -257,14 +297,19 @@ reactor.addSystemEventTrigger('before', 'shutdown', partial(save_notebook2, flas
                     print 'Another Sage Notebook server is running, PID %d.' % pid
 
                     old_interface, old_port, old_secure = self.get_old_settings(conf)
-                    if kw['automatic_login'] and old_port:
+                    if (kw['automatic_login'] or kw['upload']) and old_port:
                         old_interface = old_interface or 'localhost'
+                        if kw['upload']:
+                            import urllib
+                            startpath = '/upload_worksheet?url=file://%s' % (urllib.quote(kw['upload']))
+                        else:
+                            startpath = '/'
 
-                        print 'Opening web browser at http%s://%s:%s/ ...' % (
-                            's' if old_secure else '', old_interface, old_port)
+                        print 'Opening web browser at http%s://%s:%s%s ...' % (
+                            's' if old_secure else '', old_interface, old_port, startpath)
 
                         from sagenb.misc.misc import open_page as browse_to
-                        browse_to(old_interface, old_port, old_secure, '/')
+                        browse_to(old_interface, old_port, old_secure, startpath)
                         return None
                     print '\nPlease either stop the old server or run the new server in a different directory.'
                     return None
@@ -346,7 +391,7 @@ def notebook_setup(self=None):
                 'signing_key': True,
                 'encryption_key': True,
                 }
-                
+
     s = ""
     for key, val in template_dict.iteritems():
         if val is None:
@@ -357,7 +402,7 @@ def notebook_setup(self=None):
             w = ' '.join(['"%s"' % x for x in val])
         else:
             w = '"%s"' % val
-        s += '%s = %s \n' % (key, w) 
+        s += '%s = %s \n' % (key, w)
 
     f = open(template_file, 'w')
     f.write(s)
@@ -389,7 +434,7 @@ def notebook_setup(self=None):
 
     print "Successfully configured notebook."
 
-command={'flask': NotebookRunFlask, 'twistd': NotebookRunTwisted, 'uwsgi': NotebookRunuWSGI}
+command={'flask': NotebookRunFlask, 'twistd': NotebookRunTwisted, 'uwsgi': NotebookRunuWSGI, 'tornado': NotebookRunTornado}
 def notebook_run(self,
              directory     = None,
              port          = 8080,
@@ -405,6 +450,7 @@ def notebook_run(self,
 
              timeout       = 0,
 
+             upload        = None,
              automatic_login = True,
 
              start_path    = "",
@@ -419,6 +465,10 @@ def notebook_run(self,
              open_viewer = None,
              address = None,
              ):
+
+    # Turn it into a full path for later conversion to a file URL
+    if upload:
+        upload = os.path.abspath(upload)
 
     if subnets is not None:
         raise ValueError("""The subnets parameter is no longer supported. Please use a firewall to block subnets, or even better, volunteer to write the code to implement subnets again.""")
@@ -452,7 +502,7 @@ def notebook_run(self,
         print "your account. Make sure you know what you are doing."
         print '*' * 70
 
-    # first use provided values, if none, use loaded values, 
+    # first use provided values, if none, use loaded values,
     # if none use defaults
 
     nb = notebook.load_notebook(directory)
@@ -465,7 +515,7 @@ def notebook_run(self,
     nb.conf()['idle_timeout'] = int(timeout)
 
     if openid is not None:
-        nb.conf()['openid'] = openid 
+        nb.conf()['openid'] = openid
     elif not nb.conf()['openid']:
         # What is the purpose behind this elif?  It seems rather pointless.
         # all it appears to do is set the config to False if bool(config) is False
@@ -486,7 +536,7 @@ def notebook_run(self,
         reset = True
 
     if reset:
-        passwd = get_admin_passwd()                
+        passwd = get_admin_passwd()
         if reset:
             admin = nb.user_manager().user('admin')
             admin.set_password(passwd)
@@ -500,10 +550,10 @@ def notebook_run(self,
             if secure:
                 print "Login to the Sage notebook as admin with the password you specified above."
         #nb.del_user('root')
-            
+
     nb.set_server_pool(server_pool)
     nb.set_ulimit(ulimit)
-    
+
     if os.path.exists('%s/nb-older-backup.sobj' % directory):
         nb._migrate_worksheets()
         os.unlink('%s/nb-older-backup.sobj' % directory)
@@ -535,7 +585,7 @@ def notebook_run(self,
             print "Failed to setup notebook.  Please try notebook.setup() again manually."
 
     kw = dict(port=port, automatic_login=automatic_login, secure=secure, private_pem=private_pem, public_pem=public_pem,
-              interface=interface, directory=directory, pidfile=pidfile, cwd=cwd, profile=profile)
+              interface=interface, directory=directory, pidfile=pidfile, cwd=cwd, profile=profile, upload = upload )
     cmd = command[server]().run_command(kw)
     if cmd is None:
         return

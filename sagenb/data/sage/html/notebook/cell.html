@@ -58,7 +58,7 @@ INPUT:
                     <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
                        class="eval_button_active"
                        id="eval_button{{ cell.id() }}"
-                       alt="Click here to reset this interactive cell">
+                       title="Click here to reset this interactive cell">
                         reset
                     </a>
                 {% endif %}
@@ -67,19 +67,12 @@ INPUT:
             {% else %}
                 <textarea class="{{ input_cls }}" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
                           cols="80"
-                          id="cell_input_{{ cell.id() }}"
-                          {# TODO: Migrate these 'on' handlers to a .js file #}
-                          onKeyPress="return input_keypress({{ '%r'|format(cell.id()) }}, event);"
-                          onKeyDown="return input_keydown({{ '%r'|format(cell.id()) }}, event);"
-                          onKeyUp="return input_keyup({{ '%r'|format(cell.id()) }}, event);"
-                          onBlur="cell_blur({{ '%r'|format(cell.id()) }}); return true;"
-                          onFocus="cell_focused(this, {{ '%r'|format(cell.id()) }}); return true;">{{ cell.input_text().rstrip() }}</textarea>
-                <a href="javascript:evaluate_cell({{ '%r'|format(cell.id()) }}, 0);"
+                          id="cell_input_{{ cell.id() }}">{{ cell.input_text().rstrip() }}</textarea>
+                <input type="button"
                    class="eval_button"
                    id="eval_button{{ cell.id() }}" 
-                   alt="{{ gettext('Click here or press shift-return to evaluate') }}">
-                    {{ gettext('evaluate') }}
-                </a>
+                   title="{{ gettext('Click here or press shift-return to evaluate') }}"
+                   value="{{ gettext('evaluate') }}" />
             {% endif %}
             {# end input #}
 

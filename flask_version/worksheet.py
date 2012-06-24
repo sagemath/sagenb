@@ -7,6 +7,7 @@ from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
+from sagenb.notebook.misc import encode_response
 
 ws = Module('flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
@@ -72,6 +73,9 @@ def get_cell_id():
 @ws.route('/new_worksheet')
 @login_required
 def new_worksheet():
+    if g.notebook.readonly_user(g.username):
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('worksheet_listing.home', username=g.username))
+
     W = g.notebook.create_new_worksheet(gettext("Untitled"), g.username)
     return redirect(url_for_worksheet(W))
 
@@ -88,6 +92,13 @@ def worksheet(username, id, worksheet=None):
     s = g.notebook.html(worksheet_filename=worksheet.filename(),
                         username=g.username)
     return s
+
+published_commands_allowed = set(['alive', 'cells', 'cell_update',
+                          'data', 'download', 'edit_published_page', 'eval',
+                          'quit_sage', 'rate', 'rating_info', 'new_cell_before',
+                          'new_cell_after'])
+
+readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download', 'quit_sage', 'rating_info', 'delete_all_output'])
 
 def worksheet_command(target, **route_kwds):
     if 'methods' not in route_kwds:
@@ -108,12 +119,12 @@ def worksheet_command(target, **route_kwds):
             #####################
             #_sage_ is used by live docs and published interacts
             if username_id and username_id[0] in ['_sage_']:
-                if target.split('/')[0] not in ['alive', 'cells', 'cell_update',
-                          'data', 'download', 'edit_published_page', 'eval',
-                          'quit_sage', 'rate', 'rating_info', 'new_cell_before',
-                          'new_cell_after']:
+                if target.split('/')[0] not in published_commands_allowed:
                     raise NotImplementedError("User _sage_ can not access URL %s"%target)
-            
+            if g.notebook.readonly_user(g.username):
+                if target.split('/')[0] not in readonly_commands_allowed:
+                    return current_app.message(_("Account is in read-only mode"), cont=url_for('worksheet_listing.home', username=g.username))
+
             #Make worksheet a non-keyword argument appearing before the
             #other non-keyword arguments.
             worksheet = kwds.pop('worksheet', None)
@@ -277,7 +288,6 @@ def worksheet_cell_list_json(worksheet):
     
     r['cell_list'] = cell_list
     
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 ########################################################
@@ -315,7 +325,6 @@ def worksheet_new_cell_before(worksheet):
     r['new_id'] = cell.id()
     #r['new_html'] = cell.html(div_wrap=False)
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 @worksheet_command('new_text_cell_before')
@@ -331,7 +340,6 @@ def worksheet_new_text_cell_before(worksheet):
     r['new_id'] = cell.id()
     #r['new_html'] = cell.html(editing=True)
 
-    from sagenb.notebook.misc import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
     # to centralize that code.
     return encode_response(r)
@@ -350,7 +358,6 @@ def worksheet_new_cell_after(worksheet):
     r['new_id'] = cell.id()
     #r['new_html'] = cell.html(div_wrap=True)
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 @worksheet_command('new_text_cell_after')
@@ -366,7 +373,6 @@ def worksheet_new_text_cell_after(worksheet):
     r['new_id'] = cell.id()
     #r['new_html'] = cell.html(editing=True)
 
-    from sagenb.notebook.misc import encode_response
     # XXX: Does editing correspond to TinyMCE?  If so, we should try
     # to centralize that code.
     return encode_response(r)
@@ -393,7 +399,6 @@ def worksheet_delete_cell(worksheet):
         r['prev_id'] = worksheet.delete_cell_with_id(id)
         r['cell_id_list'] = worksheet.cell_id_list()
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 @worksheet_command('delete_cell_output')
@@ -405,7 +410,6 @@ def worksheet_delete_cell_output(worksheet):
     worksheet.get_cell_with_id(id).delete_output()
     r['command'] = 'delete_output'
 
-    from sagenb.notebook.misc import encode_response
     return encode_response(r)
 
 ########################################################
@@ -427,7 +431,6 @@ def worksheet_eval(worksheet):
     respectively.
     """
     print 'eval'
-    from sagenb.notebook.misc import encode_response
     from base import notebook_updates
     
     r = {}
@@ -493,7 +496,6 @@ def worksheet_eval(worksheet):
 def worksheet_cell_update(worksheet):
     print 'cell_update'
     import time
-    from sagenb.notebook.misc import encode_response
 
     r = {}
     r['id'] = id = get_cell_id()
@@ -563,7 +565,6 @@ def worksheet_introspect(worksheet):
     cell = worksheet.get_cell_with_id(id)
     cell.evaluate(introspect=[before_cursor, after_cursor])
 
-    from sagenb.notebook.misc import encode_response
     r['command'] = 'introspect'
     return encode_response(r)
 
@@ -818,10 +819,17 @@ def worksheet_do_upload_data(worksheet):
             return current_app.message(_('Suspicious filename "%(filename)s" encountered uploading file.%(backlinks)s', filename=filename, backlinks=backlinks), worksheet_url)
         os.unlink(dest)
 
-
     response = redirect(worksheet_datafile.url_for(worksheet, name=name))
 
-    if url != '':
+    import re
+    matches = re.match("file://(?:localhost)?(/.+)", url)
+    if matches:
+        f = file(dest, 'wb')
+        f.write(open(matches.group(1)).read())
+        f.close()
+        return response
+
+    elif url != '':
         with open(dest, 'w') as f:
             f.write(download.read())
         return response
