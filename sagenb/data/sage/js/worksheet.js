@@ -405,6 +405,8 @@ sagenb.worksheetapp.worksheet = function() {
 				this_worksheet.published_time = X.published_time;
 			}
 			
+			this_worksheet.running = X.running;
+			
 			// update the title
 			document.title = this_worksheet.name + " - Sage";
 			$(".worksheet_name h1").text(this_worksheet.name);

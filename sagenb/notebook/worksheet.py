@@ -360,8 +360,10 @@ class Worksheet(object):
              #     last_change = ('username', time.time())
              'last_change': self.last_change(),
              'last_change_pretty': prettify_time_ago(time.time() - self.last_change()[1]),
-             
-             'filename': self.filename()
+
+             'filename': self.filename(),
+
+             'running': self.compute_process_has_been_started()
              }
         return d
 

@@ -30,12 +30,19 @@ sagenb.worksheetlistapp.list_row = function() {
 		
 		$this = $("#row_" + this_row.props.id_number);
 		
+		// checkbox
 		$this.find("input").change(function(e) {
 			this_row.checked = $this.find("input").prop("checked");
 		});
 		
-		$this.find("td.worksheet_name_cell").html('<a href="/home/' + sagenb.username + '/' + this_row.props.id_number + '" target="_blank">' + this_row.props.name + '</a>');
+		// name/running
+		var name_html = '<a href="/home/' + sagenb.username + '/' + this_row.props.id_number + '" target="_blank">' + this_row.props.name + '</a>';
+		if(this_row.props.running) {
+			name_html += '<span class="label label-important pull-right running_label">running</span>';
+		}
+		$this.find("td.worksheet_name_cell").html(name_html);
 		
+		// owner/collaborators/published
 		var owner_html = this_row.props.owner;
 		if(this.props.collaborators && this.props.collaborators.length) {
 			// there are collaborators
@@ -47,6 +54,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		}
 		$this.find("td.owner_cell").html(owner_html);
 		
+		// last change
 		$this.find("td.last_edit_cell").text(this_row.props.last_change_pretty + " ago");
 	};
 	
@@ -91,6 +99,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$("#stop_button").click(this_list.stop);
 		$("#download_button").click(this_list.download);
 		
+		// not going to mess with this for now
+		// $("#action_buttons button").addClass("disabled");
 	};
 	
 	///////// FOR EACH ///////////
@@ -131,14 +141,20 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		window.open("/new_worksheet");
 	};
 	/*this_list.upload_worksheet = function() {
-		
+		// data-toggle takes care of this
 	};*/
 	this_list.download_all_active = function() {
 		
 	};
 	
-	this_list.checked_action = function(action) {
-		sagenb.async_request(action, sagenb.generic_callback(), {
+	this_list.checked_action = function(action, extra_callback) {
+		// don't do anything if none are selected
+		if(this_list.checked_worksheet_filenames().length === 0) return;
+		
+		var callback = sagenb.generic_callback();
+		if(extra_callback) callback = sagenb.generic_callback(extra_callback);
+		
+		sagenb.async_request(action, callback, {
 			filenames: encode_response(this_list.checked_worksheet_filenames())
 		});
 	}
@@ -147,21 +163,30 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	this_list.delete = function() {
 		//TODO Are you sure?
-		this_list.checked_action("/send_to_trash");
-		
-		this_list.for_each_checked_row(function(row) {
-			row.remove();
+		this_list.checked_action("/send_to_trash", function(status, response) {
+			this_list.for_each_checked_row(function(row) {
+				row.remove();
+			});
 		});
 	};
 	this_list.stop = function() {
-		this_list.checked_action("/send_to_stop");
+		this_list.checked_action("/send_to_stop", function(status, response) {
+			this_list.for_each_checked_row(function(row) {
+				$("#row_" + row.props.id_number + " running_label").detach();
+				row.uncheck();
+			});
+		});
 	};
 	this_list.download = function() {
+		// don't download if none are selected
+		if(this_list.checked_worksheet_filenames().length === 0) return;
+		
 		window.location.replace("/download_worksheets.zip?filenames=" + encode_response(this_list.checked_worksheet_filenames()));
 	};
 	
 	this_list.clear_list = function() {
 		$("table tbody tr").detach();
+		this_list.rows = [];
 	};
 	this_list.load = function() {
 		this_list.clear_list();
