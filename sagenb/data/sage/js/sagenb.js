@@ -26,6 +26,7 @@ sagenb.init = function() {
 		sagenb.ctrlkey = "Cmd";
 	}
 	
+	$("#log").click(sagenb.history_window);
 	$("#report_a_problem").click(function(e) {
 		window.open('http://spreadsheets.google.com/viewform?key=pCwvGVwSMxTzT6E2xNdo5fA', '', 'menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,resizable=1');
 	});
@@ -105,3 +106,12 @@ sagenb.generic_callback = function(extra_callback) {
 		}
 	}
 };
+
+sagenb.history_window = function() {
+    /*
+    Display the history popup window, which displays the last few hundred
+    commands typed into any worksheet.
+    */
+    window.open("/history", "", "menubar=1,scrollbars=1,width=800," +
+                "height=600,toolbar=1,resizable=1");
+}
