@@ -30,9 +30,21 @@ sagenb.init = function() {
 	$("#report_a_problem").click(function(e) {
 		window.open('http://spreadsheets.google.com/viewform?key=pCwvGVwSMxTzT6E2xNdo5fA', '', 'menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,resizable=1');
 	});
+	$("#help").click(sagenb.help);
+	$(document).bind("keydown", "F1", function(evt) { sagenb.help(); return false; });
 	
 	sagenb.spinner = new Spinner({
 		hwaccel: true
+	});
+	
+	//// IMPORT DIALOG ////
+	$("#import_modal .btn-primary").click(function(e) {
+		$("#import_modal .tab-pane.active form").submit();
+	});
+	$("#import_modal .btn").click(function(e) {
+		$.each($("#import_modal form"), function(i, form) {
+			form.reset();
+		});
 	});
 };
 
@@ -114,4 +126,11 @@ sagenb.history_window = function() {
     */
     window.open("/history", "", "menubar=1,scrollbars=1,width=800," +
                 "height=600,toolbar=1,resizable=1");
+};
+sagenb.help = function() {
+    /*
+    Popup the help window.
+    */
+    window.open("/help", "",
+                "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
 }

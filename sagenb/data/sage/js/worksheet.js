@@ -121,6 +121,7 @@ sagenb.worksheetapp.worksheet = function() {
 		sagenb.sagenb.async_request(this_worksheet.worksheet_command("save_snapshot"), sagenb.generic_callback());
 	};
 	this_worksheet.close = function() {
+		// TODO gettext
 		if(this_worksheet.name === "Untitled") {
 			$(".alert_rename").show();
 		} else {
@@ -140,12 +141,9 @@ sagenb.worksheetapp.worksheet = function() {
 		 * we have as default. I haven't seen this issue yet
 		 * but it may exist.
 		 */
-        console.log("my name is " + this_worksheet.name);
+		console.log("my name is " + this_worksheet.name);
 		//window.open('/home/');
 	};
-	this_worksheet.open_help = function() {
-		
-	}
 	
 	//////// EXPORT/IMPORT ///////
 	this_worksheet.export_worksheet = function() {
@@ -614,16 +612,6 @@ sagenb.worksheetapp.worksheet = function() {
 			}));
 		});
 		
-		// IMPORT DIALOG
-		$("#import_modal .btn-primary").click(function(e) {
-			$("#import_modal .tab-pane.active form").submit();
-		});
-		$("#import_modal .btn").click(function(e) {
-			$.each($("#import_modal form"), function(i, form) {
-				form.reset();
-			});
-		});
-			
 		
 		// start the ping interval
 		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.ping_server, this_worksheet.server_ping_time);
@@ -663,8 +651,6 @@ sagenb.worksheetapp.worksheet = function() {
 		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { this_worksheet.close(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { this_worksheet.print(); return false; });
 		
-		$(document).bind("keydown", "F1", function(evt) { this_worksheet.open_help(); return false; });
-		
 		
 		// bind buttons to functions
 		
@@ -673,7 +659,7 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#save_worksheet").click(this_worksheet.save);
 		$("#close_worksheet").click(this_worksheet.close);
 		$("#export_to_file").click(this_worksheet.export_worksheet);
-		$("#import_from_file").click(this_worksheet.import_worksheet);
+		// $("#import_from_file").click(this_worksheet.import_worksheet);
 		$("#print").click(this_worksheet.print);
 		
 		////// VIEW //////
