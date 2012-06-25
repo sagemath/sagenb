@@ -41,7 +41,7 @@ def worksheet_list():
     r = {}
     
     readonly = g.notebook.readonly_user(g.username)
-    typ = request.args['typ'] if 'typ' in request.args else 'active'
+    typ = request.args['type'] if 'type' in request.args else 'active'
     search = unicode_str(request.args['search']) if 'search' in request.args else None
     sort = request.args['sort'] if 'sort' in request.args else 'last_edited'
     reverse = (request.args['reverse'] == 'True') if 'reverse' in request.args else False
@@ -55,8 +55,6 @@ def worksheet_list():
         # for example, the sort key was not valid
         print "Error displaying worksheet listing: ", E
         return current_app.message(_("Error displaying worksheet listing."))
-
-    # r['worksheet_filenames'] = [x.filename() for x in r['worksheets']]
 
     if pub and (not g.username or g.username == tuple([])):
         r['username'] = 'pub'

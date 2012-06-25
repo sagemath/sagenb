@@ -55,13 +55,6 @@ sagenb.worksheetapp.worksheet = function() {
 	// Ping the server periodically for worksheet updates.
 	this_worksheet.server_ping_time = 10000;
 	
-	// Interact constants.  See interact.py and related files.
-	// Present in wrapped output, forces re-evaluation of ambient cell.
-	this_worksheet.INTERACT_RESTART = '__SAGE_INTERACT_RESTART__';
-	// Delimit updated markup.
-	this_worksheet.INTERACT_START = '<?__SAGE__START>';
-	this_worksheet.INTERACT_END = '<?__SAGE__END>';
-	
 	// Focus / blur.
 	this_worksheet.current_cell_id = -1;
 	

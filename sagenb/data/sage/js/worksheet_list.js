@@ -38,6 +38,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		// name/running
 		var name_html = '<a href="/home/' + sagenb.username + '/' + this_row.props.id_number + '" target="_blank">' + this_row.props.name + '</a>';
 		if(this_row.props.running) {
+			// TODO gettext
 			name_html += '<span class="label label-important pull-right running_label">running</span>';
 		}
 		$this.find("td.worksheet_name_cell").html(name_html);
@@ -55,6 +56,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		$this.find("td.owner_cell").html(owner_html);
 		
 		// last change
+		// TODO gettext
 		$this.find("td.last_edit_cell").text(this_row.props.last_change_pretty + " ago");
 	};
 	
@@ -102,6 +104,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$("#show_active").click(this_list.show_active);
 		$("#show_archive").click(this_list.show_archive);
 		$("#show_trash").click(this_list.show_trash);
+		
+		$("#submit_search").click(this_list.do_search);
 		
 		// not going to mess with this for now
 		// $("#action_buttons button").addClass("disabled");
@@ -163,7 +167,11 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	}
 	this_list.archive = function() {
-		this_list.checked_action("/send_to_archive");
+		this_list.checked_action("/send_to_archive", function(status, response) {
+			this_list.for_each_checked_row(function(row) {
+				row.remove();
+			});
+		});
 	};
 	this_list.delete = function() {
 		//TODO Are you sure?
@@ -216,6 +224,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			if($("table tbody tr").length === 0) {
 				// no rows
 				$("tbody").append('<tr class="empty_table_row">' + 
+				// TODO gettext
 					'<td colspan="4">Nothing here!</td>' + 
 				'</tr>');
 			}
@@ -226,17 +235,33 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	this_list.show_active = function() {
 		this_list.load();
 		
+		// TODO gettext
 		$(".title").text("My Notebook");
+		$("#search_input").val("");
 	};
 	this_list.show_archive = function() {
-		this_list.load("typ=archive");
+		this_list.load("type=archive");
 		
+		// TODO gettext
 		$(".title").text("My Notebook - Archive");
+		$("#search_input").val("");
 	};
 	this_list.show_trash = function() {
-		this_list.load("typ=trash");
+		this_list.load("type=trash");
 		
+		// TODO gettext
 		$(".title").text("My Notebook - Trash");
+		$("#search_input").val("");
 	};
-	
+	this_list.do_search = function() {
+		var q = $("#search_input").val();
+		if($.trim(q) === "") return;
+		
+		$("#type_buttons button").removeClass("active");
+		
+		this_list.load("search=" + q);
+		
+		// TODO gettext
+		$(".title").text("My Notebook - Search");
+	}
 };

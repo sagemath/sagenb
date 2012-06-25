@@ -17,34 +17,35 @@
 
 
 {% block page %}
+	{# TODO gettext #}
 	<h1 class="title">My Notebook</h1>
 
 	<div style="height: 10px;"></div>
 
 	<div class="btn-toolbar well" id="top_toolbar">
-		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> New Worksheet</a>
-		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> Upload</a>
-		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> Download All Active</a>
+		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> New Worksheet</a>{# TODO gettext #}
+		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> Upload</a>{# TODO gettext #}
+		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> Download All Active</a>{# TODO gettext #}
 	</div>
 
 	<div class="btn-toolbar" id="bottom_toolbar">
 		<div class="pull-left" id="action_buttons">
-			<button type="button" class="btn btn-small" id="send_to_archive_button">Archive</button>
-			<button type="button" class="btn btn-small" id="delete_button">Delete</button>
-			<button type="button" class="btn btn-small" id="stop_button">Stop</button>
-			<button type="button" class="btn btn-small" id="download_button">Download</button>
+			<button type="button" class="btn btn-small" id="send_to_archive_button">Archive</button>{# TODO gettext #}
+			<button type="button" class="btn btn-small" id="delete_button">Delete</button>{# TODO gettext #}
+			<button type="button" class="btn btn-small" id="stop_button">Stop</button>{# TODO gettext #}
+			<button type="button" class="btn btn-small" id="download_button">Download</button>{# TODO gettext #}
 		</div>
 		
-		
-		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:25px;">
-			<button type="button" class="btn active" id="show_active">Active</button>
-			<button type="button" class="btn" id="show_archive">Archive</button>
-			<button type="button" class="btn" id="show_trash">Trash</button>
+		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:25px;" id="type_buttons">
+			<button type="button" class="btn active" id="show_active">Active</button>{# TODO gettext #}
+			<button type="button" class="btn" id="show_archive">Archive</button>{# TODO gettext #}
+			<button type="button" class="btn" id="show_trash">Trash</button>{# TODO gettext #}
 		</div>
 		
 		<form action="#" class="form-search pull-right" style="margin-bottom:0">
 			<div class="input-append">
-				<input type="search" class="input-medium search-query0" placeholder="Search ..." size="12"><button class="btn"><i class="icon-search"></i></button>
+{# TODO gettext #}
+				<input type="search" class="input-medium" placeholder="Search ..." size="12" id="search_input"><button class="btn" id="submit_search"><i class="icon-search"></i></button>
 			</div>
 		</form>
 	</div>
@@ -55,9 +56,9 @@
 		<thead>
 			<tr>
 				<th><input type="checkbox" id="main_checkbox"></th>
-				<th>Worksheet</th>
-				<th>Owner/Collaborators</th>
-				<th>Last Edited</th>
+				<th>Worksheet</th>{# TODO gettext #}
+				<th>Owner/Collaborators</th>{# TODO gettext #}
+				<th>Last Edited</th>{# TODO gettext #}
 			</tr>
 		</thead>
 		<tbody>
