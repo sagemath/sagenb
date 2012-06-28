@@ -118,7 +118,7 @@ sagenb.worksheetapp.worksheet = function() {
 		window.open("/new_worksheet");
 	};
 	this_worksheet.save = function() {
-		sagenb.sagenb.async_request(this_worksheet.worksheet_command("save_snapshot"), sagenb.generic_callback());
+		sagenb.async_request(this_worksheet.worksheet_command("save_snapshot"), sagenb.generic_callback());
 	};
 	this_worksheet.close = function() {
 		// TODO gettext
@@ -201,32 +201,32 @@ sagenb.worksheetapp.worksheet = function() {
 		this_worksheet.cells[firstcell_id].evaluate();
 	};
 	this_worksheet.interrupt = function() {
-		sagenb.sagenb.async_request(this_worksheet.worksheet_command('interrupt'), sagenb.generic_callback());
+		sagenb.async_request(this_worksheet.worksheet_command('interrupt'), sagenb.generic_callback());
 	};
 	this_worksheet.restart_sage = function() {
 		this_worksheet.forEachCell(function(cell) {
 			if(cell.is_evaluating) cell.render_output("");
 		});
-		sagenb.sagenb.async_request(this_worksheet.worksheet_command('restart_sage'), sagenb.generic_callback());
+		sagenb.async_request(this_worksheet.worksheet_command('restart_sage'), sagenb.generic_callback());
 	};
 	
 	//// OUTPUT STUFF ////
 	this_worksheet.hide_all_output = function() {
-		sagenb.sagenb.async_request(this_worksheet.worksheet_command('hide_all'), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command('hide_all'), sagenb.generic_callback(function(status, response) {
 			this_worksheet.forEachCell(function(cell) {
 				cell.set_output_hidden();
 			});
 		}));
 	};
 	this_worksheet.show_all_output = function() {
-		sagenb.sagenb.async_request(this_worksheet.worksheet_command('show_all'), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command('show_all'), sagenb.generic_callback(function(status, response) {
 			this_worksheet.forEachCell(function(cell) {
 				cell.set_output_visible();
 			});
 		}));
 	};
 	this_worksheet.delete_all_output = function() {
-		sagenb.sagenb.async_request(this_worksheet.worksheet_command('delete_all_output'), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(this_worksheet.worksheet_command('delete_all_output'), sagenb.generic_callback(function(status, response) {
 			this_worksheet.forEachCell(function(cell) {
 				cell.output = "";
 				cell.render_output();
