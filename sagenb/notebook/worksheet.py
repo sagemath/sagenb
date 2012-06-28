@@ -3001,6 +3001,7 @@ except (KeyError, IOError):
 
         self.initialize_sage()
 
+        # Why the repeat?
         # make sure we have a __sage attribute
         # We do this to diagnose google issue 81; once we
         # have fixed that issue, we can remove this next statement
@@ -3187,13 +3188,21 @@ except (KeyError, IOError):
                 else:
                     c = ''
                 C.set_changed_input_text(before_prompt + c + after_prompt)
-                out = self.completions_html(C.id(), out)
-                C.set_introspect_html(out, completing=True)
+
+                if 'no completions of' in out:
+                    C.set_introspect_completions([])
+                else:
+                    C.set_introspect_completions(out.split())
+
             else:
                 if C.eval_method == 'introspect':
-                    C.set_introspect_html(out, completing=False)
+                    if 'no completions of' in out:
+                        C.set_introspect_completions([])
+                    else:
+                        C.set_introspect_completions(out.split())
+
                 else:
-                    C.set_introspect_html('')
+                    C.set_introspect_completions([])
                     C.set_output_text('<html><!--notruncate-->' + out +
                                       '</html>', '')
 
@@ -3259,7 +3268,7 @@ except (KeyError, IOError):
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())
-            C.set_introspect_html('')
+            C.set_introspect_completions([])
 
         return 'd', C
 
@@ -3559,29 +3568,30 @@ except (KeyError, IOError):
             i += 1
         return completions[0][n:m]
 
-    def completions_html(self, id, s, cols=3):
-        if 'no completions of' in s:
-            return ''
-
-        completions = s.split()
-
-        n = len(completions)
-        l = n / cols + n % cols
-
-        if n == 1:
-            return '' # don't show a window, just replace it
-
-        rows = []
-        for r in range(0, l):
-            row = []
-            for c in range(cols):
-                try:
-                    cell = completions[r + l * c]
-                    row.append(cell)
-                except:
-                    row.append('')
-            rows.append(row)
-        return format_completions_as_html(id, rows)
+# TODO completions
+#    def completions_html(self, id, s, cols=3):
+#        if 'no completions of' in s:
+#            return ''
+#
+#        completions = s.split()
+#
+#        n = len(completions)
+#        l = n / cols + n % cols
+#
+#        if n == 1:
+#            return '' # don't show a window, just replace it
+#
+#        rows = []
+#        for r in range(0, l):
+#            row = []
+#            for c in range(cols):
+#                try:
+#                    cell = completions[r + l * c]
+#                    row.append(cell)
+#                except:
+#                    row.append('')
+#            rows.append(row)
+#        return format_completions_as_html(id, rows)
 
     ##########################################################
     # Processing of input and output to worksheet process.
@@ -4204,28 +4214,30 @@ def first_word(s):
         return s
     return s[:i.start()]
 
-def format_completions_as_html(cell_id, completions, username=None):
-    """
-    Returns tabular HTML code for a list of introspection completions.
 
-    INPUT:
-
-    - ``cell_id`` - an integer or a string; the ID of the ambient cell
-
-    - ``completions`` - a nested list of completions in row-major
-      order
-
-    OUTPUT:
-
-    - a string
-    """
-    if len(completions) == 0:
-        return ''
-
-    return template(os.path.join("html", "worksheet", "completions.html"),
-                    cell_id = cell_id,
-                    # Transpose and enumerate completions to column-major
-                    completions_enumerated = enumerate(map(list, zip(*completions))))
+# TODO completions
+#def format_completions_as_html(cell_id, completions, username=None):
+#    """
+#    Returns tabular HTML code for a list of introspection completions.
+#
+#    INPUT:
+#
+#    - ``cell_id`` - an integer or a string; the ID of the ambient cell
+#
+#    - ``completions`` - a nested list of completions in row-major
+#      order
+#
+#    OUTPUT:
+#
+#    - a string
+#    """
+#    if len(completions) == 0:
+#        return ''
+#
+#    return template(os.path.join("html", "worksheet", "completions.html"),
+#                    cell_id = cell_id,
+#                    # Transpose and enumerate completions to column-major
+#                    completions_enumerated = enumerate(map(list, zip(*completions))))
 
 def extract_name(text):
     # The first line is the title

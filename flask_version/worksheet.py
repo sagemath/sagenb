@@ -26,7 +26,7 @@ def worksheet_view(f):
             worksheet = kwds['worksheet'] = g.notebook.get_worksheet_with_filename(worksheet_filename)
         except KeyError:
             return current_app.message(_("You do not have permission to access this worksheet"))
-        
+
         with worksheet_locks[worksheet]:
             owner = worksheet.owner()
 
@@ -58,7 +58,7 @@ def url_for_worksheet(worksheet):
 def get_cell_id():
     """
     Returns the cell ID from the request.
-    
+
     We cast the incoming cell ID to an integer, if it's possible.
     Otherwise, we treat it as a string.
     """
@@ -103,7 +103,7 @@ readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download
 def worksheet_command(target, **route_kwds):
     if 'methods' not in route_kwds:
         route_kwds['methods'] = ['GET', 'POST']
-        
+
     def decorator(f):
         @ws.route('/home/<username>/<id>/' + target, **route_kwds)
         @worksheet_view
@@ -130,7 +130,7 @@ def worksheet_command(target, **route_kwds):
             worksheet = kwds.pop('worksheet', None)
             if worksheet is not None:
                 args = (worksheet,) + args
-                
+
             return f(*args, **kwds)
 
         #This function shares some functionality with url_for_worksheet.
@@ -141,10 +141,10 @@ def worksheet_command(target, **route_kwds):
             return url_for(f.__name__, *args, **kwds)
 
         wrapper.url_for = wc_url_for
-        
+
         return wrapper
     return decorator
-    
+
 
 @worksheet_command('rename')
 def worksheet_rename(worksheet):
@@ -232,62 +232,41 @@ def worksheet_worksheet_properties_json(worksheet):
     Send worksheet properties as a JSON object
     """
     from sagenb.notebook.misc import encode_response
-    
+
     r = worksheet.basic()
-    
+
     if worksheet.has_published_version():
         hostname = request.headers.get('host', g.notebook.interface + ':' + str(g.notebook.port))
-        
+
         r['published_url'] = 'http%s://%s/home/%s' % ('' if not g.notebook.secure else 's',
                                             hostname,
                                             worksheet.published_version().filename())
-        
+
         from time import strftime
         r['published_time'] = time = strftime("%B %d, %Y %I:%M %p", worksheet.published_version().date_edited())
-    
+
     return encode_response(r)
 
 ########################################################
 # Used in refreshing the cell list
 ########################################################
-#@worksheet_command('cell_list')
-#def worksheet_cell_list(worksheet):
-#    """
-#    Return the state number and the HTML for the main body of the
-#    worksheet, which consists of a list of cells.
-#    """
-#    r = {}
-#    r['state_number'] = worksheet.state_number()
-#    # TODO: Send and actually use the body's HTML.
-#    r['html_cell_list'] = ''
-#     #r['html_cell_list'] = W.html_cell_list()
-#
-#    from sagenb.notebook.misc import encode_response
-#    return encode_response(r)
-
 @worksheet_command('cell_properties')
-def worksheet_cell_json(worksheet):
+def worksheet_cell_properties(worksheet):
     """
     Return the cell with the given id as a JSON object
     """
+    print 'cell_properties'
     id = get_cell_id()
-    return worksheet.get_cell_with_id(id).to_json()
-    
+    return encode_response(worksheet.get_cell_with_id(id).basic())
+
 @worksheet_command('cell_list')
-def worksheet_cell_list_json(worksheet):
+def worksheet_cell_list(worksheet):
     """
     Return a list of cells in JSON format.
     """
     r = {}
     r['state_number'] = worksheet.state_number()
-    
-    cell_list = []
-    
-    for cell in worksheet.cell_list():
-        cell_list.append(cell.to_dictionary())
-    
-    r['cell_list'] = cell_list
-    
+    r['cell_list'] = [c.basic() for c in worksheet.cell_list()]
     return encode_response(r)
 
 ########################################################
@@ -490,7 +469,6 @@ def worksheet_eval(worksheet):
     notebook_updates()
 
     return encode_response(r)
-        
 
 @worksheet_command('cell_update')
 def worksheet_cell_update(worksheet):
@@ -534,7 +512,8 @@ def worksheet_cell_update(worksheet):
     r['output'] = cell.output_text(html=True) + ' '
     r['output_wrapped'] = cell.output_text(g.notebook.conf()['word_wrap_cols'],
                                            html=True) + ' '
-    r['introspect_html'] = cell.introspect_html()
+    #r['introspect_html'] = cell.introspect_html()
+    r['introspect_completions'] = cell.introspect_completions()
 
     # Compute 'em, if we got 'em.
     worksheet.start_next_comp()
@@ -559,7 +538,7 @@ def worksheet_introspect(worksheet):
         r['command'] = 'error'
         r['message'] = 'Cannot evaluate public cell introspection.'
         return encode_response(r)
-    
+
     before_cursor = request.values.get('before_cursor', '')
     after_cursor = request.values.get('after_cursor', '')
     cell = worksheet.get_cell_with_id(id)
