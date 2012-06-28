@@ -36,6 +36,27 @@ class LdapAuth(AuthMethod):
     wildcard-search all configured "user lookup attributes" for
     the given search string
     """
+
+    def _require_ldap(retval):
+        """
+        function decorator to
+            - disable LDAP auth
+            - return the decorator argument "retval" instead of calling the
+              actual function
+        if importing ldap fails
+        """
+        def wrap(f):
+            try:
+                from ldap import __version__ as ldap_version
+                def wrapped_f(self, *args, **kwargs):
+                    return f(self, *args, **kwargs)
+            except ImportError:
+                def wrapped_f(self, *args, **kwargs):
+                    self._conf['auth_ldap'] = False
+                    return retval
+            return wrapped_f
+        return wrap
+
     def __init__(self, conf):
         AuthMethod.__init__(self, conf)
 
@@ -65,7 +86,6 @@ class LdapAuth(AuthMethod):
             raise ValueError, e
         finally:
             conn.unbind_s()
-
         return result
 
     def _get_ldapuser(self, username, attrlist=None):
@@ -78,6 +98,7 @@ class LdapAuth(AuthMethod):
         # return None if more than 1 object found
         return result[0] if len(result) == 1 else None
 
+    @_require_ldap([])
     def user_lookup(self, search):
         from ldap.filter import filter_format
         from ldap import LDAPError
@@ -95,12 +116,14 @@ class LdapAuth(AuthMethod):
         # return a list of usernames
         return [x[1][self._conf['ldap_username_attrib']][0].lower() for x in r if x[1].has_key(self._conf['ldap_username_attrib'])]
 
+    @_require_ldap(False)
     def check_user(self, username):
         # LDAP is NOT case sensitive while sage is, so only lowercase names are allowed
         if username != username.lower():
             return False
         return self._get_ldapuser(username) is not None
 
+    @_require_ldap(False)
     def check_password(self, username, password):
         import ldap
         # retrieve username's DN
@@ -121,6 +144,7 @@ class LdapAuth(AuthMethod):
         finally:
             conn.unbind_s()
 
+    @_require_ldap('')
     def get_attrib(self, username, attrib):
         # translate some common attribute names to their ldap equivalents, i.e. "email" is "mail
         attrib = 'mail' if attrib == 'email' else attrib
@@ -129,3 +153,4 @@ class LdapAuth(AuthMethod):
         if u is not None:
             a = u[1][attrib][0] #if u[1].has_key(attrib) else ''
             return a
+        return ''
