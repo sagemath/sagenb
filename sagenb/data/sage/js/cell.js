@@ -11,6 +11,7 @@ sagenb.worksheetapp.cell = function(id) {
 	this_cell.system = "";
 	this_cell.percent_directives = null;
 	
+	this_cell.introspect_state = null;
 	this_cell.is_evaluate_cell = true;
 	this_cell.is_evaluating = false;
 	
@@ -99,9 +100,9 @@ sagenb.worksheetapp.cell = function(id) {
 		
 			// render into the container
 			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
-								"<div class=\"input_cell\">" +
-								"</div>" +
-							"</div> <!-- /cell -->");
+									"<div class=\"input_cell\">" +
+									"</div>" +
+								"</div> <!-- /cell -->");
 			
 			//set up extraKeys object
 			/* because of some codemirror or chrome bug, we have to
@@ -112,6 +113,9 @@ sagenb.worksheetapp.cell = function(id) {
 			
 			// set up autocomplete. we may want to use tab
 			//extrakeys[sagenb.ctrlkey + "-Space"] = "autocomplete";
+			extrakeys[sagenb.ctrlkey + "-Space"] = function(cm) {
+				this_cell.introspect();
+			};
 			
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
@@ -454,7 +458,11 @@ sagenb.worksheetapp.cell = function(id) {
 			} /*else if (X.command === 'introspect') {
 				//introspect[X.id].loaded = false;
 				//update_introspection_text(X.id, 'loading...');
-			} else if (in_slide_mode || doing_split_eval || is_interacting_cell(X.id)) {
+				
+				// don't need anything
+			}*/
+			
+			/* else if (in_slide_mode || doing_split_eval || is_interacting_cell(X.id)) {
 				// Don't jump.
 			} else {
 				// "Plain" evaluation.  Jump to a later cell.
@@ -483,6 +491,82 @@ sagenb.worksheetapp.cell = function(id) {
 			 * changes haven't been put in this_cell.input
 			 */
 			input: this_cell.codemirror.getValue()
+		});
+	};
+	this_cell.introspect = function() {
+		if(!this_cell.is_evaluate_cell) return;
+		
+		/* split up the text cell and get before and after */
+		var before = "";
+		var after = "";
+		
+		var pos = this_cell.codemirror.getCursor(false);
+		var lines = this_cell.codemirror.getValue().split("\n");
+		
+		before += lines.slice(0, pos.line).join("\n");
+		if(pos.ch > 0) {
+			if(pos.line > 0) {
+				before += "\n";
+			}
+			before += lines[pos.line].substring(0, pos.ch);
+		}
+		
+		after += lines[pos.line].substring(pos.ch);
+		if(pos.line < lines.length - 1) {
+			after += "\n";
+			after += lines.slice(pos.line + 1).join("\n");
+		}
+		
+		
+		/* set up introspection state */
+		this_cell.introspect_state = {};
+		this_cell.introspect_state.before_replacing_word = before;
+		this_cell.introspect_state.after_cursor = after;
+		
+		/*  */
+		var command_pat = "([a-zA-Z_][a-zA-Z._0-9]*)$";
+		var function_pat = "([a-zA-Z_][a-zA-Z._0-9]*)\\([^()]*$";
+		try {
+			command_pat = new RegExp(command_pat);
+			//function_pat = new RegExp(function_pat);
+		} catch (e) {}
+		
+		m = command_pat.exec(before);
+		//f = function_pat.exec(before);
+		
+		if (before.slice(-1) === "?") {
+			// We're starting with a docstring or source code.
+			this_cell.introspect_state.docstring = true;
+		} else if (m) {
+			// We're starting with a list of completions.
+			this_cell.introspect_state.replacing = true;
+			this_cell.introspect_state.replacing_word = m[1];
+			this_cell.introspect_state.before_replacing_word = before.substring(0, before.length - m[1].length);
+		} else if (f !== null) {
+			// We're in an open function paren -- give info on the
+			// function.
+			before = f[1] + "?";
+			// We're starting with a docstring or source code.
+			this_cell.introspect_state.docstring = true;
+		}/* else {
+			// Just a tab.
+			cell_has_changed = true;
+			do_replacement(id, '    ', false);
+			return;
+		}*/
+		
+		sagenb.async_request(this_cell.worksheet.worksheet_command("introspect"), sagenb.generic_callback(function(status, response) {
+			/* INTROSPECT CALLBACK */
+			
+			// start checking for output
+			this_cell.check_for_output();
+		}),
+		
+		/* REQUEST OPTIONS */
+		{
+			id: toint(this_cell.id),
+			before_cursor: before,
+			after_cursor: after
 		});
 	};
 	this_cell.check_for_output = function() {
@@ -548,9 +632,113 @@ sagenb.worksheetapp.cell = function(id) {
 						// update codemirror/tinymce
 						if(this_cell.is_evaluate_cell) {
 							this_cell.codemirror.setValue(this_cell.input);
+							
+							// here we need to set the new cursor position if 
+							// we are in introspect
+							if(this_cell.introspect_state) {
+								var after_lines = this_cell.introspect_state.after_cursor.split("\n");
+								var val_lines = this_cell.codemirror.getValue().split("\n");
+								
+								var pos = {};
+								pos.line = val_lines.length - after_lines.length;
+								pos.ch = val_lines[pos.line].length - after_lines[0].length;
+								
+								this_cell.codemirror.setCursor(pos);
+							}
 						} else {
-							// TODO tinymce
+							/* I don't think we need to do anything for TinyMCE
+							 * but it would go here
+							 */
 						}
+					}
+					
+					// introspect
+					if(X.introspect_completions && X.introspect_completions.length > 0) {
+						// open codemirror simple hint
+						
+						var editor = this_cell.codemirror;
+						
+						/* stolen from simpleHint */
+						// We want a single cursor position.
+						// if (editor.somethingSelected()) return;
+						
+						//var result = getHints(editor);
+						//if (!result || !result.list.length) return;
+						var completions = X.introspect_completions;
+						
+						function insert(str) {
+							var oldpos = editor.getCursor();
+							var newpos = {};
+							newpos.line = oldpos.line;
+							newpos.ch = oldpos.ch + str.length;
+							
+							editor.setValue(this_cell.introspect_state.before_replacing_word + str + this_cell.introspect_state.after_cursor);
+							
+							editor.setCursor(newpos);
+						}
+						// When there is only one completion, use it directly.
+						if (completions.length === 1) {insert(completions[0]); return true;}
+						
+						// Build the select widget
+						var complete = document.createElement("div");
+						complete.className = "CodeMirror-completions";
+						var sel = complete.appendChild(document.createElement("select"));
+						// Opera doesn't move the selection when pressing up/down in a
+						// multi-select, but it does properly support the size property on
+						// single-selects, so no multi-select is necessary.
+						if (!window.opera) sel.multiple = true;
+						for (var i = 0; i < completions.length; ++i) {
+							var opt = sel.appendChild(document.createElement("option"));
+							opt.appendChild(document.createTextNode(completions[i]));
+						}
+						sel.firstChild.selected = true;
+						sel.size = Math.min(10, completions.length);
+						var pos = editor.cursorCoords();
+						complete.style.left = pos.x + "px";
+						complete.style.top = pos.yBot + "px";
+						document.body.appendChild(complete);
+						// If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
+						var winW = window.innerWidth || Math.max(document.body.offsetWidth, document.documentElement.offsetWidth);
+						if(winW - pos.x < sel.clientWidth)
+						complete.style.left = (pos.x - sel.clientWidth) + "px";
+						// Hack to hide the scrollbar.
+						if (completions.length <= 10)
+						complete.style.width = (sel.clientWidth - 1) + "px";
+
+						var done = false;
+						function close() {
+							if (done) return;
+							done = true;
+							complete.parentNode.removeChild(complete);
+						}
+						function pick() {
+							insert(completions[sel.selectedIndex]);
+							close();
+							setTimeout(function(){editor.focus();}, 50);
+						}
+						CodeMirror.connect(sel, "blur", close);
+						CodeMirror.connect(sel, "keydown", function(event) {
+							var code = event.keyCode;
+							// Enter
+							if (code === 13) {CodeMirror.e_stop(event); pick();}
+							// Escape
+							else if (code === 27) {CodeMirror.e_stop(event); close(); editor.focus();}
+							else if (code !== 38 && code !== 40) {
+								close(); editor.focus();
+								// Pass the event to the CodeMirror instance so that it can handle things like backspace properly.
+								editor.triggerOnKeyDown(event);
+								// setTimeout(function(){CodeMirror.simpleHint(editor, getHints);}, 50);
+								// TODO here we need to filter our completions
+								// or run introspect again
+								setTimeout(this_cell.introspect, 50);
+							}
+						});
+						CodeMirror.connect(sel, "dblclick", pick);
+
+						sel.focus();
+						// Opera sometimes ignores focusing a freshly created node
+						if (window.opera) setTimeout(function(){if (!done) sel.focus();}, 100);
+						return true;
 					}
 					
 					// update the output
