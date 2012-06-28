@@ -2030,7 +2030,7 @@ class Cell(Cell_generic):
 
     def introspect_completions(self):
         if not self.introspect():
-            return ''
+            return None
         try:
             return self._introspect_completions
         except AttributeError:
