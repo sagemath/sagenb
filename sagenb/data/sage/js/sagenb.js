@@ -7,16 +7,7 @@
 // the sagenb "namespace"
 var sagenb = {};
 
-// the username
-sagenb.username = "";
-sagenb.ctrlkey = "";
-// other general variables go here
-
 sagenb.init = function() {
-	// TODO is this wrong? ie, is it possible to look at someone else's worksheet?
-	// grab the username from the url
-	sagenb.username = window.location.pathname.substring(6).split("/")[0];
-	
 	// update username
 	$("#username").text(sagenb.username);
 	
