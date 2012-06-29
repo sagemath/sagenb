@@ -108,7 +108,22 @@ sagenb.worksheetapp.worksheet = function() {
 		 * the callback goes but jQuery throws a 404 error.
 		 * this error may not be a bug, not sure...
 		 */
-		sagenb.async_request(this_worksheet.worksheet_command('alive'), sagenb.generic_callback());
+		sagenb.async_request(this_worksheet.worksheet_command('alive'), sagenb.generic_callback(function(status, response) {
+			/*  Each time the server is up and responds, the server includes
+				the worksheet state_number is the response.  If this number is out
+				of sync with our view of the worksheet state, then we force a
+				refresh of the list of cells.  This is very useful in case the
+				user uses the back button and the browser cache displays an
+				invalid worksheet list (which can cause massive confusion), or the
+				user open the same worksheet in multiple browsers, or multiple
+				users open the same shared worksheet.
+			*/
+			if (this_worksheet.state_number >= 0 && parseInt(response, 10) > this_worksheet.state_number) {
+				// Force a refresh of just the cells in the body.
+				this_worksheet.worksheet_update();
+				this_worksheet.cell_list_update();
+			}
+		}));
 	};
 	
 	
