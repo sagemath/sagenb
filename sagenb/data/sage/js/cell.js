@@ -24,7 +24,7 @@ sagenb.worksheetapp.cell = function(id) {
 	this_cell.output_check_interval_id;
 	
 	// the amount of time in millisecs between update checks
-	this_cell.output_check_interval = 500;
+	this_cell.output_check_interval = 250;
 
 	
 	///////////// UPDATING /////////////
@@ -125,9 +125,6 @@ sagenb.worksheetapp.cell = function(id) {
 				if(cm.getValue() === "" && this_cell.worksheet.cells.length > 0) {
 					// it's empty and not the only one -> delete it
 					this_cell.delete();
-				
-					/* TODO: now we should focus on the cell above instead of 
-					blurring everything and setting this back to -1 */
 					this_cell.worksheet.focused_texarea_id = -1;
 				} else {
 					// not empty -> pass to the default behaviour
@@ -160,13 +157,13 @@ sagenb.worksheetapp.cell = function(id) {
 			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
 				value: this_cell.input,
 				
-				mode: this_cell.get_codemirror_mode(),
-				
 				/* some of these may need to be settings */
-				indentWithTabs: true,
+				indentWithTabs: false,
 				tabSize: 4,
 				lineNumbers: false,
 				matchBrackets: true,
+				
+				mode: this_cell.get_codemirror_mode(),
 				
 				/* autofocus messes up when true */
 				autofocus: false,
@@ -666,6 +663,7 @@ sagenb.worksheetapp.cell = function(id) {
 						//if (!result || !result.list.length) return;
 						var completions = X.introspect_completions;
 						
+						/* Insert the given completion str into the input */
 						function insert(str) {
 							var oldpos = editor.getCursor();
 							var newpos = {};
@@ -676,10 +674,14 @@ sagenb.worksheetapp.cell = function(id) {
 							
 							editor.setCursor(newpos);
 						}
+						
 						// When there is only one completion, use it directly.
 						if (completions.length === 1) {insert(completions[0]); return true;}
 						
 						// Build the select widget
+						/* Because this code is stolen directly from simple-hint.js
+						 * it does not use jQuery for any of the DOM manipulation.
+						 */
 						var complete = document.createElement("div");
 						complete.className = "CodeMirror-completions";
 						var sel = complete.appendChild(document.createElement("select"));
@@ -705,31 +707,45 @@ sagenb.worksheetapp.cell = function(id) {
 						if (completions.length <= 10)
 						complete.style.width = (sel.clientWidth - 1) + "px";
 
+						
+						/* Close the completions menu */
 						var done = false;
 						function close() {
 							if (done) return;
 							done = true;
 							complete.parentNode.removeChild(complete);
 						}
+						
+						/* Pick and insert the currently highlighted completion */
 						function pick() {
 							insert(completions[sel.selectedIndex]);
 							close();
 							setTimeout(function(){editor.focus();}, 50);
 						}
+						
 						CodeMirror.connect(sel, "blur", close);
 						CodeMirror.connect(sel, "keydown", function(event) {
 							var code = event.keyCode;
 							// Enter
 							if (code === 13) {CodeMirror.e_stop(event); pick();}
+							
 							// Escape
 							else if (code === 27) {CodeMirror.e_stop(event); close(); editor.focus();}
+							
+							// Backspace
+							else if (code === 8) {
+								close();
+								editor.focus();
+								editor.triggerOnKeyDown(event);
+							}
+							
+							// Everything else besides up/down
 							else if (code !== 38 && code !== 40) {
 								close(); editor.focus();
+								
 								// Pass the event to the CodeMirror instance so that it can handle things like backspace properly.
 								editor.triggerOnKeyDown(event);
-								// setTimeout(function(){CodeMirror.simpleHint(editor, getHints);}, 50);
-								// TODO here we need to filter our completions
-								// or run introspect again
+								
 								setTimeout(this_cell.introspect, 50);
 							}
 						});
