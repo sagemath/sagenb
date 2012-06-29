@@ -25,14 +25,6 @@ class SageNBFlask(Flask):
         # I think it would make more sense just to have one /data/ path and not do one for every kind of file
         self.add_static_path('/data', os.path.join(DATA))
         
-        ##### remove these when we don't need them anymore
-        #self.add_static_path('/css', os.path.join(DATA, "sage", "css"))
-        #self.add_static_path('/less', os.path.join(DATA, "sage", "less"))
-        #self.add_static_path('/images', os.path.join(DATA, "sage", "images"))
-        #self.add_static_path('/javascript', DATA)
-        #self.add_static_path('/static', DATA)
-        #self.add_static_path('/java', DATA)
-        
         # this one is special though since it points to SAGE_ROOT
         self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
         
@@ -126,18 +118,23 @@ def index():
 ######################
 from hashlib import sha1
 
-@base.route('/javascript/dynamic/notebook_dynamic.js')
-def dynamic_js():
-    from sagenb.notebook.js import javascript
-    # the javascript() function is cached, so there shouldn't be a big slowdown calling it
-    data,datahash = javascript()
-    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-        response = make_response('',304)
-    else:
-        response = make_response(data)
-        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-        response.headers['Etag']=datahash
-    return response
+#@base.route('/javascript/dynamic/notebook_dynamic.js')
+#def dynamic_js():
+#    from sagenb.notebook.js import javascript
+#    # the javascript() function is cached, so there shouldn't be a big slowdown calling it
+#    data,datahash = javascript()
+#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
+#        response = make_response('',304)
+#    else:
+#        response = make_response(data)
+#        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
+#        response.headers['Etag']=datahash
+#    return response
+
+@base.route('/javascript/dynamic/username.js')
+@guest_or_login_required
+def username_js():
+    return render_template(os.path.join('js', 'username.js'), username = g.username)
 
 _localization_cache = {}
 @base.route('/data/sage/js/localization.js')
