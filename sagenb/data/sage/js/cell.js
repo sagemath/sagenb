@@ -117,6 +117,13 @@ sagenb.worksheetapp.cell = function(id) {
 				this_cell.introspect();
 			};
 			
+			extrakeys["Tab"] = function(cm) {
+				if(!this_cell.introspect()) {
+					console.log('indentAuto');
+					CodeMirror.commands.indentAuto(cm);
+				}
+			}
+			
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
 				// check if it is empty
@@ -491,6 +498,16 @@ sagenb.worksheetapp.cell = function(id) {
 		});
 	};
 	this_cell.introspect = function() {
+		/* Attempts to begin an introspection. Firstly, it splits the input 
+		 * according to the cursor position. Then it matches the text before 
+		 * the cursor to some regex expression to check which type of 
+		 * introspection we are doing. Once it determines the type of introspection,
+		 * it stores some properties in the introspect_state variable. If 
+		 * there is nothing to introspect, it returns false. Otherwise, 
+		 * it executes the introspection and returns true. Handling of the 
+		 * introspection result is done in the check_for_output function.
+		 */
+		
 		if(!this_cell.is_evaluate_cell) return;
 		
 		/* split up the text cell and get before and after */
@@ -520,23 +537,23 @@ sagenb.worksheetapp.cell = function(id) {
 		this_cell.introspect_state.before_replacing_word = before;
 		this_cell.introspect_state.after_cursor = after;
 		
-		/*  */
+		/* Regexes */
 		var command_pat = "([a-zA-Z_][a-zA-Z._0-9]*)$";
 		var function_pat = "([a-zA-Z_][a-zA-Z._0-9]*)\\([^()]*$";
 		try {
 			command_pat = new RegExp(command_pat);
-			//function_pat = new RegExp(function_pat);
+			function_pat = new RegExp(function_pat);
 		} catch (e) {}
 		
 		m = command_pat.exec(before);
-		//f = function_pat.exec(before);
+		f = function_pat.exec(before);
 		
 		if (before.slice(-1) === "?") {
 			// We're starting with a docstring or source code.
 			this_cell.introspect_state.docstring = true;
 		} else if (m) {
 			// We're starting with a list of completions.
-			this_cell.introspect_state.replacing = true;
+			this_cell.introspect_state.code_completion = true;
 			this_cell.introspect_state.replacing_word = m[1];
 			this_cell.introspect_state.before_replacing_word = before.substring(0, before.length - m[1].length);
 		} else if (f !== null) {
@@ -545,12 +562,10 @@ sagenb.worksheetapp.cell = function(id) {
 			before = f[1] + "?";
 			// We're starting with a docstring or source code.
 			this_cell.introspect_state.docstring = true;
-		}/* else {
+		} else {
 			// Just a tab.
-			cell_has_changed = true;
-			do_replacement(id, '    ', false);
-			return;
-		}*/
+			return false;
+		}
 		
 		sagenb.async_request(this_cell.worksheet.worksheet_command("introspect"), sagenb.generic_callback(function(status, response) {
 			/* INTROSPECT CALLBACK */
@@ -565,6 +580,8 @@ sagenb.worksheetapp.cell = function(id) {
 			before_cursor: before,
 			after_cursor: after
 		});
+		
+		return true;
 	};
 	this_cell.check_for_output = function() {
 		/* Currently, this function uses a setInterval command
@@ -650,111 +667,120 @@ sagenb.worksheetapp.cell = function(id) {
 					}
 					
 					// introspect
-					if(X.introspect_completions && X.introspect_completions.length > 0) {
-						// open codemirror simple hint
+					if(X.introspect_output && X.introspect_output.length > 0) {
 						
-						var editor = this_cell.codemirror;
-						
-						/* stolen from simpleHint */
-						// We want a single cursor position.
-						// if (editor.somethingSelected()) return;
-						
-						//var result = getHints(editor);
-						//if (!result || !result.list.length) return;
-						var completions = X.introspect_completions;
-						
-						/* Insert the given completion str into the input */
-						function insert(str) {
-							var oldpos = editor.getCursor();
-							var newpos = {};
-							newpos.line = oldpos.line;
-							newpos.ch = oldpos.ch + str.length;
+						if(this_cell.introspect_state.code_completion) {
+							// open codemirror simple hint
+							var editor = this_cell.codemirror;
 							
-							editor.setValue(this_cell.introspect_state.before_replacing_word + str + this_cell.introspect_state.after_cursor);
+							/* stolen from simpleHint */
+							// We want a single cursor position.
+							// if (editor.somethingSelected()) return;
 							
-							editor.setCursor(newpos);
-						}
-						
-						// When there is only one completion, use it directly.
-						if (completions.length === 1) {insert(completions[0]); return true;}
-						
-						// Build the select widget
-						/* Because this code is stolen directly from simple-hint.js
-						 * it does not use jQuery for any of the DOM manipulation.
-						 */
-						var complete = document.createElement("div");
-						complete.className = "CodeMirror-completions";
-						var sel = complete.appendChild(document.createElement("select"));
-						// Opera doesn't move the selection when pressing up/down in a
-						// multi-select, but it does properly support the size property on
-						// single-selects, so no multi-select is necessary.
-						if (!window.opera) sel.multiple = true;
-						for (var i = 0; i < completions.length; ++i) {
-							var opt = sel.appendChild(document.createElement("option"));
-							opt.appendChild(document.createTextNode(completions[i]));
-						}
-						sel.firstChild.selected = true;
-						sel.size = Math.min(10, completions.length);
-						var pos = editor.cursorCoords();
-						complete.style.left = pos.x + "px";
-						complete.style.top = pos.yBot + "px";
-						document.body.appendChild(complete);
-						// If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
-						var winW = window.innerWidth || Math.max(document.body.offsetWidth, document.documentElement.offsetWidth);
-						if(winW - pos.x < sel.clientWidth)
-						complete.style.left = (pos.x - sel.clientWidth) + "px";
-						// Hack to hide the scrollbar.
-						if (completions.length <= 10)
-						complete.style.width = (sel.clientWidth - 1) + "px";
+							//var result = getHints(editor);
+							//if (!result || !result.list.length) return;
+							var completions = $.trim(X.introspect_output).split("\n");
+							
+							/* Insert the given completion str into the input */
+							function insert(str) {
+								var newpos = {};
+								var lines = this_cell.introspect_state.before_replacing_word.split("\n");
+								newpos.line = lines.length - 1;
+								newpos.ch = lines[lines.length - 1].length + str.length - 1;
+								
+								// CodeMirror bug workaround
+								str = str.replace("\r", "");
+								
+								editor.setValue(this_cell.introspect_state.before_replacing_word + str + this_cell.introspect_state.after_cursor);
+								
+								editor.setCursor(newpos);
+							}
+							
+							// When there is only one completion, use it directly.
+							// TODO we can't do return here since more commands come after introspection stuff
+							if (completions.length === 1) {insert(completions[0]); return true;}
+							
+							// Build the select widget
+							/* Because this code is stolen directly from simple-hint.js
+							* it does not use jQuery for any of the DOM manipulation.
+							*/
+							var complete = document.createElement("div");
+							complete.className = "CodeMirror-completions";
+							var sel = complete.appendChild(document.createElement("select"));
+							// Opera doesn't move the selection when pressing up/down in a
+							// multi-select, but it does properly support the size property on
+							// single-selects, so no multi-select is necessary.
+							if (!window.opera) sel.multiple = true;
+							for (var i = 0; i < completions.length; ++i) {
+								var opt = sel.appendChild(document.createElement("option"));
+								opt.appendChild(document.createTextNode(completions[i]));
+							}
+							sel.firstChild.selected = true;
+							sel.size = Math.min(10, completions.length);
+							var pos = editor.cursorCoords();
+							complete.style.left = pos.x + "px";
+							complete.style.top = pos.yBot + "px";
+							document.body.appendChild(complete);
+							// If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
+							var winW = window.innerWidth || Math.max(document.body.offsetWidth, document.documentElement.offsetWidth);
+							if(winW - pos.x < sel.clientWidth)
+							complete.style.left = (pos.x - sel.clientWidth) + "px";
+							// Hack to hide the scrollbar.
+							if (completions.length <= 10)
+							complete.style.width = (sel.clientWidth - 1) + "px";
 
-						
-						/* Close the completions menu */
-						var done = false;
-						function close() {
-							if (done) return;
-							done = true;
-							complete.parentNode.removeChild(complete);
-						}
-						
-						/* Pick and insert the currently highlighted completion */
-						function pick() {
-							insert(completions[sel.selectedIndex]);
-							close();
-							setTimeout(function(){editor.focus();}, 50);
-						}
-						
-						CodeMirror.connect(sel, "blur", close);
-						CodeMirror.connect(sel, "keydown", function(event) {
-							var code = event.keyCode;
-							// Enter
-							if (code === 13) {CodeMirror.e_stop(event); pick();}
 							
-							// Escape
-							else if (code === 27) {CodeMirror.e_stop(event); close(); editor.focus();}
+							/* Close the completions menu */
+							var done = false;
+							function close() {
+								if (done) return;
+								done = true;
+								complete.parentNode.removeChild(complete);
+							}
 							
-							// Backspace
-							else if (code === 8) {
+							/* Pick and insert the currently highlighted completion */
+							function pick() {
+								insert(completions[sel.selectedIndex]);
 								close();
-								editor.focus();
-								editor.triggerOnKeyDown(event);
+								setTimeout(function(){editor.focus();}, 50);
 							}
 							
-							// Everything else besides up/down
-							else if (code !== 38 && code !== 40) {
-								close(); editor.focus();
+							CodeMirror.connect(sel, "blur", close);
+							CodeMirror.connect(sel, "keydown", function(event) {
+								var code = event.keyCode;
+								// Enter
+								if (code === 13) {CodeMirror.e_stop(event); pick();}
 								
-								// Pass the event to the CodeMirror instance so that it can handle things like backspace properly.
-								editor.triggerOnKeyDown(event);
+								// Escape
+								else if (code === 27) {CodeMirror.e_stop(event); close(); editor.focus();}
 								
-								setTimeout(this_cell.introspect, 50);
-							}
-						});
-						CodeMirror.connect(sel, "dblclick", pick);
+								// Backspace
+								else if (code === 8) {
+									close();
+									editor.focus();
+									editor.triggerOnKeyDown(event);
+								}
+								
+								// Everything else besides up/down
+								else if (code !== 38 && code !== 40) {
+									close(); editor.focus();
+									
+									// Pass the event to the CodeMirror instance so that it can handle things like backspace properly.
+									editor.triggerOnKeyDown(event);
+									
+									setTimeout(this_cell.introspect, 50);
+								}
+							});
+							CodeMirror.connect(sel, "dblclick", pick);
 
-						sel.focus();
-						// Opera sometimes ignores focusing a freshly created node
-						if (window.opera) setTimeout(function(){if (!done) sel.focus();}, 100);
-						return true;
+							sel.focus();
+							// Opera sometimes ignores focusing a freshly created node
+							if (window.opera) setTimeout(function(){if (!done) sel.focus();}, 100);
+							//return true;
+						}
+						else {
+							// docstring
+						}
 					}
 					
 					// update the output
