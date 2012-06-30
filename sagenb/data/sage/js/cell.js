@@ -118,11 +118,20 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Tab"] = function(cm) {
-				if(!this_cell.introspect()) {
+				if(cm.getCursor(true).line != cm.getCursor().line) {
+					// multiple lines selected
+					CodeMirror.commands.indentMore(cm);
+				} else if(!this_cell.introspect()) {
 					console.log('indentAuto');
 					CodeMirror.commands.indentAuto(cm);
 				}
-			}
+			};
+			
+			extrakeys["Shift-Tab"] = "indentLess";
+			
+			/*extrakeys["("] = function(cm) {
+				this_cell.introspect();
+			};*/
 			
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
@@ -167,6 +176,7 @@ sagenb.worksheetapp.cell = function(id) {
 				/* some of these may need to be settings */
 				indentWithTabs: false,
 				tabSize: 4,
+				indentUnit: 4,
 				lineNumbers: false,
 				matchBrackets: true,
 				
@@ -683,13 +693,13 @@ sagenb.worksheetapp.cell = function(id) {
 							
 							/* Insert the given completion str into the input */
 							function insert(str) {
+								// CodeMirror bug workaround
+								str = str.replace("\r", "");
+								
 								var newpos = {};
 								var lines = this_cell.introspect_state.before_replacing_word.split("\n");
 								newpos.line = lines.length - 1;
-								newpos.ch = lines[lines.length - 1].length + str.length - 1;
-								
-								// CodeMirror bug workaround
-								str = str.replace("\r", "");
+								newpos.ch = lines[lines.length - 1].length + str.length;
 								
 								editor.setValue(this_cell.introspect_state.before_replacing_word + str + this_cell.introspect_state.after_cursor);
 								
