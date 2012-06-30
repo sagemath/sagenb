@@ -89,7 +89,6 @@ sagenb.worksheetapp.worksheet = function() {
 		// users see /home/pub but worksheet_filename is /home/_sage_
 		return ('/home/' + this_worksheet.filename + '/' + cmd);
 	};
-	// this may need to go somewhere else
 	
 	//// MISC ////
 	this_worksheet.forEachCell = function(f) {

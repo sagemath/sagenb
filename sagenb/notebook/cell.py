@@ -1698,7 +1698,7 @@ class Cell(Cell_generic):
         r['percent_directives'] = self.percent_directives()
         r['system'] = self.system()
         r['auto'] = self.is_auto_cell()
-        r['introspect_completions'] = self.introspect_completions()
+        r['introspect_output'] = self.introspect_output()
 
         return r
 
@@ -1953,89 +1953,76 @@ class Cell(Cell_generic):
     #################
     # Introspection #
     #################
-#    def set_introspect_html(self, html, completing=False, raw=False):
-#        ur"""
-#        Sets this compute cell's introspection text.
-#
-#        INPUT:
-#
-#        - ``html`` - a string; the updated text
-#
-#        - ``completing`` - a boolean (default: False); whether the
-#          completions menu is open
-#
-#        - ``raw`` - a boolean (default: False)
-#
-#        EXAMPLES::
-#
-#            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-#            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-#            sage: W = nb.create_new_worksheet('Test', 'sage')
-#            sage: C = sagenb.notebook.cell.Cell(0, 'sage?', '', W)
-#            sage: C.introspect()
-#            False
-#            sage: C.evaluate(username='sage')
-#            sage: W.check_comp(9999)     # random output -- depends on computer speed
-#            ('d', Cell 0: in=sage?, out=)
-#            sage: C.set_introspect_html('foobar')
-#            sage: C.introspect_html()
-#            u'foobar'
-#            sage: C.set_introspect_html('`foobar`')
-#            sage: C.introspect_html()
-#            u'`foobar`'
-#            sage: C.set_introspect_html('ěščřžýáíéďĎ')
-#            sage: C.introspect_html()
-#            u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
-#            sage: W.quit()
-#            sage: nb.delete()
-#        """
-#        html = unicode_str(html)
-#        self._introspect_html = html
+    def set_introspect_output(self, output, completing=False, raw=False):
+        ur"""
+        Sets this compute cell's introspection text.
 
-#    def introspect_html(self):
-#        """
-#        Returns this compute cell's introspection text, setting it to
-#        '', if none is available.
-#
-#        OUTPUT:
-#
-#        - a string
-#
-#        EXAMPLES::
-#
-#            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-#            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-#            sage: W = nb.create_new_worksheet('Test', 'sage')
-#            sage: C = sagenb.notebook.cell.Cell(0, 'sage?', '', W)
-#            sage: C.introspect()
-#            False
-#            sage: C.evaluate(username='sage')
-#            sage: W.check_comp(9999)     # random output -- depends on computer speed
-#            ('d', Cell 0: in=sage?, out=)
-#            sage: C.introspect_html()     # random output -- depends on computer speed
-#            u'...<div class="docstring">...sage...</pre></div>...'
-#            sage: W.quit()
-#            sage: nb.delete()
-#        """
-#        if not self.introspect():
-#            return ''
-#        try:
-#            return self._introspect_html
-#        except AttributeError:
-#            self._introspect_html = u''
-#            return u''
+        INPUT:
 
-    def set_introspect_completions(self, completions):
-        self._introspect_completions = completions
+        - ``output`` - a string; the updated text
 
-    def introspect_completions(self):
+        - ``completing`` - a boolean (default: False); whether the
+          completions menu is open
+
+        - ``raw`` - a boolean (default: False)
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = sagenb.notebook.cell.Cell(0, 'sage?', '', W)
+            sage: C.introspect()
+            False
+            sage: C.evaluate(username='sage')
+            sage: W.check_comp(9999)     # random output -- depends on computer speed
+            ('d', Cell 0: in=sage?, out=)
+            sage: C.set_introspect_output('foobar')
+            sage: C.introspect_output()
+            u'foobar'
+            sage: C.set_introspect_output('`foobar`')
+            sage: C.introspect_output()
+            u'`foobar`'
+            sage: C.set_introspect_output('ěščřžýáíéďĎ')
+            sage: C.introspect_output()
+            u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
+            sage: W.quit()
+            sage: nb.delete()
+        """
+        self._introspect_output = unicode_str(output)
+
+    def introspect_output(self):
+        """
+        Returns this compute cell's introspection text, setting it to
+        '', if none is available.
+
+        OUTPUT:
+
+        - a string
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = sagenb.notebook.cell.Cell(0, 'sage?', '', W)
+            sage: C.introspect()
+            False
+            sage: C.evaluate(username='sage')
+            sage: W.check_comp(9999)     # random output -- depends on computer speed
+            ('d', Cell 0: in=sage?, out=)
+            sage: C.introspect_output()     # random output -- depends on computer speed
+            u'...<div class="docstring">...sage...</pre></div>...'
+            sage: W.quit()
+            sage: nb.delete()
+        """
         if not self.introspect():
-            return None
+            return ''
         try:
-            return self._introspect_completions
+            return self._introspect_output
         except AttributeError:
-            self.set_introspect_completions([])
-            return []
+            self._introspect_output = u''
+            return u''
 
     def introspect(self):
         """

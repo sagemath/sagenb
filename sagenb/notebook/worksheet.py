@@ -3189,20 +3189,14 @@ except (KeyError, IOError):
                     c = ''
                 C.set_changed_input_text(before_prompt + c + after_prompt)
 
-                if 'no completions of' in out:
-                    C.set_introspect_completions([])
-                else:
-                    C.set_introspect_completions(out.split())
+                C.set_introspect_output(out)
 
             else:
+                # docstring
                 if C.eval_method == 'introspect':
-                    if 'no completions of' in out:
-                        C.set_introspect_completions([])
-                    else:
-                        C.set_introspect_completions(out.split())
-
+                    C.set_introspect_output(out)
                 else:
-                    C.set_introspect_completions([])
+                    C.set_introspect_output('')
                     C.set_output_text('<html><!--notruncate-->' + out +
                                       '</html>', '')
 
@@ -3268,7 +3262,8 @@ except (KeyError, IOError):
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())
-            C.set_introspect_completions([])
+            C.set_introspect_output('')
+            
 
         return 'd', C
 

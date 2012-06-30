@@ -109,6 +109,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		
 		// not going to mess with this for now
 		// $("#action_buttons button").addClass("disabled");
+		
+		// Bind hotkeys
+		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { this_list.new_worksheet(); return false; });
 	};
 	
 	///////// FOR EACH ///////////
@@ -145,15 +148,15 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	
 	////////// COMMANDS //////////////
-	/*this_list.new_worksheet = function() {
+	this_list.new_worksheet = function() {
 		window.open("/new_worksheet");
-	};*/
-	/*this_list.upload_worksheet = function() {
-		// data-toggle takes care of this
-	};*/
-	/*this_list.download_all_active = function() {
+	};
+	this_list.upload_worksheet = function() {
+		// TODO
+	};
+	this_list.download_all_active = function() {
 		window.location.replace("/download_worksheets.zip");
-	};*/
+	};
 	
 	this_list.checked_action = function(action, extra_callback) {
 		// don't do anything if none are selected
