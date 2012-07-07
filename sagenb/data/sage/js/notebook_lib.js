@@ -357,23 +357,23 @@ function bind_events() {
         cell_focused(this, cell_id);
         return true;
     });
-    $('body').on('blur', 'textarea.cell_input', function () {
+    $('body').on('blur', 'textarea.cell_input_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         cell_blur(cell_id);
         return true;
     });
-    $('body').on('keyup', 'textarea.cell_input', function () {
+    $('body').on('keyup', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keyup(cell_id, event);
     });
-    $('body').on('keydown', 'textarea.cell_input', function () {
+    $('body').on('keydown', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keydown(cell_id, event);
     });
-    $('body').on('keypress', 'textarea.cell_input', function () {
+    $('body').on('keypress', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keypress(cell_id, event);
