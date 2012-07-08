@@ -342,6 +342,58 @@ function initialize_the_notebook() {
 	    });
     }
 
+    //bind events to our DOM elements
+    bind_events();
+}
+
+
+function bind_events() {
+    /*
+     * Attaches events to DOM elements.
+     */
+    $('body').on('focus', 'textarea.cell_input', function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_focused(this, cell_id);
+        return true;
+    });
+    $('body').on('blur', 'textarea.cell_input_active', function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_blur(cell_id);
+        return true;
+    });
+    $('body').on('keyup', 'textarea.cell_input_active', function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keyup(cell_id, event);
+    });
+    $('body').on('keydown', 'textarea.cell_input_active', function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keydown(cell_id, event);
+    });
+    $('body').on('keypress', 'textarea.cell_input_active', function (event) {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        return input_keypress(cell_id, event);
+    });
+    $('body').on('click', 'input.eval_button', function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        evaluate_cell(cell_id, 0);
+    });
+}
+
+
+function get_cell_id_from_id(id) {
+    /*
+    * A function to get the cell_id from the button's id attribute
+    */
+    var num_re = /[0-9]+/;
+    var match_result = num_re.exec(id);
+    var cell_id = toint(match_result[0]);
+    return cell_id;
 }
 
 
@@ -2088,6 +2140,8 @@ function evaluate_text_cell_input(id, value, settings) {
         id: id,
         input: value
     });
+    //update jmol applet list
+    jmol_delete_check();
 }
 
 
@@ -2256,6 +2310,8 @@ function cell_delete(id) {
     async_request(worksheet_command('delete_cell'), cell_delete_callback, {
         id: id
     });
+    //update jmol applet list
+    jmol_delete_check();
 }
 
 
@@ -2304,6 +2360,9 @@ function cell_delete_callback(status, response) {
     if (in_slide_mode) {
         current_cell = -1;
         slide_mode();
+    //update jmol applet list
+    jmol_delete_check();
+
     }
 }
 
@@ -2326,6 +2385,9 @@ function cell_delete_output(id) {
                   cell_delete_output_callback, {
                       id: id
                   });
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -2354,6 +2416,8 @@ function cell_delete_output_callback(status, response) {
 
     // Set the cell to not evaluated.
     cell_set_not_evaluated(X.id);
+    //update list of jmol applets
+    jmol_delete_check();
 }
 
 
@@ -2997,6 +3061,9 @@ function evaluate_cell(id, newcell) {
         id: id,
         input: cell_input.value
     });
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -3156,6 +3223,9 @@ function evaluate_cell_callback(status, response) {
     }
 
     start_update_check();
+    //update jmol applet list
+    jmol_delete_check();
+
 }
 
 
@@ -4435,6 +4505,8 @@ function delete_all_output() {
     // delete from DOM then contact the server for maximum snappiness
     // of the user interface.
     async_request(worksheet_command('delete_all_output'));
+    //update jmol applet info
+    jmol_delete_all_output();
 }
 
 

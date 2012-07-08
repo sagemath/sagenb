@@ -468,7 +468,15 @@ def notebook_run(self,
 
     # Turn it into a full path for later conversion to a file URL
     if upload:
-        upload = os.path.abspath(upload)
+        upload_abs = os.path.abspath(upload)
+        if os.path.exists(upload_abs):
+            upload = upload_abs
+        else:
+            # They might have expected ~ to be expanded to their user directory
+            upload = os.path.expanduser(upload)
+            if not os.path.exists(upload):
+                raise ValueError("Unable to find the file %s to upload" % upload)
+
 
     if subnets is not None:
         raise ValueError("""The subnets parameter is no longer supported. Please use a firewall to block subnets, or even better, volunteer to write the code to implement subnets again.""")
