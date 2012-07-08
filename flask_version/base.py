@@ -92,6 +92,10 @@ base = Module('flask_version.base')
 @base.route('/')
 def index():
     if 'username' in session:
+        # If there is a next request use that.  See issue #76
+        if 'next' in request.args:
+            response = redirect(request.values.get('next', ''))
+            return response
         response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:
             response.set_cookie('nb_session_%s'%g.notebook.port,
