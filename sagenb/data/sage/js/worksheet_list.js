@@ -83,6 +83,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	
 	_this.rows = [];
 	
+	_this.refresh_interval_id = null;
+	_this.refresh_interval = 10 * 1000;
+	
 	_this.init = function() {
 		_this.show_active();
 		
@@ -207,11 +210,13 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	_this.load = function(params) {
 		var url = "/worksheet_list";
-		if(params) url += "?" + encodeURI(params);
-		
-		_this.clear_list();
+		if(params) {
+			url += "?" + encodeURI(params);
+		}
 		
 		sagenb.async_request(url, sagenb.generic_callback(function(status, response) {
+			_this.clear_list();
+			
 			var X = decode_response(response);
 			for(i in X.worksheets) {
 				var row = new sagenb.worksheetlistapp.list_row();
@@ -231,6 +236,12 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 					'<td colspan="4">Nothing here!</td>' + 
 				'</tr>');
 			}
+			
+			// Set up refresh_interval
+			clearInterval(_this.refresh_interval_id)
+			_this.refresh_interval_id = setInterval(function() {
+				_this.load(params);
+			}, _this.refresh_interval);
 		}));
 	};
 	
