@@ -115,13 +115,11 @@ sagenb.history_window = function() {
     Display the history popup window, which displays the last few hundred
     commands typed into any worksheet.
     */
-    window.open("/history", "", "menubar=1,scrollbars=1,width=800," +
-                "height=600,toolbar=1,resizable=1");
+    window.open("/history", "", "menubar=1,scrollbars=1,width=800,height=600,toolbar=1,resizable=1");
 };
 sagenb.help = function() {
     /*
     Popup the help window.
     */
-    window.open("/help", "",
-                "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
+    window.open("/help", "", "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
 }

@@ -24,51 +24,51 @@ sagenb.worksheetapp.worksheet = function() {
 	/* this allows us to access this cell object from 
 	 * inner functions
 	 */
-	var this_worksheet = this;
+	var _this = this;
 	
 	/* Array of all of the cells. This is a sparse array because 
 	 * cells get deleted etc. Because it is sparse, you have to 
 	 * use a conditional when you loop over each element. See
 	 * hide_all_output, show_all_output, etc.
 	 */
-	this_worksheet.cells = [];
+	_this.cells = [];
 	
 	// Worksheet information from worksheet.py
-	this_worksheet.state_number = -1;
+	_this.state_number = -1;
 	
 	// Current worksheet info, set in notebook.py.
-	this_worksheet.filename = "";
-	this_worksheet.name = "";
-	this_worksheet.owner = "";
-	this_worksheet.id = -1;
-	this_worksheet.is_published = false;
-	this_worksheet.system = "";
-	this_worksheet.pretty_print = false;
+	_this.filename = "";
+	_this.name = "";
+	_this.owner = "";
+	_this.id = -1;
+	_this.is_published = false;
+	_this.system = "";
+	_this.pretty_print = false;
 	
 	// sharing
-	this_worksheet.collaborators = [];
-	this_worksheet.auto_publish = false;
-	this_worksheet.published_id_number = -1;
-	this_worksheet.published_url = null;
-	this_worksheet.published_time = null;
+	_this.collaborators = [];
+	_this.auto_publish = false;
+	_this.published_id_number = -1;
+	_this.published_url = null;
+	_this.published_time = null;
 	
 	// Ping the server periodically for worksheet updates.
-	this_worksheet.server_ping_time = 10000;
+	_this.server_ping_time = 10000;
 	
 	// Focus / blur.
-	this_worksheet.current_cell_id = -1;
+	_this.current_cell_id = -1;
 	
 	// Single/Multi cell mode
-	this_worksheet.single_cell_mode = false;
+	_this.single_cell_mode = false;
 	
 	// Evaluate all
-	this_worksheet.is_evaluating_all = false;
+	_this.is_evaluating_all = false;
 	
 	
 	// other variables go here
 	
 	///////////// COMMANDS ////////////
-	this_worksheet.worksheet_command = function(cmd) {
+	_this.worksheet_command = function(cmd) {
 		/*
 		Create a string formatted as a URL to send back to the server and
 		execute the given cmd on the current worksheet.
@@ -83,31 +83,31 @@ sagenb.worksheetapp.worksheet = function() {
 		|| cmd === 'new_cell_after'
 		|| cmd === 'new_text_cell_before'
 		|| cmd === 'new_text_cell_after') {
-			this_worksheet.state_number = parseInt(this_worksheet.state_number, 10) + 1;
+			_this.state_number = parseInt(_this.state_number, 10) + 1;
 		}
 		// worksheet_filename differs from actual url for public interacts
 		// users see /home/pub but worksheet_filename is /home/_sage_
-		return ('/home/' + this_worksheet.filename + '/' + cmd);
+		return ('/home/' + _this.filename + '/' + cmd);
 	};
 	
 	//// MISC ////
-	this_worksheet.forEachCell = function(f) {
+	_this.forEachCell = function(f) {
 		/* Execute the given function on all cells in 
 		 * this worksheet. This is useful since some values 
-		 * in this_worksheet.cells are null.
+		 * in _this.cells are null.
 		 */
-		$.each(this_worksheet.cells, function(i, cell) {
+		$.each(_this.cells, function(i, cell) {
 			if(cell) f(cell);
 		});
 	}
 	
 	///////////////// PINGS //////////////////
-	this_worksheet.ping_server = function() {
+	_this.ping_server = function() {
 		/* for some reason pinging doesn't work well.
 		 * the callback goes but jQuery throws a 404 error.
 		 * this error may not be a bug, not sure...
 		 */
-		sagenb.async_request(this_worksheet.worksheet_command('alive'), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(_this.worksheet_command('alive'), sagenb.generic_callback(function(status, response) {
 			/*  Each time the server is up and responds, the server includes
 				the worksheet state_number is the response.  If this number is out
 				of sync with our view of the worksheet state, then we force a
@@ -117,10 +117,10 @@ sagenb.worksheetapp.worksheet = function() {
 				user open the same worksheet in multiple browsers, or multiple
 				users open the same shared worksheet.
 			*/
-			if (this_worksheet.state_number >= 0 && parseInt(response, 10) > this_worksheet.state_number) {
+			if (_this.state_number >= 0 && parseInt(response, 10) > _this.state_number) {
 				// Force a refresh of just the cells in the body.
-				this_worksheet.worksheet_update();
-				this_worksheet.cell_list_update();
+				_this.worksheet_update();
+				_this.cell_list_update();
 			}
 		}));
 	};
@@ -128,15 +128,15 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	
 	//////////// FILE MENU TYPE STUFF //////////
-	this_worksheet.new_worksheet = function() {
+	_this.new_worksheet = function() {
 		window.open("/new_worksheet");
 	};
-	this_worksheet.save = function() {
-		sagenb.async_request(this_worksheet.worksheet_command("save_snapshot"), sagenb.generic_callback());
+	_this.save = function() {
+		sagenb.async_request(_this.worksheet_command("save_snapshot"), sagenb.generic_callback());
 	};
-	this_worksheet.close = function() {
+	_this.close = function() {
 		// TODO gettext
-		if(this_worksheet.name === "Untitled") {
+		if(_this.name === "Untitled") {
 			$(".alert_rename").show();
 		} else {
 			// maybe other stuff here??
@@ -148,27 +148,27 @@ sagenb.worksheetapp.worksheet = function() {
 			self.close();
 		}
 	};
-	this_worksheet.print = function() {
+	_this.print = function() {
 		/* here we may want to convert MathJax expressions into
 		 * something more readily printable eg images. I think 
 		 * there may be some issues with printing using whatever 
 		 * we have as default. I haven't seen this issue yet
 		 * but it may exist.
 		 */
-		console.log("my name is " + this_worksheet.name);
+		console.log("my name is " + _this.name);
 		//window.open('/home/');
 	};
 	
 	//////// EXPORT/IMPORT ///////
-	this_worksheet.export_worksheet = function() {
-		window.open(this_worksheet.worksheet_command("download/" + this_worksheet.name + ".sws"));
+	_this.export_worksheet = function() {
+		window.open(_this.worksheet_command("download/" + _this.name + ".sws"));
 	};
-	this_worksheet.import_worksheet = function() {
+	_this.import_worksheet = function() {
 	
 	};
 	
 	////////// INSERT CELL //////////////
-	this_worksheet.add_new_cell_button_after = function(obj) {
+	_this.add_new_cell_button_after = function(obj) {
 		/* Add a new cell button after the given
 		 * DOM/jQuery object
 		 */
@@ -185,9 +185,9 @@ sagenb.worksheetapp.worksheet = function() {
 				var after_cell_id = toint($(this).prev(".cell_wrapper").find(".cell").attr("id").substring(5));
 				
 				if(event.shiftKey) {
-					this_worksheet.new_text_cell_after(after_cell_id);
+					_this.new_text_cell_after(after_cell_id);
 				} else {
-					this_worksheet.new_cell_after(after_cell_id);
+					_this.new_cell_after(after_cell_id);
 				}
 			}
 			else {
@@ -195,75 +195,75 @@ sagenb.worksheetapp.worksheet = function() {
 				var before_cell_id = toint($(this).next(".cell_wrapper").find(".cell").attr("id").substring(5));
 				
 				if(event.shiftKey) {
-					this_worksheet.new_text_cell_before(before_cell_id);
+					_this.new_text_cell_before(before_cell_id);
 				} else {
-					this_worksheet.new_cell_before(before_cell_id);
+					_this.new_cell_before(before_cell_id);
 				}
 			}
 		});
 	};
 	
 	////////////// EVALUATION ///////////////
-	this_worksheet.evaluate_all = function() {
-		this_worksheet.is_evaluating_all = true;
+	_this.evaluate_all = function() {
+		_this.is_evaluating_all = true;
 		
-		this_worksheet.forEachCell(function(cell) {
+		_this.forEachCell(function(cell) {
 			cell.set_output_loading();
 		});
 		
 		var firstcell_id = parseInt($(".cell").attr("id").substring(5));
-		this_worksheet.cells[firstcell_id].evaluate();
+		_this.cells[firstcell_id].evaluate();
 	};
-	this_worksheet.interrupt = function() {
-		sagenb.async_request(this_worksheet.worksheet_command('interrupt'), sagenb.generic_callback());
+	_this.interrupt = function() {
+		sagenb.async_request(_this.worksheet_command('interrupt'), sagenb.generic_callback());
 	};
-	this_worksheet.restart_sage = function() {
-		this_worksheet.forEachCell(function(cell) {
+	_this.restart_sage = function() {
+		_this.forEachCell(function(cell) {
 			if(cell.is_evaluating) cell.render_output("");
 		});
-		sagenb.async_request(this_worksheet.worksheet_command('restart_sage'), sagenb.generic_callback());
+		sagenb.async_request(_this.worksheet_command('restart_sage'), sagenb.generic_callback());
 	};
 	
 	//// OUTPUT STUFF ////
-	this_worksheet.hide_all_output = function() {
-		sagenb.async_request(this_worksheet.worksheet_command('hide_all'), sagenb.generic_callback(function(status, response) {
-			this_worksheet.forEachCell(function(cell) {
+	_this.hide_all_output = function() {
+		sagenb.async_request(_this.worksheet_command('hide_all'), sagenb.generic_callback(function(status, response) {
+			_this.forEachCell(function(cell) {
 				cell.set_output_hidden();
 			});
 		}));
 	};
-	this_worksheet.show_all_output = function() {
-		sagenb.async_request(this_worksheet.worksheet_command('show_all'), sagenb.generic_callback(function(status, response) {
-			this_worksheet.forEachCell(function(cell) {
+	_this.show_all_output = function() {
+		sagenb.async_request(_this.worksheet_command('show_all'), sagenb.generic_callback(function(status, response) {
+			_this.forEachCell(function(cell) {
 				cell.set_output_visible();
 			});
 		}));
 	};
-	this_worksheet.delete_all_output = function() {
-		sagenb.async_request(this_worksheet.worksheet_command('delete_all_output'), sagenb.generic_callback(function(status, response) {
-			this_worksheet.forEachCell(function(cell) {
+	_this.delete_all_output = function() {
+		sagenb.async_request(_this.worksheet_command('delete_all_output'), sagenb.generic_callback(function(status, response) {
+			_this.forEachCell(function(cell) {
 				cell.output = "";
 				cell.render_output();
 			});
 		}));
 	};
 	
-	this_worksheet.change_system = function(newsystem) {
-		sagenb.async_request(this_worksheet.worksheet_command("system/" + newsystem), sagenb.generic_callback(function(status, response) {
-			this_worksheet.system = newsystem;
+	_this.change_system = function(newsystem) {
+		sagenb.async_request(_this.worksheet_command("system/" + newsystem), sagenb.generic_callback(function(status, response) {
+			_this.system = newsystem;
 			
-			this_worksheet.forEachCell(function(cell) {
+			_this.forEachCell(function(cell) {
 				cell.update_codemirror_mode();
 			});
 		}));
 	};
-	this_worksheet.set_pretty_print = function(s) {
-		sagenb.async_request(this_worksheet.worksheet_command("pretty_print/" + s), sagenb.generic_callback());
+	_this.set_pretty_print = function(s) {
+		sagenb.async_request(_this.worksheet_command("pretty_print/" + s), sagenb.generic_callback());
 	};
 	
 	//// NEW CELL /////
-	this_worksheet.new_cell_before = function(id) {
-		sagenb.async_request(this_worksheet.worksheet_command("new_cell_before"), function(status, response) {
+	_this.new_cell_before = function(id) {
+		sagenb.async_request(_this.worksheet_command("new_cell_before"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -277,24 +277,24 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
 			
-			new_cell.worksheet = this_worksheet;
+			new_cell.worksheet = _this;
 			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
-			this_worksheet.add_new_cell_button_after(wrapper);
+			_this.add_new_cell_button_after(wrapper);
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
 			
-			this_worksheet.cells[new_cell.id] = new_cell;
+			_this.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
 		});
 	};
-	this_worksheet.new_cell_after = function(id) {
-		sagenb.async_request(this_worksheet.worksheet_command("new_cell_after"), function(status, response) {
+	_this.new_cell_after = function(id) {
+		sagenb.async_request(_this.worksheet_command("new_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -308,25 +308,25 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
 			
-			new_cell.worksheet = this_worksheet;
+			new_cell.worksheet = _this;
 			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
-			this_worksheet.add_new_cell_button_after(wrapper);
+			_this.add_new_cell_button_after(wrapper);
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
 			
-			this_worksheet.cells[new_cell.id] = new_cell;
+			_this.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
 		});
 	};
 	
-	this_worksheet.new_text_cell_before = function(id) {
-		sagenb.async_request(this_worksheet.worksheet_command("new_text_cell_before"), function(status, response) {
+	_this.new_text_cell_before = function(id) {
+		sagenb.async_request(_this.worksheet_command("new_text_cell_before"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -340,24 +340,24 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
 			
-			new_cell.worksheet = this_worksheet;
+			new_cell.worksheet = _this;
 			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
-			this_worksheet.add_new_cell_button_after(wrapper);
+			_this.add_new_cell_button_after(wrapper);
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
 			
-			this_worksheet.cells[new_cell.id] = new_cell;
+			_this.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
 		});
 	};
-	this_worksheet.new_text_cell_after = function(id) {
-		sagenb.async_request(this_worksheet.worksheet_command("new_text_cell_after"), function(status, response) {
+	_this.new_text_cell_after = function(id) {
+		sagenb.async_request(_this.worksheet_command("new_text_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
 				return;
@@ -371,17 +371,17 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
 			
-			new_cell.worksheet = this_worksheet;
+			new_cell.worksheet = _this;
 			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
-			this_worksheet.add_new_cell_button_after(wrapper);
+			_this.add_new_cell_button_after(wrapper);
 			
 			// wait for the render to finish
 			setTimeout(new_cell.focus, 50);
 			
-			this_worksheet.cells[new_cell.id] = new_cell;
+			_this.cells[new_cell.id] = new_cell;
 		},
 		{
 			id: id
@@ -390,45 +390,45 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	
 	/////////////// WORKSHEET UPDATE //////////////////////
-	this_worksheet.worksheet_update = function() {
-		sagenb.async_request(this_worksheet.worksheet_command("worksheet_properties"), sagenb.generic_callback(function(status, response) {
+	_this.worksheet_update = function() {
+		sagenb.async_request(_this.worksheet_command("worksheet_properties"), sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
-			this_worksheet.id = X.id_number;
-			this_worksheet.name = X.name;
-			this_worksheet.owner = X.owner;
-			this_worksheet.system = X.system;
-			this_worksheet.pretty_print = X.pretty_print;
+			_this.id = X.id_number;
+			_this.name = X.name;
+			_this.owner = X.owner;
+			_this.system = X.system;
+			_this.pretty_print = X.pretty_print;
 			
-			this_worksheet.collaborators = X.collaborators;
-			this_worksheet.auto_publish = X.auto_publish;
-			this_worksheet.published_id_number = X.published_id_number;
+			_this.collaborators = X.collaborators;
+			_this.auto_publish = X.auto_publish;
+			_this.published_id_number = X.published_id_number;
 			if(X.published_url) {
-				this_worksheet.published_url = X.published_url;
+				_this.published_url = X.published_url;
 			}
 			if(X.published_time) {
-				this_worksheet.published_time = X.published_time;
+				_this.published_time = X.published_time;
 			}
 			
-			this_worksheet.running = X.running;
+			_this.running = X.running;
 			
 			// update the title
-			document.title = this_worksheet.name + " - Sage";
-			$(".worksheet_name h1").text(this_worksheet.name);
+			document.title = _this.name + " - Sage";
+			$(".worksheet_name h1").text(_this.name);
 			
 			// update the typesetting checkbox
-			$("#typesetting_checkbox").prop("checked", this_worksheet.pretty_print);
+			$("#typesetting_checkbox").prop("checked", _this.pretty_print);
 			
 			// set the system select
-			$("#system_select").val(this_worksheet.system);
+			$("#system_select").val(_this.system);
 			
-			if(this_worksheet.published_id_number !== null && this_worksheet.published_id_number >= 0) {
+			if(_this.published_id_number !== null && _this.published_id_number >= 0) {
 				$("#publish_checkbox").prop("checked", true);
 				$("#auto_republish_checkbox").removeAttr("disabled");
 				
-				$("#auto_republish_checkbox").prop("checked", this_worksheet.auto_publish);
+				$("#auto_republish_checkbox").prop("checked", _this.auto_publish);
 				
-				$("#worksheet_url a").text(this_worksheet.published_url);
+				$("#worksheet_url a").text(_this.published_url);
 				$("#worksheet_url").show();
 			} else {
 				$("#publish_checkbox").prop("checked", false);
@@ -438,26 +438,26 @@ sagenb.worksheetapp.worksheet = function() {
 				$("#worksheet_url").hide();
 			}
 			
-			$("#collaborators").val(this_worksheet.collaborators.join(", "));
+			$("#collaborators").val(_this.collaborators.join(", "));
 			
 			
 			// TODO other stuff goes here, not sure what yet
 		}));
 	};
-	this_worksheet.cell_list_update = function() {
+	_this.cell_list_update = function() {
 		// load in cells
-		sagenb.async_request(this_worksheet.worksheet_command("cell_list"), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(_this.worksheet_command("cell_list"), sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			// set the state_number
-			this_worksheet.state_number = X.state_number;
+			_this.state_number = X.state_number;
 			
 			// remove all previous cells
 			$(".cell").detach();
 			$(".new_cell_button").detach();
 			
 			// add the first new cell button
-			this_worksheet.add_new_cell_button_after($(".the_page .worksheet_name"));
+			_this.add_new_cell_button_after($(".the_page .worksheet_name"));
 
 			// load in cells
 			for(i in X.cell_list) {
@@ -470,23 +470,23 @@ sagenb.worksheetapp.worksheet = function() {
 				var newcell = new sagenb.worksheetapp.cell(toint(cell_obj.id));
 				
 				// connect it to this worksheet
-				newcell.worksheet = this_worksheet;
+				newcell.worksheet = _this;
 				
 				// update all of the cell properties and render it into wrapper
 				newcell.update(wrapper, true);
 				
 				// add the next new cell button
-				this_worksheet.add_new_cell_button_after(wrapper);
+				_this.add_new_cell_button_after(wrapper);
 				
 				// put the cell in the array
-				this_worksheet.cells[cell_obj.id] = newcell;
+				_this.cells[cell_obj.id] = newcell;
 			}
 		}));
 	}
 	
 	
 	
-	this_worksheet.on_load_done = function() {
+	_this.on_load_done = function() {
 		/* This is the stuff that gets done
 		 * after the entire worksheet and all 
 		 * of the cells are loaded into the 
@@ -526,19 +526,19 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	
 	//////////////// INITIALIZATION ////////////////////
-	this_worksheet.init = function() {
+	_this.init = function() {
 		// show the spinner
 		sagenb.start_loading();
 		
 		// do the actual load
-		this_worksheet.worksheet_update();
+		_this.worksheet_update();
 		
-		this_worksheet.cell_list_update();
+		_this.cell_list_update();
 		
 		/////////// setup up the title stuff ////////////
 		$(".worksheet_name").click(function(e) {
 			if(!$(".worksheet_name").hasClass("edit")) {
-				$(".worksheet_name input").val(this_worksheet.name);
+				$(".worksheet_name input").val(_this.name);
 				$(".worksheet_name").addClass("edit");
 				$(".worksheet_name input").focus();
 			}
@@ -548,11 +548,11 @@ sagenb.worksheetapp.worksheet = function() {
 		var worksheet_name_input_handler = function(e) {
 			$(".worksheet_name").removeClass("edit");
 			
-			if(this_worksheet.name !== $(".worksheet_name input").val()) {
+			if(_this.name !== $(".worksheet_name input").val()) {
 				// send to the server
-				sagenb.async_request(this_worksheet.worksheet_command("rename"), sagenb.generic_callback(function(status, response) {
+				sagenb.async_request(_this.worksheet_command("rename"), sagenb.generic_callback(function(status, response) {
 					// update the title when we get good response
-					this_worksheet.worksheet_update();
+					_this.worksheet_update();
 				}), {
 					name: $(".worksheet_name input").val()
 				});
@@ -568,15 +568,15 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		////////// TYPESETTING CHECKBOX //////////
 		$("#typesetting_checkbox").change(function(e) {
-			this_worksheet.set_pretty_print($("#typesetting_checkbox").prop("checked"));
+			_this.set_pretty_print($("#typesetting_checkbox").prop("checked"));
 			
 			// update
-			this_worksheet.worksheet_update();
+			_this.worksheet_update();
 		});
 		
 		////////// LINE NUMBERS CHECKBOX //////////
 		$("#line_numbers_checkbox").change(function(e) {
-			this_worksheet.forEachCell(function(cell) {
+			_this.forEachCell(function(cell) {
 				if(cell.is_evaluate_cell) {
 					cell.codemirror.setOption("lineNumbers", $("#line_numbers_checkbox").prop("checked"));
 				}
@@ -597,38 +597,38 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		/////// CHANGE SYSTEM DIALOG //////////
 		$("#system_modal .btn-primary").click(function(e) {
-			this_worksheet.change_system($("#system_select").val());
+			_this.change_system($("#system_select").val());
 		});
 		
 		
 		//////// SHARING DIALOG ///////////
 		$("#sharing_dialog .btn-primary").click(function(e) {
-			sagenb.async_request(this_worksheet.worksheet_command("invite_collab"), sagenb.generic_callback(), {
+			sagenb.async_request(_this.worksheet_command("invite_collab"), sagenb.generic_callback(), {
 				collaborators: $("#collaborators").val()
 			});
 		});
 		$("#publish_checkbox").change(function(e) {
 			var command;
 			if($("#publish_checkbox").prop("checked")) {
-				command = this_worksheet.worksheet_command("publish?yes");
+				command = _this.worksheet_command("publish?yes");
 			} else {
-				command = this_worksheet.worksheet_command("publish?stop");
+				command = _this.worksheet_command("publish?stop");
 			}
 			
 			sagenb.async_request(command, sagenb.generic_callback(function(status, response) {
-				this_worksheet.worksheet_update();
+				_this.worksheet_update();
 			}));
 		});
 		$("#auto_republish_checkbox").change(function(e) {
 			// for some reason, auto is a toggle command
-			sagenb.async_request(this_worksheet.worksheet_command("publish?auto"), sagenb.generic_callback(function(status, response) {
-				this_worksheet.worksheet_update();
+			sagenb.async_request(_this.worksheet_command("publish?auto"), sagenb.generic_callback(function(status, response) {
+				_this.worksheet_update();
 			}));
 		});
 		
 		
 		// start the ping interval
-		this_worksheet.ping_interval_id = window.setInterval(this_worksheet.ping_server, this_worksheet.server_ping_time);
+		_this.ping_interval_id = window.setInterval(_this.ping_server, _this.server_ping_time);
 		
 		// set up codemirror autocomplete
 		// TODO set up autocomplete
@@ -643,12 +643,12 @@ sagenb.worksheetapp.worksheet = function() {
 			 */
 			var numcells = 0;
 			
-			this_worksheet.forEachCell(function(cell) {
+			_this.forEachCell(function(cell) {
 				numcells++;
 			});
 			
 			if(numcells > 0 && numcells === $(".cell").length) {
-				this_worksheet.on_load_done();
+				_this.on_load_done();
 				clearInterval(load_done_interval);
 			}
 		},
@@ -660,33 +660,33 @@ sagenb.worksheetapp.worksheet = function() {
 		but they are included in the best case scenario that they are all 
 		accepted. I have not checked all of the official hotkeys for Sage NB
 		so this list may not be complete but will be updated later. */
-		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { this_worksheet.new_worksheet(); return false; });
-		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { this_worksheet.save(); return false; });
-		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { this_worksheet.close(); return false; });
-		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { this_worksheet.print(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { _this.new_worksheet(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { _this.save(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { _this.close(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { _this.print(); return false; });
 		
 		
 		// bind buttons to functions
 		
 		/////// FILE MENU ////////
-		$("#new_worksheet").click(this_worksheet.new_worksheet);
-		$("#save_worksheet").click(this_worksheet.save);
-		$("#close_worksheet").click(this_worksheet.close);
-		$("#export_to_file").click(this_worksheet.export_worksheet);
-		// $("#import_from_file").click(this_worksheet.import_worksheet);
-		$("#print").click(this_worksheet.print);
+		$("#new_worksheet").click(_this.new_worksheet);
+		$("#save_worksheet").click(_this.save);
+		$("#close_worksheet").click(_this.close);
+		$("#export_to_file").click(_this.export_worksheet);
+		// $("#import_from_file").click(_this.import_worksheet);
+		$("#print").click(_this.print);
 		
 		////// VIEW //////
 		
 		
 		////////// EVALUATION ///////////
-		$("#evaluate_all_cells").click(this_worksheet.evaluate_all);
-		$("#interrupt").click(this_worksheet.interrupt);
+		$("#evaluate_all_cells").click(_this.evaluate_all);
+		$("#interrupt").click(_this.interrupt);
 		$("#restart_worksheet").click();
 		// change system doesn't require event handler here
-		$("#hide_all_output").click(this_worksheet.hide_all_output);
-		$("#show_all_output").click(this_worksheet.show_all_output);
-		$("#delete_all_output").click(this_worksheet.delete_all_output);
+		$("#hide_all_output").click(_this.hide_all_output);
+		$("#show_all_output").click(_this.show_all_output);
+		$("#delete_all_output").click(_this.delete_all_output);
 		
 		// TODO
 	}

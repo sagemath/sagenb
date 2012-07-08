@@ -3,103 +3,103 @@ sagenb.worksheetapp.cell = function(id) {
 	/* this allows us to access this cell object from 
 	 * inner functions
 	 */
-	var this_cell = this;
+	var _this = this;
 	
-	this_cell.id = id;
-	this_cell.input = "";
-	this_cell.output = "";
-	this_cell.system = "";
-	this_cell.percent_directives = null;
+	_this.id = id;
+	_this.input = "";
+	_this.output = "";
+	_this.system = "";
+	_this.percent_directives = null;
 	
-	this_cell.introspect_state = null;
-	this_cell.is_evaluate_cell = true;
-	this_cell.is_evaluating = false;
+	_this.introspect_state = null;
+	_this.is_evaluate_cell = true;
+	_this.is_evaluating = false;
 	
-	this_cell.codemirror = null;
+	_this.codemirror = null;
 	
-	this_cell.worksheet = null;
+	_this.worksheet = null;
 	
 	
 	// this is the id of the interval for checking for new output
-	this_cell.output_check_interval_id;
+	_this.output_check_interval_id;
 	
 	// the amount of time in millisecs between update checks
-	this_cell.output_check_interval = 250;
+	_this.output_check_interval = 250;
 
 	
 	///////////// UPDATING /////////////
-	this_cell.update = function(render_container, auto_evaluate) {
+	_this.update = function(render_container, auto_evaluate) {
 		/* Update cell properties. Updates the codemirror mode (if necessary)
 		 * and %hide stuff. Only performs rendering if a render_container is 
 		 * given. If auto_evaluate is true and this is an #auto cell, it will
 		 * be evaluated.
 		 */
-		sagenb.async_request(this_cell.worksheet.worksheet_command("cell_properties"), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(_this.worksheet.worksheet_command("cell_properties"), sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
 			
 			// set up all of the parameters
-			this_cell.input = X.input;
-			this_cell.output = X.output;
-			this_cell.system = X.system;
-			this_cell.percent_directives = X.percent_directives;
+			_this.input = X.input;
+			_this.output = X.output;
+			_this.system = X.system;
+			_this.percent_directives = X.percent_directives;
 			
 			// check for output_html
 			if(X.output_html && $.trim(X.output_html) !== "") {
-				this_cell.output = X.output_html;
+				_this.output = X.output_html;
 			}
 			
-			this_cell.is_evaluate_cell = (X.type === "evaluate") ? true : false;
+			_this.is_evaluate_cell = (X.type === "evaluate") ? true : false;
 			
 			// change the codemirror mode
-			this_cell.update_codemirror_mode();
+			_this.update_codemirror_mode();
 			
 			if(render_container) {
-				this_cell.render(render_container);
+				_this.render(render_container);
 			}
 			
 			// if it's a %hide cell, hide it
-			if(this_cell.is_hide()) {
-				$("#cell_" + this_cell.id + " .input_cell").addClass("input_hidden");
+			if(_this.is_hide()) {
+				$("#cell_" + _this.id + " .input_cell").addClass("input_hidden");
 			}
 			
 			// if it's an auto cell, evaluate
-			if(auto_evaluate && this_cell.is_auto()) {
-				this_cell.evaluate();
+			if(auto_evaluate && _this.is_auto()) {
+				_this.evaluate();
 			}
 		}),
 		{
-			id: this_cell.id
+			id: _this.id
 		});
 	};
-	this_cell.get_codemirror_mode = function() {
+	_this.get_codemirror_mode = function() {
 		/* This is a utility function to get the correct
 		 * CodeMirror mode which this cell should be 
 		 * rendered in.
 		 */
-		if(this_cell.system !== "" && this_cell.system !== null) {
+		if(_this.system !== "" && _this.system !== null) {
 			// specific cell system
-			return system_to_codemirror_mode(this_cell.system);
+			return system_to_codemirror_mode(_this.system);
 		} else {
 			// fall through to worksheet system
-			return system_to_codemirror_mode(this_cell.worksheet.system);
+			return system_to_codemirror_mode(_this.worksheet.system);
 		}
 	}
-	this_cell.update_codemirror_mode = function() {
-		if(this_cell.codemirror) {
-			if(this_cell.get_codemirror_mode() !== this_cell.codemirror.getOption("mode")) {
+	_this.update_codemirror_mode = function() {
+		if(_this.codemirror) {
+			if(_this.get_codemirror_mode() !== _this.codemirror.getOption("mode")) {
 				// change the codemirror mode
-				this_cell.codemirror.setOption("mode", this_cell.get_codemirror_mode());
+				_this.codemirror.setOption("mode", _this.get_codemirror_mode());
 			}
 		}
 	}
 	
 	//////// RENDER //////////
-	this_cell.render = function(container) {
-		if(this_cell.is_evaluate_cell) {
+	_this.render = function(container) {
+		if(_this.is_evaluate_cell) {
 			// its an evaluate cell
 		
 			// render into the container
-			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + this_cell.id + "\">" +
+			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + _this.id + "\">" +
 									"<div class=\"input_cell\">" +
 									"</div>" +
 								"</div> <!-- /cell -->");
@@ -114,14 +114,14 @@ sagenb.worksheetapp.cell = function(id) {
 			// set up autocomplete. we may want to use tab
 			//extrakeys[sagenb.ctrlkey + "-Space"] = "autocomplete";
 			extrakeys[sagenb.ctrlkey + "-Space"] = function(cm) {
-				this_cell.introspect();
+				_this.introspect();
 			};
 			
 			extrakeys["Tab"] = function(cm) {
 				if(cm.getCursor(true).line != cm.getCursor().line) {
 					// multiple lines selected
 					CodeMirror.commands.indentMore(cm);
-				} else if(!this_cell.introspect()) {
+				} else if(!_this.introspect()) {
 					console.log('indentAuto');
 					CodeMirror.commands.indentAuto(cm);
 				}
@@ -130,7 +130,7 @@ sagenb.worksheetapp.cell = function(id) {
 			extrakeys["Shift-Tab"] = "indentLess";
 			
 			/*extrakeys["("] = function(cm) {
-				this_cell.introspect();
+				_this.introspect();
 			};*/
 			
 			// backspace handler
@@ -138,10 +138,10 @@ sagenb.worksheetapp.cell = function(id) {
 				// check if it is empty
 			
 				// all of this is disabled for now
-				if(cm.getValue() === "" && this_cell.worksheet.cells.length > 0) {
+				if(cm.getValue() === "" && _this.worksheet.cells.length > 0) {
 					// it's empty and not the only one -> delete it
-					this_cell.delete();
-					this_cell.worksheet.focused_texarea_id = -1;
+					_this.delete();
+					_this.worksheet.focused_texarea_id = -1;
 				} else {
 					// not empty -> pass to the default behaviour
 					throw CodeMirror.Pass;
@@ -149,29 +149,29 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Shift-Enter"] = function(cm) {
-				this_cell.evaluate();
+				_this.evaluate();
 			};
 			
 			extrakeys[sagenb.ctrlkey + "-N"] = function(cm) {
-				this_cell.worksheet.new_worksheet();
+				_this.worksheet.new_worksheet();
 			};
 			extrakeys[sagenb.ctrlkey + "-S"] = function(cm) {
-				this_cell.worksheet.save();
+				_this.worksheet.save();
 			};
 			extrakeys[sagenb.ctrlkey + "-W"] = function(cm) {
-				this_cell.worksheet.close();
+				_this.worksheet.close();
 			};
 			extrakeys[sagenb.ctrlkey + "-P"] = function(cm) {
-				this_cell.worksheet.print();
+				_this.worksheet.print();
 			};
 			
 			extrakeys["F1"] = function() {
-				this_cell.worksheet.open_help();
+				_this.worksheet.open_help();
 			};
 			
 			// create the codemirror
-			this_cell.codemirror = CodeMirror($(container).find(".input_cell")[0], {
-				value: this_cell.input,
+			_this.codemirror = CodeMirror($(container).find(".input_cell")[0], {
+				value: _this.input,
 				
 				/* some of these may need to be settings */
 				indentWithTabs: false,
@@ -180,28 +180,28 @@ sagenb.worksheetapp.cell = function(id) {
 				lineNumbers: false,
 				matchBrackets: true,
 				
-				mode: this_cell.get_codemirror_mode(),
+				mode: _this.get_codemirror_mode(),
 				
 				/* autofocus messes up when true */
 				autofocus: false,
 			
 				onFocus: function() {
 					// may need to make sagenb.async_request here
-					this_cell.worksheet.current_cell_id = this_cell.id;
+					_this.worksheet.current_cell_id = _this.id;
 					
 					// unhide
-					$("#cell_" + this_cell.id + " .input_cell").removeClass("input_hidden");
+					$("#cell_" + _this.id + " .input_cell").removeClass("input_hidden");
 				},
 				onBlur: function() {
-					this_cell.worksheet.current_cell_id = -1;
-					if(this_cell.input !== this_cell.codemirror.getValue()) {
+					_this.worksheet.current_cell_id = -1;
+					if(_this.input !== _this.codemirror.getValue()) {
 						// the input has changed since the user focused
 						// so we send it back to the server
-						this_cell.send_input();
+						_this.send_input();
 					}
 					
 					// update cell properties without rendering
-					this_cell.update();
+					_this.update();
 				},
 			
 				extraKeys: extrakeys
@@ -210,14 +210,14 @@ sagenb.worksheetapp.cell = function(id) {
 			/* we may want to focus this cell here */
 			
 			// render the output
-			this_cell.render_output();
+			_this.render_output();
 		}
 		else {
 			// its a text cell
-			$(container).html("<div class=\"cell text_cell\" id=\"cell_" + this_cell.id + "\">" + 
-									"<div class=\"view_text\">" + this_cell.input + "</div>" + 
+			$(container).html("<div class=\"cell text_cell\" id=\"cell_" + _this.id + "\">" + 
+									"<div class=\"view_text\">" + _this.input + "</div>" + 
 									"<div class=\"edit_text\">" + 
-										"<textarea name=\"text_cell_textarea_" + this_cell.id + "\" id=\"text_cell_textarea_" + this_cell.id + "\">" + this_cell.input + "</textarea>" + 
+										"<textarea name=\"text_cell_textarea_" + _this.id + "\" id=\"text_cell_textarea_" + _this.id + "\">" + _this.input + "</textarea>" + 
 										"<div class=\"buttons\">" + 
 											"<button class=\"btn btn-danger delete_button pull-left\">Delete</button>" + 
 											"<button class=\"btn cancel_button\">Cancel</button>" + 
@@ -231,22 +231,22 @@ sagenb.worksheetapp.cell = function(id) {
 			// we may want to customize the editor some to include other buttons/features
 			tinyMCE.init({
 				mode: "exact",
-				elements: ("text_cell_textarea_" + this_cell.id),
+				elements: ("text_cell_textarea_" + _this.id),
 				theme: "advanced",
 				
 				width: "100%",
 				height: "300"
 			});
 			
-			var $this_cell = $("#cell_" + this_cell.id);
+			var $_this = $("#cell_" + _this.id);
 			
 			// MathJax the text
-			MathJax.Hub.Queue(["Typeset", MathJax.Hub, $this_cell.find(".view_text")[0]]);
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub, $_this.find(".view_text")[0]]);
 			
-			$this_cell.dblclick(function(e) {
-				if(!this_cell.is_evaluate_cell) {
+			$_this.dblclick(function(e) {
+				if(!_this.is_evaluate_cell) {
 					// set the current_cell_id
-					this_cell.worksheet.current_cell_id = this_cell.id;
+					_this.worksheet.current_cell_id = _this.id;
 					
 					// lose any selection that was made
 					if (window.getSelection) {
@@ -255,64 +255,52 @@ sagenb.worksheetapp.cell = function(id) {
 						document.selection.empty();
 					}
 					
-					// get tinymce instance
-					//var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
-					
-					// hide progress
-					// ed.setProgressState(0);
-					
 					// add the edit class
-					$("#cell_" + this_cell.id).addClass("edit");
+					$("#cell_" + _this.id).addClass("edit");
 				}
 			});
 			
-			$this_cell.find(".delete_button").click(this_cell.delete);
+			$_this.find(".delete_button").click(_this.delete);
 			
-			$this_cell.find(".cancel_button").click(function(e) {
+			$_this.find(".cancel_button").click(function(e) {
 				// get tinymce instance
-				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
-				
-				// show progress
-				// ed.setProgressState(1);
+				var ed = tinyMCE.get("text_cell_textarea_" + _this.id);
 				
 				// revert the text
-				ed.setContent(this_cell.input);
+				ed.setContent(_this.input);
 				
 				// remove the edit class
-				$("#cell_" + this_cell.id).removeClass("edit");
+				$("#cell_" + _this.id).removeClass("edit");
 			});
 			
-			$this_cell.find(".save_button").click(function(e) {
+			$_this.find(".save_button").click(function(e) {
 				// get tinymce instance
-				var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
-				
-				// show progress
-				// ed.setProgressState(1);
+				var ed = tinyMCE.get("text_cell_textarea_" + _this.id);
 				
 				// send input
-				this_cell.send_input();
+				_this.send_input();
 				
 				// update the cell
-				$this_cell.find(".view_text").html(this_cell.input);
+				$_this.find(".view_text").html(_this.input);
 				
 				// MathJax the text
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, $this_cell.find(".view_text")[0]]);
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, $_this.find(".view_text")[0]]);
 				
 				// remove the edit class
-				$("#cell_" + this_cell.id).removeClass("edit");
+				$("#cell_" + _this.id).removeClass("edit");
 			});
 		}
 	};
-	this_cell.render_output = function(stuff_to_render) {
+	_this.render_output = function(stuff_to_render) {
 		/* Renders stuff_to_render as the cells output, 
-		 * if given. If not, then it renders this_cell.output.
+		 * if given. If not, then it renders _this.output.
 		 */
 		
 		// don't do anything for text cells
-		if(!this_cell.is_evaluate_cell) return;
+		if(!_this.is_evaluate_cell) return;
 		
 		var a = "";
-		if(this_cell.output) a = this_cell.output;
+		if(_this.output) a = _this.output;
 		if(stuff_to_render) a = stuff_to_render;
 		
 		a = $.trim(a);
@@ -327,7 +315,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		
 		// take the output off the dom
-		$("#cell_" + this_cell.id + " .output_cell").detach();
+		$("#cell_" + _this.id + " .output_cell").detach();
 		
 		// it may be better to send a no_output value instead here
 		if(a === "") {
@@ -336,7 +324,7 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		
 		// the .output_cell div needs to be created
-		var output_cell_dom = $("<div class=\"output_cell\" id=\"output_" + this_cell.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
+		var output_cell_dom = $("<div class=\"output_cell\" id=\"output_" + _this.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
 		
 		/* TODO scrap JMOL, use three.js. Right now using 
 		 applets screws up when you scoll an applet over the
@@ -363,7 +351,7 @@ sagenb.worksheetapp.cell = function(id) {
 		if(output_contains_latex(a)) {
 			/* \( \) is for inline and \[ \] is for block mathjax */
 			
-			var output_cell = $("#cell_" + this_cell.id + " .output_cell");
+			var output_cell = $("#cell_" + _this.id + " .output_cell");
 			
 			if(output_cell.contents().length === 1) {
 				// only one piece of math, make it big
@@ -394,58 +382,58 @@ sagenb.worksheetapp.cell = function(id) {
 	};
 	
 	////// FOCUS/BLUR ///////
-	this_cell.focus = function() {
-		if(this_cell.is_evaluate_cell) {
-			this_cell.codemirror.focus();
+	_this.focus = function() {
+		if(_this.is_evaluate_cell) {
+			_this.codemirror.focus();
 		} else {
 			// edit the tinyMCE
-			$("#cell_" + this_cell.id).dblclick();
-			tinyMCE.execCommand('mceFocus', false, "text_cell_textarea_" + this_cell.id);
+			$("#cell_" + _this.id).dblclick();
+			tinyMCE.execCommand('mceFocus', false, "text_cell_textarea_" + _this.id);
 		}
 	}
 	
-	this_cell.is_focused = function() {
-		return this_cell.worksheet.current_cell_id === this_cell.id;
+	_this.is_focused = function() {
+		return _this.worksheet.current_cell_id === _this.id;
 	};
-	this_cell.is_auto = function() {
-		return (this_cell.percent_directives && $.inArray("auto", this_cell.percent_directives) >= 0);
+	_this.is_auto = function() {
+		return (_this.percent_directives && $.inArray("auto", _this.percent_directives) >= 0);
 	}
-	this_cell.is_hide = function() {
-		return (this_cell.percent_directives && $.inArray("hide", this_cell.percent_directives) >= 0);
+	_this.is_hide = function() {
+		return (_this.percent_directives && $.inArray("hide", _this.percent_directives) >= 0);
 	}
 	
 	/////// EVALUATION //////
-	this_cell.send_input = function() {
+	_this.send_input = function() {
 		// mark the cell as changed
-		$("#cell_" + this_cell.id).addClass("input_changed");
+		$("#cell_" + _this.id).addClass("input_changed");
 		
 		// update the local input property
-		if(this_cell.is_evaluate_cell) {
-			this_cell.input = this_cell.codemirror.getValue();
+		if(_this.is_evaluate_cell) {
+			_this.input = _this.codemirror.getValue();
 		} else {
 			// get tinymce instance
-			var ed = tinyMCE.get("text_cell_textarea_" + this_cell.id);
+			var ed = tinyMCE.get("text_cell_textarea_" + _this.id);
 			
 			// set input
-			this_cell.input = ed.getContent();
+			_this.input = ed.getContent();
 		}
 		
 		// update the server input property
-		sagenb.async_request(this_cell.worksheet.worksheet_command("eval"), sagenb.generic_callback, {
+		sagenb.async_request(_this.worksheet.worksheet_command("eval"), sagenb.generic_callback, {
 			save_only: 1,
-			id: this_cell.id,
-			input: this_cell.input
+			id: _this.id,
+			input: _this.input
 		});
 	};
-	this_cell.evaluate = function() {
-		if(!this_cell.is_evaluate_cell) {
+	_this.evaluate = function() {
+		if(!_this.is_evaluate_cell) {
 			// we're a text cell
-			this_cell.continue_evaluating_all();
+			_this.continue_evaluating_all();
 			return;
 		}
 		
 		// we're an evaluate cell
-		sagenb.async_request(this_cell.worksheet.worksheet_command("eval"), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(_this.worksheet.worksheet_command("eval"), sagenb.generic_callback(function(status, response) {
 			/* EVALUATION CALLBACK */
 		
 			var X = decode_response(response);
@@ -454,7 +442,7 @@ sagenb.worksheetapp.cell = function(id) {
 			// seems like this is redundant
 			X.interact = X.interact ? true : false;
 			
-			if (X.id !== this_cell.id) {
+			if (X.id !== _this.id) {
 				// Something went wrong, e.g., cell id's don't match
 				return;
 			}
@@ -468,7 +456,7 @@ sagenb.worksheetapp.cell = function(id) {
 			// not sure about these commands
 			if (X.command === 'insert_cell') {
 				// Insert a new cell after the evaluated cell.
-				this_cell.worksheet.new_cell_after(this_cell.id);
+				_this.worksheet.new_cell_after(_this.id);
 			} /*else if (X.command === 'introspect') {
 				//introspect[X.id].loaded = false;
 				//update_introspection_text(X.id, 'loading...');
@@ -483,14 +471,14 @@ sagenb.worksheetapp.cell = function(id) {
 				//go_next(false, true);
 			}*/
 			
-			this_cell.is_evaluating = true;
+			_this.is_evaluating = true;
 			
 			// mark the cell as running
-			$("#cell_" + this_cell.id).addClass("running");	
-			this_cell.set_output_loading();
+			$("#cell_" + _this.id).addClass("running");	
+			_this.set_output_loading();
 			
 			// start checking for output
-			this_cell.check_for_output();
+			_this.check_for_output();
 		}),
 		
 		/* REQUEST OPTIONS */
@@ -498,16 +486,16 @@ sagenb.worksheetapp.cell = function(id) {
 			// 0 = false, 1 = true this needs some conditional
 			newcell: 0,
 			
-			id: toint(this_cell.id),
+			id: toint(_this.id),
 			
 			/* it's necessary to get the codemirror value because the user
 			 * may have made changes and not blurred the codemirror so the 
-			 * changes haven't been put in this_cell.input
+			 * changes haven't been put in _this.input
 			 */
-			input: this_cell.codemirror.getValue()
+			input: _this.codemirror.getValue()
 		});
 	};
-	this_cell.introspect = function() {
+	_this.introspect = function() {
 		/* Attempts to begin an introspection. Firstly, it splits the input 
 		 * according to the cursor position. Then it matches the text before 
 		 * the cursor to some regex expression to check which type of 
@@ -518,14 +506,14 @@ sagenb.worksheetapp.cell = function(id) {
 		 * introspection result is done in the check_for_output function.
 		 */
 		
-		if(!this_cell.is_evaluate_cell) return;
+		if(!_this.is_evaluate_cell) return;
 		
 		/* split up the text cell and get before and after */
 		var before = "";
 		var after = "";
 		
-		var pos = this_cell.codemirror.getCursor(false);
-		var lines = this_cell.codemirror.getValue().split("\n");
+		var pos = _this.codemirror.getCursor(false);
+		var lines = _this.codemirror.getValue().split("\n");
 		
 		before += lines.slice(0, pos.line).join("\n");
 		if(pos.ch > 0) {
@@ -543,9 +531,9 @@ sagenb.worksheetapp.cell = function(id) {
 		
 		
 		/* set up introspection state */
-		this_cell.introspect_state = {};
-		this_cell.introspect_state.before_replacing_word = before;
-		this_cell.introspect_state.after_cursor = after;
+		_this.introspect_state = {};
+		_this.introspect_state.before_replacing_word = before;
+		_this.introspect_state.after_cursor = after;
 		
 		/* Regexes */
 		var command_pat = "([a-zA-Z_][a-zA-Z._0-9]*)$";
@@ -560,63 +548,63 @@ sagenb.worksheetapp.cell = function(id) {
 		
 		if (before.slice(-1) === "?") {
 			// We're starting with a docstring or source code.
-			this_cell.introspect_state.docstring = true;
+			_this.introspect_state.docstring = true;
 		} else if (m) {
 			// We're starting with a list of completions.
-			this_cell.introspect_state.code_completion = true;
-			this_cell.introspect_state.replacing_word = m[1];
-			this_cell.introspect_state.before_replacing_word = before.substring(0, before.length - m[1].length);
+			_this.introspect_state.code_completion = true;
+			_this.introspect_state.replacing_word = m[1];
+			_this.introspect_state.before_replacing_word = before.substring(0, before.length - m[1].length);
 		} else if (f !== null) {
 			// We're in an open function paren -- give info on the
 			// function.
 			before = f[1] + "?";
 			// We're starting with a docstring or source code.
-			this_cell.introspect_state.docstring = true;
+			_this.introspect_state.docstring = true;
 		} else {
 			// Just a tab.
 			return false;
 		}
 		
-		sagenb.async_request(this_cell.worksheet.worksheet_command("introspect"), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(_this.worksheet.worksheet_command("introspect"), sagenb.generic_callback(function(status, response) {
 			/* INTROSPECT CALLBACK */
 			
 			// start checking for output
-			this_cell.check_for_output();
+			_this.check_for_output();
 		}),
 		
 		/* REQUEST OPTIONS */
 		{
-			id: toint(this_cell.id),
+			id: toint(_this.id),
 			before_cursor: before,
 			after_cursor: after
 		});
 		
 		return true;
 	};
-	this_cell.check_for_output = function() {
+	_this.check_for_output = function() {
 		/* Currently, this function uses a setInterval command
 		 * so that the result will be checked every X millisecs.
 		 * In the future, we may want to implement an exponential
 		 * pause system like the last notebook had.
 		 */
 		function stop_checking() {
-			this_cell.is_evaluating = false;
+			_this.is_evaluating = false;
 			
 			// mark the cell as done
-			$("#cell_" + this_cell.id).removeClass("running");	
+			$("#cell_" + _this.id).removeClass("running");	
 			
 			// clear interval
-			this_cell.output_check_interval_id = window.clearInterval(this_cell.output_check_interval_id);
+			_this.output_check_interval_id = window.clearInterval(_this.output_check_interval_id);
 		}
 		
 		function do_check() {
-			sagenb.async_request(this_cell.worksheet.worksheet_command("cell_update"), sagenb.generic_callback(function(status, response) {
+			sagenb.async_request(_this.worksheet.worksheet_command("cell_update"), sagenb.generic_callback(function(status, response) {
 				/* we may want to implement an error threshold system for errors 
 				like the old notebook had. that would go here */
 				
 				if(response === "") {
 					// empty response, try again after a little bit
-					// setTimeout(this_cell.check_for_output, 500);
+					// setTimeout(_this.check_for_output, 500);
 					return;
 				}
 				
@@ -624,7 +612,7 @@ sagenb.worksheetapp.cell = function(id) {
 				
 				if(X.status === "e") {
 					// there was an error, stop checking
-					this_cell.worksheet.show_connection_error();
+					_this.worksheet.show_connection_error();
 					stop_checking();
 					return;
 				}
@@ -651,23 +639,23 @@ sagenb.worksheetapp.cell = function(id) {
 					
 					if(X.new_input !== "") {
 						// update the input
-						this_cell.input = X.new_input;
+						_this.input = X.new_input;
 						
 						// update codemirror/tinymce
-						if(this_cell.is_evaluate_cell) {
-							this_cell.codemirror.setValue(this_cell.input);
+						if(_this.is_evaluate_cell) {
+							_this.codemirror.setValue(_this.input);
 							
 							// here we need to set the new cursor position if 
 							// we are in introspect
-							if(this_cell.introspect_state) {
-								var after_lines = this_cell.introspect_state.after_cursor.split("\n");
-								var val_lines = this_cell.codemirror.getValue().split("\n");
+							if(_this.introspect_state) {
+								var after_lines = _this.introspect_state.after_cursor.split("\n");
+								var val_lines = _this.codemirror.getValue().split("\n");
 								
 								var pos = {};
 								pos.line = val_lines.length - after_lines.length;
 								pos.ch = val_lines[pos.line].length - after_lines[0].length;
 								
-								this_cell.codemirror.setCursor(pos);
+								_this.codemirror.setCursor(pos);
 							}
 						} else {
 							/* I don't think we need to do anything for TinyMCE
@@ -679,9 +667,9 @@ sagenb.worksheetapp.cell = function(id) {
 					// introspect
 					if(X.introspect_output && X.introspect_output.length > 0) {
 						
-						if(this_cell.introspect_state.code_completion) {
+						if(_this.introspect_state.code_completion) {
 							// open codemirror simple hint
-							var editor = this_cell.codemirror;
+							var editor = _this.codemirror;
 							
 							/* stolen from simpleHint */
 							// We want a single cursor position.
@@ -697,11 +685,11 @@ sagenb.worksheetapp.cell = function(id) {
 								str = str.replace("\r", "");
 								
 								var newpos = {};
-								var lines = this_cell.introspect_state.before_replacing_word.split("\n");
+								var lines = _this.introspect_state.before_replacing_word.split("\n");
 								newpos.line = lines.length - 1;
 								newpos.ch = lines[lines.length - 1].length + str.length;
 								
-								editor.setValue(this_cell.introspect_state.before_replacing_word + str + this_cell.introspect_state.after_cursor);
+								editor.setValue(_this.introspect_state.before_replacing_word + str + _this.introspect_state.after_cursor);
 								
 								editor.setCursor(newpos);
 							}
@@ -778,7 +766,7 @@ sagenb.worksheetapp.cell = function(id) {
 									// Pass the event to the CodeMirror instance so that it can handle things like backspace properly.
 									editor.triggerOnKeyDown(event);
 									
-									setTimeout(this_cell.introspect, 50);
+									setTimeout(_this.introspect, 50);
 								}
 							});
 							CodeMirror.connect(sel, "dblclick", pick);
@@ -794,100 +782,100 @@ sagenb.worksheetapp.cell = function(id) {
 					}
 					
 					// update the output
-					this_cell.output = X.output;
+					_this.output = X.output;
 					
 					// check for output_html
 					// it doesn't seem right to have a different property here
 					// it seems like X.output is sufficient
 					if($.trim(X.output_html) !== "") {
-						this_cell.output = X.output_html;
+						_this.output = X.output_html;
 					}
 					
 					// render to the DOM
-					this_cell.render_output();
+					_this.render_output();
 					
 					// EVALUATE ALL STUFF
-					this_cell.continue_evaluating_all();
+					_this.continue_evaluating_all();
 				}
 			}),
 				{
-					id: this_cell.id
+					id: _this.id
 				}
 			);
 		}
 		
 		// start checking
-		this_cell.output_check_interval_id = window.setInterval(do_check, this_cell.output_check_interval);
+		_this.output_check_interval_id = window.setInterval(do_check, _this.output_check_interval);
 	};
 	
-	this_cell.continue_evaluating_all = function() {
-		if(this_cell.worksheet.is_evaluating_all) {
+	_this.continue_evaluating_all = function() {
+		if(_this.worksheet.is_evaluating_all) {
 			// go evaluate the next cell
-			var $nextcell = $("#cell_" + this_cell.id).parent().next().next().find(".cell");
+			var $nextcell = $("#cell_" + _this.id).parent().next().next().find(".cell");
 			
 			if($nextcell.length > 0) {
 				// we're not the last cell -> evaluate next
 				var nextcell_id = parseInt($nextcell.attr("id").substring(5));
 				
-				this_cell.worksheet.cells[nextcell_id].evaluate();
+				_this.worksheet.cells[nextcell_id].evaluate();
 			} else {
 				// we're the last cell -> stop evaluating all
-				this_cell.worksheet.is_evaluating_all = false;
+				_this.worksheet.is_evaluating_all = false;
 			}
 		}
 	}
 	
-	this_cell.is_interact_cell = function() {
+	_this.is_interact_cell = function() {
 		
 	};
 	
 	
 	/////// OUTPUT ///////
-	this_cell.delete_output = function() {
+	_this.delete_output = function() {
 		// TODO we should maybe interrupt the cell if its running here
-		sagenb.async_request(this_cell.worksheet.worksheet_command('delete_cell_output'), sagenb.generic_callback(function(status, response) {
-			this_cell.output = "";
-			this_cell.render_output();
+		sagenb.async_request(_this.worksheet.worksheet_command('delete_cell_output'), sagenb.generic_callback(function(status, response) {
+			_this.output = "";
+			_this.render_output();
 		}), {
-			id: toint(this_cell.id)
+			id: toint(_this.id)
 		});
 	};
 	
-	this_cell.set_output_loading = function() {
-		this_cell.render_output("<div class=\"progress progress-striped active\" style=\"width: 25%; margin: 0 auto;\">" + 
+	_this.set_output_loading = function() {
+		_this.render_output("<div class=\"progress progress-striped active\" style=\"width: 25%; margin: 0 auto;\">" + 
 									"<div class=\"bar\" style=\"width: 100%;\"></div>" + 
 								"</div>");
 	};
-	this_cell.set_output_hidden = function() {
-		if($("#cell_" + this_cell.id + " .output_cell").length > 0) {
-			this_cell.render_output("<hr>");
+	_this.set_output_hidden = function() {
+		if($("#cell_" + _this.id + " .output_cell").length > 0) {
+			_this.render_output("<hr>");
 		}
 	}
-	this_cell.set_output_visible = function() {
-		this_cell.render_output();
+	_this.set_output_visible = function() {
+		_this.render_output();
 	}
-	this_cell.has_input_hide = function() {
+	_this.has_input_hide = function() {
 		// connect with Cell.percent_directives
-		return this_cell.input.substring(0, 5) === "%hide";
+		return _this.input.substring(0, 5) === "%hide";
 	};
 	
-	this_cell.delete = function() {
-		if(this_cell.is_evaluating) {
+	_this.delete = function() {
+		if(_this.is_evaluating) {
 			// interrupt
-			sagenb.async_request(this_cell.worksheet.worksheet_command('interrupt'));
+			sagenb.async_request(_this.worksheet.worksheet_command('interrupt'));
 		}
 		
-		sagenb.async_request(this_cell.worksheet.worksheet_command('delete_cell'), sagenb.generic_callback(function(status, response) {
+		sagenb.async_request(_this.worksheet.worksheet_command('delete_cell'), sagenb.generic_callback(function(status, response) {
 			X = decode_response(response);
 			
 			if(X.command === "ignore") return;
 			
-			this_cell.worksheet.cells[this_cell.id] = null;
+			_this.worksheet.cells[_this.id] = null;
 			
-			$("#cell_" + this_cell.id).parent().next().detach();
-			$("#cell_" + this_cell.id).parent().detach();
+			$("#cell_" + _this.id).parent().next().detach();
+			$("#cell_" + _this.id).parent().detach();
 		}), {
-			id: toint(this_cell.id)
+			id: toint(_this.id)
 		});
 	};
 };

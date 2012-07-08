@@ -7,44 +7,44 @@
 sagenb.worksheetlistapp = {};
 
 sagenb.worksheetlistapp.list_row = function() {
-	var this_row = this;
+	var _this = this;
 	
 	var $this = null;
 	
 	// properties object
-	this_row.props = null;
-	this_row.checked = false;
-	this_row.list = null;
+	_this.props = null;
+	_this.checked = false;
+	_this.list = null;
 	
-	this_row.init = function() {
+	_this.init = function() {
 		
 	};
 	
-	this_row.render = function() {
-		$("tbody").append('<tr id="row_' + this_row.props.id_number + '">' + 
+	_this.render = function() {
+		$("tbody").append('<tr id="row_' + _this.props.id_number + '">' + 
 				'<td class="checkbox_cell"><input type="checkbox"></td>' + 
 				'<td class="worksheet_name_cell"></td>' + 
 				'<td class="owner_cell"></td>' + 
 				'<td class="last_edit_cell"></td>' + 
 			'</tr>');
 		
-		$this = $("#row_" + this_row.props.id_number);
+		$this = $("#row_" + _this.props.id_number);
 		
 		// checkbox
 		$this.find("input").change(function(e) {
-			this_row.checked = $this.find("input").prop("checked");
+			_this.checked = $this.find("input").prop("checked");
 		});
 		
 		// name/running
-		var name_html = '<a href="/home/' + sagenb.username + '/' + this_row.props.id_number + '" target="_blank">' + this_row.props.name + '</a>';
-		if(this_row.props.running) {
+		var name_html = '<a href="/home/' + sagenb.username + '/' + _this.props.id_number + '" target="_blank">' + _this.props.name + '</a>';
+		if(_this.props.running) {
 			// TODO gettext
 			name_html += '<span class="label label-important pull-right running_label">running</span>';
 		}
 		$this.find("td.worksheet_name_cell").html(name_html);
 		
 		// owner/collaborators/published
-		var owner_html = this_row.props.owner;
+		var owner_html = _this.props.owner;
 		if(this.props.collaborators && this.props.collaborators.length) {
 			// there are collaborators
 			owner_html += ' and <a href="#">2 others</a>';
@@ -57,136 +57,136 @@ sagenb.worksheetlistapp.list_row = function() {
 		
 		// last change
 		// TODO gettext
-		$this.find("td.last_edit_cell").text(this_row.props.last_change_pretty + " ago");
+		$this.find("td.last_edit_cell").text(_this.props.last_change_pretty + " ago");
 	};
 	
-	this_row.remove = function() {
+	_this.remove = function() {
 		$this.hide("slow", function() {
 			$this.detach();
-			delete this_row.list.rows[this_row.props.id_number];
+			delete _this.list.rows[_this.props.id_number];
 		});
 	}
 	
-	this_row.check = function() {
-		this_row.checked = true;
+	_this.check = function() {
+		_this.checked = true;
 		$this.find("input").prop("checked", true);
 	};
 	
-	this_row.uncheck = function() {
-		this_row.checked = false;
+	_this.uncheck = function() {
+		_this.checked = false;
 		$this.find("input").prop("checked", false);
 	};
 };
 
 sagenb.worksheetlistapp.worksheet_list = function() {
-	var this_list = this;
+	var _this = this;
 	
-	this_list.rows = [];
+	_this.rows = [];
 	
-	this_list.init = function() {
-		this_list.show_active();
+	_this.init = function() {
+		_this.show_active();
 		
 		$("#main_checkbox").change(function(e) {
 			if($("#main_checkbox").prop("checked")) {
 				// checked -> check all
-				this_list.check_all();
+				_this.check_all();
 			} else {
 				// unchecked -> uncheck all
-				this_list.check_none();
+				_this.check_none();
 			}
 		});
 		
-		$("#send_to_archive_button").click(this_list.archive);
-		$("#delete_button").click(this_list.delete);
-		$("#stop_button").click(this_list.stop);
-		$("#download_button").click(this_list.download);
+		$("#send_to_archive_button").click(_this.archive);
+		$("#delete_button").click(_this.delete);
+		$("#stop_button").click(_this.stop);
+		$("#download_button").click(_this.download);
 		
-		$("#show_active").click(this_list.show_active);
-		$("#show_archive").click(this_list.show_archive);
-		$("#show_trash").click(this_list.show_trash);
+		$("#show_active").click(_this.show_active);
+		$("#show_archive").click(_this.show_archive);
+		$("#show_trash").click(_this.show_trash);
 		
-		$("#submit_search").click(this_list.do_search);
+		$("#submit_search").click(_this.do_search);
 		
 		// not going to mess with this for now
 		// $("#action_buttons button").addClass("disabled");
 		
 		// Bind hotkeys
-		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { this_list.new_worksheet(); return false; });
+		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { _this.new_worksheet(); return false; });
 	};
 	
 	///////// FOR EACH ///////////
-	this_list.for_each_row = function(f) {
-		$.each(this_list.rows, function(i, list_row) {
+	_this.for_each_row = function(f) {
+		$.each(_this.rows, function(i, list_row) {
 			if(list_row) f(list_row);
 		});
 	};
-	this_list.for_each_checked_row = function(f) {
-		$.each(this_list.rows, function(i, list_row) {
+	_this.for_each_checked_row = function(f) {
+		$.each(_this.rows, function(i, list_row) {
 			if(list_row && list_row.checked) f(list_row);
 		});
 	};
 	
 	////////// CHECKING //////////
-	this_list.check_all = function() {
-		this_list.for_each_row(function(list_row) {
+	_this.check_all = function() {
+		_this.for_each_row(function(list_row) {
 			list_row.check();
 		});
 	};
-	this_list.check_none = function() {
-		this_list.for_each_row(function(list_row) {
+	_this.check_none = function() {
+		_this.for_each_row(function(list_row) {
 			list_row.uncheck();
 		});
 	};
 	
 	/////////// FILENAMES ////////////
-	this_list.checked_worksheet_filenames = function() {
+	_this.checked_worksheet_filenames = function() {
 		var r = [];
-		this_list.for_each_checked_row(function(list_row) {
+		_this.for_each_checked_row(function(list_row) {
 			r.push(list_row.props.filename);
 		});
 		return r;
 	};
 	
 	////////// COMMANDS //////////////
-	this_list.new_worksheet = function() {
+	_this.new_worksheet = function() {
 		window.open("/new_worksheet");
 	};
-	this_list.upload_worksheet = function() {
+	_this.upload_worksheet = function() {
 		// TODO
 	};
-	this_list.download_all_active = function() {
+	_this.download_all_active = function() {
 		window.location.replace("/download_worksheets.zip");
 	};
 	
-	this_list.checked_action = function(action, extra_callback) {
+	_this.checked_action = function(action, extra_callback) {
 		// don't do anything if none are selected
-		if(this_list.checked_worksheet_filenames().length === 0) return;
+		if(_this.checked_worksheet_filenames().length === 0) return;
 		
 		var callback = sagenb.generic_callback();
 		if(extra_callback) callback = sagenb.generic_callback(extra_callback);
 		
 		sagenb.async_request(action, callback, {
-			filenames: encode_response(this_list.checked_worksheet_filenames())
+			filenames: encode_response(_this.checked_worksheet_filenames())
 		});
 	}
-	this_list.archive = function() {
-		this_list.checked_action("/send_to_archive", function(status, response) {
-			this_list.for_each_checked_row(function(row) {
+	_this.archive = function() {
+		_this.checked_action("/send_to_archive", function(status, response) {
+			_this.for_each_checked_row(function(row) {
 				row.remove();
 			});
 		});
 	};
-	this_list.delete = function() {
+	_this.delete = function() {
 		//TODO Are you sure?
-		this_list.checked_action("/send_to_trash", function(status, response) {
-			this_list.for_each_checked_row(function(row) {
+		_this.checked_action("/send_to_trash", function(status, response) {
+			_this.for_each_checked_row(function(row) {
 				row.remove();
 			});
 		});
 	};
-	this_list.stop = function() {
-		this_list.checked_action("/send_to_stop", function(status, response) {
-			this_list.for_each_checked_row(function(row) {
+	_this.stop = function() {
+		_this.checked_action("/send_to_stop", function(status, response) {
+			_this.for_each_checked_row(function(row) {
 				$("#row_" + row.props.id_number + " .running_label").fadeOut('slow', function() {
 					$(this).detach();
 					row.uncheck();
@@ -194,22 +194,22 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			});
 		});
 	};
-	this_list.download = function() {
+	_this.download = function() {
 		// don't download if none are selected
-		if(this_list.checked_worksheet_filenames().length === 0) return;
+		if(_this.checked_worksheet_filenames().length === 0) return;
 		
-		window.location.replace("/download_worksheets.zip?filenames=" + encode_response(this_list.checked_worksheet_filenames()));
+		window.location.replace("/download_worksheets.zip?filenames=" + encode_response(_this.checked_worksheet_filenames()));
 	};
 	
-	this_list.clear_list = function() {
+	_this.clear_list = function() {
 		$("table tbody tr").detach();
-		this_list.rows = [];
+		_this.rows = [];
 	};
-	this_list.load = function(params) {
+	_this.load = function(params) {
 		var url = "/worksheet_list";
 		if(params) url += "?" + encodeURI(params);
 		
-		this_list.clear_list();
+		_this.clear_list();
 		
 		sagenb.async_request(url, sagenb.generic_callback(function(status, response) {
 			var X = decode_response(response);
@@ -217,9 +217,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 				var row = new sagenb.worksheetlistapp.list_row();
 				
 				row.props = X.worksheets[i];
-				row.list = this_list;
+				row.list = _this;
 				
-				this_list.rows[row.props.id_number] = row;
+				_this.rows[row.props.id_number] = row;
 				
 				row.render();
 			}
@@ -235,34 +235,34 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	
 	//// VIEWS ////
-	this_list.show_active = function() {
-		this_list.load();
+	_this.show_active = function() {
+		_this.load();
 		
 		// TODO gettext
 		$(".title").text("My Notebook");
 		$("#search_input").val("");
 	};
-	this_list.show_archive = function() {
-		this_list.load("type=archive");
+	_this.show_archive = function() {
+		_this.load("type=archive");
 		
 		// TODO gettext
 		$(".title").text("My Notebook - Archive");
 		$("#search_input").val("");
 	};
-	this_list.show_trash = function() {
-		this_list.load("type=trash");
+	_this.show_trash = function() {
+		_this.load("type=trash");
 		
 		// TODO gettext
 		$(".title").text("My Notebook - Trash");
 		$("#search_input").val("");
 	};
-	this_list.do_search = function() {
+	_this.do_search = function() {
 		var q = $("#search_input").val();
 		if($.trim(q) === "") return;
 		
 		$("#type_buttons button").removeClass("active");
 		
-		this_list.load("search=" + q);
+		_this.load("search=" + q);
 		
 		// TODO gettext
 		$(".title").text("My Notebook - Search");
