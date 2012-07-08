@@ -3747,7 +3747,7 @@ except (KeyError, IOError):
             L = L[:i]
         a = []
         for filename in L.split():
-            filename = filename.strip('"').strip("'")
+            filename = filename.strip('"\'')
             if not filename.endswith('.py') and not filename.endswith('.sage') and \
                    not filename.endswith('.sobj') and not os.path.exists(filename):
                 if os.path.exists(filename + '.sage'):
