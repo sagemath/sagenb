@@ -351,35 +351,34 @@ function bind_events() {
     /*
      * Attaches events to DOM elements.
      */
-
-    $('.cell_input').focus(function () {
+    $('body').on('focus', 'textarea.cell_input', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         cell_focused(this, cell_id);
         return true;
     });
-    $('.cell_input').blur(function () {
+    $('body').on('blur', 'textarea.cell_input_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         cell_blur(cell_id);
         return true;
     });
-    $('.cell_input').keyup(function (event) {
+    $('body').on('keyup', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keyup(cell_id, event);
     });
-    $('.cell_input').keydown(function (event) {
+    $('body').on('keydown', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keydown(cell_id, event);
     });
-    $('.cell_input').keypress(function (event) {
+    $('body').on('keypress', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keypress(cell_id, event);
     });
-    $('.eval_button').click(function () {
+    $('body').on('click', 'input.eval_button', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         evaluate_cell(cell_id, 0);
