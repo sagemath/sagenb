@@ -118,12 +118,8 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Tab"] = function(cm) {
-				if(cm.getCursor(true).line != cm.getCursor().line) {
-					// multiple lines selected
+				if(cm.getCursor(true).line != cm.getCursor().line && !_this.introspect()) {
 					CodeMirror.commands.indentMore(cm);
-				} else if(!_this.introspect()) {
-					console.log('indentAuto');
-					CodeMirror.commands.indentAuto(cm);
 				}
 			};
 			
@@ -193,7 +189,9 @@ sagenb.worksheetapp.cell = function(id) {
 					$("#cell_" + _this.id + " .input_cell").removeClass("input_hidden");
 				},
 				onBlur: function() {
-					_this.worksheet.current_cell_id = -1;
+					if(_this.worksheet.current_cell_id === _this.id) {
+						_this.worksheet.current_cell_id = -1;
+					}
 					if(_this.input !== _this.codemirror.getValue()) {
 						// the input has changed since the user focused
 						// so we send it back to the server
@@ -206,8 +204,6 @@ sagenb.worksheetapp.cell = function(id) {
 			
 				extraKeys: extrakeys
 			});
-			
-			/* we may want to focus this cell here */
 			
 			// render the output
 			_this.render_output();
