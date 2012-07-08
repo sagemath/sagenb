@@ -240,6 +240,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		
 		// TODO gettext
 		$(".title").text("My Notebook");
+		document.title = "My Notebook - Sage";
 		$("#search_input").val("");
 	};
 	_this.show_archive = function() {
@@ -247,6 +248,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		
 		// TODO gettext
 		$(".title").text("My Notebook - Archive");
+		document.title = "My Notebook - Archive - Sage";
 		$("#search_input").val("");
 	};
 	_this.show_trash = function() {
@@ -254,6 +256,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		
 		// TODO gettext
 		$(".title").text("My Notebook - Trash");
+		document.title = "My Notebook - Trash - Sage";
 		$("#search_input").val("");
 	};
 	_this.do_search = function() {
@@ -265,6 +268,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		_this.load("search=" + q);
 		
 		// TODO gettext
+		document.title = "My Notebook - Search - Sage";
 		$(".title").text("My Notebook - Search");
 	}
 };
