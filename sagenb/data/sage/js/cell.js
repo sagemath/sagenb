@@ -183,6 +183,7 @@ sagenb.worksheetapp.cell = function(id) {
 					// may need to make sagenb.async_request here
 					_this.worksheet.current_cell_id = _this.id;
 					
+					$(".cell").removeClass("current_cell");
 					$("#cell_" + _this.id).addClass("current_cell");
 					
 					// unhide
@@ -191,9 +192,6 @@ sagenb.worksheetapp.cell = function(id) {
 				onBlur: function() {
 					if(!($("body").hasClass("single_cell_mode"))) {
 						$("#cell_" + _this.id).removeClass("current_cell");
-						if(_this.worksheet.current_cell_id === _this.id) {
-							_this.worksheet.current_cell_id = -1;
-						}
 					}
 					
 					if(_this.input !== _this.codemirror.getValue()) {

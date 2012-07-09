@@ -500,22 +500,24 @@ sagenb.worksheetapp.worksheet = function() {
 			// something like #single_cell#cell8
 			var splithash = hash.split("#");
 			
-			if($.inArray("single_cell", splithash) >= 0) {
-				// #single_cell is in hash
-				// TODO
-			}
-			
 			$.each(splithash, function(i, e) {
-				if(e.substring(0, 4) === "cell") {
+				if(e.substring(0, 5) === "cell_") {
 					$('html, body').animate({
 						// -40 for navbar and -20 extra
-						scrollTop: $("#cell_" + e.substring(4)).offset().top - 60
+						scrollTop: $("#" + e).offset().top - 60
 					}, "slow");
+					
+					$("#" + e).addClass("current_cell");
 					
 					// break each loop
 					return false;
 				}
 			});
+			
+			if($.inArray("single_cell", splithash) >= 0) {
+				// #single_cell is in hash
+				$("#single_cell_mode_radio").click();
+			}
 		}
 		
 		sagenb.done_loading();
@@ -576,6 +578,8 @@ sagenb.worksheetapp.worksheet = function() {
 			var current_index = $(".cell").index($(".current_cell")) + 1;
 			var num_of_cells = $(".cell").length;
 			
+			window.location.hash = "#single_cell#" + $(".current_cell").attr("id");
+			
 			$(".progress_text").text(current_index + "/" + num_of_cells);
 			$(".progress .bar").css("width", current_index / num_of_cells * 100 + "%");
 			
@@ -624,20 +628,16 @@ sagenb.worksheetapp.worksheet = function() {
 		$("[name=cell_mode_radio]").change(function(e) {
 			if($("[name=cell_mode_radio]:checked").val() === "single") {
 				// single cell mode
-				
 				var $current_cell = $(".current_cell");
 				if($current_cell.length === 0) {
 					$current_cell = $(".cell").first().addClass("current_cell");
 				}
-				
 				$("body").addClass("single_cell_mode");
-				
 				update_single_cell_controls();
-				
 			}
 			else {
 				// multi cell mode
-				
+				window.location.hash = "";
 				$("body").removeClass("single_cell_mode");
 			}
 			
