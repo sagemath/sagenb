@@ -157,13 +157,11 @@ def worksheet_alive(worksheet):
 
 @worksheet_command('system/<system>')
 def worksheet_system(worksheet, system):
-    print 'change system ', system
     worksheet.set_system(system)
     return 'success'
 
 @worksheet_command('pretty_print/<enable>')
 def worksheet_pretty_print(worksheet, enable):
-    print 'pretty print ', enable
     worksheet.set_pretty_print(enable)
     return 'success'
 
@@ -182,7 +180,6 @@ def worksheet_save(worksheet):
     Save the contents of a worksheet after editing it in plain-text
     edit mode.
     """
-    print 'save'
     if 'button_save' in request.form:
         E = request.values['textfield']
         worksheet.edit_save(E)
@@ -192,7 +189,6 @@ def worksheet_save(worksheet):
 @worksheet_command('save_snapshot')
 def worksheet_save_snapshot(worksheet):
     """Save a snapshot of a worksheet."""
-    print 'save snapshot'
     worksheet.save_snapshot(g.username)
     return 'saved'
 
@@ -255,7 +251,6 @@ def worksheet_cell_properties(worksheet):
     """
     Return the cell with the given id as a JSON object
     """
-    print 'cell_properties'
     id = get_cell_id()
     return encode_response(worksheet.get_cell_with_id(id).basic())
 
@@ -294,7 +289,6 @@ from sagenb.misc.misc import unicode_str
 @worksheet_command('new_cell_before')
 def worksheet_new_cell_before(worksheet):
     """Add a new cell before a given cell."""
-    print 'new cell before'
     r = {}
     r['id'] =  id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
@@ -309,7 +303,6 @@ def worksheet_new_cell_before(worksheet):
 @worksheet_command('new_text_cell_before')
 def worksheet_new_text_cell_before(worksheet):
     """Add a new text cell before a given cell."""
-    print 'new text cell before'
     r = {}
     r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
@@ -327,7 +320,6 @@ def worksheet_new_text_cell_before(worksheet):
 @worksheet_command('new_cell_after')
 def worksheet_new_cell_after(worksheet):
     """Add a new cell after a given cell."""
-    print 'new cell after'
     r = {}
     r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
@@ -342,7 +334,6 @@ def worksheet_new_cell_after(worksheet):
 @worksheet_command('new_text_cell_after')
 def worksheet_new_text_cell_after(worksheet):
     """Add a new text cell after a given cell."""
-    print 'new text cell after'
     r = {}
     r['id'] = id = get_cell_id()
     input = unicode_str(request.values.get('input', ''))
@@ -367,7 +358,6 @@ def worksheet_delete_cell(worksheet):
     left.  This allows functions which evaluate relative to existing
     cells, e.g., inserting a new cell, to continue to work.
     """
-    print 'delete cell'
     r = {}
     r['id'] = id = get_cell_id()
     if len(worksheet.compute_cell_id_list()) <= 1:
@@ -383,7 +373,6 @@ def worksheet_delete_cell(worksheet):
 @worksheet_command('delete_cell_output')
 def worksheet_delete_cell_output(worksheet):
     """Delete's a cell's output."""
-    print 'delete cell output'
     r = {}
     r['id'] = id = get_cell_id()
     worksheet.get_cell_with_id(id).delete_output()
@@ -409,7 +398,6 @@ def worksheet_eval(worksheet):
     documentation of the function and the source code of the function
     respectively.
     """
-    print 'eval'
     from base import notebook_updates
     
     r = {}
@@ -472,7 +460,6 @@ def worksheet_eval(worksheet):
 
 @worksheet_command('cell_update')
 def worksheet_cell_update(worksheet):
-    print 'cell_update'
     import time
 
     r = {}
@@ -529,7 +516,6 @@ def worksheet_introspect(worksheet):
     Cell introspection. This is called when the user presses the tab
     key in the browser in order to introspect.
     """
-    print 'introspect'
     r = {}
     r['id'] = id = get_cell_id()
 
