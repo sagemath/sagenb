@@ -207,8 +207,7 @@ def mathjax_js():
 @base.route('/help')
 @login_required
 def help():
-    from sagenb.notebook.tutorial import notebook_help
-    return render_template(os.path.join('html', 'docs.html'), username = g.username, notebook_help = notebook_help)
+    return render_template(os.path.join('html', 'docs.html'))
 
 ###########
 # History #
