@@ -58,9 +58,6 @@ sagenb.worksheetapp.worksheet = function() {
 	// Focus / blur.
 	_this.current_cell_id = -1;
 	
-	// Single/Multi cell mode
-	_this.single_cell_mode = false;
-	
 	// Evaluate all
 	_this.is_evaluating_all = false;
 	
@@ -572,6 +569,84 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			// update
 			_this.worksheet_update();
+		});
+		
+		////////// SINGLE/MULTI CELL ///////////
+		function update_single_cell_controls() {
+			var current_index = $(".cell").index($(".current_cell")) + 1;
+			var num_of_cells = $(".cell").length;
+			
+			$(".progress_text").text(current_index + "/" + num_of_cells);
+			$(".progress .bar").css("width", current_index / num_of_cells * 100 + "%");
+			
+			if(current_index / num_of_cells < 0.55) {
+				$(".progress_text").css("color", "#222");
+			}
+			else {
+				$(".progress_text").css("color", "#eee");
+			}
+			
+			if(current_index === 1) {
+				$("#first_cell, #previous_cell").attr("disabled", "disabled");
+			}
+			else {
+				$("#first_cell, #previous_cell").removeAttr("disabled");
+			}
+			
+			if(current_index === num_of_cells) {
+				$("#last_cell, #next_cell").attr("disabled", "disabled");
+			}
+			else {
+				$("#last_cell, #next_cell").removeAttr("disabled");
+			}
+		}
+		
+		$("#first_cell").click(function(e) {
+			$(".cell").removeClass("current_cell");
+			$(".cell").first().addClass("current_cell");
+			update_single_cell_controls();
+		});
+		$("#last_cell").click(function(e) {
+			$(".cell").removeClass("current_cell");
+			$(".cell").last().addClass("current_cell");
+			update_single_cell_controls();
+		});
+		
+		$("#previous_cell").click(function(e) {
+			$(".current_cell").removeClass("current_cell").parent().prev().prev().find(".cell").addClass("current_cell");
+			update_single_cell_controls();
+		});
+		$("#next_cell").click(function(e) {
+			$(".current_cell").removeClass("current_cell").parent().next().next().find(".cell").addClass("current_cell");
+			update_single_cell_controls();
+		});
+		
+		$("[name=cell_mode_radio]").change(function(e) {
+			if($("[name=cell_mode_radio]:checked").val() === "single") {
+				// single cell mode
+				
+				var $current_cell = $(".current_cell");
+				if($current_cell.length === 0) {
+					$current_cell = $(".cell").first().addClass("current_cell");
+				}
+				
+				$("body").addClass("single_cell_mode");
+				
+				update_single_cell_controls();
+				
+			}
+			else {
+				// multi cell mode
+				
+				$("body").removeClass("single_cell_mode");
+			}
+			
+			// fix codemirror bug
+			_this.forEachCell(function(cell) {
+				if(cell.codemirror) {
+					cell.codemirror.refresh();
+				}
+			});
 		});
 		
 		////////// LINE NUMBERS CHECKBOX //////////

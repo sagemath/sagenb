@@ -19,7 +19,6 @@ sagenb.worksheetapp.cell = function(id) {
 	
 	_this.worksheet = null;
 	
-	
 	// this is the id of the interval for checking for new output
 	_this.output_check_interval_id;
 	
@@ -134,10 +133,9 @@ sagenb.worksheetapp.cell = function(id) {
 				// check if it is empty
 			
 				// all of this is disabled for now
-				if(cm.getValue() === "" && _this.worksheet.cells.length > 0) {
+				if(cm.getValue() === "" && _this.worksheet.cells.length > 0 && !($("body").hasClass("single_cell_mode"))) {
 					// it's empty and not the only one -> delete it
 					_this.delete();
-					_this.worksheet.focused_texarea_id = -1;
 				} else {
 					// not empty -> pass to the default behaviour
 					throw CodeMirror.Pass;
@@ -185,13 +183,19 @@ sagenb.worksheetapp.cell = function(id) {
 					// may need to make sagenb.async_request here
 					_this.worksheet.current_cell_id = _this.id;
 					
+					$("#cell_" + _this.id).addClass("current_cell");
+					
 					// unhide
 					$("#cell_" + _this.id + " .input_cell").removeClass("input_hidden");
 				},
 				onBlur: function() {
-					if(_this.worksheet.current_cell_id === _this.id) {
-						_this.worksheet.current_cell_id = -1;
+					if(!($("body").hasClass("single_cell_mode"))) {
+						$("#cell_" + _this.id).removeClass("current_cell");
+						if(_this.worksheet.current_cell_id === _this.id) {
+							_this.worksheet.current_cell_id = -1;
+						}
 					}
+					
 					if(_this.input !== _this.codemirror.getValue()) {
 						// the input has changed since the user focused
 						// so we send it back to the server

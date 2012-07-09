@@ -70,7 +70,7 @@ body {
 		width: @alert_width - 50;
 		
 		/* otherwise codemirror shows through */
-		z-index: 1;
+		z-index: 2;
 	}
 	
 	.alert {
@@ -92,10 +92,6 @@ body {
 		background-color: #fff;
 		padding: 25px;
 	}
-}
-
-body.single_cell_mode .the_page {
-	margin-top: 0px;
 }
 
 /* this is the responsive styling for the page and container.
@@ -228,7 +224,8 @@ h1.title {
 	height: 30px;
 	padding-bottom: @single_cell_controls_padding;
 	padding-top: @single_cell_controls_padding;
-	opacity: 0.5;
+	opacity: 0.75;
+	top: 95px;
 
 	&:hover {
 		opacity: 1.0;
@@ -239,6 +236,10 @@ h1.title {
 		left: 0;
 		top: @single_cell_controls_padding;
 		z-index: 1;
+
+		#previous_cell {
+			width: 75px;
+		}
 	}
 	
 	.progress_text {
@@ -268,13 +269,37 @@ h1.title {
 		right: 0;
 		top: @single_cell_controls_padding;
 		z-index: 1;
+		
+		#next_cell {
+			width: 75px;
+		}
 	}
 }
 
-body.single_cell_mode .single_cell_controls {
-	display: block;
-}
+body.single_cell_mode {
+	.single_cell_controls {
+		display: block;
+	}
 
+	.cell {
+		display: none;
+		&.current_cell {
+			display: block;
+		}
+	}
+
+	.new_cell_button {
+		display: none;
+	}
+
+	.worksheet_name {
+		display: none;
+	}
+
+	.the_page {
+		min-height: 0px;
+	}
+}
 
 .bootstrap_well {
 	min-height: 20px;
@@ -284,17 +309,16 @@ body.single_cell_mode .single_cell_controls {
 	border: 1px solid #eee;
 	border: 1px solid rgba(0, 0, 0, 0.05);
 	-webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-     -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-          box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	-moz-border-radius: 4px;
+	     border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .the_well {
 	.bootstrap_well;
 	margin: 0;
-	/*min-height: 50px;*/
 	padding: @well_padding;
 }
 
@@ -307,7 +331,6 @@ body.single_cell_mode .single_cell_controls {
 		.rounded-corners(10px);
 		padding: @well_padding;
 		background-color: #ececea;
-		/*min-height: 50px;*/
 
 		/* make cordemirror automatically resize the height */
 		.CodeMirror-scroll {
@@ -318,10 +341,10 @@ body.single_cell_mode .single_cell_controls {
 			max-height: 350px;
 		}
 
-        .CodeMirror-gutter-text {
-            color: #999999;
-            background-color: #ECECEA;
-        }
+		.CodeMirror-gutter-text {
+			color: #999999;
+			background-color: #ECECEA;
+		}
 
 		&.input_hidden {
 			.CodeMirror-scroll {
@@ -410,6 +433,9 @@ body.single_cell_mode .single_cell_controls {
 		}
 	}
 
+	&.current_cell {
+		/*.outer_shadow(1px, #ccc);*/
+	}
 }
 
 @new_cell_button_margin: 10px;
