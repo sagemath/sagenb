@@ -1,0 +1,58 @@
+/* -------- SHARING DIALOG ---- */
+#collaborators_textarea {
+	resize: vertical;
+	max-height: 200px;
+}
+
+/* -------- DATA DIALOG -------- */
+#data_modal {
+	#manage_tab {
+		.data_list {
+			height: 300px;
+			padding-right: 5px;
+			overflow-y: scroll;
+		}
+		ul {
+			margin-bottom: 0px;
+
+			li {
+				a {
+					span.filename {
+						
+					}
+					
+					/* The stuff on the right */
+					& > .pull-right {
+						display: none;
+						
+						/* click for this text */
+						.explanation {
+							color: #bbb;
+							font-size: 10px;
+							margin-right: 10px;
+							margin-top: 2px;
+							float: left;
+						}
+					}
+				}
+				
+
+				&:hover div {
+					display: block;
+				}
+			}
+		}
+	}
+	
+	#new_file_tab {
+		
+	}
+	
+	#upload_file_tab {
+		
+	}
+	
+	#file_from_url_tab {
+		
+	}
+}

@@ -1,0 +1,222 @@
+@well_padding: 10px;
+@single_cell_controls_padding: 10px;
+
+.single_cell_controls {
+	display: none;
+	position: relative;
+	height: 30px;
+	padding-bottom: @single_cell_controls_padding;
+	padding-top: @single_cell_controls_padding;
+	opacity: 0.75;
+	top: 95px;
+
+	&:hover {
+		opacity: 1.0;
+	}
+
+	.left_controls {
+		position: absolute;
+		left: 0;
+		top: @single_cell_controls_padding;
+		z-index: 1;
+
+		#previous_cell {
+			width: 75px;
+		}
+	}
+	
+	.progress_text {
+		position: absolute;
+		top: @single_cell_controls_padding + 6px;
+		text-align: center;
+		width: 100%;
+		z-index: 0;
+		font-weight: bold;
+		font-size: 16px;
+	}
+	
+	.progress {
+		width: 50%;
+		height: 100%;
+		margin-left: auto;
+		margin-right: auto;
+		margin-bottom: 0;
+		
+		.bar {
+			height: 100%;
+		}
+	}
+	
+	.right_controls {
+		position: absolute;
+		right: 0;
+		top: @single_cell_controls_padding;
+		z-index: 1;
+		
+		#next_cell {
+			width: 75px;
+		}
+	}
+}
+
+body.single_cell_mode {
+	.single_cell_controls {
+		display: block;
+	}
+
+	.cell {
+		display: none;
+		&.current_cell {
+			display: block;
+		}
+	}
+
+	.new_cell_button {
+		display: none;
+	}
+
+	.worksheet_name {
+		display: none;
+	}
+
+	.the_page {
+		min-height: 0px;
+	}
+}
+
+.bootstrap_well {
+	min-height: 20px;
+	padding: 19px;
+	margin-bottom: 20px;
+	background-color: #f5f5f5;
+	border: 1px solid #eee;
+	border: 1px solid rgba(0, 0, 0, 0.05);
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	     border-radius: 4px;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+	        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+.the_well {
+	.bootstrap_well;
+	margin: 0;
+	padding: @well_padding;
+}
+
+.cell {
+	.rounded-corners(10px);
+	background-color: #fafafa;
+	padding: @well_padding;
+	
+	.input_cell {
+		.rounded-corners(10px);
+		padding: @well_padding;
+		background-color: #ececea;
+
+		/* make cordemirror automatically resize the height */
+		.CodeMirror-scroll {
+			height: auto;
+			overflow-y: auto;
+			overflow-x: auto;
+			width: 100%;
+			max-height: 350px;
+		}
+
+		.CodeMirror-gutter-text {
+			color: #999999;
+			background-color: #ECECEA;
+		}
+
+		&.input_hidden {
+			.CodeMirror-scroll {
+				max-height: 20px;
+				opacity: 0.5;
+				overflow-y: hidden;
+			}
+		}
+	}
+	
+	.output_cell {
+		.the_well;
+		margin-top: 10px;
+
+		/*.rounded-corners(10px);
+		padding: 10px;
+		background-color: #eaeaea;
+		min-height: 50px;*/
+
+		max-height: 500px;
+		overflow: auto;
+
+		pre {
+			padding: 0;
+			margin: 0;
+			border: none;
+			background-color: transparent;
+			font-size: 14px;
+		}
+
+		.jmol_frame {
+			width: 100%;
+			height: 500px;
+			border: none;
+		}
+
+		/* for hidden output */
+		hr {
+			margin: 10px auto;
+			border-style: solid;
+			border-width: 2px;
+			border-color: #bbb;
+			width: 100px;
+		}
+	}
+	
+	&.text_cell {
+		.view_text {
+			
+		}
+		.edit_text {
+			display: none;
+			
+			textarea {
+				margin-bottom: 0;
+			}
+
+			/* the cancel and save buttons */
+			.buttons {
+				margin-top: @well_padding;
+				text-align: right;
+
+				button {
+					margin-left: @well_padding;
+					
+					/* the save buttons */
+					&.btn-primary {
+						padding-left: 2 * @well_padding;
+						padding-right: 2 * @well_padding;
+					}
+
+					&.delete_button {
+						margin-left: 0;
+					}
+				}
+			}
+		}
+
+		&.edit {
+			.view_text {
+				display: none;
+			}
+			.edit_text {
+				display: block;
+			}
+		}
+	}
+
+	&.current_cell {
+		/*.outer_shadow(1px, #ccc);*/
+	}
+}
