@@ -127,7 +127,9 @@ sagenb.worksheetapp.cell = function(id) {
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
 				// check if it is empty
-			
+				
+				_this.hide_popover();
+				
 				// all of this is disabled for now
 				if(cm.getValue() === "" && _this.worksheet.cells.length > 0 && !($("body").hasClass("single_cell_mode"))) {
 					// it's empty and not the only one -> delete it
