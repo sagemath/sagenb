@@ -117,7 +117,7 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Tab"] = function(cm) {
-				if(cm.getCursor(true).line != cm.getCursor().line && !_this.introspect()) {
+				if(cm.getCursor(true).line != cm.getCursor().line || !_this.introspect()) {
 					CodeMirror.commands.indentMore(cm);
 				}
 			};
