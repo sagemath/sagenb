@@ -129,7 +129,7 @@ sagenb.worksheetapp.cell = function(id) {
 				// check if it is empty
 				
 				_this.hide_popover();
-				
+
 				// all of this is disabled for now
 				if(cm.getValue() === "" && _this.worksheet.cells.length > 0 && !($("body").hasClass("single_cell_mode"))) {
 					// it's empty and not the only one -> delete it
@@ -584,6 +584,7 @@ sagenb.worksheetapp.cell = function(id) {
 		_this.introspect_state = {};
 		_this.introspect_state.before_replacing_word = before;
 		_this.introspect_state.after_cursor = after;
+		_this.introspect_state.previous_value = _this.codemirror.getValue();
 		
 		/* Regexes */
 		var command_pat = "([a-zA-Z_][a-zA-Z._0-9]*)$";
@@ -688,6 +689,12 @@ sagenb.worksheetapp.cell = function(id) {
 					*/
 					
 					if(X.new_input !== "") {
+						// if the editor has changed, re-introspect
+						if(_this.codemirror.getValue() !== _this.introspect_state.previous_value) {
+							setTimeout(_this.introspect, 50);
+							return;
+						}
+						
 						// update the input
 						_this.input = X.new_input;
 						
@@ -716,21 +723,23 @@ sagenb.worksheetapp.cell = function(id) {
 					
 					// introspect
 					if(X.introspect_output && $.trim(X.introspect_output).length > 0) {
-						
 						if(_this.introspect_state.code_completion) {
 							// open codemirror simple hint
 							var editor = _this.codemirror;
-							
+
 							/* stolen from simpleHint */
 							// We want a single cursor position.
 							// if (editor.somethingSelected()) return;
 							
 							//var result = getHints(editor);
 							//if (!result || !result.list.length) return;
-							var completions = $.trim(X.introspect_output).replace("\r", "").split("\n");
+							var completions = $.trim(X.introspect_output).split("\n");
 							
 							/* Insert the given completion str into the input */
 							function insert(str) {
+								// we can take this out in the next release of CodeMirror
+								str = str.replace("\r", "");
+
 								var newpos = {};
 								var lines = _this.introspect_state.before_replacing_word.split("\n");
 								newpos.line = lines.length - 1;
