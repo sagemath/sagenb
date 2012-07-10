@@ -16,7 +16,7 @@ sagenb.worksheetapp.cell = function(id) {
 	_this.is_evaluating = false;
 	
 	_this.codemirror = null;
-	
+
 	_this.worksheet = null;
 	
 	// this is the id of the interval for checking for new output
@@ -124,10 +124,6 @@ sagenb.worksheetapp.cell = function(id) {
 			
 			extrakeys["Shift-Tab"] = "indentLess";
 			
-			/*extrakeys["("] = function(cm) {
-				_this.introspect();
-			};*/
-			
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
 				// check if it is empty
@@ -143,6 +139,7 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Shift-Enter"] = function(cm) {
+				_this.hide_popover();
 				_this.evaluate();
 			};
 			
@@ -179,6 +176,15 @@ sagenb.worksheetapp.cell = function(id) {
 				/* autofocus messes up when true */
 				autofocus: false,
 			
+				onChange: function(cm, chg) {
+					if(chg.text[0] === "(") {
+						_this.introspect();
+					}
+					else if(chg.text[0] === ")") {
+						_this.hide_popover();
+					}
+				},
+
 				onFocus: function() {
 					// may need to make sagenb.async_request here
 					_this.worksheet.current_cell_id = _this.id;
@@ -381,7 +387,7 @@ sagenb.worksheetapp.cell = function(id) {
 	
 	////// FOCUS/BLUR ///////
 	_this.focus = function() {
-		if(_this.is_evaluate_cell) {
+		if(_this.codemirror) {
 			_this.codemirror.focus();
 		} else {
 			// edit the tinyMCE
@@ -398,6 +404,50 @@ sagenb.worksheetapp.cell = function(id) {
 	}
 	_this.is_hide = function() {
 		return (_this.percent_directives && $.inArray("hide", _this.percent_directives) >= 0);
+	}
+
+	///// POPOVER /////
+	_this.hide_popover = function() {
+		$(".tooltip_root").popover("hide");
+		$(".tooltip_root").detach();
+	}
+	_this.show_popover = function(content) {
+		_this.hide_popover();
+		var tooltip_root = $("<div />").addClass("tooltip_root").appendTo("body");
+		var pos = _this.codemirror.cursorCoords();
+		tooltip_root.css({
+			"position": "absolute",
+			"left": pos.x,
+			"top": pos.yBot
+		});
+
+		tooltip_root.popover({
+			placement: "bottom",
+			trigger: "manual",
+			content: content
+		});
+
+		tooltip_root.popover("show");
+
+		var safety = 50;
+		var off = $(".popover-inner").offset();
+		var pop_w = $(".popover-inner").width();
+		var window_w = $(window).width();
+		if(off.left < safety) {
+			$(".popover-inner").offset({left: safety, top: off.top});
+		}
+		else if(off.left + pop_w > window_w - safety) {
+			$(".popover-inner").offset({left: window_w - safety - pop_w, top: off.top});
+		}
+
+		$("body").click(function(e) {
+			_this.hide_popover();
+		}).keydown(function(e) {
+			if(e.which === 27) {
+				// Esc
+				_this.hide_popover();
+			}
+		});
 	}
 	
 	/////// EVALUATION //////
@@ -663,7 +713,7 @@ sagenb.worksheetapp.cell = function(id) {
 					}
 					
 					// introspect
-					if(X.introspect_output && X.introspect_output.length > 0) {
+					if(X.introspect_output && $.trim(X.introspect_output).length > 0) {
 						
 						if(_this.introspect_state.code_completion) {
 							// open codemirror simple hint
@@ -675,13 +725,10 @@ sagenb.worksheetapp.cell = function(id) {
 							
 							//var result = getHints(editor);
 							//if (!result || !result.list.length) return;
-							var completions = $.trim(X.introspect_output).split("\n");
+							var completions = $.trim(X.introspect_output).replace("\r", "").split("\n");
 							
 							/* Insert the given completion str into the input */
 							function insert(str) {
-								// CodeMirror bug workaround
-								str = str.replace("\r", "");
-								
 								var newpos = {};
 								var lines = _this.introspect_state.before_replacing_word.split("\n");
 								newpos.line = lines.length - 1;
@@ -776,6 +823,7 @@ sagenb.worksheetapp.cell = function(id) {
 						}
 						else {
 							// docstring
+							_this.show_popover($.trim(X.introspect_output));
 						}
 					}
 					
