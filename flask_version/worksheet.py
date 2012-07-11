@@ -1,6 +1,6 @@
 import os, threading, collections
 from functools import wraps
-from flask import Module, url_for, render_template, request, session, redirect, g, current_app
+from flask import Module, url_for, render_template, request, session, redirect, g, current_app, make_response
 from decorators import login_required, with_lock
 from collections import defaultdict
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
@@ -25,7 +25,7 @@ def worksheet_view(f):
         try:
             worksheet = kwds['worksheet'] = g.notebook.get_worksheet_with_filename(worksheet_filename)
         except KeyError:
-            return current_app.message(_("You do not have permission to access this worksheet"))
+            return _("You do not have permission to access this worksheet")
 
         with worksheet_locks[worksheet]:
             owner = worksheet.owner()
@@ -535,6 +535,7 @@ def worksheet_introspect(worksheet):
 ########################################################
 # Edit the entire worksheet
 ########################################################
+# TODO take out or implement
 @worksheet_command('edit')
 def worksheet_edit(worksheet):
     """
@@ -547,6 +548,7 @@ def worksheet_edit(worksheet):
 ########################################################
 # Plain text log view of worksheet
 ########################################################
+# TODO take out or implement
 @worksheet_command('text')
 def worksheet_text(worksheet):
     """
@@ -622,6 +624,7 @@ def worksheet_invite_collab(worksheet):
 ########################################################
 # Revisions
 ########################################################
+# TODO take out or implement
 @worksheet_command('revisions')
 def worksheet_revisions(worksheet):
     """
@@ -669,40 +672,25 @@ def worksheet_cells(worksheet, filename):
 ##############################################
 # Data
 ##############################################
-#@worksheet_command('<path:filename>')
-#def worksheet_data_legacy(worksheet, filename):
-    # adhering to old behavior, should be removed eventually
-#    return worksheet_data(worksheet, filename)
-
 @worksheet_command('data/<path:filename>')
 def worksheed_data_folder(worksheet,filename):
-    # preferred way of accessing data 
-    return worksheet_data(worksheet, filename)
-
-def worksheet_data(worksheet, filename):
     dir = os.path.abspath(worksheet.data_directory())
     if not os.path.exists(dir):
-        return current_app.message(_('No data files'))
+        return make_response(_('No data file'), 404)
     else:
         from flask.helpers import send_from_directory
         return send_from_directory(worksheet.data_directory(), filename)
 
-@worksheet_command('datafile')
-def worksheet_datafile(worksheet):
-    #XXX: This requires that the worker filesystem be accessible from
-    #the server.
+@worksheet_command('delete_datafile')
+def worksheet_delete_datafile(worksheet):
     dir = os.path.abspath(worksheet.data_directory())
     filename = request.values['name']
-    if request.values.get('action', '') == 'delete':
-        path = os.path.join(dir, filename)
-        os.unlink(path)
-        return current_app.message("Successfully deleted '%s'"%filename,
-                                   cont=url_for_worksheet(worksheet)) #XXX: i18n
-    else:
-        return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
+    path = os.path.join(dir, filename)
+    os.unlink(path)
+    return ''
 
-@worksheet_command('savedatafile')
-def worksheet_savedatafile(worksheet):
+@worksheet_command('save_datafile')
+def worksheet_save_datafile(worksheet):
     filename = request.values['filename']
     if 'button_save' in request.values:
         text_field = request.values['textfield'] #XXX: Should this be text_field
@@ -710,80 +698,68 @@ def worksheet_savedatafile(worksheet):
         if os.path.exists(dest):
             os.unlink(dest)
         open(dest, 'w').write(text_field)
+
+    # TODO
     return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
-        
 
-@worksheet_command('link_datafile')
-def worksheet_link_datafile(worksheet):
-    target_worksheet_filename = request.values['target']
-    data_filename = request.values['filename']
-    src = os.path.abspath(os.path.join(
-        worksheet.data_directory(), data_filename))
-    target_ws =  g.notebook.get_worksheet_with_filename(target_worksheet_filename)
-    target = os.path.abspath(os.path.join(
-        target_ws.data_directory(), data_filename))
-    if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
-        return current_app.message(_("illegal link attempt!"), worksheet_datafile.url_for(worksheet, name=data_filename))
-    if os.path.exists(target):
-        return current_app.message(_("The data filename already exists in other worksheet\nDelete the file in the other worksheet before creating a link."), worksheet_datafile.url_for(worksheet, name=data_filename))
-    os.link(src,target)
-    return redirect(worksheet_datafile.url_for(worksheet, name=data_filename))
-    #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
-    
-@worksheet_command('upload_data')
-def worksheet_upload_data(worksheet):
-    return g.notebook.html_upload_data_window(worksheet, g.username)        
+# @worksheet_command('link_datafile')
+# def worksheet_link_datafile(worksheet):
+#     target_worksheet_filename = request.values['target']
+#     data_filename = request.values['filename']
+#     src = os.path.abspath(os.path.join(
+#         worksheet.data_directory(), data_filename))
+#     target_ws =  g.notebook.get_worksheet_with_filename(target_worksheet_filename)
+#     target = os.path.abspath(os.path.join(
+#         target_ws.data_directory(), data_filename))
+#     if target_ws.owner() != g.username and not target_ws.is_collaborator(g.username):
+#         return current_app.message(_("illegal link attempt!"), worksheet_datafile.url_for(worksheet, name=data_filename))
+#     if os.path.exists(target):
+#         return current_app.message(_("The data filename already exists in other worksheet\nDelete the file in the other worksheet before creating a link."), worksheet_datafile.url_for(worksheet, name=data_filename))
+#     os.link(src,target)
+#     return redirect(worksheet_datafile.url_for(worksheet, name=data_filename))
+#     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
 
-@worksheet_command('do_upload_data')
-def worksheet_do_upload_data(worksheet):
+@worksheet_command('upload_datafile')
+def worksheet_upload_datafile(worksheet):
     from werkzeug.utils import secure_filename
 
-    worksheet_url = url_for_worksheet(worksheet)
-    upload_url = worksheet_upload_data.url_for(worksheet)
-
-    backlinks = _(""" Return to <a href="%(upload_url)s" title="Upload or create a data file in a wide range of formats"><strong>Upload or Create Data File</strong></a> or <a href="%(worksheet_url)s" title="Interactively use the worksheet"><strong>%(worksheet_name)s</strong></a>.""", upload_url=upload_url, worksheet_url=worksheet_url, worksheet_name=worksheet.name())
-
-
-    if 'file' not in request.files:
-        return current_app.message(_('Error uploading file (missing field "file"). %(backlinks)s', backlinks=backlinks), worksheet_url)
-    else:
-        file = request.files['file']
-        
-    text_fields = ['url', 'new', 'name']
-    for field in text_fields:
-        if field not in request.values:
-            return current_app.message(_('Error uploading file (missing %(field)s arg).%(backlinks)s', field=field, backlinks=backlinks), worksheet_url)
-
-
-    name = request.values.get('name', '').strip()
-    new_field = request.values.get('new', '').strip()
-    url = request.values.get('url', '').strip()
-
-    name = name or file.filename or new_field
-    if url and not name:
-        name = url.split('/')[-1]
+    file = request.files['file']
+    name = request.values.get('name', '').strip() or file.filename
     name = secure_filename(name)
-
-    if not name:
-        return current_app.message(_('Error uploading file (missing filename).%(backlinks)s', backlinks=backlinks), worksheet_url)
-
-    if url != '':
-        import urllib2
-        from urlparse import urlparse
-        # we normalize the url by parsing it first
-        parsedurl=urlparse(url)
-        if not parsedurl[0] in ('http','https','ftp'):
-            return current_app.message(_('URL must start with http, https, or ftp.%(backlinks)s', backlinks=backlinks), worksheet_url)
-        download = urllib2.urlopen(parsedurl.geturl())
 
     #XXX: disk access
     dest = os.path.join(worksheet.data_directory(), name)
     if os.path.exists(dest):
         if not os.path.isfile(dest):
-            return current_app.message(_('Suspicious filename "%(filename)s" encountered uploading file.%(backlinks)s', filename=filename, backlinks=backlinks), worksheet_url)
+            return _('Suspicious filename encountered uploading file.')
         os.unlink(dest)
 
-    response = redirect(worksheet_datafile.url_for(worksheet, name=name))
+    file.save(dest)
+    return ''
+
+@worksheet_command('datafile_from_url')
+def worksheet_datafile_from_url(worksheet):
+    from werkzeug.utils import secure_filename
+
+    name = request.values.get('name', '').strip()
+    url = request.values.get('url', '').strip()
+    if url and not name:
+        name = url.split('/')[-1]
+    name = secure_filename(name)
+
+    import urllib2
+    from urlparse import urlparse
+    # we normalize the url by parsing it first
+    parsedurl = urlparse(url)
+    if not parsedurl[0] in ('http','https','ftp'):
+        return _('URL must start with http, https, or ftp.')
+    download = urllib2.urlopen(parsedurl.geturl())
+
+    dest = os.path.join(worksheet.data_directory(), name)
+    if os.path.exists(dest):
+        if not os.path.isfile(dest):
+            return _('Suspicious filename encountered uploading file.')
+        os.unlink(dest)
 
     import re
     matches = re.match("file://(?:localhost)?(/.+)", url)
@@ -791,19 +767,29 @@ def worksheet_do_upload_data(worksheet):
         f = file(dest, 'wb')
         f.write(open(matches.group(1)).read())
         f.close()
-        return response
+        return ''
 
-    elif url != '':
-        with open(dest, 'w') as f:
-            f.write(download.read())
-        return response
-    elif new_field:
-        open(dest, 'w').close()
-        return response
-    else:
-        file.save(dest)
-        return response        
-    
+    with open(dest, 'w') as f:
+        f.write(download.read())
+    return ''
+
+@worksheet_command('new_datafile')
+def worksheet_new_datafile(worksheet):
+    from werkzeug.utils import secure_filename
+
+    name = request.values.get('new', '').strip()
+    name = secure_filename(name)
+
+    #XXX: disk access
+    dest = os.path.join(worksheet.data_directory(), name)
+    if os.path.exists(dest):
+        if not os.path.isfile(dest):
+            return _('Suspicious filename encountered uploading file.')
+        os.unlink(dest)
+
+    open(dest, 'w').close()
+    return ''
+
 ################################
 #Publishing
 ################################

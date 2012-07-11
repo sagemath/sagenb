@@ -51,6 +51,9 @@ sagenb.worksheetapp.worksheet = function() {
 	_this.published_id_number = -1;
 	_this.published_url = null;
 	_this.published_time = null;
+
+	// data
+	_this.attached_data_files = [];
 	
 	// Ping the server periodically for worksheet updates.
 	_this.server_ping_time = 10000;
@@ -409,6 +412,8 @@ sagenb.worksheetapp.worksheet = function() {
 			
 			_this.running = X.running;
 			
+			_this.attached_data_files = X.attached_data_files;
+
 			// update the title
 			document.title = _this.name + " - Sage";
 			$(".worksheet_name h1").text(_this.name);
@@ -419,6 +424,7 @@ sagenb.worksheetapp.worksheet = function() {
 			// set the system select
 			$("#system_select").val(_this.system);
 			
+			// sharing
 			if(_this.published_id_number !== null && _this.published_id_number >= 0) {
 				$("#publish_checkbox").prop("checked", true);
 				$("#auto_republish_checkbox").removeAttr("disabled");
@@ -434,11 +440,46 @@ sagenb.worksheetapp.worksheet = function() {
 				
 				$("#worksheet_url").hide();
 			}
-			
+
 			$("#collaborators").val(_this.collaborators.join(", "));
 			
-			
-			// TODO other stuff goes here, not sure what yet
+			// data
+			$("#data_list ul *").detach();
+			for(i in _this.attached_data_files) {
+				var datafile = _this.attached_data_files[i];
+
+				$("#data_list ul").append('<li>' + 
+												'<a href="#" class="filename">' + datafile + '</a>' + 
+												'<div class="btn-group">' + 
+													'<a href="#" class="btn btn-mini copy_path_btn" rel="tooltip" title="Get Path"><i class="icon-edit"></i></a>' + 
+													'<a href="data/' + datafile + '" class="btn btn-mini download_btn" rel="tooltip" title="Download" target="_blank"><i class="icon-download"></i></a>' + 
+													'<a href="#" class="btn btn-mini delete_btn" rel="tooltip" title="Delete"><i class="icon-remove"></i></a>' + 
+												'</div>' + 
+											'</li>');
+
+				var elem = $("#data_list li").last();
+
+				// cannot access datastore variable in these functions because it will change by the time they are called
+				elem.find(".copy_path_btn").click(function(e) {
+					window.prompt("Copy to clipboard: " + sagenb.ctrlkey + "-C, Enter", "DATA+'" + $(this).parent().prev().text() + "'");
+				});
+				elem.find(".delete_btn").click(function(e) {
+					var fn = $(this).parent().prev().text();
+					$(this).parent().parent().fadeOut("slow", function() {
+						sagenb.async_request(_this.worksheet_command("delete_datafile"), sagenb.generic_callback(function(status, response) {
+							_this.worksheet_update();
+						}),
+						{
+							name: fn
+						});
+					});
+				});
+			}
+			$("#data_list ul .btn-group a").tooltip();
+
+			if($("#data_list ul li").length === 0) {
+				$("#data_list ul").append('<li class="no_data_files"><a href="#" class="filename">No data files</a></li>');
+			}
 		}));
 	};
 	_this.cell_list_update = function() {
@@ -699,6 +740,52 @@ sagenb.worksheetapp.worksheet = function() {
 			sagenb.async_request(_this.worksheet_command("publish?auto"), sagenb.generic_callback(function(status, response) {
 				_this.worksheet_update();
 			}));
+		});
+
+
+		///////// DATA DIALOG //////////
+		$("#data_modal ul.nav a").click(function(e) {
+			setTimeout(function() {
+				if($("#data_modal .tab-pane.active").attr("id") !== "manage_tab") {
+					$("#data_modal #upload_button").show();
+					$("#data_modal #done_button").hide();
+				} else {
+					$("#data_modal #upload_button").hide();
+					$("#data_modal #done_button").show();
+					$("#data_modal input").val("");
+					_this.worksheet_update();
+				}
+			}, 50);
+		});
+
+		$("#data_modal #upload_button").click(function(e) {
+			var current_tab = $("#data_modal .tab-pane.active").attr("id");
+			if(current_tab === "upload_data_file_tab") {
+				$("body").append('<iframe name="upload_frame" id="upload_frame" />');
+				var upload_frame = $("iframe#upload_frame");
+				upload_frame.hide();
+				var form = $("#upload_data_file_tab form");
+				form.submit();
+				upload_frame.load(function() {
+					$("#manage_tab_button").click();
+					upload_frame.detach();
+				});
+			}
+			else if(current_tab === "file_from_url_tab") {
+				sagenb.async_request(_this.worksheet_command("datafile_from_url"), sagenb.generic_callback(function(status, response) {
+					$("#manage_tab_button").click();
+				}), {
+					url: $("#data_modal #file_from_url_tab input#url").val(),
+					name: $("#data_modal #file_from_url_tab input#name").val()
+				});
+			}
+			else if(current_tab === "new_file_tab") {
+				sagenb.async_request(_this.worksheet_command("new_datafile"), sagenb.generic_callback(function(status, response) {
+					$("#manage_tab_button").click();
+				}), {
+					"new": $("#data_modal #new_file_tab input#new").val()
+				});
+			}
 		});
 		
 		

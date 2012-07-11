@@ -967,7 +967,7 @@ class Cell(Cell_generic):
         else:
             self._out_html = self.files_html(output)
 
-    ####
+    # TODO
     def directory(self):
         """
         Returns the name of this compute cell's directory, creating
@@ -993,6 +993,7 @@ class Cell(Cell_generic):
         set_restrictive_permissions(dir)
         return dir
 
+    # TODO
     def _directory_name(self):
         """
         Returns the name of this compute cell's directory.
@@ -2272,6 +2273,8 @@ class Cell(Cell_generic):
             return self._url_to_self
 
     ####
+
+    # TODO
     def files(self):
         """
         Returns a list of all the files in this compute cell's
@@ -2302,6 +2305,7 @@ class Cell(Cell_generic):
         D = os.listdir(dir)
         return D
 
+    # TODO
     def delete_files(self):
         """
         Deletes all of the files associated with this compute cell.
@@ -2333,6 +2337,7 @@ class Cell(Cell_generic):
         if os.path.exists(dir):
             shutil.rmtree(dir, ignore_errors=True)
 
+    # TODO
     def files_html(self, out):
         """
         Returns HTML to display the files in this compute cell's

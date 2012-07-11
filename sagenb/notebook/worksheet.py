@@ -363,7 +363,9 @@ class Worksheet(object):
 
              'filename': self.filename(),
 
-             'running': self.compute_process_has_been_started()
+             'running': self.compute_process_has_been_started(),
+
+             'attached_data_files': self.attached_data_files()
              }
         return d
 
@@ -2306,6 +2308,7 @@ class Worksheet(object):
     ##########################################################
     # HTML rendering of the whole worksheet
     ##########################################################
+    # TODO get rid of this stuff
     def html_cell_list(self, do_print=False, username=None):
         """
         INPUT:
@@ -2350,6 +2353,7 @@ class Worksheet(object):
         from sagenb.notebook.misc import encode_response
         return encode_response(self.basic())
 
+    # TODO
     def html(self, do_print=False, publish=False, username=None):
         r"""
         INPUT:
@@ -2503,6 +2507,7 @@ class Worksheet(object):
                 return True, user
         return False
 
+    # TODO
     def html_time_since_last_edited(self, username=None):
         t = self.time_since_last_edited()
         tm = prettify_time_ago(t)
@@ -2511,12 +2516,14 @@ class Worksheet(object):
                         time = tm,
                         username=username)
 
+    # TODO
     def html_time_last_edited(self, username=None):
         return template(os.path.join("html", "worksheet", "time_last_edited.html"),
                         time = convert_time_to_string(self.last_edited()),
                         last_editor = self.last_to_edit(),
                         username=username)
 
+    # TODO
     def html_time_nice_edited(self, username=None):
         """
         Returns a "nice" html time since last edit.

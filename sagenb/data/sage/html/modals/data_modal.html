@@ -9,7 +9,7 @@
 <div class="tabbable">
 
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="#manage_tab" data-toggle="tab">Manage</a></li>
+		<li class="active"><a href="#manage_tab" data-toggle="tab" id="manage_tab_button">Manage</a></li>
 		<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Import <b class="caret"></b></a>
 
@@ -24,139 +24,15 @@
 	<div class="tab-content" style="padding-top: 0px">
 
 		<div class="tab-pane active" id="manage_tab">
-			<div class="data_list">
+			<div id="data_list">
 				<ul class="nav nav-tabs nav-stacked">
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#"><span class="filename">Filename</span>
-							<div class="pull-right">
-								<span class="explanation">click to insert path</span>
-								<div class="btn-group pull-right">
-									<button class="btn btn-mini" rel="tooltip" title="Download"><i class="icon-download"></i></button>
-									<button class="btn btn-mini" rel="tooltip" title="Delete"><i class="icon-remove"></i></button>
-								</div>
-							</div>
-						</a>
-					</li>
-
 					
 				</ul>
 			</div>
 		</div>
 
 		<div class="tab-pane" id="new_file_tab">
-			<form class="form-horizontal" method="post" action="do_upload_data" name="upload" enctype="multipart/form-data" target="_blank">
-				<input type="hidden" name="file" value="">
-				<input type="hidden" name="url" value="">
-				<input type="hidden" name="name" value="">
-
+			<form class="form-horizontal" method="post" action="#" name="upload">
 				<fieldset>
 
 					<div class="control-group">
@@ -172,10 +48,7 @@
 		</div>
 
 		<div class="tab-pane" id="upload_data_file_tab">
-			<form class="form-horizontal" method="post" action="do_upload_data" name="upload" enctype="multipart/form-data" target="_blank">
-				<input type="hidden" name="url" value="">
-				<input type="hidden" name="new" value="">
-
+			<form class="form-horizontal" method="post" action="upload_datafile" name="upload" enctype="multipart/form-data" encoding="multipart/form-data" target="upload_frame">
 				<fieldset>
 
 					<div class="control-group">
@@ -198,10 +71,7 @@
 		</div>
 
 		<div class="tab-pane" id="file_from_url_tab">
-			<form class="form-horizontal" method="post" action="do_upload_data" name="upload" enctype="multipart/form-data" target="_blank">
-				<input type="hidden" name="file" value="">
-				<input type="hidden" name="new" value="">
-
+			<form class="form-horizontal" method="post" action="#" name="upload">
 				<fieldset>
 
 					<div class="control-group">
@@ -233,5 +103,6 @@
 {% endblock modal_content %}
 
 {% block modal_footer %}
-<a href="#" class="btn btn-primary" data-dismiss="modal">Done</a>
+<a href="#" class="btn btn-primary hide" id="upload_button">Upload</a>
+<a href="#" class="btn btn-primary" data-dismiss="modal" id="done_button">Done</a>
 {% endblock modal_footer %}

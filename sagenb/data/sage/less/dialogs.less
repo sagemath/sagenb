@@ -7,7 +7,7 @@
 /* -------- DATA DIALOG -------- */
 #data_modal {
 	#manage_tab {
-		.data_list {
+		#data_list {
 			height: 300px;
 			padding-right: 5px;
 			overflow-y: scroll;
@@ -16,29 +16,28 @@
 			margin-bottom: 0px;
 
 			li {
+				position: relative;
+
 				a {
-					span.filename {
-						
-					}
-					
-					/* The stuff on the right */
-					& > .pull-right {
-						display: none;
-						
-						/* click for this text */
-						.explanation {
-							color: #bbb;
-							font-size: 10px;
-							margin-right: 10px;
-							margin-top: 2px;
-							float: left;
-						}
-					}
+					font-weight: bold;
+					color: #333;
+					cursor: default;
 				}
 				
+				.btn-group {
+					display: none;
+					position: absolute;
+					top: 7px;
+					right: 7px;
+				}
 
-				&:hover div {
+				&:hover .btn-group {
 					display: block;
+				}
+
+				&.no_data_files a {
+					text-align: center;
+					background-color: #eee;
 				}
 			}
 		}

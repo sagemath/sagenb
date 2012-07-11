@@ -154,6 +154,7 @@ class Notebook(object):
         W = WorksheetDict(self)
         self.__worksheets = W
 
+        # MONGODB
         # Store / Refresh public worksheets
         for id_number in os.listdir(self.__storage._abspath(self.__storage._user_path("pub"))):
             if id_number.isdigit():
@@ -328,6 +329,7 @@ class Notebook(object):
         #      shutil.copytree(src.cells_directory(), W.cells_directory())
         #      shutil.copytree(src.data_directory(), W.data_directory())
 
+        # MONGODB
         for sub in ['cells', 'data', 'snapshots']:
             target_dir = os.path.join(W.directory(), sub)
             if os.path.exists(target_dir):
@@ -343,6 +345,7 @@ class Notebook(object):
         W.edit_save(src.edit_text())
         W.save()
 
+    # MONGODB
     def pub_worksheets(self):
         path = self.__storage._abspath(self.__storage._user_path("pub"))
         v = []
@@ -1294,6 +1297,7 @@ class Notebook(object):
     ##########################################################
     # Revision history for a worksheet
     ##########################################################
+    # TODO
     def html_worksheet_revision_list(self, username, worksheet):
         r"""
         Return HTML for the revision list of a worksheet.
@@ -1325,7 +1329,7 @@ class Notebook(object):
                         notebook = self,
                         username = username)
 
-
+    # TODO
     def html_specific_revision(self, username, ws, rev):
         r"""
         Return the HTML for a specific revision of a worksheet.
@@ -1368,6 +1372,7 @@ class Notebook(object):
                         username = username, rev = rev, prev_rev = prev_rev,
                         next_rev = next_rev, time_ago = time_ago)
 
+    # TODO
     def html_share(self, worksheet, username):
         r"""
         Return the HTML for the "share" page of a worksheet.
@@ -1394,6 +1399,7 @@ class Notebook(object):
                         notebook = self,
                         username = username)
 
+    # TODO
     def html_download_or_delete_datafile(self, ws, username, filename):
         r"""
         Return the HTML for the download or delete datafile page.
@@ -1519,6 +1525,7 @@ class Notebook(object):
     ###########################################################
     # HTML -- generate most html related to the whole notebook page
     ###########################################################
+    # TODO
     def html_plain_text_window(self, worksheet, username):
         r"""
         Return HTML for the window that displays a plain text version
@@ -1550,6 +1557,7 @@ class Notebook(object):
                         username = username, plain_text = plain_text,
                         MATHJAX = MATHJAX, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
 
+    # TODO
     def html_edit_window(self, worksheet, username):
         r"""
         Return HTML for a window for editing ``worksheet``.
@@ -1577,6 +1585,7 @@ class Notebook(object):
                         notebook = self,
                         username = username)
 
+    # TODO
     def html_beforepublish_window(self, worksheet, username):
         r"""
         Return HTML for the warning and decision page displayed prior
@@ -1614,6 +1623,7 @@ class Notebook(object):
                         notebook = self,
                         username = username)
 
+    # TODO
     def html_afterpublish_window(self, worksheet, username, url, dtime):
         r"""
         Return HTML for a given worksheet's post-publication page.
@@ -1642,6 +1652,7 @@ class Notebook(object):
                         notebook = self,
                         username = username, url = url, time = time)
 
+    # TODO
     def html_upload_data_window(self, ws, username):
         r"""
         Return HTML for the "Upload Data" window.
@@ -1666,6 +1677,7 @@ class Notebook(object):
         return template(os.path.join("html", "notebook", "upload_data_window.html"),
                         worksheet = ws, username = username)
 
+    # TODO
     def html(self, worksheet_filename=None, username='guest', admin=False, 
              do_print=False):
         r"""
@@ -1767,6 +1779,7 @@ class Notebook(object):
         
 ####################################################################
 
+# TODO
 def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None):
     """
     Load and return a notebook from a given directory.  Create a new
@@ -1983,6 +1996,7 @@ def migrate_old_notebook_v1(dir):
     print "Worksheet migration completed."
     return new_nb
 
+# TODO
 def make_path_relative(dir):
     r"""
     Replace an absolute path with a relative path, if possible.
