@@ -18,22 +18,26 @@
 
 {% block page %}
 	{# TODO gettext #}
-	<h1 class="title">My Notebook</h1>
+	<h1 class="title"></h1>
 
 	<div style="height: 10px;"></div>
 
 	<div class="btn-toolbar well" id="top_toolbar">
-		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> New Worksheet</a>{# TODO gettext #}
-		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> Upload</a>{# TODO gettext #}
-		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> Download All Active</a>{# TODO gettext #}
+		{# TODO gettext #}
+		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> New Worksheet</a>
+		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> Upload</a>
+		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> Download All Active</a>
 	</div>
 
 	<div class="btn-toolbar" id="bottom_toolbar">
 		<div class="pull-left" id="action_buttons">
-			<button type="button" class="btn btn-small" id="send_to_archive_button">Archive</button>{# TODO gettext #}
-			<button type="button" class="btn btn-small" id="delete_button">Delete</button>{# TODO gettext #}
-			<button type="button" class="btn btn-small" id="stop_button">Stop</button>{# TODO gettext #}
-			<button type="button" class="btn btn-small" id="download_button">Download</button>{# TODO gettext #}
+			{# TODO gettext #}
+			<button type="button" class="btn btn-small hide" id="send_to_archive_button">Archive</button>
+			<button type="button" class="btn btn-small hide" id="unarchive_button">Unarchive</button>
+			<button type="button" class="btn btn-small hide" id="delete_button">Delete</button>
+			<button type="button" class="btn btn-small hide" id="undelete_button">Undelete</button>
+			<button type="button" class="btn btn-small hide" id="stop_button">Stop</button>
+			<button type="button" class="btn btn-small hide" id="download_button">Download</button>
 		</div>
 		
 		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:25px;" id="type_buttons">
@@ -44,7 +48,7 @@
 		
 		<form action="#" class="form-search pull-right" style="margin-bottom:0">
 			<div class="input-append">
-{# TODO gettext #}
+				{# TODO gettext #}
 				<input type="search" class="input-medium" placeholder="Search ..." size="12" id="search_input"><button class="btn" id="submit_search"><i class="icon-search"></i></button>
 			</div>
 		</form>
@@ -55,10 +59,11 @@
 	<table class="table table-striped worksheets_table">
 		<thead>
 			<tr>
+				{# TODO gettext #}
 				<th><input type="checkbox" id="main_checkbox"></th>
-				<th>Worksheet</th>{# TODO gettext #}
-				<th>Owner/Collaborators</th>{# TODO gettext #}
-				<th>Last Edited</th>{# TODO gettext #}
+				<th>Worksheet</th>
+				<th>Owner/Collaborators</th>
+				<th>Last Edited</th>
 			</tr>
 		</thead>
 		<tbody>

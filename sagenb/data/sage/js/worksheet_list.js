@@ -179,9 +179,22 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			});
 		});
 	};
+	_this.unarchive = function() {
+		_this.checked_action("/send_to_active", function(status, response) {
+			_this.for_each_checked_row(function(row) {
+				row.remove();
+			});
+		});
+	};
 	_this.delete = function() {
-		//TODO Are you sure?
 		_this.checked_action("/send_to_trash", function(status, response) {
+			_this.for_each_checked_row(function(row) {
+				row.remove();
+			});
+		});
+	};
+	_this.undelete = function() {
+		_this.checked_action("/send_to_active", function(status, response) {
 			_this.for_each_checked_row(function(row) {
 				row.remove();
 			});
@@ -253,6 +266,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$(".title").text("My Notebook");
 		document.title = "My Notebook - Sage";
 		$("#search_input").val("");
+
+		$("#action_buttons button").hide();
+		$("#send_to_archive_button, #delete_button, #stop_button, #download_button").show();
 	};
 	_this.show_archive = function() {
 		_this.load("type=archive");
@@ -261,6 +277,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$(".title").text("My Notebook - Archive");
 		document.title = "My Notebook - Archive - Sage";
 		$("#search_input").val("");
+
+		$("#action_buttons button").hide();
+		$("#unarchive_button, #delete_button, #stop_button, #download_button").show();
 	};
 	_this.show_trash = function() {
 		_this.load("type=trash");
@@ -269,6 +288,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		$(".title").text("My Notebook - Trash");
 		document.title = "My Notebook - Trash - Sage";
 		$("#search_input").val("");
+
+		$("#action_buttons button").hide();
+		$("#send_to_archive_button, #undelete_button, #stop_button, #download_button").show();
 	};
 	_this.do_search = function() {
 		var q = $("#search_input").val();
@@ -281,5 +303,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		// TODO gettext
 		document.title = "My Notebook - Search - Sage";
 		$(".title").text("My Notebook - Search");
+
+		$("#action_buttons button").hide();
+		$("#send_to_archive_button, #delete_button, #stop_button, #download_button").show();
 	}
 };
