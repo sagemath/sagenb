@@ -297,6 +297,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			$(".title").text("My Notebook");
 			document.title = "My Notebook - Sage";
 			$("#search_input").val("");
+			$("#main_checkbox").prop("checked", false);
 
 			_this.enable_actions_menu();
 			$("#send_to_archive_button, #delete_button, #stop_button, #download_button").removeClass("disabled");
@@ -309,6 +310,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			$(".title").text("Archive");
 			document.title = "Archive - Sage";
 			$("#search_input").val("");
+			$("#main_checkbox").prop("checked", false);
 
 			_this.enable_actions_menu();
 			$("#unarchive_button, #delete_button, #stop_button, #download_button").removeClass("disabled");
@@ -321,6 +323,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			$(".title").text("Trash");
 			document.title = "Trash - Sage";
 			$("#search_input").val("");
+			$("#main_checkbox").prop("checked", false);
 
 			_this.enable_actions_menu();
 			$("#send_to_archive_button, #undelete_button, #stop_button, #download_button, #empty_trash").removeClass("disabled");
@@ -353,6 +356,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			// TODO gettext
 			document.title = str + " - Search - Sage";
 			$(".title").text(str + " - Search");
+			$("#main_checkbox").prop("checked", false);
 
 			_this.enable_actions_menu();
 			$("#send_to_archive_button, #delete_button, #stop_button, #download_button").removeClass("disabled");
