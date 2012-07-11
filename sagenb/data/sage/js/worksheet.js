@@ -750,7 +750,7 @@ sagenb.worksheetapp.worksheet = function() {
 					$("#data_modal #upload_button").show();
 					$("#data_modal #done_button").hide();
 				} else {
-					$("#data_modal #upload_button").hide();
+					$("#data_modal #upload_button").removeClass("disabled").hide();
 					$("#data_modal #done_button").show();
 					$("#data_modal input").val("");
 					_this.worksheet_update();
@@ -759,13 +759,16 @@ sagenb.worksheetapp.worksheet = function() {
 		});
 
 		$("#data_modal #upload_button").click(function(e) {
+			if($(this).hasClass("disabled")) return;
+
 			var current_tab = $("#data_modal .tab-pane.active").attr("id");
+			$(this).addClass("disabled");
+
 			if(current_tab === "upload_data_file_tab") {
 				$("body").append('<iframe name="upload_frame" id="upload_frame" />');
 				var upload_frame = $("iframe#upload_frame");
 				upload_frame.hide();
-				var form = $("#upload_data_file_tab form");
-				form.submit();
+				$("#upload_data_file_tab form").submit();
 				upload_frame.load(function() {
 					$("#manage_tab_button").click();
 					upload_frame.detach();
