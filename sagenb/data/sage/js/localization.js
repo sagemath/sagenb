@@ -5,6 +5,7 @@
 {# If you add any new strings to this list, please also add them to translated-messages.js. This indirection and duplication
  is in place becase pybabel canoot parse this Jinja for some reason. #}
 
+// TODO create function
 translations = {
     {% for string in ['Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.',
                       "Java Applet Hidden",

@@ -62,7 +62,6 @@ def worksheet_list():
     r['accounts'] = g.notebook.user_manager().get_accounts()
     r['sage_version'] = SAGE_VERSION
     r['pub'] = pub
-    # r['username'] = g.username
     
     return encode_response(r)
 
@@ -70,10 +69,8 @@ def worksheet_list():
 @login_required
 def home(username):
     if not g.notebook.user_manager().user_is_admin(g.username) and username != g.username:
-        #XXX: i18n
-        return current_app.message("User '%s' does not have permission to view the home page of '%s'." % (g.username, username))
+        return current_app.message(_("User '%s' does not have permission to view the home page of '%s'." % (g.username, username)))
     else:
-        # return render_worksheet_list(request.args, pub=False, username=username)
         return render_template('html/worksheet_list.html')
 
 @worksheet_listing.route('/home/')
