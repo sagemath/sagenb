@@ -100,9 +100,12 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 		
 		$("#send_to_archive_button").click(_this.archive);
+		$("#unarchive_button").click(_this.unarchive);
 		$("#delete_button").click(_this.delete);
+		$("#undelete_button").click(_this.undelete);
 		$("#stop_button").click(_this.stop);
 		$("#download_button").click(_this.download);
+		$("#empty_trash").click(_this.empty_trash);
 		
 		$("#show_active").click(_this.show_active);
 		$("#show_archive").click(_this.show_archive);
@@ -173,6 +176,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	}
 	_this.archive = function() {
+		if($("#send_to_archive_button").hasClass("disabled")) return;
 		_this.checked_action("/send_to_archive", function(status, response) {
 			_this.for_each_checked_row(function(row) {
 				row.remove();
@@ -180,6 +184,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	};
 	_this.unarchive = function() {
+		if($("#unarchive_button").hasClass("disabled")) return;
 		_this.checked_action("/send_to_active", function(status, response) {
 			_this.for_each_checked_row(function(row) {
 				row.remove();
@@ -187,6 +192,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	};
 	_this.delete = function() {
+		if($("#delete_button").hasClass("disabled")) return;
 		_this.checked_action("/send_to_trash", function(status, response) {
 			_this.for_each_checked_row(function(row) {
 				row.remove();
@@ -194,6 +200,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	};
 	_this.undelete = function() {
+		if($("#undelete_button").hasClass("disabled")) return;
 		_this.checked_action("/send_to_active", function(status, response) {
 			_this.for_each_checked_row(function(row) {
 				row.remove();
@@ -201,6 +208,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	};
 	_this.stop = function() {
+		if($("#stop_button").hasClass("disabled")) return;
 		_this.checked_action("/send_to_stop", function(status, response) {
 			_this.for_each_checked_row(function(row) {
 				$("#row_" + row.props.id_number + " .running_label").fadeOut('slow', function() {
@@ -211,17 +219,28 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		});
 	};
 	_this.download = function() {
+		if($("#download_button").hasClass("disabled")) return;
 		// don't download if none are selected
 		if(_this.checked_worksheet_filenames().length === 0) return;
 		
 		window.location.replace("/download_worksheets.zip?filenames=" + encode_response(_this.checked_worksheet_filenames()));
 	};
+	_this.empty_trash = function() {
+		if($("#empty_trash").hasClass("disabled")) return;
+
+		// TODO gettext
+		if(confirm("Emptying the Trash is final. Are you sure?")) {
+			sagenb.async_request("/empty_trash", sagenb.generic_callback(function(status, response) {
+				_this.show_trash();
+			}), {});
+		}
+	}
 	
 	_this.clear_list = function() {
 		$("table tbody tr").detach();
 		_this.rows = [];
 	};
-	_this.load = function(params) {
+	_this.load = function(params, extra_callback) {
 		var url = "/worksheet_list";
 		if(params) {
 			url += "?" + encodeURI(params);
@@ -255,56 +274,88 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			_this.refresh_interval_id = setInterval(function() {
 				_this.load(params);
 			}, _this.refresh_interval);
+
+			if($.isFunction(extra_callback)) {
+				extra_callback();
+			}
 		}));
 	};
 	
+	_this.disable_actions_menu = function() {
+		$("#actions_menu button").attr("disabled", "disabled");
+		$("#actions_menu ul li a").addClass("disabled");
+	}
+	_this.enable_actions_menu = function() {
+		$("#actions_menu button").removeAttr("disabled");
+	}
+	
 	//// VIEWS ////
 	_this.show_active = function() {
-		_this.load();
-		
-		// TODO gettext
-		$(".title").text("My Notebook");
-		document.title = "My Notebook - Sage";
-		$("#search_input").val("");
+		_this.disable_actions_menu();
+		_this.load("", function() {
+			// TODO gettext
+			$(".title").text("My Notebook");
+			document.title = "My Notebook - Sage";
+			$("#search_input").val("");
 
-		$("#action_buttons button").hide();
-		$("#send_to_archive_button, #delete_button, #stop_button, #download_button").show();
+			_this.enable_actions_menu();
+			$("#send_to_archive_button, #delete_button, #stop_button, #download_button").removeClass("disabled");
+		});
 	};
 	_this.show_archive = function() {
-		_this.load("type=archive");
-		
-		// TODO gettext
-		$(".title").text("My Notebook - Archive");
-		document.title = "My Notebook - Archive - Sage";
-		$("#search_input").val("");
+		_this.disable_actions_menu();
+		_this.load("type=archive", function() {
+			// TODO gettext
+			$(".title").text("Archive");
+			document.title = "Archive - Sage";
+			$("#search_input").val("");
 
-		$("#action_buttons button").hide();
-		$("#unarchive_button, #delete_button, #stop_button, #download_button").show();
+			_this.enable_actions_menu();
+			$("#unarchive_button, #delete_button, #stop_button, #download_button").removeClass("disabled");
+		});
 	};
 	_this.show_trash = function() {
-		_this.load("type=trash");
-		
-		// TODO gettext
-		$(".title").text("My Notebook - Trash");
-		document.title = "My Notebook - Trash - Sage";
-		$("#search_input").val("");
+		_this.disable_actions_menu();
+		_this.load("type=trash", function() {
+			// TODO gettext
+			$(".title").text("Trash");
+			document.title = "Trash - Sage";
+			$("#search_input").val("");
 
-		$("#action_buttons button").hide();
-		$("#send_to_archive_button, #undelete_button, #stop_button, #download_button").show();
+			_this.enable_actions_menu();
+			$("#send_to_archive_button, #undelete_button, #stop_button, #download_button, #empty_trash").removeClass("disabled");
+		});
 	};
 	_this.do_search = function() {
 		var q = $("#search_input").val();
 		if($.trim(q) === "") return;
-		
-		$("#type_buttons button").removeClass("active");
-		
-		_this.load("search=" + q);
-		
-		// TODO gettext
-		document.title = "My Notebook - Search - Sage";
-		$(".title").text("My Notebook - Search");
 
-		$("#action_buttons button").hide();
-		$("#send_to_archive_button, #delete_button, #stop_button, #download_button").show();
+		var current_id = $("#type_buttons .active").attr("id");
+		var str, type;
+
+		switch(current_id) {
+			case "show_active":
+				str = "Active";
+				type = "active";
+				break;
+			case "show_archive":
+				str = "Archive";
+				type = "archive";
+				break;
+			case "show_trash":
+				str = "Trash";
+				type = "trash";
+				break;
+		}
+
+		_this.disable_actions_menu();
+		_this.load(("type=" + type + "&search=" + q), function() {
+			// TODO gettext
+			document.title = str + " - Search - Sage";
+			$(".title").text(str + " - Search");
+
+			_this.enable_actions_menu();
+			$("#send_to_archive_button, #delete_button, #stop_button, #download_button").removeClass("disabled");
+		});
 	}
 };

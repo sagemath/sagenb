@@ -8,6 +8,21 @@
 	}
 }
 
+#actions_menu ul li a.disabled {
+	/*display: none;*/
+	background-color: #eee;
+	color: #bbb;
+	&:hover {
+		background-color: #eee;
+		color: #bbb;
+		cursor: default;
+	}
+
+	* {
+		opacity: 0.2;
+	}
+}
+
 .worksheets_table {
 	margin-top: 5px;
 
@@ -16,14 +31,18 @@
 	}
 	
 	.worksheet_name_cell {
-		font-weight: bold;
 		width: 45%
 	}
-	
+	td.worksheet_name_cell {
+		font-weight: bold;
+	}
+
 	.last_edit_cell {
+		width: 15%;
+	}
+	td.last_edit_cell {
 		font-size: 8pt;
 		color: #999;
-		width: 15%;
 	}
 	
 	.empty_table_row td {

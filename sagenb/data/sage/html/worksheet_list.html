@@ -30,17 +30,30 @@
 	</div>
 
 	<div class="btn-toolbar" id="bottom_toolbar">
-		<div class="pull-left" id="action_buttons">
-			{# TODO gettext #}
+		{# <div class="pull-left" id="action_buttons">
 			<button type="button" class="btn btn-small hide" id="send_to_archive_button">Archive</button>
 			<button type="button" class="btn btn-small hide" id="unarchive_button">Unarchive</button>
 			<button type="button" class="btn btn-small hide" id="delete_button">Delete</button>
 			<button type="button" class="btn btn-small hide" id="undelete_button">Undelete</button>
 			<button type="button" class="btn btn-small hide" id="stop_button">Stop</button>
 			<button type="button" class="btn btn-small hide" id="download_button">Download</button>
+		</div> #}
+
+		<div class="btn-group pull-left" id="actions_menu">
+			<button class="btn dropdown-toggle span2" data-toggle="dropdown">Action <span class="caret"></span></button>
+			<ul class="dropdown-menu">
+				<li><a href="#" class="disabled" id="send_to_archive_button"><i class="icon-folder-close"></i> Archive</a></li>
+				<li><a href="#" class="disabled" id="unarchive_button"><i class="icon-folder-open"></i> Unarchive</a></li>
+				<li><a href="#" class="disabled" id="delete_button"><i class="icon-trash"></i> Delete</a></li>
+				<li><a href="#" class="disabled" id="undelete_button"><i class="icon-ok"></i> Undelete</a></li>
+				<li><a href="#" class="disabled" id="stop_button"><i class="icon-stop"></i> Stop</a></li>
+				<li><a href="#" class="disabled" id="download_button"><i class="icon-download"></i> Download</a></li>
+				<li class="divider"></li>
+				<li><a href="#" class="disabled" id="empty_trash"><i class="icon-exclamation-sign"></i> Empty Trash</a></li>
+			</ul>
 		</div>
 		
-		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:25px;" id="type_buttons">
+		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:55px;" id="type_buttons">
 			<button type="button" class="btn active" id="show_active">Active</button>{# TODO gettext #}
 			<button type="button" class="btn" id="show_archive">Archive</button>{# TODO gettext #}
 			<button type="button" class="btn" id="show_trash">Trash</button>{# TODO gettext #}
@@ -60,10 +73,10 @@
 		<thead>
 			<tr>
 				{# TODO gettext #}
-				<th><input type="checkbox" id="main_checkbox"></th>
-				<th>Worksheet</th>
+				<th class="checkbox_cell"><input type="checkbox" id="main_checkbox"></th>
+				<th class="worksheet_name_cell">Worksheet</th>
 				<th>Owner/Collaborators</th>
-				<th>Last Edited</th>
+				<th class="last_edit_cell">Last Edited</th>
 			</tr>
 		</thead>
 		<tbody>
