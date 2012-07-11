@@ -154,7 +154,7 @@ class Notebook(object):
         W = WorksheetDict(self)
         self.__worksheets = W
 
-        # MONGODB
+        # datastore
         # Store / Refresh public worksheets
         for id_number in os.listdir(self.__storage._abspath(self.__storage._user_path("pub"))):
             if id_number.isdigit():
@@ -329,7 +329,7 @@ class Notebook(object):
         #      shutil.copytree(src.cells_directory(), W.cells_directory())
         #      shutil.copytree(src.data_directory(), W.data_directory())
 
-        # MONGODB
+        # datastore
         for sub in ['cells', 'data', 'snapshots']:
             target_dir = os.path.join(W.directory(), sub)
             if os.path.exists(target_dir):
@@ -345,7 +345,7 @@ class Notebook(object):
         W.edit_save(src.edit_text())
         W.save()
 
-    # MONGODB
+    # datastore
     def pub_worksheets(self):
         path = self.__storage._abspath(self.__storage._user_path("pub"))
         v = []
