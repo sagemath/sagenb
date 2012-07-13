@@ -67,8 +67,8 @@ var jmolStatus = {
     pictureStrs: new Array(),
     stateScripts: new Array(),
     cntrls: new Array(),
-    attempts: new Array(),
-	}
+    attempts: new Array()
+}
 
 //Some default constants
 //applet sizes
@@ -81,25 +81,25 @@ wakeMessage = "Wake this 3-D view";
 captionStr = ''; //empty no caption
 controlStr = ' '; //could put special controls here.  Must not be empty for default controls to appear, that is why it is a space.
 
-function jmol_checkbrowserOS(){
+function jmol_checkbrowserOS() {
     jmolStatus.os = _jmol.os;
-    jmolStatus.browser=_jmol.browser;
-    if (_jmol.os=="mac"){
-        if (_jmol.browser=="mozilla"){
+    jmolStatus.browser = _jmol.browser;
+    if (_jmol.os == "mac") {
+        if (_jmol.browser == "mozilla") {
             alert("You are using a Firefox/Mozilla browser on MacOS.  Many people experience inconsistent behavior of the 3-D viewer or no images using this combination.  It is recommended that you use Chrome (or another webkit browser) instead.");
         }
-        if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1){
-            jmolStatus.browser="chrome";
+        if (navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+            jmolStatus.browser = "chrome";
         }
     }
-    if (_jmol.os =="win"){
-        if (_jmol.browser=="msie"){
+    if (_jmol.os == "win") {
+        if (_jmol.browser == "msie") {
             alert("Many of the advanced 3-D viewing functions DO NOT work in Internet Explorer.  Until this is fixed please use FireFox or Chrome browsers which do work.");
         }
     }
 }
 
-function toggling_button(element){//uses the jqueryui to toggle the element onoff.
+function toggling_button(element) {//uses the jqueryui to toggle the element onoff.
     //necessary because IE doesn't interpret the standard form correctly in a button element.  THIS DIDN'T HELP!
     $('#'+element).toggle();
 }
@@ -112,147 +112,147 @@ function jmol_pulldown(theform) {
     */
     with(theform) {
         eval(options[selectedIndex].value);
-        }
     }
+}
 
 function jmol_spin (state, n) {
-    if(state == true){
+    if(state == true) {
         result = jmolScriptWait("spin on", n);
-        }else {
+    } else {
         result = jmolScriptWait("spin off", n);
-        }
-    jmolUpdateState(n);
     }
+    jmolUpdateState(n);
+}
 
-function jmol_antialias(state,n) {
-    if(state == true){
+function jmol_antialias(state, n) {
+    if(state == true) {
         result = jmolScriptWait("set antialiasdisplay on", n);
-        }else {
+    }else {
         result = jmolScriptWait("set antialiasdisplay off", n);
-        }
-    jmolUpdateState(n);
     }
+    jmolUpdateState(n);
+}
 
 
-function jmol_show_element(state,whichsurface, type ,n) {
-    if(state == true){
+function jmol_show_element(state, whichsurface, type, n) {
+    if(state == true) {
         scriptStr = ''+type+' '+whichsurface+' on;';
         result = jmolScriptWait(scriptStr, n);
-        }else {
+    }else {
         scriptStr = ''+type+' '+whichsurface+' off;';
         result = jmolScriptWait(scriptStr, n);
-        }
-    jmolUpdateState(n);
     }
-
-function do_jmolScriptWait(scriptStr, n){
-    result = jmolScriptWait(scriptStr,n);
     jmolUpdateState(n);
-    }
+}
 
-function jmolSurfColor(color,surface,n){
+function do_jmolScriptWait(scriptStr, n) {
+    result = jmolScriptWait(scriptStr, n);
+    jmolUpdateState(n);
+}
+
+function jmolSurfColor(color, surface, n) {
     scriptStr = 'color $'+surface+' '+color;
     result = jmolScriptWait(scriptStr,n);
     jmolUpdateState(n);
-    }
+}
 
-function jmolFileDownload(n){//switches to the signed applet before downloading the fill if necessary
-    if (jmolStatus.signed[n]){
-        jmolScript('write "JmolFromSage.jmol";',n);//TODO make unique
-    }else{
+function jmolFileDownload(n) {//switches to the signed applet before downloading the fill if necessary
+    if (jmolStatus.signed[n]) {
+        jmolScript('write "JmolFromSage.jmol";', n);//TODO make unique
+    } else {
         switchToSigned('write "JmolFromSage.jmol";', n)
     }
-    }
+}
 
-function jmolCntrlPanel(state, panelID, tabID, tabName, panelHTML){ //The default definition for a jmolcontrolpanel
+function jmolCntrlPanel(state, panelID, tabID, tabName, panelHTML) { //The default definition for a jmolcontrolpanel
     this.state = state; //0 active, 1 inactive, 2 hidden ...other numbers for future possibilities
     this.panelID = panelID;
     this.tabID = tabID;
-    this.tabName=tabName;
-    this.panelHTML=panelHTML;
-    }
+    this.tabName = tabName;
+    this.panelHTML = panelHTML;
+}
 
-function jmolUpdateState(n){
+function jmolUpdateState(n) {
     //make sure the default directory is correct
 //    jmolScript('x=defaultdirectory;data "directory @x";');<--this is done on launch of the applet.
     jmolStatus.defaultdirectory[n] = jmolEvaluate("x",n);
     var divID = 'jmolStateDiv'+n;
-    var stateStr ="#a comment to guarrantee one line\n";
-    stateStr+= jmolGetPropertyAsString("stateInfo", "", n);
+    var stateStr = "#a comment to guarrantee one line\n";
+    stateStr += jmolGetPropertyAsString("stateInfo", "", n);
     re_modelinline = /data "model list"(.|\n|\r)*end "model list"/;
-    if(stateStr.match(re_modelinline)){//If we didn't get a good response we'll ignore and get later
+    if(stateStr.match(re_modelinline)) {//If we didn't get a good response we'll ignore and get later
         var modelStr = (stateStr.match(re_modelinline))[0];
         modelStr = modelStr.replace(/\r\n/g,'|').replace(/\r/g, '|').replace(/\n/g,'|').replace(/\|\|/g, '|');
 //    modelStr = 'fix between here '+modelStr+' and here';
         stateStr = stateStr.replace(re_modelinline, modelStr);
-        }
+    }
     re_endofline = /\n/g;
     re_doublequote = /"/g;
     get_element(divID).innerHTML = '<div style="overflow:scroll;max-height:400px;">set defaultdirectory=\"'+ jmolStatus.defaultdirectory[n] +'\";<br>'+stateStr.replace(re_endofline,'<br>')+'</div>';
     jmolStatus.stateScripts[n] = 'set defaultdirectory=\"'+ jmolStatus.defaultdirectory[n] +'\";\n'+stateStr;
-    jmolStatus.defaultdirectory[n]="done";//update finished.
-    }
+    jmolStatus.defaultdirectory[n] = "done";//update finished.
+}
 
 var jmolLastDefaultDir = '';
 
 function jmolMessageHandler(applet, messageStr, number) {
-    re_defaultdirectory =/defaultdirectory/i;
+    re_defaultdirectory = /defaultdirectory/i;
     re_jmolApplet = /jmolApplet/i;
     var javaScriptStr = ''+messageStr;
     var appletname = ""+applet;
     var messagenum = ""+number;
     var appletN = appletname.substring(10);
-//    if (javaScriptStr.search(re_defaultdirectory)!=-1){
+//    if (javaScriptStr.search(re_defaultdirectory)!=-1) {
 //        jmolLastDefaultDir = javaScriptStr;
 //        jmolStatus.defaultdirectory[appletN]= javaScriptStr;
 //        }
-    if (jmolStatus.jmolArray[appletN]==2) {//finishing load process
+    if (jmolStatus.jmolArray[appletN] == 2) {//finishing load process
         setTimeout('jmolUpdateState('+appletN+')',300);
-        }
-   }
+    }
+}
 
-function jmolAppletReady_jmolUpdateState(n){
+function jmolAppletReady_jmolUpdateState(n) {
     jmolUpdateState(n);
 //    setTimeout('jmolAppletLive('+n+')',300);
-   }
+}
 
-function jmol_numLiveUpdate(){
+function jmol_numLiveUpdate() {
     var liveCount = 0;
-    for (i=0;i < jmolStatus.jmolArray.length; i++){ //reset the number of live Jmols
-        if (jmolStatus.jmolArray[i]==0) {liveCount = liveCount+1;}
-        }
+    for (i = 0; i < jmolStatus.jmolArray.length; i++) { //reset the number of live Jmols
+        if (jmolStatus.jmolArray[i] == 0) {liveCount = liveCount+1;}
+    }
     jmolStatus.numLive = liveCount;
-    }
+}
 
-function jmolCntrlPanels(whichActive,cntrlPanels){ //The default definition for a group of jmolCntrlPanels
+function jmolCntrlPanels(whichActive, cntrlPanels) { //The default definition for a group of jmolCntrlPanels
     this.whichActive = whichActive; //array index for the active, front, panel
-    this.cntrlPanels= cntrlPanels; //array of jmolCntrlPanel
-    }
+    this.cntrlPanels = cntrlPanels; //array of jmolCntrlPanel
+}
 
-function jmolNewAppletSize(size,n){
+function jmolNewAppletSize(size, n) {
     //update jmolStatus
-    jmolStatus.widths[n]=size;
-    jmolStatus.heights[n]=size;
-    jmolResizeApplet(size,n);
-    }
+    jmolStatus.widths[n] = size;
+    jmolStatus.heights[n] = size;
+    jmolResizeApplet(size, n);
+}
 
-function makeCntrlPanels(url, n, functionnames){
+function makeCntrlPanels(url, n, functionnames) {
     var panels = new Array();
     //Applet options: size, background color, spinning etc...
-    panelID = 'size_jmol'+n;
-    tabID = 'tab_'+panelID;
+    panelID = 'size_jmol' + n;
+    tabID = 'tab_' + panelID;
     //size control
-    if(_jmol.os=="mac" && _jmol.browser=="mozilla"){
+    if(_jmol.os == "mac" && _jmol.browser == "mozilla") {
         panelHTML ='';
-        }else{
-        panelHTML ='3-D display size: <select title ="Select a size" onchange="jmol_pulldown(this);">';
-        panelHTML += '<option value = "jmolNewAppletSize('+miniature+','+n+');"> Miniature ('+miniature+'px)</option>';
-        panelHTML += '<option  value = "jmolNewAppletSize('+small+','+n+');"> Small ('+small+'px)</option>';
-        panelHTML += '<option selected = "" value = "jmolNewAppletSize('+medium+','+n+');"> Medium ('+medium+'px)</option>';
-        panelHTML += '<option value = "jmolNewAppletSize('+large+','+n+');"> Large ('+large+'px)</option>';
+    } else {
+        panelHTML = '3-D display size: <select title="Select a size" onchange="jmol_pulldown(this);">';
+        panelHTML += '<option value="jmolNewAppletSize('+miniature+','+n+');"> Miniature ('+miniature+'px)</option>';
+        panelHTML += '<option value="jmolNewAppletSize('+small+','+n+');"> Small ('+small+'px)</option>';
+        panelHTML += '<option selected="" value="jmolNewAppletSize('+medium+','+n+');"> Medium ('+medium+'px)</option>';
+        panelHTML += '<option value="jmolNewAppletSize('+large+','+n+');"> Large ('+large+'px)</option>';
         panelHTML += '</';
         panelHTML += 'select><hr/>';
-        }
+    }
     panelHTML +='<button title="Move to own window" onClick="javascript:void(jmol_popup(\''+n+'\'))">Move to own window</button> arbitrarily resizable.<hr/>';
     //static image to save
     panelHTML +='<button onClick="sleepJmol('+n+',jmolStatus)"> Get Static Image to Save (Sleep) </button> Right-click or Cmd-click on image to get download options.<hr/>';
@@ -262,55 +262,54 @@ function makeCntrlPanels(url, n, functionnames){
     //spin on
     panelHTML +='<input class="worksheet" type="checkbox" value="spin on" onchange="jmol_spin(this.checked,'+n+');" title="Enable/disable spin"/>Spin on';
     //antialaisdisplay (smoothing of objects)
-    panelHTML +='<br/><input class="worksheet" type="checkbox" checked="true" value="hi quality" onchange="jmol_antialias(this.checked,'+n+');" title="Enable/disable smoothing"/>High quality';
+    panelHTML +='<br><input class="worksheet" type="checkbox" checked="true" value="hi quality" onchange="jmol_antialias(this.checked,'+n+');" title="Enable/disable smoothing"/>High quality';
     //background color
     panelHTML += '';
-    panels[0] = new jmolCntrlPanel(0, panelID, tabID, "Display",panelHTML);
+    panels[0] = new jmolCntrlPanel(0, panelID, tabID, "Display", panelHTML);
     //Function Display Options
-    panelID = 'disp_jmol'+n;
-    tabID = 'tab_'+panelID;
-    if(functionnames ==''||functionnames==undefined){//no names for the functions so cannot build list, will have to get after Jmol launched
+    panelID = 'disp_jmol' + n;
+    tabID = 'tab_' + panelID;
+    if(functionnames == '' || functionnames == undefined) {//no names for the functions so cannot build list, will have to get after Jmol launched
 	    panelHTML = '<p><a class="link" href="javascript:void(getSurfacesFromJmol('+n+'))">Click to request functions from Jmol</a> so that you can adjust function color and mesh.</p>';
-        }else{//step through functionnames and make list of functions.
-        panelHTML ='<table style="border-width:medium;border-style:solid;"><tr><td>Function Name</td><td>On</td><td>Color</td><td>Translucent</td><td>Mesh</td><td>Mesh Color</td></tr>';
-        var funcs=functionnames.split(',');
-        for(i in funcs){
-	    }
+    } else {//step through functionnames and make list of functions.
+        panelHTML = '<table style="border-width:medium;border-style:solid;"><tr><td>Function Name</td><td>On</td><td>Color</td><td>Translucent</td><td>Mesh</td><td>Mesh Color</td></tr>';
+        var funcs = functionnames.split(',');
+        for(i in funcs) {}
         str+='</table>';
-        }
-    panels[1] = new jmolCntrlPanel(1, panelID, tabID, "Color & Mesh",panelHTML);
+    }
+    panels[1] = new jmolCntrlPanel(1, panelID, tabID, "Color & Mesh", panelHTML);
     //Axes to be done
     //State will be hidden long term
-    panelID = 'jmolStateDiv'+n;
-    tabID = 'tab_'+panelID;
-    panelHTML ='# Blank script';
-    panels[2] = new jmolCntrlPanel(2, panelID, tabID,"State", panelHTML);
+    panelID = 'jmolStateDiv' + n;
+    tabID = 'tab_' + panelID;
+    panelHTML = '# Blank script';
+    panels[2] = new jmolCntrlPanel(2, panelID, tabID, "State", panelHTML);
     return (new jmolCntrlPanels(0, panels)); //this will then be plugged into jmolStatus.cntrls[n]
-    }
+}
 
 function setMaxLiveJmol(maxLive) { //sets maximum applets live at once.
     jmolStatus.maxLiveAllowed = maxLive;
-    }
+}
 
-function jmol_launch(size, url, cell_num, functionnames){//hides static image before calling jmol_applet()
-    var cellID = 'jmol_static'+cell_num;
-    get_element(cellID).setAttribute("style","display: none;");//keep for reference in jmol_applet()...see below
+function jmol_launch(size, url, cell_num, functionnames) {//hides static image before calling jmol_applet()
+    var cellID = 'jmol_static' + cell_num;
+    get_element(cellID).setAttribute("style", "display: none;");//keep for reference in jmol_applet()...see below
     jmol_applet(size, url, cell_num, functionnames);
 }
 
 function jmol_applet(size, url, cell_num, functionnames) { //makes a new applet. Presently ignoring size, kept for backwards compatibility
     var appletID = jmol_count;
-    if (jmol_count==0){//time to start the jmolQueueWatcher to manage multiple Jmol launches.
+    if (jmol_count == 0) {//time to start the jmolQueueWatcher to manage multiple Jmol launches.
         jmolQueue = setInterval('jmolQueueWatcher();',1500);
-        }
+    }
     jmol_count = jmol_count + 1;
     jmolStatus.jmolArray[appletID] = 3; //queued to load.
     size = medium; //overriding value from server.  Probably should accept server value.
     jmolSetDocument(false);
     //Where am I?  Need to know in cases where I need to write directly to this cell.
-    cell_ID = 'cell_output_html_'+cell_num;
+    cell_ID = 'cell_output_html_' + cell_num;
     //however, I might be inside something else like an interact as well...so
-    parent = get_element('jmol_static'+cell_num).parentNode;
+    parent = get_element('jmol_static' + cell_num).parentNode;
     cntrlPanels = makeCntrlPanels(url, appletID, functionnames);
     controlStr = makeControlStr(url, appletID, cntrlPanels);
     parentStr = parent.innerHTML;
@@ -321,64 +320,64 @@ function jmol_applet(size, url, cell_num, functionnames) { //makes a new applet.
     //cell_writer.write(str);
     parent.innerHTML = str;
     jmolSetAppletColor("white");
-    if (appletID==0){
+    if (appletID == 0) {
         jmol_checkbrowserOS();
-        }
+    }
     //we will still set all the data for this applet so that other asynchronously created applets do not grab its ID.
-    jmolStatus.signed[appletID]=jmolStatus.loadSigned;
-    jmolStatus.urls[appletID]=url;
+    jmolStatus.signed[appletID] = jmolStatus.loadSigned;
+    jmolStatus.urls[appletID] = url;
     jmolStatus.widths[appletID] = size;
     jmolStatus.heights[appletID]= size;
     //    jmolStatus.numLive = jmolStatus.numLive+1;
     jmolStatus.controlStrs[appletID] = controlStr;
     jmolStatus.captionStrs[appletID] = captionStr;
-    jmolStatus.cntrls[appletID]=cntrlPanels;
+    jmolStatus.cntrls[appletID] = cntrlPanels;
 //Now we wait for the server by calling a function that waits if the div is not yet written.
 //    launchNewJmol(size,scriptStr,appletID);
     return str;
-    }
+}
 
-function jmolQueueWatcher(){
+function jmolQueueWatcher() {
     //this function should be started on a 1500 ms interval as soon as the first Jmol applet is called for.
     //This controls launch of applet timing and order when multiple Jmols are trying to launch. Necessary
     //for the asynchronous launching caused by openning an old worksheet with lots of Jmols.
     //Check for Jmols in the launching state (should be one or none)
     jmol_numLiveUpdate();
-    numAppletsAtStart =jmolStatus.jmolArray.length;//may change during checks...ignore new additions
+    numAppletsAtStart = jmolStatus.jmolArray.length;//may change during checks...ignore new additions
     loading = -1;
-    for (n=0;n<numAppletsAtStart;n++){
-        if(jmolStatus.jmolArray[n]==2){loading=n;};
-        }
-    if(loading>=0){//we found a loading applet
-        jmolStatus.attempts[loading]+=1; //update number of checks for load completion.
-        if(jmolStatus.defaultdirectory[loading]=="done"){//Applet is ready.
+    for (n = 0; n < numAppletsAtStart; n++) {
+        if(jmolStatus.jmolArray[n] == 2) {loading = n;};
+    }
+    if(loading >= 0) {//we found a loading applet
+        jmolStatus.attempts[loading] += 1; //update number of checks for load completion.
+        if(jmolStatus.defaultdirectory[loading] == "done") {//Applet is ready.
             jmolAppletLive(loading);
-            }else{ //Applet not ready. How many checks have we done?
-            if(jmolStatus.attempts[loading]==10){
+        } else { //Applet not ready. How many checks have we done?
+            if(jmolStatus.attempts[loading] == 10) {
                 alert("Jmol Applet #"+loading+" is having trouble loading.  Will retry once.");
                 var scriptStr = 'x=defaultdirectory; data "directory @x";';
                 scriptStr += 'set MessageCallback "jmolMessageHandler"; show defaultdirectory;';
                 jmolScript(scriptStr);
-                }
-            if(jmolStatus.attempts[loading]==20){
+            }
+            if(jmolStatus.attempts[loading] == 20) {
                 alert("Second attempt to finish launch of Jmol Applet #"+loading+" failed.  Recommend reevaluating the cell manually.");
                 jmolStatus.jmolArray[loading]=-2; //launch failed.
-                }
             }
-        }else{//no loading applets. Search for queued applet.
+        }
+    } else {//no loading applets. Search for queued applet.
         queued = -1;
-        for (n=0;n<numAppletsAtStart;n++){
-            if(jmolStatus.jmolArray[n]==3){queued=n;};//will use the last one we find
-            }
-        if(queued>=0){//we found a queued applet and can start its launch.
+        for (n = 0; n < numAppletsAtStart; n++) {
+            if(jmolStatus.jmolArray[n] == 3) {queued = n;};//will use the last one we find
+        }
+        if(queued >= 0) {//we found a queued applet and can start its launch.
             //alert("About to launch applet #"+queued);
             var defaultdir = (jmolStatus.urls[queued]).substring(0,((jmolStatus.urls[queued]).lastIndexOf("?")));
             var scriptStr = 'set defaultdirectory "'+defaultdir+'";script "'+jmolStatus.urls[queued]+'"; isosurface fullylit; pmesh o* fullylit;';
-            scriptStr +='set antialiasdisplay on; set repaintWaitMs 1500;';
-            scriptStr +='x=defaultdirectory; data "directory @x";';
+            scriptStr += 'set antialiasdisplay on; set repaintWaitMs 1500;';
+            scriptStr += 'x=defaultdirectory; data "directory @x";';
             scriptStr += 'set MessageCallback "jmolMessageHandler"; show defaultdirectory;';
             //alert("About to look for the div to put it in");
-            if (get_element("Jmol"+ queued) ){//the div is ready
+            if (get_element("Jmol"+ queued)) {//the div is ready
                 //sleep some if necessary
                 //alert("Found div.  About to enter LimitLive.");
                 limitlive(queued, jmolStatus);
@@ -386,247 +385,253 @@ function jmolQueueWatcher(){
                 jmolStatus.attempts[queued]=0; //no checks on load completion yet.
                 jmolStatus.jmolArray[queued]=2; //now it is loading
                 get_element("Jmol"+ queued).innerHTML = jmolApplet([jmolStatus.widths[queued], jmolStatus.heights[queued]], scriptStr, queued);
-                }
             }
         }
     }
+}
 
-function jmolAppletLive(n){//called after an applet is loaded to say set state to live
+function jmolAppletLive(n) {//called after an applet is loaded to say set state to live
 	jmolStatus.jmolArray[n]=0;
     jmol_numLiveUpdate();
-    }
+}
 
-function newJmolTableStr(n, width, height, url, wakeMessage, sleepMessage, captionStr, controlStr){
+function newJmolTableStr(n, width, height, url, wakeMessage, sleepMessage, captionStr, controlStr) {
     //if captionStr or controlStr is the empty string, '', then the caption or the controls  respectively will not be shown.
-    Id = 'Jmol'+n;
-    tableId = 'Jmol_Table_'+Id;
+    Id = 'Jmol' + n;
+    tableId = 'Jmol_Table_' + Id;
     tableStr = '<table id="'+tableId+'"><tr><td id="'+tableId+'_cell_0_0">';
 	if (controlStr!='') {
-	    if(_jmol.browser=="msie"){//nothing until figure out how to get working...
+	    if(_jmol.browser == "msie") {//nothing until figure out how to get working...
 	        //tableStr+='<div id=\'Adv_but_'+Id+'\'><a onClick="$(\'#'+tableId+'_cell_0_1\').toggle()">Toggle Advanced Controls</a></div>';
-	        tableStr +='<button onClick="jmol_help()">Help for Jmol 3-D viewer</button>';
-	    }else{
-	        tableStr+='<div id=\'Adv_but_'+Id+'\'><button onClick="javascript:void(toggling_button(\''+tableId+'_cell_0_1\'))">Toggle Advanced Controls</button>';
-	        tableStr +='<button onClick="jmol_help()">Help for Jmol 3-D viewer</button></div>';
+	        tableStr += '<button onClick="jmol_help()">Help for Jmol 3-D viewer</button>';
+	    } else {
+	        tableStr += '<div id=\'Adv_but_'+Id+'\'><button onClick="javascript:void(toggling_button(\''+tableId+'_cell_0_1\'))">Toggle Advanced Controls</button>';
+	        tableStr += '<button onClick="jmol_help()">Help for Jmol 3-D viewer</button></div>';
 	    }
 	}
     tableStr +='<div id = '+Id+'>';
     tableStr += 'Loading Jmol 3-D viewer...</div>';
-	    tableStr+='</td>';
-    if (controlStr!=''){
+    tableStr+='</td>';
+    if (controlStr!='') {
         var tempCntrlStr='';
-        if(_jmol.browser=="msie"){
+        if(_jmol.browser == "msie") {
 //            tempCntrlStr +='<a href="javascript:sleepJmol('+n+',jmolStatus);">'+sleepMessage+'</a><br/>';
             tempCntrlStr += controlStr;
-        }else{
+        } else {
 //            tempCntrlStr +='<button onClick="sleepJmol('+n+',jmolStatus)">'+sleepMessage+'</button>';
             tempCntrlStr += controlStr;
         }
-        if (_jmol.browser=="msie"){
+        if (_jmol.browser == "msie") {
             tableStr += '<td id="'+tableId+'_cell_0_1">'+tempCntrlStr+'</td>';
-        }else{
+        } else {
             tableStr += '<td id="'+tableId+'_cell_0_1" style="display:none;">'+tempCntrlStr+'</td>';
         }
     }
     tableStr += '</tr>';
-    if (captionStr !=''){
+    if (captionStr !='') {
 	    tableStr +='<tr><td>'+captionStr+'</td></tr>';
 	}
     tableStr += '</table>';
     return (tableStr);
-    }
+}
 
-function makeControlStr(url, n, cntrlPanels){
+function makeControlStr(url, n, cntrlPanels) {
     //This function makes the string that contains the controls other than the default wake and sleep links.
     //These are extracted from the cntrlPanels structure passed from the calling routine
     cntrlID= 'cntrl_jmol'+n;
     str = '<div id="'+cntrlID+'" class="ui-tabs ui-widget-content ui-corner-all">';
     //make tab
     str+= '<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header">';
-    for (i in cntrlPanels.cntrlPanels){
-        if(cntrlPanels.cntrlPanels[i].state==0){
+    for (i in cntrlPanels.cntrlPanels) {
+        if(cntrlPanels.cntrlPanels[i].state == 0) {
             classStr = "ui-tabs-selected ui-widget-content";
-            }else{
+        } else {
             classStr ="ui-state-default";
-            }
-         if(cntrlPanels.cntrlPanels[i].state==2){
+        }
+        if(cntrlPanels.cntrlPanels[i].state == 2) {
             classStr = "hidden";
-            }
-        str+='<li id="'+cntrlPanels.cntrlPanels[i].tabID+'" class="'+classStr+'">';
+        }
+        str += '<li id="'+cntrlPanels.cntrlPanels[i].tabID+'" class="'+classStr+'">';
         whichWake = cntrlPanels.cntrlPanels[i].isActive;
         tabName = cntrlPanels.cntrlPanels[i].tabName;
-        str+='<a class="control" href="javascript:void(switchJmolCntrl(jmolStatus,'+n+','+i+'))">'+tabName+'</a></li>';
-        }
+        str += '<a class="control" href="javascript:void(switchJmolCntrl(jmolStatus,'+n+','+i+'))">'+tabName+'</a></li>';
+    }
     str += '</ul>';
     //make panels
-    for (i in cntrlPanels.cntrlPanels){
+    for (i in cntrlPanels.cntrlPanels) {
         panelID = cntrlPanels.cntrlPanels[i].panelID;
-        if(cntrlPanels.cntrlPanels[i].state==0){
+        if(cntrlPanels.cntrlPanels[i].state == 0) {
             classStr = "ui-tabs-panel";
-            }else{
+        } else {
             classStr ="ui-tabs-panel ui-tabs-hide";
-            }
+        }
         str+='<div id="'+panelID+'" class ="'+classStr+'">';
         str+= cntrlPanels.cntrlPanels[i].panelHTML;
         str+= '</div>';
-        }
-    str+='</div>';
-    return str;
     }
+    str += '</div>';
+    return str;
+}
 
-function getSurfacesFromJmol(n){
+function getSurfacesFromJmol(n) {
     var surfaceListStr = jmolGetPropertyAsString("stateInfo", "modelState", n);
-    var scriptArray=parseJmolStateInfoForSurfaces(surfaceListStr);
+    var scriptArray = parseJmolStateInfoForSurfaces(surfaceListStr);
     var surfaceArray = makeJmolSurfaceArray2(scriptArray);
     var tdstr ='<td style="border-width:thin;border-style:solid;padding:4px;">';
-    var dispStr='';
-    if (scriptArray[0]==''||scriptArray[0]==null||scriptArray[0]=='null'||scriptArray[0]==undefined||scriptArray[0]=='undefined') {//no surfaces ?!
+    var dispStr = '';
+    if (scriptArray[0] == '' || 
+        scriptArray[0] == null || 
+        scriptArray[0] == 'null' || 
+        scriptArray[0] == undefined || 
+        scriptArray[0] == 'undefined') {//no surfaces ?!
+
         dispStr = 'No surfaces recovered from Jmol.  Sorry.';
-        }
-    dispStr +='<table style="border-width:thin;border-style:solid;border-collapse:collapse;"><tr>'+tdstr+'Function</td>'+tdstr+'Color</td>'+tdstr+'On?</td>'+tdstr+'Opacity</td>'+tdstr+'Mesh Color</td>'+tdstr+'Mesh on?</td></tr>';
-    for (i in surfaceArray){
-        dispStr +='<tr>';
-        dispStr +=''+tdstr+''+surfaceArray[i].ID+'</td>';
+    }
+    dispStr += '<table style="border-width:thin;border-style:solid;border-collapse:collapse;"><tr>'+tdstr+'Function</td>'+tdstr+'Color</td>'+tdstr+'On?</td>'+tdstr+'Opacity</td>'+tdstr+'Mesh Color</td>'+tdstr+'Mesh on?</td></tr>';
+    for (i in surfaceArray) {
+        dispStr += '<tr>';
+        dispStr += ''+tdstr+''+surfaceArray[i].ID+'</td>';
         var scriptStr = 'color $'+surfaceArray[i].ID+' $COLOR$';
         var boxIdStr = 'colorBox_'+n+'_'+i;
-        dispStr +=''+tdstr+''+JmolColorPickerBoxStr(scriptStr,surfaceArray[i].color,boxIdStr,n)+'</td>';
+        dispStr += ''+tdstr+''+JmolColorPickerBoxStr(scriptStr,surfaceArray[i].color,boxIdStr,n)+'</td>';
         var checkedStr = 'checked = "true"';
         re_off = /off/i;
-        if (surfaceArray[i].visibility.match(re_off)){
+        if (surfaceArray[i].visibility.match(re_off)) {
             checkedStr = '';
-            }
-        dispStr +=''+tdstr+'<input class="worksheet" type="checkbox" '+checkedStr+' onchange="jmol_show_element(this.checked,\''+surfaceArray[i].ID+'\',\''+surfaceArray[i].type+'\','+n+');" title="Show function"/></td>';
-        dispStr +=''+tdstr+'<select class="jmol" title ="Select transparency" onchange="jmolSurfColor(this.value,\''+surfaceArray[i].ID+'\','+n+');">';
-        dispStr +='<option selected="" value ="'+surfaceArray[i].fillState+'">'+surfaceArray[i].fillState+'</option>';
-        var fillState='opaque';
-        dispStr +='<option value = "'+ fillState +'">opacity 100%</option>';
+        }
+        dispStr += ''+tdstr+'<input class="worksheet" type="checkbox" '+checkedStr+' onchange="jmol_show_element(this.checked,\''+surfaceArray[i].ID+'\',\''+surfaceArray[i].type+'\','+n+');" title="Show function"/></td>';
+        dispStr += ''+tdstr+'<select class="jmol" title ="Select transparency" onchange="jmolSurfColor(this.value,\''+surfaceArray[i].ID+'\','+n+');">';
+        dispStr += '<option selected="" value ="'+surfaceArray[i].fillState+'">'+surfaceArray[i].fillState+'</option>';
+        var fillState = 'opaque';
+        dispStr += '<option value = "'+ fillState +'">opacity 100%</option>';
         fillState = 'translucent 32';
-        dispStr +='<option value = "'+ fillState +'">opacity 80%</option>';
+        dispStr += '<option value = "'+ fillState +'">opacity 80%</option>';
         fillState ='translucent 64';
-        dispStr +='<option value = "'+ fillState +'">opacity 60%</option>';
+        dispStr += '<option value = "'+ fillState +'">opacity 60%</option>';
         fillState = 'translucent 96';
-        dispStr +='<option value = "'+ fillState +'">opacity 40%</option>';
+        dispStr += '<option value = "'+ fillState +'">opacity 40%</option>';
         fillState ='translucent 128';
-        dispStr +='<option value = "'+ fillState +'">opacity 20%</option>';
-        dispStr +='</';
+        dispStr += '<option value = "'+ fillState +'">opacity 20%</option>';
+        dispStr += '</';
         dispStr += 'select></td>';
-        if (surfaceArray[i].mesh_ID ==''){//we don't have a mesh so  need to make one
+        if (surfaceArray[i].mesh_ID == '') {//we don't have a mesh so  need to make one
             scriptStr = surfaceArray[i].type+' '+surfaceArray[i].ID+'_mesh '+surfaceArray[i].sourceType+' '+surfaceArray[i].source+'noFill mesh;';
             scriptStr += surfaceArray[i].type+' fullylit off;';
             scriptStr += 'color '+surfaceArray[i].type+' opaque [x000059];';
             result = jmolScriptWait(scriptStr, n);
-            surfaceArray[i].mesh_ID=surfaceArray[i].ID+'_mesh';
+            surfaceArray[i].mesh_ID = surfaceArray[i].ID+'_mesh';
             surfaceArray[i].meshColor = '[x000059]';
             surfaceArray[i].mesh_visibility = 'off';
             //we've changed the state, so save
             jmolUpdateState(n);
-            }
+        }
         scriptStr = 'color $'+surfaceArray[i].mesh_ID+' $COLOR$';
         boxIdStr = 'colorBox_'+n+'_'+i+'_mesh';
-        dispStr +=''+tdstr+''+JmolColorPickerBoxStr(scriptStr,surfaceArray[i].meshColor,boxIdStr,n)+'</td>';
+        dispStr += ''+tdstr+''+JmolColorPickerBoxStr(scriptStr,surfaceArray[i].meshColor,boxIdStr,n)+'</td>';
         checkedStr = 'checked = "true"';
-        if (surfaceArray[i].mesh_visibility.match(re_off)){
+        if (surfaceArray[i].mesh_visibility.match(re_off)) {
             checkedStr = '';
-            }
-        dispStr +=''+tdstr+'<input class="worksheet" type="checkbox" '+checkedStr+' onchange="jmol_show_element(this.checked,\''+surfaceArray[i].mesh_ID+'\',\''+surfaceArray[i].type+'\','+n+');" title="Show mesh"/></td>';
-         dispStr +='</tr>';
         }
-    dispStr +='</table>';
-    displayID = 'disp_jmol'+n;
-    get_element(displayID).innerHTML= dispStr;
+        dispStr += ''+tdstr+'<input class="worksheet" type="checkbox" '+checkedStr+' onchange="jmol_show_element(this.checked,\''+surfaceArray[i].mesh_ID+'\',\''+surfaceArray[i].type+'\','+n+');" title="Show mesh"/></td>';
+        dispStr += '</tr>';
     }
+    dispStr += '</table>';
+    displayID = 'disp_jmol' + n;
+    get_element(displayID).innerHTML = dispStr;
+}
 
-function parseJmolStateInfoForSurfaces(stateInfoStr){
+function parseJmolStateInfoForSurfaces(stateInfoStr) {
     //Returns an array of strings containing the script commands for creating and loading surfaces, pmesh or isosurface.
-    var tempStrArray=stateInfoStr.split(';');
+    var tempStrArray = stateInfoStr.split(';');
     scriptArray = new Array();
     re_isosurface = /\s*isosurface/;
-    re_pmesh =/\s*pmesh/;
+    re_pmesh = /\s*pmesh/;
     linecount = 0;
-    for (i in tempStrArray){
-        if(tempStrArray[i].match(re_isosurface)||tempStrArray[i].match(re_pmesh)){
-            scriptArray[linecount]=tempStrArray[i]; //Safari doesn't like .append()?
-            linecount=linecount+1;
-            }
+    for (i in tempStrArray) {
+        if(tempStrArray[i].match(re_isosurface) || tempStrArray[i].match(re_pmesh)) {
+            scriptArray[linecount] = tempStrArray[i]; //Safari doesn't like .append()?
+            linecount = linecount + 1;
         }
-    return scriptArray;
     }
+    return scriptArray;
+}
 
-function makeJmolSurfaceArray2(scriptArray){
+function makeJmolSurfaceArray2(scriptArray) {
     //generates an array of surfaceState objects.  One for each surface.
     var surfaceArray = new Array();
     var surface_count = 0;
     var lastID = '';
     var lastSurface = -1;
     var lastIsMesh = false;
-    for (i in scriptArray){
+    for (i in scriptArray) {
         properties = parseScriptLine(scriptArray[i],lastIsMesh);
         k = 0;
         which = -1;
-        while (k < surface_count){//if we get a match we're looking at a second load, so just update info.
-           if((properties.ID == surfaceArray[k].ID && surfaceArray[k].ID!='')||(properties.mesh_ID==surfaceArray[k].mesh_ID && surfaceArray[k].mesh_ID!='')
-                  ||(properties.source == surfaceArray[k].source && surfaceArray[k].source!='')){
-               which = k;
-               k=surface_count; // found a match we're done
-               } else {
-               k=k+1;
-               } //end if
-            }//end while k<surface_count
-        if (properties.ID=='' && properties.mesh_ID=='' && properties.source == '' && lastSurface>=0) {//this is just update to previous line...
-             which = lastSurface;
-             }//end update to previous line
+        while (k < surface_count) {//if we get a match we're looking at a second load, so just update info.
+            if((properties.ID == surfaceArray[k].ID && surfaceArray[k].ID != '') || 
+               (properties.mesh_ID == surfaceArray[k].mesh_ID && surfaceArray[k].mesh_ID != '') ||
+               (properties.source == surfaceArray[k].source && surfaceArray[k].source!='')) {
+                which = k;
+                k = surface_count; // found a match we're done
+            } else {
+                k = k + 1;
+            } //end if
+        }//end while k < surface_count
+        if (properties.ID == '' && properties.mesh_ID == '' && properties.source == '' && lastSurface >= 0) {//this is just update to previous line...
+            which = lastSurface;
+        }//end update to previous line
         if (which == -1) {//new surface
             surfaceArray[surface_count] = new surfaceState(properties.type, properties.ID, properties.source, properties.sourceType,
                      properties.color, properties.fillState, properties.visibility, properties.mesh_ID, properties.meshColor,
                      properties.meshState, properties.mesh_visibility);
             lastSurface = surface_count;
             surface_count = surface_count + 1;
-            } else {//existing surface update only things that are not empty strings and don't corrupt existing labels.
-            if (properties.type!=''){
+        } else {//existing surface update only things that are not empty strings and don't corrupt existing labels.
+            if (properties.type != '') {
                 surfaceArray[which].type = properties.type;
-               }
-            if (properties.sourceType!=''&& surfaceArray[which].sourceType==''){
+            }
+            if (properties.sourceType != '' && surfaceArray[which].sourceType == '') {
                 surfaceArray[which].sourceType = properties.sourceType;
-               }
-            if (properties.ID!='' && surfaceArray[which].ID==''){
-               surfaceArray[which] = properties.ID;
-               }
-            if (properties.source!='' && surfaceArray[which].source==''){
-               surfaceArray[which].source = properties.source;
-               }
-            if (properties.color!='') {
-               surfaceArray[which].color = properties.color;
-               }
-            if (properties.fillState!=''){
-               surfaceArray[which].fillState = properties.fillState;
-               }
-            if (properties.visibility!='') {
-               surfaceArray[which].visibility = properties.visibility;
-               }
-            if (properties.mesh_ID!='' && surfaceArray[which].mesh_ID=='') {
-               surfaceArray[which].mesh_ID = properties.mesh_ID;
-               }
-            if (properties.meshColor!='') {
-               surfaceArray[which].meshColor = properties.meshColor;
-               }
-            if (properties.mesh_visibility!='') {
-               surfaceArray[which].mesh_visibility = properties.mesh_visibility;
-               }
-            if (properties.meshState!='') {
-               surfaceArray[which].meshState = properties.meshState;
-               }
+            }
+            if (properties.ID != '' && surfaceArray[which].ID == '') {
+                surfaceArray[which] = properties.ID;
+            }
+            if (properties.source != '' && surfaceArray[which].source == '') {
+                surfaceArray[which].source = properties.source;
+            }
+            if (properties.color != '') {
+                surfaceArray[which].color = properties.color;
+            }
+            if (properties.fillState != '') {
+                surfaceArray[which].fillState = properties.fillState;
+            }
+            if (properties.visibility != '') {
+                surfaceArray[which].visibility = properties.visibility;
+            }
+            if (properties.mesh_ID != '' && surfaceArray[which].mesh_ID == '') {
+                surfaceArray[which].mesh_ID = properties.mesh_ID;
+            }
+            if (properties.meshColor != '') {
+                surfaceArray[which].meshColor = properties.meshColor;
+            }
+            if (properties.mesh_visibility != '') {
+                surfaceArray[which].mesh_visibility = properties.mesh_visibility;
+            }
+            if (properties.meshState != '') {
+                surfaceArray[which].meshState = properties.meshState;
+            }
             lastSurface = which;
-            }//end new or old surface
-            if (properties.ID=='' && properties.mesh_ID!='') {
-                lastIsMesh=true;
-                }else{
-                lastIsMesh=false;
-                }
-        }//end stepping through scriptArray
+        }//end new or old surface
+        if (properties.ID == '' && properties.mesh_ID != '') {
+            lastIsMesh = true;
+        } else {
+            lastIsMesh = false;
+        }
+    }//end stepping through scriptArray
     return (surfaceArray);
-    }
+}
 
-function parseScriptLine(scriptLine, lastIsMesh){
+function parseScriptLine(scriptLine, lastIsMesh) {
     var properties = {
         type: '',
         source: '',
@@ -639,80 +644,80 @@ function parseScriptLine(scriptLine, lastIsMesh){
         meshColor: '',
         meshState: '',
         mesh_visibility: '',
-        }
+    };
     re_wordboundary = /\s+/;
     var wordList = scriptLine.split(re_wordboundary);
     firstIndex = 0;
-    if (wordList[0]=='') {
+    if (wordList[0] == '') {
         firstIndex = 1;
-        }
-    if (wordList[firstIndex] == 'isosurface') {
-       properties.type = 'isosurface';
-       properties = parseIsosurfaceCmd(properties, wordList);
-       }
-    if (wordList[firstIndex] == 'pmesh') {
-       properties.type = 'pmesh';
-       properties = parsePmeshCmd(properties, wordList);
-       }
-    if (wordList[firstIndex] == 'color') {
-       properties = parseColorCmd(properties, wordList);
-       }
-    if (lastIsMesh == true) {//check that the mesh values and non-mesh are not flipped
-       if(properties.color!=''&&properties.meshColor==''){
-           properties.meshColor=properties.color;
-           properties.color='';
-           }
-       if(properties.visibility!=''&&properties.mesh_visibility==''){
-           properties.mesh_visibility =properties.visibility;
-           properties.visibility ='';
-           }
-       if(properties.fillState!=''&&properties.meshState==''){
-           properties.meshState =properties.fillState;
-           properties.fillState ='';
-           }
-       }
-    return (properties);
     }
+    if (wordList[firstIndex] == 'isosurface') {
+        properties.type = 'isosurface';
+        properties = parseIsosurfaceCmd(properties, wordList);
+    }
+    if (wordList[firstIndex] == 'pmesh') {
+        properties.type = 'pmesh';
+        properties = parsePmeshCmd(properties, wordList);
+    }
+    if (wordList[firstIndex] == 'color') {
+        properties = parseColorCmd(properties, wordList);
+    }
+    if (lastIsMesh == true) {//check that the mesh values and non-mesh are not flipped
+        if(properties.color!=''&&properties.meshColor == '') {
+            properties.meshColor=properties.color;
+            properties.color='';
+        }
+        if(properties.visibility!=''&&properties.mesh_visibility == '') {
+            properties.mesh_visibility =properties.visibility;
+            properties.visibility ='';
+        }
+        if(properties.fillState!=''&&properties.meshState == '') {
+            properties.meshState =properties.fillState;
+            properties.fillState ='';
+        }
+    }
+    return (properties);
+}
 
-function parseColorCmd(properties, wordList){
+function parseColorCmd(properties, wordList) {
     re_dollarsign = /^$/;
     re_colorcode=/\[x.{6}\]/;
     re_translucent =/translucent/i;
     firstIndex = 0;
-    if (wordList[0]=='') {
+    if (wordList[0] == '') {
         firstIndex = 1;
-        }
-    parseFrom = firstIndex+2;
+    }
+    parseFrom = firstIndex + 2;
     if(wordList[firstIndex+1].match(re_dollarsign)) {
         properties.ID = wordList[firstIndex+1].replace('$','').toLowerCase();
-        }
-    for (i=parseFrom; i<wordList.length; i++){
-        if (wordList[i]=='opaque') {
-           properties.fillState = 'opaque';
-           }//end opaque
-        if (wordList[i].match(re_translucent)){
-           properties.fillState = 'translucent';
-           if (wordList[i+1].match(re_number)){
-               properties.fillState='translucent '+wordList[i+1];
-               }//end is it followed by number?
-           }//end translucent
-        if (wordList[i].match(re_colorcode)){
-           properties.color = wordList[i];
-           }//end colorcode
-        }
+    }
+    for (i = parseFrom; i < wordList.length; i++) {
+        if (wordList[i] == 'opaque') {
+            properties.fillState = 'opaque';
+        }//end opaque
+        if (wordList[i].match(re_translucent)) {
+            properties.fillState = 'translucent';
+            if (wordList[i+1].match(re_number)) {
+                properties.fillState = 'translucent '+wordList[i+1];
+            }//end is it followed by number?
+        }//end translucent
+        if (wordList[i].match(re_colorcode)) {
+            properties.color = wordList[i];
+        }//end colorcode
+    }
     return properties;
-    }
+}
 
-function parsePmeshCmd(properties, wordList){
+function parsePmeshCmd(properties, wordList) {
     return (parseIsosurfaceCmd(properties,wordList));
-    }
+}
 
-function parseIsosurfaceCmd(properties, wordList){
+function parseIsosurfaceCmd(properties, wordList) {
     firstIndex = 0;
-    if (wordList[0]=='') {
+    if (wordList[0] == '') {
         firstIndex = 1;
-        }
-    parseFrom = firstIndex+3;
+    }
+    parseFrom = firstIndex + 3;
     re_quoted = /".*"/;
     re_number = /d*\.*d*/;
     re_quote_global = /"/g;
@@ -721,66 +726,66 @@ function parseIsosurfaceCmd(properties, wordList){
     re_fill = /fill/i;
     re_nofill = /nofill/i;
     re_hidden = /hidden/i;
-    if (wordList[firstIndex + 1]=='ID') {//modifying an existing surface
+    if (wordList[firstIndex + 1] == 'ID') {//modifying an existing surface
         properties.ID = (wordList[firstIndex + 2].replace(re_quote_global,'')).toLowerCase(); //if we're lucky and the name is not broken into two words?
-        }else{
+    } else {
         properties.ID = (wordList[firstIndex + 1].replace(re_quote_global,'')).toLowerCase(); //if it is the loaded object name we will have to remove the quotes.
         if (wordList[firstIndex + 1].match(re_quoted)) {
             properties.source = wordList[firstIndex + 1];
-            }//end if this word is in quotes
+        }//end if this word is in quotes
         parseFrom = firstIndex + 2;
-        } //end wordList[firstIndex + 1]=='ID'
-    for (i=parseFrom; i<wordList.length; i++){
+    } //end wordList[firstIndex + 1] == 'ID'
+    for (i = parseFrom; i < wordList.length; i++) {
         if (wordList[i].match(re_mesh)) {
-           properties.mesh_visibility = 'on';
-           }//end mesh
-        if (wordList[i].match(re_nomesh)){
-           properties.mesh_visibility = 'off';
-           }//end nomesh
-        if (wordList[i].match(re_fill)){
-           properties.visibility = 'on';
-           }//end fill
-        if (wordList[i].match(re_nofill)){
-           properties.visibility = 'off';
-           }//end nofill
-        if (wordList[i]=='opaque') {
-           properties.fillState = 'opaque';
-           }//end opaque
-        if (wordList[i]=='translucent'){
-           if (wordList[i+1].match(re_number)){
-               properties.fillState='translucent '+wordList[i+1];
-               }else{
-               properties.fillState = 'translucent';
-               }//end is it followed by number?
-           }//end translucent
+            properties.mesh_visibility = 'on';
+        }//end mesh
+        if (wordList[i].match(re_nomesh)) {
+            properties.mesh_visibility = 'off';
+        }//end nomesh
+        if (wordList[i].match(re_fill)) {
+            properties.visibility = 'on';
+        }//end fill
+        if (wordList[i].match(re_nofill)) {
+            properties.visibility = 'off';
+        }//end nofill
+        if (wordList[i] == 'opaque') {
+            properties.fillState = 'opaque';
+        }//end opaque
+        if (wordList[i] == 'translucent') {
+            if (wordList[i+1].match(re_number)) {
+                properties.fillState='translucent '+wordList[i+1];
+            } else {
+                properties.fillState = 'translucent';
+            }//end is it followed by number?
+        }//end translucent
         if (wordList[i].match(re_quoted)) {
             properties.source = wordList[i];
             //check for sourceType
             re_pmesh = /pmesh/i;
-            if(wordList[i-1].match(re_pmesh)){
+            if(wordList[i-1].match(re_pmesh)) {
                 properties.sourceType = 'pmesh';
-                }//end check for pmesh source type.
-            if(properties.type=='pmesh'){
+            }//end check for pmesh source type.
+            if(properties.type == 'pmesh') {
                 properties.sourceType = 'pmesh';
-                }//setting to match type if pmesh.
-            }//end if this word is in quotes
+            }//setting to match type if pmesh.
+        }//end if this word is in quotes
         if (wordList[i].match(re_hidden)) {
             properties.visibility='off';
-            }//end hidden
-        }//end for
+        }//end hidden
+    }//end for
     //decide if this is only a mesh surface.
-    if (properties.mesh_visibility=='on' && (properties.visibility=='off')) {//just mesh
+    if (properties.mesh_visibility == 'on' && (properties.visibility == 'off')) {//just mesh
         properties.mesh_ID = properties.ID;
         properties.ID = '';
         properties.meshColor = properties.color;
         properties.color = '';
         properties.mesh_visibility = properties.visibility;
         properties.visibility = '';
-        }//end if mesh
+    }//end if mesh
     return properties;
-    }
+}
 
-function surfaceState(type, ID, source, sourceType, color, fillState, visibility, mesh_ID, meshColor, meshState, mesh_visibility){
+function surfaceState(type, ID, source, sourceType, color, fillState, visibility, mesh_ID, meshColor, meshState, mesh_visibility) {
     this.type = type; //'isosurface' or 'pmesh'
     this.ID = ID; //the ID string used by Jmol
     this.source=source; //the source filename (not the full path, should it be?)
@@ -792,75 +797,78 @@ function surfaceState(type, ID, source, sourceType, color, fillState, visibility
     this.meshColor = meshColor; //hex value for the color of the mesh, default is black [x000000]
     this.meshState = meshState; //  "opaque" or "transparent" or "transparent 0.XX"
     this.mesh_visibility = mesh_visibility; // "on" or "off"
-    }
+}
 
-function switchJmolCntrl(jmolStatus,n,whichWake){//whichWake is the numerical index of the panel to wake
+function switchJmolCntrl(jmolStatus, n, whichWake) {//whichWake is the numerical index of the panel to wake
     //making use of the jsquery-ui defaults loaded in with SAGE, but cannot use their functions to switch tabs (don't know why).
     //Check to see if whichWake is already awake
     isActive = jmolStatus.cntrls[n].whichActive
-    if(whichWake== isActive){
+    if(whichWake == isActive) {
         return;
-        }
+    }
     //first sleep the active panel.
     get_element(jmolStatus.cntrls[n].cntrlPanels[isActive].panelID).setAttribute('class','ui-tabs-panel ui-tabs-hide');
     get_element(jmolStatus.cntrls[n].cntrlPanels[isActive].tabID).setAttribute('class', 'ui-state-default');
-    jmolStatus.cntrls[n].cntrlPanels[isActive].state=1;
+    jmolStatus.cntrls[n].cntrlPanels[isActive].state = 1;
     //Now unhide the control requested.
     get_element(jmolStatus.cntrls[n].cntrlPanels[whichWake].tabID).setAttribute('class', 'ui-tabs-selected ui-widget-content');
     get_element(jmolStatus.cntrls[n].cntrlPanels[whichWake].panelID).setAttribute('class','ui-tabs-panel');
-    jmolStatus.cntrls[n].cntrlPanels[whichWake].state=0;
-    jmolStatus.cntrls[n].whichActive=whichWake;
-    }
+    jmolStatus.cntrls[n].cntrlPanels[whichWake].state = 0;
+    jmolStatus.cntrls[n].whichActive = whichWake;
+}
 
 function sleepJmol(n,jmolStatus) {
-    if(jmolStatus.jmolArray[n]==0){//it's awake, so put to sleep
+    if(jmolStatus.jmolArray[n] == 0) {//it's awake, so put to sleep
         //alert('applet #'+n+' is awake.');
-	//get a picture to replace the applet
-	jmolStatus.pictureStrs[n] = get_jmol_image(n, jmolStatus);
-	//alert('got image from applet.');
+	    //get a picture to replace the applet
+	    jmolStatus.pictureStrs[n] = get_jmol_image(n, jmolStatus);
+	    //alert('got image from applet.');
         //make sure the state is up-to-date
         jmolUpdateState(n);
         //alert("Have got the picture and updated the state before sleeping #"+n);
         //Different browsers pass different versions of null and undefined.
-        if(jmolStatus.pictureStrs[n]=="null"||jmolStatus.pictureStrs[n]==""||jmolStatus.pictureStrs[n]==undefined||jmolStatus.pictureStrs[n]==null||jmolStatus.pictureStrs[n]=="undefined"){//don't have a picture put up text instead
-            if(_jmol.browser=="msie"){
+        if(jmolStatus.pictureStrs[n] == "null" || 
+           jmolStatus.pictureStrs[n] == "" || 
+           jmolStatus.pictureStrs[n] == undefined || 
+           jmolStatus.pictureStrs[n] == null || 
+           jmolStatus.pictureStrs[n] == "undefined") {//don't have a picture put up text instead
+            if(_jmol.browser == "msie") {
                 get_element("Jmol"+n).innerHTML = 'Sleeping...<br/>Static plot unavailable. <br/>  <a href="javascript:wakeJmol('+n+',jmolStatus);">Make Interactive</a> to get live plot.';
-
-            }else{
+            } else {
                 get_element("Jmol"+n).innerHTML = 'Sleeping...<br/>Static plot unavailable. <br/>  <button onClick="javascript:void(wakeJmol('+n+',jmolStatus))">Make Interactive</button> to get live plot.';
 	        }
-            }else{
+        } else {
 	        var imageID = 'Jmol_Image'+n;
 	        //The below does not work with Safari, doesn't show alternate text when no image data.
 	        var imageStr = '<image id='+imageID+' alt="If no plot appears here click Wake Up" src="data:image/jpeg;base64, ' + jmolStatus.pictureStrs[n] + '">';
-            if(_jmol.browser=="msie"){
+            if(_jmol.browser == "msie") {
                 get_element("Jmol"+n).innerHTML = 'Sleeping...<a href="javascript:wakeJmol('+n+',jmolStatus);">Make Interactive</a><br/>'+imageStr;
-            }else{
+            } else {
                 get_element("Jmol"+n).innerHTML = 'Sleeping...<button onClick="javascript:void(wakeJmol('+n+',jmolStatus))">Make Interactive</button><br/>'+imageStr;
 	        }
-	        }
-	jmolStatus.jmolArray[n]=1; //we've turned it off
-	if(_jmol.browser!="msie"){
-        //make sure the controls that only work with live Jmol are hidden
+	    }
+    	jmolStatus.jmolArray[n] = 1; //we've turned it off
+        if(_jmol.browser!="msie") {
+            //make sure the controls that only work with live Jmol are hidden
             var cellID = 'Jmol_Table_Jmol'+n+'_cell_0_1';
             get_element(cellID).setAttribute("style","display: none;");
             //jqueryui toggle not working reliably
             //var togname = '#Adv_but_Jmol'+n;
             //$(togname).toggle();
-            togname ='Adv_but_Jmol'+n;
+            togname = 'Adv_but_Jmol'+n;
             get_element(togname).setAttribute("style","display: none;");
         }
 	    jmol_numLiveUpdate();
-       }
     }
+}
 
-function switchToSigned(scriptStr, n){//scriptStr will be added to the end of the recreation script.
+function switchToSigned(scriptStr, n) {//scriptStr will be added to the end of the recreation script.
     //sleep the unsigned...with custom message
-    if(jmolStatus.jmolArray[n]==0){//it's awake, so put to sleep
+    if(jmolStatus.jmolArray[n] == 0) {//it's awake, so put to sleep
         //make sure the state is up-to-date
         jmolUpdateState(n);
         get_element("Jmol"+n).innerHTML = 'Switching to signed applet this will take a while and generate some warnings...';
-        jmolStatus.jmolArray[n]=1; //we've turned it off
+        jmolStatus.jmolArray[n] = 1; //we've turned it off
     }
     //set applet type to signed
     jmolToSigned();
@@ -877,7 +885,7 @@ function wakeJmol(n,jmolStatus) {
 	width = jmolStatus.widths[n];
 	height = jmolStatus.heights[n];
 	url = jmolStatus.urls[n];
-	jmolStatus.signed[n]=jmolStatus.loadSigned;
+	jmolStatus.signed[n] = jmolStatus.loadSigned;
 	jmolSetDocument(false);
 //	scriptStr = 'script "'+url+'"; isosurface fullylit; pmesh o* fullylit; set antialiasdisplay off;';
         re_linebreak = /<br>/gi;
@@ -885,15 +893,15 @@ function wakeJmol(n,jmolStatus) {
     var scriptStr = jmolStatus.stateScripts[n];
 	var nquote = n;
 	get_element("Jmol"+ nquote).innerHTML = jmolApplet([width,height], scriptStr, nquote);
-	if (jmolStatus.jmolArray[n]!=0){//it wasn't on, if it was we've just done a reset so don't need to update status
-		jmolStatus.jmolArray[n]=0; //we've turned it on
+	if (jmolStatus.jmolArray[n] != 0) {//it wasn't on, if it was we've just done a reset so don't need to update status
+		jmolStatus.jmolArray[n] = 0; //we've turned it on
 		jmol_numLiveUpdate();
         var togname = '#Adv_but_Jmol'+n;
         $(togname).toggle();
-		}
 	}
+}
 
-function limitlive(nWake, jmolStatus){
+function limitlive(nWake, jmolStatus) {
 	//called before waking an old or initiating a new Jmol
 	//nWake = index of the Jmol being initiated or wakened.
 	//will attempt to shut down a Jmol as far away as possible.
@@ -902,34 +910,36 @@ function limitlive(nWake, jmolStatus){
 	while (jmolStatus.numLive >= jmolStatus.maxLiveAllowed) {
         //search only from zero
         k=0;
-        while (jmolStatus.jmolArray[k]!=0){
-            k = k +1;
-            }
+        while (jmolStatus.jmolArray[k]!=0) {
+            k = k + 1;
+        }
         //search only from max
         i = jmolStatus.jmolArray.length-1;
-        while (jmolStatus.jmolArray[i]!=0){
-            i = i -1;
-            }
-        if (Math.abs(nWake-i) > Math.abs(nWake-k)){
-            nSleep = i;}else{
-            nSleep = k;}
+        while (jmolStatus.jmolArray[i]!=0) {
+            i = i - 1;
+        }
+        if (Math.abs(nWake-i) > Math.abs(nWake-k)) {
+            nSleep = i;
+        } else {
+            nSleep = k;
+        }
         //alert("About to sleep applet#"+nSleep);
         sleepJmol(nSleep, jmolStatus);
-        }
-	}
+    }
+}
 
 function jmol_delete_all_output() {
     //called by the delete_all_output function of the notebook to get jmol parameters cleaned up.
-    jmol_count=0;
-    jmolStatus.numLive=0;
-    jmolStatus.jmolArray=new Array();
+    jmol_count = 0;
+    jmolStatus.numLive = 0;
+    jmolStatus.jmolArray = new Array();
 }
 
 function jmol_delete_check() {
     //called when cells are evaluated to see if any jmols have been deleted.  If so update their status.
     liveCount = jmolStatus.jmolArray.length;
-    for ( k = 0; k< liveCount; k++) {
-        testId= 'Jmol_Table_Jmol'+k; //looking for the whole table Jmol is in, since if the table is there it is sleeping.
+    for (k = 0; k < liveCount; k++) {
+        testId= 'Jmol_Table_Jmol' + k; //looking for the whole table Jmol is in, since if the table is there it is sleeping.
         if (!get_element(testId)) { //we need to set this as deleted and maybe free up the ID?
             jmolStatus.jmolArray[k] = -1;
             //for the time being old IDs will not be reused.  Shouldn't be real big problem as completely resets
@@ -943,19 +953,19 @@ function jmol_image(jmol_count) {
     var myImage = jmolGetPropertyAsString("image","",jmol_count);
     mywindow = window.open("","Jmol Image","menubar=no,width=600,height=600,toolbar=no");
     s = '<HTML><TITLE>Jmol Image</TITLE><BODY>';
-	s += '<img src="data:image/jpeg;base64,' + myImage + '">';
+    s += '<img src="data:image/jpeg;base64,' + myImage + '">';
     s += '<p>To save this image, you can try right-clicking on the image to copy it or save it to a file, or you may be able to just drag the image to your desktop.</p>';
-	s += '</BODY></HTML>';
-	mywindow.document.write(s);
-    }
+    s += '</BODY></HTML>';
+    mywindow.document.write(s);
+}
 
 
-function get_jmol_image(n, jmolStatus){
-    var pictureStr="";
+function get_jmol_image(n, jmolStatus) {
+    var pictureStr = "";
     if(jmolStatus.jmolArray[n] == 0) {//it's live
-        if(jmolStatus.jmolArray.length < 10 ||jmolStatus.os!='mac'||jmolStatus.browser!='webkit'){
+        if(jmolStatus.jmolArray.length < 10 || jmolStatus.os != 'mac' || jmolStatus.browser != 'webkit') {
             pictureStr = jmolGetPropertyAsString("image","",n);
-        }else{
+        } else {
             alert('More than 9 Jmols have been launched on the worksheet since it was last openned. Unable to get a static image from Jmol#'+n+' You might want to try Chrome as this problem does not exist with Chrome on MacOS.');
         }
     }
@@ -973,26 +983,26 @@ function jmol_popup(n) {
     //sleep all the applets before openning the big window.
     jmol_sleepall();
     win = window.open ("", "jmol viewer", "width=600,height=600,resizable=1,statusbar=0");
-	win.document.body.innerHTML = "";
-	win.document.title = "Sage 3d Viewer";
-	win.document.writeln("<h1 align=center>Sage 3d Viewer</h1>");
-	jmolSetDocument(win.document);
+    win.document.body.innerHTML = "";
+    win.document.title = "Sage 3d Viewer";
+    win.document.writeln("<h1 align=center>Sage 3d Viewer</h1>");
+    jmolSetDocument(win.document);
     jmolApplet("100%", scriptStr, n);
     win.focus();
 }
 
-function jmol_sleepall(){
+function jmol_sleepall() {
     var j = 0;
-    while (j < jmolStatus.jmolArray.length){
-        if (jmolStatus.jmolArray[j]==0){//it is awake and needs to be put to sleep
+    while (j < jmolStatus.jmolArray.length) {
+        if (jmolStatus.jmolArray[j] == 0) {//it is awake and needs to be put to sleep
             sleepJmol(j, jmolStatus);
-            }
-        j = j+1;
         }
+        j = j + 1;
     }
-function jmol_help(){
+}
+function jmol_help() {
     win = window.open("/java/jmol/appletweb/JmolHelp.html","Jmol Help","width=400, height=600, scrollbars=yes");
-	win.focus();
+    win.focus();
 }
 
 /* Tools adapted from the Jmol Widgets Libray
@@ -1053,34 +1063,34 @@ var JmolColorPickerStatus = {
     lastPicked: '', //last picked color...not used at present
     funcName: '', //where to pass to next after pickedColor()
     passThrough: '' //name of the global variable or structure containing information to be passed
-    }
+};
 
-var JmolColorPickerBoxes=new Array();//array of boxInfo
+var JmolColorPickerBoxes = new Array();//array of boxInfo
 
-function boxInfo(boxID, appletID, scriptStr){//used when using a predefined colorPickerBox
-    this.boxID=boxID;
-    this.appletID=appletID; //applet ID
-    this.scriptStr=scriptStr; //script with $COLOR$ where the color should be placed.
-    }
+function boxInfo(boxID, appletID, scriptStr) {//used when using a predefined colorPickerBox
+    this.boxID = boxID;
+    this.appletID = appletID; //applet ID
+    this.scriptStr = scriptStr; //script with $COLOR$ where the color should be placed.
+}
 
-function changeClass(someObj,someClassName) {
-    someObj.setAttribute("class",someClassName);
-    someObj.setAttribute("className",someClassName);  // this is for IE
+function changeClass(someObj, someClassName) {
+    someObj.setAttribute("class", someClassName);
+    someObj.setAttribute("className", someClassName);  // this is for IE
 }
 
 //Build the ColorPicker Div.
 
 // detect if browser supports data:URI   (IE6 & IE7 do not)
-    var dataURIsupported = true;
-    var testImg64 = new Image();
-    testImg64.onload = testImg64.onerror = function() {
-        if(this.width != 1 || this.height != 1) { dataURIsupported = false; }
-    }
-    testImg64.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+var dataURIsupported = true;
+var testImg64 = new Image();
+testImg64.onload = testImg64.onerror = function() {
+    if(this.width != 1 || this.height != 1) { dataURIsupported = false; }
+}
+testImg64.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
 
-function makeColorPicker(){
+function makeColorPicker() {
     JmolColorPickerDiv = get_element("JmolColorPickerDiv");
-    if(! JmolColorPickerDiv){
+    if(! JmolColorPickerDiv) {
         var colorPickerCSS = document.createElement('style');
         colorPickerCSS.type = 'text/css';
         CSSStr ='.JmolColorPicker_vis {border-style:solid;border-width:thin;clear:both;display:block;overflow:visible;position:absolute;margin-left:-52px;width:104px;z-index:2;}';
@@ -1094,8 +1104,8 @@ function makeColorPicker(){
         document.getElementsByTagName('head')[0].appendChild(colorPickerCSS);
         JmolColorPickerDiv = document.createElement("div");
         JmolColorPickerDiv.setAttribute("id", "JmolColorPickerDiv");
-        changeClass(JmolColorPickerDiv,"JmolColorPicker_hid");
-        }
+        changeClass(JmolColorPickerDiv, "JmolColorPicker_hid");
+    }
    var rgbs=[[255,0,0]
        ,[255,128,0]
        ,[255,255,0]
@@ -1130,40 +1140,40 @@ function makeColorPicker(){
     }
     htmlStr += '</div>';
     htmlStr += '<table cellspacing="0" cellpadding="0" border="0" style="font-size:2px; cursor:default;"><tbody>';
-    for (j = 0; j < hues.length;j++){
+    for (j = 0; j < hues.length; j++) {
     htmlStr += '<tr>'
     var f = (hues[j][0])/100.0;
-       for (k = 0; k < rgbs.length; k++){
-       if(rgbs[k][0]==255&&rgbs[k][1]==255&&rgbs[k][2]==255) f =(hues[j][1])/100.0;;
-       r = Math.min(Math.max(Math.round(rgbs[k][0] * f),Math.round(255-rgbs[k][0])*(f-1)^2),255);
-       g = Math.min(Math.max(Math.round(rgbs[k][1] * f),Math.round(255-rgbs[k][1])*(f-1)^2),255);
-       b = Math.min(Math.max(Math.round(rgbs[k][2] * f),Math.round(255-rgbs[k][2])*(f-1)^2),255);
-          htmlStr +='<td style="background-color: rgb(' + r + "," + g + ","+ b + ');">';
-          htmlStr +='<div style="width: 8px; height: 8px;" onclick=\'pickedColor("rgb('+r+','+g+','+b+')");\' ';
-          htmlStr +='onmouseover=\'hoverColor("rgb('+r+','+g+','+b+')");\'></div>';
-          htmlStr +='</td>';
-       }//for k
-   htmlStr +='</tr>';
-   }//for j
-   htmlStr += '</tbody></table>';
+        for (k = 0; k < rgbs.length; k++) {
+            if(rgbs[k][0] == 255 && rgbs[k][1] == 255 && rgbs[k][2] == 255) f = (hues[j][1])/100.0;;
+            r = Math.min(Math.max(Math.round(rgbs[k][0] * f),Math.round(255-rgbs[k][0])*(f-1)^2),255);
+            g = Math.min(Math.max(Math.round(rgbs[k][1] * f),Math.round(255-rgbs[k][1])*(f-1)^2),255);
+            b = Math.min(Math.max(Math.round(rgbs[k][2] * f),Math.round(255-rgbs[k][2])*(f-1)^2),255);
+            htmlStr += '<td style="background-color: rgb(' + r + "," + g + ","+ b + ');">';
+            htmlStr += '<div style="width: 8px; height: 8px;" onclick=\'pickedColor("rgb('+r+','+g+','+b+')");\' ';
+            htmlStr += 'onmouseover=\'hoverColor("rgb('+r+','+g+','+b+')");\'></div>';
+            htmlStr += '</td>';
+        }//for k
+        htmlStr +='</tr>';
+    }//for j
+    htmlStr += '</tbody></table>';
     content = document.createTextNode("loading color picker...");
     JmolColorPickerDiv.appendChild(content);
     JmolColorPickerDiv.innerHTML = htmlStr;
-    return(JmolColorPickerDiv);
+    return (JmolColorPickerDiv);
 }
 
 // IE6 puts the SELECT control on top of the popup colorpicker DIV, so we trick that:
 var IEversion = 999;
 if (/MSIE (\d+\.\d+);/.test(navigator.userAgent)) { //test for MSIE x.x;
-    IEversion=new Number(RegExp.$1); // capture x.x portion and store as a number
+    IEversion = new Number(RegExp.$1); // capture x.x portion and store as a number
 }
 
-function pickedColor(colorStr){
+function pickedColor(colorStr) {
     var pickerDiv = get_element("JmolColorPickerDiv");
 //    var debug = get_element("JmolDebug");
 //    var tempStr = debug.innerHTML;
 //    tempStr+='<br/>The parent of the picker div is on reaching pickedColor is: '+pickerDiv.parentNode.id;
-    if(colorStr!='cancel'){
+    if(colorStr!='cancel') {
         var boxNum = JmolColorPickerStatus.passThrough;
         get_element(JmolColorPickerBoxes[boxNum].boxID).style.background = colorStr;
         var rgbCodes = colorStr.replace(/rgb/i,'').replace('(','[').replace(')',']');
@@ -1176,24 +1186,24 @@ function pickedColor(colorStr){
 //    tempStr += ' has class: '+pickerDiv.getAttribute("class")+' after call to pickedColor.'
 //    debug.innerHTML = tempStr;
 }
-function hoverColor(colorStr){
+function hoverColor(colorStr) {
     get_element("JmolColorPickerHover").style.background = colorStr;
 }
 
-function popUpPicker(whereID, funcName, passThrough){
+function popUpPicker(whereID, funcName, passThrough) {
     var pickerDiv = get_element("JmolColorPickerDiv");
     if (!pickerDiv) {//make a new picker
         pickerDiv =  makeColorPicker();
-        }
+    }
     JmolColorPickerStatus.funcName = funcName;
     JmolColorPickerStatus.passThrough = passThrough;
     var where = get_element(whereID);
     where.appendChild(pickerDiv);
-    changeClass(pickerDiv,"JmolColorPicker_vis");
+    changeClass(pickerDiv, "JmolColorPicker_vis");
 }
 
 
-function JmolColorPickerBoxStr(scriptStr, startColor, boxID, appletID){
+function JmolColorPickerBoxStr(scriptStr, startColor, boxID, appletID) {
     if (!appletID) appletID = "0";
     var boxNum = JmolColorPickerBoxes.length;
     if (!boxID) boxID = 'colorBox'+boxNum;
@@ -1214,11 +1224,11 @@ function JmolColorPickerBoxStr(scriptStr, startColor, boxID, appletID){
         htmlStr += '<span id="'+ boxArrowName+'" style="font-size:10px; padding:0 2px; background-color:#A0A0A0; font-family:Verdana, Arial, Helvetica, sans-serif;">V</span>';
     }
     htmlStr += '</td></tr></tbody></table></div>';
-    return(htmlStr);
+    return (htmlStr);
 }
 
 
-function colorBoxUpdate(pickedColor, boxNum){
+function colorBoxUpdate(pickedColor, boxNum) {
     get_element(JmolColorPickerBoxes[boxNum].boxID).style.background = pickedColor;
     var pickerDiv = get_element("JmolColorPickerDiv");
     changeClass(pickerDiv, "JmolColorPicker_hid");
