@@ -770,7 +770,12 @@ sagenb.worksheetapp.worksheet = function() {
 				upload_frame.hide();
 				$("#upload_data_file_tab form").submit();
 				upload_frame.load(function() {
-					$("#manage_tab_button").click();
+					if($.trim(upload_frame.text()) !== "") {
+						alert(upload_frame.text());
+					}
+					else {
+						$("#manage_tab_button").click();
+					}
 					upload_frame.detach();
 				});
 			}
