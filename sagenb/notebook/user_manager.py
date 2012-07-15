@@ -547,7 +547,7 @@ class ExtAuthUserManager(SimpleUserManager):
         """
         Returns a list of usernames that are found when calling user_lookup on all enabled auth methods
         """
-        r = {}
+        r = set()
         for a in self._auth_methods:
             if self._conf[a]:
                 names = self._auth_methods[a].user_lookup(search)
