@@ -98,7 +98,7 @@ class LdapAuth(AuthMethod):
         # return None if more than 1 object found
         return result[0] if len(result) == 1 else None
 
-    @_require_ldap([])
+    @_require_ldap(None)
     def user_lookup(self, search):
         from ldap.filter import filter_format
         from ldap import LDAPError

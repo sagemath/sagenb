@@ -547,12 +547,13 @@ class ExtAuthUserManager(SimpleUserManager):
         """
         Returns a list of usernames that are found when calling user_lookup on all enabled auth methods
         """
-        r = []
+        r = set()
         for a in self._auth_methods:
             if self._conf[a]:
-                # avoid duplicates
-                r += [u for u in self._auth_methods[a].user_lookup(search) if u not in r]
-        return r
+                names = self._auth_methods[a].user_lookup(search)
+                if names:
+                    r = r.union(names)
+        return list(r)
 
 class OpenIDUserManager(ExtAuthUserManager):
     def __init__(self, accounts=True, conf=None):
