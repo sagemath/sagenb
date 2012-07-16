@@ -12,6 +12,7 @@ sagenb.Jmol.Jmol_instance = function(container) {
 	_this.url = _this.container.data("url");
 	_this.static_img_url = _this.container.data("img");
 	_this.dimensions = [500, 500];
+	_this.popup_win = null;
 
 	_this.state_script = null;
 
@@ -27,33 +28,32 @@ sagenb.Jmol.Jmol_instance = function(container) {
 	};
 	_this.appletify = function() {
 		_this.container.children().detach();
-		_this.container.addClass("alive");
-
-		if(!_this.state_script) {
-			var default_dir = _this.url.split("?")[0];
-			_this.state_script = 'set defaultdirectory "' + default_dir + '";' + 
-								 'script "' + _this.url + '";' + 
-								 'isosurface fullylit;' + 
-								 'pmesh o* fullylit;' + 
-								 'set antialiasdisplay on;' + 
-								 'set repaintWaitMs 1500;' + 
-								 'x=defaultdirectory;' + 
-								 'data "directory @x";' + 
-								 'set MessageCallback "jmolMessageHandler";' + 
-								 'show defaultdirectory;';
-		}
+		_this.update_state_script();
 
 		jmolSetDocument(false);
 		var sleep_btn = $("<button />")
 			.text("Show Static Image")
 			.addClass("btn")
-			.css({ "margin-bottom": "5px" })
+			.css({
+				"margin-bottom": "5px",
+				"margin-right": "5px"
+			})
 			.click(_this.sleep);
-		_this.container.append(sleep_btn, $("<br>"), jmolApplet(_this.dimensions, _this.state_script, _this.suffix));
+		var popup_btn = $("<button />")
+			.text("Popout")
+			.addClass("btn")
+			.css({ "margin-bottom": "5px" })
+			.click(_this.popup);
+		_this.container.append(sleep_btn,
+							   popup_btn,
+							   $("<br>"),
+							   jmolApplet(_this.dimensions, _this.state_script, _this.suffix));
+
+		_this.container.addClass("alive");
 	};
 	_this.sleep = function() {
 		if (_this.is_alive()) {
-			//_this.update_state_script();
+			_this.update_state_script();
 			_this.static_img_url = "data:image/jpeg;base64, " + jmolGetPropertyAsString("image", "", _this.suffix);
 		}
 		_this.container.children().detach();
@@ -71,31 +71,44 @@ sagenb.Jmol.Jmol_instance = function(container) {
 		jmolResizeApplet(dimensions, _this.suffix);
 	};
 	_this.update_state_script = function() {
-		// it seems like we could use _this.url here instead
-		var default_dir = jmolEvaluate("x", _this.suffix);
+		var default_dir = _this.url.split("?")[0];
 
-		var stateStr = "#a comment to guarrantee one line\n";
-		stateStr += jmolGetPropertyAsString("stateInfo", "", _this.suffix);
-		var re_modelinline = /data "model list"(.|\n|\r)*end "model list"/;
-		if(stateStr.match(re_modelinline)) {
-			//If we didn't get a good response we'll ignore and get later
-			var modelStr = (stateStr.match(re_modelinline))[0];
-			modelStr = modelStr.replace(/\r\n/g,'|').replace(/\r/g, '|').replace(/\n/g,'|').replace(/\|\|/g, '|');
-			modelStr = 'fix between here ' + modelStr + ' and here';
-			stateStr = stateStr.replace(re_modelinline, modelStr);
+		/*if(_this.is_alive()) {
+			var stateStr = "#a comment to guarrantee one line\n";
+			stateStr += jmolGetPropertyAsString("stateInfo", "", _this.suffix);
+			var re_modelinline = /data "model list"(.|\n|\r)*end "model list"/;
+			if(stateStr.match(re_modelinline)) {
+				//If we didn't get a good response we'll ignore and get later
+				var modelStr = (stateStr.match(re_modelinline))[0];
+				modelStr = modelStr.replace(/\r\n/g, '|').replace(/\r/g, '|').replace(/\n/g, '|').replace(/\|\|/g, '|');
+				modelStr = 'fix between here ' + modelStr + ' and here';
+				stateStr = stateStr.replace(re_modelinline, modelStr);
+			}
+
+			_this.state_script = 'set defaultdirectory="' + default_dir + '";\n' + stateStr;
+		}*/
+
+		if(!_this.state_script) {
+			_this.state_script = 'set defaultdirectory "' + default_dir + '";' + 
+								 'script "' + _this.url + '";' + 
+								 'isosurface fullylit;' + 
+								 'pmesh o* fullylit;' + 
+								 'set antialiasdisplay on;' + 
+								 'set repaintWaitMs 1500;' + 
+								 'x=defaultdirectory;' + 
+								 'data "directory @x";' + 
+								 'set MessageCallback "jmolMessageHandler";' + 
+								 'show defaultdirectory;';
 		}
-
-		_this.state_script = 'set defaultdirectory=\"' + default_dir +'\";\n' + stateStr;
 	};
 	_this.popup = function() {
 		_this.sleep();
-		var win = window.open("", "jmol viewer", "width=600,height=600,resizable=1,statusbar=0");
-		win.document.body.innerHTML = "";
-		win.document.title = "Sage 3d Viewer";
-		// win.document.writeln("<h1 align=center>Sage 3d Viewer</h1>");
-		jmolSetDocument(win.document);
-		jmolApplet("100%", _this.get_state_script(), _this.suffix);
-		win.focus();
+		_this.popup_win = window.open("", "jmol_viewer" + _this.suffix, "width=600,height=600,resizable=1,statusbar=0");
+		_this.popup_win.document.title = "Sage 3d Viewer";
+		jmolSetDocument(_this.popup_win.document);
+		jmolApplet("100%", _this.state_script, _this.suffix);
+		$(_this.popup_win.document.body).css({ "margin": "0" });
+		_this.popup_win.focus();
 	};
 	_this.spin = function(s) {
 		if(s) {
