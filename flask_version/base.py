@@ -31,6 +31,7 @@ class SageNBFlask(Flask):
         
         import mimetypes
         mimetypes.add_type('text/plain', '.jmol')
+        mimetypes.add_type('font/opentype', '.otf')
 
         #######
         # Doc #
