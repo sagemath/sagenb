@@ -92,6 +92,7 @@ def worksheet(username, id, worksheet=None):
     s = g.notebook.html(worksheet_filename=worksheet.filename(),
                         username=g.username)
     return s
+    return render_template(os.path.join('html', 'worksheet.html'))
 
 published_commands_allowed = set(['alive', 'cells', 'cell_update',
                           'data', 'download', 'edit_published_page', 'eval',
@@ -656,8 +657,6 @@ def worksheet_revisions(worksheet):
             return redirect(url_for_worksheet(W))
         else:
             return current_app.message(_('Error'))
-
-
         
 ########################################################
 # Cell directories 
@@ -668,6 +667,7 @@ def worksheet_cells(worksheet, filename):
     #the server.
     from flask.helpers import send_from_directory
     return send_from_directory(worksheet.cells_directory(), filename)
+
 
 ##############################################
 # Data

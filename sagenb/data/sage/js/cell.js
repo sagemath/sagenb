@@ -316,10 +316,6 @@ sagenb.worksheetapp.cell = function(id) {
 				   (b.indexOf('<div class="math">') !== -1);
 		}
 		
-		function output_contains_jmol(b) {
-			return (b.indexOf('jmol_applet') !== -1);
-		}
-		
 		// take the output off the dom
 		$("#cell_" + _this.id + " .output_cell").detach();
 		
@@ -330,57 +326,40 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 		
 		// the .output_cell div needs to be created
-		var output_cell_dom = $("<div class=\"output_cell\" id=\"output_" + _this.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
-		
-		/* TODO scrap JMOL, use three.js. Right now using 
-		 applets screws up when you scoll an applet over the
-		 navbar. Plus three.js is better supported, more modern,
-		 etc.*/
-		/* This method creates an iframe inside the output_cell
-		 * and then dumps the output stuff inside the frame
-		 */
-		if(output_contains_jmol(a)) {
-			var jmol_frame = $("<iframe />").addClass("jmol_frame").appendTo(output_cell_dom);
-			window.cell_writer = jmol_frame[0].contentDocument;
-			
-			output_cell_dom.append(a);
-			
-			$(cell_writer.body).css("margin", "0");
-			$(cell_writer.body).css("padding", "0");
-			
-			return;
-		}
+		var $output_cell = $("<div class=\"output_cell\" id=\"output_" + _this.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
 		
 		// insert the new output
-		output_cell_dom.html(a);
+		$output_cell.html(a);
+
+		if($output_cell.find(".Jmol_instance").length > 0) {
+			var Jmol_instance = new sagenb.Jmol.Jmol_instance($output_cell.find(".Jmol_instance"));
+		}
 		
 		if(output_contains_latex(a)) {
 			/* \( \) is for inline and \[ \] is for block mathjax */
 			
-			var output_cell = $("#cell_" + _this.id + " .output_cell");
-			
-			if(output_cell.contents().length === 1) {
+			if($output_cell.contents().length === 1) {
 				// only one piece of math, make it big
 				/* using contents instead of children guarantees that we
 				 * get all other types of nodes including text and comments.
 				 */
 				
-				output_cell.html("\\[" + output_cell.find(".math").html() + "\\]");
+				$output_cell.html("\\[" + $output_cell.find(".math").html() + "\\]");
 				
 				// mathjax the ouput
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, output_cell[0]]);
+				MathJax.Hub.Queue(["Typeset", MathJax.Hub, $output_cell[0]]);
 				
 				return;
 			}
 			
 			// mathjax each span with \( \)
-			output_cell.find("span.math").each(function(i, element) {
+			$output_cell.find("span.math").each(function(i, element) {
 				$(element).html("\\(" + $(element).html() + "\\)");
 				MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
 			});
 			
 			// mathjax each div with \[ \]
-			output_cell.find("div.math").each(function(i, element) {
+			$output_cell.find("div.math").each(function(i, element) {
 				$(element).html("\\[" + $(element).html() + "\\]");
 				MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
 			});

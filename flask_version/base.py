@@ -30,8 +30,7 @@ class SageNBFlask(Flask):
         
         
         import mimetypes
-        mimetypes.add_type('text/plain','.jmol')
-
+        mimetypes.add_type('text/plain', '.jmol')
 
         #######
         # Doc #
@@ -164,6 +163,7 @@ def mathjax_js():
         data = render_template('js/mathjax_sage.js', theme_mathjax_macros=mathjax_macros)
         _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
     data,datahash = _mathjax_js_cache
+
 #
 #    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
 #        response = make_response('',304)

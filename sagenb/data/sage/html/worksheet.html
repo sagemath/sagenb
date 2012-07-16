@@ -70,10 +70,10 @@
 			<button type="button" class="btn btn-primary" id="previous_cell"><i class="icon-step-backward icon-white"></i></button>
 		</div>
 		
-		<div class="progress_text">1/4</div>
+		<div class="progress_text"></div>
 		
 		<div class="progress">
-			<div class="bar" style="width: 25%;"></div>
+			<div class="bar" style="width: 0%;"></div>
 		</div>
 		
 		<div class="right_controls">
@@ -96,6 +96,8 @@
 	{% include 'html/modals/system_modal.html' %}
 	{% include 'html/modals/import_modal.html' %}
 	{% include 'html/modals/data_modal.html' %}
+
+	<iframe src="#" id="Jmol_zindex_fix"></iframe>
 {% endblock after_container %}
 
 {% block extra_javascript %}
@@ -128,15 +130,14 @@
 	<script src="/data/CodeMirror-2.3/mode/htmlmixed/htmlmixed.js"></script>
 	<!-- END CodeMirror -->
 
-	<!-- Jmol stuff -->
-	<script type="text/javascript" src="/data/sage/js/jmol_lib.js"></script>
-
 	<!-- Sage3d - accelerated 3D graphics -->
 	<script type="text/javascript" src="/data/sage3d/sage3d.js"></script>
 
 	<!-- Jmol - embedded 3D graphics -->
-	<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
+	<script type="text/javascript" src="/java/jmol/Jmol.js"></script>
 	<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
+
+	<script type="text/javascript" src="/data/sage/js/jmol.js"></script>
 
 	<!-- Worksheet related javascript -->
     <script type="text/javascript" charset="utf-8" src="/data/sage/js/worksheet.js"></script>

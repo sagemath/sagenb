@@ -2420,10 +2420,8 @@ class Cell(Cell_generic):
                     jmol_file.write(jmol_script)
                     jmol_file.close()
 
-                #script = '<div><script>jmol_applet(%s, "%s?%d");</script></div>' % (size, url, time.time())
-                script = '<div id = "jmol_static%s">Sleeping...<button onClick="javascript:void(jmol_launch(%s, \'%s?%d\', %s))">Make Interactive</button>'  % (self._id, size, url, time.time(), self._id)
                 image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
-                script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
+                script = '<div class="Jmol_instance" data-url="' + url + '" data-img="' + image_name + '.png"></div>'
                 images.append(script)
                 jmolimagebase = F
                 hasjmol=True
