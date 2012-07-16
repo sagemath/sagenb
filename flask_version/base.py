@@ -133,7 +133,9 @@ from hashlib import sha1
 @base.route('/javascript/dynamic/username.js')
 @guest_or_login_required
 def username_js():
-    return render_template(os.path.join('js', 'username.js'), username = g.username)
+    r = make_response(render_template(os.path.join('js', 'username.js'), username = g.username))
+    r.mimetype = "application/javascript"
+    return r
 
 _localization_cache = {}
 @base.route('/data/sage/js/localization.js')
