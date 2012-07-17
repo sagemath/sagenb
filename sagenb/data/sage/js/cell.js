@@ -331,8 +331,9 @@ sagenb.worksheetapp.cell = function(id) {
 		// insert the new output
 		$output_cell.html(a);
 
-		if($output_cell.find(".Jmol_instance").length > 0) {
-			var Jmol_instance = new sagenb.Jmol.Jmol_instance($output_cell.find(".Jmol_instance"));
+		if($output_cell.find(".jmol_instance").length > 0) {
+			var jmol_instance = new sagenb.jmol.jmol_inline($output_cell.find(".jmol_instance"));
+			jmol_instance.init();
 		}
 		
 		if(output_contains_latex(a)) {

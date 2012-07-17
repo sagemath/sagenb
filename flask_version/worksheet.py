@@ -174,7 +174,6 @@ def worksheet_conf(worksheet):
 ########################################################
 # Save a worksheet
 ########################################################
-
 @worksheet_command('save')
 def worksheet_save(worksheet):
     """
@@ -285,8 +284,6 @@ def worksheet_set_cell_output_type(worksheet):
 #Cell creation
 ########################################################
 from sagenb.misc.misc import unicode_str
-
-
 @worksheet_command('new_cell_before')
 def worksheet_new_cell_before(worksheet):
     """Add a new cell before a given cell."""
@@ -351,7 +348,6 @@ def worksheet_new_text_cell_after(worksheet):
 ########################################################
 # Cell deletion
 ########################################################
-
 @worksheet_command('delete_cell')
 def worksheet_delete_cell(worksheet):
     """
@@ -793,7 +789,6 @@ def worksheet_new_datafile(worksheet):
 ################################
 #Publishing
 ################################
-
 # TODO remove templating here
 @worksheet_command('publish')
 def worksheet_publish(worksheet):
@@ -995,6 +990,7 @@ def worksheet_file(path):
     # remove it here.
     W.cell_list().pop()
     
+    # TODO
     return g.notebook.html(worksheet_filename=W.filename(),
                            username=g.username)
 
@@ -1012,3 +1008,11 @@ def pub_worksheet(source):
     proxy.set_tags({'_pub_': [True]})
     proxy.save()
     return proxy
+
+#######################################################
+# Jmol Popup
+#######################################################
+@ws.route('/home/<username>/<id>/jmol_popup.html', methods=['GET'])
+@login_required
+def jmol_popup(username, id):
+    return render_template(os.path.join('html', 'jmol_popup.html'))

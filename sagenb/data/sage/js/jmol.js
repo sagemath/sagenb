@@ -1,9 +1,9 @@
-sagenb.Jmol = {};
+sagenb.jmol = {};
 
-sagenb.Jmol.Jmol_instance = function(container) {
+sagenb.jmol.jmol_inline = function(container) {
 	var _this = this;
 
-	if(!container.hasClass("Jmol_instance")) {
+	if(!container.hasClass("jmol_instance")) {
 		throw "Not a Jmol container";
 		return;
 	}
@@ -16,12 +16,16 @@ sagenb.Jmol.Jmol_instance = function(container) {
 
 	_this.state_script = null;
 
-	// get random id
-	_this.suffix = Math.floor(Math.random() * 1000000);
-	while($("#Jmol_instance" + _this.suffix).length > 0) {
+	_this.init = function() {
+		// get random id
 		_this.suffix = Math.floor(Math.random() * 1000000);
-	}
-	_this.container.attr("id", "Jmol_instance" + _this.suffix);
+		while($("#jmol_instance" + _this.suffix).length > 0) {
+			_this.suffix = Math.floor(Math.random() * 1000000);
+		}
+		_this.container.attr("id", "jmol_instance" + _this.suffix);
+
+		_this.sleep();
+	};
 
 	_this.is_alive = function() {
 		return _this.container.hasClass("alive");
@@ -34,15 +38,10 @@ sagenb.Jmol.Jmol_instance = function(container) {
 		var sleep_btn = $("<button />")
 			.text("Show Static Image")
 			.addClass("btn")
-			.css({
-				"margin-bottom": "5px",
-				"margin-right": "5px"
-			})
 			.click(_this.sleep);
 		var popup_btn = $("<button />")
 			.text("Popout")
 			.addClass("btn")
-			.css({ "margin-bottom": "5px" })
 			.click(_this.popup);
 		_this.container.append(sleep_btn,
 							   popup_btn,
@@ -54,17 +53,20 @@ sagenb.Jmol.Jmol_instance = function(container) {
 	_this.sleep = function() {
 		if (_this.is_alive()) {
 			_this.update_state_script();
-			_this.static_img_url = "data:image/jpeg;base64, " + jmolGetPropertyAsString("image", "", _this.suffix);
+			// _this.static_img_url = "data:image/jpeg;base64, " + jmolGetPropertyAsString("image", "", _this.suffix);
 		}
 		_this.container.children().detach();
 		_this.container.removeClass("alive");
 		var appletify_btn = $("<button />")
 			.text("Open Interactive View")
 			.addClass("btn")
-			.css({ "margin-bottom": "5px" })
 			.click(_this.appletify);
+		var popup_btn = $("<button />")
+			.text("Popout")
+			.addClass("btn")
+			.click(_this.popup);
 		var static_img = $("<img />").attr("src", _this.static_img_url);
-		_this.container.append(appletify_btn, $("<br>"), static_img);
+		_this.container.append(appletify_btn, popup_btn, $("<br>"), static_img);
 	};
 	_this.resize = function(dimensions) {
 		_this.dimensions = dimensions;
@@ -103,29 +105,50 @@ sagenb.Jmol.Jmol_instance = function(container) {
 	};
 	_this.popup = function() {
 		_this.sleep();
-		_this.popup_win = window.open("", "jmol_viewer" + _this.suffix, "width=600,height=600,resizable=1,statusbar=0");
-		_this.popup_win.document.title = "Sage 3d Viewer";
-		jmolSetDocument(_this.popup_win.document);
-		jmolApplet("100%", _this.state_script, _this.suffix);
-		$(_this.popup_win.document.body).css({ "margin": "0" });
-		_this.popup_win.focus();
+		_this.update_state_script();
+		_this.popup_win = window.open("jmol_popup.html", "jmol_viewer" + _this.suffix, "width=600,height=600,resizable=1,statusbar=0");
+		_this.popup_win.onload = function() {
+			_this.popup_win.the_popup = new sagenb.jmol.jmol_popup(_this.popup_win);
+			_this.popup_win.the_popup.state_script = _this.state_script;
+			_this.popup_win.the_popup.url = _this.url;
+			_this.popup_win.the_popup.suffix = _this.suffix + "popup";
+			_this.popup_win.the_popup.init();
+			_this.popup_win.focus();
+		};
 	};
+}
+
+sagenb.jmol.jmol_popup = function(win) {
+	var _this = this;
+
+	_this.win = win;
+	_this.container = $(".jmol_instance", _this.win.document);
+	
+	_this.init = function() {
+		jmolSetDocument(false);
+		_this.container.html(jmolApplet("100%", _this.state_script, _this.suffix));
+
+		function on_resize() {
+			_this.container.height(_this.container.width());
+		}
+		$(_this.win).resize(on_resize);
+		on_resize();
+	};
+
 	_this.spin = function(s) {
 		if(s) {
-			jmolScriptWait("spin on", _this.suffix);
+			jmolScriptWait("spin on", "");
 		}
 		else {
-			jmolScriptWait("spin off", _this.suffix);
+			jmolScriptWait("spin off", "");
 		}
 	};
 	_this.antialias = function(s) {
 		if(s) {
-			jmolScriptWait("set antialiasdisplay on", _this.suffix);
+			jmolScriptWait("set antialiasdisplay on", "");
 		}
 		else {
-			jmolScriptWait("set antialiasdisplay off", _this.suffix);
+			jmolScriptWait("set antialiasdisplay off", "");
 		}
 	};
-
-	_this.sleep();
 }

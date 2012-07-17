@@ -2421,7 +2421,7 @@ class Cell(Cell_generic):
                     jmol_file.close()
 
                 image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
-                script = '<div class="Jmol_instance" data-url="' + url + '" data-img="' + image_name + '.png"></div>'
+                script = '<div class="jmol_instance" data-url="' + url + '" data-img="' + image_name + '.png"></div>'
                 images.append(script)
                 jmolimagebase = F
                 hasjmol=True
