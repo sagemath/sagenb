@@ -378,7 +378,7 @@ function bind_events() {
         var cell_id = get_cell_id_from_id(id);
         return input_keypress(cell_id, event);
     });
-    $('body').on('click', 'input.eval_button', function () {
+    $('body').on('click', 'input.eval_button_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         evaluate_cell(cell_id, 0);
