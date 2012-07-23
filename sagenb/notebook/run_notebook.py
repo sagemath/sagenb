@@ -292,8 +292,8 @@ def notebook_twisted(self,
 
     if accounts is not None:
         nb.user_manager().set_accounts(accounts)
-    elif not nb.conf()['accounts']:
-        nb.user_manager().set_accounts(True)
+    else:
+        nb.user_manager().set_accounts(nb.conf()['accounts'])
     
     if nb.user_manager().user_exists('root') and not nb.user_manager().user_exists('admin'):
         # This is here only for backward compatibility with one
