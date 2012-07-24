@@ -89,9 +89,6 @@ def worksheet(username, id, worksheet=None):
     # /home/pub/* is handled in worksheet_listing.py
     assert worksheet is not None
     worksheet.sage()
-    s = g.notebook.html(worksheet_filename=worksheet.filename(),
-                        username=g.username)
-    return s
     return render_template(os.path.join('html', 'worksheet.html'))
 
 published_commands_allowed = set(['alive', 'cells', 'cell_update',
@@ -583,10 +580,6 @@ def worksheet_edit_published_page(worksheet):
 ########################################################
 # Collaborate with others
 ########################################################
-@worksheet_command('share')
-def worksheet_share(worksheet):
-    return g.notebook.html_share(worksheet, g.username)
-
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
     owner = worksheet.owner()
@@ -613,7 +606,7 @@ def worksheet_invite_collab(worksheet):
             # user doesn't exist
             pass
 
-    return redirect(url_for_worksheet(worksheet))
+    return ''
     
 ########################################################
 # Revisions
@@ -682,18 +675,18 @@ def worksheet_delete_datafile(worksheet):
     os.unlink(path)
     return ''
 
-@worksheet_command('save_datafile')
-def worksheet_save_datafile(worksheet):
-    filename = request.values['filename']
-    if 'button_save' in request.values:
-        text_field = request.values['textfield'] #XXX: Should this be text_field
-        dest = os.path.join(worksheet.data_directory(), filename) #XXX: Requires access to filesystem
-        if os.path.exists(dest):
-            os.unlink(dest)
-        open(dest, 'w').write(text_field)
+# @worksheet_command('save_datafile')
+# def worksheet_save_datafile(worksheet):
+#     filename = request.values['filename']
+#     if 'button_save' in request.values:
+#         text_field = request.values['textfield'] #XXX: Should this be text_field
+#         dest = os.path.join(worksheet.data_directory(), filename) #XXX: Requires access to filesystem
+#         if os.path.exists(dest):
+#             os.unlink(dest)
+#         open(dest, 'w').write(text_field)
 
-    # TODO
-    return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
+#     # TODO
+#     return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
 # @worksheet_command('link_datafile')
 # def worksheet_link_datafile(worksheet):
@@ -786,7 +779,6 @@ def worksheet_new_datafile(worksheet):
 ################################
 #Publishing
 ################################
-# TODO remove templating here
 @worksheet_command('publish')
 def worksheet_publish(worksheet):
     """
@@ -815,29 +807,29 @@ def worksheet_publish(worksheet):
 ############################################
 # Ratings
 ############################################
-@worksheet_command('rating_info')
-def worksheet_rating_info(worksheet):
-    return worksheet.html_ratings_info()
+# @worksheet_command('rating_info')
+# def worksheet_rating_info(worksheet):
+#     return worksheet.html_ratings_info()
 
-@worksheet_command('rate')
-def worksheet_rate(worksheet):
-    ## if user_type(self.username) == "guest":
-    ##     return HTMLResponse(stream = message(
-    ##         'You must <a href="/">login first</a> in order to rate this worksheet.', ret))
+# @worksheet_command('rate')
+# def worksheet_rate(worksheet):
+#     ## if user_type(self.username) == "guest":
+#     ##     return HTMLResponse(stream = message(
+#     ##         'You must <a href="/">login first</a> in order to rate this worksheet.', ret))
 
-    rating = int(request.values['rating'])
-    if rating < 0 or rating >= 5:
-        return current_app.messge("Gees -- You can't fool the rating system that easily!",
-                          url_for_worksheet(worksheet))
+#     rating = int(request.values['rating'])
+#     if rating < 0 or rating >= 5:
+#         return current_app.messge("Gees -- You can't fool the rating system that easily!",
+#                           url_for_worksheet(worksheet))
 
-    comment = request.values['comment']
-    worksheet.rate(rating, comment, g.username)
-    s = """
-    Thank you for rating the worksheet <b><i>%s</i></b>!
-    You can <a href="rating_info">see all ratings of this worksheet.</a>
-    """%(worksheet.name())
-    #XXX: Hardcoded url
-    return current_app.message(s.strip(), '/pub/', title=u'Rating Accepted')
+#     comment = request.values['comment']
+#     worksheet.rate(rating, comment, g.username)
+#     s = """
+#     Thank you for rating the worksheet <b><i>%s</i></b>!
+#     You can <a href="rating_info">see all ratings of this worksheet.</a>
+#     """%(worksheet.name())
+#     #XXX: Hardcoded url
+#     return current_app.message(s.strip(), '/pub/', title=u'Rating Accepted')
 
 
 ########################################################
@@ -931,42 +923,42 @@ def doc_worksheet():
         W = g.notebook.create_new_worksheet('', '_sage_')
     return W
 
-def extract_title(html_page):
-    #XXX: This might be better as a regex
-    h = html_page.lower()
-    i = h.find('<title>')
-    if i == -1:
-        return gettext("Untitled")
-    j = h.find('</title>')
-    return html_page[i + len('<title>') : j]
+# def extract_title(html_page):
+#     #XXX: This might be better as a regex
+#     h = html_page.lower()
+#     i = h.find('<title>')
+#     if i == -1:
+#         return gettext("Untitled")
+#     j = h.find('</title>')
+#     return html_page[i + len('<title>') : j]
 
-@login_required
-def worksheet_file(path):
-    # Create a live Sage worksheet from the given path.
-    if not os.path.exists(path):
-        return current_app.message(_('Document does not exist.'))
+# @login_required
+# def worksheet_file(path):
+#     # Create a live Sage worksheet from the given path.
+#     if not os.path.exists(path):
+#         return current_app.message(_('Document does not exist.'))
 
-    doc_page_html = open(path).read()
-    from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
-    doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
+#     doc_page_html = open(path).read()
+#     from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
+#     doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
 
-    title = (extract_title(doc_page_html).replace('&mdash;', '--') or
-             'Live Sage Documentation')
+#     title = (extract_title(doc_page_html).replace('&mdash;', '--') or
+#              'Live Sage Documentation')
 
-    W = doc_worksheet()
-    W.edit_save(doc_page)
-    W.set_system('sage')
-    W.set_name(title)
-    W.save()
-    W.quit()
+#     W = doc_worksheet()
+#     W.edit_save(doc_page)
+#     W.set_system('sage')
+#     W.set_name(title)
+#     W.save()
+#     W.quit()
 
-    # FIXME: For some reason, an extra cell gets added so we
-    # remove it here.
-    W.cell_list().pop()
+#     # FIXME: For some reason, an extra cell gets added so we
+#     # remove it here.
+#     W.cell_list().pop()
     
-    # TODO
-    return g.notebook.html(worksheet_filename=W.filename(),
-                           username=g.username)
+#     # TODO
+#     return g.notebook.html(worksheet_filename=W.filename(),
+#                            username=g.username)
 
 
 ####################
