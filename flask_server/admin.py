@@ -3,73 +3,83 @@ from flask import Module, url_for, render_template, request, session, redirect, 
 from decorators import login_required, admin_required, with_lock
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
+from sagenb.notebook.misc import encode_response
 
 admin = Module('flask_server.admin')
 
-# '/users' does not work, because current template calls urls like '/users/?reset=...'
-@admin.route('/users/')
+def random_password(length=8):
+    from random import choice
+    import string
+    chara = string.letters + string.digits
+    return ''.join([choice(chara) for i in range(length)])
+
+@admin.route('/manage_users')
 @admin_required
 @with_lock
-def users():
+def manage_users():
     template_dict = {}
-
-    if 'reset' in request.values:
-        user = request.values['reset']
-        from random import choice
-        import string
-        chara = string.letters + string.digits
-        password = ''.join([choice(chara) for i in range(8)])
-        try:
-            U = g.notebook.user_manager().user(user)
-            g.notebook.user_manager().set_password(user, password)
-        except KeyError:
-            pass
-        template_dict['reset'] = [user, password]
-
-    if 'suspension' in request.values:
-        user = request.values['suspension']
-        try:
-            U = g.notebook.user_manager().user(user)
-            U.set_suspension()
-        except KeyError:
-            pass
-
     template_dict['number_of_users'] = len(g.notebook.user_manager().valid_login_names()) if len(g.notebook.user_manager().valid_login_names()) > 1 else None
     users = sorted(g.notebook.user_manager().valid_login_names())
     del users[users.index('admin')]
     template_dict['users'] = [g.notebook.user_manager().user(username) for username in users]
-    template_dict['admin'] = g.notebook.user_manager().user(g.username).is_admin()
-    template_dict['username'] = g.username
-    return render_template(os.path.join('html', 'settings', 'user_management.html'), **template_dict)
+    return render_template(os.path.join('html', 'settings', 'manage_users.html'), **template_dict)
 
-@admin.route('/adduser', methods = ['GET','POST'])
+@admin.route('/reset_user_password', methods = ['POST'])
+@admin_required
+@with_lock
+def reset_user_password():
+    user = request.values['username']
+    password = random_password()
+    try:
+        # U = g.notebook.user_manager().user(user)
+        g.notebook.user_manager().set_password(user, password)
+    except KeyError:
+        pass
+
+    return encode_response({
+        'message': _('The temporary password for the new user <strong>%(username)s</strong> is <strong>%(password)s</strong>',
+                          username=user, password=password)
+    })
+
+@admin.route('/suspend_user', methods = ['POST'])
+@admin_required
+@with_lock
+def suspend_user():
+    user = request.values['username']
+    try:
+        U = g.notebook.user_manager().user(user)
+        U.set_suspension()
+    except KeyError:
+        pass
+
+    return encode_response({
+        'message': _('User <strong>%(username)s</strong> has been suspended/unsuspended.', username=user)
+    })
+
+@admin.route('/add_user', methods = ['POST'])
 @admin_required
 @with_lock
 def add_user():
     from sagenb.notebook.misc import is_valid_username
-    template_dict = {'admin': g.notebook.user_manager().user(g.username).is_admin(),
-                     'username': g.username}
-    if 'username' in request.values:
-        username = request.values['username']
-        if not is_valid_username(username):
-            return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
-                                   error='username_invalid', username=username, **template_dict)
 
-        from random import choice
-        import string
-        chara = string.letters + string.digits
-        password = ''.join([choice(chara) for i in range(8)])
-        if username in g.notebook.user_manager().usernames():
-            return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
-                                   error='username_taken', username_input=username, **template_dict)
-        g.notebook.user_manager().add_user(username, password, '', force=True)
+    username = request.values['username']
+    password = random_password()
 
-        message = _('The temporary password for the new user <em>%(username)s</em> is <em>%(password)s</em>',
-                          username=username, password=password)
-        return current_app.message(message, cont='/adduser', title=_('New User'))
-    else:
-        return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
-                               **template_dict)
+    if not is_valid_username(username):
+        return encode_response({
+            'error': _('<strong>Invalid username!</strong>')
+        })
+
+    if username in g.notebook.user_manager().usernames():
+        return encode_response({
+            'error': _('The username <strong>%(username)s</strong> is already taken!', username=username)
+        })
+
+    g.notebook.user_manager().add_user(username, password, '', force=True)
+    return encode_response({
+        'message': _('The temporary password for the new user <strong>%(username)s</strong> is <strong>%(password)s</strong>',
+                      username=username, password=password)
+    })
 
 @admin.route('/notebooksettings', methods=['GET', 'POST'])
 @admin_required
