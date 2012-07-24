@@ -410,6 +410,7 @@ sagenb.worksheetapp.cell = function(id) {
 		});
 
 		tooltip_root.popover("show");
+		MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(".popover")[0]]);
 
 		var safety = 50;
 		var off = $(".popover-inner").offset();
