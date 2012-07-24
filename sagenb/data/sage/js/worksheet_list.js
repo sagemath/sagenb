@@ -21,14 +21,14 @@ sagenb.worksheetlistapp.list_row = function() {
 	};
 	
 	_this.render = function() {
-		$("tbody").append('<tr id="row_' + _this.props.id_number + '">' + 
+		$("tbody").append('<tr id="row_' + _this.props.filename.replace("/", "_") + '">' + 
 				'<td class="checkbox_cell"><input type="checkbox"></td>' + 
 				'<td class="worksheet_name_cell"></td>' + 
 				'<td class="owner_cell"></td>' + 
 				'<td class="last_edit_cell"></td>' + 
 			'</tr>');
 		
-		$this = $("#row_" + _this.props.id_number);
+		$this = $("#row_" + _this.props.filename.replace("/", "_"));
 		
 		// checkbox
 		$this.find("input").change(function(e) {
@@ -63,7 +63,7 @@ sagenb.worksheetlistapp.list_row = function() {
 	_this.remove = function() {
 		$this.hide("slow", function() {
 			$this.detach();
-			delete _this.list.rows[_this.props.id_number];
+			delete _this.list.rows[_this.props.filename];
 		});
 	}
 	
@@ -81,7 +81,11 @@ sagenb.worksheetlistapp.list_row = function() {
 sagenb.worksheetlistapp.worksheet_list = function() {
 	var _this = this;
 	
-	_this.rows = [];
+	/* Key-value object of all of the worksheet rows.
+	Uses worksheet filenames as keys because id numbers
+	are unique to users but not to the entire notebook.
+	Therefore, the admin will run into errors. */
+	_this.rows = {};
 	
 	_this.refresh_interval_id = null;
 	_this.refresh_interval = 10 * 1000;
@@ -122,12 +126,12 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	
 	///////// FOR EACH ///////////
 	_this.for_each_row = function(f) {
-		$.each(_this.rows, function(i, list_row) {
+		$.each(_this.rows, function(filename, list_row) {
 			if(list_row) f(list_row);
 		});
 	};
 	_this.for_each_checked_row = function(f) {
-		$.each(_this.rows, function(i, list_row) {
+		$.each(_this.rows, function(filename, list_row) {
 			if(list_row && list_row.checked) f(list_row);
 		});
 	};
@@ -238,7 +242,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	
 	_this.clear_list = function() {
 		$("table tbody tr").detach();
-		_this.rows = [];
+		_this.rows = {};
 	};
 	_this.load = function(params, extra_callback) {
 		var url = "/worksheet_list";
@@ -256,7 +260,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 				row.props = X.worksheets[i];
 				row.list = _this;
 				
-				_this.rows[row.props.id_number] = row;
+				_this.rows[row.props.filename] = row;
 				
 				row.render();
 			}
