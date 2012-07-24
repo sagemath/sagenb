@@ -162,7 +162,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		window.open("/new_worksheet");
 	};
 	_this.upload_worksheet = function() {
-		// TODO
+		//
 	};
 	_this.download_all_active = function() {
 		window.location.replace("/download_worksheets.zip");
