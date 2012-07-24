@@ -170,7 +170,7 @@ sagenb.worksheetapp.cell = function(id) {
 				indentWithTabs: false,
 				tabSize: 4,
 				indentUnit: 4,
-				lineNumbers: false,
+				lineNumbers: $("#line_numbers_checkbox").prop("checked"),
 				matchBrackets: true,
 				
 				mode: _this.get_codemirror_mode(),
