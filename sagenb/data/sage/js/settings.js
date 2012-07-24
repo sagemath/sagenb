@@ -27,11 +27,19 @@ sagenb.settings.setup_manage_users_page = function() {
 		});
 	});
 	$(".reset_user_password_button").click(function(e) {
+		// TODO gettext
+		if(!confirm("Are you sure you want to reset " + 
+			$(this).parent().parent().data("username") + 
+			"'s password?")) return;
 		sagenb.async_request("/reset_user_password", cb, {
 			username: $(this).parent().parent().data("username")
 		});
 	});
 	$(".suspend_user_button").click(function(e) {
+		// TODO gettext
+		if(!confirm("Are you sure you want to suspend/unsuspend " + 
+			$(this).parent().parent().data("username") + 
+			"'s account?")) return;
 		sagenb.async_request("/suspend_user", sagenb.generic_callback(function(status, response) {
 			window.location.reload();
 		}), {
