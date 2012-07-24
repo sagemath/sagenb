@@ -291,21 +291,6 @@ class Worksheet(object):
             sage: sorted((W.basic().items()))
             [('auto_publish', False), ('collaborators', []), ('id_number', 0), ('last_change', ('sage', ...)), ('name', u'test'), ('owner', 'sage'), ('pretty_print', False), ('published_id_number', None), ('ratings', []), ('saved_by_info', {}), ('system', None), ('tags', {'sage': [1]}), ('viewers', []), ('worksheet_that_was_published', ('sage', 0))]
         """
-        try:
-            published_id_number = int(os.path.split(self.__published_version)[1])
-        except AttributeError:
-            published_id_number = None
-
-        try:
-            ws_pub = self.__worksheet_came_from
-        except AttributeError:
-            ws_pub = (self.owner(), self.id_number())
-
-        try:
-            saved_by_info = self.__saved_by_info 
-        except AttributeError:
-            saved_by_info = {}
-
         d = {#############
              # basic identification
              'name': unicode(self.name()),
@@ -321,20 +306,6 @@ class Worksheet(object):
              'viewers': self.viewers(),
              'collaborators': self.collaborators(),
 
-             #############
-             # publishing worksheets (am I published?); auto-publish me?
-             # If this worksheet is published, then the published_id_number
-             # is the id of the published version of this worksheet. Otherwise,
-             # it is None.
-             'published_id_number': published_id_number,
-             # If this is a published worksheet, then ws_pub
-             # is a 2-tuple ('username', id_number) of a non-published
-             # worksheet.  Otherwise ws_pub is None.
-             'worksheet_that_was_published': ws_pub,
-             # Whether or not this worksheet should automatically be
-             # republished when changed.
-             'auto_publish': self.is_auto_publish(),
-
              # Appearance: e.g., whether to pretty print this
              # worksheet by default
              'pretty_print': self.pretty_print(),
@@ -343,9 +314,6 @@ class Worksheet(object):
              # triples
              #       (username, rating, comment)
              'ratings': self.ratings(),
-
-             #???
-             'saved_by_info':saved_by_info,
 
              # dictionary mapping usernames to list of tags that
              # reflect what the tages are for that user.  A tag can be
@@ -366,7 +334,30 @@ class Worksheet(object):
              'running': self.compute_process_has_been_started(),
 
              'attached_data_files': self.attached_data_files()
-             }
+        }
+
+        try:
+            d['saved_by_info'] = self.__saved_by_info 
+        except AttributeError:
+            d['saved_by_info'] = {}
+
+        try:
+            d['worksheet_that_was_published'] = self.__worksheet_came_from
+        except AttributeError:
+            d['worksheet_that_was_published'] = (self.owner(), self.id_number())
+
+        if self.has_published_version():
+            d['published'] = True
+            d['auto_publish'] = self.is_auto_publish()
+
+            from time import strftime
+            d['published_time'] = strftime("%B %d, %Y %I:%M %p", self.published_version().date_edited())
+
+            try:
+                d['published_id_number'] = int(os.path.split(self.__published_version)[1])
+            except AttributeError:
+                d['published_id_number'] = None
+
         return d
 
     def reconstruct_from_basic(self, obj, notebook_worksheet_directory=None):

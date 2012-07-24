@@ -399,17 +399,21 @@ sagenb.worksheetapp.worksheet = function() {
 			_this.owner = X.owner;
 			_this.system = X.system;
 			_this.pretty_print = X.pretty_print;
-			
 			_this.collaborators = X.collaborators;
-			_this.auto_publish = X.auto_publish;
-			_this.published_id_number = X.published_id_number;
-			if(X.published_url) {
-				_this.published_url = X.published_url;
-			}
-			if(X.published_time) {
-				_this.published_time = X.published_time;
-			}
 			
+			if(X.published) {
+				_this.published_url = X.published_url;
+				_this.published_time = X.published_time;
+				_this.auto_publish = X.auto_publish;
+				_this.published_id_number = X.published_id_number;
+			}
+			else {
+				_this.published_url = null;
+				_this.published_time = null;
+				_this.auto_publish = null;
+				_this.published_id_number = null;
+			}
+
 			_this.running = X.running;
 			
 			_this.attached_data_files = X.attached_data_files;
@@ -726,9 +730,9 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#publish_checkbox").change(function(e) {
 			var command;
 			if($("#publish_checkbox").prop("checked")) {
-				command = _this.worksheet_command("publish?yes");
+				command = _this.worksheet_command("publish?publish_on");
 			} else {
-				command = _this.worksheet_command("publish?stop");
+				command = _this.worksheet_command("publish?publish_off");
 			}
 			
 			sagenb.async_request(command, sagenb.generic_callback(function(status, response) {
@@ -736,8 +740,15 @@ sagenb.worksheetapp.worksheet = function() {
 			}));
 		});
 		$("#auto_republish_checkbox").change(function(e) {
+			var command;
+			if($("#auto_republish_checkbox").prop("checked")) {
+				command = _this.worksheet_command("publish?auto_on");
+			} else {
+				command = _this.worksheet_command("publish?auto_off");
+			}
+			
 			// for some reason, auto is a toggle command
-			sagenb.async_request(_this.worksheet_command("publish?auto"), sagenb.generic_callback(function(status, response) {
+			sagenb.async_request(command, sagenb.generic_callback(function(status, response) {
 				_this.worksheet_update();
 			}));
 		});

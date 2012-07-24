@@ -238,9 +238,6 @@ def worksheet_worksheet_properties_json(worksheet):
                                             hostname,
                                             worksheet.published_version().filename())
 
-        from time import strftime
-        r['published_time'] = time = strftime("%B %d, %Y %I:%M %p", worksheet.published_version().date_edited())
-
     return encode_response(r)
 
 ########################################################
@@ -798,45 +795,22 @@ def worksheet_publish(worksheet):
     initializational of publication, re-publication, automated
     publication when a worksheet saved, and ending of publication.
     """
-    # Publishes worksheet and also sets worksheet to be published automatically when saved
-    if 'yes' in request.values and 'auto' in request.values:
+    if 'publish_on' in request.values:
         g.notebook.publish_worksheet(worksheet, g.username)
-        worksheet.set_auto_publish(True)
-        return redirect(worksheet_publish.url_for(worksheet))
-    # Just publishes worksheet
-    elif 'yes' in request.values:
-        g.notebook.publish_worksheet(worksheet, g.username)
-        return redirect(worksheet_publish.url_for(worksheet))
-    # Stops publication of worksheet
-    elif 'stop' in request.values:
+    if 'publish_off' in request.values and worksheet.has_published_version():
         g.notebook.delete_worksheet(worksheet.published_version().filename())
-        return redirect(worksheet_publish.url_for(worksheet))
-    # Re-publishes worksheet
-    elif 're' in request.values:
-        W = g.notebook.publish_worksheet(worksheet, g.username)
-        return redirect(worksheet_publish.url_for(worksheet))
-    # Sets worksheet to be published automatically when saved
-    elif 'auto' in request.values:
-        worksheet.set_auto_publish(not worksheet.is_auto_publish())
-        return redirect(worksheet_publish.url_for(worksheet))
-    # Returns boolean of "Is this worksheet set to be published automatically when saved?"
-    elif 'is_auto' in request.values:
-        return str(worksheet.is_auto_publish())
-    # Returns the publication page
-    else:
-        # Page for when worksheet already published
-        if worksheet.has_published_version():
-            hostname = request.headers.get('host', g.notebook.interface + ':' + str(g.notebook.port))
 
-            #XXX: We shouldn't hardcode this.
-            addr = 'http%s://%s/home/%s' % ('' if not g.notebook.secure else 's',
-                                            hostname,
-                                            worksheet.published_version().filename())
-            dtime = worksheet.published_version().date_edited()
-            return g.notebook.html_afterpublish_window(worksheet, g.username, addr, dtime)
-        # Page for when worksheet is not already published
-        else:
-            return g.notebook.html_beforepublish_window(worksheet, g.username)
+    if 'auto_on' in request.values:
+        worksheet.set_auto_publish(True)
+    if 'auto_off' in request.values:
+        worksheet.set_auto_publish(False)
+    if 'is_auto' in request.values:
+        return str(worksheet.is_auto_publish())
+
+    if 'republish' in request.values:
+        g.notebook.publish_worksheet(worksheet, g.username)
+
+    return ''
 
 ############################################
 # Ratings
