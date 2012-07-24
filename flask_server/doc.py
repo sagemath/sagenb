@@ -17,7 +17,7 @@ import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required
 
-doc = Module('flask_version.doc')
+doc = Module('flask_server.doc')
 
 from sagenb.misc.misc import SAGE_DOC 
 DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')

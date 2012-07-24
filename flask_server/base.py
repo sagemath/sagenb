@@ -85,7 +85,7 @@ class SageNBFlask(Flask):
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
-base = Module('flask_version.base')
+base = Module('flask_server.base')
 
 #############
 # Main Page #
@@ -423,7 +423,7 @@ def create_app(path_to_notebook, *args, **kwds):
     ##############
     # Create app #
     ##############
-    app = SageNBFlask('flask_version', startup_token=startup_token)
+    app = SageNBFlask('flask_server', startup_token=startup_token)
     app.secret_key = os.urandom(24)
     oid.init_app(app)
     app.debug = True

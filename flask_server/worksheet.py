@@ -9,7 +9,7 @@ _ = gettext
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
 from sagenb.notebook.misc import encode_response
 
-ws = Module('flask_version.worksheet')
+ws = Module('flask_server.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
 
 def worksheet_view(f):

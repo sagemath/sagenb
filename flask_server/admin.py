@@ -4,7 +4,7 @@ from decorators import login_required, admin_required, with_lock
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
-admin = Module('flask_version.admin')
+admin = Module('flask_server.admin')
 
 # '/users' does not work, because current template calls urls like '/users/?reset=...'
 @admin.route('/users/')

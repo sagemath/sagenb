@@ -5,7 +5,7 @@ from decorators import with_lock
 from flaskext.babel import gettext, ngettext, lazy_gettext
 _ = gettext
 
-authentication = Module('flask_version.authentication')
+authentication = Module('flask_server.authentication')
 
 ##################
 # Authentication #
