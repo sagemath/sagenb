@@ -477,26 +477,19 @@ def worksheet_cell_update(worksheet):
         r['new_input'] = ''
         r['output_html'] = ''
 
-    if cell.interrupted():
-        r['interrupted'] = 'true'
-    else:
-        r['interrupted'] = 'false'
-
+    r['interrupted'] = cell.interrupted()
     if 'Unhandled SIGSEGV' in cell.output_text(raw=True).split('\n'):
         r['interrupted'] = 'restart'
         print 'Segmentation fault detected in output!'
 
-
-    r['output'] = cell.output_text(html=True) + ' '
-    r['output_wrapped'] = cell.output_text(g.notebook.conf()['word_wrap_cols'],
-                                           html=True) + ' '
+    r['output'] = cell.output_text(html=True)
+    #r['output_wrapped'] = cell.output_text(g.notebook.conf()['word_wrap_cols'],
+    #                                       html=True) + ' '
     r['introspect_output'] = cell.introspect_output()
 
     # Compute 'em, if we got 'em.
     worksheet.start_next_comp()
-
     return encode_response(r)
-
 
 ########################################################
 # Cell introspection

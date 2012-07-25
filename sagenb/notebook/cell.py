@@ -1617,7 +1617,7 @@ class Cell(Cell_generic):
         output = unicode_str(output)
         html = unicode_str(html)
         if output.count(INTERACT_TEXT) > 1:
-            html = u'<h3><font color="red">WARNING: multiple @interacts in one cell disabled (not yet implemented).</font></h3>'
+            html = u'<div class="alert alert-error"><strong>Warning:</strong> multiple @interacts in one cell disabled (not yet implemented).</div>'
             output = u''
 
         # In interacting mode, we just save the computed output
@@ -1794,27 +1794,31 @@ class Cell(Cell_generic):
             sage: C.output_text(raw=True)
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
+        print '1797'
         if allow_interact and hasattr(self, '_interact_output'):
             # Get the input template
             z = self.output_text(ncols, html, raw, allow_interact=False)
             if not INTERACT_TEXT in z or not INTERACT_HTML in z:
+                print '1801'
                 return z
-            if ncols:
-                # Get the output template
-                try:
-                    # Fill in the output template
-                    output, html = self._interact_output
-                    output = self.parse_html(output, ncols)
-                    z = z.replace(INTERACT_TEXT, output)
-                    z = z.replace(INTERACT_HTML, html)
-                    return z
-                except (ValueError, AttributeError), msg:
-                    print msg
-                    pass
-            else:
-                # Get rid of the interact div to avoid updating the
-                # wrong output location during interact.
-                return ''
+
+            # Get the output template
+            try:
+                # Fill in the output template
+                output, html = self._interact_output
+                output = self.parse_html(output, ncols)
+                z = z.replace(INTERACT_TEXT, output)
+                z = z.replace(INTERACT_HTML, html)
+                print '1811'
+                return z
+            except (ValueError, AttributeError), msg:
+                print msg
+                pass
+
+            # Get rid of the interact div to avoid updating the
+            # wrong output location during interact.
+            print '1819'
+            return ''
 
         self._out = unicode_str(self._out)
 
@@ -1824,7 +1828,7 @@ class Cell(Cell_generic):
                 s = self._out.replace('cell-interact', '')
                 is_interact = False
             else:
-                return u'<h2>Click to the left again to hide and once more to show the dynamic interactive window</h2>'
+                return u''
         else:
             s = self._out
 

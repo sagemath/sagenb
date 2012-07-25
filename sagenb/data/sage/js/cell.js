@@ -42,8 +42,9 @@ sagenb.worksheetapp.cell = function(id) {
 			_this.system = X.system;
 			_this.percent_directives = X.percent_directives;
 			
-			// check for output_html
-			if(X.output_html && $.trim(X.output_html) !== "") {
+			// it doesn't seem right to have a different property here
+			// it seems like X.output is sufficient
+			if($.trim(X.output_html) !== "") {
 				_this.output = X.output_html;
 			}
 			
@@ -305,38 +306,62 @@ sagenb.worksheetapp.cell = function(id) {
 		// don't do anything for text cells
 		if(!_this.is_evaluate_cell) return;
 		
-		var a = "";
-		if(_this.output) a = _this.output;
-		if(stuff_to_render) a = stuff_to_render;
+		stuff_to_render = stuff_to_render ? stuff_to_render : _this.output;
+		stuff_to_render = $.trim(stuff_to_render);
 		
-		a = $.trim(a);
-		
-		function output_contains_latex(b) {
-			return (b.indexOf('<span class="math">') !== -1) ||
-				   (b.indexOf('<div class="math">') !== -1);
-		}
-		
-		// take the output off the dom
-		$("#cell_" + _this.id + " .output_cell").detach();
-		
-		// it may be better to send a no_output value instead here
-		if(a === "") {
-			// if no output then don't do anything else
+		// if no output then don't do anything else
+		if(!stuff_to_render) {
+			// take the output off the dom
+			$("#cell_" + _this.id + " .output_cell").detach();
 			return;
 		}
-		
-		// the .output_cell div needs to be created
-		var $output_cell = $("<div class=\"output_cell\" id=\"output_" + _this.id + "\"></div>").insertAfter("#cell_" + id + " .input_cell");
-		
-		// insert the new output
-		$output_cell.html(a);
+
+		var $output_cell = $("#output_" + _this.id);
+		if($output_cell.length === 0) {
+			$output_cell = $("<div class=\"output_cell\" id=\"output_" + _this.id + "\"></div>")
+				.insertAfter("#cell_" + _this.id + " .input_cell");
+		}
+
+		// Interact constants.  See interact.py and related files.
+		// Present in wrapped output, forces re-evaluation of ambient cell.
+		var INTERACT_RESTART = '<!--__SAGE_INTERACT_RESTART__-->';
+		// Delimit updated markup.
+		var INTERACT_START = '<!--__SAGE__START-->';
+		var INTERACT_END = '<!--__SAGE__END-->';
+
+		if(stuff_to_render.indexOf(INTERACT_RESTART) > -1) {
+			_this.evaluate();
+			return;
+		}
+
+		var istart = stuff_to_render.indexOf(INTERACT_START);
+		var iend = stuff_to_render.indexOf(INTERACT_END);
+		if(istart > -1 && iend > -1) {
+			if(_this.has_interact()) {
+				// update interact
+				stuff_to_render = stuff_to_render.slice(istart + INTERACT_START.length, iend);
+				$("#cell-interact-" + _this.id).html(stuff_to_render);
+			}
+			else {
+				// start interact
+				$output_cell.html(stuff_to_render);
+				_this.evaluate_interact({}, 1);
+			}
+		}
+		else {
+			// create the .output_cell div
+			$output_cell.html(stuff_to_render);
+		}
 
 		if($output_cell.find(".jmol_instance").length > 0) {
+			// TODO Is it possible to have multiple Jmol's in a single cell output?
+			// If so, we would need to call jmol_inline.init(), etc on all of them
 			var jmol_instance = new sagenb.jmol.jmol_inline($output_cell.find(".jmol_instance"));
 			jmol_instance.init();
 		}
 		
-		if(output_contains_latex(a)) {
+		if($output_cell.find(".math").length > 0 ||
+		   $output_cell.find("script[type='math/tex']").length > 0) {
 			/* \( \) is for inline and \[ \] is for block mathjax */
 			
 			if($output_cell.contents().length === 1) {
@@ -344,26 +369,21 @@ sagenb.worksheetapp.cell = function(id) {
 				/* using contents instead of children guarantees that we
 				 * get all other types of nodes including text and comments.
 				 */
-				
 				$output_cell.html("\\[" + $output_cell.find(".math").html() + "\\]");
-				
-				// mathjax the ouput
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, $output_cell[0]]);
-				
-				return;
 			}
-			
-			// mathjax each span with \( \)
-			$output_cell.find("span.math").each(function(i, element) {
-				$(element).html("\\(" + $(element).html() + "\\)");
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
-			});
-			
-			// mathjax each div with \[ \]
-			$output_cell.find("div.math").each(function(i, element) {
-				$(element).html("\\[" + $(element).html() + "\\]");
-				MathJax.Hub.Queue(["Typeset", MathJax.Hub, element]);
-			});
+			else {
+				// mathjax each span with \( \)
+				$output_cell.find("span.math").each(function(i, element) {
+					$(element).html("\\(" + $(element).html() + "\\)");
+				});
+				
+				// mathjax each div with \[ \]
+				$output_cell.find("div.math").each(function(i, element) {
+					$(element).html("\\[" + $(element).html() + "\\]");
+				});
+			}
+
+			MathJax.Hub.Queue(["Typeset", MathJax.Hub, $output_cell[0]]);
 		}
 	};
 	
@@ -383,10 +403,14 @@ sagenb.worksheetapp.cell = function(id) {
 	};
 	_this.is_auto = function() {
 		return (_this.percent_directives && $.inArray("auto", _this.percent_directives) >= 0);
-	}
+	};
 	_this.is_hide = function() {
 		return (_this.percent_directives && $.inArray("hide", _this.percent_directives) >= 0);
-	}
+	};
+
+	_this.has_interact = function() {
+		return $("#cell-interact-" + _this.id).length > 0;
+	};
 
 	///// POPOVER /////
 	_this.hide_popover = function() {
@@ -434,6 +458,35 @@ sagenb.worksheetapp.cell = function(id) {
 	}
 	
 	/////// EVALUATION //////
+	var _evaluate_callback = sagenb.generic_callback(function(status, response) {
+		var X = decode_response(response);
+		
+		// figure out whether or not we are interacting
+		// seems like this is redundant
+		// X.interact = X.interact ? true : false;
+		
+		// Something went wrong, e.g., cell id's don't match
+		if (X.id !== _this.id) return;
+
+		if (X.command && (X.command.slice(0, 5) === 'error')) {
+			// TODO: use a bootstrap error message
+			console.log(X, X.id, X.command, X.message);
+			return;
+		}
+		
+		// not sure about these commands
+		if (X.command === 'insert_cell') {
+			// Insert a new cell after the evaluated cell.
+			_this.worksheet.new_cell_after(_this.id);
+		}
+		
+		_this.is_evaluating = true;
+		$("#cell_" + _this.id).addClass("running");	
+		
+		// start checking for output
+		_this.check_for_output();
+	});
+
 	_this.send_input = function() {
 		// mark the cell as changed
 		$("#cell_" + _this.id).addClass("input_changed");
@@ -463,67 +516,31 @@ sagenb.worksheetapp.cell = function(id) {
 			return;
 		}
 		
-		// we're an evaluate cell
-		sagenb.async_request(_this.worksheet.worksheet_command("eval"), sagenb.generic_callback(function(status, response) {
-			/* EVALUATION CALLBACK */
-		
-			var X = decode_response(response);
-			
-			// figure out whether or not we are interacting
-			// seems like this is redundant
-			X.interact = X.interact ? true : false;
-			
-			if (X.id !== _this.id) {
-				// Something went wrong, e.g., cell id's don't match
-				return;
-			}
+		_this.set_output_loading();
 
-			if (X.command && (X.command.slice(0, 5) === 'error')) {
-				// TODO: use a bootstrap error message
-				// console.log(X, X.id, X.command, X.message);
-				return;
-			}
-			
-			// not sure about these commands
-			if (X.command === 'insert_cell') {
-				// Insert a new cell after the evaluated cell.
-				_this.worksheet.new_cell_after(_this.id);
-			} /*else if (X.command === 'introspect') {
-				//introspect[X.id].loaded = false;
-				//update_introspection_text(X.id, 'loading...');
-				
-				// don't need anything
-			}*/
-			
-			/* else if (in_slide_mode || doing_split_eval || is_interacting_cell(X.id)) {
-				// Don't jump.
-			} else {
-				// "Plain" evaluation.  Jump to a later cell.
-				//go_next(false, true);
-			}*/
-			
-			_this.is_evaluating = true;
-			
-			// mark the cell as running
-			$("#cell_" + _this.id).addClass("running");	
-			_this.set_output_loading();
-			
-			// start checking for output
-			_this.check_for_output();
-		}),
-		
-		/* REQUEST OPTIONS */
-		{
+		// we're an evaluate cell
+		sagenb.async_request(_this.worksheet.worksheet_command("eval"), _evaluate_callback,	{
 			// 0 = false, 1 = true this needs some conditional
 			newcell: 0,
 			
 			id: toint(_this.id),
 			
-			/* it's necessary to get the codemirror value because the user
+			/* It's necessary to get the codemirror value because the user
 			 * may have made changes and not blurred the codemirror so the 
 			 * changes haven't been put in _this.input
 			 */
 			input: _this.codemirror.getValue()
+		});
+	};
+	_this.evaluate_interact = function(update, recompute) {
+		sagenb.async_request(_this.worksheet.worksheet_command("eval"), _evaluate_callback, {
+			id: toint(_this.id),
+			interact: 1,
+			variable: update.variable || '',
+			adapt_number: update.adapt_number || -1,
+			value: update.value || '',
+			recompute: recompute,
+			newcell: 0
 		});
 	};
 	_this.introspect = function() {
@@ -651,24 +668,8 @@ sagenb.worksheetapp.cell = function(id) {
 				
 				if(X.status === "d") {
 					// evaluation done
-					
 					stop_checking();
-					
-					/* NOTE I'm not exactly sure what the interrupted property is for 
-					* so I'm not sure that this is necessary 
-					*/
-					/*
-					if(X.interrupted === "restart") {
-						// restart_sage()
-					}
-					else if(X.interrupted === "false") {
-						
-					}
-					else {
-						
-					}
-					*/
-					
+										
 					if(X.new_input !== "") {
 						// if the editor has changed, re-introspect
 						if(_this.codemirror.getValue() !== _this.introspect_state.previous_value) {
@@ -822,11 +823,13 @@ sagenb.worksheetapp.cell = function(id) {
 					// update the output
 					_this.output = X.output;
 					
-					// check for output_html
 					// it doesn't seem right to have a different property here
 					// it seems like X.output is sufficient
 					if($.trim(X.output_html) !== "") {
 						_this.output = X.output_html;
+					}
+					if($.trim(X.output_wrapped) !== "") {
+						_this.output = X.output_wrapped;
 					}
 					
 					// render to the DOM
@@ -862,11 +865,6 @@ sagenb.worksheetapp.cell = function(id) {
 			}
 		}
 	}
-	
-	_this.is_interact_cell = function() {
-		
-	};
-	
 	
 	/////// OUTPUT ///////
 	_this.delete_output = function() {
