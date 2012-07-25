@@ -22,10 +22,11 @@ class NotebookObject:
     r"""
     Start the Sage Notebook server.  More details about using these
     options, as well as tips and tricks, may be available at `this
-    Sage wiki page`_.
+    Sage wiki page`_.  If a notebook server is already running in the
+    directory, this will open a browser to the running notebook.
 
     INPUT:
-    
+
         - ``directory`` -- string; directory that contains the Sage
           notebook files; the default is
           ``.sage/sage_notebook.sagenb``, in your home directory.
@@ -67,17 +68,25 @@ class NotebookObject:
               user_manager.set_accounts(True)
               user_manager.add_user("username", "password", "email@place", "user")
               nb.save()
-              
+
         - ``automatic_login`` -- boolean (default: True) whether to pop up
           a web browser and automatically log into the server as admin.  You can
           override the default browser by setting the ``SAGE_BROWSER`` environment
           variable, e.g., by putting
 
           ::
-          
+
               export SAGE_BROWSER="firefox"
-              
+
           in the file .bashrc in your home directory.
+
+        - ``upload`` -- string (default: None) Full path to a local file
+          (sws, txt, zip) to be uploaded and turned into a worksheet(s).
+          This is equivalent to manually uploading a file via
+          ``http://localhost:8080/upload`` or to fetching
+          ``http://localhost:8080/upload_worksheet?url=file:///...``
+          in a script except that (hopefully) you will already be
+          logged in.
 
           .. warning::
 
@@ -98,7 +107,7 @@ class NotebookObject:
           separate user (chosen from the list in the ``server_pool``
           -- see below).
 
-    .. note:: 
+    .. note::
 
        If you have problems with the server certificate hostname not
        matching, do ``notebook.setup()``.
@@ -107,7 +116,7 @@ class NotebookObject:
 
        The ``require_login`` option has been removed.  Use `automatic_login` to control
        automatic logins instead---`automatic_login=False` corresponds to `require_login=True`.
-    
+
     EXAMPLES:
 
     1. I just want to run the Sage notebook.  Type::
@@ -128,7 +137,7 @@ class NotebookObject:
        publicly (1) at a minimum run it from a chroot jail or inside a
        virtual machine (see `this Sage wiki page`_) and (2) use a
        command like::
-    
+
            notebook(interface='', server_pool=['sage1@localhost'],
            ulimit='-v 500000', accounts=True, automatic_login=False)
 
@@ -151,7 +160,7 @@ class NotebookObject:
           if given, should be a list like \['sage1@localhost',
           'sage2@localhost'\], where you have setup ssh keys so that
           typing::
-          
+
               ssh sage1@localhost
 
           logs in without requiring a password, e.g., by typing
@@ -179,10 +188,10 @@ class NotebookObject:
 
               - ``-t`` The maximum amount of cpu time in seconds.
                 NOTE: For Sage, ``-t`` is the wall time, not cpu time.
-                
+
               - ``-u`` The maximum number of processes available to a
                 single user.
-              
+
               - ``-v`` The maximum amount of virtual memory available
                 to the process.
 
@@ -190,13 +199,13 @@ class NotebookObject:
           is in seconds, and ``-u`` which is a positive
           integer. Example: ulimit="-v 400000 -t 30"
 
-    .. note:: 
+    .. note::
 
        The values of ``server_pool`` and ``ulimit`` default to what
        they were last time the notebook command was called.
 
     OTHER NOTES:
-    
+
        - If you create a file ``\\$DOT_SAGE/notebook.css`` then it
          will get applied when rendering the notebook HTML.  This
          allows notebook administrators to customize the look of the
@@ -227,9 +236,9 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
                   interface='localhost', verbose=False):
     """
     This function is used to test notebook server functions.
-    
+
     EXAMPLES::
-    
+
         sage: from sagenb.notebook.notebook_object import test_notebook
         sage: passwd = str(randint(1,1<<128))
         sage: nb = test_notebook(passwd, interface='localhost', port=8060)
@@ -242,12 +251,12 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
         sage: nb.dispose()
     """
     import socket, pexpect
-        
+
     if directory is None:
         directory = tmp_dir = tempfile.mkdtemp()
     else:
         tmp_dir = None
-        
+
     if not os.path.exists(directory):
         os.makedirs(directory)
 
@@ -256,7 +265,7 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
     nb.add_user('admin', admin_passwd, '')
     nb.set_accounts(False)
     nb.save()
-    
+
     p = notebook(directory=directory, accounts=True, secure=secure, port=port,
                  interface=interface, automatic_login=False, fork=True, quiet=True)
     p.expect("Starting factory")

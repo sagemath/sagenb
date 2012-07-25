@@ -84,15 +84,7 @@ class SageNBFlask(Flask):
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
-
-#XXX: This should probably be made able to put in a "central" place
-#with all of the jsmath stuff rather than just a global variable here.
-from sagenb.misc.misc import is_package_installed
-jsmath_image_fonts = is_package_installed("jsmath-image-fonts")
-
 base = Module('flask_version.base')
-
-
 
 #############
 # Main Page #
@@ -100,6 +92,10 @@ base = Module('flask_version.base')
 @base.route('/')
 def index():
     if 'username' in session:
+        # If there is a next request use that.  See issue #76
+        if 'next' in request.args:
+            response = redirect(request.values.get('next', ''))
+            return response
         response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:
             response.set_cookie('nb_session_%s'%g.notebook.port,
@@ -155,16 +151,15 @@ def localization_js():
         response.headers['Etag']=datahash
     return response
 
-_jsmath_js_cache = None
-@base.route('/javascript/dynamic/jsmath.js')
-def jsmath_js():
-    global _jsmath_js_cache
-    if _jsmath_js_cache is None:
-        from sagenb.misc.misc import jsmath_macros
-        data = render_template('js/jsmath.js', jsmath_macros=jsmath_macros,
-                               jsmath_image_fonts=jsmath_image_fonts)
-        _jsmath_js_cache = (data, sha1(repr(data)).hexdigest())
-    data,datahash = _jsmath_js_cache
+_mathjax_js_cache = None
+@base.route('/javascript/dynamic/mathjax_sage.js')
+def mathjax_js():
+    global _mathjax_js_cache
+    if _mathjax_js_cache is None:
+        from sagenb.misc.misc import mathjax_macros
+        data = render_template('js/mathjax_sage.js', theme_mathjax_macros=mathjax_macros)
+        _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
+    data,datahash = _mathjax_js_cache
 
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
         response = make_response('',304)
@@ -415,7 +410,7 @@ def create_app(path_to_notebook, *args, **kwds):
     # OLD STUFF #
     #############
     import sagenb.notebook.notebook as notebook
-    notebook.JSMATH = True
+    notebook.MATHJAX = True
     notebook = notebook.load_notebook(path_to_notebook, *args, **kwds)
     init_updates()
 

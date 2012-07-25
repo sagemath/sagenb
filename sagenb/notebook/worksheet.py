@@ -3747,7 +3747,7 @@ except (KeyError, IOError):
             L = L[:i]
         a = []
         for filename in L.split():
-            filename = filename.strip('"').strip("'")
+            filename = filename.strip('"\'')
             if not filename.endswith('.py') and not filename.endswith('.sage') and \
                    not filename.endswith('.sobj') and not os.path.exists(filename):
                 if os.path.exists(filename + '.sage'):
@@ -3824,7 +3824,7 @@ except (KeyError, IOError):
         return u"print _support_.syseval(%s, %r, __SAGE_TMP_DIR__)"%(system, cmd)
 
     ##########################################################
-    # Parsing the %cython, %jsmath, %python, etc., extension.
+    # Parsing the %cython, %mathjax, %python, etc., extension.
     ##########################################################
     def get_cell_system(self, cell):
         r"""
@@ -4052,15 +4052,7 @@ except (KeyError, IOError):
             C.delete_output()
 
 
-__internal_test1 = '''
-def foo(x):
-    "
-    EXAMPLES:
-        sage: 2+2
-        4
-    "
-    return x
-'''.lstrip()
+__internal_test1 = 'def foo(x):\n    """\n    EXAMPLES:\n        sage: 2+2\n        4\n    """\n    return x\n'.lstrip()
 
 __internal_test2 = '''
 sage: 2 + 2
