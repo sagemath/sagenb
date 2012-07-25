@@ -95,11 +95,13 @@
 	<script type="text/javascript" charset="utf-8" src="/data/sage/js/worksheet_list.js"></script>
 	
 	<script type="text/javascript">
-		// init notebook stuff
-		sagenb.init();
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
 
-		// init the worksheet list
-		var the_worksheet_list = new sagenb.worksheetlistapp.worksheet_list();
-		the_worksheet_list.init();
+			// init the worksheet list
+			sagenb.worksheetlistapp.worksheet_list = new sagenb.worksheetlistapp.worksheet_list();
+			sagenb.worksheetlistapp.worksheet_list.init();
+		});
 	</script>
 {% endblock extra_javascript %}

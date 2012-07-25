@@ -144,28 +144,30 @@
 	<script type="text/javascript" charset="utf-8" src="/data/sage/js/cell.js"></script>
 	
 	<script type="text/javascript">
-		// init notebook stuff
-		sagenb.init();
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
 
-		// create the worksheet
-		var the_worksheet = new sagenb.worksheetapp.worksheet();
+			// create the worksheet
+			sagenb.worksheetapp.worksheet = new sagenb.worksheetapp.worksheet();
 
-		// grab the filename from the URL
-		var fn = window.location.pathname;
+			// grab the filename from the URL
+			var fn = window.location.pathname;
 
-		// take off /home/
-		fn = fn.substring(6);
+			// take off /home/
+			fn = fn.substring(6);
 
-		// take off last /
-		if(fn.substring(fn.length - 1, fn.length) === "/") {
-			// some versions of IE don't support fn.substring(-1)
-			fn = fn.substring(0, fn.length - 1);
-		}
+			// take off last /
+			if(fn.substring(fn.length - 1, fn.length) === "/") {
+				// some versions of IE don't support fn.substring(-1)
+				fn = fn.substring(0, fn.length - 1);
+			}
 
-		// set filename
-		the_worksheet.filename = fn;
+			// set filename
+			sagenb.worksheetapp.worksheet.filename = fn;
 
-		// initialize
-		the_worksheet.init();
+			// initialize
+			sagenb.worksheetapp.worksheet.init();
+		});
 	</script>
 {% endblock extra_javascript %}
