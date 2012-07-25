@@ -47,7 +47,10 @@ sagenb.worksheetapp.cell = function(id) {
 			if($.trim(X.output_html) !== "") {
 				_this.output = X.output_html;
 			}
-			
+			if($.trim(X.output_wrapped) !== "") {
+				_this.output = X.output_wrapped;
+			}
+					
 			_this.is_evaluate_cell = (X.type === "evaluate") ? true : false;
 			
 			// change the codemirror mode

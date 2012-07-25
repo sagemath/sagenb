@@ -1696,11 +1696,11 @@ class Cell(Cell_generic):
         r['input'] = self._in
         r['output'] = self.output_text()
         r['output_html'] = self.output_html()
+        r['output_wrapped'] = self.output_text(self.notebook().conf()['word_wrap_cols'])
         r['percent_directives'] = self.percent_directives()
         r['system'] = self.system()
         r['auto'] = self.is_auto_cell()
         r['introspect_output'] = self.introspect_output()
-
         return r
 
     def output_html(self):
@@ -1794,31 +1794,27 @@ class Cell(Cell_generic):
             sage: C.output_text(raw=True)
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
-        print '1797'
         if allow_interact and hasattr(self, '_interact_output'):
             # Get the input template
             z = self.output_text(ncols, html, raw, allow_interact=False)
             if not INTERACT_TEXT in z or not INTERACT_HTML in z:
-                print '1801'
                 return z
-
-            # Get the output template
-            try:
-                # Fill in the output template
-                output, html = self._interact_output
-                output = self.parse_html(output, ncols)
-                z = z.replace(INTERACT_TEXT, output)
-                z = z.replace(INTERACT_HTML, html)
-                print '1811'
-                return z
-            except (ValueError, AttributeError), msg:
-                print msg
-                pass
-
-            # Get rid of the interact div to avoid updating the
-            # wrong output location during interact.
-            print '1819'
-            return ''
+            if ncols:
+                # Get the output template
+                try:
+                    # Fill in the output template
+                    output, html = self._interact_output
+                    output = self.parse_html(output, ncols)
+                    z = z.replace(INTERACT_TEXT, output)
+                    z = z.replace(INTERACT_HTML, html)
+                    return z
+                except (ValueError, AttributeError), msg:
+                    print msg
+                    pass
+            else:
+                # Get rid of the interact div to avoid updating the
+                # wrong output location during interact.
+                return ''
 
         self._out = unicode_str(self._out)
 

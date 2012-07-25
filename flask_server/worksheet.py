@@ -483,8 +483,7 @@ def worksheet_cell_update(worksheet):
         print 'Segmentation fault detected in output!'
 
     r['output'] = cell.output_text(html=True)
-    #r['output_wrapped'] = cell.output_text(g.notebook.conf()['word_wrap_cols'],
-    #                                       html=True) + ' '
+    r['output_wrapped'] = cell.output_text(g.notebook.conf()['word_wrap_cols'])
     r['introspect_output'] = cell.introspect_output()
 
     # Compute 'em, if we got 'em.
