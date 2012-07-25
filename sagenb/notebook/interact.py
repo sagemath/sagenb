@@ -95,7 +95,7 @@ VERSION 1:
    
 VERSION 2:
 
-   [ ] vertical scroll bars (maybe very easy via jsquery)
+   [ ] vertical scroll bars (maybe very easy via jquery)
    [ ] small version of color selector
    [ ] button -- block of code gets run when it is clicked
    [ ] when click a button in a button bar it is highlighted and
@@ -134,7 +134,7 @@ VERSION 3:
              interact(obj)
              }}}
        and get something useful as a result. 
-   [ ] flot -- some pretty but very simple javascript only graphics  (maybe don't do... unclear)
+   [ ] flot -- some pretty but very simple javascript only graphics (maybe don't do... unclear)
    [ ] zorn -- similar (maybe don't do... unclear)
    [ ] color sliders (?):
           u = color(...)         a color slider
@@ -167,14 +167,14 @@ INTERACT_UPDATE_PREFIX = '%__sage_interact__'
 
 # If this special message appears in an interact cell's output, it
 # should trigger an automatic re-evaluation of the ambient cell.
-INTERACT_RESTART = '__SAGE_INTERACT_RESTART__'
+INTERACT_RESTART = '<!--__SAGE_INTERACT_RESTART__-->'
 
 # Place-holder markers/fields, replaced in cell.py and
 # notebook_lib.js.
-INTERACT_START = '<?__SAGE__START>'
-INTERACT_TEXT = '<?__SAGE__TEXT>'
-INTERACT_HTML = '<?__SAGE__HTML>'
-INTERACT_END = '<?__SAGE__END>'
+INTERACT_START = '<!--__SAGE__START-->'
+INTERACT_TEXT = '<!--__SAGE__TEXT-->'
+INTERACT_HTML = '<!--__SAGE__HTML-->'
+INTERACT_END = '<!--__SAGE__END-->'
 
 
 # Dictionary that stores the state of all active interact cells. 
@@ -909,7 +909,7 @@ class InteractControl(InteractElement):
         update = "{variable: '%s', adapt_number: %s, value: encode64(%s)}" % (
             self.var(), self.adapt_number(), self.value_js(*args))
 
-        return "interact(%r, %s, %s)" % (self.cell_id(), update, recompute)
+        return "sagenb.worksheetapp.worksheet.cells[%r].evaluate_interact(%s, %s)" % (self.cell_id(), update, recompute)
    
     def var(self):
         """
@@ -1071,17 +1071,17 @@ class InputBox(InteractControl):
             '...input...value="1"...theta...'
         """
         if self.__type is bool:
-            return """<input type="checkbox" %s width=200px onchange="%s"></input>"""%(
+            return """<input type="checkbox" %s width="200px" onchange="%s"></input>"""%(
                 'checked' if self.default_value() else '',  self.interact())
         elif self.__type is str and self.__height ==1:
-            return """<input type="text" value="%s" size=%s onchange="%s"></input>"""%(
+            return """<input type="text" value="%s" size="%s" onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width, self.interact())
         elif self.__type is str and self.__height > 1:
             textval = self.html_escaped_default_value()
             return """<textarea type="text" value="%s" rows="%s" cols="%s" onchange="%s">%s</textarea>"""%(
                 textval, self.__height, self.__width, self.interact(), textval)
         else:
-            return """<input type="text" value="%s" size=%s onchange="%s"></input>"""%(
+            return """<input type="text" value="%s" size="%s" onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width,  self.interact())
 
 class ColorInput(InputBox):
@@ -1471,7 +1471,7 @@ class Selector(InteractControl):
             #unselected boxes - outset. This usually is default
             #rendering.
             if len(vals) > 1:
-                    event = """$('BUTTON', this.parentNode).css('border-style', 'outset'); $(this).css('border-style', 'inset'); %s""" % event
+                    event = """$('button', this.parentNode).css('border-style', 'outset'); $(this).css('border-style', 'inset'); %s""" % event
             s = """<table style="border:1px solid #dfdfdf; background-color:#efefef;">"""
         else:
             s = """<select onchange="%s;">""" % event
@@ -1962,7 +1962,7 @@ class InteractCanvas(object):
         if layout is None:
             layout = [[c.var()] for c in self.__controls]
         if not isinstance(layout, dict):
-            layout={'top': layout}
+            layout = {'top': layout}
         self.__layout = layout
 
 
@@ -2067,14 +2067,14 @@ class InteractCanvas(object):
         """
         return """
         <div id="cell-interact-{0}">{1}
-          <table border=0 bgcolor="white" width=100%>
+          <table border="0" bgcolor="white" width="100%">
             <tr>
-              <td bgcolor="white" align=left valign=top>
+              <td bgcolor="white" align="left" valign="top">
                 <pre>{2}</pre>
               </td>
             </tr>
             <tr>
-              <td align=left valign=top>{3}</td>
+              <td align="left" valign="top">{3}</td>
             </tr>
           </table>{4}
         </div>""".format(self.cell_id(), INTERACT_START, INTERACT_TEXT,
@@ -2104,9 +2104,9 @@ class InteractCanvas(object):
             for c_name in row:
                 c = controls[c_name]
                 if c.label() == '':
-                    tbl_body += '<td colspan=2>{0}</td>\n'.format(c.render())
+                    tbl_body += '<td colspan="2">{0}</td>\n'.format(c.render())
                 else:
-                    tbl_body += '<td align=right><font color="black">{0}&nbsp;</font></td><td>{1}</td>\n'.format(c.label(), c.render())
+                    tbl_body += '<td align="right"><font color="black">{0}&nbsp;</font></td><td>{1}</td>\n'.format(c.label(), c.render())
                     
             tbl_body += '</tr>'
 
@@ -2133,10 +2133,10 @@ class InteractCanvas(object):
             '...notruncate...div...interact...table...inside...'
         """
         return """<!--notruncate-->
-        <div padding=6 id="div-interact-%s">
-          <table width=800px height=20px bgcolor="#c5c5c5" cellpadding=15>
+        <div id="div-interact-%s" style="padding: 6px;">
+          <table style="width: 100%%; height: 20px; background-color: #c5c5c5;" cellpadding="15">
             <tr>
-              <td bgcolor="#f9f9f9" valign=top align=left>%s</td>
+              <td bgcolor="#f9f9f9" valign="top" align="left">%s</td>
             </tr>
           </table>
         </div>""" % (self.cell_id(), inside)
@@ -2166,15 +2166,15 @@ class InteractCanvas(object):
             sage: sagenb.notebook.interact.InteractCanvas([B], 3).render()
             '...notruncate...div...interact...table...x...'
         """
-        html_controls={}
-        for side in ('top','left','right','bottom'):
+        html_controls = {}
+        for side in ('top', 'left', 'right', 'bottom'):
             html_controls[side] = self.render_controls(side=side)
 
         s = """
             <table>
-              <tr><td colspan=3>{top}</td></tr>
-              <tr><td>{left}</td><td style='width: 100%;'>{output}</td><td>{right}</td></tr>
-              <tr><td colspan=3>{bottom}</td></tr>
+              <tr><td colspan="3">{top}</td></tr>
+              <tr><td>{left}</td><td style="width: 100%;">{output}</td><td>{right}</td></tr>
+              <tr><td colspan="3">{bottom}</td></tr>
             </table>""".format(output=self.render_output(), **html_controls)
         
         s = self.wrap_in_outside_frame(s)
@@ -2254,7 +2254,7 @@ class UpdateButton(JavascriptCodeButton):
 from sage.misc.misc import decorator_defaults
 
 @decorator_defaults
-def interact(f, layout=None, width='800px'):
+def interact(f, layout=None, width='100%'):
     r"""
     Use interact as a decorator to create interactive Sage notebook
     cells with sliders, text boxes, radio buttons, check boxes, and

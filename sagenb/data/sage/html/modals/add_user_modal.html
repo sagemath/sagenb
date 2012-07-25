@@ -1,0 +1,26 @@
+{% extends 'html/modals/modal_base.html' %}
+
+{% block modal_id %}add_user_modal{% endblock modal_id %}
+
+{% block modal_title %}Add User{% endblock modal_title %}
+
+{% block modal_content %}
+
+<form action="#" class="form-horizontal">
+	<fieldset>
+		<div class="control-group">
+			<label for="username" class="control-label">Username</label>
+			<div class="controls">
+				<input type="text" class="input-xlarge" id="username" name="username">
+				<p class="help-block">{{ gettext('The username must start with a letter and be between 4 and 32 characters long. It can only consist of letters, numbers, underscores, and one dot (.).') }}</p>
+			</div>
+		</div>
+	</fieldset>
+</form>
+
+{% endblock modal_content %}
+
+{% block modal_footer %}
+<a href="#" class="btn" data-dismiss="modal">{{ gettext('Cancel') }}</a>
+<a href="#" class="btn btn-primary" data-dismiss="modal" id="do_add_user_button">{{ gettext('Add User') }}</a>
+{% endblock modal_footer %}

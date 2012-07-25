@@ -18,6 +18,7 @@ import re
 import shutil
 from cgi import escape
 
+
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
@@ -440,6 +441,11 @@ class Cell_generic(object):
         """
         return False
 
+    def basic(self):
+        """
+        Returns the cell as a python object
+        """
+        return {}
 
 #############
 # Text cell #
@@ -522,45 +528,57 @@ class TextCell(Cell_generic):
         input_text = unicode_str(input_text)
         self._text = input_text
 
-    def html(self, wrap=None, div_wrap=True, do_print=False,
-             editing=False, publish=False):
+    def basic(self):
         """
-        Returns HTML code for this text cell, including its contents
-        and associated script elements.
-
-        INPUT:
-
-        - ``wrap`` -- an integer (default: None); number of columns to
-          wrap at (not used)
-
-        - ``div_wrap`` -- a boolean (default: True); whether to wrap
-          in a div (not used)
-
-        - ``do_print`` - a boolean (default: False); whether to render the
-          cell for printing
-
-        - ``editing`` - a boolean (default: False); whether to open an
-          editor for this cell
-
-        OUTPUT:
-
-        - a string
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', W)
-            sage: C.html()
-            u'...text_cell...2+3...'
-            sage: C.set_input_text("$2+3$")
+        Returns the cell as a python object
         """
-        from template import template
-        return template(os.path.join('html', 'notebook', 'text_cell.html'),
-                        cell = self, wrap = wrap, div_wrap = div_wrap,
-                        do_print = do_print,
-                        editing = editing, publish = publish)
+        r = {}
+
+        r['id'] = self.id()
+        r['type'] = 'text'
+        r['input'] = self._text
+
+        return r
+
+#    def html(self, wrap=None, div_wrap=True, do_print=False,
+#             editing=False, publish=False):
+#        """
+#        Returns HTML code for this text cell, including its contents
+#        and associated script elements.
+#
+#        INPUT:
+#
+#        - ``wrap`` -- an integer (default: None); number of columns to
+#          wrap at (not used)
+#
+#        - ``div_wrap`` -- a boolean (default: True); whether to wrap
+#          in a div (not used)
+#
+#        - ``do_print`` - a boolean (default: False); whether to render the
+#          cell for printing
+#
+#        - ``editing`` - a boolean (default: False); whether to open an
+#          editor for this cell
+#
+#        OUTPUT:
+#
+#        - a string
+#
+#        EXAMPLES::
+#
+#            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+#            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+#            sage: W = nb.create_new_worksheet('Test', 'sage')
+#            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', W)
+#            sage: C.html()
+#            u'...text_cell...2+3...'
+#            sage: C.set_input_text("$2+3$")
+#        """
+#        from template import template
+#        return template(os.path.join('html', 'notebook', 'text_cell.html'),
+#                        cell = self, wrap = wrap, div_wrap = div_wrap,
+#                        do_print = do_print,
+#                        editing = editing, publish = publish)
 
 
     def plain_text(self, prompts=False):
@@ -949,6 +967,7 @@ class Cell(Cell_generic):
         else:
             self._out_html = self.files_html(output)
 
+    # TODO
     def directory(self):
         """
         Returns the name of this compute cell's directory, creating
@@ -974,6 +993,7 @@ class Cell(Cell_generic):
         set_restrictive_permissions(dir)
         return dir
 
+    # TODO
     def _directory_name(self):
         """
         Returns the name of this compute cell's directory.
@@ -1597,7 +1617,7 @@ class Cell(Cell_generic):
         output = unicode_str(output)
         html = unicode_str(html)
         if output.count(INTERACT_TEXT) > 1:
-            html = u'<h3><font color="red">WARNING: multiple @interacts in one cell disabled (not yet implemented).</font></h3>'
+            html = u'<div class="alert alert-error"><strong>Warning:</strong> multiple @interacts in one cell disabled (not yet implemented).</div>'
             output = u''
 
         # In interacting mode, we just save the computed output
@@ -1663,6 +1683,25 @@ class Cell(Cell_generic):
             return self._sage
         except AttributeError:
             return None
+
+
+    def basic(self):
+        """
+        Returns the cell as a python object
+        """
+
+        r = {}
+        r['id'] = self.id()
+        r['type'] = 'evaluate'
+        r['input'] = self._in
+        r['output'] = self.output_text()
+        r['output_html'] = self.output_html()
+        r['output_wrapped'] = self.output_text(self.notebook().conf()['word_wrap_cols'])
+        r['percent_directives'] = self.percent_directives()
+        r['system'] = self.system()
+        r['auto'] = self.is_auto_cell()
+        r['introspect_output'] = self.introspect_output()
+        return r
 
     def output_html(self):
         """
@@ -1785,7 +1824,7 @@ class Cell(Cell_generic):
                 s = self._out.replace('cell-interact', '')
                 is_interact = False
             else:
-                return u'<h2>Click to the left again to hide and once more to show the dynamic interactive window</h2>'
+                return u''
         else:
             s = self._out
 
@@ -1796,9 +1835,11 @@ class Cell(Cell_generic):
             s = self.parse_html(s, ncols)
 
         if (not is_interact and not self.is_html() and len(s.strip()) > 0 and
-            '<div class="docstring">' not in s):
-            s = '<pre class="shrunk">' + s.strip('\n') + '</pre>'
-
+            '<div class="docstring">' not in s and '<div class="math">' not in s
+            and '<span class="math">' not in s):
+            # s = '<pre class="shrunk">' + s.strip('\n') + '-</pre>'
+            s = '<pre>' + s.strip('\n') + '</pre>'
+        
         return s.strip('\n')
 
     def parse_html(self, s, ncols):
@@ -1913,13 +1954,13 @@ class Cell(Cell_generic):
     #################
     # Introspection #
     #################
-    def set_introspect_html(self, html, completing=False, raw=False):
+    def set_introspect_output(self, output, completing=False, raw=False):
         ur"""
         Sets this compute cell's introspection text.
 
         INPUT:
 
-        - ``html`` - a string; the updated text
+        - ``output`` - a string; the updated text
 
         - ``completing`` - a boolean (default: False); whether the
           completions menu is open
@@ -1937,22 +1978,21 @@ class Cell(Cell_generic):
             sage: C.evaluate(username='sage')
             sage: W.check_comp(9999)     # random output -- depends on computer speed
             ('d', Cell 0: in=sage?, out=)
-            sage: C.set_introspect_html('foobar')
-            sage: C.introspect_html()
+            sage: C.set_introspect_output('foobar')
+            sage: C.introspect_output()
             u'foobar'
-            sage: C.set_introspect_html('`foobar`')
-            sage: C.introspect_html()
+            sage: C.set_introspect_output('`foobar`')
+            sage: C.introspect_output()
             u'`foobar`'
-            sage: C.set_introspect_html('ěščřžýáíéďĎ')
-            sage: C.introspect_html()
+            sage: C.set_introspect_output('ěščřžýáíéďĎ')
+            sage: C.introspect_output()
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
             sage: W.quit()
             sage: nb.delete()
         """
-        html = unicode_str(html)
-        self._introspect_html = html
+        self._introspect_output = unicode_str(output)
 
-    def introspect_html(self):
+    def introspect_output(self):
         """
         Returns this compute cell's introspection text, setting it to
         '', if none is available.
@@ -1972,7 +2012,7 @@ class Cell(Cell_generic):
             sage: C.evaluate(username='sage')
             sage: W.check_comp(9999)     # random output -- depends on computer speed
             ('d', Cell 0: in=sage?, out=)
-            sage: C.introspect_html()     # random output -- depends on computer speed
+            sage: C.introspect_output()     # random output -- depends on computer speed
             u'...<div class="docstring">...sage...</pre></div>...'
             sage: W.quit()
             sage: nb.delete()
@@ -1980,9 +2020,9 @@ class Cell(Cell_generic):
         if not self.introspect():
             return ''
         try:
-            return self._introspect_html
+            return self._introspect_output
         except AttributeError:
-            self._introspect_html = u''
+            self._introspect_output = u''
             return u''
 
     def introspect(self):
@@ -2107,6 +2147,8 @@ class Cell(Cell_generic):
         self._introspect = introspect
         self.worksheet().enqueue(self, username=username)
         self._type = 'wrap'
+        
+        ####
         dir = self.directory()
         for D in os.listdir(dir):
             F = os.path.join(dir, D)
@@ -2166,45 +2208,45 @@ class Cell(Cell_generic):
                 'timeit' in self.percent_directives() or
                 getattr(self, '_time', False))
 
-    def html(self, wrap=None, div_wrap=True, do_print=False, publish=False):
-        r"""
-        Returns the HTML for this compute cell.
-
-        INPUT:
-
-        - ``wrap`` - an integer (default: None); the number of word
-          wrap columns
-
-        - ``div_wrap`` - a boolean (default: True); whether to wrap
-          the output in outer div elements
-
-        - ``do_print`` - a boolean (default: False); whether to return
-          output suitable for printing
-
-        - ``publish`` - a boolean (default: False); whether to render
-          a published cell
-
-        OUTPUT:
-
-        - a string
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
-            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-            sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
-            sage: C.html()
-            u'...cell_outer_0...2+3...5...'
-        """
-        from template import template
-
-        if wrap is None:
-            wrap = self.notebook().conf()['word_wrap_cols']
-
-        return template(os.path.join('html', 'notebook', 'cell.html'),
-                        cell=self, wrap=wrap, div_wrap=div_wrap,
-                        do_print=do_print, publish=publish)
+#    def html(self, wrap=None, div_wrap=True, do_print=False, publish=False):
+#        r"""
+#        Returns the HTML for this compute cell.
+#
+#        INPUT:
+#
+#        - ``wrap`` - an integer (default: None); the number of word
+#          wrap columns
+#
+#        - ``div_wrap`` - a boolean (default: True); whether to wrap
+#          the output in outer div elements
+#
+#        - ``do_print`` - a boolean (default: False); whether to return
+#          output suitable for printing
+#
+#        - ``publish`` - a boolean (default: False); whether to render
+#          a published cell
+#
+#        OUTPUT:
+#
+#        - a string
+#
+#        EXAMPLES::
+#
+#            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
+#            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+#            sage: W = nb.create_new_worksheet('Test', 'sage')
+#            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
+#            sage: C.html()
+#            u'...cell_outer_0...2+3...5...'
+#        """
+#        from template import template
+#
+#        if wrap is None:
+#            wrap = self.notebook().conf()['word_wrap_cols']
+#
+#        return template(os.path.join('html', 'notebook', 'cell.html'),
+#                        cell=self, wrap=wrap, div_wrap=div_wrap,
+#                        do_print=do_print, publish=publish)
 
     def url_to_self(self):
         """
@@ -2230,6 +2272,9 @@ class Cell(Cell_generic):
                 self.worksheet_filename(), self.id())
             return self._url_to_self
 
+    ####
+
+    # TODO
     def files(self):
         """
         Returns a list of all the files in this compute cell's
@@ -2260,6 +2305,7 @@ class Cell(Cell_generic):
         D = os.listdir(dir)
         return D
 
+    # TODO
     def delete_files(self):
         """
         Deletes all of the files associated with this compute cell.
@@ -2291,6 +2337,7 @@ class Cell(Cell_generic):
         if os.path.exists(dir):
             shutil.rmtree(dir, ignore_errors=True)
 
+    # TODO
     def files_html(self, out):
         """
         Returns HTML to display the files in this compute cell's
@@ -2373,10 +2420,8 @@ class Cell(Cell_generic):
                     jmol_file.write(jmol_script)
                     jmol_file.close()
 
-                #script = '<div><script>jmol_applet(%s, "%s?%d");</script></div>' % (size, url, time.time())
-                script = '<div id = "jmol_static%s">Sleeping...<button onClick="javascript:void(jmol_launch(%s, \'%s?%d\', %s))">Make Interactive</button>'  % (self._id, size, url, time.time(), self._id)
                 image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
-                script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
+                script = '<div class="jmol_instance" data-url="' + url + '" data-img="' + image_name + '.png"></div>'
                 images.append(script)
                 jmolimagebase = F
                 hasjmol=True

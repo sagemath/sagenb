@@ -32,6 +32,9 @@ directory. Then run the notebook from within Sage as follows::
 This will create a directory ``mynotebook.sagenb``, and all notebook
 data is stored in that directory.
 
+If you are interested in developing the Sage Notebook, run 
+``sage -python setup.py develop`` instead of ``sage -python setup.py install``
+
 SSL support
 -----------
 
@@ -52,7 +55,7 @@ Development
 ===========
 
 See the Sage Developer's guide, part of the Sage documentation, for
-instructions.
+instructions. Also see https://github.com/samuela/sagenb/wiki/Development-Notes.
 
 Miscellaneous Release Instructions
 ----------------------------------

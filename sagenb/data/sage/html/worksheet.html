@@ -1,0 +1,189 @@
+{% extends 'html/base.html' %}
+
+{% block head %}
+	{{ super() }}
+
+	<!-- CodeMirror -->
+	<link rel="stylesheet" href="/data/CodeMirror-2.3/lib/codemirror.css">
+	
+	<!-- simple hinting -->
+	<link rel="stylesheet" href="/data/CodeMirror-2.3/lib/util/simple-hint.css">
+{% endblock head %}
+
+{% block navbar %}
+	<ul class="nav">
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<li><a href="#" id="new_worksheet"><i class="icon-file"></i> New Worksheet</a></li>
+				<li><a href="#" id="save_worksheet"><i class="icon-ok"></i> Save Worksheet</a></li>
+				<li><a href="#" id="close_worksheet"><i class="icon-remove"></i> Close Worksheet</a></li>
+
+				<li class="divider"></li>
+				<li><a href="#" id="export_to_file"><i class="icon-download"></i> Export to File</a></li>
+				<li><a href="#import_modal" id="import_from_file" data-toggle="modal"><i class="icon-upload"></i> Import from File</a></li>
+
+				<li class="divider"></li>
+				<li><a href="#" id="print"><i class="icon-print"></i> Print</a></li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">View <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<li><a href="#"><label for="typesetting_checkbox" class="checkbox"><input name="typesetting_checkbox" type="checkbox" id="typesetting_checkbox"> Typesetting</label></a></li>
+				<li><a href="#"><label for="line_numbers_checkbox" class="checkbox"><input name="line_numbers_checkbox" type="checkbox" id="line_numbers_checkbox"> Line numbers</label></a></li>
+				<li class="divider"></li>
+				<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="single_cell_mode_radio" value="single"> Single-cell Mode</label></a></li>
+				<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="multi_cell_mode_radio" value="multi" checked> Multi-cell Mode</label></a></li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Evaluation <b class="caret"></b></a>
+			<ul class="dropdown-menu">
+				<li><a href="#" id="evaluate_all_cells"><i class="icon-play"></i> Evaluate all Cells</a></li>
+				<li><a href="#" id="interrupt"><i class="icon-stop"></i> Interrupt</a></li>
+				<li><a href="#" id="restart_worksheet"><i class="icon-refresh"></i> Restart Worksheet</a></li>
+				<li class="divider"></li>
+				<li><a href="#system_modal" id="change_system" data-toggle="modal"><i class="icon-cog"></i> Change system</a></li>
+				<li class="divider"></li>
+				<li><a href="#" id="hide_all_output"><i class="icon-eye-close"></i> Hide all output</a></li>
+				<li><a href="#" id="show_all_output"><i class="icon-eye-open"></i> Show all output</a></li>
+				<li><a href="#" id="delete_all_output"><i class="icon-remove"></i> Delete all output</a></li>
+			</ul>
+		</li>
+		<li class="dropdown">
+			<a href="#data_modal" data-toggle="modal">Data</a>
+		</li>
+		<li><a href="#sharing_modal" id="sharing" data-toggle="modal">Sharing</a></li>
+	</ul>
+{% endblock navbar %}
+
+{% block alerts %}
+	{% include 'html/alerts/worksheet_locked_alert.html' %}
+	{% include 'html/alerts/rename_alert.html' %}
+{% endblock alerts %}
+
+{% block before_page %}
+	<div class="single_cell_controls">
+		<div class="left_controls">
+			<button type="button" class="btn" id="first_cell"><i class="icon-fast-backward"></i></button>
+			<button type="button" class="btn btn-primary" id="previous_cell"><i class="icon-step-backward icon-white"></i></button>
+		</div>
+		
+		<div class="progress_text"></div>
+		
+		<div class="progress">
+			<div class="bar" style="width: 0%;"></div>
+		</div>
+		
+		<div class="right_controls">
+			<button type="button" class="btn btn-primary" id="next_cell"><i class="icon-step-forward icon-white"></i></button>
+			<button type="button" class="btn" id="last_cell"><i class="icon-fast-forward"></i></button>
+		</div>
+	</div>
+{% endblock before_page %}
+
+
+{% block page %}
+	<div class="worksheet_name">
+		<h1 class="title"><!--Worksheet Name--></h1>
+		<input type="text" />
+	</div>
+{% endblock page %}
+
+{% block after_container %}
+	{% include 'html/modals/sharing_modal.html' %}
+	{% include 'html/modals/system_modal.html' %}
+	{% include 'html/modals/import_modal.html' %}
+	{% include 'html/modals/data_modal.html' %}
+
+	<iframe src="#" id="Jmol_zindex_fix"></iframe>
+{% endblock after_container %}
+
+{% block extra_javascript %}
+	{# TODO: use webassets here #}
+
+	<!-- MathJax -->
+	<script type="text/javascript" src="/data/sage/js/load_mathjax.js"></script>
+
+	<!-- TinyMCE -->
+	<script type="text/javascript" src="/data/tinymce-3.5.2/jscripts/tiny_mce/tiny_mce.js" ></script>
+
+	<!-- CodeMirror -->
+	<script src="/data/CodeMirror-2.3/lib/codemirror.js"></script>
+
+	<!-- simple hinting -->
+	<script type="text/javascript" src="/data/CodeMirror-2.3/lib/util/simple-hint.js"></script>
+	<!-- javascript hinting. we'll have to create our own hinting presets but for testing we use js -->
+	<script type="text/javascript" src="/data/CodeMirror-2.3/lib/util/javascript-hint.js"></script>
+
+	<!-- CodeMirror modes -->
+	<script src="/data/CodeMirror-2.3/mode/python/python.js"></script>
+	<script src="/data/CodeMirror-2.3/mode/stex/stex.js"></script>
+	<script src="/data/CodeMirror-2.3/mode/r/r.js"></script>
+	<script src="/data/CodeMirror-2.3/mode/shell/shell.js"></script>
+
+	<!-- htmlmixed depends on xml. javascript, and css -->
+	<script src="/data/CodeMirror-2.3/mode/xml/xml.js"></script>
+	<script src="/data/CodeMirror-2.3/mode/javascript/javascript.js"></script>
+	<script src="/data/CodeMirror-2.3/mode/css/css.js"></script>
+	<script src="/data/CodeMirror-2.3/mode/htmlmixed/htmlmixed.js"></script>
+	<!-- END CodeMirror -->
+
+	<!-- Sage3d - accelerated 3D graphics -->
+	<script type="text/javascript" src="/data/sage3d/sage3d.js"></script>
+
+	<!-- Jmol - embedded 3D graphics -->
+	<script type="text/javascript" src="/java/jmol/Jmol.js"></script>
+	<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
+
+	<script type="text/javascript" src="/data/sage/js/jmol.js"></script>
+
+	<!-- Worksheet related javascript -->
+    <script type="text/javascript" src="/data/sage/js/worksheet.js"></script>
+	<script type="text/javascript" src="/data/sage/js/cell.js"></script>
+
+	<!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
+	<link rel="stylesheet" href="/data/jqueryui/css/sage/jquery-ui-1.8.11.custom.css" />
+	<script type="text/javascript" src="/data/jqueryui/js/jquery-ui-1.8.11.custom.min.js"></script>
+
+	<!-- jQuery plugins - color pickers, shift-click, AJAX forms, IE fixes, notifications -->
+	<link rel="stylesheet" href="/data/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />
+	<script type="text/javascript" src="/data/jquery/plugins/farbtastic/farbtastic.min.js"></script>
+	<script type="text/javascript" src="/data/jquery/plugins/extendedclick/jquery.event.extendedclick.min.js"></script>
+	<script type="text/javascript" src="/data/jquery/plugins/form/jquery.form.min.js"></script>
+	<script type="text/javascript" src="/data/jquery/plugins/jquery.bgiframe.min.js"></script>
+	<link rel="stylesheet" href="/data/jquery/plugins/jpicker/css/jPicker-1.1.6.min.css" type="text/css" />
+	<script type="text/javascript" src="/data/jquery/plugins/jpicker/jpicker-1.1.6.min.js"></script>
+	<link rel="stylesheet" media="screen" type="text/css" href="/data/jquery/plugins/colorpicker/css/colorpicker.css" />
+	<script type="text/javascript" src="/data/jquery/plugins/colorpicker/js/colorpicker.min.js"></script>
+	<script type="text/javascript" src="/data/jquery/plugins/achtung/ui.achtung-mod.min.js"></script>
+	
+	<script type="text/javascript">
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
+
+			// create the worksheet
+			sagenb.worksheetapp.worksheet = new sagenb.worksheetapp.worksheet();
+
+			// grab the filename from the URL
+			var fn = window.location.pathname;
+
+			// take off /home/
+			fn = fn.substring(6);
+
+			// take off last /
+			if(fn.substring(fn.length - 1, fn.length) === "/") {
+				// some versions of IE don't support fn.substring(-1)
+				fn = fn.substring(0, fn.length - 1);
+			}
+
+			// set filename
+			sagenb.worksheetapp.worksheet.filename = fn;
+
+			// initialize
+			sagenb.worksheetapp.worksheet.init();
+		});
+	</script>
+{% endblock extra_javascript %}

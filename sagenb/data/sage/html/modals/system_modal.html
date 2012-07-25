@@ -1,0 +1,39 @@
+{% extends 'html/modals/modal_base.html' %}
+
+{% block modal_id %}system_modal{% endblock modal_id %}
+
+{% block modal_title %}Worksheet System{% endblock modal_title %}
+
+{% block modal_content %}
+
+<div style="text-align: center">
+	<select id="system_select">
+		<option value="sage">Sage</option>
+		<option value="gap">GAP</option>
+		<option value="gp">GP</option>
+		<option value="html">HTML</option>
+		<option value="latex">Latex</option>
+		<option value="maxima">Maxima</option>
+		<option value="python">Python</option>
+		<option value="r">R</option>
+		<option value="sh">Shell script</option>
+		<option value="singular">Singular</option>
+		<option value="axiom">Axiom (optional)</option>
+		<option value="kash">Kash (optional)</option>
+		<option value="macaulay2">Macaulay2 (optional)</option>
+		<option value="magma">Magma (optional)</option>
+		<option value="maple">Maple (optional)</option>
+		<option value="mathematica">Mathematica (optional)</option>
+		<option value="matlab">Matlab (optional)</option>
+		<option value="mupad">Mupad (optional)</option>
+		<option value="octave">Octave (optional)</option>
+		<option value="scilab">Scilab (optional)</option>
+	</select>
+</div>
+
+{% endblock modal_content %}
+
+{% block modal_footer %}
+<a href="#" class="btn" data-dismiss="modal">Cancel</a>
+<a href="#" class="btn btn-primary" data-dismiss="modal">Change system</a>
+{% endblock modal_footer %}

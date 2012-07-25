@@ -1,0 +1,66 @@
+/* -------- SHARING DIALOG ---- */
+#collaborators_textarea {
+	resize: vertical;
+	max-height: 200px;
+}
+
+/* -------- DATA DIALOG -------- */
+#data_modal {
+	#manage_tab {
+		#data_list {
+			height: 300px;
+			padding-right: 5px;
+			overflow-y: scroll;
+		}
+		ul {
+			margin-bottom: 0px;
+
+			li {
+				position: relative;
+
+				a {
+					font-weight: bold;
+					color: #333;
+					cursor: default;
+				}
+				
+				.btn-group {
+					display: none;
+					position: absolute;
+					top: 7px;
+					right: 7px;
+				}
+
+				&:hover .btn-group {
+					display: block;
+				}
+
+				&.no_data_files a {
+					text-align: center;
+					background-color: #eee;
+				}
+			}
+		}
+	}
+	
+	#new_file_tab {
+		
+	}
+	
+	#upload_file_tab {
+		
+	}
+	
+	#file_from_url_tab {
+		
+	}
+}
+
+#import_modal {
+	#import_details {
+		font-size: 12px;
+		code {
+			color: black;
+		}
+	}
+}

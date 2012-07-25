@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: ../flask_version/admin.py:67
+#: ../flask_server/admin.py:67
 #, python-format
 msgid ""
 "The temporary password for the new user <em>%(username)s</em> is "
@@ -23,15 +23,15 @@ msgstr ""
 "Временный пароль для нового пользователя "
 "<em>%(username)s</em>:<em>%(password)s</em>"
 
-#: ../flask_version/admin.py:69
+#: ../flask_server/admin.py:69
 msgid "New User"
 msgstr "Новый пользователь"
 
-#: ../flask_version/authentication.py:258
+#: ../flask_server/authentication.py:258
 msgid "The confirmation system is not active."
 msgstr "Система подтверждения не активна."
 
-#: ../flask_version/authentication.py:261
+#: ../flask_server/authentication.py:261
 msgid ""
 "    <h1>Invalid confirmation key</h1>\n"
 "    <p>You are reporting a confirmation key that has not been assigned by"
@@ -46,41 +46,41 @@ msgstr ""
 "Пожалуйста, <a href=\"/register\">зарегистрируйтесь</a> на этом "
 "сервере.</p>"
 
-#: ../flask_version/authentication.py:272
+#: ../flask_server/authentication.py:272
 #, python-format
 msgid "<h1>Email address confirmed for user %(username)s</h1>"
 msgstr "<h1>Электронный адрес подтверждён для пользователя %(username)s</h1>"
 
-#: ../flask_version/authentication.py:274
+#: ../flask_server/authentication.py:274
 msgid "Email Confirmed"
 msgstr "E-mail подтверждён"
 
-#: ../flask_version/base.py:226
+#: ../flask_server/base.py:226
 #: ../sagenb/data/sage/html/base_authenticated.html:15
 msgid "Log"
 msgstr "История"
 
-#: ../flask_version/decorators.py:35
+#: ../flask_server/decorators.py:35
 msgid "You do not have permission to access this location"
 msgstr "У вас нет прав для доступа к этой странице"
 
-#: ../flask_version/worksheet.py:27 ../flask_version/worksheet.py:36
-#: ../flask_version/worksheet_listing.py:195
+#: ../flask_server/worksheet.py:27 ../flask_server/worksheet.py:36
+#: ../flask_server/worksheet_listing.py:195
 msgid "You do not have permission to access this worksheet"
 msgstr "У вас нет прав для доступа к этому рабочему листу"
 
-#: ../flask_version/worksheet.py:75 ../flask_version/worksheet.py:951
+#: ../flask_server/worksheet.py:75 ../flask_server/worksheet.py:951
 #: ../sagenb/data/sage/html/notebook/worksheet_page.html:28
 #: ../sagenb/notebook/misc.py:237 ../sagenb/notebook/worksheet.py:703
 #: ../sagenb/notebook/worksheet.py:723 ../sagenb/notebook/worksheet.py:4230
 msgid "Untitled"
 msgstr "Безымянный"
 
-#: ../flask_version/worksheet.py:578
+#: ../flask_server/worksheet.py:578
 msgid "Error: can't add more than 500 collaborators at a time"
 msgstr "Ошибка: нельзя добавить более 500 соавторов за один раз"
 
-#: ../flask_version/worksheet.py:631
+#: ../flask_server/worksheet.py:631
 #: ../sagenb/data/sage/html/error_message.html:4
 #: ../sagenb/data/sage/html/login.html:69
 #: ../sagenb/data/sage/html/login.html:76
@@ -105,15 +105,15 @@ msgstr "Ошибка: нельзя добавить более 500 соавто�
 msgid "Error"
 msgstr "Ошибка"
 
-#: ../flask_version/worksheet.py:661
+#: ../flask_server/worksheet.py:661
 msgid "No data files"
 msgstr "Нет файлов данных"
 
-#: ../flask_version/worksheet.py:702
+#: ../flask_server/worksheet.py:702
 msgid "illegal link attempt!"
 msgstr "попытка доступа по неверной ссылке!"
 
-#: ../flask_version/worksheet.py:704
+#: ../flask_server/worksheet.py:704
 msgid ""
 "The data filename already exists in other worksheet\n"
 "Delete the file in the other worksheet before creating a link."
@@ -121,7 +121,7 @@ msgstr ""
 "Файл данных с таким именем уже существует в рабочем листе \n"
 "Удалите файл в другом рабочем листе, прежде чем создавать связанную копию."
 
-#: ../flask_version/worksheet.py:720
+#: ../flask_server/worksheet.py:720
 #, python-format
 msgid ""
 " Return to <a href=\"%(upload_url)s\" title=\"Upload or create a data "
@@ -135,27 +135,27 @@ msgstr ""
 " href=\"%(worksheet_url)s\" title=\"Интерактивно использовать рабочий "
 "лист\"><strong>%(worksheet_name)s</strong></a>."
 
-#: ../flask_version/worksheet.py:724
+#: ../flask_server/worksheet.py:724
 #, python-format
 msgid "Error uploading file (missing field \"file\"). %(backlinks)s"
 msgstr "Ошибка при загрузке файла (отсутствует файл fileField). %(backlinks)s"
 
-#: ../flask_version/worksheet.py:731
+#: ../flask_server/worksheet.py:731
 #, python-format
 msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
 msgstr "Ошибка при загрузке файла (отсутствует аргумент %(field)s). %(backlinks)s"
 
-#: ../flask_version/worksheet.py:744
+#: ../flask_server/worksheet.py:744
 #, python-format
 msgid "Error uploading file (missing filename).%(backlinks)s"
 msgstr "Ошибка при загрузке файла (отсутствует имя файла). %(backlinks)s"
 
-#: ../flask_version/worksheet.py:752
+#: ../flask_server/worksheet.py:752
 #, python-format
 msgid "URL must start with http, https, or ftp.%(backlinks)s"
 msgstr "URL должен начинаться с http, https, или ftp. %(backlinks)s"
 
-#: ../flask_version/worksheet.py:759
+#: ../flask_server/worksheet.py:759
 #, python-format
 msgid ""
 "Suspicious filename \"%(filename)s\" encountered uploading "
@@ -164,23 +164,23 @@ msgstr ""
 "Подозрительное имя файла \"%(filename)s\" обнаружено при загрузке файла. "
 "%(backlinks)s"
 
-#: ../flask_version/worksheet.py:874
+#: ../flask_server/worksheet.py:874
 msgid "No such worksheet."
 msgstr "Запрошенный рабочий лист не найден."
 
-#: ../flask_version/worksheet.py:959
+#: ../flask_server/worksheet.py:959
 msgid "Document does not exist."
 msgstr "Документ не существует"
 
-#: ../flask_version/worksheet_listing.py:57
+#: ../flask_server/worksheet_listing.py:57
 msgid "Error displaying worksheet listing."
 msgstr "Ошибка при отображении списка рабочих листов"
 
-#: ../flask_version/worksheet_listing.py:176
+#: ../flask_server/worksheet_listing.py:176
 msgid "Requested public worksheet does not exist"
 msgstr "Запрошеный опубликованный рабочий лист не существует"
 
-#: ../flask_version/worksheet_listing.py:295
+#: ../flask_server/worksheet_listing.py:295
 #, python-format
 msgid ""
 "This Sage notebook is not configured to load worksheets from 'https' "
@@ -193,7 +193,7 @@ msgstr ""
 "листа, а потом загрузите его непосредственно со своего компьютера.\n"
 "%(backlinks)s"
 
-#: ../flask_version/worksheet_listing.py:357
+#: ../flask_server/worksheet_listing.py:357
 msgid ""
 "Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload"
 " File</strong></a>."
@@ -201,14 +201,14 @@ msgstr ""
 "Вернуться к <a href=\"/upload\" title=\"Загрузить рабочий "
 "лист\"><strong>Загрузить файл</strong></a>."
 
-#: ../flask_version/worksheet_listing.py:380
+#: ../flask_server/worksheet_listing.py:380
 #, python-format
 msgid ""
 "Please specify a worksheet to load.\n"
 "%(backlinks)s"
 msgstr "Пожалуйста, укажите рабочий лист для загрузки. %(backlinks)s"
 
-#: ../flask_version/worksheet_listing.py:384
+#: ../flask_server/worksheet_listing.py:384
 #, python-format
 msgid ""
 "Invalid filename.\n"
@@ -217,7 +217,7 @@ msgstr ""
 "Неверное имя файла.\n"
 "%(backlinks)s"
 
-#: ../flask_version/worksheet_listing.py:425
+#: ../flask_server/worksheet_listing.py:425
 #, python-format
 msgid ""
 "There was an error uploading the worksheet.  It could be an old "
@@ -236,7 +236,7 @@ msgstr ""
 "tar-архиве, сжатом bzip2!\n"
 "%(backlinks)s"
 
-#: ../flask_version/worksheet_listing.py:436
+#: ../flask_server/worksheet_listing.py:436
 #, python-format
 msgid "Error uploading worksheet '%(msg)s'.%(backlinks)s"
 msgstr "Ошибка при загрузке рабочего листа '%(msg)s'. %(backlinks)s"

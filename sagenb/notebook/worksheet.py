@@ -291,21 +291,6 @@ class Worksheet(object):
             sage: sorted((W.basic().items()))
             [('auto_publish', False), ('collaborators', []), ('id_number', 0), ('last_change', ('sage', ...)), ('name', u'test'), ('owner', 'sage'), ('pretty_print', False), ('published_id_number', None), ('ratings', []), ('saved_by_info', {}), ('system', None), ('tags', {'sage': [1]}), ('viewers', []), ('worksheet_that_was_published', ('sage', 0))]
         """
-        try:
-            published_id_number = int(os.path.split(self.__published_version)[1])
-        except AttributeError:
-            published_id_number = None
-
-        try:
-            ws_pub = self.__worksheet_came_from
-        except AttributeError:
-            ws_pub = (self.owner(), self.id_number())
-
-        try:
-            saved_by_info = self.__saved_by_info 
-        except AttributeError:
-            saved_by_info = {}
-
         d = {#############
              # basic identification
              'name': unicode(self.name()),
@@ -321,20 +306,6 @@ class Worksheet(object):
              'viewers': self.viewers(),
              'collaborators': self.collaborators(),
 
-             #############
-             # publishing worksheets (am I published?); auto-publish me?
-             # If this worksheet is published, then the published_id_number
-             # is the id of the published version of this worksheet. Otherwise,
-             # it is None.
-             'published_id_number': published_id_number,
-             # If this is a published worksheet, then ws_pub
-             # is a 2-tuple ('username', id_number) of a non-published
-             # worksheet.  Otherwise ws_pub is None.
-             'worksheet_that_was_published': ws_pub,
-             # Whether or not this worksheet should automatically be
-             # republished when changed.
-             'auto_publish': self.is_auto_publish(),
-
              # Appearance: e.g., whether to pretty print this
              # worksheet by default
              'pretty_print': self.pretty_print(),
@@ -343,9 +314,6 @@ class Worksheet(object):
              # triples
              #       (username, rating, comment)
              'ratings': self.ratings(),
-
-             #???
-             'saved_by_info':saved_by_info,
 
              # dictionary mapping usernames to list of tags that
              # reflect what the tages are for that user.  A tag can be
@@ -359,7 +327,37 @@ class Worksheet(object):
              # and by whom:
              #     last_change = ('username', time.time())
              'last_change': self.last_change(),
-             }
+             'last_change_pretty': prettify_time_ago(time.time() - self.last_change()[1]),
+
+             'filename': self.filename(),
+
+             'running': self.compute_process_has_been_started(),
+
+             'attached_data_files': self.attached_data_files()
+        }
+
+        try:
+            d['saved_by_info'] = self.__saved_by_info 
+        except AttributeError:
+            d['saved_by_info'] = {}
+
+        try:
+            d['worksheet_that_was_published'] = self.__worksheet_came_from
+        except AttributeError:
+            d['worksheet_that_was_published'] = (self.owner(), self.id_number())
+
+        if self.has_published_version():
+            d['published'] = True
+            d['auto_publish'] = self.is_auto_publish()
+
+            from time import strftime
+            d['published_time'] = strftime("%B %d, %Y %I:%M %p", self.published_version().date_edited())
+
+            try:
+                d['published_id_number'] = int(os.path.split(self.__published_version)[1])
+            except AttributeError:
+                d['published_id_number'] = None
+
         return d
 
     def reconstruct_from_basic(self, obj, notebook_worksheet_directory=None):
@@ -2301,6 +2299,7 @@ class Worksheet(object):
     ##########################################################
     # HTML rendering of the whole worksheet
     ##########################################################
+    # TODO get rid of this stuff
     def html_cell_list(self, do_print=False, username=None):
         """
         INPUT:
@@ -2338,6 +2337,14 @@ class Worksheet(object):
                 print msg
         return cells_html
 
+    def to_json(self):
+        """
+        Returns the worksheet as a JSON object.
+        """
+        from sagenb.notebook.misc import encode_response
+        return encode_response(self.basic())
+
+    # TODO
     def html(self, do_print=False, publish=False, username=None):
         r"""
         INPUT:
@@ -2491,6 +2498,7 @@ class Worksheet(object):
                 return True, user
         return False
 
+    # TODO
     def html_time_since_last_edited(self, username=None):
         t = self.time_since_last_edited()
         tm = prettify_time_ago(t)
@@ -2499,12 +2507,14 @@ class Worksheet(object):
                         time = tm,
                         username=username)
 
+    # TODO
     def html_time_last_edited(self, username=None):
         return template(os.path.join("html", "worksheet", "time_last_edited.html"),
                         time = convert_time_to_string(self.last_edited()),
                         last_editor = self.last_to_edit(),
                         username=username)
 
+    # TODO
     def html_time_nice_edited(self, username=None):
         """
         Returns a "nice" html time since last edit.
@@ -2989,6 +2999,7 @@ except (KeyError, IOError):
 
         self.initialize_sage()
 
+        # Why the repeat?
         # make sure we have a __sage attribute
         # We do this to diagnose google issue 81; once we
         # have fixed that issue, we can remove this next statement
@@ -3175,13 +3186,15 @@ except (KeyError, IOError):
                 else:
                     c = ''
                 C.set_changed_input_text(before_prompt + c + after_prompt)
-                out = self.completions_html(C.id(), out)
-                C.set_introspect_html(out, completing=True)
+
+                C.set_introspect_output(out)
+
             else:
+                # docstring
                 if C.eval_method == 'introspect':
-                    C.set_introspect_html(out, completing=False)
+                    C.set_introspect_output(out)
                 else:
-                    C.set_introspect_html('')
+                    C.set_introspect_output('')
                     C.set_output_text('<html><!--notruncate-->' + out +
                                       '</html>', '')
 
@@ -3247,7 +3260,8 @@ except (KeyError, IOError):
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())
-            C.set_introspect_html('')
+            C.set_introspect_output('')
+            
 
         return 'd', C
 
@@ -3547,29 +3561,30 @@ except (KeyError, IOError):
             i += 1
         return completions[0][n:m]
 
-    def completions_html(self, id, s, cols=3):
-        if 'no completions of' in s:
-            return ''
-
-        completions = s.split()
-
-        n = len(completions)
-        l = n / cols + n % cols
-
-        if n == 1:
-            return '' # don't show a window, just replace it
-
-        rows = []
-        for r in range(0, l):
-            row = []
-            for c in range(cols):
-                try:
-                    cell = completions[r + l * c]
-                    row.append(cell)
-                except:
-                    row.append('')
-            rows.append(row)
-        return format_completions_as_html(id, rows)
+# TODO completions
+#    def completions_html(self, id, s, cols=3):
+#        if 'no completions of' in s:
+#            return ''
+#
+#        completions = s.split()
+#
+#        n = len(completions)
+#        l = n / cols + n % cols
+#
+#        if n == 1:
+#            return '' # don't show a window, just replace it
+#
+#        rows = []
+#        for r in range(0, l):
+#            row = []
+#            for c in range(cols):
+#                try:
+#                    cell = completions[r + l * c]
+#                    row.append(cell)
+#                except:
+#                    row.append('')
+#            rows.append(row)
+#        return format_completions_as_html(id, rows)
 
     ##########################################################
     # Processing of input and output to worksheet process.
@@ -4192,28 +4207,30 @@ def first_word(s):
         return s
     return s[:i.start()]
 
-def format_completions_as_html(cell_id, completions, username=None):
-    """
-    Returns tabular HTML code for a list of introspection completions.
 
-    INPUT:
-
-    - ``cell_id`` - an integer or a string; the ID of the ambient cell
-
-    - ``completions`` - a nested list of completions in row-major
-      order
-
-    OUTPUT:
-
-    - a string
-    """
-    if len(completions) == 0:
-        return ''
-
-    return template(os.path.join("html", "worksheet", "completions.html"),
-                    cell_id = cell_id,
-                    # Transpose and enumerate completions to column-major
-                    completions_enumerated = enumerate(map(list, zip(*completions))))
+# TODO completions
+#def format_completions_as_html(cell_id, completions, username=None):
+#    """
+#    Returns tabular HTML code for a list of introspection completions.
+#
+#    INPUT:
+#
+#    - ``cell_id`` - an integer or a string; the ID of the ambient cell
+#
+#    - ``completions`` - a nested list of completions in row-major
+#      order
+#
+#    OUTPUT:
+#
+#    - a string
+#    """
+#    if len(completions) == 0:
+#        return ''
+#
+#    return template(os.path.join("html", "worksheet", "completions.html"),
+#                    cell_id = cell_id,
+#                    # Transpose and enumerate completions to column-major
+#                    completions_enumerated = enumerate(map(list, zip(*completions))))
 
 def extract_name(text):
     # The first line is the title

@@ -1,0 +1,52 @@
+{% extends 'html/base.html' %}
+
+{% block title %}{{ gettext('Manage Users') }} - Sage{% endblock title %}
+
+{% block navbar %}{% endblock navbar %}
+
+{% block alerts %}{% endblock alerts %}
+
+{% block page %}
+	<h1 class="title">{{ gettext('Manage Users') }}</h1>
+	<a href="#add_user_modal" id="add_user_button" data-toggle="modal" class="btn btn-primary">{{ gettext('Add User') }}</a>
+	<table class="table table-striped" id="users_table">
+		<thead>
+			<tr>
+				<th class="user_col">{{ gettext('Username') }}</th>
+				<th>{{ gettext('Password Reset') }}</th>
+				<th>{{ gettext('User Suspension') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for user in users %}
+      		<tr data-username="{{ user }}">
+      			<td class="user_col"><a href="/home/{{ user }}">{{ user }}</a></td>
+      			<td><a href="#" class="reset_user_password_button btn btn-mini">{{ gettext('Reset') }}</a></td>
+      			<td><a href="#" class="suspend_user_button btn btn-mini">
+      				{% if user.is_suspended() %}
+      					{{ gettext('Unsuspend') }}
+      				{% else %}
+      					{{ gettext('Suspend') }}
+      				{% endif %}
+      			</td>
+      		</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock page %}
+
+{% block after_container %}
+	{% include 'html/modals/add_user_modal.html' %}
+{% endblock after_container %}
+
+{% block extra_javascript %}
+	<script type="text/javascript" src="/data/sage/js/settings.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
+
+			sagenb.settings.setup_manage_users_page();
+		});
+	</script>
+{% endblock extra_javascript %}
