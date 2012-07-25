@@ -429,9 +429,9 @@ div.cell_input_print { background-color: white; border: 1px solid #a8a8a8; font-
 textarea.cell_input:hover { cursor: text; }
 
 /* line 866, ../../../../sass/src/main.scss */
-a.eval_button { display: none; }
+input.eval_button { display: none; }
 /* line 868, ../../../../sass/src/main.scss */
-a.eval_button_active { display: block; position: relative; top: 2px; margin: 0px; padding: 0px; font-size: 10pt; }
+input.eval_button_active { display: block; position: relative; top: 2px; margin: 0px; padding: 0px; font-size: 10pt; }
 
 /*********** CELL OUTPUT ************************* */
 /* line 879, ../../../../sass/src/main.scss */
@@ -655,13 +655,13 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 #guest-worksheet-page h1, #guest-worksheet-page h2 { text-align: center; }
 /* line 4, ../../../../sass/src/_guest_worksheet.scss */
 #guest-worksheet-page ul.controls { margin: 0; padding: 0; border: 0; overflow: hidden; *zoom: 1; }
-/* line 60, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-#guest-worksheet-page ul.controls li { list-style-image: none; list-style-type: none; margin-left: 0px; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
-/* line 48, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 60, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+#guest-worksheet-page ul.controls li { list-style-image: none; list-style-type: none; margin-left: 0; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
+/* line 48, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #guest-worksheet-page ul.controls li:first-child, #guest-worksheet-page ul.controls li.first { padding-left: 0; }
-/* line 49, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 49, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #guest-worksheet-page ul.controls li:last-child { padding-right: 0; }
-/* line 50, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 50, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #guest-worksheet-page ul.controls li.last { padding-right: 0; }
 
 /* line 3, ../../../../sass/src/_worksheet_aux.scss */
@@ -708,13 +708,13 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 
 /* line 35, ../../../../sass/src/_settings.scss */
 #settings-nav { margin: 0; padding: 0; border: 0; overflow: hidden; *zoom: 1; }
-/* line 60, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-#settings-nav li { list-style-image: none; list-style-type: none; margin-left: 0px; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
-/* line 48, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 60, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+#settings-nav li { list-style-image: none; list-style-type: none; margin-left: 0; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
+/* line 48, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #settings-nav li:first-child, #settings-nav li.first { padding-left: 0; }
-/* line 49, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 49, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #settings-nav li:last-child { padding-right: 0; }
-/* line 50, ../../../../../../../../usr/lib/ruby/gems/1.9.1/gems/compass-0.11.5/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 50, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #settings-nav li.last { padding-right: 0; }
 /* line 37, ../../../../sass/src/_settings.scss */
 #settings-nav li { border-right: 1px solid #cccccc; }
@@ -730,31 +730,31 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 /* line 50, ../../../../sass/src/_settings.scss */
 #user-management-page a:link, #user-management-page a:visited { color: #112abb; }
 
-/* line 2, ../../../../sass/src/accounts.scss */
+/* line 2, ../../../../sass/src/_accounts.scss */
 .accounts-page #wrapper { margin: 0 auto; max-width: 600px; }
-/* line 5, ../../../../sass/src/accounts.scss */
+/* line 5, ../../../../sass/src/_accounts.scss */
 .accounts-page h1, .accounts-page h2, .accounts-page h3, .accounts-page h4, .accounts-page h5 { font-weight: normal; }
-/* line 7, ../../../../sass/src/accounts.scss */
+/* line 7, ../../../../sass/src/_accounts.scss */
 .accounts-page h1 { border-bottom: 1px solid #696969; font-size: 2em; padding: 10px 0; }
-/* line 11, ../../../../sass/src/accounts.scss */
+/* line 11, ../../../../sass/src/_accounts.scss */
 .accounts-page h2 { font-weight: bold; }
-/* line 13, ../../../../sass/src/accounts.scss */
+/* line 13, ../../../../sass/src/_accounts.scss */
 .accounts-page h1, .accounts-page h2, .accounts-page p, .accounts-page li { margin-bottom: 10px; }
-/* line 15, ../../../../sass/src/accounts.scss */
+/* line 15, ../../../../sass/src/_accounts.scss */
 .accounts-page .entry { margin-bottom: 10px; border: 1px solid #999999; padding: 3px; width: 200; }
-/* line 20, ../../../../sass/src/accounts.scss */
+/* line 20, ../../../../sass/src/_accounts.scss */
 .accounts-page li { border-bottom: 1px solid #cccccc; }
-/* line 22, ../../../../sass/src/accounts.scss */
+/* line 22, ../../../../sass/src/_accounts.scss */
 .accounts-page .error { color: red; }
-/* line 24, ../../../../sass/src/accounts.scss */
+/* line 24, ../../../../sass/src/_accounts.scss */
 .accounts-page .error_found { color: red; font-size: 1.5em; }
-/* line 27, ../../../../sass/src/accounts.scss */
+/* line 27, ../../../../sass/src/_accounts.scss */
 .accounts-page button { margin-right: 1em; }
-/* line 30, ../../../../sass/src/accounts.scss */
+/* line 30, ../../../../sass/src/_accounts.scss */
 .accounts-page form label { display: block; }
-/* line 32, ../../../../sass/src/accounts.scss */
+/* line 32, ../../../../sass/src/_accounts.scss */
 .accounts-page form div { margin-bottom: 1em; }
-/* line 34, ../../../../sass/src/accounts.scss */
+/* line 34, ../../../../sass/src/_accounts.scss */
 .accounts-page form a { text-decoration: none; }
 
 /* line 2, ../../../../sass/src/_login.scss */
