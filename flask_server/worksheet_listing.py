@@ -20,7 +20,7 @@ def worksheet_list():
     -  ``args`` - ctx.args where ctx is the dict passed
        into a resource's render method
 
-    -  ``pub`` - boolean, True if this is a listing of
+    -  ``published`` - boolean, True if this is a listing of
        public worksheets
 
     -  ``username`` - the user whose worksheets we are
@@ -35,8 +35,7 @@ def worksheet_list():
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
     from sagenb.notebook.misc import encode_response
     
-    # TESTING
-    pub = False
+    pub = 'pub' in request.args
     
     r = {}
     
@@ -61,7 +60,7 @@ def worksheet_list():
 
     r['accounts'] = g.notebook.user_manager().get_accounts()
     r['sage_version'] = SAGE_VERSION
-    r['pub'] = pub
+    # r['pub'] = pub
     
     return encode_response(r)
 
@@ -145,36 +144,27 @@ def empty_trash():
 #####################
 # Public Worksheets #
 #####################
-@worksheet_listing.route('/pub/')
+@worksheet_listing.route('/home/pub/')
 @guest_or_login_required
 def pub():
-    return render_worksheet_list(request.args, pub=True, username=g.username)
+    return render_template(os.path.join('html', 'worksheet_list.html'), published_mode=True)
 
 @worksheet_listing.route('/home/pub/<id>/')
 @guest_or_login_required
 def public_worksheet(id):
-    from worksheet import pub_worksheet
-    filename = 'pub/%s'%id
+    # from worksheet import pub_worksheet
+    filename = 'pub/' + id
     if g.notebook.conf()['pub_interact']:
         try:
             original_worksheet = g.notebook.get_worksheet_with_filename(filename)
         except KeyError:
             return _("Requested public worksheet does not exist"), 404
-        worksheet = pub_worksheet(original_worksheet)
-        
-        owner = worksheet.owner()
-        worksheet.set_owner('pub')
-        s = g.notebook.html(worksheet_filename=worksheet.filename(),
-                            username=g.username)
-        worksheet.set_owner(owner)
-    else:
-        s = g.notebook.html(worksheet_filename=filename, username = g.username)
-    return s
+    return render_template(os.path.join('html', 'worksheet.html'), published_mode=True)
 
 @worksheet_listing.route('/home/pub/<id>/download/<path:title>')
 def public_worksheet_download(id, title):
     from worksheet import unconditional_download
-    worksheet_filename =  "pub" + "/" + id
+    worksheet_filename =  "pub/" + id
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
@@ -183,7 +173,7 @@ def public_worksheet_download(id, title):
 
 @worksheet_listing.route('/home/pub/<id>/cells/<path:filename>')
 def public_worksheet_cells(id, filename):
-    worksheet_filename =  "pub" + "/" + id
+    worksheet_filename =  "pub/" + id
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:

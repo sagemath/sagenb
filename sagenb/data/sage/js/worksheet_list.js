@@ -31,12 +31,23 @@ sagenb.worksheetlistapp.list_row = function() {
 		$this = $("#row_" + _this.props.filename.replace("/", "_"));
 		
 		// checkbox
-		$this.find("input").change(function(e) {
-			_this.checked = $this.find("input").prop("checked");
-		});
+		if(_this.list.published_mode) {
+			$this.find("td.checkbox_cell").detach();
+		}
+		else {
+			$this.find("input").change(function(e) {
+				_this.checked = $this.find("input").prop("checked");
+			});
+		}
 		
 		// name/running
-		var name_html = '<a href="/home/' + sagenb.username + '/' + _this.props.id_number + '" target="_blank">' + _this.props.name + '</a>';
+		var name_html = "";
+		if(_this.list.published_mode) {
+			name_html += '<a href="/home/pub/' + _this.props.published_id_number + '" target="_blank">' + _this.props.name + '</a>';
+		}
+		else {
+			name_html += '<a href="/home/' + _this.props.filename + '" target="_blank">' + _this.props.name + '</a>';
+		}
 		if(_this.props.running) {
 			// TODO gettext
 			name_html += '<span class="label label-important pull-right running_label">running</span>';
@@ -47,9 +58,10 @@ sagenb.worksheetlistapp.list_row = function() {
 		var owner_html = _this.props.owner;
 		if(this.props.collaborators && this.props.collaborators.length) {
 			// there are collaborators
+			// TODO
 			owner_html += ' and <a href="#">2 others</a>';
 		}
-		if(this.props.published_id_number) {
+		if(this.props.published_id_number && !_this.list.published_mode) {
 			// it's published
 			owner_html += '<span class="published_badge badge badge-info pull-right"><i class="icon-share-alt icon-white"></i></span>';
 		}
@@ -91,7 +103,9 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	_this.refresh_interval = 10 * 1000;
 	
 	_this.init = function() {
-		_this.show_active();
+		// TODO handle published mode
+		if(_this.published_mode) _this.show_published();
+		else _this.show_active();
 		
 		$("#main_checkbox").change(function(e) {
 			if($("#main_checkbox").prop("checked")) {
@@ -159,16 +173,20 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	
 	////////// COMMANDS //////////////
 	_this.new_worksheet = function() {
+		if(_this.published_mode) return;
 		window.open("/new_worksheet");
 	};
 	_this.upload_worksheet = function() {
+		if(_this.published_mode) return;
 		//
 	};
 	_this.download_all_active = function() {
+		if(_this.published_mode) return;
 		window.location.replace("/download_worksheets.zip");
 	};
 	
 	_this.checked_action = function(action, extra_callback) {
+		if(_this.published_mode) return;
 		// don't do anything if none are selected
 		if(_this.checked_worksheet_filenames().length === 0) return;
 		
@@ -294,6 +312,14 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	}
 	
 	//// VIEWS ////
+	_this.show_published = function() {
+		_this.load("published", function() {
+			// TODO gettext
+			$(".title").text("Published Worksheets");
+			document.title = "Published Worksheets - Sage";
+			$("#search_input").val("");
+		});
+	};
 	_this.show_active = function() {
 		_this.disable_actions_menu();
 		_this.load("", function() {
@@ -337,25 +363,32 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		var q = $("#search_input").val();
 		if($.trim(q) === "") return;
 
-		var current_id = $("#type_buttons .active").attr("id");
-		var str, type;
-
-		switch(current_id) {
-			case "show_active":
-				str = "Active";
-				type = "active";
-				break;
-			case "show_archive":
-				str = "Archive";
-				type = "archive";
-				break;
-			case "show_trash":
-				str = "Trash";
-				type = "trash";
-				break;
+		var str, urlq;
+		if(_this.published_mode) {
+			str = "Published";
+			urlq = "pub"
 		}
+		else {
+			var current_id = $("#type_buttons .active").attr("id");
+			switch(current_id) {
+				case "show_active":
+					str = "Active";
+					urlq = "active";
+					break;
+				case "show_archive":
+					str = "Archive";
+					urlq = "archive";
+					break;
+				case "show_trash":
+					str = "Trash";
+					urlq = "trash";
+					break;
+			}
+			urlq = "type=" + urlq;
+		}
+		
 
-		_this.load(("type=" + type + "&search=" + q), function() {
+		_this.load((urlq + "&search=" + q), function() {
 			// TODO gettext
 			document.title = str + " - Search - Sage";
 			$(".title").text(str + " - Search");

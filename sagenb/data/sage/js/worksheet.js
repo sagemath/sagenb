@@ -129,14 +129,16 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	//////////// FILE MENU TYPE STUFF //////////
 	_this.new_worksheet = function() {
+		if(_this.published_mode) return;
 		window.open("/new_worksheet");
 	};
 	_this.save = function() {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("save_snapshot"), sagenb.generic_callback());
 	};
 	_this.close = function() {
 		// TODO gettext
-		if(_this.name === "Untitled") {
+		if(_this.name === "Untitled" && !_this.published_mode) {
 			$(".alert_rename").show();
 		} else {
 			// maybe other stuff here??
@@ -155,7 +157,7 @@ sagenb.worksheetapp.worksheet = function() {
 		 * we have as default. I haven't seen this issue yet
 		 * but it may exist.
 		 */
-		console.log("my name is " + _this.name);
+		console.log("print " + _this.name);
 		//window.open('/home/');
 	};
 	
@@ -205,6 +207,7 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	////////////// EVALUATION ///////////////
 	_this.evaluate_all = function() {
+		if(_this.published_mode) return;
 		_this.is_evaluating_all = true;
 		
 		_this.forEachCell(function(cell) {
@@ -215,9 +218,11 @@ sagenb.worksheetapp.worksheet = function() {
 		_this.cells[firstcell_id].evaluate();
 	};
 	_this.interrupt = function() {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command('interrupt'), sagenb.generic_callback());
 	};
 	_this.restart_sage = function() {
+		if(_this.published_mode) return;
 		_this.forEachCell(function(cell) {
 			if(cell.is_evaluating) cell.render_output("");
 		});
@@ -226,6 +231,7 @@ sagenb.worksheetapp.worksheet = function() {
 	
 	//// OUTPUT STUFF ////
 	_this.hide_all_output = function() {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command('hide_all'), sagenb.generic_callback(function(status, response) {
 			_this.forEachCell(function(cell) {
 				cell.set_output_hidden();
@@ -233,6 +239,7 @@ sagenb.worksheetapp.worksheet = function() {
 		}));
 	};
 	_this.show_all_output = function() {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command('show_all'), sagenb.generic_callback(function(status, response) {
 			_this.forEachCell(function(cell) {
 				cell.set_output_visible();
@@ -240,6 +247,7 @@ sagenb.worksheetapp.worksheet = function() {
 		}));
 	};
 	_this.delete_all_output = function() {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command('delete_all_output'), sagenb.generic_callback(function(status, response) {
 			_this.forEachCell(function(cell) {
 				cell.output = "";
@@ -249,6 +257,7 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	
 	_this.change_system = function(newsystem) {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("system/" + newsystem), sagenb.generic_callback(function(status, response) {
 			_this.system = newsystem;
 			
@@ -258,11 +267,13 @@ sagenb.worksheetapp.worksheet = function() {
 		}));
 	};
 	_this.set_pretty_print = function(s) {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("pretty_print/" + s), sagenb.generic_callback());
 	};
 	
 	//// NEW CELL /////
 	_this.new_cell_before = function(id) {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("new_cell_before"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
@@ -270,15 +281,10 @@ sagenb.worksheetapp.worksheet = function() {
 			}
 			
 			var X = decode_response(response);
-			
 			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
-			
 			var a = $("#cell_" + X.id).parent().prev();
-			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
-			
 			new_cell.worksheet = _this;
-			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
@@ -294,6 +300,7 @@ sagenb.worksheetapp.worksheet = function() {
 		});
 	};
 	_this.new_cell_after = function(id) {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("new_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
@@ -301,15 +308,10 @@ sagenb.worksheetapp.worksheet = function() {
 			}
 			
 			var X = decode_response(response);
-			
 			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
-			
 			var a = $("#cell_" + X.id).parent().next();
-			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
-			
 			new_cell.worksheet = _this;
-			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
@@ -326,6 +328,7 @@ sagenb.worksheetapp.worksheet = function() {
 	};
 	
 	_this.new_text_cell_before = function(id) {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("new_text_cell_before"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
@@ -333,15 +336,10 @@ sagenb.worksheetapp.worksheet = function() {
 			}
 			
 			var X = decode_response(response);
-			
 			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
-			
 			var a = $("#cell_" + X.id).parent().prev();
-			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
-			
 			new_cell.worksheet = _this;
-			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
@@ -357,6 +355,7 @@ sagenb.worksheetapp.worksheet = function() {
 		});
 	};
 	_this.new_text_cell_after = function(id) {
+		if(_this.published_mode) return;
 		sagenb.async_request(_this.worksheet_command("new_text_cell_after"), function(status, response) {
 			if(response === "locked") {
 				$(".alert_locked").show();
@@ -364,15 +363,10 @@ sagenb.worksheetapp.worksheet = function() {
 			}
 			
 			var X = decode_response(response);
-			
 			var new_cell = new sagenb.worksheetapp.cell(X.new_id);
-			
 			var a = $("#cell_" + X.id).parent().next();
-			
 			var wrapper = $("<div></div>").addClass("cell_wrapper").insertAfter(a);
-			
 			new_cell.worksheet = _this;
-			
 			new_cell.update(wrapper);
 			
 			// add the next new cell button
@@ -579,14 +573,21 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		_this.cell_list_update();
 		
+		// published mode
+		if(_this.published_mode) {
+			$("body").addClass("published_mode");
+		}
+
 		/////////// setup up the title stuff ////////////
-		$(".worksheet_name").click(function(e) {
-			if(!$(".worksheet_name").hasClass("edit")) {
-				$(".worksheet_name input").val(_this.name);
-				$(".worksheet_name").addClass("edit");
-				$(".worksheet_name input").focus();
-			}
-		});
+		if(!_this.published_mode) {
+			$(".worksheet_name").click(function(e) {
+				if(!$(".worksheet_name").hasClass("edit")) {
+					$(".worksheet_name input").val(_this.name);
+					$(".worksheet_name").addClass("edit");
+					$(".worksheet_name input").focus();
+				}
+			});
+		}
 		
 		// this is the event handler for the input
 		var worksheet_name_input_handler = function(e) {

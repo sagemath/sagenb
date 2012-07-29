@@ -158,10 +158,10 @@ class Notebook(object):
         # Store / Refresh public worksheets
         for id_number in os.listdir(self.__storage._abspath(self.__storage._user_path("pub"))):
             if id_number.isdigit():
-                a = "pub/"+str(id_number)
+                a = "pub/" + str(id_number)
                 if a not in self.__worksheets:
                     try:
-                        self.__worksheets[a] = self.__storage.load_worksheet("pub",int(id_number))
+                        self.__worksheets[a] = self.__storage.load_worksheet("pub", int(id_number))
                     except Exception:
                         import traceback
                         print "Warning: problem loading %s/%s: %s"%("pub", int(id_number), traceback.format_exc())
@@ -276,6 +276,7 @@ class Notebook(object):
             sage: nb.user('admin').password() #random
             '256$7998210096323979f76e9fedaf1f85bda1561c479ae732f9c1f1abab1291b0b9$373f16b9d5fab80b9a9012af26a6b2d52d92b6d4b64c1836562cbd4264a6e704'
         """
+        # This should be a method of UserManager
         return self.user_manager().user(username)
 
     def valid_login_names(self):
@@ -304,6 +305,8 @@ class Notebook(object):
         """
         Returns True if the user is supposed to only be a read-only user.
         """
+        # It seems as though this should be an instance method of the User
+        # class
         return self.__storage.readonly_user(username)
 
     ##########################################################
@@ -352,7 +355,7 @@ class Notebook(object):
         a = ""
         for id_number in os.listdir(path):
             if id_number.isdigit():
-                a = "pub"+"/"+id_number
+                a = "pub" + "/" + id_number
                 if a in self.__worksheets:
                     v.append(self.__worksheets[a])
                 else:
@@ -447,7 +450,6 @@ class Notebook(object):
     ##########################################################
     # Moving, copying, creating, renaming, and listing worksheets
     ##########################################################
-
     def scratch_worksheet(self):
         try:
             return self.__scratch_worksheet
@@ -1216,7 +1218,6 @@ class Notebook(object):
     ##########################################################
     # Server configuration
     ##########################################################
-
     def conf(self):
         try:
             return self.__conf
@@ -1229,7 +1230,7 @@ class Notebook(object):
             # model_version property
             # TODO: distinguish between a new server config default values
             #  and default values for missing properties
-            C['model_version']=1
+            C['model_version'] = 1
             self.__conf = C
             return C
 
@@ -1273,7 +1274,7 @@ class Notebook(object):
     # Worksheet HTML generation
     ##########################################################
     def worksheet_list_for_public(self, username, sort='last_edited', reverse=False, search=None):
-        W = self.users_worksheets('pub')
+        W = self.pub_worksheets()
 
         if search:
             W = [x for x in W if x.satisfies_search(search)]
@@ -1490,7 +1491,6 @@ class Notebook(object):
     ###########################################################
     # Saving the whole notebook
     ###########################################################
-
     def save(self):
         """
         Save this notebook server to disk.

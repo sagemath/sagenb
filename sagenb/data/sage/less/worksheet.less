@@ -13,6 +13,13 @@
 	}
 }
 
+.published_mode .new_cell_button {
+	cursor: default;
+	&:hover .line {
+		background-color: transparent;
+	}
+}
+
 .worksheet_name {
 	height: @title_font_size + 6;
 
@@ -43,6 +50,11 @@
 			display: block;
 		}
 	}
+}
+
+.published_mode .worksheet_name:hover {
+	background-color: transparent;
+	cursor: default;
 }
 
 .popover {

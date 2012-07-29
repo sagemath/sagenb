@@ -5,6 +5,11 @@
 {% endblock head %}
 
 {% block navbar %}
+	{% if not published_mode %}
+		<ul class="nav">
+			<li><a href="/home/pub">Published</a></li>
+		</ul>
+	{% endif %}
 {% endblock navbar %}
 
 {% block alerts %}
@@ -22,23 +27,17 @@
 
 	<div style="height: 10px;"></div>
 
+	{% if not published_mode %}
 	<div class="btn-toolbar well" id="top_toolbar">
 		{# TODO gettext #}
 		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> New Worksheet</a>
 		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> Upload</a>
 		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> Download All Active</a>
 	</div>
+	{% endif %}
 
 	<div class="btn-toolbar" id="bottom_toolbar">
-		{# <div class="pull-left" id="action_buttons">
-			<button type="button" class="btn btn-small hide" id="send_to_archive_button">Archive</button>
-			<button type="button" class="btn btn-small hide" id="unarchive_button">Unarchive</button>
-			<button type="button" class="btn btn-small hide" id="delete_button">Delete</button>
-			<button type="button" class="btn btn-small hide" id="undelete_button">Undelete</button>
-			<button type="button" class="btn btn-small hide" id="stop_button">Stop</button>
-			<button type="button" class="btn btn-small hide" id="download_button">Download</button>
-		</div> #}
-
+		{% if not published_mode %}
 		<div class="btn-group pull-left" id="actions_menu">
 			<button class="btn dropdown-toggle span2" data-toggle="dropdown">Action <span class="caret"></span></button>
 			<ul class="dropdown-menu">
@@ -58,7 +57,8 @@
 			<button type="button" class="btn" id="show_archive">Archive</button>{# TODO gettext #}
 			<button type="button" class="btn" id="show_trash">Trash</button>{# TODO gettext #}
 		</div>
-		
+		{% endif %}
+
 		<form action="#" class="form-search pull-right" style="margin-bottom:0">
 			<div class="input-append">
 				{# TODO gettext #}
@@ -73,7 +73,9 @@
 		<thead>
 			<tr>
 				{# TODO gettext #}
+				{% if not published_mode %}
 				<th class="checkbox_cell"><input type="checkbox" id="main_checkbox"></th>
+				{% endif %}
 				<th class="worksheet_name_cell">Worksheet</th>
 				<th>Owner/Collaborators</th>
 				<th class="last_edit_cell">Last Edited</th>
@@ -101,6 +103,9 @@
 
 			// init the worksheet list
 			sagenb.worksheetlistapp.worksheet_list = new sagenb.worksheetlistapp.worksheet_list();
+			{% if published_mode %}
+			sagenb.worksheetlistapp.worksheet_list.published_mode = true;
+			{% endif %}
 			sagenb.worksheetlistapp.worksheet_list.init();
 		});
 	</script>

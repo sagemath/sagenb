@@ -484,7 +484,7 @@ class Worksheet(object):
 
     def worksheet_html_filename(self):
         """
-        Return path to the underlying plane text file that defines the
+        Return path to the underlying plain text file that defines the
         worksheet.
         """
         return os.path.join(self.__dir, 'worksheet.html')

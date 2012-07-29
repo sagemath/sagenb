@@ -220,7 +220,7 @@ def worksheet_revert_to_last_saved_state(worksheet):
 # Worksheet properties
 ########################################################
 @worksheet_command('worksheet_properties')
-def worksheet_worksheet_properties_json(worksheet):
+def worksheet_properties(worksheet):
     """
     Send worksheet properties as a JSON object
     """
@@ -956,16 +956,16 @@ def doc_worksheet():
 ####################
 # Public Worksheets
 ####################
-def pub_worksheet(source):
-    # TODO: Independent pub pool and server settings.
-    proxy = doc_worksheet()
-    proxy.set_name(source.name())
-    proxy.set_last_change(*source.last_change())
-    proxy.set_worksheet_that_was_published(source.worksheet_that_was_published())
-    g.notebook._initialize_worksheet(source, proxy)
-    proxy.set_tags({'_pub_': [True]})
-    proxy.save()
-    return proxy
+# def pub_worksheet(source):
+#     # TODO: Independent pub pool and server settings.
+#     proxy = doc_worksheet()
+#     proxy.set_name(source.name())
+#     proxy.set_last_change(*source.last_change())
+#     proxy.set_worksheet_that_was_published(source.worksheet_that_was_published())
+#     g.notebook._initialize_worksheet(source, proxy)
+#     proxy.set_tags({'_pub_': [True]})
+#     proxy.save()
+#     return proxy
 
 #######################################################
 # Jmol Popup
