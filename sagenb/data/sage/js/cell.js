@@ -131,11 +131,11 @@ sagenb.worksheetapp.cell = function(id) {
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
 				// check if it is empty
-				
 				_this.hide_popover();
 
-				// all of this is disabled for now
-				if(cm.getValue() === "" && _this.worksheet.cells.length > 0 && !($("body").hasClass("single_cell_mode"))) {
+				var key, count = 0;
+				for(key in _this.worksheet.cells) count++;
+				if(cm.getValue() === "" && count > 0 && !($("body").hasClass("single_cell_mode"))) {
 					// it's empty and not the only one -> delete it
 					_this.delete();
 				} else {
@@ -930,10 +930,9 @@ sagenb.worksheetapp.cell = function(id) {
 		
 		sagenb.async_request(_this.worksheet.worksheet_command('delete_cell'), sagenb.generic_callback(function(status, response) {
 			X = decode_response(response);
-			
 			if(X.command === "ignore") return;
 			
-			_this.worksheet.cells[_this.id] = null;
+			delete _this.worksheet.cells[_this.id];
 			
 			$("#cell_" + _this.id).parent().next().detach();
 			$("#cell_" + _this.id).parent().detach();

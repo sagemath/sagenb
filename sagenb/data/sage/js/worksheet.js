@@ -31,7 +31,7 @@ sagenb.worksheetapp.worksheet = function() {
 	 * use a conditional when you loop over each element. See
 	 * hide_all_output, show_all_output, etc.
 	 */
-	_this.cells = [];
+	_this.cells = {};
 	
 	// Worksheet information from worksheet.py
 	_this.state_number = -1;
