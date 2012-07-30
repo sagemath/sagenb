@@ -9,7 +9,7 @@ sagenb.worksheetlistapp = {};
 sagenb.worksheetlistapp.list_row = function() {
 	var _this = this;
 	
-	var $this = null;
+	_this.jquery_this = null;
 	
 	// properties object
 	_this.props = null;
@@ -28,15 +28,15 @@ sagenb.worksheetlistapp.list_row = function() {
 				'<td class="last_edit_cell"></td>' + 
 			'</tr>');
 		
-		$this = $("#row_" + _this.props.filename.replace("/", "_"));
+		_this.jquery_this = $("#row_" + _this.props.filename.replace("/", "_"));
 		
 		// checkbox
 		if(_this.list.published_mode) {
-			$this.find("td.checkbox_cell").detach();
+			_this.jquery_this.find("td.checkbox_cell").detach();
 		}
 		else {
-			$this.find("input").change(function(e) {
-				_this.checked = $this.find("input").prop("checked");
+			_this.jquery_this.find("input").change(function(e) {
+				_this.checked = _this.jquery_this.find("input").prop("checked");
 			});
 		}
 		
@@ -52,7 +52,7 @@ sagenb.worksheetlistapp.list_row = function() {
 			// TODO gettext
 			name_html += '<span class="label label-important pull-right running_label">running</span>';
 		}
-		$this.find("td.worksheet_name_cell").html(name_html);
+		_this.jquery_this.find("td.worksheet_name_cell").html(name_html);
 		
 		// owner/collaborators/published
 		var owner_html = _this.props.owner;
@@ -64,28 +64,28 @@ sagenb.worksheetlistapp.list_row = function() {
 			// it's published
 			owner_html += '<span class="published_badge badge badge-info pull-right"><i class="icon-share-alt icon-white"></i></span>';
 		}
-		$this.find("td.owner_cell").html(owner_html);
-		$this.find("td.owner_cell .collaborators_tooltip").tooltip();
+		_this.jquery_this.find("td.owner_cell").html(owner_html);
+		_this.jquery_this.find("td.owner_cell .collaborators_tooltip").tooltip();
 		
 		// last change
-		$this.find("td.last_edit_cell").text(_this.props.last_change_pretty + " " + gettext("ago"));
+		_this.jquery_this.find("td.last_edit_cell").text(_this.props.last_change_pretty + " " + gettext("ago"));
 	};
 	
 	_this.remove = function() {
-		$this.hide("slow", function() {
-			$this.detach();
+		_this.jquery_this.hide("slow", function() {
+			_this.jquery_this.detach();
 			delete _this.list.rows[_this.props.filename];
 		});
 	}
 	
 	_this.check = function() {
 		_this.checked = true;
-		$this.find("input").prop("checked", true);
+		_this.jquery_this.find("input").prop("checked", true);
 	};
 	
 	_this.uncheck = function() {
 		_this.checked = false;
-		$this.find("input").prop("checked", false);
+		_this.jquery_this.find("input").prop("checked", false);
 	};
 };
 
@@ -231,7 +231,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		if($("#stop_button").hasClass("disabled")) return;
 		_this.checked_action("/send_to_stop", function(status, response) {
 			_this.for_each_checked_row(function(row) {
-				$("#row_" + row.props.id_number + " .running_label").fadeOut('slow', function() {
+				row.jquery_this.find(".running_label").fadeOut('slow', function() {
 					$(this).detach();
 					row.uncheck();
 				});
@@ -283,7 +283,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			if($("table tbody tr").length === 0) {
 				// no rows
 				$("tbody").append('<tr class="empty_table_row">' + 
-				// TODO gettext
 					'<td colspan="4">' + gettext("Nothing here!") + '</td>' + 
 				'</tr>');
 			}
