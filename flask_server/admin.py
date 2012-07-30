@@ -81,7 +81,7 @@ def add_user():
                       username=username, password=password)
     })
 
-@admin.route('/notebooksettings', methods=['GET', 'POST'])
+@admin.route('/notebook_settings', methods=['GET', 'POST'])
 @admin_required
 @with_lock
 def notebook_settings():
@@ -89,7 +89,7 @@ def notebook_settings():
     if 'form' in request.values:
         updated = g.notebook.conf().update_from_form(request.values)
         
-    #Make changes to the default language used
+    # Make changes to the default language used
     if 'default_language' in request.values:
         from flaskext.babel import refresh
         refresh()

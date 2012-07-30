@@ -1,0 +1,26 @@
+{% extends "html/base.html" %}
+
+{% block title %}{{ gettext('Notebook Settings') }} - Sage{% endblock %}
+
+{% block navbar %}{% endblock navbar %}
+
+{% block page %}
+<h1 class="title">{{ gettext('Notebook Settings') }}</h1>
+<form method="post" action="/notebook_settings">
+	<input type="hidden" name="form" value="on" />
+	{%- if auto_table %}
+	{{ auto_table }}
+	{%- endif %}
+	<div class="form-actions">
+		<button type="submit" class="btn btn-primary">{{ gettext('Save') }}</button>
+		<a class="btn" href="/">{{ gettext('Cancel') }}</a>
+	</div>
+</form>
+{% endblock %}
+
+{% block extra_javascript %}
+	<script type="text/javascript">
+		// init notebook stuff
+		sagenb.init();
+	</script>
+{% endblock extra_javascript %}
