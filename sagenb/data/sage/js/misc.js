@@ -57,12 +57,9 @@ function encode_response(obj) {
 function system_to_codemirror_mode(system) {
 	var mode = "";
 	
+	// TODO use an Object here instead of a massive switch statement
 	switch(system) {
 		case "sage":
-			/* TODO write a specific mode for sage
-			* for now, python and sage are so similar
-			* we don't bother making a difference.
-			*/
 			mode = "python";
 			break;
 		case "gap":
