@@ -14,6 +14,12 @@
 
 {% block page %}
 	<h1 class="title">Account Settings</h1>
+	{% if admin %}
+	<div style="margin-top: 20px">
+		<a href="/manage_users" class="btn">{{ gettext('Manage Users') }}</a>
+		<a href="/notebook_settings" class="btn">{{ gettext('Notebook Settings') }}</a>
+	</div>
+	{% endif %}
 	<form action="/settings" class="form-horizontal" method="post" id="account_settings_form">
 		<fieldset>
 			<legend>Auto-Save</legend>

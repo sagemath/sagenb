@@ -64,7 +64,10 @@ class Configuration(object):
 
     def __setitem__(self, key, value):
         self.confs[key] = value
-        
+    
+    # TODO all of these HTML methods should really be put into 
+    # the Jinja template instead of rendered in custom Python 
+    # functions.
     def html_conf_form(self, action):
         D = self.defaults()
         C = self.confs
