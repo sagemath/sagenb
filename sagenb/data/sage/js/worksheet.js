@@ -137,8 +137,7 @@ sagenb.worksheetapp.worksheet = function() {
 		sagenb.async_request(_this.worksheet_command("save_snapshot"), sagenb.generic_callback());
 	};
 	_this.close = function() {
-		// TODO gettext
-		if(_this.name === "Untitled" && !_this.published_mode) {
+		if(_this.name === gettext("Untitled") && !_this.published_mode) {
 			$(".alert_rename").show();
 		} else {
 			// maybe other stuff here??
@@ -808,16 +807,8 @@ sagenb.worksheetapp.worksheet = function() {
 			}
 		});
 		
-		
 		// start the ping interval
 		_this.ping_interval_id = window.setInterval(_this.ping_server, _this.server_ping_time);
-		
-		// set up codemirror autocomplete
-		// TODO set up autocomplete
-		/*CodeMirror.commands.autocomplete = function(cm) {
-			CodeMirror.simpleHint(cm, CodeMirror.javascriptHint);
-		};*/
-		
 		
 		var load_done_interval = setInterval(function() {
 			/* because the cells array is sparse we need this.

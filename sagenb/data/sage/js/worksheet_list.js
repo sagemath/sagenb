@@ -58,8 +58,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		var owner_html = _this.props.owner;
 		if(_this.props.collaborators && _this.props.collaborators.length) {
 			// there are collaborators
-			// TODO
-			owner_html += ' and <a href="#" class="collaborators_tooltip" rel="tooltip" title="' + _this.props.collaborators.join("<br>") + '">' + _this.props.collaborators.length + ' other(s)</a>';
+			owner_html += ' and <a href="#" class="collaborators_tooltip" rel="tooltip" title="' + _this.props.collaborators.join("<br>") + '">' + _this.props.collaborators.length + ' ' + gettext('other(s)') + '</a>';
 		}
 		if(_this.props.published_id_number && !_this.list.published_mode) {
 			// it's published
@@ -69,8 +68,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		$this.find("td.owner_cell .collaborators_tooltip").tooltip();
 		
 		// last change
-		// TODO gettext
-		$this.find("td.last_edit_cell").text(_this.props.last_change_pretty + " ago");
+		$this.find("td.last_edit_cell").text(_this.props.last_change_pretty + " " + gettext("ago"));
 	};
 	
 	_this.remove = function() {
@@ -104,7 +102,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	_this.refresh_interval = 10 * 1000;
 	
 	_this.init = function() {
-		// TODO handle published mode
 		if(_this.published_mode) _this.show_published();
 		else _this.show_active();
 		
@@ -251,8 +248,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	_this.empty_trash = function() {
 		if($("#empty_trash").hasClass("disabled")) return;
 
-		// TODO gettext
-		if(confirm("Emptying the Trash is final. Are you sure?")) {
+		if(confirm(gettext("Emptying the Trash is final. Are you sure?"))) {
 			sagenb.async_request("/empty_trash", sagenb.generic_callback(function(status, response) {
 				_this.show_trash();
 			}), {});
@@ -288,7 +284,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 				// no rows
 				$("tbody").append('<tr class="empty_table_row">' + 
 				// TODO gettext
-					'<td colspan="4">Nothing here!</td>' + 
+					'<td colspan="4">' + gettext("Nothing here!") + '</td>' + 
 				'</tr>');
 			}
 			
@@ -315,18 +311,16 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	//// VIEWS ////
 	_this.show_published = function() {
 		_this.load("published", function() {
-			// TODO gettext
-			$(".title").text("Published Worksheets");
-			document.title = "Published Worksheets - Sage";
+			$(".title").text(gettext("Published Worksheets"));
+			document.title = gettext("Published Worksheets") + " - Sage";
 			$("#search_input").val("");
 		});
 	};
 	_this.show_active = function() {
 		_this.disable_actions_menu();
 		_this.load("", function() {
-			// TODO gettext
-			$(".title").text("My Notebook");
-			document.title = "My Notebook - Sage";
+			$(".title").text(gettext("My Notebook"));
+			document.title = gettext("My Notebook") + " - Sage";
 			$("#search_input").val("");
 			$("#main_checkbox").prop("checked", false);
 
@@ -337,9 +331,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	_this.show_archive = function() {
 		_this.disable_actions_menu();
 		_this.load("type=archive", function() {
-			// TODO gettext
-			$(".title").text("Archive");
-			document.title = "Archive - Sage";
+			$(".title").text(gettext("Archive"));
+			document.title = gettext("Archive") + " - Sage";
 			$("#search_input").val("");
 			$("#main_checkbox").prop("checked", false);
 
@@ -351,8 +344,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		_this.disable_actions_menu();
 		_this.load("type=trash", function() {
 			// TODO gettext
-			$(".title").text("Trash");
-			document.title = "Trash - Sage";
+			$(".title").text(gettext("Trash"));
+			document.title = gettext("Trash") + " - Sage";
 			$("#search_input").val("");
 			$("#main_checkbox").prop("checked", false);
 
@@ -390,9 +383,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 		
 
 		_this.load((urlq + "&search=" + q), function() {
-			// TODO gettext
-			document.title = str + " - Search - Sage";
-			$(".title").text(str + " - Search");
+			document.title = gettext(str) + " - Search - Sage";
+			$(".title").text(gettext(str) + " - Search");
 			$("#main_checkbox").prop("checked", false);
 		});
 	}
