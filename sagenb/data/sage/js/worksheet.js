@@ -838,7 +838,7 @@ sagenb.worksheetapp.worksheet = function() {
 		);
 		
 		// load js-hotkeys
-		/* notes on hotkeys: these don't work on all browsers consistently
+		/* TODO notes on hotkeys: these don't work on all browsers consistently
 		but they are included in the best case scenario that they are all 
 		accepted. I have not checked all of the official hotkeys for Sage NB
 		so this list may not be complete but will be updated later. */
@@ -846,10 +846,7 @@ sagenb.worksheetapp.worksheet = function() {
 		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { _this.save(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { _this.close(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { _this.print(); return false; });
-		
-		
-		// bind buttons to functions
-		
+				
 		/////// FILE MENU ////////
 		$("#new_worksheet").click(_this.new_worksheet);
 		$("#save_worksheet").click(_this.save);
@@ -857,10 +854,7 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#export_to_file").click(_this.export_worksheet);
 		// $("#import_from_file").click(_this.import_worksheet);
 		$("#print").click(_this.print);
-		
-		////// VIEW //////
-		
-		
+				
 		////////// EVALUATION ///////////
 		$("#evaluate_all_cells").click(_this.evaluate_all);
 		$("#interrupt").click(_this.interrupt);
@@ -869,7 +863,5 @@ sagenb.worksheetapp.worksheet = function() {
 		$("#hide_all_output").click(_this.hide_all_output);
 		$("#show_all_output").click(_this.show_all_output);
 		$("#delete_all_output").click(_this.delete_all_output);
-		
-		// TODO
 	}
 };

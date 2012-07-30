@@ -42,11 +42,13 @@
 					</a>
 					<a class="brand" href="/" style="padding-bottom: 0; padding-top: 5px; padding-right: 0;"><img src="/data/sage/images/headerlogo.png" alt="" width="113" height="30"></a>
 
-					{# TODO this should be conditional on whether or not the user is logged in #}
-					{% if True %}
+					{% if logged_in %}
 						{% include 'html/user_navbar_area.html' %}
 					{% else %}
 						<!-- user is not logged in -->
+						<div class="btn-group pull-right nav">
+							<a href="#" class="btn"><i class="icon-user"></i> {{ gettext('Login') }}</a>
+						</div>
 					{% endif %}
 
 					<div class="nav-collapse">

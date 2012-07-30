@@ -26,7 +26,7 @@ class SageNBFlask(Flask):
         self.add_static_path('/data', os.path.join(DATA))
         
         # this one is special though since it points to SAGE_ROOT
-        self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
+        self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"], "local", "share", "jmol"))
         
         
         import mimetypes
@@ -122,19 +122,6 @@ def index():
 ######################
 from hashlib import sha1
 
-#@base.route('/javascript/dynamic/notebook_dynamic.js')
-#def dynamic_js():
-#    from sagenb.notebook.js import javascript
-#    # the javascript() function is cached, so there shouldn't be a big slowdown calling it
-#    data,datahash = javascript()
-#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-#        response = make_response('',304)
-#    else:
-#        response = make_response(data)
-#        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-#        response.headers['Etag']=datahash
-#    return response
-
 @base.route('/javascript/dynamic/username.js')
 @guest_or_login_required
 def username_js():
@@ -147,64 +134,35 @@ _localization_cache = {}
 @base.route('/javascript/dynamic/localization.js')
 def localization_js():
     global _localization_cache
-    locale=repr(get_locale())
+    locale = repr(get_locale())
     if _localization_cache.get(locale,None) is None:
-        data= render_template(os.path.join('js/localization.js'))
+        data = render_template(os.path.join('js/localization.js'))
         _localization_cache[locale] = (data, sha1(repr(data)).hexdigest())
-    data,datahash = _localization_cache[locale]
+    data, datahash = _localization_cache[locale]
 
     if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-        response = make_response('',304)
+        response = make_response('', 304)
     else:
         response = make_response(data)
         response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-        response.headers['Etag']=datahash
+        response.headers['Etag'] = datahash
     return response
 
-_mathjax_js_cache = None
-@base.route('/javascript/dynamic/mathjax_sage.js')
-def mathjax_js():
-    global _mathjax_js_cache
-    if _mathjax_js_cache is None:
-        from sagenb.misc.misc import mathjax_macros
-        data = render_template('js/mathjax_sage.js', theme_mathjax_macros=mathjax_macros)
-        _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
-    data,datahash = _mathjax_js_cache
-
+# _mathjax_js_cache = None
+# @base.route('/javascript/dynamic/mathjax_sage.js')
+# def mathjax_js():
+#     global _mathjax_js_cache
+#     if _mathjax_js_cache is None:
+#         from sagenb.misc.misc import mathjax_macros
+#         data = render_template('js/mathjax_sage.js', theme_mathjax_macros=mathjax_macros)
+#         _mathjax_js_cache = (data, sha1(repr(data)).hexdigest())
+#     data, datahash = _mathjax_js_cache
 #
 #    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
 #        response = make_response('',304)
 #    else:
 #        response = make_response(data)
 #        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-#        response.headers['Etag']=datahash
-#    return response
-
-#@base.route('/javascript/dynamic/keyboard/<browser_os>')
-#def keyboard_js(browser_os):
-#    from sagenb.notebook.keyboards import get_keyboard
-#    data = get_keyboard(browser_os)
-#    datahash=sha1(data).hexdigest()
-#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-#        response = make_response('',304)
-#    else:
-#        response = make_response(data)
-#        response.headers['Content-Type'] = 'text/javascript; charset=utf-8'
-#        response.headers['Etag']=datahash
-#    return response
-
-###############
-# Dynamic CSS #
-###############
-#@base.route('/css/main.css')
-#def main_css():
-#    from sagenb.notebook.css import css
-#    data,datahash = css()
-#    if request.environ.get('HTTP_IF_NONE_MATCH', None) == datahash:
-#        response = make_response('',304)
-#    else:
-#        response = make_response(data)
-#        response.headers['Content-Type'] = 'text/css; charset=utf-8'
 #        response.headers['Etag']=datahash
 #    return response
 
@@ -231,14 +189,6 @@ def live_history():
     W = g.notebook.create_new_worksheet_from_history(gettext('Log'), g.username, 100)
     from worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))
-
-###########
-# Favicon #
-###########
-@base.route('/favicon.ico')
-def favicon():
-    from flask.helpers import send_file
-    return send_file(os.path.join(DATA, 'sage', 'images', 'favicon.ico'))
 
 @base.route('/loginoid', methods=['POST', 'GET'])
 @guest_or_login_required

@@ -20,7 +20,7 @@ def worksheet_list():
     -  ``args`` - ctx.args where ctx is the dict passed
        into a resource's render method
 
-    -  ``published`` - boolean, True if this is a listing of
+    -  ``pub`` - boolean, True if this is a listing of
        public worksheets
 
     -  ``username`` - the user whose worksheets we are
