@@ -56,16 +56,17 @@ sagenb.worksheetlistapp.list_row = function() {
 		
 		// owner/collaborators/published
 		var owner_html = _this.props.owner;
-		if(this.props.collaborators && this.props.collaborators.length) {
+		if(_this.props.collaborators && _this.props.collaborators.length) {
 			// there are collaborators
 			// TODO
-			owner_html += ' and <a href="#">2 others</a>';
+			owner_html += ' and <a href="#" class="collaborators_tooltip" rel="tooltip" title="' + _this.props.collaborators.join("<br>") + '">' + _this.props.collaborators.length + ' other(s)</a>';
 		}
-		if(this.props.published_id_number && !_this.list.published_mode) {
+		if(_this.props.published_id_number && !_this.list.published_mode) {
 			// it's published
 			owner_html += '<span class="published_badge badge badge-info pull-right"><i class="icon-share-alt icon-white"></i></span>';
 		}
 		$this.find("td.owner_cell").html(owner_html);
+		$this.find("td.owner_cell .collaborators_tooltip").tooltip();
 		
 		// last change
 		// TODO gettext

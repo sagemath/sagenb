@@ -723,7 +723,7 @@ sagenb.worksheetapp.worksheet = function() {
 		
 		
 		//////// SHARING DIALOG ///////////
-		$("#sharing_dialog .btn-primary").click(function(e) {
+		$("#sharing_modal .btn-primary").click(function(e) {
 			sagenb.async_request(_this.worksheet_command("invite_collab"), sagenb.generic_callback(), {
 				collaborators: $("#collaborators").val()
 			});
