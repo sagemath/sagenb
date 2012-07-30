@@ -2295,90 +2295,6 @@ class Worksheet(object):
                 if c.is_interactive_cell():
                     c.delete_output()
 
-
-    ##########################################################
-    # HTML rendering of the whole worksheet
-    ##########################################################
-    # TODO get rid of this stuff
-    def html_cell_list(self, do_print=False, username=None):
-        """
-        INPUT:
-
-            - do_print - a boolean
-
-        OUTPUT:
-
-            - string -- the HTML for the list of cells
-        """
-        ncols = self.notebook().conf()['word_wrap_cols']
-        cells_html = ""
-        if self.is_published():
-            try:
-                return self.__html
-            except AttributeError:
-                for cell in self.cell_list():
-                    cells_html += cell.html(ncols, do_print=True, username=self.username) + '\n'
-                s = template(os.path.join('html', 'worksheet', 'published_worksheet.html'),
-                             ncols = ncols, cells_html = cells_html,
-                             username=username)
-                self.__html = s
-                return s
-        for cell in self.cell_list():
-            try:
-                cells_html += cell.html(ncols, do_print=do_print, username=self.username) + '\n'
-            except Exception, msg:
-                # catch any exception, since this exception is raised
-                # sometimes, at least for some worksheets:
-                # exceptions.UnicodeDecodeError: 'ascii' codec can't decode byte
-                #         0xc2 in position 825: ordinal not in range(128)
-                # and this causes the entire worksheet to fail to
-                # save/render, which is obviously *not* good (much
-                # worse than a weird issue with one cell).
-                print msg
-        return cells_html
-
-    def to_json(self):
-        """
-        Returns the worksheet as a JSON object.
-        """
-        from sagenb.notebook.misc import encode_response
-        return encode_response(self.basic())
-
-    # TODO
-    def html(self, do_print=False, publish=False, username=None):
-        r"""
-        INPUT:
-
-        - publish - a boolean stating whether the worksheet is published
-
-        - do_print - a boolean
-
-        OUTPUT:
-
-        - string -- the HTML for the worksheet
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.html()
-            u'...cell_input_active...worksheet_cell_list...cell_1...cell_output_html_1...'
-        """
-        if self.is_published():
-            try:
-                return self.__html
-            except AttributeError:
-                pass
-
-        s = template(os.path.join("html", "notebook", "worksheet.html"),
-                     do_print=do_print, publish=publish,
-                     worksheet=self, username=username) 
-
-        if self.is_published():
-            self.__html = s
-
-        return s
-
     def truncated_name(self, max=30):
         name = self.name()
         if len(name) > max:
@@ -2497,37 +2413,6 @@ class Worksheet(object):
             if user != username:
                 return True, user
         return False
-
-    # TODO
-    def html_time_since_last_edited(self, username=None):
-        t = self.time_since_last_edited()
-        tm = prettify_time_ago(t)
-        return template(os.path.join("html", "worksheet", "time_since_last_edited.html"),
-                        last_editor = self.last_to_edit(),
-                        time = tm,
-                        username=username)
-
-    # TODO
-    def html_time_last_edited(self, username=None):
-        return template(os.path.join("html", "worksheet", "time_last_edited.html"),
-                        time = convert_time_to_string(self.last_edited()),
-                        last_editor = self.last_to_edit(),
-                        username=username)
-
-    # TODO
-    def html_time_nice_edited(self, username=None):
-        """
-        Returns a "nice" html time since last edit.
-
-        If the last edit was in the last 24 hours, return a "x hours ago".
-        Otherwise, return a specific date.
-        """
-
-        t = self.time_since_last_edited()
-        if t < 3600*24:
-            return self.html_time_since_last_edited(username=username)
-        else:
-            return self.html_time_last_edited(username=username)
 
     ##########################################################
     # Managing cells and groups of cells in this worksheet
@@ -3561,31 +3446,6 @@ except (KeyError, IOError):
             i += 1
         return completions[0][n:m]
 
-# TODO completions
-#    def completions_html(self, id, s, cols=3):
-#        if 'no completions of' in s:
-#            return ''
-#
-#        completions = s.split()
-#
-#        n = len(completions)
-#        l = n / cols + n % cols
-#
-#        if n == 1:
-#            return '' # don't show a window, just replace it
-#
-#        rows = []
-#        for r in range(0, l):
-#            row = []
-#            for c in range(cols):
-#                try:
-#                    cell = completions[r + l * c]
-#                    row.append(cell)
-#                except:
-#                    row.append('')
-#            rows.append(row)
-#        return format_completions_as_html(id, rows)
-
     ##########################################################
     # Processing of input and output to worksheet process.
     ##########################################################
@@ -4206,31 +4066,6 @@ def first_word(s):
     if i is None:
         return s
     return s[:i.start()]
-
-
-# TODO completions
-#def format_completions_as_html(cell_id, completions, username=None):
-#    """
-#    Returns tabular HTML code for a list of introspection completions.
-#
-#    INPUT:
-#
-#    - ``cell_id`` - an integer or a string; the ID of the ambient cell
-#
-#    - ``completions`` - a nested list of completions in row-major
-#      order
-#
-#    OUTPUT:
-#
-#    - a string
-#    """
-#    if len(completions) == 0:
-#        return ''
-#
-#    return template(os.path.join("html", "worksheet", "completions.html"),
-#                    cell_id = cell_id,
-#                    # Transpose and enumerate completions to column-major
-#                    completions_enumerated = enumerate(map(list, zip(*completions))))
 
 def extract_name(text):
     # The first line is the title

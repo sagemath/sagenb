@@ -540,47 +540,6 @@ class TextCell(Cell_generic):
 
         return r
 
-#    def html(self, wrap=None, div_wrap=True, do_print=False,
-#             editing=False, publish=False):
-#        """
-#        Returns HTML code for this text cell, including its contents
-#        and associated script elements.
-#
-#        INPUT:
-#
-#        - ``wrap`` -- an integer (default: None); number of columns to
-#          wrap at (not used)
-#
-#        - ``div_wrap`` -- a boolean (default: True); whether to wrap
-#          in a div (not used)
-#
-#        - ``do_print`` - a boolean (default: False); whether to render the
-#          cell for printing
-#
-#        - ``editing`` - a boolean (default: False); whether to open an
-#          editor for this cell
-#
-#        OUTPUT:
-#
-#        - a string
-#
-#        EXAMPLES::
-#
-#            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
-#            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
-#            sage: W = nb.create_new_worksheet('Test', 'sage')
-#            sage: C = sagenb.notebook.cell.TextCell(0, '2+3', W)
-#            sage: C.html()
-#            u'...text_cell...2+3...'
-#            sage: C.set_input_text("$2+3$")
-#        """
-#        from template import template
-#        return template(os.path.join('html', 'notebook', 'text_cell.html'),
-#                        cell = self, wrap = wrap, div_wrap = div_wrap,
-#                        do_print = do_print,
-#                        editing = editing, publish = publish)
-
-
     def plain_text(self, prompts=False):
         ur"""
         Returns a plain text version of this text cell.

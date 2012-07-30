@@ -15,6 +15,8 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
+# TODO get rid of this. Some helper functions may still be used.
+
 import jinja2
 
 import os, re, sys, json
