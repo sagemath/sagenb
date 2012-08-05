@@ -1,110 +1,122 @@
 {% extends "html/base.html" %}
 
-{% block javascript %}
-<link rel="stylesheet" href="/javascript/openid-realselector/css/style.css" />
-<script type="text/javascript" src="/javascript/openid-realselector/js/jquery.openid.js"></script>
-<script type="text/javascript">
-    $(function() {
-      $('#openid').openid({
-        img_path: '/javascript/openid-realselector/img/openid/',
-        txt: {
-          label: '{username} for <b>{provider}</b>',
-          username: '{{ gettext('username') }}',
-          title: '{{ gettext('Select an OpenID provider') }}',
-          sign: '{{ gettext('Send') }}'
-        }
-      });
-    });
-</script>
-
-{% endblock %}
-
 {% block title %}{{ gettext('Sign in') }}{% endblock %}
 
 {% block page_id %}login-page{% endblock %}
 
+{% block alerts %}
+	{% if welcome_user %}
+		<div class="alert alert-success">
+			<button class="close" data-dismiss="alert">×</button>
+			<strong>{{ gettext('Congratulations %(u)s! You can now sign into the Sage Notebook.', u=welcome_user) }}</strong>
+		</div>
+	{% endif %}
+
+	{% if username_error or password_error %}
+		<div class="alert alert-error">
+			<button class="close" data-dismiss="alert">×</button>
+			<strong>{{ gettext('Error') }}:</strong> {{ gettext('Bad login credentials') }}
+		</div>
+	{% endif %}
+
+	{% if creation_error %}
+		<div class="alert alert-error">
+			<button class="close" data-dismiss="alert">×</button>
+			<strong>{{ gettext('Error') }}:</strong> {{ gettext('Creating new users is disabled by the administrator.') }}
+		</div>
+	{% endif %}
+{% endblock alerts %}
+
 {% block main %}
-{% if welcome_user %}
-<h2>{{ gettext('Congratulations %(u)s! You can now sign into the Sage Notebook.', u=welcome_user) }}</h2>
-{% endif %}
+	<div class="container" style="margin-top: 60px;">
+		<div class="row-fluid">
+			<div id="desc" class="span8">
+				<h2>{{ gettext('Welcome!') }}</h2>
+				<p>{{ gettext('<strong>Sage</strong> is a different approach to mathematics software.') }}</p>
 
-<div id="desc">
-    <h2>{{ gettext('Welcome!') }}</h2>
-    <p>{{ gettext('<strong>Sage</strong> is a different approach to mathematics software.') }}</p>
+				<h2>{{ gettext('The Sage Notebook') }}</h2>
+				<p>{{ gettext('With the Sage Notebook anyone can create, collaborate on, and publish interactive worksheets. In a worksheet, one can write code using Sage, Python, and other software included in Sage.') }}</p>
 
-    <h2>{{ gettext('The Sage Notebook') }}</h2>
-    <p>{{ gettext('With the Sage Notebook anyone can create, collaborate on, and publish interactive worksheets. In a worksheet, one can write code using Sage, Python, and other software included in Sage.') }}
-    </p>
+				<h2>{{ gettext('General and Advanced Pure and Applied Mathematics') }}</h2>
+				<p>{{ gettext('Use Sage for studying calculus, elementary to very advanced number theory, cryptography, commutative algebra, group theory, graph theory, numerical and exact linear algebra, and more.') }}</p>
 
-    <h2>{{ gettext('General and Advanced Pure and Applied Mathematics') }}</h2>
-    <p>{{ gettext('Use Sage for studying calculus, elementary to very advanced number theory, cryptography, commutative algebra, group theory, graph theory, numerical and exact linear algebra, and more.') }} 
-    </p>
+				<h2>{{ gettext('Use an Open Source Alternative') }}</h2>
+				<p>{{ gettext('By using Sage you help to support a viable open source alternative to Magma, Maple, Mathematica, and MATLAB. Sage includes many high-quality open source math packages.') }}</p>
 
-    <h2>{{ gettext('Use an Open Source Alternative') }}</h2>
-    <p>{{ gettext('By using Sage you help to support a viable open source alternative to Magma, Maple, Mathematica, and MATLAB. Sage includes many high-quality open source math packages.') }}
-    </p>
+				<h2>{{ gettext('Use Most Mathematics Software from Within Sage') }}</h2>
+				<p>{{ gettext('Sage makes it easy for you to use most mathematics software together. Sage includes GAP, GP/PARI, Maxima, and Singular, and dozens of other open packages.') }}</p>
 
-    <h2>{{ gettext('Use Most Mathematics Software from Within Sage') }}</h2>
-    <p>{{ gettext('Sage makes it easy for you to use most mathematics software together. Sage includes GAP, GP/PARI, Maxima, and Singular, and dozens of other open packages.') }}
-    </p>
+				<h2>{{ gettext('Use a Mainstream Programming Language') }}</h2>
+				<p>{{ gettext('You work with Sage using the highly regarded scripting language Python. You can write programs that combine serious mathematics with anything else.') }}</p>
 
-    <h2>{{ gettext('Use a Mainstream Programming Language') }}</h2>
-    <p>{{ gettext('You work with Sage using the highly regarded scripting language Python. You can write programs that combine serious mathematics with anything else.') }}
-    </p>
+				<h2>{{ gettext('Acknowledgement') }}</h2>
+				<p>{{ gettext('The Sage Notebook is based upon work supported by the National Science Foundation under grants DMS-0821725, DMS-1020378, DMS-0713225, DMS-0555776, DMS-0545904, DMS-0838212, DMS-0757627, DUE-1020378, DUE-1022574, DMS-1015114, etc.    Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.   See also <a href="http://sagemath.org/development-ack.html">http://sagemath.org/development-ack.html</a>.') }}</p>
+			</div>
 
-    <h2>{{ gettext('Acknowledgement') }}</h2>
-    <p>{{ gettext('The Sage Notebook is based upon work supported by the National Science Foundation under grants DMS-0821725, DMS-1020378, DMS-0713225, DMS-0555776, DMS-0545904, DMS-0838212, DMS-0757627, DUE-1020378, DUE-1022574, DMS-1015114, etc.    Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.   See also <a href="http://sagemath.org/development-ack.html">http://sagemath.org/development-ack.html</a>.') }}
-    </p>
+			<div id="sign-in-box" class="span4">
+				<h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
+				<form method="post" action="/login" id="sign-in-form" class="well">
+					<div>
+						<label for="email">{{ gettext('Username') }}</label>
+						<input type="text" type="email" name="email" style="width: 97%;" />
+					</div>
+					<div>
+						<label for="password">{{ gettext('Password') }}</label>
+						<input type="password" name="password" style="width: 97%;" />
+					</div>
+					<div>
+						<label for="remember"><input type="checkbox" name="remember" id="remember" /> {{ gettext('Remember me') }}</label>
+					</div>
+					<div>
+						<input type="hidden" name="next", value="{{ next }}"/>
+						<button type="submit" class="btn btn-primary" style="margin-top: 10px;">{{ gettext('Sign in') }}</button>
+					</div>
+				</form>
 
+				{% if accounts %}
+				<div>
+					<a href="/register" id="register-link"><strong>{{ gettext('Sign up for a new Sage Notebook account') }}</strong></a>
+				</div>
+				{% endif %}
 
-</div>
+				<div>
+					<a href="/pub"><strong>{{ gettext('Browse published Sage worksheets (no login required)') }}</strong></a>
+				</div>
 
-<div id="sign-in-box">
-    <h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
-    <form method="POST" action="/login" id="sign-in-form">
-        <div>
-            <label for="email">{{ gettext('Username') }}</label>
-            <input type="text" name="email" size="15" />
-            {% if username_error %}
-            <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Username is not in the system') }}
-            {% endif %}
-        </div>
-        <div>
-            <label for="password">{{ gettext('Password') }}</label>
-            <input type="password" name="password" size="15" />
-            {% if password_error %}
-            <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Wrong password') }}
-            {% endif %}
-        </div>
-        <div>
-            <input type="checkbox" name="remember" /> {{ gettext('Remember me') }} 
-        </div>
-        <div>
-            <input type="hidden" name="next", value="{{next}}"/>
-            <button type="submit">{{ gettext('Sign in') }}</button>
-        </div>
-    </form>
-    {% if accounts %}
-    <div>
-        <a href="/register" id="register-link"><strong>{{ gettext('Sign up for a new Sage Notebook account') }}</strong></a>
-    </div>
-    {% endif %}
-    <div>
-        <a href="/pub"><strong>{{ gettext('Browse published Sage worksheets<br>(no login required)') }}</strong></a>
-    </div>
-    {% if recovery %}
-    <div>
-        <a href="/forgotpass"><strong>{{ gettext('Forgot password') }}</strong></a>
-    </div>
-    {% endif %}
-    {% if openid %}
-    <form method="post" action="/loginoid" id="openid"></form>
-    {% endif %}
-    {% if creation_error %}
-    <span style="color:red">{{ gettext('Error') }}: </span>{{ gettext('Creating new users is disabled by the administrator.') }}
-    {% endif %}
-    <noscript style="color:red">{{ gettext('Error') }}: {{ gettext('Javascript must be enabled in order to use the Sage Notebook.') }}</noscript>
-</div>
+				{% if recovery %}
+					<div>
+						<a href="/forgotpass"><strong>{{ gettext('Forgot password') }}</strong></a>
+					</div>
+				{% endif %}
+
+				{% if openid %}
+					<form method="post" action="/loginoid" id="openid"></forrm>
+				{% endif %}
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
-
+{% block extra_javascript %}
+	<style type="text/css">
+		body {
+			background-color: #fafafa;
+		}
+	</style>
+	
+	<link rel="stylesheet" href="/data/openid-realselector/css/style.css" />
+	<script type="text/javascript" src="/data/openid-realselector/js/jquery.openid.js"></script>
+	<script type="text/javascript">
+		$(function() {
+		  $('#openid').openid({
+			img_path: '/data/openid-realselector/img/openid/',
+			txt: {
+			  label: '{username} for <b>{provider}</b>',
+			  username: '{{ gettext('username') }}',
+			  title: '{{ gettext('Select an OpenID provider') }}',
+			  sign: '{{ gettext('Send') }}'
+			}
+		  });
+		});
+	</script>
+{% endblock %}

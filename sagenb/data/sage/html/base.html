@@ -61,6 +61,7 @@
 			</div>
 		</div>
 
+		{% block main %}
 		<div class="the_container">
 			{% block container %}
 				{% block before_page %}
@@ -72,7 +73,7 @@
 			</div> <!-- /the_page -->
 			{% endblock container %}
 		</div> <!-- /the_container -->
-
+		{% endblock %}
 
 		{% block after_container %}
 		{% endblock after_container %}
