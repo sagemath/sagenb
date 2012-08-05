@@ -553,6 +553,7 @@ sagenb.worksheetapp.cell = function(id) {
 		});
 	};
 	_this.evaluate_interact = function(update, recompute) {
+		if(_this.worksheet.published_mode) return;
 		sagenb.async_request(_this.worksheet.worksheet_command("eval"), _evaluate_callback, {
 			id: toint(_this.id),
 			interact: 1,
