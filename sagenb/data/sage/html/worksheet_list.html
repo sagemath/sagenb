@@ -17,17 +17,15 @@
 
 
 {% block page %}
-	{# TODO gettext #}
 	<h1 class="title"></h1>
 
 	<div style="height: 10px;"></div>
 
 	{% if not published_mode %}
 	<div class="btn-toolbar well" id="top_toolbar">
-		{# TODO gettext #}
-		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> New Worksheet</a>
-		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> Upload</a>
-		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> Download All Active</a>
+		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> {{ gettext("New Worksheet") }}</a>
+		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> {{ gettext("Upload") }}</a>
+		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> {{ gettext("Download All Active") }}</a>
 	</div>
 	{% endif %}
 
@@ -48,16 +46,15 @@
 		</div>
 		
 		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:55px;" id="type_buttons">
-			<button type="button" class="btn active" id="show_active">Active</button>{# TODO gettext #}
-			<button type="button" class="btn" id="show_archive">Archive</button>{# TODO gettext #}
-			<button type="button" class="btn" id="show_trash">Trash</button>{# TODO gettext #}
+			<button type="button" class="btn active" id="show_active">{{ gettext("Active") }}</button>
+			<button type="button" class="btn" id="show_archive">{{ gettext("Archive") }}</button>
+			<button type="button" class="btn" id="show_trash">{{ gettext("Trash") }}</button>
 		</div>
 		{% endif %}
 
 		<form action="#" class="form-search pull-right" style="margin-bottom:0">
 			<div class="input-append">
-				{# TODO gettext #}
-				<input type="search" class="input-medium" placeholder="Search ..." size="12" id="search_input"><button class="btn" id="submit_search"><i class="icon-search"></i></button>
+				<input type="search" class="input-medium" placeholder="{{ gettext("Search...") }}" size="12" id="search_input"><button class="btn" id="submit_search"><i class="icon-search"></i></button>
 			</div>
 		</form>
 	</div>
@@ -67,13 +64,12 @@
 	<table class="table table-striped worksheets_table">
 		<thead>
 			<tr>
-				{# TODO gettext #}
 				{% if not published_mode %}
 				<th class="checkbox_cell"><input type="checkbox" id="main_checkbox"></th>
 				{% endif %}
-				<th class="worksheet_name_cell">Worksheet</th>
-				<th>Owner/Collaborators</th>
-				<th class="last_edit_cell">Last Edited</th>
+				<th class="worksheet_name_cell">{{ gettext("Worksheet") }}</th>
+				<th>{{ gettext("Owner/Collaborators") }}</th>
+				<th class="last_edit_cell">{{ gettext("Last Edited") }}</th>
 			</tr>
 		</thead>
 		<tbody>

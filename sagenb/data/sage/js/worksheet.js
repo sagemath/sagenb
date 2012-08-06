@@ -7,19 +7,6 @@
 // simulated namespace
 sagenb.worksheetapp = {};
 
-/* We may wish to switch our object oriented approach 
-away from using functions and instead taking advantage
-of prototypes. Supposedly, there may be some memory 
-advantages to prototypes over functions but this is not 
-clear. I'm not convinced. See
-
-http://stackoverflow.com/questions/1441212/javascript-instance-functions-versus-prototype-functions
-http://stackoverflow.com/questions/310870/use-of-prototype-vs-this-in-javascript
-http://blogs.msdn.com/b/kristoffer/archive/2007/02/13/javascript-prototype-versus-closure-execution-speed.aspx
-http://www.nczonline.net/blog/2009/04/13/computer-science-in-javascript-linked-list/
-
-*/
-
 sagenb.worksheetapp.worksheet = function() {
 	/* this allows us to access this cell object from 
 	 * inner functions
@@ -458,7 +445,7 @@ sagenb.worksheetapp.worksheet = function() {
 
 				// cannot access datastore variable in these functions because it will change by the time they are called
 				elem.find(".copy_path_btn").click(function(e) {
-					window.prompt("Copy to clipboard: " + sagenb.ctrlkey + "-C, Enter", "DATA+'" + $(this).parent().prev().text() + "'");
+					window.prompt(gettext("Copy to clipboard: ") + sagenb.ctrlkey + "-C, Enter", "DATA+'" + $(this).parent().prev().text() + "'");
 				});
 				elem.find(".delete_btn").click(function(e) {
 					var fn = $(this).parent().prev().text();

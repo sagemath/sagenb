@@ -50,7 +50,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		}
 		if(_this.props.running && !_this.list.published_mode) {
 			// TODO gettext
-			name_html += '<span class="label label-important pull-right running_label">running</span>';
+			name_html += '<span class="label label-important pull-right running_label">' + gettext(running) + '</span>';
 		}
 		_this.jquery_this.find("td.worksheet_name_cell").html(name_html);
 		
@@ -393,8 +393,8 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 				document.title = gettext(no_search_title) + " - Sage";
 				$(".title").text(gettext(no_search_title));
 			} else {
-				document.title = gettext(seach_title) + " - Search - Sage";
-				$(".title").text(gettext(seach_title) + " - Search");
+				document.title = gettext(seach_title) + " - " + gettext("Search") + " - Sage";
+				$(".title").text(gettext(seach_title) + " - " + gettext("Search"));
 			}
 			$("#main_checkbox").prop("checked", false);
 		});

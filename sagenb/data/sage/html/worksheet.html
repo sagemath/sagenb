@@ -16,46 +16,46 @@
 			<li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">File <b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a href="#" id="new_worksheet"><i class="icon-file"></i> New Worksheet</a></li>
-					<li><a href="#" id="save_worksheet"><i class="icon-ok"></i> Save Worksheet</a></li>
-					<li><a href="#" id="close_worksheet"><i class="icon-remove"></i> Close Worksheet</a></li>
+					<li><a href="#" id="new_worksheet"><i class="icon-file"></i> {{ gettext("New Worksheet") }}</a></li>
+					<li><a href="#" id="save_worksheet"><i class="icon-ok"></i> {{ gettext("Save Worksheet") }}</a></li>
+					<li><a href="#" id="close_worksheet"><i class="icon-remove"></i> {{ gettext("Close Worksheet") }}</a></li>
 
 					<li class="divider"></li>
-					<li><a href="#" id="export_to_file"><i class="icon-download"></i> Export to File</a></li>
-					<li><a href="#import_modal" id="import_from_file" data-toggle="modal"><i class="icon-upload"></i> Import from File</a></li>
+					<li><a href="#" id="export_to_file"><i class="icon-download"></i> {{ gettext("Export to File") }}</a></li>
+					<li><a href="#import_modal" id="import_from_file" data-toggle="modal"><i class="icon-upload"></i> {{ gettext("Import from File") }}</a></li>
 
 					<li class="divider"></li>
-					<li><a href="#" id="print"><i class="icon-print"></i> Print</a></li>
+					<li><a href="#" id="print"><i class="icon-print"></i> {{ gettext("Print") }}</a></li>
 				</ul>
 			</li>
 			<li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">View <b class="caret"></b></a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ gettext("View")}} <b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a href="#"><label for="typesetting_checkbox" class="checkbox"><input name="typesetting_checkbox" type="checkbox" id="typesetting_checkbox"> Typesetting</label></a></li>
-					<li><a href="#"><label for="line_numbers_checkbox" class="checkbox"><input name="line_numbers_checkbox" type="checkbox" id="line_numbers_checkbox"> Line numbers</label></a></li>
+					<li><a href="#"><label for="typesetting_checkbox" class="checkbox"><input name="typesetting_checkbox" type="checkbox" id="typesetting_checkbox"> {{ gettext("Typesetting") }}</label></a></li>
+					<li><a href="#"><label for="line_numbers_checkbox" class="checkbox"><input name="line_numbers_checkbox" type="checkbox" id="line_numbers_checkbox"> {{ gettext("Line numbers") }}</label></a></li>
 					<li class="divider"></li>
-					<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="single_cell_mode_radio" value="single"> Single-cell Mode</label></a></li>
-					<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="multi_cell_mode_radio" value="multi" checked> Multi-cell Mode</label></a></li>
+					<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="single_cell_mode_radio" value="single"> {{ gettext("Single-cell Mode") }}</label></a></li>
+					<li><a href="#"><label class="radio"><input name="cell_mode_radio" type="radio" id="multi_cell_mode_radio" value="multi" checked> {{ gettext("Multi-cell Mode") }}</label></a></li>
 				</ul>
 			</li>
 			<li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Evaluation <b class="caret"></b></a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ gettext("Evaluation") }} <b class="caret"></b></a>
 				<ul class="dropdown-menu">
-					<li><a href="#" id="evaluate_all_cells"><i class="icon-play"></i> Evaluate all Cells</a></li>
-					<li><a href="#" id="interrupt"><i class="icon-stop"></i> Interrupt</a></li>
-					<li><a href="#" id="restart_worksheet"><i class="icon-refresh"></i> Restart Worksheet</a></li>
+					<li><a href="#" id="evaluate_all_cells"><i class="icon-play"></i> {{ gettext("Evaluate all Cells") }}</a></li>
+					<li><a href="#" id="interrupt"><i class="icon-stop"></i> {{ gettext("Interrupt") }}</a></li>
+					<li><a href="#" id="restart_worksheet"><i class="icon-refresh"></i> {{ gettext("Restart Worksheet") }}</a></li>
 					<li class="divider"></li>
-					<li><a href="#system_modal" id="change_system" data-toggle="modal"><i class="icon-cog"></i> Change system</a></li>
+					<li><a href="#system_modal" id="change_system" data-toggle="modal"><i class="icon-cog"></i> {{ gettext("Change system") }}</a></li>
 					<li class="divider"></li>
-					<li><a href="#" id="hide_all_output"><i class="icon-eye-close"></i> Hide all output</a></li>
-					<li><a href="#" id="show_all_output"><i class="icon-eye-open"></i> Show all output</a></li>
-					<li><a href="#" id="delete_all_output"><i class="icon-remove"></i> Delete all output</a></li>
+					<li><a href="#" id="hide_all_output"><i class="icon-eye-close"></i> {{ gettext("Hide all output") }}</a></li>
+					<li><a href="#" id="show_all_output"><i class="icon-eye-open"></i> {{ gettext("Show all output") }}</a></li>
+					<li><a href="#" id="delete_all_output"><i class="icon-remove"></i> {{ gettext("Delete all output") }}</a></li>
 				</ul>
 			</li>
 			<li class="dropdown">
-				<a href="#data_modal" data-toggle="modal">Data</a>
+				<a href="#data_modal" data-toggle="modal">{{ gettext("Data") }}</a>
 			</li>
-			<li><a href="#sharing_modal" id="sharing" data-toggle="modal">Sharing</a></li>
+			<li><a href="#sharing_modal" id="sharing" data-toggle="modal">{{ gettext("Sharing") }}</a></li>
 		</ul>
 	{% endif %}
 {% endblock navbar %}

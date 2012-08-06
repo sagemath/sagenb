@@ -36,11 +36,11 @@ sagenb.jmol.jmol_inline = function(container) {
 
 		jmolSetDocument(false);
 		var sleep_btn = $("<button />")
-			.text("Show Static Image")
+			.text(gettext("Show Static Image"))
 			.addClass("btn")
 			.click(_this.sleep);
 		var popup_btn = $("<button />")
-			.text("Popout")
+			.text(gettext("Popout"))
 			.addClass("btn")
 			.click(_this.popup);
 		_this.container.append(sleep_btn,
@@ -58,11 +58,11 @@ sagenb.jmol.jmol_inline = function(container) {
 		_this.container.children().detach();
 		_this.container.removeClass("alive");
 		var appletify_btn = $("<button />")
-			.text("Open Interactive View")
+			.text(gettext("Open Interactive View"))
 			.addClass("btn")
 			.click(_this.appletify);
 		var popup_btn = $("<button />")
-			.text("Popout")
+			.text(gettext("Popout"))
 			.addClass("btn")
 			.click(_this.popup);
 		var static_img = $("<img />").attr("src", _this.static_img_url);
