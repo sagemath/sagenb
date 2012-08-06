@@ -144,6 +144,12 @@ def empty_trash():
 #####################
 # Public Worksheets #
 #####################
+@worksheet_listing.route('/pub/')
+@worksheet_listing.route('/published/')
+@guest_or_login_required
+def pub_redirects():
+    return redirect(url_for('pub'))
+
 @worksheet_listing.route('/home/pub/')
 @guest_or_login_required
 def pub():
