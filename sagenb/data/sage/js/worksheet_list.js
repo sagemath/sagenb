@@ -288,7 +288,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 			}
 			
 			// Set up refresh_interval
-			clearInterval(_this.refresh_interval_id)
+			clearInterval(_this.refresh_interval_id);
 			_this.refresh_interval_id = setInterval(function() {
 				_this.load(params);
 			}, _this.refresh_interval);
@@ -354,36 +354,48 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	_this.do_search = function() {
 		var q = $("#search_input").val();
-		if($.trim(q) === "") return;
 
-		var str, urlq;
+		var seach_title, no_search_title, urlq;
 		if(_this.published_mode) {
-			str = "Published";
-			urlq = "pub"
+			seach_title = gettext("Published");
+			no_search_title = gettext("Published Worksheets");
+			urlq = "pub";
 		}
 		else {
 			var current_id = $("#type_buttons .active").attr("id");
 			switch(current_id) {
 				case "show_active":
-					str = "Active";
+					seach_title = gettext("Active");
+					no_search_title = gettext("My Notebook");
 					urlq = "active";
 					break;
 				case "show_archive":
-					str = "Archive";
+					seach_title = gettext("Archive");
+					no_search_title = seach_title;
 					urlq = "archive";
 					break;
 				case "show_trash":
-					str = "Trash";
+					seach_title = gettext("Trash");
+					no_search_title = seach_title;
 					urlq = "trash";
 					break;
 			}
 			urlq = "type=" + urlq;
 		}
 		
+		var clear_search = ($.trim(q) === "");
+		if(!clear_search) {
+			urlq += "&search=" + q;
+		}
 
-		_this.load((urlq + "&search=" + q), function() {
-			document.title = gettext(str) + " - Search - Sage";
-			$(".title").text(gettext(str) + " - Search");
+		_this.load(urlq, function() {
+			if(clear_search) {
+				document.title = gettext(no_search_title) + " - Sage";
+				$(".title").text(gettext(no_search_title));
+			} else {
+				document.title = gettext(seach_title) + " - Search - Sage";
+				$(".title").text(gettext(seach_title) + " - Search");
+			}
 			$("#main_checkbox").prop("checked", false);
 		});
 	}
