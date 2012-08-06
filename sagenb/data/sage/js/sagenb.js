@@ -12,7 +12,7 @@ sagenb.init = function() {
 	if(sagenb.username === "guest") {
 		$("#user_navbar_area").html(
 '<div class="btn-group pull-right nav">' +
-	'<a href="#" class="btn"><i class="icon-user"></i>' + gettext('Login') + '</a>' +
+	'<a href="#" class="btn">' + gettext('Login') + '</a>' +
 '</div>'
 		);
 	}
