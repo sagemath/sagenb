@@ -54,7 +54,7 @@
 			</div>
 
 			<div id="sign-in-box" class="span4">
-				<h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
+				<h2 style="margin-bottom: 10px;">Sign into the Sage Notebook v{{ sage_version }}</h2>
 				<form method="post" action="/login" id="sign-in-form" class="well">
 					<div>
 						<label for="email">{{ gettext('Username') }}</label>
@@ -62,49 +62,48 @@
 					</div>
 					<div>
 						<label for="password">{{ gettext('Password') }}</label>
+						{% if recovery %}
+							<a href="/forgotpass">{{ gettext('Forgot password') }}</a>
+						{% endif %}
 						<input type="password" name="password" style="width: 97%;" />
 					</div>
 					<div>
 						<label for="remember"><input type="checkbox" name="remember" id="remember" /> {{ gettext('Remember me') }}</label>
 					</div>
-					<div>
+					<div style="margin-top: 10px;">
 						<input type="hidden" name="next", value="{{ next }}"/>
-						<button type="submit" class="btn btn-primary" style="margin-top: 10px;">{{ gettext('Sign in') }}</button>
+						<button type="submit" class="btn btn-primary">{{ gettext('Sign in') }}</button>
+						{% if accounts %}
+							<a href="/register" id="register-link" class="btn">{{ gettext('Register') }}</a>
+						{% endif %}
 					</div>
 				</form>
 
-				{% if accounts %}
-				<div>
-					<a href="/register" id="register-link"><strong>{{ gettext('Sign up for a new Sage Notebook account') }}</strong></a>
-				</div>
+				{% if openid %}
+					<form method="post" action="/loginoid" id="openid" class="well"></form>
 				{% endif %}
 
 				<div>
 					<a href="/pub"><strong>{{ gettext('Browse published Sage worksheets (no login required)') }}</strong></a>
 				</div>
-
-				{% if recovery %}
-					<div>
-						<a href="/forgotpass"><strong>{{ gettext('Forgot password') }}</strong></a>
-					</div>
-				{% endif %}
-
-				{% if openid %}
-					<form method="post" action="/loginoid" id="openid"></forrm>
-				{% endif %}
 			</div>
 		</div>
 	</div>
 {% endblock %}
 
 {% block extra_javascript %}
-	<style type="text/css">
+	<link rel="stylesheet" href="/data/openid-realselector/css/style.css" />
+		<style type="text/css">
 		body {
 			background-color: #fafafa;
 		}
+		#openid {
+			width: auto;
+			height: inherit;
+			margin-bottom: 20px;
+			background-color: whiteSmoke;
+		}
 	</style>
-	
-	<link rel="stylesheet" href="/data/openid-realselector/css/style.css" />
 	<script type="text/javascript" src="/data/openid-realselector/js/jquery.openid.js"></script>
 	<script type="text/javascript">
 		$(function() {
