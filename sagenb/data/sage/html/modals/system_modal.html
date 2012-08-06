@@ -2,7 +2,7 @@
 
 {% block modal_id %}system_modal{% endblock modal_id %}
 
-{% block modal_title %}Worksheet System{% endblock modal_title %}
+{% block modal_title %}{{ gettext("Worksheet System") }}{% endblock modal_title %}
 
 {% block modal_content %}
 
@@ -34,6 +34,6 @@
 {% endblock modal_content %}
 
 {% block modal_footer %}
-<a href="#" class="btn" data-dismiss="modal">Cancel</a>
-<a href="#" class="btn btn-primary" data-dismiss="modal">Change system</a>
+<a href="#" class="btn" data-dismiss="modal">{{ gettext("Cancel") }}</a>
+<a href="#" class="btn btn-primary" data-dismiss="modal">{{ gettext("Change system") }}</a>
 {% endblock modal_footer %}

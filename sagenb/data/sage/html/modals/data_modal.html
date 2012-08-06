@@ -2,21 +2,21 @@
 
 {% block modal_id %}data_modal{% endblock modal_id %}
 
-{% block modal_title %}Data{% endblock modal_title %}
+{% block modal_title %}{{ gettext("Data") }}{% endblock modal_title %}
 
 {% block modal_content %}
 
 <div class="tabbable">
 
 	<ul class="nav nav-tabs">
-		<li class="active"><a href="#manage_tab" data-toggle="tab" id="manage_tab_button">Manage</a></li>
+		<li class="active"><a href="#manage_tab" data-toggle="tab" id="manage_tab_button">{{ gettext("Manage") }}</a></li>
 		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Import <b class="caret"></b></a>
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ gettext("Import") }} <b class="caret"></b></a>
 
 			<ul class="dropdown-menu">
-				<li><a href="#new_file_tab" id="new_file" data-toggle="tab"><i class="icon-file"></i> New file</a></li>
-				<li><a href="#upload_data_file_tab" id="upload_file" data-toggle="tab"><i class="icon-upload"></i> Upload file</a></li>
-				<li><a href="#file_from_url_tab" id="file_from_url" data-toggle="tab"><i class="icon-globe"></i> File from URL</a></li>
+				<li><a href="#new_file_tab" id="new_file" data-toggle="tab"><i class="icon-file"></i> {{ gettext("New file") }}</a></li>
+				<li><a href="#upload_data_file_tab" id="upload_file" data-toggle="tab"><i class="icon-upload"></i> {{ gettext("Upload file") }}</a></li>
+				<li><a href="#file_from_url_tab" id="file_from_url" data-toggle="tab"><i class="icon-globe"></i> {{ gettext("File from URL") }}</a></li>
 			</ul>
 		</li>
 	</ul>
@@ -36,10 +36,10 @@
 				<fieldset>
 
 					<div class="control-group">
-						<label class="control-label" for="new">Name</label>
+						<label class="control-label" for="new">{{ gettext("Name") }}</label>
 						<div class="controls">
 							<input type="text" class="input-xlarge" id="new" name="new">
-							<p class="help-block">Pick a name for the file.</p>
+							<p class="help-block">{{ gettext("Pick a name for the file.") }}</p>
 						</div>
 					</div>
 
@@ -52,17 +52,17 @@
 				<fieldset>
 
 					<div class="control-group">
-						<label class="control-label" for="file">File</label>
+						<label class="control-label" for="file">{{ gettext("File") }}</label>
 						<div class="controls">
 							<input class="input-file" id="file" name="file" type="file">
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="name">New name</label>
+						<label class="control-label" for="name">{{ gettext("New name") }}</label>
 						<div class="controls">
 							<input type="text" class="input-xlarge" id="name" name="name">
-							<p class="help-block">Optional. Pick a new name for the file.</p>
+							<p class="help-block">{{ gettext("Optional. Pick a new name for the file.") }}</p>
 						</div>
 					</div>
 
@@ -75,18 +75,18 @@
 				<fieldset>
 
 					<div class="control-group">
-						<label class="control-label" for="url">URL</label>
+						<label class="control-label" for="url">{{ gettext("URL") }}</label>
 						<div class="controls">
 							<input type="text" class="input-xlarge" id="url" name="url">
-							<p class="help-block">URL of the file you would like to import.</p>
+							<p class="help-block">{{ gettext("URL of the file you would like to import.") }}</p>
 						</div>
 					</div>
 
 					<div class="control-group">
-						<label class="control-label" for="name">New name</label>
+						<label class="control-label" for="name">{{ gettext("New name") }}</label>
 						<div class="controls">
 							<input type="text" class="input-xlarge" id="name" name="name">
-							<p class="help-block">Optional. Pick a new name for the file.</p>
+							<p class="help-block">{{ gettext("Optional. Pick a new name for the file.") }}</p>
 						</div>
 					</div>
 
@@ -95,14 +95,10 @@
 		</div>
 
 	</div>
-
-
-
 </div>
-
 {% endblock modal_content %}
 
 {% block modal_footer %}
-<a href="#" class="btn btn-primary hide" id="upload_button">Upload</a>
-<a href="#" class="btn btn-primary" data-dismiss="modal" id="done_button">Done</a>
+<a href="#" class="btn btn-primary hide" id="upload_button">{{ gettext("Upload") }}</a>
+<a href="#" class="btn btn-primary" data-dismiss="modal" id="done_button">{{ gettext("Done") }}</a>
 {% endblock modal_footer %}

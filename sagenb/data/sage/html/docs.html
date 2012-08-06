@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Getting Started with the Sage Notebook</title>
+	<title>{{ gettext('Getting Started with the Sage Notebook') }}</title>
 
 	<!-- styles -->
 	<link href="/data/bootstrap-2.0.4/css/bootstrap.min.css" rel="stylesheet">
@@ -35,175 +35,175 @@ footer {
 <div class="container">
 
 	<header class="jumbotron subhead">
-		<h1>Getting Started with the Sage Notebook</h1>
+		<h1>{{ gettext('Getting Started with the Sage Notebook') }}</h1>
 		<p class="lead"></p>
 	</header>
 
 	<section id="definitions">
-		<h2>Some Lingo</h2>
+		<h2>{{ gettext('Some Lingo') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td><i>Worksheet</i></td>
-					<td>an ordered list of Sage calculations with output</td>
+					<td><i>{{ gettext('Worksheet') }}</i></td>
+					<td>{{ gettext('an ordered list of Sage calculations with output') }}</td>
 				</tr>
 				<tr>
-					<td><i>Session</i></td>
-					<td>a worksheet and a set of variables in some state</td>
+					<td><i>{{ gettext('Session') }}</i></td>
+					<td>{{ gettext('a worksheet and a set of variables in some state') }}</td>
 				</tr>
 				<tr>
-					<td><i>Sage Notebook</i></td>
-					<td>a collection of worksheets, saved objects, and user information</td>
+					<td><i>{{ gettext('Sage Notebook') }}</i></td>
+					<td>{{ gettext('a collection of worksheets, saved objects, and user information') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
 	<section id="morehelp">
-		<h2>Finding More Help</h2>
+		<h2>{{ gettext('Finding More Help') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td>Get Started with Sage</td>
-					<td>Check out the <a href="/doc/live/tutorial/index.html">tutorial</a>. (If you have trouble check out the <a href="/doc/static/tutorial/index.html">static version</a>.)</td>
+					<td>{{ gettext('Get Started with Sage') }}</td>
+					<td>{{ gettext('Check out the <a href="/doc/live/tutorial/index.html">tutorial</a>. (If you have trouble check out the <a href="/doc/static/tutorial/index.html">static version</a>.)') }}</td>
 				</tr>
 				<tr>
-					<td>Introspection</td>
-					<td>Type "?" immediately after an object and press <strong>Tab</strong> to see help for the object. In addition, you may type "??" immediately after an object and press <strong>Tab</strong> to see source code for that object.</td>
+					<td>{{ gettext('Introspection') }}</td>
+					<td>{{ gettext('Type "?" immediately after an object and press <strong>Tab</strong> to see help for the object. In addition, you may type "??" immediately after an object and press <strong>Tab</strong> to see source code for that object.') }}</td>
 				</tr>
 				<tr>
-					<td>Search Documentation and Source</td>
-					<td>Search the Sage documentation by typing <code>search_doc("my query")</code> in an input cell and press shift-enter. Search the source code of Sage by typing <code>search_src("my query")</code> and pressing shift-enter. Arbitrary regular expressions are allowed as queries.</td>
+					<td>{{ gettext('Search Documentation and Source') }}</td>
+					<td>{{ gettext('Search the Sage documentation by typing <code>search_doc("my query")</code> in an input cell and press shift-enter. Search the source code of Sage by typing <code>search_src("my query")</code> and pressing shift-enter. Arbitrary regular expressions are allowed as queries.') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
 	<section id="bindings">
-		<h2>Key and Mouse Bindings</h2>
+		<h2>{{ gettext('Key and Mouse Bindings') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td>Evaluate</td>
-					<td>Press <strong>Shift-Enter</strong></td>
+					<td>{{ gettext('Evaluate') }}</td>
+					<td>{{ gettext('Press <strong>Shift-Enter</strong>') }}</td>
 				</tr>
 				<tr>
-					<td>Auto-Completion</td>
-					<td>Press <strong>Tab</strong> or <strong>Ctrl-Space</strong>/<strong>Cmd-Space</strong></td>
+					<td>{{ gettext('Auto-Completion') }}</td>
+					<td>{{ gettext('Press <strong>Tab</strong> or <strong>Ctrl-Space</strong>/<strong>Cmd-Space</strong>') }}</td>
 				</tr>
 				<tr>
-					<td>Insert New Cell</td>
-					<td>Hover the mouse on the area between two cells to see the new cell buttons. Clicking on a new cell button will create a new cell.</td>
+					<td>{{ gettext('Insert New Cell') }}</td>
+					<td>{{ gettext('Hover the mouse on the area between two cells to see the new cell buttons. Clicking on a new cell button will create a new cell.') }}</td>
 				</tr>
 				<tr>
-					<td>Delete Cell</td>
-					<td>Delete all cell contents, then press <strong>Backspace</strong>.</td>
+					<td>{{ gettext('Delete Cell') }}</td>
+					<td>{{ gettext('Delete all cell contents, then press <strong>Backspace</strong>.') }}</td>
 				</tr>
 				<tr>
-					<td>Indenting</td>
-					<td>You can indent and un-indent selected blocks of text by pressing <strong>Tab</strong> and <strong>Shift-Tab</strong> respectively.</td>
+					<td>{{ gettext('Indenting') }}</td>
+					<td>{{ gettext('You can indent and un-indent selected blocks of text by pressing <strong>Tab</strong> and <strong>Shift-Tab</strong> respectively.') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
 	<section id="session">
-		<h2>Session Management</h2>
+		<h2>{{ gettext('Session Management') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td>Interrupt</td>
-					<td>Click <strong>Evaluation > Interrupt</strong>. This will (attempt) to interrupt Sage by sending many interrupt signals.</td>
+					<td>{{ gettext('Interrupt') }}</td>
+					<td>{{ gettext('Click <strong>Evaluation > Interrupt</strong>. This will (attempt) to interrupt Sage by sending many interrupt signals.') }}</td>
 				</tr>
 				<tr>
-					<td>Restart</td>
-					<td>Click <strong>Evaluation > Restart Worksheet</strong>.</td>
+					<td>{{ gettext('Restart') }}</td>
+					<td>{{ gettext('Click <strong>Evaluation > Restart Worksheet</strong>.') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
 	<section id="special">
-		<h2>Special Cell Blocks</h2>
+		<h2>{{ gettext('Special Cell Blocks') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td>Cell System</td>
-					<td>Put <code>%gap</code>, <code>%singular</code>, etc. as the first line of cell input to evaluate using that system. In addition, using <code>%sh</code> will evaluate a cell as a shell script.</td>
+					<td>{{ gettext('Cell System') }}</td>
+					<td>{{ gettext('Put <code>%gap</code>, <code>%singular</code>, etc. as the first line of cell input to evaluate using that system. In addition, using <code>%sh</code> will evaluate a cell as a shell script.') }}</td>
 				</tr>
 				<tr>
-					<td>Interaction</td>
-					<td>Put <code>@interact</code> on the line before a function definition. Type <code>interact?</code> for more details.</td>
+					<td>{{ gettext('Interaction') }}</td>
+					<td>{{ gettext('Put <code>@interact</code> on the line before a function definition. Type <code>interact?</code> for more details.') }}</td>
 				</tr>
 				<tr>
-					<td>Auto-Evaluation</td>
-					<td>Cells with <code>%auto</code> in the input will be automatically evaluated when the worksheet is loaded.</td>
+					<td>{{ gettext('Auto-Evaluation') }}</td>
+					<td>{{ gettext('Cells with <code>%auto</code> in the input will be automatically evaluated when the worksheet is loaded.') }}</td>
 				</tr>
 				<tr>
-					<td>Timing</td>
-					<td>Cells with <code>%time</code> will time evaluation.</td>
+					<td>{{ gettext('Timing') }}</td>
+					<td>{{ gettext('Cells with <code>%time</code> will time evaluation.') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
 	<section id="tips">
-		<h2>Tips and Tricks</h2>
+		<h2>{{ gettext('Tips and Tricks') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td>Input Rules</td>
-					<td>Code is evaluated by <code>exec</code>'ing (after preparsing). Only the output of the last line of the cell is implicitly printed. If any line starts with <code>sage:</code> or <code>&gt;&gt;&gt;</code> the entire block is assumed to contain text and examples, so only lines that begin with a prompt are executed. Thus you can paste in complete examples from the docs without any editing, and you can write input cells that contains non-evaluated plain text mixed with examples by starting the block with <code>&gt;&gt;&gt;</code> or including an example.</td>
+					<td>{{ gettext('Input Rules') }}</td>
+					<td>{{ gettext('Code is evaluated by <code>exec</code>'ing (after preparsing). Only the output of the last line of the cell is implicitly printed. If any line starts with <code>sage:</code> or <code>&gt;&gt;&gt;</code> the entire block is assumed to contain text and examples, so only lines that begin with a prompt are executed. Thus you can paste in complete examples from the docs without any editing, and you can write input cells that contains non-evaluated plain text mixed with examples by starting the block with <code>&gt;&gt;&gt;</code> or including an example.') }}</td>
 				</tr>
 				<tr>
-					<td>Log</td>
-					<td>Click <strong>Profile Menu > Log</strong> to see a log of changes you have made in any worksheet.</td>
+					<td>{{ gettext('Log') }}</td>
+					<td>{{ gettext('Click <strong>Profile Menu > Log</strong> to see a log of changes you have made in any worksheet.') }}</td>
 				</tr>
 				<tr>
-					<td>Typesetting</td>
-					<td>Enable or disable typesetting of all output with <strong>View > Typesetting</strong>. You can also use <code>pretty_print_default(bool)</code>.</td>
+					<td>{{ gettext('Typesetting') }}</td>
+					<td>{{ gettext('Enable or disable typesetting of all output with <strong>View > Typesetting</strong>. You can also use <code>pretty_print_default(bool)</code>.') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
 	<section id="files">
-		<h2>Files and Scripts</h2>
+		<h2>{{ gettext('Files and Scripts') }}</h2>
 		<table class="table table-bordered">
 			<tbody>
 				<tr>
-					<td>Loading Sage/Python Scripts</td>
-					<td>Use <code>load filename.sage</code> and <code>load filename.py</code>. Load is relative to the path you started the notebook in. The .sage files are preparsed and .py files are not. You may omit the .sage or .py extension. Files may load other files.</td>
+					<td>{{ gettext('Loading Sage/Python Scripts') }}</td>
+					<td>{{ gettext('Use <code>load filename.sage</code> and <code>load filename.py</code>. Load is relative to the path you started the notebook in. The .sage files are preparsed and .py files are not. You may omit the .sage or .py extension. Files may load other files.') }}</td>
 				</tr>
 				<tr>
-					<td>Attaching Scripts</td>
-					<td>Use <code>attach filename.sage</code> or <code>attach filename.py</code>. Attached files are automatically reloaded when the file changes. The file $HOME/.sage/init.sage is attached on startup if it exists.</td>
+					<td>{{ gettext('Attaching Scripts') }}</td>
+					<td>{{ gettext('Use <code>attach filename.sage</code> or <code>attach filename.py</code>. Attached files are automatically reloaded when the file changes. The file $HOME/.sage/init.sage is attached on startup if it exists.') }}</td>
 				</tr>
 				<tr>
-					<td>Working Directory</td>
-					<td>Each block of code is run from its own directory. If any images are created as a side effect, they will automatically be displayed.</td>
+					<td>{{ gettext('Working Directory') }}</td>
+					<td>{{ gettext('Each block of code is run from its own directory. If any images are created as a side effect, they will automatically be displayed.') }}</td>
 				</tr>
 				<tr>
-					<td>DIR Variable</td>
-					<td>The variable DIR contains the directory from which you started the Sage notebook. For example, to open a file in that directory, do <code>open(DIR+'filename')</code>.</td>
+					<td>{{ gettext('DIR Variable') }}</td>
+					<td>{{ gettext('The variable DIR contains the directory from which you started the Sage notebook. For example, to open a file in that directory, do <code>open(DIR+'filename')</code>.') }}</td>
 				</tr>
 				<tr>
-					<td>DATA Variable</td>
-					<td>Use the Data menu to upload images and other files, and create new files that can be shared between worksheets. The DATA variable contains the path to the data files. For example, to open a file in that directory, do <code>open(DATA+'filename')</code>. If foo.sage is a Sage file that you uploaded, type <code>load foo.sage</code>; if foo.py is a Python file, you can import it by typing <code>import foo</code>.</td>
+					<td>{{ gettext('DATA Variable') }}</td>
+					<td>{{ gettext('Use the Data menu to upload images and other files, and create new files that can be shared between worksheets. The DATA variable contains the path to the data files. For example, to open a file in that directory, do <code>open(DATA+'filename')</code>. If foo.sage is a Sage file that you uploaded, type <code>load foo.sage</code>; if foo.py is a Python file, you can import it by typing <code>import foo</code>.') }}</td>
 				</tr>
 				<tr>
-					<td>Loading and Saving Objects</td>
-					<td>Use <code>save obj1 obj2 ...</code> and <code>load obj1 obj2 ...</code>. This allows for easy moving of objects from one worksheet to another, and saving of objects for later use.</td>
+					<td>{{ gettext('Loading and Saving Objects') }}</td>
+					<td>{{ gettext('Use <code>save obj1 obj2 ...</code> and <code>load obj1 obj2 ...</code>. This allows for easy moving of objects from one worksheet to another, and saving of objects for later use.') }}</td>
 				</tr>
 				<tr>
-					<td>Loading and Saving Sessions</td>
-					<td>Use <code>save_session('name')</code> to save all variables to an object. Use <code>load_session('name')</code> to merge in all variables from a saved session.</td>
+					<td>{{ gettext('Loading and Saving Sessions') }}</td>
+					<td>{{ gettext('Use <code>save_session('name')</code> to save all variables to an object. Use <code>load_session('name')</code> to merge in all variables from a saved session.') }}</td>
 				</tr>
 			</tbody>
 		</table>
 	</section>
 
-	<footer>The Sage Notebook was primarily written by William Stein with substantial contributions from Tom Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, Bobby Moretti, Yi Qiang, and Dorian Raymer.</footer>
+	<footer>{{ gettext('The Sage Notebook was primarily written by William Stein with substantial contributions from Tom Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, Bobby Moretti, Yi Qiang, and Dorian Raymer.') }}</footer>
 
 </div>
 

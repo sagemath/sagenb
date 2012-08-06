@@ -2,25 +2,25 @@
 
 {% block modal_id %}sharing_modal{% endblock modal_id %}
 
-{% block modal_title %}Sharing{% endblock modal_title %}
+{% block modal_title %}{{ gettext("Sharing") }}{% endblock modal_title %}
 
 {% block modal_content %}
 
 <form action="#" class="form-horizontal">
 	<fieldset>
 		<div class="control-group">
-			<label for="" class="control-label">Sharing</label>
+			<label for="" class="control-label">{{ gettext("Sharing") }}</label>
 			<div class="controls">
 				<textarea name="collaborators" id="collaborators" class="input-xlarge"></textarea>
-				<p class="help-block">Add/remove collaborators by entering their user names separated by commas.</p>
+				<p class="help-block">{{ gettext("Add/remove collaborators by entering their user names separated by commas.") }}</p>
 			</div>
 		</div>
 		<div class="control-group">
-			<label for="" class="control-label">Publishing</label>
+			<label for="" class="control-label">{{ gettext("Publishing") }}</label>
 			<div class="controls">
-				<label for="publish_checkbox" class="checkbox"><input type="checkbox" id="publish_checkbox"> Publish this worksheet</label>
-				<label for="auto_republish_checkbox" class="checkbox"><input type="checkbox" id="auto_republish_checkbox"> Re-publish this worksheet when it changes</label>
-				<p class="help-block" id="worksheet_url">Worksheet viewable at <a href="#">http://insert/url/here</a></p>
+				<label for="publish_checkbox" class="checkbox"><input type="checkbox" id="publish_checkbox"> {{ gettext("Publish this worksheet") }}</label>
+				<label for="auto_republish_checkbox" class="checkbox"><input type="checkbox" id="auto_republish_checkbox"> {{ gettext("Re-publish this worksheet when it changes") }}</label>
+				<p class="help-block" id="worksheet_url">{{ gettext("Worksheet viewable at") }} <a href="#">http://insert/url/here</a></p>
 			</div>
 		</div>
 	</fieldset>
@@ -29,6 +29,6 @@
 {% endblock modal_content %}
 
 {% block modal_footer %}
-<a href="#" class="btn" data-dismiss="modal">Cancel</a>
-<a href="#" class="btn btn-primary" data-dismiss="modal">Save changes</a>
+<a href="#" class="btn" data-dismiss="modal">{{ gettext("Cancel") }}</a>
+<a href="#" class="btn btn-primary" data-dismiss="modal">{{ gettext("Save changes") }}</a>
 {% endblock modal_footer %}

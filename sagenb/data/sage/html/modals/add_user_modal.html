@@ -2,14 +2,14 @@
 
 {% block modal_id %}add_user_modal{% endblock modal_id %}
 
-{% block modal_title %}Add User{% endblock modal_title %}
+{% block modal_title %}{{ gettext("Add User") }}{% endblock modal_title %}
 
 {% block modal_content %}
 
 <form action="#" class="form-horizontal">
 	<fieldset>
 		<div class="control-group">
-			<label for="username" class="control-label">Username</label>
+			<label for="username" class="control-label">{{ gettext("Username") }}</label>
 			<div class="controls">
 				<input type="text" class="input-xlarge" id="username" name="username">
 				<p class="help-block">{{ gettext('The username must start with a letter and be between 4 and 32 characters long. It can only consist of letters, numbers, underscores, and one dot (.).') }}</p>

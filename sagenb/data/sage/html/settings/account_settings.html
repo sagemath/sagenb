@@ -1,6 +1,6 @@
 {% extends 'html/base.html' %}
 
-{% block title %}Account Settings - Sage{% endblock title %}
+{% block title %}{{ gettext("Account Settings") }} - Sage{% endblock title %}
 
 {% block navbar %}{% endblock navbar %}
 
@@ -13,7 +13,7 @@
 {% endblock alerts %}
 
 {% block page %}
-	<h1 class="title">Account Settings</h1>
+	<h1 class="title">{{ gettext("Account Settings") }}</h1>
 	{% if admin %}
 	<div style="margin-top: 20px">
 		<a href="/manage_users" class="btn">{{ gettext('Manage Users') }}</a>
@@ -22,7 +22,7 @@
 	{% endif %}
 	<form action="/settings" class="form-horizontal" method="post" id="account_settings_form">
 		<fieldset>
-			<legend>Auto-Save</legend>
+			<legend>{{ gettext("Auto-Save") }}</legend>
 			<div class="control-group">
 				<label class="control-label" for="autosave">{{ gettext('Auto-Save Interval') }}</label>
 				<div class="controls">
