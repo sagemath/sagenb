@@ -10,7 +10,7 @@ _ = gettext
 worksheet_listing = Module('flask_server.worksheet_listing')
 
 @worksheet_listing.route('/worksheet_list')
-@login_required
+@guest_or_login_required
 def worksheet_list():
     """
     Returns a worksheet listing.
@@ -35,10 +35,9 @@ def worksheet_list():
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
     from sagenb.notebook.misc import encode_response
     
-    pub = 'pub' in request.args
-    
     r = {}
-    
+
+    pub = 'pub' in request.args    
     readonly = g.notebook.readonly_user(g.username)
     typ = request.args['type'] if 'type' in request.args else 'active'
     search = unicode_str(request.args['search']) if 'search' in request.args else None
@@ -55,8 +54,8 @@ def worksheet_list():
         print "Error displaying worksheet listing: ", E
         return current_app.message(_("Error displaying worksheet listing."))
 
-    if pub and (not g.username or g.username == tuple([])):
-        r['username'] = 'pub'
+    #if pub and (not g.username or g.username == tuple([])):
+    #    r['username'] = 'pub'
 
     r['accounts'] = g.notebook.user_manager().get_accounts()
     r['sage_version'] = SAGE_VERSION

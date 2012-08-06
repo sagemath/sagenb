@@ -352,16 +352,16 @@ class Notebook(object):
     def pub_worksheets(self):
         path = self.__storage._abspath(self.__storage._user_path("pub"))
         v = []
-        a = ""
         for id_number in os.listdir(path):
             if id_number.isdigit():
-                a = "pub" + "/" + id_number
+                a = "pub/" + id_number
                 if a in self.__worksheets:
-                    v.append(self.__worksheets[a])
+                    v.append(self.__worksheets[a].worksheet_that_was_published())
                 else:
                     try:
-                        self.__worksheets[a] = self.__storage.load_worksheet("pub", int(id_number))
-                        v.append(self.__worksheets[a])
+                        w = self.__storage.load_worksheet("pub", int(id_number)).worksheet_that_was_published()
+                        v.append(w)
+                        self.__worksheets[a] = w
                     except Exception:
                         import traceback
                         print "Warning: problem loading %s/%s: %s"%("pub", id_number, traceback.format_exc())

@@ -48,7 +48,7 @@ sagenb.worksheetlistapp.list_row = function() {
 		else {
 			name_html += '<a href="/home/' + _this.props.filename + '" target="_blank">' + _this.props.name + '</a>';
 		}
-		if(_this.props.running) {
+		if(_this.props.running && !_this.list.published_mode) {
 			// TODO gettext
 			name_html += '<span class="label label-important pull-right running_label">running</span>';
 		}
@@ -309,7 +309,7 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	
 	//// VIEWS ////
 	_this.show_published = function() {
-		_this.load("published", function() {
+		_this.load("pub", function() {
 			$(".title").text(gettext("Published Worksheets"));
 			document.title = gettext("Published Worksheets") + " - Sage";
 			$("#search_input").val("");
