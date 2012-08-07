@@ -3581,7 +3581,7 @@ except (KeyError, IOError):
         else:
             switched, input = self.check_for_system_switching(input, C)
             if not switched:
-                input = self.preparse_nonswitched_input(input)
+                input = self.preparse_nonswitched_input(input, C.prun() and not C.introspect())
             input += '\n'
         return input
 
@@ -3611,7 +3611,7 @@ except (KeyError, IOError):
             input = 'print "\\n".join(_support_.completions("%s", globals(), system="%s"))' % (input, self.system())
         return input
 
-    def preparse_nonswitched_input(self, input):
+    def preparse_nonswitched_input(self, input, prun=False):
         """
         Preparse the input to a Sage Notebook cell.
 
@@ -3624,7 +3624,7 @@ except (KeyError, IOError):
             - a string
         """
         input = ignore_prompts_and_output(input).rstrip()
-        input = self.preparse(input)
+        input = self.preparse(input, prun)
         return input
 
     def _strip_synchro_from_start_of_output(self, s):
@@ -3674,7 +3674,7 @@ except (KeyError, IOError):
     def _get_last_identifier(self, s):
         return support.get_rightmost_identifier(s)
 
-    def preparse(self, s):
+    def preparse(self, s, prun=False):
         """
         Return preparsed version of input code ``s``, ready to be sent
         to the Sage process for evaluation.  The output is a "safe
@@ -3690,7 +3690,12 @@ except (KeyError, IOError):
         """
         # The extra newline below is necessary, since otherwise source
         # code introspection doesn't include the last line.
-        return 'open("%s","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); execfile(os.path.abspath("%s"))'%(CODE_PY, base64.b64encode(s.encode('utf-8', 'ignore')), CODE_PY)
+        prun_start = ''
+        prun_end = ''
+        if prun:
+            prun_start = 'import cProfile\ncProfile.run("""'
+            prun_end = '""",sort="time")'
+        return 'open("%s","w").write("# -*- coding: utf-8 -*-\\n" + _support_.preparse_worksheet_cell(base64.b64decode("%s"),globals())+"\\n"); %sexecfile(os.path.abspath("%s"))%s'%(CODE_PY, base64.b64encode(s.encode('utf-8', 'ignore')), prun_start, CODE_PY, prun_end)
 
     ##########################################################
     # Loading and attaching files
