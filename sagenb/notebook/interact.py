@@ -3184,7 +3184,7 @@ class slider_generic(control):
 
             #Compute list of values
             num_steps = int(math.ceil((self.__vmax-self.__vmin)/float(self.__step_size)))
-            if num_steps <= 2:
+            if num_steps <= 1:
                 vals = [self.__vmin, self.__vmax]
             else:
                 vals = srange(self.__vmin, self.__vmax, self.__step_size, include_endpoint=True)
