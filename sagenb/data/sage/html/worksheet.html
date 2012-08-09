@@ -103,48 +103,33 @@
 {% endblock after_container %}
 
 {% block extra_javascript %}
-	{# TODO: use webassets here #}
+	{% assets filters="rjsmin", output="webassets_generated/worksheet.js",
+		"sage/js/load_mathjax.js",
+		"tinymce-3.5.2/jscripts/tiny_mce/tiny_mce.js",
+		"CodeMirror-2.3/lib/codemirror.js",
+		"CodeMirror-2.3/lib/util/simple-hint.js",
+		"CodeMirror-2.3/mode/python/python.js",
+		"CodeMirror-2.3/mode/stex/stex.js",
+		"CodeMirror-2.3/mode/r/r.js",
+		"CodeMirror-2.3/mode/shell/shell.js",
+		"CodeMirror-2.3/mode/xml/xml.js",
+		"CodeMirror-2.3/mode/javascript/javascript.js",
+		"CodeMirror-2.3/mode/css/css.js",
+		"CodeMirror-2.3/mode/htmlmixed/htmlmixed.js",
+		"sage3d/sage3d.js",
+		"sage/js/jmol.js",
+		"sage/js/worksheet.js",
+		"sage/js/cell.js"
+	%}
+		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+	{% endassets %}
 
-	<!-- MathJax -->
-	<script type="text/javascript" src="/data/sage/js/load_mathjax.js"></script>
-
-	<!-- TinyMCE -->
-	<script type="text/javascript" src="/data/tinymce-3.5.2/jscripts/tiny_mce/tiny_mce.js" ></script>
-
-	<!-- CodeMirror -->
-	<script src="/data/CodeMirror-2.3/lib/codemirror.js"></script>
-
-	<!-- simple hinting -->
-	<script type="text/javascript" src="/data/CodeMirror-2.3/lib/util/simple-hint.js"></script>
-	<!-- javascript hinting. we'll have to create our own hinting presets but for testing we use js -->
-	<script type="text/javascript" src="/data/CodeMirror-2.3/lib/util/javascript-hint.js"></script>
-
-	<!-- CodeMirror modes -->
-	<script src="/data/CodeMirror-2.3/mode/python/python.js"></script>
-	<script src="/data/CodeMirror-2.3/mode/stex/stex.js"></script>
-	<script src="/data/CodeMirror-2.3/mode/r/r.js"></script>
-	<script src="/data/CodeMirror-2.3/mode/shell/shell.js"></script>
-
-	<!-- htmlmixed depends on xml. javascript, and css -->
-	<script src="/data/CodeMirror-2.3/mode/xml/xml.js"></script>
-	<script src="/data/CodeMirror-2.3/mode/javascript/javascript.js"></script>
-	<script src="/data/CodeMirror-2.3/mode/css/css.js"></script>
-	<script src="/data/CodeMirror-2.3/mode/htmlmixed/htmlmixed.js"></script>
-	<!-- END CodeMirror -->
-
-	<!-- Sage3d - accelerated 3D graphics -->
-	<script type="text/javascript" src="/data/sage3d/sage3d.js"></script>
-
+	<!-- Can't minify -->
 	<!-- Jmol - embedded 3D graphics -->
 	<script type="text/javascript" src="/java/jmol/Jmol.js"></script>
 	<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
 
-	<script type="text/javascript" src="/data/sage/js/jmol.js"></script>
-
-	<!-- Worksheet related javascript -->
-    <script type="text/javascript" src="/data/sage/js/worksheet.js"></script>
-	<script type="text/javascript" src="/data/sage/js/cell.js"></script>
-
+	<!-- These are already minified, so there's no point in minifying again -->
 	<!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
 	<link rel="stylesheet" href="/data/jqueryui/css/sage/jquery-ui-1.8.11.custom.css" />
 	<script type="text/javascript" src="/data/jqueryui/js/jquery-ui-1.8.11.custom.min.js"></script>
