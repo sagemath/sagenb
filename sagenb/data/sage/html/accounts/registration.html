@@ -1,0 +1,100 @@
+{% extends "html/base.html" %}
+{% block title %}{{ gettext('Register') }} - Sage{% endblock %}
+{% block page_id %}register-page{% endblock %}
+{% block alerts %}{% endblock alerts %}
+
+{% block main %}
+	<div class="container" style="margin-top: 100px; width: 770px">
+		<form action="/register" method="post" class="form-horizontal">
+			<fieldset>
+				<div class="control-group {% if username_missing or username_taken or username_invalid %}error{% endif %}">
+					<label for="username" class="control-label">{{ gettext("Username") }}</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="username" name="username" value="{{ username }}">
+
+						{% if username_missing %}
+							<span class="help-inline">{{ gettext('No username given') }}</span>
+						{% endif %}
+						{% if username_taken %}
+							<span class="help-inline">{{ gettext('Username already in use') }}</span>
+						{% endif %}
+						{% if username_invalid %}
+							<span class="help-inline">{{ gettext('Bad username') }}</span>
+						{% endif %}
+
+						<p class="help-block">{{ gettext('Your username must start with a letter and be between 3 and 64 characters long. You may only use letters, numbers, underscores, @, and dots.') }}</p>
+					</div>
+				</div>
+				<div class="control-group {% if password_missing or password_invalid or passwords_dont_match or retype_password_missing %}error{% endif %}">
+					<label for="password" class="control-label">{{ gettext("Password") }}</label>
+					<div class="controls">
+						<input type="password" class="input-xlarge" id="password" name="password">
+
+						{% if password_missing %}
+							<span class="help-inline">{{ gettext('No password given') }}</span>
+						{% endif %}
+						{% if password_invalid %}
+							<span class="help-inline">{{ gettext('Bad password') }}</span>
+						{% endif %}
+						{% if passwords_dont_match %}
+							<span class="help-inline">{{ gettext('Passwords didn\'t match') }}</span>
+						{% endif %}
+
+						<p class="help-block">{{ gettext('Your password must have at least 4 characters. '
+		                    'Your password can not contain your username or spaces.') }}</p>
+					</div>
+				</div>
+				<div class="control-group {% if retype_password_missing %}error{% endif %}">
+					<label for="retype_password" class="control-label">{{ gettext("Re-type password") }}</label>
+					<div class="controls">
+						<input type="password" class="input-xlarge" id="retype_password" name="retype_password">
+
+						{% if retype_password_missing %}
+							<span class="help-inline">{{ gettext('Re-type your password') }}</span>
+						{% endif %}
+					</div>
+				</div>
+				{% if email or email_missing or email_invaild %}
+					<div class="control-group {% if email_missing or email_invaild %}error{% endif %}">
+						<label for="email" class="control-label">{{ gettext("Email") }}</label>
+
+						<div class="controls">
+							<input type="email" class="input-xlarge" id="email" name="email" value="{{ email_address }}">
+							
+							{% if email_missing %}
+								<span class="help-inline">{{ gettext('No email address given') }}</span>
+							{% endif %}
+							{% if email_invalid %}
+								<span class="help-inline">{{ gettext('Invalid email address') }}</span>
+							{% endif %}
+
+							<p class="help-block">{{ gettext('Your email address is required for account '
+								'confirmation and recovery. You will be emailed a confirmation link '
+								'right after you successfully sign up.') }}</p>
+						</div>
+					</div>
+				{% endif %}
+
+				{% if challenge %}
+					<div class="control-group {% if challenge_missing or challenge_invalid %}error{% endif %}">
+						<label for="" class="control-label">{{ gettext("Challenge") }}</label>
+						<div class="controls">
+							{{ challenge_html }}
+						</div>
+						
+						{% if challenge_missing %}
+							<p class="help-block">{{ gettext('No challenge response given') }}</p>
+						{% endif %}
+						{% if challenge_invalid %}
+							<p class="help-block">{{ gettext('Invalid challenge response') }}</p>
+						{% endif %}
+					</div>
+				{% endif %}
+
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit">{{ gettext("Register") }}</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+{% endblock %}

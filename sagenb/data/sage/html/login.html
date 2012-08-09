@@ -58,14 +58,17 @@
 				<form method="post" action="/login" id="sign-in-form" class="well">
 					<div>
 						<label for="email">{{ gettext('Username') }}</label>
-						<input type="text" type="email" name="email" style="width: 97%;" />
+						<input type="text" type="email" name="email" id="email" style="width: 97%;" />
 					</div>
 					<div>
-						<label for="password">{{ gettext('Password') }}</label>
-						{% if recovery %}
-							<a href="/forgotpass">{{ gettext('Forgot password') }}</a>
-						{% endif %}
-						<input type="password" name="password" style="width: 97%;" />
+						<div style="margin-bottom: 5px">
+							<label for="password" style="display: inline">{{ gettext('Password') }}</label>
+							{% if recovery %}
+								<a href="/forgotpass" style="font-size: 10px; line-height: 1em; padding-left: 5px">{{ gettext('forgot password?') }}</a>
+							{% endif %}
+						</div>
+						
+						<input type="password" name="password" id="password " style="width: 97%;" />
 					</div>
 					<div>
 						<label for="remember"><input type="checkbox" name="remember" id="remember" /> {{ gettext('Remember me') }}</label>
@@ -91,6 +94,8 @@
 	</div>
 {% endblock %}
 
+{% block after_container %}{% endblock after_container %}
+
 {% block extra_javascript %}
 	<link rel="stylesheet" href="/data/openid-realselector/css/style.css" />
 		<style type="text/css">
@@ -104,18 +109,19 @@
 			background-color: whiteSmoke;
 		}
 	</style>
+
 	<script type="text/javascript" src="/data/openid-realselector/js/jquery.openid.js"></script>
 	<script type="text/javascript">
 		$(function() {
-		  $('#openid').openid({
-			img_path: '/data/openid-realselector/img/openid/',
-			txt: {
-			  label: '{username} for <b>{provider}</b>',
-			  username: '{{ gettext('username') }}',
-			  title: '{{ gettext('Select an OpenID provider') }}',
-			  sign: '{{ gettext('Send') }}'
-			}
-		  });
+			$('#openid').openid({
+				img_path: '/data/openid-realselector/img/openid/',
+				txt: {
+					label: '<strong>{provider}</strong> {username}',
+					username: '{{ gettext('username') }}',
+					// title: '{{ gettext('Select an OpenID provider') }}',
+					sign: '{{ gettext('Sign in') }}'
+				}
+			});
 		});
 	</script>
 {% endblock %}

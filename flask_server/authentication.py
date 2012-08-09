@@ -273,7 +273,7 @@ def confirm():
     del waiting[key]
     return current_app.message(success, title=_('Email Confirmed'))
 
-@authentication.route('/forgotpass')
+@authentication.route('/forgotpass', methods=['POST'])
 @with_lock
 def forgot_pass():
     if not g.notebook.conf()['email']:

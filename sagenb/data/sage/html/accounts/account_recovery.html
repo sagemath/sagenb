@@ -1,0 +1,23 @@
+{% extends "html/base.html" %}
+{% block title %}{{ gettext('Account Recovery') }} - Sage{% endblock %}
+{% block page_id %}account-recovery-page{% endblock %}
+{% block alerts %}{% endblock alerts %}
+
+{% block main %}
+	<div class="container" style="margin-top: 100px; width: 770px">
+		<form action="/forgotpass" method="post" class="form-horizontal">
+			<fieldset>
+				<div class="control-group">
+					<label for="username" class="control-label">{{ gettext("Username") }}</label>
+					<div class="controls">
+						<input type="text" class="input-xlarge" id="username" name="username">
+						<p class="help-block">{{ gettext("A new password will be emailed to the email address connected to your account. However if you didn't confirm your email address you will be unable to recover your account.") }}</p>
+					</div>
+				</div>
+				<div class="form-actions">
+					<button class="btn btn-primary" type="submit">{{ gettext("Reset password") }}</button>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+{% endblock %}
