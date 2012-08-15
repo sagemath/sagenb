@@ -105,7 +105,6 @@
 {% block extra_javascript %}
 	{% assets filters="rjsmin", output="webassets_generated/worksheet.js",
 		"sage/js/load_mathjax.js",
-		"tinymce-3.5.2/jscripts/tiny_mce/tiny_mce.js",
 		"CodeMirror-2.32/lib/codemirror.js",
 		"CodeMirror-2.32/lib/util/simple-hint.js",
 		"CodeMirror-2.32/mode/python/python.js",
@@ -125,6 +124,9 @@
 	{% endassets %}
 
 	<!-- Can't minify -->
+	<!-- TinyMCE -->
+	<script type="text/javascript" src="/data/tinymce-3.5.2/jscripts/tiny_mce/tiny_mce.js"></script>
+
 	<!-- Jmol - embedded 3D graphics -->
 	<script type="text/javascript" src="/java/jmol/Jmol.js"></script>
 	<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
