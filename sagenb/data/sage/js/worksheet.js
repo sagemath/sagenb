@@ -143,8 +143,7 @@ sagenb.worksheetapp.worksheet = function() {
 		 * we have as default. I haven't seen this issue yet
 		 * but it may exist.
 		 */
-		console.log("print " + _this.name);
-		//window.open('/home/');
+		window.print();
 	};
 	
 	//////// EXPORT/IMPORT ///////
