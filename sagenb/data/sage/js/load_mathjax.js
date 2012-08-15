@@ -15,13 +15,13 @@
 	
 	if(window.location.hostname.indexOf("localhost") > -1) {
 		// we are running on localhost
-		doLoad("/data/mathjax/MathJax.js" + mathjax_config);
+		doLoad("/data/mathjax-MathJax-07669ac/MathJax.js" + mathjax_config);
 	} else {
 		// we aren't running localhost
 		doLoad("http://cdn.mathjax.org/mathjax/latest/MathJax.js" + mathjax_config);
 		if(!MathJax) {
 			// CDN failed, load from notebook server
-			doLoad("/data/mathjax/MathJax.js" + mathjax_config);
+			doLoad("/data/mathjax-MathJax-07669ac/MathJax.js" + mathjax_config);
 		}
 	}
 })();
