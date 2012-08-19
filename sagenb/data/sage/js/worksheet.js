@@ -474,7 +474,7 @@ sagenb.worksheetapp.worksheet = function() {
 			_this.state_number = X.state_number;
 			
 			// remove all previous cells
-			$(".cell").detach();
+			$(".cell_wrapper").detach();
 			$(".new_cell_button").detach();
 			
 			// add the first new cell button
