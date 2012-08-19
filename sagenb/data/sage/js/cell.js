@@ -386,9 +386,11 @@ sagenb.worksheetapp.cell = function(id) {
 				/* using contents instead of children guarantees that we
 				 * get all other types of nodes including text and comments.
 				 */
-				$output_cell.html("\\[" + $output_cell.find(".math").html() + "\\]");
+				$output_cell.html("\\[" + $output_cell.find("script[type='math/tex']").html() + "\\]");
 			}
 			else {
+				// NOTE: these may be obsolete
+
 				// mathjax each span with \( \)
 				$output_cell.find("span.math").each(function(i, element) {
 					$(element).html("\\(" + $(element).html() + "\\)");
