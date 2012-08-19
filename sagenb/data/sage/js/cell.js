@@ -121,7 +121,7 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Tab"] = function(cm) {
-				if(cm.getCursor(true).line != cm.getCursor().line || !_this.introspect()) {
+				if(!_this.introspect() && cm.getCursor(true).line != cm.getCursor().line) {
 					CodeMirror.commands.indentMore(cm);
 				}
 			};
@@ -577,8 +577,9 @@ sagenb.worksheetapp.cell = function(id) {
 		 * introspection result is done in the check_for_output function.
 		 */
 		
-		if(!_this.is_evaluate_cell) return;
-		if(_this.worksheet.published_mode) return;
+		if(!_this.is_evaluate_cell) return false;
+		if(_this.worksheet.published_mode) return false;
+		if($(".tooltip_root").length > 0) return false;
 		
 		/* split up the text cell and get before and after */
 		var before = "";
