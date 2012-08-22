@@ -48,10 +48,9 @@ sagenb.worksheetlistapp.list_row = function() {
 		else {
 			name_html += '<a href="/home/' + _this.props.filename + '" target="_blank">' + _this.props.name + '</a>';
 		}
-		if(_this.props.running && !_this.list.published_mode) {
-			// TODO gettext
+		/*if(_this.props.running && !_this.list.published_mode) {
 			name_html += '<span class="label label-important pull-right running_label">' + gettext("running") + '</span>';
-		}
+		}*/
 		_this.jquery_this.find("td.worksheet_name_cell").html(name_html);
 		
 		// owner/collaborators/published
