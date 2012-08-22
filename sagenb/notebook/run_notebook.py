@@ -160,10 +160,15 @@ with open(%(pidfile)r, 'w') as pidfile:
     pidfile.write(str(os.getpid()))
 
 if %(secure)s:
-    from OpenSSL import SSL
-    ssl_context = SSL.Context(SSL.SSLv23_METHOD)
-    ssl_context.use_privatekey_file(%(private_pem)r)
-    ssl_context.use_certificate_file(%(public_pem)r)
+    try:
+        from OpenSSL import SSL
+        ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+        ssl_context.use_privatekey_file(%(private_pem)r)
+        ssl_context.use_certificate_file(%(public_pem)r)
+    except ImportError:
+        print "WARNING: HTTPS cannot be used as pyOpenSSL is unavailable; falling back to HTTP"
+        %(secure)s = False
+        ssl_context = None
 else:
     ssl_context = None
 
@@ -465,6 +470,15 @@ def notebook_run(self,
              open_viewer = None,
              address = None,
              ):
+
+    # Check whether pyOpenSSL is installed or not (see Sage trac #13385)
+    if secure:
+        try:
+            import OpenSSL
+        except ImportError:
+            print "WARNING: secure mode was requested, but pyOpenSSL was not found."
+            print "Falling back to HTTP."
+            secure = False
 
     # Turn it into a full path for later conversion to a file URL
     if upload:
