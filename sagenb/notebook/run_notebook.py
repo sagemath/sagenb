@@ -166,9 +166,8 @@ if %(secure)s:
         ssl_context.use_privatekey_file(%(private_pem)r)
         ssl_context.use_certificate_file(%(public_pem)r)
     except ImportError:
-        print "WARNING: HTTPS cannot be used as pyOpenSSL is unavailable; falling back to HTTP"
-        %(secure)s = False
-        ssl_context = None
+        raise RuntimeError("HTTPS cannot be used without pyOpenSSL"
+                " installed. See the Sage README for more information.")
 else:
     ssl_context = None
 
@@ -476,9 +475,8 @@ def notebook_run(self,
         try:
             import OpenSSL
         except ImportError:
-            print "WARNING: secure mode was requested, but pyOpenSSL was not found."
-            print "Falling back to HTTP."
-            secure = False
+            raise RuntimeError("HTTPS cannot be used without pyOpenSSL"
+                    " installed. See the Sage README for more information.")
 
     # Turn it into a full path for later conversion to a file URL
     if upload:
