@@ -131,7 +131,7 @@ sagenb.worksheetapp.cell = function(id) {
 			// backspace handler
 			extrakeys["Backspace"] = function(cm) {
 				// check if it is empty
-				_this.hide_popover();
+				_this.cancel_introspect();
 
 				var key, count = 0;
 				for(key in _this.worksheet.cells) count++;
@@ -145,7 +145,6 @@ sagenb.worksheetapp.cell = function(id) {
 			};
 			
 			extrakeys["Shift-Enter"] = function(cm) {
-				_this.hide_popover();
 				_this.evaluate();
 			};
 			
@@ -189,7 +188,7 @@ sagenb.worksheetapp.cell = function(id) {
 						_this.introspect();
 					}
 					else if(chg.text[0] === ")") {
-						_this.hide_popover();
+						_this.cancel_introspect();
 					}
 				},
 
@@ -467,11 +466,11 @@ sagenb.worksheetapp.cell = function(id) {
 		}
 
 		$("body").click(function(e) {
-			_this.hide_popover();
+			_this.cancel_introspect();
 		}).keydown(function(e) {
 			if(e.which === 27) {
 				// Esc
-				_this.hide_popover();
+				_this.cancel_introspect();
 			}
 		});
 	}
@@ -498,7 +497,7 @@ sagenb.worksheetapp.cell = function(id) {
 			// Insert a new cell after the evaluated cell.
 			_this.worksheet.new_cell_after(_this.id);
 		}
-		
+
 		_this.is_evaluating = true;
 		$("#cell_" + _this.id).addClass("running");	
 		
@@ -538,10 +537,15 @@ sagenb.worksheetapp.cell = function(id) {
 			return;
 		}
 		
+		if(_this.is_evaluating) {
+			return;
+		}
+
+		_this.cancel_introspect();
 		_this.set_output_loading();
 
 		// we're an evaluate cell
-		sagenb.async_request(_this.worksheet.worksheet_command("eval"), _evaluate_callback,	{
+		sagenb.async_request(_this.worksheet.worksheet_command("eval"), _evaluate_callback, {
 			// 0 = false, 1 = true this needs some conditional
 			newcell: 0,
 			
@@ -580,6 +584,8 @@ sagenb.worksheetapp.cell = function(id) {
 		if(!_this.is_evaluate_cell) return false;
 		if(_this.worksheet.published_mode) return false;
 		if($(".tooltip_root").length > 0) return false;
+		if(_this.is_evaluating) return false;
+		// if(_this.introspect_state) return false;
 		
 		/* split up the text cell and get before and after */
 		var before = "";
@@ -641,6 +647,7 @@ sagenb.worksheetapp.cell = function(id) {
 		
 		sagenb.async_request(_this.worksheet.worksheet_command("introspect"), sagenb.generic_callback(function(status, response) {
 			/* INTROSPECT CALLBACK */
+			_this.is_evaluating = true;
 			
 			// start checking for output
 			_this.check_for_output();
@@ -655,12 +662,11 @@ sagenb.worksheetapp.cell = function(id) {
 		
 		return true;
 	};
+	_this.cancel_introspect = function() {
+		_this.hide_popover();
+		_this.introspect_state = null;
+	};
 	_this.check_for_output = function() {
-		/* Currently, this function uses a setInterval command
-		 * so that the result will be checked every X millisecs.
-		 * In the future, we may want to implement an exponential
-		 * pause system like the last notebook had.
-		 */
 		function stop_checking() {
 			_this.is_evaluating = false;
 			
@@ -673,9 +679,6 @@ sagenb.worksheetapp.cell = function(id) {
 		
 		function do_check() {
 			sagenb.async_request(_this.worksheet.worksheet_command("cell_update"), sagenb.generic_callback(function(status, response) {
-				/* we may want to implement an error threshold system for errors 
-				like the old notebook had. that would go here */
-				
 				if(response === "") {
 					// empty response, try again after a little bit
 					// setTimeout(_this.check_for_output, 500);
@@ -690,17 +693,25 @@ sagenb.worksheetapp.cell = function(id) {
 					stop_checking();
 					return;
 				}
+
+				// check if introspect was cancelled
+				if(X.introspect_output && $.trim(X.introspect_output).length > 0 && _this.introspect_state == null) {
+					// introspect cancelled
+					stop_checking();
+					return;
+				}
 				
 				if(X.status === "d") {
 					// evaluation done
 					stop_checking();
-										
+					
 					if(X.new_input !== "") {
 						// if the editor has changed, re-introspect
-						if(_this.codemirror.getValue() !== _this.introspect_state.previous_value) {
+						// This is buggy
+						/*if(_this.codemirror.getValue() !== _this.introspect_state.previous_value) {
 							setTimeout(_this.introspect, 50);
 							return;
-						}
+						}*/
 						
 						// update the input
 						_this.input = X.new_input;
@@ -721,10 +732,6 @@ sagenb.worksheetapp.cell = function(id) {
 								
 								_this.codemirror.setCursor(pos);
 							}
-						} else {
-							/* I don't think we need to do anything for TinyMCE
-							 * but it would go here
-							 */
 						}
 					}
 					
@@ -829,7 +836,8 @@ sagenb.worksheetapp.cell = function(id) {
 									// Pass the event to the CodeMirror instance so that it can handle things like backspace properly.
 									editor.triggerOnKeyDown(event);
 									
-									setTimeout(_this.introspect, 50);
+									// This is buggy
+									// setTimeout(_this.introspect, 50);
 								}
 							});
 							CodeMirror.connect(sel, "dblclick", pick);
@@ -844,7 +852,7 @@ sagenb.worksheetapp.cell = function(id) {
 							_this.show_popover($.trim(X.introspect_output));
 						}
 					}
-					
+
 					// update the output
 					_this.output = X.output;
 					
@@ -869,6 +877,9 @@ sagenb.worksheetapp.cell = function(id) {
 				}
 			);
 		}
+
+		// clear interval
+		_this.output_check_interval_id = window.clearInterval(_this.output_check_interval_id);
 		
 		// start checking
 		_this.output_check_interval_id = window.setInterval(do_check, _this.output_check_interval);
