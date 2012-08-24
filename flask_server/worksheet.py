@@ -1,7 +1,7 @@
 import os, threading, collections
 from functools import wraps
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app, make_response
-from decorators import login_required, with_lock
+from decorators import guest_or_login_required, login_required, with_lock
 from collections import defaultdict
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
@@ -18,7 +18,7 @@ def worksheet_view(f):
     is the owner of the worksheet.  Don't confuse this with `g.username`, the actual username of the 
     user looking at the worksheet.
     """
-    @login_required
+    @guest_or_login_required
     @wraps(f)
     def wrapper(username, id, **kwds):
         worksheet_filename = username + "/" + id
