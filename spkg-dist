@@ -243,6 +243,11 @@ if [ $? -ne 0 ]; then
     echo >&2 "Error overwriting original 'easy-install.pth'."
     exit 1
 fi
+
+# Remove old reference manual to fix upgrading from sage-5.1 or
+# earlier. Some old .rst files might try to import modules which no
+# longer exist, see #13405.
+rm -rf "$SAGE_ROOT/devel/sage/doc/en/reference/sagenb"
 """ % {'install_dependencies': install_dependencies})
 spkg_install_fd.close()
 os.chmod(spkg_install, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP |
