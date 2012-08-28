@@ -36,11 +36,7 @@ from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
                               ignore_nonexistent_files, unicode_str)
 
 # Sage Notebook
-from . import css          # style
-from . import js           # javascript
 from . import worksheet    # individual worksheets (which make up a notebook)
-from . import config       # internal configuration stuff (currently, just keycodes)
-from . import keyboards    # keyboard layouts
 from . import server_conf  # server configuration
 from . import user_conf    # user configuration
 from . import user         # users
