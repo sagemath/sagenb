@@ -378,7 +378,7 @@ function bind_events() {
         var cell_id = get_cell_id_from_id(id);
         return input_keypress(cell_id, event);
     });
-    $('body').on('click', 'input.eval_button', function () {
+    $('body').on('click', 'input.eval_button_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         evaluate_cell(cell_id, 0);
@@ -3704,7 +3704,6 @@ function set_output_text(id, status, output_text, output_text_wrapped,
     if (status === 'd' && introspect_html === '' && is_interacting_cell(id)) {
         // This is the first time that the underlying Python interact
         // function (i.e., interact.recompute) is actually called!
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
         return 'trigger_interact';
     }
 

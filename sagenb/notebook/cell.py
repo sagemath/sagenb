@@ -2394,17 +2394,6 @@ class Cell(Cell_generic):
                 if len(link_text) > 40:
                     link_text = link_text[:10] + '...' + link_text[-20:]
                 files.append('<a target="_new" href="%s" class="file_link">%s</a>' % (url, link_text))
-        if len(images) == 0:
-            images = ''
-        else:
-            images = "%s" % '<br>'.join(images)
-        if len(files) == 0:
-            files = ''
-        else:
-            files = ('&nbsp'*3).join(files)
-
-        files = unicode_str(files)
-        images = unicode_str(images)
 
         if(hasjmol and not hasjmolimages):
             # This is probably an old worksheet. Generate the missing jmol static image(s)
@@ -2437,7 +2426,17 @@ class Cell(Cell_generic):
             else:
                 images.append('Java Virtual Machine Unavailable.  Cannot make image from old data.  Please reevaluate cell.')
 
+        if len(images) == 0:
+            images = ''
+        else:
+            images = "%s" % '<br>'.join(images)
+        if len(files) == 0:
+            files = ''
+        else:
+            files = ('&nbsp'*3).join(files)
 
+        files = unicode_str(files)
+        images = unicode_str(images)
         return images + files
 
 
