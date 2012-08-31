@@ -35,7 +35,6 @@ install_requires = [ 'twisted>=11.0.0'
                    , 'flask-autoindex'
                    , 'babel'
                    , 'flask-babel'
-                   , 'pyOpenSSL<=0.12'
                    , 'webassets'
                    ]
 

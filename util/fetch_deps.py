@@ -19,7 +19,6 @@ required_packages = [ 'twisted>=11.0.0'
                     , 'Flask-AutoIndex>=0.4.0'
                     , 'Flask-Babel>=0.8'
                     , 'Flask-OpenID>=1.0.1'
-                    , 'pyOpenSSL<=0.12'
                     , 'webassets>=0.7.1'
                     ]
 
