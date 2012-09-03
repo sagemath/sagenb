@@ -103,10 +103,15 @@ sagenb.worksheetapp.cell = function(id) {
 		
 			// render into the container
 			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + _this.id + "\">" +
-									"<div class=\"input_cell\">" +
+									"<div class=\"input_cell\"></div>" +
+									"<div class=\"evaluate_button_container\">" + 
+										"<a href=\"#\" class=\"btn evaluate_button\">" + gettext("Evaluate") + "</a>" +
 									"</div>" +
 								"</div> <!-- /cell -->");
 			
+			// Bind the evaluate button
+			$(container).find(".evaluate_button").click(_this.evaluate);
+
 			//set up extraKeys object
 			/* because of some codemirror or chrome bug, we have to
 			 * use = new Object(); instead of = {}; When we use = {};
@@ -335,7 +340,7 @@ sagenb.worksheetapp.cell = function(id) {
 		var $output_cell = $("#output_" + _this.id);
 		if($output_cell.length === 0) {
 			$output_cell = $("<div class=\"output_cell\" id=\"output_" + _this.id + "\"></div>")
-				.insertAfter("#cell_" + _this.id + " .input_cell");
+				.appendTo("#cell_" + _this.id);
 		}
 
 		// Interact constants.  See interact.py and related files.
