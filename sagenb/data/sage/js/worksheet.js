@@ -112,7 +112,13 @@ sagenb.worksheetapp.worksheet = function() {
 		}));
 	};
 	
-	
+	function close_window() {
+		// this is a hack which gets close working
+		window.open('', '_self', '');
+		close();
+		window.close();
+		self.close();
+	}
 	
 	//////////// FILE MENU TYPE STUFF //////////
 	_this.new_worksheet = function() {
@@ -128,12 +134,7 @@ sagenb.worksheetapp.worksheet = function() {
 			$(".alert_rename").show();
 		} else {
 			// maybe other stuff here??
-			
-			// this is a hack which gets close working
-			window.open('', '_self', '');
-			close();
-			window.close();
-			self.close();
+			close_window();
 		}
 	};
 	_this.print = function() {
@@ -694,7 +695,7 @@ sagenb.worksheetapp.worksheet = function() {
 			$(".worksheet_name").click();
 			$(".alert_rename").hide();
 		});
-		$(".alert_rename .cancel").click(window.close);
+		$(".alert_rename .cancel").click(close_window);
 		
 		///////// LOCKED ALERT //////////
 		$(".alert_locked button").click(function(e) {
