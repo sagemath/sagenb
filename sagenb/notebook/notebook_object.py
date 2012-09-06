@@ -131,6 +131,10 @@ class NotebookObject:
        the first time you do this you'll be prompted to set an
        administrator password.  Use this to login. NOTE: You may have
        to run ``notebook.setup()`` again and change the hostname.
+       ANOTHER NOTE: You must have installed pyOpenSSL in order to use
+       secure mode; see the top-level Sage README file or the "Install
+       from Source Code" section in the Sage manual for more
+       information.
 
     3. I want to create a Sage notebook server that is open to anybody
        in the world to create new accounts. To run the Sage notebook

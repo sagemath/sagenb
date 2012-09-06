@@ -160,10 +160,14 @@ with open(%(pidfile)r, 'w') as pidfile:
     pidfile.write(str(os.getpid()))
 
 if %(secure)s:
-    from OpenSSL import SSL
-    ssl_context = SSL.Context(SSL.SSLv23_METHOD)
-    ssl_context.use_privatekey_file(%(private_pem)r)
-    ssl_context.use_certificate_file(%(public_pem)r)
+    try:
+        from OpenSSL import SSL
+        ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+        ssl_context.use_privatekey_file(%(private_pem)r)
+        ssl_context.use_certificate_file(%(public_pem)r)
+    except ImportError:
+        raise RuntimeError("HTTPS cannot be used without pyOpenSSL"
+                " installed. See the Sage README for more information.")
 else:
     ssl_context = None
 
@@ -465,6 +469,14 @@ def notebook_run(self,
              open_viewer = None,
              address = None,
              ):
+
+    # Check whether pyOpenSSL is installed or not (see Sage trac #13385)
+    if secure:
+        try:
+            import OpenSSL
+        except ImportError:
+            raise RuntimeError("HTTPS cannot be used without pyOpenSSL"
+                    " installed. See the Sage README for more information.")
 
     # Turn it into a full path for later conversion to a file URL
     if upload:

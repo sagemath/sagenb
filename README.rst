@@ -38,16 +38,15 @@ If you are interested in developing the Sage Notebook, run
 SSL support
 -----------
 
-SSL is required for OpenID and accessing HTTPS from the Sage shell. Your
-Sage install should usually support SSL out of the box, but if you
-compiled it from source on a machine without the libssl headers, it may
-not. You can check for SSL support by running ``import ssl`` in the Sage
-console. If you get an error, then do the following.
-
-1. Install the libssl headers on your system. On Debian-based systems,
-   one way to do this is to run ``sudo apt-get install libssl-dev``.
-2. Recompile Sage's internal Python interpreter by running ``sage -f
-   python``.
+SSL is required for OpenID and HTTPS support in the notebook. OpenID
+only requires Python's built-in SSL support, whereas HTTPS support also
+requires the Python library pyOpenSSL. In order to ensure that these are
+installed, please follow the instructions in Sage's own README file
+(look for the section about SSL). If you don't intend to use OpenID for
+user logins, or HTTPS for connecting to the server, you can safely
+ignore this section. In particular, if you're installing a copy of Sage
+for your personal use only, you probably won't need OpenID or HTTPS
+support in the notebook.
 
 
 
