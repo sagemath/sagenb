@@ -105,7 +105,7 @@ sagenb.worksheetapp.cell = function(id) {
 			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + _this.id + "\">" +
 									"<div class=\"input_cell\"></div>" +
 									"<div class=\"evaluate_button_container\">" + 
-										"<a href=\"#\" class=\"btn evaluate_button\">" + gettext("Evaluate") + "</a>" +
+										"<a class=\"btn evaluate_button\">" + gettext("Evaluate") + "</a>" +
 									"</div>" +
 								"</div> <!-- /cell -->");
 			
