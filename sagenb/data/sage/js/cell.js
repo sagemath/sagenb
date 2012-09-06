@@ -259,7 +259,19 @@ sagenb.worksheetapp.cell = function(id) {
 				tinyMCE.init({
 					mode: "exact",
 					elements: ("text_cell_textarea_" + _this.id),
-					theme: "advanced",
+					
+					plugins: "advlist,inlinepopups,lists,media,paste,searchreplace,table,autolink,",
+
+					theme : "advanced",
+					theme_advanced_toolbar_location : "top",
+					theme_advanced_toolbar_align : "left",
+					theme_advanced_statusbar_location : "bottom",
+					theme_advanced_buttons1 : "formatselect,fontselect,fontsizeselect,bold,italic,underline,strikethrough,forecolor,backcolor,|,bullist,numlist,|,undo,redo,search,pastetext,pasteword",
+					theme_advanced_buttons2 : "justifyleft,justifycenter,justifyright,justifyfull,outdent,indent,|,charmap,|,table,tablecontrols,|,code,|,link,image,media,unlink",
+					theme_advanced_buttons3 : "",
+					theme_advanced_resizing : true,
+					theme_advanced_show_current_color: true,
+					theme_advanced_default_background_color : "#FFCC99",
 					
 					width: "100%",
 					height: "300"
