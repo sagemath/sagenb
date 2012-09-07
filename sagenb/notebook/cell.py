@@ -2481,18 +2481,18 @@ def format_exception(s0, ncols):
     # sage.server.support.help command.
     if TRACEBACK not in s or 'notracebacks' in s:
         return s0
-    if ncols > 0:
-        s = s.strip()
-        w = s.splitlines()
-        for k in range(len(w)):
-            if TRACEBACK in w[k]:
-                break
-        s = ('\n'.join(w[:k]) +
-             '\nTraceback (click to the left of this block for traceback)' +
-             '\n...\n' + w[-1])
-    else:
-        s = s.replace("exec compile(ur'", "")
-        s = s.replace("' + '\\n', '', 'single')", "")
+    #if ncols > 0:
+    #    s = s.strip()
+    #    w = s.splitlines()
+    #    for k in range(len(w)):
+    #        if TRACEBACK in w[k]:
+    #            break
+    #    s = ('\n'.join(w[:k]) +
+    #         '\nTraceback (click to the left of this block for traceback)' +
+    #         '\n...\n' + w[-1])
+    #else:
+    s = s.replace("exec compile(ur'", "")
+    s = s.replace("' + '\\n', '', 'single')", "")
     return s
 
 def number_of_rows(txt, ncols):
