@@ -35,7 +35,6 @@ install_requires = [ 'twisted>=11.0.0'
                    , 'flask-autoindex'
                    , 'babel'
                    , 'flask-babel'
-                   , 'pyOpenSSL<=0.12'
                    , 'webassets'
                    ]
 
@@ -44,7 +43,7 @@ if __name__ == '__main__':
         distutils.log.set_threshold(distutils.log.DEBUG)
 
     code = setup(name = 'sagenb',
-          version     = '0.10.1',
+          version     = '0.10.2',
           description = 'The Sage Notebook',
           license     = 'GNU General Public License (GPL) v2+',
           author      = 'William Stein et al.',

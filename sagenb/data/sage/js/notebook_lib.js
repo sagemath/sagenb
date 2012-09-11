@@ -3704,7 +3704,6 @@ function set_output_text(id, status, output_text, output_text_wrapped,
     if (status === 'd' && introspect_html === '' && is_interacting_cell(id)) {
         // This is the first time that the underlying Python interact
         // function (i.e., interact.recompute) is actually called!
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
         return 'trigger_interact';
     }
 
