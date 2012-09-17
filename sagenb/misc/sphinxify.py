@@ -34,16 +34,29 @@ def is_sphinx_markup(docstring):
     """
     Returns whether a string that contains Sphinx-style ReST markup.
 
+    This always returns True! For Sage docstrings, we always want to
+    assume that docstrings ReST markup; otherwise, text and symbols
+    (for example backslashes) in docstrings will be treated
+    inconsistently depending on whether the docstring is treated as
+    Sphinx markup.
+
     INPUT:
 
     - ``docstring`` - string to test for markup
 
     OUTPUT:
 
-    - boolean
+    - boolean - always returns True
+
+    EXAMPLES::
+
+        sage: from sagenb.misc.sphinxify import is_sphinx_markup
+        sage: is_sphinx_markup('')
+        True
+        sage: is_sphinx_markup('.. note::')
+        True
     """
-    # this could be made much more clever
-    return ("`" in docstring or "::" in docstring)
+    return True
 
 
 def sphinxify(docstring, format='html'):
@@ -91,9 +104,6 @@ def sphinxify(docstring, format='html'):
         suffix = '.txt'
     output_name = base_name + suffix
 
-    # This is needed for MathJax to work.
-    docstring = docstring.replace('\\\\', '\\')
-
     filed = open(rst_name, 'w')
     filed.write(docstring)
     filed.close()
@@ -133,6 +143,8 @@ def sphinxify(docstring, format='html'):
         output = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
                           'src="/doc/static/reference/media/\\2"',
                           output)
+        # Remove spurious \(, \), \[, \].
+        output = output.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
     else:
         print "BUG -- Sphinx error"
         if format == 'html':
