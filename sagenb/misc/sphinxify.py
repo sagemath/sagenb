@@ -30,35 +30,6 @@ except ImportError:
     SAGE_DOC = ''  # used to be None
 
 
-def is_sphinx_markup(docstring):
-    """
-    Returns whether a string that contains Sphinx-style ReST markup.
-
-    This always returns True! For Sage docstrings, we always want to
-    assume that docstrings ReST markup; otherwise, text and symbols
-    (for example backslashes) in docstrings will be treated
-    inconsistently depending on whether the docstring is treated as
-    Sphinx markup.
-
-    INPUT:
-
-    - ``docstring`` - string to test for markup
-
-    OUTPUT:
-
-    - boolean - always returns True
-
-    EXAMPLES::
-
-        sage: from sagenb.misc.sphinxify import is_sphinx_markup
-        sage: is_sphinx_markup('')
-        True
-        sage: is_sphinx_markup('.. note::')
-        True
-    """
-    return True
-
-
 def sphinxify(docstring, format='html'):
     r"""
     Runs Sphinx on a ``docstring``, and outputs the processed
