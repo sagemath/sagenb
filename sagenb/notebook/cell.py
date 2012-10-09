@@ -1866,7 +1866,7 @@ class Cell(Cell_generic):
 
         # If there is an error in the output, specially format it.
         if not self.is_interactive_cell():
-            s = format_exception(format_html(s), ncols)
+            s = format_exception(s, ncols)
 
         # Everything not wrapped in <html> ... </html> should be
         # escaped and word wrapped.
