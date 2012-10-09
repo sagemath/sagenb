@@ -56,7 +56,9 @@ try:
             if el.tag=='script' and el.get('type')=='math/tex' and not el.get('src'):
                 return True
             return super(SageCleaner, self).allow_element(el)
-    html_cleaner = SageCleaner(page_structure=False, remove_tags=('head', 'title'), style=True, add_nofollow=True)
+
+    html_cleaner = SageCleaner(style=True, add_nofollow=True,
+                               remove_tags=('base', 'basefont', 'bdo', 'body', 'isindex', 'noscript'))
     def clean_html(text):
         try:
             return html_cleaner.clean_html(text)
