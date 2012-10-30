@@ -287,7 +287,7 @@ def forgot_pass():
         return current_app.message(msg, url_for('forgot_pass'))
 
     try:
-        user = g.notebook.user(request.values[username])
+        user = g.notebook.user(username)
     except KeyError:
         return error('Username is invalid.')
 
