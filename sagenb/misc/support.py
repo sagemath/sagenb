@@ -30,15 +30,13 @@ except ImportError:
         return s
 
 try:
-    from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
+    from sagenb.misc.sphinxify import sphinxify
 except ImportError, msg:
     print msg
     print "Sphinx docstrings not available."
     # Don't do any Sphinxifying if sphinx's dependencies aren't around
     def sphinxify(s):
         return s
-    def is_sphinx_markup(s):
-        return False
 
 ######################################################################
 # Initialization
@@ -278,16 +276,10 @@ def docstring(obj_name, globs, system='sage'):
 
 def html_markup(s):
     try:
-        from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
+        from sagenb.misc.sphinxify import sphinxify
+        return sphinxify(s)
     except ImportError, msg:
-        # sphinx not available
-        def is_sphinx_markup(s): return False
-
-    if is_sphinx_markup(s):
-        try:
-            return sphinxify(s)
-        except:
-            pass
+        pass
     # Not in ReST format, so use docutils
     # to process the preamble ("**File:**" etc.)  and put
     # everything else in a <pre> block.
