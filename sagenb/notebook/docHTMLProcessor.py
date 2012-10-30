@@ -153,7 +153,7 @@ class genericHTMLProcessor(SGMLParser):
         self.feed(doc_in) #SGMLParser call
         self.close()     #SGMLParser call
         self.hand_off_temp_pieces('to_doc_pieces')
-        return self.all_pieces
+        return self.all_pieces.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
 
 
     def hand_off_temp_pieces(self, piece_type):
