@@ -557,7 +557,7 @@ def notebook_run(self,
 
     if reset:
         passwd = get_admin_passwd()
-        if reset:
+        if nb.user_manager().user_exists('admin'):
             admin = nb.user_manager().user('admin')
             admin.set_password(passwd)
             print "Password changed for user 'admin'."
