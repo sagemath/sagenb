@@ -12,7 +12,7 @@ admin = Module('flask_version.admin')
 @with_lock
 def users(reset=None):
     template_dict = {}
-    if reset is not None:
+    if reset:
         from random import choice
         import string
         chara = string.letters + string.digits
@@ -47,7 +47,7 @@ def suspend_user(user):
 @admin_required
 @with_lock
 def del_user(user):
-    if not user == 'admin':
+    if user != 'admin':
         try:
             g.notebook.user_manager().delete_user(user)
         except KeyError:
