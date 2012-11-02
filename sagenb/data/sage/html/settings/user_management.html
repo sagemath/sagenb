@@ -21,7 +21,6 @@
       {% if u.username() != 'admin' %}
       <tr>
          <td><a href="/home/{{ u }}/">{{ u }}</a></td>
-         <td>{% if not user.is_external() %}<a href="/users/?reset={{ user }}">{{ gettext('Reset') }}</a>{% endif %}</td>
          <td>
             {% if not u.is_external() %}
             <a href="{{ url_for('users', reset=u.username()) }}">{{ gettext('Reset') }}</a>
