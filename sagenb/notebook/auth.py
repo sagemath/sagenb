@@ -158,7 +158,7 @@ class LdapAuth(AuthMethod):
     def get_attrib(self, username, attrib):
         # 'translate' attribute names used in ExtAuthUserManager to their ldap equivalents
         # "email" is "mail"
-        if attrib == 'email'
+        if attrib == 'email':
             attrib = 'mail'
 
         dn, attribs = self._get_ldapuser(username, [attrib])
