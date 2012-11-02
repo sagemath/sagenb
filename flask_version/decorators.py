@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import Flask, url_for, render_template, request, session, redirect, g
+from flask import Flask, url_for, render_template, request, session, redirect, g, current_app
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
@@ -27,7 +27,7 @@ def admin_required(f):
     @wraps(f)
     def wrapper(*args, **kwds):
         if not g.notebook.user_manager().user_is_admin(g.username):
-            app.message(_("You do not have permission to access this location"))
+            return current_app.message(_("You do not have permission to access this location"), cont=url_for('base.index'))
         return f(*args, **kwds)
 
     return wrapper
