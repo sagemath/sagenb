@@ -277,7 +277,15 @@ class User(object):
             sage: User('B', account_type='user').is_admin()
             False
         """
-        return self._account_type == 'admin'
+        return self.account_type() == 'admin'
+
+    def grant_admin(self):
+        if not self.is_guest():
+            self._account_type = 'admin'
+
+    def revoke_admin(self):
+        if not self.is_guest():
+            self._account_type = 'user'
 
     def is_guest(self):
         """
@@ -289,10 +297,10 @@ class User(object):
             sage: User('B', account_type='user').is_guest()
             False
         """
-        return self._account_type == 'guest'
+        return self.account_type() == 'guest'
 
     def is_external(self):
-        return self._external_auth is not None
+        return self.external_auth() is not None
 
     def external_auth(self):
         return self._external_auth
