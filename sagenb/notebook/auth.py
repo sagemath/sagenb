@@ -68,13 +68,13 @@ class LdapAuth(AuthMethod):
         from ldap.sasl import gssapi
         conn = ldap.initialize(self._conf['ldap_uri'])
 
-        if self._conf['ldap_gssapi']:
-            token = gssapi()
-            conn.sasl_interactive_bind_s('', token)
-        else:
-            conn.simple_bind_s(self._conf['ldap_binddn'], self._conf['ldap_bindpw'])
-
         try:
+            if self._conf['ldap_gssapi']:
+                token = gssapi()
+                conn.sasl_interactive_bind_s('', token)
+            else:
+                conn.simple_bind_s(self._conf['ldap_binddn'], self._conf['ldap_bindpw'])
+
             result = conn.search_ext_s(
                     self._conf['ldap_basedn'],
                     ldap.SCOPE_SUBTREE,
