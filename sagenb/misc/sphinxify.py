@@ -30,22 +30,6 @@ except ImportError:
     SAGE_DOC = ''  # used to be None
 
 
-def is_sphinx_markup(docstring):
-    """
-    Returns whether a string that contains Sphinx-style ReST markup.
-
-    INPUT:
-
-    - ``docstring`` - string to test for markup
-
-    OUTPUT:
-
-    - boolean
-    """
-    # this could be made much more clever
-    return ("`" in docstring or "::" in docstring)
-
-
 def sphinxify(docstring, format='html'):
     r"""
     Runs Sphinx on a ``docstring``, and outputs the processed
@@ -91,9 +75,6 @@ def sphinxify(docstring, format='html'):
         suffix = '.txt'
     output_name = base_name + suffix
 
-    # This is needed for MathJax to work.
-    docstring = docstring.replace('\\\\', '\\')
-
     filed = open(rst_name, 'w')
     filed.write(docstring)
     filed.close()
@@ -133,6 +114,8 @@ def sphinxify(docstring, format='html'):
         output = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
                           'src="/doc/static/reference/media/\\2"',
                           output)
+        # Remove spurious \(, \), \[, \].
+        output = output.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
     else:
         print "BUG -- Sphinx error"
         if format == 'html':
