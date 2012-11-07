@@ -4,10 +4,10 @@
 	{{ super() }}
 
 	<!-- CodeMirror -->
-	<link rel="stylesheet" href="/data/CodeMirror-2.32/lib/codemirror.css">
+	<link rel="stylesheet" href="/data/CodeMirror-2.35/lib/codemirror.css">
 	
 	<!-- simple hinting -->
-	<link rel="stylesheet" href="/data/CodeMirror-2.32/lib/util/simple-hint.css">
+	<link rel="stylesheet" href="/data/CodeMirror-2.35/lib/util/simple-hint.css">
 {% endblock head %}
 
 {% block navbar %}
@@ -105,16 +105,16 @@
 {% block extra_javascript %}
 	{% assets filters="rjsmin", output="webassets_generated/worksheet.js",
 		"sage/js/load_mathjax.js",
-		"CodeMirror-2.32/lib/codemirror.js",
-		"CodeMirror-2.32/lib/util/simple-hint.js",
-		"CodeMirror-2.32/mode/python/python.js",
-		"CodeMirror-2.32/mode/stex/stex.js",
-		"CodeMirror-2.32/mode/r/r.js",
-		"CodeMirror-2.32/mode/shell/shell.js",
-		"CodeMirror-2.32/mode/xml/xml.js",
-		"CodeMirror-2.32/mode/javascript/javascript.js",
-		"CodeMirror-2.32/mode/css/css.js",
-		"CodeMirror-2.32/mode/htmlmixed/htmlmixed.js",
+		"CodeMirror-2.35/lib/codemirror.js",
+		"CodeMirror-2.35/lib/util/simple-hint.js",
+		"CodeMirror-2.35/mode/python/python.js",
+		"CodeMirror-2.35/mode/stex/stex.js",
+		"CodeMirror-2.35/mode/r/r.js",
+		"CodeMirror-2.35/mode/shell/shell.js",
+		"CodeMirror-2.35/mode/xml/xml.js",
+		"CodeMirror-2.35/mode/javascript/javascript.js",
+		"CodeMirror-2.35/mode/css/css.js",
+		"CodeMirror-2.35/mode/htmlmixed/htmlmixed.js",
 		"sage3d/sage3d.js",
 		"sage/js/jmol.js",
 		"sage/js/worksheet.js",
