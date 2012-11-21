@@ -19,7 +19,7 @@ required_packages = [ 'zope.interface'
                     , 'Flask-Silk>=0.1.1'
                     , 'Flask-AutoIndex>=0.4.0'
                     , 'Flask-Babel>=0.8'
-                    , 'Flask-OpenID>=1.0.1'
+                    , 'Flask-OpenID==1.0.1' # version 1.1 changes the import interface from 'import flaskext.openid' to 'import flask_openid'
                     , 'webassets>=0.7.1'
                     ]
 

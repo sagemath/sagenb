@@ -31,7 +31,7 @@ def all_files(dir, prefix):
 
 install_requires = [ 'twisted>=11.0.0'
                    , 'flask'
-                   , 'flask-openid'
+                   , 'flask-openid==1.0.1'
                    , 'flask-autoindex'
                    , 'babel'
                    , 'flask-babel'
