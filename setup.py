@@ -43,7 +43,7 @@ if __name__ == '__main__':
         distutils.log.set_threshold(distutils.log.DEBUG)
 
     code = setup(name = 'sagenb',
-          version     = '0.10.2',
+          version     = '0.10.3',
           description = 'The Sage Notebook',
           license     = 'GNU General Public License (GPL) v2+',
           author      = 'William Stein et al.',
