@@ -83,7 +83,7 @@ class LdapAuth(AuthMethod):
                     timeout=self._conf['ldap_timeout'],
                     sizelimit=self._conf['ldap_sizelimit']
                     )
-        except LDAPError, e:
+        except ldap.LDAPError, e:
             print 'LDAP Error: %s' % str(e)
             return []
         finally:
