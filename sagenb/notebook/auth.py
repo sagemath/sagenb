@@ -48,12 +48,16 @@ class LdapAuth(AuthMethod):
         def wrap(f):
             try:
                 from ldap import __version__ as ldap_version
+
                 def wrapped_f(self, *args, **kwargs):
                     return f(self, *args, **kwargs)
+
             except ImportError:
+
                 def wrapped_f(self, *args, **kwargs):
                     self._conf['auth_ldap'] = False
                     return retval
+
             return wrapped_f
         return wrap
 
@@ -73,16 +77,16 @@ class LdapAuth(AuthMethod):
                 token = gssapi()
                 conn.sasl_interactive_bind_s('', token)
             else:
-                conn.simple_bind_s(self._conf['ldap_binddn'], self._conf['ldap_bindpw'])
+                conn.simple_bind_s(
+                    self._conf['ldap_binddn'], self._conf['ldap_bindpw'])
 
             result = conn.search_ext_s(
-                    self._conf['ldap_basedn'],
-                    ldap.SCOPE_SUBTREE,
-                    filterstr=query,
-                    attrlist=attrlist,
-                    timeout=self._conf['ldap_timeout'],
-                    sizelimit=self._conf['ldap_sizelimit']
-                    )
+                self._conf['ldap_basedn'],
+                ldap.SCOPE_SUBTREE,
+                filterstr=query,
+                attrlist=attrlist,
+                timeout=self._conf['ldap_timeout'],
+                sizelimit=self._conf['ldap_sizelimit'])
         except ldap.LDAPError, e:
             print 'LDAP Error: %s' % str(e)
             return []
@@ -98,7 +102,10 @@ class LdapAuth(AuthMethod):
         """
         from ldap.filter import filter_format
 
-        result = self._ldap_search(filter_format('(%s=%s)', [self._conf['ldap_username_attrib'], username]), attrlist)
+        query = filter_format(
+            '(%s=%s)', (self._conf['ldap_username_attrib'], username))
+
+        result = self._ldap_search(query, attrlist)
 
         # only allow one unique result
         # (len(result) will probably always be 0 or 1)
@@ -112,7 +119,8 @@ class LdapAuth(AuthMethod):
         lookup_attribs = self._conf['ldap_lookup_attribs']
 
         # build ldap OR query
-        query = '(|%s)' % ''.join(filter_format('(%s=*%s*)', [a, search]) for a in lookup_attribs)
+        query = '(|%s)' % ''.join(
+            filter_format('(%s=*%s*)', [a, search]) for a in lookup_attribs)
 
         result = self._ldap_search(query, attrlist=[str(uname_attrib)])
 
@@ -127,8 +135,8 @@ class LdapAuth(AuthMethod):
 
     @_require_ldap(False)
     def check_user(self, username):
-        # LDAP is NOT case sensitive while sage is, so only lowercase names are allowed
-        if username != username.lower():
+        # LDAP is NOT case sensitive while sage is, so only allow lowercase
+        if not username.islower():
             return False
         dn, attribs = self._get_ldapuser(username)
         return dn is not None
@@ -156,7 +164,9 @@ class LdapAuth(AuthMethod):
 
     @_require_ldap('')
     def get_attrib(self, username, attrib):
-        # 'translate' attribute names used in ExtAuthUserManager to their ldap equivalents
+        # 'translate' attribute names used in ExtAuthUserManager
+        # to their ldap equivalents
+
         # "email" is "mail"
         if attrib == 'email':
             attrib = 'mail'
