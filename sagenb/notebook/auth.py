@@ -37,27 +37,23 @@ class LdapAuth(AuthMethod):
     search string
     """
 
-    def _require_ldap(retval):
+    def _require_ldap(default_return):
         """
         function decorator to
             - disable LDAP auth
-            - return the decorator argument "retval" instead of calling the
-              actual function
+            - return a "default" value (decorator argument)
         if importing ldap fails
         """
         def wrap(f):
-            try:
-                from ldap import __version__ as ldap_version
-
-                def wrapped_f(self, *args, **kwargs):
-                    return f(self, *args, **kwargs)
-
-            except ImportError:
-
-                def wrapped_f(self, *args, **kwargs):
+            def wrapped_f(self, *args, **kwargs):
+                try:
+                    from ldap import __version__ as ldap_version
+                except ImportError:
+                    print "cannot 'import ldap', disabling LDAP auth"
                     self._conf['auth_ldap'] = False
-                    return retval
-
+                    return default_return
+                else:
+                    return f(self, *args, **kwargs)
             return wrapped_f
         return wrap
 
