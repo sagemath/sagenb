@@ -24,11 +24,11 @@ server/API.
 
 Start the notebook server.::
 
-    sage: from sage.server.misc import find_next_available_port
+    sage: from sagenb.misc.misc import find_next_available_port
     sage: port = find_next_available_port(9000, verbose=False)
     sage: from sagenb.notebook.notebook_object import test_notebook
     sage: passwd = str(randint(1,1<<128))
-    sage: nb = test_notebook(passwd, secure=False, address='localhost', port=port, verbose=True) #doctest: +ELLIPSIS 
+    sage: nb = test_notebook(passwd, secure=False, address='localhost', port=port, verbose=True)
     ...
     Notebook started.
 
@@ -160,7 +160,7 @@ def simple_jsonize(data):
     
     EXAMPLES::
 
-        sage: from sage.server.simple.twist import simple_jsonize
+        sage: from sagenb.simple.twist import simple_jsonize
         sage: print simple_jsonize({'a': [1,2,3], 'b': "yep"})
         { "a": [1, 2, 3], "b": "yep" }
     """
@@ -195,7 +195,7 @@ class SessionObject:
         
         TEST::
 
-            sage: from sage.server.simple.twist import SessionObject
+            sage: from sagenb.simple.twist import SessionObject
             sage: s = SessionObject(id=1, username=None, worksheet=None)
             sage: s.get_status()
             {'session': 1}
