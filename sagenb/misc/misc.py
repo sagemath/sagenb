@@ -86,15 +86,15 @@ def print_open_msg(address, port, secure=False, path=""):
     print '*'*n
 
 
-def find_next_available_port(host, start, max_tries=100, verbose=False):
+def find_next_available_port(interface, start, max_tries=100, verbose=False):
     """
-    Find the next available port on a given host, that is, a port for
+    Find the next available port at a given interface, that is, a port for
     which a current connection attempt returns a 'Connection refused'
     error message.  If no port is found, raise a RuntimeError exception.
 
     INPUT:
 
-    - ``host`` - address to check
+    - ``interface`` - address to check
 
     - ``start`` - an int; the starting port number for the scan
 
@@ -118,7 +118,7 @@ def find_next_available_port(host, start, max_tries=100, verbose=False):
         try:
             alarm(1)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((host, port))
+            s.connect((interface, port))
         except socket.error, msg:
             if msg[1] == 'Connection refused':
                 if verbose: print "Using port = %s"%port
