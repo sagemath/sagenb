@@ -58,6 +58,7 @@ try:
                ('sh', False),
                ('singular', False),
                ('axiom', True),
+               ('fricas', True),
                ('kash', True),
                ('macaulay2', True),
                ('magma', True),

@@ -8,7 +8,8 @@ need not be run independently.
 # lower than it in the list (or not in the list).
 #
 # TODO: Automatically generate this (using distribute internals ?)
-required_packages = [ 'twisted>=11.0.0'
+required_packages = [ 'zope.interface'
+                    , 'twisted>=11.0.0'
                     , 'pytz>=2011n'
                     , 'Babel>=0.9.6'
                     , 'Werkzeug>=0.8.2'
