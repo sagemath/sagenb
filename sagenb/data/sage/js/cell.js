@@ -99,7 +99,7 @@ sagenb.worksheetapp.cell = function(id) {
 	//////// RENDER //////////
 	_this.render = function(container) {
 		if(_this.is_evaluate_cell) {
-			// its an evaluate cell
+			// it's an evaluate cell
 		
 			// render into the container
 			$(container).html("<div class=\"cell evaluate_cell\" id=\"cell_" + _this.id + "\">" +
@@ -234,7 +234,7 @@ sagenb.worksheetapp.cell = function(id) {
 			_this.render_output();
 		}
 		else {
-			// its a text cell
+			// it's a text cell
 			if(_this.worksheet.published_mode) {
 				$(container).html("<div class=\"cell text_cell\" id=\"cell_" + _this.id + "\">" + 
 										"<div class=\"view_text\">" + _this.input + "</div>" + 
