@@ -51,9 +51,7 @@ sagenb.init = function() {
 	$("#help").click(sagenb.help);
 	$(document).bind("keydown", "F1", function(evt) { sagenb.help(); return false; });
 	
-	sagenb.spinner = new Spinner({
-		hwaccel: true
-	});
+	sagenb.spinner = new Spinner();
 	
 	//// IMPORT DIALOG ////
 	$("#import_modal .btn-primary").click(function(e) {
