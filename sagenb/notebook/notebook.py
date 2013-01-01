@@ -1415,7 +1415,7 @@ class Notebook(object):
                     pass
             print 'Done upgrading to model version 1'
             self.conf()['model_version'] = 1
-        
+
 ####################################################################
 
 # TODO

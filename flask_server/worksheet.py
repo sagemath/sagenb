@@ -518,28 +518,32 @@ def worksheet_introspect(worksheet):
 ########################################################
 # Edit the entire worksheet
 ########################################################
-# TODO take out or implement
 @worksheet_command('edit')
 def worksheet_edit(worksheet):
     """
     Return a window that allows the user to edit the text of the
     worksheet with the given filename.
     """
-    return g.notebook.html_edit_window(worksheet, g.username)
-
+    # return g.notebook.html_edit_window(worksheet, g.username)
+    pass
 
 ########################################################
 # Plain text log view of worksheet
 ########################################################
-# TODO take out or implement
 @worksheet_command('text')
 def worksheet_text(worksheet):
     """
     Return a window that allows the user to edit the text of the
     worksheet with the given filename.
     """
-    return g.notebook.html_plain_text_window(worksheet, g.username)
+    from cgi import escape
+    plain_text = worksheet.plain_text(prompts=True, banner=False)
+    plain_text = escape(plain_text).strip()
 
+    return render_template(os.path.join("html", "worksheet_text.html"),
+                           username = g.username,
+                           plain_text = plain_text)
+    
 ########################################################
 # Copy a worksheet
 ########################################################

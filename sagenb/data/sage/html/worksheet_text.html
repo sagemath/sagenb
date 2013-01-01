@@ -1,0 +1,32 @@
+{% extends 'html/base.html' %}
+
+{% block head %}
+	{{ super() }}
+
+	<!-- CodeMirror -->
+	<link rel="stylesheet" href="/data/CodeMirror-2.32/lib/codemirror.css">
+	
+	<!-- simple hinting -->
+	<link rel="stylesheet" href="/data/CodeMirror-2.32/lib/util/simple-hint.css">
+{% endblock head %}
+
+{% block navbar %}
+	{% if not published_mode %}
+		<ul class="nav">
+			<li><a href=".">{{ gettext("Back to worksheet") }}</a></li>
+		</ul>
+	{% endif %}
+{% endblock navbar %}
+
+{% block page %}
+	<pre id="worksheet_text">{{ plain_text }}</pre>
+{% endblock page %}
+
+{% block extra_javascript %}
+	<script type="text/javascript">
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
+		});
+	</script>
+{% endblock extra_javascript %}

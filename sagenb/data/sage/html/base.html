@@ -81,7 +81,7 @@
 		<!-- Translations. This has Jinja templating in it so it can't be bundled -->
 		<script type="text/javascript" src="/data/sage/js/localization.js"></script>
 
-		{# TODO make this only when not in debug mode #}
+		{# TODO disable minification when in debug mode #}
 		{% assets filters="rjsmin", output="webassets_generated/base.js",
 			"jquery/jquery-1.7.2.min.js",
 			"bootstrap-2.0.4/js/bootstrap.min.js",
