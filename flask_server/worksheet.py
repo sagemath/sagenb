@@ -524,8 +524,9 @@ def worksheet_edit(worksheet):
     Return a window that allows the user to edit the text of the
     worksheet with the given filename.
     """
-    # return g.notebook.html_edit_window(worksheet, g.username)
-    pass
+    return render_template(os.path.join("html", "worksheet_edit.html"),
+                           worksheet = worksheet,
+                           username = g.username)
 
 ########################################################
 # Plain text log view of worksheet
@@ -543,7 +544,7 @@ def worksheet_text(worksheet):
     return render_template(os.path.join("html", "worksheet_text.html"),
                            username = g.username,
                            plain_text = plain_text)
-    
+
 ########################################################
 # Copy a worksheet
 ########################################################
