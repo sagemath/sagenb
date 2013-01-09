@@ -116,11 +116,12 @@ body.single_cell_mode {
 		background-color: #ececea;
 
 		/* make cordemirror automatically resize the height */
-		.CodeMirror-scroll {
+		.CodeMirror {
 			height: auto;
-			overflow-y: auto;
+		}
+		.CodeMirror-scroll {
+			overflow-y: hidden;
 			overflow-x: auto;
-			width: 100%;
 			/*max-height: 350px;*/
 		}
 
