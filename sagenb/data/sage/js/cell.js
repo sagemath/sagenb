@@ -325,7 +325,7 @@ sagenb.worksheetapp.cell = function(id) {
 					theme_advanced_resizing : true,
 					theme_advanced_show_current_color: true,
 					theme_advanced_default_background_color : "#FFCC99",
-					
+
 					width: "100%",
 					height: "300"
 				});
