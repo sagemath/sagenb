@@ -129,7 +129,7 @@ footer {
 			<tbody>
 				<tr>
 					<td>{{ gettext('Cell System') }}</td>
-					<td>{{ gettext('Put <code>%gap</code>, <code>%singular</code>, etc. as the first line of cell input to evaluate using that system. In addition, using <code>%sh</code> will evaluate a cell as a shell script.') }}</td>
+					<td>{{ gettext('Put <code>%%gap</code>, <code>%%singular</code>, etc. as the first line of cell input to evaluate using that system. In addition, using <code>%%sh</code> will evaluate a cell as a shell script.') }}</td>
 				</tr>
 				<tr>
 					<td>{{ gettext('Interaction') }}</td>
@@ -137,11 +137,11 @@ footer {
 				</tr>
 				<tr>
 					<td>{{ gettext('Auto-Evaluation') }}</td>
-					<td>{{ gettext('Cells with <code>%auto</code> in the input will be automatically evaluated when the worksheet is loaded.') }}</td>
+					<td>{{ gettext('Cells with <code>%%auto</code> in the input will be automatically evaluated when the worksheet is loaded.') }}</td>
 				</tr>
 				<tr>
 					<td>{{ gettext('Timing') }}</td>
-					<td>{{ gettext('Cells with <code>%time</code> will time evaluation.') }}</td>
+					<td>{{ gettext('Cells with <code>%%time</code> will time evaluation.') }}</td>
 				</tr>
 			</tbody>
 		</table>
@@ -153,7 +153,7 @@ footer {
 			<tbody>
 				<tr>
 					<td>{{ gettext('Input Rules') }}</td>
-					<td>{{ gettext('Code is evaluated by <code>exec</code>'ing (after preparsing). Only the output of the last line of the cell is implicitly printed. If any line starts with <code>sage:</code> or <code>&gt;&gt;&gt;</code> the entire block is assumed to contain text and examples, so only lines that begin with a prompt are executed. Thus you can paste in complete examples from the docs without any editing, and you can write input cells that contains non-evaluated plain text mixed with examples by starting the block with <code>&gt;&gt;&gt;</code> or including an example.') }}</td>
+					<td>{{ gettext('Code is evaluated by <code>exec</code>\'ing (after preparsing). Only the output of the last line of the cell is implicitly printed. If any line starts with <code>sage:</code> or <code>&gt;&gt;&gt;</code> the entire block is assumed to contain text and examples, so only lines that begin with a prompt are executed. Thus you can paste in complete examples from the docs without any editing, and you can write input cells that contains non-evaluated plain text mixed with examples by starting the block with <code>&gt;&gt;&gt;</code> or including an example.') }}</td>
 				</tr>
 				<tr>
 					<td>{{ gettext('Log') }}</td>
@@ -185,11 +185,11 @@ footer {
 				</tr>
 				<tr>
 					<td>{{ gettext('DIR Variable') }}</td>
-					<td>{{ gettext('The variable DIR contains the directory from which you started the Sage notebook. For example, to open a file in that directory, do <code>open(DIR+'filename')</code>.') }}</td>
+					<td>{{ gettext('The variable DIR contains the directory from which you started the Sage notebook. For example, to open a file in that directory, do <code>open(DIR+\'filename\')</code>.') }}</td>
 				</tr>
 				<tr>
 					<td>{{ gettext('DATA Variable') }}</td>
-					<td>{{ gettext('Use the Data menu to upload images and other files, and create new files that can be shared between worksheets. The DATA variable contains the path to the data files. For example, to open a file in that directory, do <code>open(DATA+'filename')</code>. If foo.sage is a Sage file that you uploaded, type <code>load foo.sage</code>; if foo.py is a Python file, you can import it by typing <code>import foo</code>.') }}</td>
+					<td>{{ gettext('Use the Data menu to upload images and other files, and create new files that can be shared between worksheets. The DATA variable contains the path to the data files. For example, to open a file in that directory, do <code>open(DATA+\'filename\')</code>. If foo.sage is a Sage file that you uploaded, type <code>load foo.sage</code>; if foo.py is a Python file, you can import it by typing <code>import foo</code>.') }}</td>
 				</tr>
 				<tr>
 					<td>{{ gettext('Loading and Saving Objects') }}</td>
@@ -197,7 +197,7 @@ footer {
 				</tr>
 				<tr>
 					<td>{{ gettext('Loading and Saving Sessions') }}</td>
-					<td>{{ gettext('Use <code>save_session('name')</code> to save all variables to an object. Use <code>load_session('name')</code> to merge in all variables from a saved session.') }}</td>
+					<td>{{ gettext('Use <code>save_session(\'name\')</code> to save all variables to an object. Use <code>load_session(\'name\')</code> to merge in all variables from a saved session.') }}</td>
 				</tr>
 			</tbody>
 		</table>
