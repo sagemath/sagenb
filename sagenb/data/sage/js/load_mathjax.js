@@ -19,7 +19,7 @@
 	} else {
 		// we aren't running localhost
 		doLoad("http://cdn.mathjax.org/mathjax/latest/MathJax.js" + mathjax_config);
-		if(!MathJax) {
+		if(typeof MathJax === undefined) {
 			// CDN failed, load from notebook server
 			doLoad("/data/mathjax-MathJax-07669ac/MathJax.js" + mathjax_config);
 		}
