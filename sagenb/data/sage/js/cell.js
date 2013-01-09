@@ -26,6 +26,26 @@ sagenb.worksheetapp.cell = function(id) {
 	_this.output_check_interval = 250;
 
 	
+	// HELPERS
+	function get_next_cell() {
+		var $nextcell = $("#cell_" + _this.id).parent().next().next().find(".cell");
+		if($nextcell.length > 0) {
+			// we're not the last cell
+			var nextcell_id = parseInt($nextcell.attr("id").substring(5));
+			return _this.worksheet.cells[nextcell_id];
+		}
+	}
+
+	function get_prev_cell() {
+		var $prevcell = $("#cell_" + _this.id).parent().prev().prev().find(".cell");
+		if($prevcell.length > 0) {
+			// we're not the last cell
+			var prevcell_id = parseInt($prevcell.attr("id").substring(5));
+			return _this.worksheet.cells[prevcell_id];
+		}
+	}	
+
+
 	///////////// UPDATING /////////////
 	_this.update = function(render_container, auto_evaluate) {
 		/* Update cell properties. Updates the codemirror mode (if necessary)
@@ -148,7 +168,35 @@ sagenb.worksheetapp.cell = function(id) {
 					throw CodeMirror.Pass;
 				}
 			};
+
+			extrakeys["Up"] = function(cm) {
+				var c = cm.getCursor();
+				if(c.line === 0) {
+					var prevcell = get_prev_cell();
+					if(prevcell) {
+						_this.cancel_introspect();
+
+						prevcell.focus();
+					}
+				} else {
+					throw CodeMirror.Pass;
+				}
+			};
 			
+			extrakeys["Down"] = function(cm) {
+				var c = cm.getCursor();
+				if(c.line === cm.getValue().split("\n").length - 1) {
+					var nextcell = get_next_cell();
+					if(nextcell) {
+						_this.cancel_introspect();
+
+						nextcell.focus();
+					}
+				} else {
+					throw CodeMirror.Pass;
+				}
+			};
+
 			extrakeys["Shift-Enter"] = function(cm) {
 				_this.evaluate();
 			};
@@ -910,14 +958,12 @@ sagenb.worksheetapp.cell = function(id) {
 	_this.continue_evaluating_all = function() {
 		if(_this.worksheet.published_mode) return;
 		if(_this.worksheet.is_evaluating_all) {
-			// go evaluate the next cell
-			var $nextcell = $("#cell_" + _this.id).parent().next().next().find(".cell");
-			
-			if($nextcell.length > 0) {
-				// we're not the last cell -> evaluate next
-				var nextcell_id = parseInt($nextcell.attr("id").substring(5));
-				
-				_this.worksheet.cells[nextcell_id].evaluate();
+			// get the next cell
+			var nextcell = get_next_cell();
+
+			if(nextcell) {
+				// evaluate
+				nextcell.evaluate();
 			} else {
 				// we're the last cell -> stop evaluating all
 				_this.worksheet.is_evaluating_all = false;
