@@ -97,9 +97,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	Therefore, the admin will run into errors. */
 	_this.rows = {};
 	
-	_this.refresh_interval_id = null;
-	_this.refresh_interval = 10 * 1000;
-	
 	_this.init = function() {
 		if(_this.published_mode) _this.show_published();
 		else _this.show_active();
@@ -175,7 +172,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	};
 	_this.upload_worksheet = function() {
 		if(_this.published_mode) return;
-		//
 	};
 	_this.download_all_active = function() {
 		if(_this.published_mode) return;
@@ -285,12 +281,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 					'<td colspan="4">' + gettext("Nothing here!") + '</td>' + 
 				'</tr>');
 			}
-			
-			// Set up refresh_interval
-			clearInterval(_this.refresh_interval_id);
-			_this.refresh_interval_id = setInterval(function() {
-				_this.load(params);
-			}, _this.refresh_interval);
 
 			if($.isFunction(extra_callback)) {
 				extra_callback();
@@ -341,7 +331,6 @@ sagenb.worksheetlistapp.worksheet_list = function() {
 	_this.show_trash = function() {
 		_this.disable_actions_menu();
 		_this.load("type=trash", function() {
-			// TODO gettext
 			$(".title").text(gettext("Trash"));
 			document.title = gettext("Trash") + " - Sage";
 			$("#search_input").val("");
