@@ -391,7 +391,10 @@ def upload_worksheet():
                 zip_file = zipfile.ZipFile(filename)
                 for subfilename in zip_file.namelist():
                     prefix, extension = os.path.splitext(subfilename)
-                    if extension in ['.sws', '.html', '.txt', '.rst'] :
+                    # Mac zip files contain files like __MACOSX/._worksheet.sws
+                    # which are metadata files, so we skip those as
+                    # well as any other files we won't understand
+                    if extension in ['.sws', '.html', '.txt', '.rst'] and not prefix.startswith('__MACOSX/'):
                         tmpfilename = os.path.join(dir, "tmp" + extension)
                         try:
                             tmpfilename = zip_file.extract(subfilename, tmpfilename)
