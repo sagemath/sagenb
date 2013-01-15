@@ -1,7 +1,16 @@
 {% extends "html/base.html" %}
 {% block title %}{{ gettext('Create your profile') }} - Sage{% endblock %}
 {% block page_id %}openid-profile-page{% endblock %}
-{% block alerts %}{% endblock alerts %}
+
+{% block alerts %}
+
+{% if creation_error %}
+	<div class="alert alert-error">
+		{{ gettext('<strong>Uh oh!</strong> There was an error creating your account. Account creation may be disabled. Please contact the Notebook administrator.') }}
+	</div>
+{% endif %}
+
+{% endblock alerts %}
 
 {% block main %}
 	<div class="container" style="margin-top: 100px; width: 770px">

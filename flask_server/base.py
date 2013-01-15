@@ -299,7 +299,7 @@ def set_profiles():
             session['username'] = g.username = username
             session.modified = True
         except ValueError:
-            return render_template('html/accounts/openid_profile.html', **parse_dict) 
+            return render_template('html/accounts/openid_profile.html', **parse_dict)
         return redirect(url_for('base.index'))
 
 
