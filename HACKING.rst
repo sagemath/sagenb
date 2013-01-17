@@ -51,7 +51,8 @@ how to do this are as follows.
 This completes the installation process. Now you can modify files in
 your ``sagenb`` directory and submit your modifications to us using pull
 requests on GitHub. (A full walkthrough of using git and GitHub are
-beyond the scope of this file.)
+beyond the scope of this file -- for more information see `the relevant
+section in the Sage manual`_.)
 
 If you ever need to switch to using another Sage installation for your
 sagenb development, you only need to repeat step 5 with the new value of
@@ -61,3 +62,5 @@ sagenb development, you only need to repeat step 5 with the new value of
 .. _the sagenb git repository: http://github.com/sagemath/sagenb
 .. _the latest development version of Sage: 
     http://sagemath.org/download-latest.html
+.. _the relevant section in the Sage manual:
+    http://sagemath.org/doc/developer/sagenb/index.html
