@@ -512,8 +512,8 @@ sagenb.worksheetapp.cell = function(id) {
 		var pos = _this.codemirror.cursorCoords();
 		tooltip_root.css({
 			"position": "absolute",
-			"left": pos.x,
-			"top": pos.yBot
+			"left": pos.left,
+			"top": pos.bottom
 		});
 
 		tooltip_root.popover({
