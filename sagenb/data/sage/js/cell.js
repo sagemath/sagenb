@@ -235,49 +235,50 @@ sagenb.worksheetapp.cell = function(id) {
 				
 				/* autofocus messes up when true */
 				autofocus: false,
-			
-				onChange: function(cm, chg) {
-					if(chg.text[0] === "(") {
-						_this.introspect();
-					}
-					else if(chg.text[0] === ")") {
-						_this.cancel_introspect();
-					}
-				},
 
-				onFocus: function() {
-					_this.worksheet.current_cell_id = _this.id;
-					
-					$(".cell").removeClass("current_cell");
-					$("#cell_" + _this.id).addClass("current_cell");
-					
-					// unhide if hidden
-					$("#cell_" + _this.id + " .input_cell").removeClass("input_hidden");
-
-					// Show the evaluate button
-					$("#cell_" + _this.id + " .evaluate_button_container").show();
-				},
-				onBlur: function() {
-					if(!($("body").hasClass("single_cell_mode"))) {
-						$("#cell_" + _this.id).removeClass("current_cell");
-					}
-					
-					if(_this.input !== _this.codemirror.getValue()) {
-						// the input has changed since the user focused
-						// so we send it back to the server
-						_this.send_input();
-					}
-					
-					// Hide the evaluate button
-					$("#cell_" + _this.id + " .evaluate_button_container").hide();
-
-					// update cell properties without rendering
-					_this.update();
-				},
-			
 				extraKeys: extrakeys
 			});
+
+			_this.codemirror.on("change", function(cm, chg) {
+				if(chg.text[0] === "(") {
+					_this.introspect();
+				}
+				else if(chg.text[0] === ")") {
+					_this.cancel_introspect();
+				}
+			});
 			
+			_this.codemirror.on("focus", function() {
+				_this.worksheet.current_cell_id = _this.id;
+				
+				$(".cell").removeClass("current_cell");
+				$("#cell_" + _this.id).addClass("current_cell");
+				
+				// unhide if hidden
+				$("#cell_" + _this.id + " .input_cell").removeClass("input_hidden");
+
+				// Show the evaluate button
+				$("#cell_" + _this.id + " .evaluate_button_container").show();
+			});
+
+			_this.codemirror.on("blur", function() {
+				if(!($("body").hasClass("single_cell_mode"))) {
+					$("#cell_" + _this.id).removeClass("current_cell");
+				}
+				
+				if(_this.input !== _this.codemirror.getValue()) {
+					// the input has changed since the user focused
+					// so we send it back to the server
+					_this.send_input();
+				}
+				
+				// Hide the evaluate button
+				$("#cell_" + _this.id + " .evaluate_button_container").hide();
+
+				// update cell properties without rendering
+				_this.update();
+			});
+
 			// render the output
 			_this.render_output();
 		}
