@@ -857,16 +857,16 @@ sagenb.worksheetapp.cell = function(id) {
 							sel.firstChild.selected = true;
 							sel.size = Math.min(10, completions.length);
 							var pos = editor.cursorCoords();
-							complete.style.left = pos.x + "px";
-							complete.style.top = pos.yBot + "px";
+							complete.style.left = pos.left + "px";
+							complete.style.top = pos.bottom + "px";
 							document.body.appendChild(complete);
 							// If we're at the edge of the screen, then we want the menu to appear on the left of the cursor.
 							var winW = window.innerWidth || Math.max(document.body.offsetWidth, document.documentElement.offsetWidth);
-							if(winW - pos.x < sel.clientWidth)
-							complete.style.left = (pos.x - sel.clientWidth) + "px";
+							if(winW - pos.left < sel.clientWidth)
+								complete.style.left = (pos.left - sel.clientWidth) + "px";
 							// Hack to hide the scrollbar.
 							if (completions.length <= 10)
-							complete.style.width = (sel.clientWidth - 1) + "px";
+								complete.style.width = (sel.clientWidth - 1) + "px";
 
 							
 							/* Close the completions menu */
@@ -884,8 +884,8 @@ sagenb.worksheetapp.cell = function(id) {
 								setTimeout(function(){editor.focus();}, 50);
 							}
 							
-							CodeMirror.connect(sel, "blur", close);
-							CodeMirror.connect(sel, "keydown", function(event) {
+							CodeMirror.on(sel, "blur", close);
+							CodeMirror.on(sel, "keydown", function(event) {
 								var code = event.keyCode;
 								// Enter
 								if (code === 13) {CodeMirror.e_stop(event); pick();}
@@ -911,7 +911,7 @@ sagenb.worksheetapp.cell = function(id) {
 									// setTimeout(_this.introspect, 50);
 								}
 							});
-							CodeMirror.connect(sel, "dblclick", pick);
+							CodeMirror.on(sel, "dblclick", pick);
 
 							sel.focus();
 							// Opera sometimes ignores focusing a freshly created node
