@@ -615,6 +615,11 @@ sagenb.worksheetapp.cell = function(id) {
 		_this.cancel_introspect();
 		_this.set_output_loading();
 
+		var nextcell = get_next_cell();
+		if(nextcell) {
+			nextcell.focus();
+		}
+
 		// we're an evaluate cell
 		sagenb.async_request(_this.worksheet.worksheet_command("eval"), _evaluate_callback, {
 			// 0 = false, 1 = true this needs some conditional
@@ -1010,6 +1015,11 @@ sagenb.worksheetapp.cell = function(id) {
 		if(_this.is_evaluating) {
 			// interrupt
 			sagenb.async_request(_this.worksheet.worksheet_command('interrupt'));
+		}
+
+		var prevcell = get_prev_cell();
+		if(prevcell) {
+			prevcell.focus();
 		}
 		
 		sagenb.async_request(_this.worksheet.worksheet_command('delete_cell'), sagenb.generic_callback(function(status, response) {
