@@ -78,39 +78,25 @@ body {
 	}
 }
 
-.the_container {
-	width: @the_container_width;
-	margin-left: auto;
-	margin-right: auto;
-	
-	.the_page {
-		.rounded-corners(3px);
-		.outer_shadow(3px, #ccc);
-		min-height: 700px;
-		margin-bottom: 50px;
-		margin-top: 100px;
-		background-color: #fff;
-		padding: 25px;
-	}
+.the_page {
+	.rounded-corners(3px);
+	.outer_shadow(3px, #ccc);
+	/* min-height: 700px; */
+	margin-bottom: 50px;
+	margin-top: 100px;
+	background-color: #fff;
+	padding: 25px;
 }
 
-/* this is the responsive styling for the page and container.
-it makes the page automatically fit the screen when the 
-screen width is less than the container width */
-@media (max-width: @the_container_width) {
+/* this is the responsive styling for the page and container. */
+@media (max-width: 979px) {
 	/* here we may want to also change the body padding */
 
-	.the_container {
-		width: auto;
-		margin-left: 0px;
-		margin-right: 0px;
-		
-		/* these styles are adjusted to create a 20px space 
-		around the page since the body has a 20px padding */
-		.the_page {
-			margin-top: 25px;
-			margin-bottom: 20px;
-		}
+	/* these styles are adjusted to create a 20px space 
+	around the page since the body has a 20px padding */
+	.the_page {
+		margin-top: 25px;
+		margin-bottom: 20px;
 	}
 }
 
