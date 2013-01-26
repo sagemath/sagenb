@@ -176,6 +176,7 @@ sagenb.worksheetapp.cell = function(id) {
 					if(prevcell) {
 						_this.cancel_introspect();
 
+						_this.blur();
 						prevcell.focus();
 					}
 				} else {
@@ -190,6 +191,7 @@ sagenb.worksheetapp.cell = function(id) {
 					if(nextcell) {
 						_this.cancel_introspect();
 
+						_this.blur();
 						nextcell.focus();
 					}
 				} else {
@@ -478,6 +480,12 @@ sagenb.worksheetapp.cell = function(id) {
 			// edit the tinyMCE
 			$("#cell_" + _this.id).dblclick();
 			tinyMCE.execCommand('mceFocus', false, "text_cell_textarea_" + _this.id);
+		}
+	}
+
+	_this.blur = function() {
+		if(_this.codemirror) {
+			_this.codemirror.getInputField().blur();
 		}
 	}
 	
