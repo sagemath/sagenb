@@ -256,9 +256,6 @@ sagenb.worksheetapp.cell = function(id) {
 				
 				// unhide if hidden
 				$("#cell_" + _this.id + " .input_cell").removeClass("input_hidden");
-
-				// Show the evaluate button
-				$("#cell_" + _this.id + " .evaluate_button_container").show();
 			});
 
 			_this.codemirror.on("blur", function() {
@@ -271,9 +268,6 @@ sagenb.worksheetapp.cell = function(id) {
 					// so we send it back to the server
 					_this.send_input();
 				}
-				
-				// Hide the evaluate button
-				$("#cell_" + _this.id + " .evaluate_button_container").hide();
 
 				// update cell properties without rendering
 				_this.update();
