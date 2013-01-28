@@ -815,11 +815,10 @@ sagenb.worksheetapp.worksheet = function() {
 			1000
 		);
 		
-		// load js-hotkeys
-		/* TODO notes on hotkeys: these don't work on all browsers consistently
+		// Setup hotkeys
+		/* Notes on hotkeys: these don't work on all browsers consistently
 		but they are included in the best case scenario that they are all 
-		accepted. I have not checked all of the official hotkeys for Sage NB
-		so this list may not be complete but will be updated later. */
+		accepted. */
 		$(document).bind("keydown", sagenb.ctrlkey + "+N", function(evt) { _this.new_worksheet(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { _this.save(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { _this.close(); return false; });
