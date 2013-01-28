@@ -824,6 +824,11 @@ sagenb.worksheetapp.worksheet = function() {
 		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { _this.save(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { _this.close(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { _this.print(); return false; });
+		$(document).bind("keydown", "esc", function(evt) {
+			if(confirm(gettext("Are you sure you would like to interrupt the running computation?"))) {
+				_this.interrupt();
+			}
+		});
 				
 		/////// FILE MENU ////////
 		$("#new_worksheet").click(_this.new_worksheet);
