@@ -43,8 +43,19 @@ sagenb.worksheetapp.cell = function(id) {
 			var prevcell_id = parseInt($prevcell.attr("id").substring(5));
 			return _this.worksheet.cells[prevcell_id];
 		}
-	}	
+	}
 
+	function fixOldjsMath(elem) {
+		// mathjax each span with \( \)
+		$(elem).find("span.math").each(function(i, element) {
+			$(element).html("\\(" + $(element).html() + "\\)");
+		});
+		
+		// mathjax each div with \[ \]
+		$(elem).find("div.math").each(function(i, element) {
+			$(element).html("\\[" + $(element).html() + "\\]");
+		});
+	}
 
 	///////////// UPDATING /////////////
 	_this.update = function(render_container, auto_evaluate) {
@@ -455,17 +466,7 @@ sagenb.worksheetapp.cell = function(id) {
 				$output_cell.html("\\[" + $output_cell.find("script[type='math/tex']").html() + "\\]");
 			}
 			else {
-				// NOTE: these may be obsolete
-
-				// mathjax each span with \( \)
-				$output_cell.find("span.math").each(function(i, element) {
-					$(element).html("\\(" + $(element).html() + "\\)");
-				});
-				
-				// mathjax each div with \[ \]
-				$output_cell.find("div.math").each(function(i, element) {
-					$(element).html("\\[" + $(element).html() + "\\]");
-				});
+				fixOldjsMath($output_cell);
 			}
 
 			MathJax.Hub.Queue(["Typeset", MathJax.Hub, $output_cell[0]]);
@@ -525,6 +526,7 @@ sagenb.worksheetapp.cell = function(id) {
 		});
 
 		tooltip_root.popover("show");
+		fixOldjsMath($(".popover"));
 		MathJax.Hub.Queue(["Typeset", MathJax.Hub, $(".popover")[0]]);
 
 		var safety = 50;
