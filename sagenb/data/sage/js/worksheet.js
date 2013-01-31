@@ -828,7 +828,7 @@ sagenb.worksheetapp.worksheet = function() {
 		$(document).bind("keydown", sagenb.ctrlkey + "+S", function(evt) { _this.save(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+W", function(evt) { _this.close(); return false; });
 		$(document).bind("keydown", sagenb.ctrlkey + "+P", function(evt) { _this.print(); return false; });
-		$(document).bind("keydown", "esc", function(evt) { _this.interrupt_with_confirm() return false; });
+		$(document).bind("keydown", "esc", function(evt) { _this.interrupt_with_confirm(); return false; });
 				
 		/////// FILE MENU ////////
 		$("#new_worksheet").click(_this.new_worksheet);
