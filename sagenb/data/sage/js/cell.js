@@ -345,9 +345,6 @@ sagenb.worksheetapp.cell = function(id) {
 				
 				$_this.dblclick(function(e) {
 					if(!_this.is_evaluate_cell) {
-						// set the current_cell_id
-						_this.worksheet.current_cell_id = _this.id;
-						
 						// lose any selection that was made
 						if (window.getSelection) {
 							window.getSelection().removeAllRanges();
@@ -356,7 +353,8 @@ sagenb.worksheetapp.cell = function(id) {
 						}
 						
 						// add the edit class
-						$("#cell_" + _this.id).addClass("edit");
+						$("#cell_" + _this.id).addClass("edit")
+											  .addClass("current_cell");
 					}
 				});
 				
@@ -370,7 +368,8 @@ sagenb.worksheetapp.cell = function(id) {
 					ed.setContent(_this.input);
 					
 					// remove the edit class
-					$("#cell_" + _this.id).removeClass("edit");
+					$("#cell_" + _this.id).removeClass("edit")
+										  .removeClass("current_cell");
 				});
 				
 				$_this.find(".save_button").click(function(e) {
@@ -387,7 +386,8 @@ sagenb.worksheetapp.cell = function(id) {
 					MathJax.Hub.Queue(["Typeset", MathJax.Hub, $_this.find(".view_text")[0]]);
 					
 					// remove the edit class
-					$("#cell_" + _this.id).removeClass("edit");
+					$("#cell_" + _this.id).removeClass("edit")
+										  .removeClass("current_cell");
 				});
 			}
 		}
