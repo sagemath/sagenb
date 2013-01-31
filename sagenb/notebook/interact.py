@@ -1074,14 +1074,14 @@ class InputBox(InteractControl):
             return """<input type="checkbox" %s width="200px" onchange="%s"></input>"""%(
                 'checked' if self.default_value() else '',  self.interact())
         elif self.__type is str and self.__height ==1:
-            return """<input type="text" value="%s" size="%s" onchange="%s"></input>"""%(
+            return """<input type="text" value="%s" style="width: %spx;" onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width, self.interact())
         elif self.__type is str and self.__height > 1:
             textval = self.html_escaped_default_value()
             return """<textarea type="text" value="%s" rows="%s" cols="%s" onchange="%s">%s</textarea>"""%(
                 textval, self.__height, self.__width, self.interact(), textval)
         else:
-            return """<input type="text" value="%s" size="%s" onchange="%s"></input>"""%(
+            return """<input type="text" value="%s" style="width: %spx;" onchange="%s"></input>"""%(
                 self.html_escaped_default_value(), self.__width,  self.interact())
 
 class ColorInput(InputBox):
