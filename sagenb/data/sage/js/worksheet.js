@@ -840,7 +840,7 @@ sagenb.worksheetapp.worksheet = function() {
 		////////// EVALUATION ///////////
 		$("#evaluate_all_cells").click(_this.evaluate_all);
 		$("#interrupt").click(_this.interrupt);
-		$("#restart_worksheet").click();
+		$("#restart_worksheet").click(_this.restart_sage);
 		// change system doesn't require event handler here
 		$("#hide_all_output").click(_this.hide_all_output);
 		$("#show_all_output").click(_this.show_all_output);
