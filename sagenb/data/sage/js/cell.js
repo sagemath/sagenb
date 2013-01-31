@@ -27,20 +27,26 @@ sagenb.worksheetapp.cell = function(id) {
 
 	
 	// HELPERS
-	function get_next_cell() {
-		var $nextcell = $("#cell_" + _this.id).parent().next().next().find(".cell");
+	function get_next_eval_cell() {
+		var $nextcell = $("#cell_" + _this.id).parent().next().next();
+		while($nextcell.length > 0 && $nextcell.find(".evaluate_cell").length === 0) {
+			$nextcell = $nextcell.next().next();
+		}
 		if($nextcell.length > 0) {
 			// we're not the last cell
-			var nextcell_id = parseInt($nextcell.attr("id").substring(5));
+			var nextcell_id = parseInt($nextcell.find(".evaluate_cell").attr("id").substring(5));
 			return _this.worksheet.cells[nextcell_id];
 		}
 	}
 
-	function get_prev_cell() {
-		var $prevcell = $("#cell_" + _this.id).parent().prev().prev().find(".cell");
+	function get_prev_eval_cell() {
+		var $prevcell = $("#cell_" + _this.id).parent().prev().prev();
+		while($prevcell.length > 0 && $prevcell.find(".evaluate_cell").length === 0) {
+			$prevcell = $prevcell.prev().prev();
+		}
 		if($prevcell.length > 0) {
 			// we're not the last cell
-			var prevcell_id = parseInt($prevcell.attr("id").substring(5));
+			var prevcell_id = parseInt($prevcell.find(".evaluate_cell").attr("id").substring(5));
 			return _this.worksheet.cells[prevcell_id];
 		}
 	}
@@ -183,7 +189,7 @@ sagenb.worksheetapp.cell = function(id) {
 			extrakeys["Up"] = function(cm) {
 				var c = cm.getCursor();
 				if(c.line === 0) {
-					var prevcell = get_prev_cell();
+					var prevcell = get_prev_eval_cell();
 					if(prevcell) {
 						_this.cancel_introspect();
 
@@ -198,7 +204,7 @@ sagenb.worksheetapp.cell = function(id) {
 			extrakeys["Down"] = function(cm) {
 				var c = cm.getCursor();
 				if(c.line === cm.getValue().split("\n").length - 1) {
-					var nextcell = get_next_cell();
+					var nextcell = get_next_eval_cell();
 					if(nextcell) {
 						_this.cancel_introspect();
 
@@ -619,7 +625,7 @@ sagenb.worksheetapp.cell = function(id) {
 		_this.cancel_introspect();
 		_this.set_output_loading();
 
-		var nextcell = get_next_cell();
+		var nextcell = get_next_eval_cell();
 		if(nextcell) {
 			nextcell.focus();
 		}
@@ -969,7 +975,7 @@ sagenb.worksheetapp.cell = function(id) {
 		if(_this.worksheet.published_mode) return;
 		if(_this.worksheet.is_evaluating_all) {
 			// get the next cell
-			var nextcell = get_next_cell();
+			var nextcell = get_next_eval_cell();
 
 			if(nextcell) {
 				// evaluate
@@ -1021,7 +1027,7 @@ sagenb.worksheetapp.cell = function(id) {
 			sagenb.async_request(_this.worksheet.worksheet_command('interrupt'));
 		}
 
-		var prevcell = get_prev_cell();
+		var prevcell = get_prev_eval_cell();
 		if(prevcell) {
 			prevcell.focus();
 		}
