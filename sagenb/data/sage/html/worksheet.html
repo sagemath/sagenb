@@ -105,7 +105,7 @@
 {% endblock after_container %}
 
 {% block extra_javascript %}
-	{% assets filters="rjsmin", output="webassets_generated/worksheet.js",
+	{% assets output="webassets_generated/worksheet.js",
 		"sage/js/load_mathjax.js",
 		"codemirror-3.0/lib/codemirror.js",
 		"codemirror-3.0/lib/util/matchbrackets.js",
