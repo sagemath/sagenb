@@ -188,7 +188,7 @@ msgid ""
 "Suspicious filename \"%(filename)s\" encountered uploading "
 "file.%(backlinks)s"
 msgstr ""
-"Se ha encontrado un nombre de fichero \"%(filename)s\" sospechoso subiendo "
+"Se ha encontrado un nombre de archivo \"%(filename)s\" sospechoso subiendo "
 "file.%(backlinks)s"
 #: flask_version/worksheet.py:874
 msgid "No such worksheet."
@@ -242,7 +242,7 @@ msgid ""
 "Invalid filename.\n"
 "%(backlinks)s"
 msgstr ""
-"Nombre de fichero no válido.\n"
+"Nombre de archivo no válido.\n"
 "%(backlinks)s"
 
 #: flask_version/worksheet_listing.py:425
@@ -944,7 +944,7 @@ msgid ""
 msgstr ""
 "Se requiere su dirección de e-mail para la confirmación de su cuenta y su "
 "recuperación. Le será enviado un e-mail con un enlace de confirmación después "
-" de que se registre."
+"de que se registre."
 
 #: sagenb/data/sage/html/accounts/registration.html:62
 msgid "No e-mail address given"
@@ -1012,7 +1012,7 @@ msgstr "Alguien más está viendo esta hoja"
 #: sagenb/data/sage/html/notebook/base.html:88
 #: sagenb/data/sage/html/notebook/text_cell.html:48
 msgid "Save changes"
-msgstr "Guarda cambios"
+msgstr "Guardar cambios"
 
 #: sagenb/data/sage/html/notebook/base.html:88
 #: sagenb/data/sage/html/settings/account_settings.html:9
@@ -1024,7 +1024,7 @@ msgstr "Guardar"
 
 #: sagenb/data/sage/html/notebook/base.html:88
 msgid "Save changes and close window"
-msgstr "Guarda cambios y cierra"
+msgstr "Guardar cambios y cerrar"
 
 #: sagenb/data/sage/html/notebook/base.html:88
 msgid "Save & quit"
@@ -1032,7 +1032,7 @@ msgstr "Guardar y salir"
 
 #: sagenb/data/sage/html/notebook/base.html:88
 msgid "Discard changes to this worksheet"
-msgstr "Descarta los cambios en esta hoja"
+msgstr "Descartar los cambios en esta hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:88
 msgid "Discard & quit"
@@ -1040,7 +1040,7 @@ msgstr "Descartar y Salir"
 
 #: sagenb/data/sage/html/notebook/base.html:95
 msgid "Select a file related function"
-msgstr "Selecciona una función de archivos"
+msgstr "Seleccionar una función de archivos"
 
 #: sagenb/data/sage/html/notebook/base.html:95
 msgid "File..."
@@ -1048,7 +1048,7 @@ msgstr "Archivos..."
 
 #: sagenb/data/sage/html/notebook/base.html:96
 msgid "Load a new worksheet stored in a file"
-msgstr "Carga una hoja nueva guardad en un archivo"
+msgstr "Carga una hoja nueva guardada en un archivo"
 
 #: sagenb/data/sage/html/notebook/base.html:96
 msgid "Load worksheet from a file..."
@@ -1056,7 +1056,7 @@ msgstr "Cargar hoja de archivo..."
 
 #: sagenb/data/sage/html/notebook/base.html:97
 msgid "Create a new worksheet"
-msgstr "Crea una hoja nueva"
+msgstr "Crear una hoja nueva"
 
 #: sagenb/data/sage/html/notebook/base.html:97
 msgid "New worksheet"
@@ -1064,16 +1064,16 @@ msgstr "Hoja nueva"
 
 #: sagenb/data/sage/html/notebook/base.html:98
 msgid "Save this worksheet to an sws file"
-msgstr "Guarda esta hoja en un fichero sws"
+msgstr "Guardar esta hoja en un archivo sws"
 
 #: sagenb/data/sage/html/notebook/base.html:98
 msgid "Save worksheet to a file..."
-msgstr "Guardar esta hoja en un fichero..."
+msgstr "Guardar esta hoja en un archivo..."
 
 #: sagenb/data/sage/html/notebook/base.html:99
 #: sagenb/data/sage/html/notebook/base.html:148
 msgid "Print this worksheet"
-msgstr "Imprime esta hoja"
+msgstr "Imprimir esta hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:99
 #: sagenb/data/sage/html/notebook/base.html:148
@@ -1082,7 +1082,7 @@ msgstr "Imprimir"
 
 #: sagenb/data/sage/html/notebook/base.html:100
 msgid "Rename this worksheet"
-msgstr "Renombra esta hoja"
+msgstr "Cambiar el nombre de esta hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:100
 #: sagenb/data/sage/js/translated-messages.js:11
@@ -1091,7 +1091,7 @@ msgstr "Renombrar hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:101
 msgid "Copy this worksheet"
-msgstr "Copia esta hoja"
+msgstr "Copiar esta hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:101
 msgid "Copy worksheet"
@@ -1099,7 +1099,7 @@ msgstr "Copiar hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:102
 msgid "Move this worksheet to the trash"
-msgstr "Envía esta hoja a la papelera"
+msgstr "Enviar esta hoja a la papelera"
 
 #: sagenb/data/sage/html/notebook/base.html:102
 msgid "Delete worksheet"
@@ -1107,7 +1107,7 @@ msgstr "Borrar hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:106
 msgid "Select a worksheet function"
-msgstr "Selecciona una función de hoja"
+msgstr "Seleccionar una función de hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:106
 msgid "Action..."
@@ -1115,7 +1115,7 @@ msgstr "Acción..."
 
 #: sagenb/data/sage/html/notebook/base.html:107
 msgid "Interrupt currently running calculations, if possible"
-msgstr "Interrumpe los cálculos en curso si es posible"
+msgstr "Interrumpir los cálculos en curso si es posible"
 
 #: sagenb/data/sage/html/notebook/base.html:107
 msgid "Interrupt"
@@ -1123,7 +1123,7 @@ msgstr "Interrumpir"
 
 #: sagenb/data/sage/html/notebook/base.html:108
 msgid "Restart the worksheet process"
-msgstr "Reinicia el proceso de la hoja"
+msgstr "Reiniciar el proceso de la hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:108
 msgid "Restart worksheet"
@@ -1139,7 +1139,7 @@ msgstr "Salir y guardar hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:111
 msgid "Evaluate all input cells in the worksheet"
-msgstr "Evalúa todas las celdas de entrada de la hoja"
+msgstr "Evaluar todas las celdas de entrada de la hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:111
 msgid "Evaluate All"
@@ -1147,7 +1147,7 @@ msgstr "Evaluar todo"
 
 #: sagenb/data/sage/html/notebook/base.html:112
 msgid "Hide all output"
-msgstr "Oculta resultados"
+msgstr "Ocultar todos los resultados"
 
 #: sagenb/data/sage/html/notebook/base.html:112
 msgid "Hide All Output"
@@ -1155,7 +1155,7 @@ msgstr "Ocultar Resultados"
 
 #: sagenb/data/sage/html/notebook/base.html:113
 msgid "Show all output"
-msgstr "Muestra resultados"
+msgstr "Mostrar todos los resultados"
 
 #: sagenb/data/sage/html/notebook/base.html:113
 msgid "Show All Output"
@@ -1163,7 +1163,7 @@ msgstr "Mostrar Resultados"
 
 #: sagenb/data/sage/html/notebook/base.html:114
 msgid "Delete all output"
-msgstr "Borra resultados"
+msgstr "Borrar todos los resultados"
 
 #: sagenb/data/sage/html/notebook/base.html:114
 msgid "Delete All Output"
@@ -1171,15 +1171,15 @@ msgstr "Borrar Resultados"
 
 #: sagenb/data/sage/html/notebook/base.html:116
 msgid "Switch to single-cell mode"
-msgstr "Cambia a modo de una celda"
+msgstr "Cambiar a modo de celda única"
 
 #: sagenb/data/sage/html/notebook/base.html:116
 msgid "One Cell Mode"
-msgstr "Modo de Una Celda"
+msgstr "Modo de Celda Única"
 
 #: sagenb/data/sage/html/notebook/base.html:117
 msgid "Switch to multi-cell mode"
-msgstr "Cambia a modo multi-celda"
+msgstr "Cambiar a modo multi-celda"
 
 #: sagenb/data/sage/html/notebook/base.html:117
 msgid "Multi Cell Mode"
@@ -1187,7 +1187,7 @@ msgstr "Modo Multi-Celda"
 
 #: sagenb/data/sage/html/notebook/base.html:120
 msgid "Select an attached file"
-msgstr "Selecciona un fichero adjunto"
+msgstr "Seleccionar un archivo adjunto"
 
 #: sagenb/data/sage/html/notebook/base.html:120
 msgid "Data..."
@@ -1195,20 +1195,20 @@ msgstr "Datos..."
 
 #: sagenb/data/sage/html/notebook/base.html:121
 msgid "Upload or create a data file in a wide range of formats"
-msgstr "Sube o crea un fichero de datos en múltiples formatos"
+msgstr "Subir o crear un archivo de datos en múltiples formatos"
 
 #: sagenb/data/sage/html/notebook/base.html:121
 msgid "Upload or create file..."
-msgstr "Subir o crear fichero..."
+msgstr "Subir o crear archivo..."
 
 #: sagenb/data/sage/html/notebook/base.html:131
 #, python-format
 msgid "Evaluate all input cells using %(i)s"
-msgstr "Evalúa todas las celdas de entrada utilizando %(i)s"
+msgstr "Evaluar todas las celdas de entrada utilizando %(i)s"
 
 #: sagenb/data/sage/html/notebook/base.html:137
 msgid "Enable/disable pretty_printing"
-msgstr "Activa/desactiva impresión avanzada"
+msgstr "Activar/desactivar impresión avanzada"
 
 #: sagenb/data/sage/html/notebook/base.html:149
 msgid "Interactively use this worksheet"
@@ -1252,7 +1252,7 @@ msgstr "Compartir"
 
 #: sagenb/data/sage/html/notebook/base.html:154
 msgid "Make this worksheet publicly viewable"
-msgstr "Permitir que esta hoja se pueda ver esta hoja públicamente"
+msgstr "Permitir que esta hoja se pueda ver públicamente"
 
 #: sagenb/data/sage/html/notebook/base.html:154
 msgid "Publish"
@@ -1309,7 +1309,7 @@ msgid ""
 "file in worksheet "
 msgstr ""
 "Puede descargar <a href=\"%(p)s\">%(f)s</a> o crear un enlace a este "
-"fichero en la hoja "
+"archivo en la hoja "
 
 #: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:40
 msgid "select worksheet"
@@ -1441,7 +1441,7 @@ msgstr "O introducir el URL de un archivo en la web:"
 
 #: sagenb/data/sage/html/notebook/upload_data_window.html:23
 msgid "Or enter the name of a new file, which will be created:"
-msgstr "O introducir el nombre de un fichero nuevo que será creado:"
+msgstr "O introducir el nombre de un archivo nuevo que será creado:"
 
 #: sagenb/data/sage/html/notebook/upload_data_window.html:27
 msgid "What do you want to call it? (if different than the original name)"
@@ -1502,7 +1502,7 @@ msgstr "Buscar resultados:"
 
 #: sagenb/data/sage/html/notebook/worksheet_share.html:46
 msgid "sorry, no match found"
-msgstr "lo siento, no se ha encontrado coincidencia"
+msgstr "lo siento, no se han encontrado coincidencias"
 
 #: sagenb/data/sage/html/notebook/worksheet_share.html:50
 msgid "Search Users"
@@ -1781,7 +1781,7 @@ msgid ""
 "desktop."
 msgstr ""
 "Para guardar esta imagen, puede intentar pulsar el botón derecho sobre ella "
-"y copiarla o guardarla en un fichero, o puede intentar arrastrar la imagen "
+"y copiarla o guardarla en un archivo, o puede intentar arrastrar la imagen "
 "a su escritorio."
 
 #: sagenb/data/sage/js/translated-messages.js:32
@@ -2447,7 +2447,7 @@ msgid ""
 msgstr ""
 "Utilice el menú Datos para subir imágenes y otros archivos, y crear nuevos "
 "archivos que se puedan compartir entre hojas. La variable DATA "
-"contiene la ruta a los ficheros de datos. Por ejemplo, para abrir un archivo "
+"contiene la ruta a los archivos de datos. Por ejemplo, para abrir un archivo "
 "de ese directorio, escribir \"open(DATA+'filename')\". Si usted ha subido el "
 "archivo foo.sage, podrá cargarlo con  \"load foo.sage\"; Si foo.py es un "
 "archivo Python, podrá importarlo con \"import foo\"."
