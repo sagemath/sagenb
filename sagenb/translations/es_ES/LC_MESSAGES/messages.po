@@ -224,7 +224,7 @@ msgid ""
 "Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload"
 " File</strong></a>."
 msgstr ""
-"Vuelva a <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Bajar"
+"Vuelva a <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Subir"
 " Archivo</strong></a>."
 
 #: flask_version/worksheet_listing.py:380
@@ -266,7 +266,7 @@ msgstr ""
 #: flask_version/worksheet_listing.py:436
 #, python-format
 msgid "Error uploading worksheet '%(msg)s'.%(backlinks)s"
-msgstr "Error bajando la hoja '%(msg)s'.%(backlinks)s"
+msgstr "Error subiendo la hoja '%(msg)s'.%(backlinks)s"
 
 #: sagenb/data/sage/html/base.html:33 ../sagenb/data/sage/html/login.html:35
 msgid "The Sage Notebook"
@@ -716,7 +716,7 @@ msgstr "Hoja Nueva"
 
 #: sagenb/data/sage/html/worksheet_listing.html:100
 msgid "Upload"
-msgstr "Bajar"
+msgstr "Subir"
 
 #: sagenb/data/sage/html/worksheet_listing.html:101
 msgid "Download All Active"
