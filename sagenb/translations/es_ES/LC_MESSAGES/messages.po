@@ -47,7 +47,7 @@ msgid ""
 "The temporary password for the new user <em>%(username)s</em> is "
 "<em>%(password)s</em>"
 msgstr ""
-"La clave provisional para el nuevo usuario <em>%(username)s</em>  es "
+"La contraseña provisional para el nuevo usuario <em>%(username)s</em>  es "
 "<em>%(password)s</em>"
 
 #: flask_version/admin.py:69
@@ -67,10 +67,10 @@ msgid ""
 "server.</p>\n"
 "    "
 msgstr ""
-"    <h1>Clave de confirmación inválida</h1>\n"
-"    <p>Usted ha proporcionado una clave de confirmación no asignada por"
+"    <h1>Contraseña de confirmación inválida</h1>\n"
+"    <p>Usted ha proporcionado una contraseña de confirmación no asignada por"
 " este\n"
-"    servidor. Por favor <a href=\"/register\">regístrese</a> con el "
+"    servidor. Por favor <a href=\"/register\">regístrese</a> en el "
 "servidor.</p>\n"
 "    "
 
@@ -156,10 +156,10 @@ msgid ""
 "File</strong></a> or <a href=\"%(worksheet_url)s\" title=\"Interactively "
 "use the worksheet\"><strong>%(worksheet_name)s</strong></a>."
 msgstr ""
-" Vuelva a <a href=\"%(upload_url)s\" title=\"Upload or create a data "
-"file in a wide range of formats\"><strong>Subir o Crear archivo "
-"de datos</strong></a> o <a href=\"%(worksheet_url)s\" title=\"Interactively "
-"use the worksheet\"><strong>%(worksheet_name)s</strong></a>."
+" Vuelva a <a href=\"%(upload_url)s\" title=\"Subir o crear un archivo "
+"de datos en una amplia variedad de formatos\"><strong>Subir o Crear Archivo "
+"de Datos</strong></a> o <a href=\"%(worksheet_url)s\" title=\"Utilizar la "
+"hoja en modo interactivo \"><strong>%(worksheet_name)s</strong></a>."
 
 #: flask_version/worksheet.py:724
 #, python-format
@@ -224,7 +224,7 @@ msgid ""
 "Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload"
 " File</strong></a>."
 msgstr ""
-"Vuelva a <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Subir"
+"Vuelva a <a href=\"/upload\" title=\"Bajar una hoja\"><strong>Subir"
 " Archivo</strong></a>."
 
 #: flask_version/worksheet_listing.py:380
@@ -259,7 +259,7 @@ msgstr ""
 "antiguo no soportado o peor aún. Si necesita sus contenidos desesperadamente "
 "contacte con el grupo <a href=\"http://groups.google.com/group/sage-support\">"
 "sage-support</a> y envíe un enlace a su hoja. Alternativamente, un archivo "
-"sws simplemente es un tarball comprimido con bzip2;"
+"sws simplemente es un tarball comprimido con bzip2; "
 "¡Eche un vistazo dentro de él!\n"
 "%(backlinks)s"
 
@@ -320,7 +320,7 @@ msgstr "Ver un historial de cálculos recientes"
 
 #: sagenb/data/sage/html/base_authenticated.html:17
 msgid "Change account settings including password"
-msgstr "Cambiar la configuración de la cuenta, clave incluida"
+msgstr "Cambiar la configuración de la cuenta, incluyendo la contraseña"
 
 #: sagenb/data/sage/html/base_authenticated.html:17
 msgid "Settings"
@@ -588,11 +588,11 @@ msgstr "El usuario no está en el sistema"
 #: sagenb/data/sage/html/login.html:73
 #: sagenb/data/sage/html/settings/user_management.html:13
 msgid "Password"
-msgstr "Clave"
+msgstr "Contraseña"
 
 #: sagenb/data/sage/html/login.html:76
 msgid "Wrong password"
-msgstr "Clave errónea"
+msgstr "Contraseña errónea"
 
 #: sagenb/data/sage/html/login.html:80
 msgid "Remember me"
@@ -608,7 +608,7 @@ msgstr "Ver las hojas de Sage publicadas<br>(no se requiere entrar)"
 
 #: sagenb/data/sage/html/login.html:97
 msgid "Forgot password"
-msgstr "Olvidar la clave"
+msgstr "Olvidar la contraseña"
 
 #: sagenb/data/sage/html/login.html:104
 msgid "Creating new users is disabled by the administrator."
@@ -852,7 +852,7 @@ msgid ""
 "account. However if you didn't confirm your e-mail address you will be "
 "unable to recover your account."
 msgstr ""
-"Se le enviará una nueva clave a su dirección de e-mail. "
+"Se le enviará una nueva contraseña a su dirección de e-mail. "
 "Sin embargo no podrá recuperar su cuenta si no ha confirmado "
 "su dirección de e-mail."
 
@@ -906,31 +906,31 @@ msgstr "Usuario incorrecto"
 
 #: sagenb/data/sage/html/accounts/registration.html:32
 msgid "Create a good password"
-msgstr "Cree una clave robusta"
+msgstr "Cree una contraseña robusta"
 
 #: sagenb/data/sage/html/accounts/registration.html:34
 msgid ""
 "Your password must have at least 4 characters. Your password can not "
 "contain your username or spaces."
 msgstr ""
-"Su clave debe tener al menos 4 caracteres. Su clave no puede contener ni "
+"Su contraseña debe tener al menos 4 caracteres. Su contraseña no puede contener ni "
 "su usuario ni espacios."
 
 #: sagenb/data/sage/html/accounts/registration.html:39
 msgid "No password given"
-msgstr "No se ha proporcionado una clave"
+msgstr "No se ha proporcionado una contraseña"
 
 #: sagenb/data/sage/html/accounts/registration.html:42
 msgid "Bad password"
-msgstr "Clave incorrecta"
+msgstr "Contraseña incorrecta"
 
 #: sagenb/data/sage/html/accounts/registration.html:46
 msgid "Re-type your password"
-msgstr "Vuelva a introducir su clave"
+msgstr "Vuelva a introducir su contraseña"
 
 #: sagenb/data/sage/html/accounts/registration.html:49
 msgid "Passwords didn't match"
-msgstr "Las claves no coinciden"
+msgstr "Las contraseñas no coinciden"
 
 #: sagenb/data/sage/html/accounts/registration.html:54
 msgid "Enter your e-mail address"
@@ -1527,19 +1527,19 @@ msgstr "Minutos"
 
 #: sagenb/data/sage/html/settings/account_settings.html:25
 msgid "Change Password"
-msgstr "Cambiar Clave"
+msgstr "Cambiar Contraseña"
 
 #: sagenb/data/sage/html/settings/account_settings.html:31
 msgid "Old password"
-msgstr "Clave anterior"
+msgstr "Contraseña anterior"
 
 #: sagenb/data/sage/html/settings/account_settings.html:35
 msgid "New password"
-msgstr "Clave Nueva"
+msgstr "Contraseña Nueva"
 
 #: sagenb/data/sage/html/settings/account_settings.html:39
 msgid "Retype new password"
-msgstr "Volver a introducir la nueva clave"
+msgstr "Volver a introducir la nueva contraseña"
 
 #: sagenb/data/sage/html/settings/account_settings.html:48
 msgid "Change E-mail Address"
@@ -1615,7 +1615,7 @@ msgstr "Añadir Usuario"
 #: sagenb/data/sage/html/settings/user_management.html:10
 #, python-format
 msgid "The password for the user %(u)s has been reset to <strong>%(p)s</strong>"
-msgstr "La clave para el usuario %(u)s se ha reiniciado a <strong>%(p)s</strong>"
+msgstr "La contraseña para el usuario %(u)s se ha reiniciado a <strong>%(p)s</strong>"
 
 #: sagenb/data/sage/html/settings/user_management.html:13
 msgid "Suspension"
@@ -1876,11 +1876,11 @@ msgid ""
 "Make sure to reset your password by going to Settings in the upper right "
 "bar."
 msgstr ""
-"Su nueva clave es %(key)s\n"
+"Su nueva contraseña es %(key)s\n"
 "\n"
 "Entre en %(url_prefix)s://%(addr)s:%(port)s/\n"
 "\n"
-"Asegúrese de reiniciar su clave entrando en Configuración."
+"Asegúrese de reiniciar su contraseña entrando en Configuración."
 
 #: sagenb/notebook/server_conf.py:57
 msgid "Appearance"
@@ -1992,7 +1992,7 @@ msgstr "Bind DN"
 
 #: sagenb/notebook/server_conf.py:215
 msgid "Bind Password"
-msgstr "Clave Bind"
+msgstr "Contraseña Bind"
 
 #: sagenb/notebook/server_conf.py:221
 msgid "Base DN"
