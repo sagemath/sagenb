@@ -47,7 +47,7 @@ msgid ""
 "The temporary password for the new user <em>%(username)s</em> is "
 "<em>%(password)s</em>"
 msgstr ""
-"La contraseña provisional para el nuevo usuario <em>%(username)s</em>  es "
+"La contraseña provisional para el nuevo usuario <em>%(username)s</em> es "
 "<em>%(password)s</em>"
 
 #: flask_version/admin.py:69
@@ -77,7 +77,7 @@ msgstr ""
 #: flask_version/authentication.py:272
 #, python-format
 msgid "<h1>E-mail address confirmed for user %(username)s</h1>"
-msgstr "<h1>Dirección de e-mail confirmada para el usuario  %(username)s</h1>"
+msgstr "<h1>Dirección de e-mail confirmada para el usuario %(username)s</h1>"
 
 #: flask_version/authentication.py:274
 msgid "E-mail Confirmed"
@@ -170,7 +170,7 @@ msgstr "Error subiendo archivo (falta el campo \"archivo\"). %(backlinks)s"
 #, python-format
 msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
 msgstr "Error subiendo archivo (falta el argumento de " 
-"%(field)s arg).%(backlinks)s"
+"%(field)s).%(backlinks)s"
 
 #: flask_version/worksheet.py:744
 #, python-format
@@ -189,7 +189,7 @@ msgid ""
 "file.%(backlinks)s"
 msgstr ""
 "Se ha encontrado un nombre de archivo \"%(filename)s\" sospechoso subiendo "
-"file.%(backlinks)s"
+"archivo.%(backlinks)s"
 #: flask_version/worksheet.py:874
 msgid "No such worksheet."
 msgstr "No existe la hoja."
@@ -340,7 +340,7 @@ msgstr "Informar de un problema o enviar un error para mejorar Sage"
 
 #: sagenb/data/sage/html/base_authenticated.html:19
 msgid "Report a Problem"
-msgstr "¡Problema!"
+msgstr "Informar de un problema"
 
 #: sagenb/data/sage/html/base_authenticated.html:20
 msgid "Log out of the Sage notebook"
@@ -477,7 +477,7 @@ msgstr "Entrar"
 #: sagenb/data/sage/html/login.html:28
 #, python-format
 msgid "Congratulations %(u)s! You can now sign into the Sage Notebook."
-msgstr "¡Enhorabuena  %(u)s! Ahora puede entrar en el Notebook Sage"
+msgstr "¡Enhorabuena %(u)s! Ahora puede entrar en el Notebook Sage."
 
 #: sagenb/data/sage/html/login.html:32
 msgid "Welcome!"
@@ -486,7 +486,7 @@ msgstr "¡Bienvenido!"
 #: sagenb/data/sage/html/login.html:33
 msgid "<strong>Sage</strong> is a different approach to mathematics software."
 msgstr "<strong>Sage</strong> presenta un enfoque diferente del software para "
-"matemáticas"
+"matemáticas."
 
 #: sagenb/data/sage/html/login.html:36
 msgid ""
@@ -573,7 +573,7 @@ msgstr ""
 "DUE-1022574, DMS-1015114, etc. Cualesquiera opiniones, investigaciones, y "
 "conclusiones o recomendaciones expresadas en este material son del autor(es), "
 "no reflejan necesariamente los puntos de vista de The National Science "
-"Foundation.   Ver también <a href=\"http://sagemath.org/development-"
+"Foundation. Ver también <a href=\"http://sagemath.org/development-"
 "ack.html\">http://sagemath.org/development-ack.html</a>."
 
 #: sagenb/data/sage/html/login.html:66
@@ -1275,7 +1275,7 @@ msgid ""
 "Your worksheet will be assigned a unique address (URL) that you can send "
 "to your friends and colleagues."
 msgstr ""
-"Se asignará una dirección única a su hoja (URL) que podrá  enviar a sus "
+"Se asignará una dirección única a su hoja (URL) que podrá enviar a sus "
 "amigos y colegas."
 
 #: sagenb/data/sage/html/notebook/beforepublish_window.html:9
@@ -1474,7 +1474,7 @@ msgid ""
 " you want if you <a href=\"copy\">make your own copy</a>."
 msgstr ""
 "Sólo se permite compartir una hoja a su propietario. Usted podrá hacer lo "
-"que desee  si <a href=\"copy\">realiza su propia copia</a>."
+"que desee si <a href=\"copy\">realiza su propia copia</a>."
 
 #: sagenb/data/sage/html/notebook/worksheet_share.html:29
 msgid ""
@@ -1577,7 +1577,7 @@ msgid ""
 "(.)."
 msgstr ""
 "El usuario debe comenzar por una letra y tener entre 4 y 32 caracteres. "
-"Sólo puede contener letras, números , guiones bajos y un punto."
+"Sólo puede contener letras, números, guiones bajos y un punto."
 #: sagenb/data/sage/html/settings/admin_add_user.html:17
 msgid "Invalid username"
 msgstr "Usuario no válido"
@@ -1660,7 +1660,7 @@ msgstr "%(t)s por %(le)s"
 #: sagenb/notebook/worksheet.py:2010
 #, python-format
 msgid "%(t)s ago by %(le)s"
-msgstr "hace %(t)s por  %(le)s"
+msgstr "hace %(t)s por %(le)s"
 
 #: sagenb/data/sage/js/translated-messages.js:4
 msgid "Click to download and install tex fonts."
@@ -1704,7 +1704,7 @@ msgstr "Renombrar"
 
 #: sagenb/data/sage/js/translated-messages.js:14
 msgid "Possible failure deleting worksheet."
-msgstr "Posible fallo la borrar la hoja."
+msgstr "Posible fallo al borrar la hoja."
 
 #: sagenb/data/sage/js/translated-messages.js:15
 msgid "unprinted"
@@ -2091,7 +2091,7 @@ msgstr ""
 "búsqueda\")</pre> en una celda de entrada y pulse shift-enter. " 
 "Busque en el código fuente de SAGE tecleando "
 "<pre>search_src(\"mi búsqueda\")</pre> y pulsando "
-"shift-enter.  Se admiten expresiones regulares arbitrarias en las búsquedas."
+"shift-enter. Se admiten expresiones regulares arbitrarias en las búsquedas."
 
 #: sagenb/notebook/tutorial.py:365
 msgid "Key and Mouse Bindings"
@@ -2146,7 +2146,7 @@ msgstr "Borrar Celda"
 
 #: sagenb/notebook/tutorial.py:373
 msgid "Delete all cell contents, then press <strong>backspace</strong>."
-msgstr "Borrar todo el contenido de una celda y después pulsar  <strong>backspace</strong>."
+msgstr "Borrar todo el contenido de una celda y después pulsar <strong>backspace</strong>."
 
 #: sagenb/notebook/tutorial.py:374
 msgid "Split and Join Cells"
@@ -2159,7 +2159,7 @@ msgid ""
 "enter</strong> to split a cell and evaluate both pieces."
 msgstr ""
 "Pulse <strong>ctrl-;</strong> en una celda para dividirla en dos, y "
-"<strong>ctrl-backspace</strong> para unirlas. Pulse  <strong>ctrl-"
+"<strong>ctrl-backspace</strong> para unirlas. Pulse <strong>ctrl-"
 "enter</strong> para dividir una celda y evaluar ambas."
 
 #: sagenb/notebook/tutorial.py:376
@@ -2199,7 +2199,7 @@ msgid ""
 "(works in Safari and Firefox).  In Firefox you can also press tab and "
 "shift-tab."
 msgstr ""
-"Seleccione un texto y pulse > para  sangrarlo < para reducir la sangría ""(funciona en Safari y Firefox). En Firefox también se puede pulsar tab y "
+"Seleccione un texto y pulse > para sangrarlo < para reducir la sangría ""(funciona en Safari y Firefox). En Firefox también se puede pulsar tab y "
 "shift-tab."
 
 #: sagenb/notebook/tutorial.py:382
@@ -2273,7 +2273,7 @@ msgid ""
 "Put \"%%gap\", \"%%singular\", etc. as the first input line of a cell; "
 "the rest of the cell is evaluated in that system."
 msgstr ""
-"Escriba  \"%%gap\", \"%%singular\", etc. como primera línea de la celda; "
+"Escriba \"%%gap\", \"%%singular\", etc. como primera línea de la celda; "
 "el resto de la celda se evaluará en ese sistema."
 
 #: sagenb/notebook/tutorial.py:397
@@ -2386,8 +2386,8 @@ msgid ""
 " .py files are not.   You may omit the .sage or .py extension.  Files may"
 " load other files."
 msgstr ""
-"Utilice  \"load filename.sage\" y \"load filename.py\". La ruta es relativa "
-" a la del directorio donde inició el notebook. Los archivos .sage son "
+"Utilice \"load filename.sage\" y \"load filename.py\". La ruta es relativa "
+"a la del directorio donde inició el notebook. Los archivos .sage son "
 "preprocesados y los .py no. Se puede omitir la extensión .sage o .py. Los "
 "archivos pueden cargar otros archivos."
 
@@ -2401,7 +2401,7 @@ msgid ""
 "are automatically reloaded when the file changes.  The file "
 "$HOME/.sage/init.sage is attached on startup if it exists."
 msgstr ""
-"Utilice  \"attach filename.sage\" o \"attach filename.py\". Los archivos "
+"Utilice \"attach filename.sage\" o \"attach filename.py\". Los archivos "
 "adjuntos son recargados automáticamente cuando el archivo cambia. El archivo "
 "$HOME/.sage/init.sage, si existe, se adjunta automáticamente al inicio."
 
@@ -2449,7 +2449,7 @@ msgstr ""
 "archivos que se puedan compartir entre hojas. La variable DATA "
 "contiene la ruta a los archivos de datos. Por ejemplo, para abrir un archivo "
 "de ese directorio, escribir \"open(DATA+'filename')\". Si usted ha subido el "
-"archivo foo.sage, podrá cargarlo con  \"load foo.sage\"; Si foo.py es un "
+"archivo foo.sage, podrá cargarlo con \"load foo.sage\"; Si foo.py es un "
 "archivo Python, podrá importarlo con \"import foo\"."
 
 #: sagenb/notebook/tutorial.py:425
@@ -2462,7 +2462,7 @@ msgid ""
 "easy moving of objects from one worksheet to another, and saving of "
 "objects for later use."
 msgstr ""
-"Utilice  \"save obj1 obj2 ...\" y \"load obj1 obj2 ...\". Esto permite mover "
+"Utilice \"save obj1 obj2 ...\" y \"load obj1 obj2 ...\". Esto permite mover "
 "fácilmente objetos de una hoja a otra, y guardarlos para un uso posterior."
 
 #: sagenb/notebook/tutorial.py:427
