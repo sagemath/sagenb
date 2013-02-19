@@ -240,8 +240,6 @@ def docstring(obj_name, globs, system='sage'):
 
         sage: from sagenb.misc.support import docstring
         sage: D = docstring("r.lm", globs=globals())
-        <string>:5: (WARNING/2) Inline emphasis start-string without end-string.
-        <string>:5: (WARNING/2) Inline strong start-string without end-string.
     """
     if system not in ['sage', 'python']:
         obj_name = system + '.' + obj_name
