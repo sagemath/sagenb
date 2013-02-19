@@ -56,7 +56,7 @@ msgstr "Nuevo usuario"
 
 #: flask_version/authentication.py:258
 msgid "The confirmation system is not active."
-msgstr "El sistema de confirmación no está activo"
+msgstr "El sistema de confirmación está desactivado"
 
 #: flask_version/authentication.py:261
 msgid ""
@@ -90,12 +90,12 @@ msgstr "Historial"
 
 #: flask_version/decorators.py:35
 msgid "You do not have permission to access this location"
-msgstr "Usted no tiene permiso para acceder a este lugar"
+msgstr "Usted no está autorizado para acceder a esta página"
 
 #: flask_version/worksheet.py:27 ../flask_version/worksheet.py:36
 #: flask_version/worksheet_listing.py:195
 msgid "You do not have permission to access this worksheet"
-msgstr "Usted no tiene permiso para acceder a esta hoja"
+msgstr "Usted no está autorizado para acceder a esta hoja"
 
 #: flask_version/worksheet.py:75 ../flask_version/worksheet.py:951
 #: sagenb/data/sage/html/notebook/worksheet_page.html:28
@@ -106,7 +106,7 @@ msgstr "Sin título"
 
 #: flask_version/worksheet.py:578
 msgid "Error: can't add more than 500 collaborators at a time"
-msgstr "Error: No se pueden añadir más de 500 colaboradures a la vez"
+msgstr "Error: No se pueden añadir más de 500 colaboradores a la vez"
 
 #: flask_version/worksheet.py:631
 #: sagenb/data/sage/html/error_message.html:4
@@ -164,18 +164,18 @@ msgstr ""
 #: flask_version/worksheet.py:724
 #, python-format
 msgid "Error uploading file (missing field \"file\"). %(backlinks)s"
-msgstr "Error recuperando archivo (falta el campo \"archivo\"). %(backlinks)s"
+msgstr "Error subiendo archivo (falta el campo \"archivo\"). %(backlinks)s"
 
 #: flask_version/worksheet.py:731
 #, python-format
 msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
-msgstr "Error recuperando archivo (falta el argumento de " 
+msgstr "Error subiendo archivo (falta el argumento de " 
 "%(field)s arg).%(backlinks)s"
 
 #: flask_version/worksheet.py:744
 #, python-format
 msgid "Error uploading file (missing filename).%(backlinks)s"
-msgstr "Error recuperando archivo (falta el nombre del archivo).%(backlinks)s"
+msgstr "Error subiendo archivo (falta el nombre del archivo).%(backlinks)s"
 
 #: flask_version/worksheet.py:752
 #, python-format
@@ -188,8 +188,8 @@ msgid ""
 "Suspicious filename \"%(filename)s\" encountered uploading "
 "file.%(backlinks)s"
 msgstr ""
-"Se ha encontrado un nombre de fichero \"%(filename)s\" sospechoso recuperando "
-"el fichero.%(backlinks)s"
+"Se ha encontrado un nombre de fichero \"%(filename)s\" sospechoso subiendo "
+"file.%(backlinks)s"
 #: flask_version/worksheet.py:874
 msgid "No such worksheet."
 msgstr "No existe la hoja."
@@ -214,8 +214,8 @@ msgid ""
 "directly from your computer.\n"
 "%(backlinks)s"
 msgstr ""
-"Este notebook Sage no está configuradopara recuperar hojas desde URLs "
-"'https'. Intente un URL diferente, o descarge la hoja y súbala "
+"Este notebook Sage no está configurado para recuperar hojas desde URLs "
+"'https'. Pruebe con un URL diferente, o descargue la hoja y súbala "
 "directamente desde su ordenador.\n"
 "%(backlinks)s"
 
@@ -255,10 +255,11 @@ msgid ""
 "sws file is just a bzip2 tarball; take a look inside!\n"
 "%(backlinks)s"
 msgstr ""
-"Ocurrió un error al bajar la hoja. Pudiera estar en un formato "
+"Ocurrió un error al subir la hoja. Pudiera estar en un formato "
 "antiguo no soportado o peor aún. Si necesita sus contenidos desesperadamente "
-"contacte con el grupo <a href=\"http://groups.google.com/group/sage-support\">""sage-support</a> y envíe un enlace a su hoja. Alternativamente, un archivo"
-"sws salo es un tarball comprimido con bzip2 tarball;"
+"contacte con el grupo <a href=\"http://groups.google.com/group/sage-support\">"
+"sage-support</a> y envíe un enlace a su hoja. Alternativamente, un archivo "
+"sws simplemente es un tarball comprimido con bzip2;"
 "¡Eche un vistazo dentro de él!\n"
 "%(backlinks)s"
 
@@ -294,7 +295,7 @@ msgstr "Ocultar/Mostrar la barra superior"
 #: sagenb/data/sage/html/base_authenticated.html:9
 #: sagenb/data/sage/html/test_report.html:123
 msgid "Toggle"
-msgstr "Ocultar/Mostar"
+msgstr "Ocultar/Mostrar"
 
 #: sagenb/data/sage/html/base_authenticated.html:10
 msgid "Back to your personal worksheet list"
@@ -363,7 +364,7 @@ msgstr "Tutorial"
 
 #: sagenb/data/sage/html/docs.html:16
 msgid "Explore a collection of in-depth tutorials on specific topics"
-msgstr "Explorar una collección de tutoriales avanzados sobre materias " 
+msgstr "Explorar una colección de tutoriales avanzados sobre materias " 
 "específicas"
 
 #: sagenb/data/sage/html/docs.html:16
@@ -433,7 +434,7 @@ msgid ""
 "Hansen, Bobby Moretti, Yi Qiang, and Dorian Raymer."
 msgstr ""
 "El Notebook Sage fue escrito principalmente por William Stein con "
-"contribuciones sustenciales de Tom Boothby, Timothy Clemans, Alex Clemesha, "
+"contribuciones sustanciales de Tom Boothby, Timothy Clemans, Alex Clemesha, "
 "Mike Hansen, Bobby Moretti, Yi Qiang, y Dorian Raymer."
 #: sagenb/data/sage/html/error_message.html:19
 msgid "Continue"
@@ -495,7 +496,7 @@ msgid ""
 msgstr ""
 "Con el Notebook Sage, cualquiera puede crear, colaborar en, y publicar "
 "hojas interactivas. En una hoja se puede escribir código de Sage, de Python y "
-"de otro software incluído en Sage"
+"de otro software incluido en Sage"
 #: sagenb/data/sage/html/login.html:39
 msgid "General and Advanced Pure and Applied Mathematics"
 msgstr "Matemática General y Avanzada, Pura y Aplicada"
@@ -599,7 +600,7 @@ msgstr "Recordarme"
 
 #: sagenb/data/sage/html/login.html:89
 msgid "Sign up for a new Sage Notebook account"
-msgstr "Abrir una cuenta nueva en el Notebbok de Sage"
+msgstr "Abrir una cuenta nueva en el Notebook de Sage"
 
 #: sagenb/data/sage/html/login.html:93
 msgid "Browse published Sage worksheets<br>(no login required)"
@@ -615,7 +616,7 @@ msgstr "El administrador ha desactivado la creación de usuarios nuevos."
 
 #: sagenb/data/sage/html/login.html:106
 msgid "Javascript must be enabled in order to use the Sage Notebook."
-msgstr "Para utilizra el Notebbok Sage se debe activar Javascript"
+msgstr "Para utilizar el Notebook Sage se debe activar Javascript"
 
 #: sagenb/data/sage/html/source_code.html:3
 #: sagenb/notebook/tutorial.py:358
@@ -727,11 +728,11 @@ msgstr "Buscar hojas"
 
 #: sagenb/data/sage/html/worksheet_listing.html:116
 msgid "Unarchive selected worksheets so it appears in the default worksheet list"
-msgstr "Desarchivar las hojas seleccionadas para que aparezcan en la lista normal de hojas"
+msgstr "Des-archivar las hojas seleccionadas para que aparezcan en la lista normal de hojas"
 
 #: sagenb/data/sage/html/worksheet_listing.html:116
 msgid "Unarchive"
-msgstr "Desarchivar"
+msgstr "Des-archivar"
 
 #: sagenb/data/sage/html/worksheet_listing.html:118
 msgid ""
@@ -820,7 +821,7 @@ msgid ""
 "worksheet</a>, view <a href=\"/pub/\">published worksheets</a>, or read "
 "the <a href=\"/help\" target=\"_new\">documentation</a>."
 msgstr ""
-"¡Bienvenido a Sagee! Puede <a href=\"/new_worksheet\">crear una hoja "
+"¡Bienvenido a Sage! Puede <a href=\"/new_worksheet\">crear una hoja "
 "nueva</a>, ver las <a href=\"/pub/\">hojas publicadas</a>, o leer "
 "la <a href=\"/help\" target=\"_new\">documentación</a>."
 
@@ -851,7 +852,7 @@ msgid ""
 "account. However if you didn't confirm your e-mail address you will be "
 "unable to recover your account."
 msgstr ""
-"Se le enviará una nueva clave a su dirección de e-mail."
+"Se le enviará una nueva clave a su dirección de e-mail. "
 "Sin embargo no podrá recuperar su cuenta si no ha confirmado "
 "su dirección de e-mail."
 
@@ -889,7 +890,7 @@ msgid ""
 " long. You may only use letters, numbers, underscores, @, and dots."
 msgstr ""
 "Su usuario debe comenzar con una letra y tener entre 3 y 64 caracteres."
-"sólo se puede utilizar letras, números, guiones bajos, @, y puntos." 
+" Sólo se puede utilizar letras, números, guiones bajos, @, y puntos." 
 
 #: sagenb/data/sage/html/accounts/registration.html:22
 msgid "No username given"
@@ -925,7 +926,7 @@ msgstr "Clave incorrecta"
 
 #: sagenb/data/sage/html/accounts/registration.html:46
 msgid "Re-type your password"
-msgstr "Reintroduzca su clave"
+msgstr "Vuelva a introducir su clave"
 
 #: sagenb/data/sage/html/accounts/registration.html:49
 msgid "Passwords didn't match"
@@ -1098,7 +1099,7 @@ msgstr "Copiar hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:102
 msgid "Move this worksheet to the trash"
-msgstr "Envia esta hoja a la papelera"
+msgstr "Envía esta hoja a la papelera"
 
 #: sagenb/data/sage/html/notebook/base.html:102
 msgid "Delete worksheet"
@@ -1178,11 +1179,11 @@ msgstr "Modo de Una Celda"
 
 #: sagenb/data/sage/html/notebook/base.html:117
 msgid "Switch to multi-cell mode"
-msgstr "Cambia a modo multi celda"
+msgstr "Cambia a modo multi-celda"
 
 #: sagenb/data/sage/html/notebook/base.html:117
 msgid "Multi Cell Mode"
-msgstr "Modo Multi Celda"
+msgstr "Modo Multi-Celda"
 
 #: sagenb/data/sage/html/notebook/base.html:120
 msgid "Select an attached file"
@@ -1211,7 +1212,7 @@ msgstr "Activa/desactiva impresión avanzada"
 
 #: sagenb/data/sage/html/notebook/base.html:149
 msgid "Interactively use this worksheet"
-msgstr "Utilizar esta hoja en mod interactivo"
+msgstr "Utilizar esta hoja en modo interactivo"
 
 #: sagenb/data/sage/html/notebook/base.html:149
 msgid "Worksheet"
@@ -1243,7 +1244,7 @@ msgstr "Revisiones"
 
 #: sagenb/data/sage/html/notebook/base.html:153
 msgid "Let others edit this worksheet"
-msgstr "Permintir que otros editen esta hoja"
+msgstr "Permitir que otros editen esta hoja"
 
 #: sagenb/data/sage/html/notebook/base.html:153
 msgid "Share"
@@ -1330,7 +1331,7 @@ msgid ""
 " is a special variable that gives the exact path to all data files "
 "uploaded to this worksheet."
 msgstr ""
-"Acceda a %(f)s en esta hoja escribiendo <tt>DATA+'%(f)s'</tt>. Aquí DATA"
+"Acceda a %(f)s en esta hoja escribiendo <tt>DATA+'%(f)s'</tt>. Aquí DATA "
 "es una variable especial que proporciona la ruta exacta a todos los archivos "
 "de datos subidos a esta hoja."
 
@@ -1366,11 +1367,11 @@ msgstr "Esta página tiene la puntuación %(wr).1f."
 
 #: sagenb/data/sage/html/notebook/guest_worksheet_page.html:54
 msgid "leave a comment"
-msgstr "dejar un cometario"
+msgstr "dejar un comentario"
 
 #: sagenb/data/sage/html/notebook/guest_worksheet_page.html:55
 msgid "Rerate"
-msgstr "Repuntuar"
+msgstr "Re-puntuar"
 
 #: sagenb/data/sage/html/notebook/guest_worksheet_page.html:55
 msgid "Rate"
@@ -1538,7 +1539,7 @@ msgstr "Clave Nueva"
 
 #: sagenb/data/sage/html/settings/account_settings.html:39
 msgid "Retype new password"
-msgstr "Reintroducir la nueva clave"
+msgstr "Volver a introducir la nueva clave"
 
 #: sagenb/data/sage/html/settings/account_settings.html:48
 msgid "Change E-mail Address"
@@ -1567,7 +1568,7 @@ msgstr "Error de Usuario"
 
 #: sagenb/data/sage/html/settings/admin_add_user.html:12
 msgid "Pick a username"
-msgstr "Eleja un usuario"
+msgstr "Elija un usuario"
 
 #: sagenb/data/sage/html/settings/admin_add_user.html:13
 msgid ""
@@ -1575,7 +1576,7 @@ msgid ""
 "long. It can only consist of letters, numbers, underscores, and one dot "
 "(.)."
 msgstr ""
-"El usuario debe comenzar por una letra y tener entre 4 y 32 caracteres."
+"El usuario debe comenzar por una letra y tener entre 4 y 32 caracteres. "
 "Sólo puede contener letras, números , guiones bajos y un punto."
 #: sagenb/data/sage/html/settings/admin_add_user.html:17
 msgid "Invalid username"
@@ -1626,7 +1627,7 @@ msgstr "Reiniciar"
 
 #: sagenb/data/sage/html/settings/user_management.html:16
 msgid "Unsuspend"
-msgstr "Reestablecer"
+msgstr "Restablecer"
 
 #: sagenb/data/sage/html/settings/user_management.html:16
 msgid "Suspend"
@@ -1648,7 +1649,7 @@ msgstr "Usuario"
 
 #: sagenb/data/sage/html/worksheet/ratings_info.html:9
 msgid "Comment"
-msgstr "Commentario"
+msgstr "Comentario"
 
 #: sagenb/data/sage/html/worksheet/time_last_edited.html:6
 #, python-format
@@ -1670,8 +1671,8 @@ msgid ""
 "Your browser / OS combination is not supported.\\nPlease use Firefox or "
 "Opera under Linux, Windows, or Mac OS X, or Safari."
 msgstr ""
-"Su combinación navegador / OS no está soportada.\\nPor favor, utilice"
-"Firefox o Oper bajo Linux, Windows o Mac OS X, o Safari."
+"Su combinación navegador / OS no está soportada.\\nPor favor, utilice "
+"Firefox u Opera bajo Linux, Windows o Mac OS X, o Safari."
 
 #: sagenb/data/sage/js/translated-messages.js:6
 msgid "Java Applet Hidden"
@@ -1720,7 +1721,7 @@ msgid ""
 "This worksheet is read only. Please make a copy or contact the owner to "
 "change it."
 msgstr ""
-"Esta hoja is de sólo lectura. Por favor haga una copia o contacte con el "
+"Esta hoja es de sólo lectura. Por favor haga una copia o contacte con el "
 "propietario para cambiarlo."
 
 #: sagenb/data/sage/js/translated-messages.js:19
@@ -1779,7 +1780,7 @@ msgid ""
 " save it to a file, or you may be able to just drag the image to your "
 "desktop."
 msgstr ""
-"Para guardar esta image, puede intentar pulsar el botón derecho sobre ella "
+"Para guardar esta imagen, puede intentar pulsar el botón derecho sobre ella "
 "y copiarla o guardarla en un fichero, o puede intentar arrastrar la imagen "
 "a su escritorio."
 
@@ -1999,7 +2000,7 @@ msgstr "Base DN"
 
 #: sagenb/notebook/server_conf.py:227
 msgid "Username Attribute (i.e. cn, uid or userPrincipalName)"
-msgstr "Attributo de usuario (i.e. cn, uid or userPrincipalName)"
+msgstr "Atributo de usuario (i.e. cn, uid o userPrincipalName)"
 
 #: sagenb/notebook/server_conf.py:233
 msgid "Attributes for user lookup"
@@ -2065,7 +2066,7 @@ msgid ""
 "enter (shift-enter overwrites output and saves to worksheet)."
 msgstr ""
 "Teclee ? inmediatamente después del objeto o función y presione tab or shift-"
-"enter (shift-enter sobreescribe la salida y guarda la hoja)."
+"enter (shift-enter sobrescribe la salida y guarda la hoja)."
 
 #: sagenb/notebook/tutorial.py:359
 msgid ""
@@ -2073,11 +2074,11 @@ msgid ""
 "overwrites output and saves to worksheet)."
 msgstr ""
 "Teclee ?? después del objeto y pule tab o shift-enter (shift-enter "
-"sobreescribe la salida y guarda la hoja)."
+"sobrescribe la salida y guarda la hoja)."
 
 #: sagenb/notebook/tutorial.py:360
 msgid "Full Text Search of Docs and Source"
-msgstr "Búsqueda a Texto Completo en Docs y Fuentes"
+msgstr "Búsqueda a Texto Completo en Documentación y Fuentes"
 
 #: sagenb/notebook/tutorial.py:361
 msgid ""
@@ -2086,7 +2087,7 @@ msgid ""
 " code of SAGE by typing <pre>search_src(\"my query\")</pre> and pressing "
 "shift-enter.  Arbitrary regular expressions are allowed as queries."
 msgstr ""
-"Busque en ls documentación de SAGE escribiendo <pre>search_doc(\"mi "
+"Busque en la documentación de SAGE escribiendo <pre>search_doc(\"mi "
 "búsqueda\")</pre> en una celda de entrada y pulse shift-enter. " 
 "Busque en el código fuente de SAGE tecleando "
 "<pre>search_src(\"mi búsqueda\")</pre> y pulsando "
@@ -2172,7 +2173,7 @@ msgid ""
 "on existing text to edit it.  Use $...$ and $$...$$ to include typeset "
 "math in the text block."
 msgstr ""
-"Mueva el ratón hasta que aprezca una barra azul. <strong>Shift-"
+"Mueva el ratón hasta que aparezca una barra azul. <strong>Shift-"
 "click</strong> en la barra azul para crear una celda de texto nueva. Haga "
 "doble pulsación sobre el texto preexistente para editarlo. Utilice $...$ "
 "y $$...$$ para incluir expresiones matemáticas en el bloque de texto."
@@ -2190,7 +2191,7 @@ msgstr ""
 
 #: sagenb/notebook/tutorial.py:380
 msgid "Indenting Blocks"
-msgstr "Indentar bloques"
+msgstr "Sangrar bloques"
 
 #: sagenb/notebook/tutorial.py:381
 msgid ""
@@ -2198,12 +2199,12 @@ msgid ""
 "(works in Safari and Firefox).  In Firefox you can also press tab and "
 "shift-tab."
 msgstr ""
-"Seleccione un texto y pulse > para indentarlo u < para reducir la indentación ""(funciona en Safari y Firefox). En Firefox también se puede pulsar tab y "
+"Seleccione un texto y pulse > para  sangrarlo < para reducir la sangría ""(funciona en Safari y Firefox). En Firefox también se puede pulsar tab y "
 "shift-tab."
 
 #: sagenb/notebook/tutorial.py:382
 msgid "Comment/Uncomment Blocks"
-msgstr "Comentar/Descomentar bloques"
+msgstr "Comentar/Des-comentar bloques"
 
 #: sagenb/notebook/tutorial.py:383
 msgid ""
@@ -2212,7 +2213,7 @@ msgid ""
 "<strong>ctrl-3</strong> and <strong>ctrl-4</strong>."
 msgstr ""
 "Seleccione un texto y pulse <strong>ctrl-.</strong> para comentarlo y "
-"<strong>ctrl-,</strong> para descomentarlo. También se puede usar "
+"<strong>ctrl-,</strong> para quitar los comentarios. También se puede usar "
 "<strong>ctrl-3</strong> y <strong>ctrl-4</strong>."
 
 #: sagenb/notebook/tutorial.py:384
@@ -2231,7 +2232,7 @@ msgstr ""
 
 #: sagenb/notebook/tutorial.py:388
 msgid "Interrupt and Restart Sessions"
-msgstr "Interumpir y Reiniciar Sesiones"
+msgstr "Interrumpir y Reiniciar Sesiones"
 
 #: sagenb/notebook/tutorial.py:389
 msgid "Interrupt Running Calculations"
@@ -2289,7 +2290,7 @@ msgstr ""
 "de shell. Se mantiene el directorio por defecto actual."
 #: sagenb/notebook/tutorial.py:399
 msgid "Interactive Dynamic Widgets"
-msgstr "Widgets Dinámicas interactivas"
+msgstr "Widgets Dinámicas Interactivas"
 
 #: sagenb/notebook/tutorial.py:400
 msgid ""
@@ -2301,7 +2302,7 @@ msgstr ""
 
 #: sagenb/notebook/tutorial.py:401
 msgid "Autoevaluate Cells on Load"
-msgstr "Autoevaluar Celdas al Cargar"
+msgstr "Auto-evaluar Celdas al Cargar"
 
 #: sagenb/notebook/tutorial.py:402
 msgid ""
@@ -2338,10 +2339,10 @@ msgid ""
 "you can write input cells that contains non-evaluated plain text mixed "
 "with examples by starting the block with \">>>\" or including an example."
 msgstr ""
-"El código se evalúa ejecutando (despuén de preprocesarlo). Sólo se muestra la "
+"El código se evalúa ejecutando (después de preprocesarlo). Sólo se muestra la "
 "salida de la última línea. Si alguna línea comienza por \"sage:\" o \">>>\" "
 "se asume que todo el bloque contiene texto y ejemplos, por lo que solo se "
-"ejecutan las líneas que comienzen por un inductor. Así, se pueden pegar "
+"ejecutan las líneas que comiencen por un inductor. Así, se pueden pegar "
 "ejemplos completos de la documentación sin necesidad de editarlos y se puede "
 "escribir texto sin evaluar en las celdas mezclado con ejemplos, comenzando "
 "el bloque con \">>>\" o incluyendo un ejemplo."
@@ -2386,7 +2387,7 @@ msgid ""
 " load other files."
 msgstr ""
 "Utilice  \"load filename.sage\" y \"load filename.py\". La ruta es relativa "
-" a la del directorio donde inición el notebook. Los archivos .sage son "
+" a la del directorio donde inició el notebook. Los archivos .sage son "
 "preprocesados y los .py no. Se puede omitir la extensión .sage o .py. Los "
 "archivos pueden cargar otros archivos."
 
@@ -2401,7 +2402,7 @@ msgid ""
 "$HOME/.sage/init.sage is attached on startup if it exists."
 msgstr ""
 "Utilice  \"attach filename.sage\" o \"attach filename.py\". Los archivos "
-"adjuntos son recargados automáticamente cuando el archivo cambia. El achivo "
+"adjuntos son recargados automáticamente cuando el archivo cambia. El archivo "
 "$HOME/.sage/init.sage, si existe, se adjunta automáticamente al inicio."
 
 #: sagenb/notebook/tutorial.py:419
@@ -2444,7 +2445,7 @@ msgid ""
 "uploaded, type \"load foo.sage\"; if foo.py is a Python file, you can "
 "import it by typing \"import foo\"."
 msgstr ""
-"Utilice el menu Datos para subir imágenes y otros archivos, y crear nuevos "
+"Utilice el menú Datos para subir imágenes y otros archivos, y crear nuevos "
 "archivos que se puedan compartir entre hojas. La variable DATA "
 "contiene la ruta a los ficheros de datos. Por ejemplo, para abrir un archivo "
 "de ese directorio, escribir \"open(DATA+'filename')\". Si usted ha subido el "
@@ -2462,7 +2463,7 @@ msgid ""
 "objects for later use."
 msgstr ""
 "Utilice  \"save obj1 obj2 ...\" y \"load obj1 obj2 ...\". Esto permite mover "
-"fácilmenete objetos de una hoja a otra, y guardarlos para un uso posterior."
+"fácilmente objetos de una hoja a otra, y guardarlos para un uso posterior."
 
 #: sagenb/notebook/tutorial.py:427
 msgid "Loading and Saving Sessions"
