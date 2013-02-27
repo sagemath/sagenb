@@ -113,7 +113,7 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
     alarm_count = 0  
     for port in range(start, start+max_tries+1):
         try:
-            alarm(1)
+            alarm(5)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((interface, port))
         except socket.error, msg:
