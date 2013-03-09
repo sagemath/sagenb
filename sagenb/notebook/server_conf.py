@@ -52,9 +52,7 @@ defaults = {'word_wrap_cols':72,
             'ldap_bindpw': 'secret',
             'ldap_gssapi': False,
             'ldap_username_attrib': 'cn',
-            'ldap_lookup_attribs': ['cn', 'sn', 'givenName', 'mail'],
             'ldap_timeout': 5,
-            'ldap_sizelimit': 30,
             }
 
 G_APPEARANCE = _('Appearance')
@@ -238,21 +236,9 @@ defaults_descriptions = {
         GROUP : G_LDAP,
         TYPE : T_STRING,
         },
-    'ldap_lookup_attribs': {
-        POS : 8,
-        DESC: _('Attributes for user lookup'),
-        GROUP : G_LDAP,
-        TYPE : T_LIST,
-        },
     'ldap_timeout': {
-        POS : 9,
+        POS : 8,
         DESC: _('Query timeout (seconds)'),
-        GROUP : G_LDAP,
-        TYPE : T_INTEGER,
-        },
-    'ldap_sizelimit': {
-        POS : 9,
-        DESC: _('Max. number of search results'),
         GROUP : G_LDAP,
         TYPE : T_INTEGER,
         },

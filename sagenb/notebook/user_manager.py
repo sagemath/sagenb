@@ -113,14 +113,6 @@ class UserManager(object):
 
         raise KeyError, "no user '%s'"%username
 
-    def user_lookup(self, search):
-        r = [x for x in self.users().keys() if search in x]
-        try:
-            r += [u for u in self._user_lookup(search) if u not in r]
-        except AttributeError:
-            pass
-        return r
-
     def valid_login_names(self):
         """
         Return a list of users that can log in.
@@ -542,18 +534,6 @@ class ExtAuthUserManager(SimpleUserManager):
             return self._auth_methods[a].check_password(username, password)
 
         return False
-
-    def _user_lookup(self, search):
-        """
-        Returns a list of usernames that are found when calling user_lookup on all enabled auth methods
-        """
-        r = set()
-        for a in self._auth_methods:
-            if self._conf[a]:
-                names = self._auth_methods[a].user_lookup(search)
-                if names:
-                    r = r.union(names)
-        return list(r)
 
 class OpenIDUserManager(ExtAuthUserManager):
     def __init__(self, accounts=True, conf=None):

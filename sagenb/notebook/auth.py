@@ -7,9 +7,6 @@ class AuthMethod():
     def __init__(self, conf):
         self._conf = conf
 
-    def user_lookup(self, search):
-        raise NotImplementedError
-
     def check_user(self, username):
         raise NotImplementedError
 
@@ -31,10 +28,6 @@ class LdapAuth(AuthMethod):
     1.2) find the ldap object matching username.
 
     2) if 1 succeeds, try simple bind with the supplied user DN and password
-
-    User lookup:
-    wildcard-search all configured "user lookup attributes" for the given
-    search string
     """
 
     def _require_ldap(default_return):
@@ -60,7 +53,7 @@ class LdapAuth(AuthMethod):
     def __init__(self, conf):
         AuthMethod.__init__(self, conf)
 
-    def _ldap_search(self, query, attrlist=None):
+    def _ldap_search(self, query, attrlist=None, sizelimit=20):
         """
         runs any ldap query passed as arg
         """
@@ -81,8 +74,8 @@ class LdapAuth(AuthMethod):
                 ldap.SCOPE_SUBTREE,
                 filterstr=query,
                 attrlist=attrlist,
-                timeout=self._conf['ldap_timeout'],
-                sizelimit=self._conf['ldap_sizelimit'])
+                timeout=self._conf['ldap_timeout'])
+                sizelimit=sizelimit)
         except ldap.LDAPError, e:
             print 'LDAP Error: %s' % str(e)
             return []
@@ -106,28 +99,6 @@ class LdapAuth(AuthMethod):
         # only allow one unique result
         # (len(result) will probably always be 0 or 1)
         return result[0] if len(result) == 1 else (None, None)
-
-    @_require_ldap(None)
-    def user_lookup(self, search):
-        from ldap.filter import filter_format
-
-        uname_attrib = self._conf['ldap_username_attrib']
-        lookup_attribs = self._conf['ldap_lookup_attribs']
-
-        # build ldap OR query
-        query = '(|%s)' % ''.join(
-            filter_format('(%s=*%s*)', [a, search]) for a in lookup_attribs)
-
-        result = self._ldap_search(query, attrlist=[str(uname_attrib)])
-
-        # return a list of usernames
-        unames = []
-        for dn, attribs in result:
-            uname_list = attribs.get(uname_attrib, None)
-            if uname_list:
-                # use only the first item of the attribute list
-                unames.append(uname_list[0])
-        return unames
 
     @_require_ldap(False)
     def check_user(self, username):
