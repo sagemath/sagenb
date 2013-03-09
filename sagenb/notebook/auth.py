@@ -74,7 +74,7 @@ class LdapAuth(AuthMethod):
                 ldap.SCOPE_SUBTREE,
                 filterstr=query,
                 attrlist=attrlist,
-                timeout=self._conf['ldap_timeout'])
+                timeout=self._conf['ldap_timeout'],
                 sizelimit=sizelimit)
         except ldap.LDAPError, e:
             print 'LDAP Error: %s' % str(e)
