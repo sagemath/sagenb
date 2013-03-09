@@ -3,8 +3,7 @@
 INPUT:
     - worksheet - an instance of Worksheet
     - username - a string containing a username
-    - lookup - (optional) string used for user lookup
-    - lookup_result - (optional) list of users returned by user lookup
+    - other_users - a list of strings containing other users names
 #}
 
 {% block sharebar_title %}
@@ -14,16 +13,6 @@ INPUT:
 {% set select = "share" %}
 
 {% block after_sharebar %}
-<script type="text/javascript">
-function add_collab(u) {
-    var col = document.getElementById('collaborators');
-    if (col.value != "") {
-        col.value+= ", ";
-    }
-    col.value+=u;
-}
-</script>
-
 {% if not (notebook.user_manager().user_is_admin(username) or username == worksheet.owner()) %}
 {{ gettext('Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href="copy">make your own copy</a>.') }}
 {% else %}
@@ -34,25 +23,5 @@ function add_collab(u) {
     <textarea name="collaborators" rows=5 cols=70 class="edit" id="collaborators" style="display:block; margin-bottom:1em;">{{ worksheet.collaborators()|join(', ') }}</textarea>
     <input type="submit" title="{{ gettext('Give access to your worksheet to the above collaborators') }}" value="{{ gettext('Invite Collaborators') }}" />
 </form>
-
-    <hr class="usercontrol" />
-    {% if lookup %}
-        <div>
-        <p>{{ gettext ('Search results:') }}{% if lookup_result %}
-            {% for u in lookup_result %}
-                <span class="users">
-                    <a href="javascript:add_collab('{{ u }}');" class="users">{{ u }}</a>
-                </span>
-            {% endfor %}
-         {% else %} {{ gettext('No match found') }}
-         {% endif %}</p>
-         </div>
-    {% else %}
-        {{ gettext('Search Users') }}
-    {% endif %}
-    <form width=70% method="post" action="search_collab" style="margin-bottom:1em">
-        <input type="text" class="edit" id="lookup" name="lookup" value="{{ lookup if lookup else '' }}" />
-        <input type="submit" value="{{ gettext('Search') }}" />
-    </form>
 {% endif %}
 {% endblock %}

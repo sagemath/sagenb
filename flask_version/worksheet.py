@@ -564,10 +564,6 @@ def worksheet_edit_published_page(worksheet):
 def worksheet_share(worksheet):
     return g.notebook.html_share(worksheet, g.username)
 
-@worksheet_command('search_collab')
-def worksheet_search_collab(worksheet):
-    return g.notebook.html_share(worksheet, g.username, request.values.get('lookup'))
-
 @worksheet_command('invite_collab')
 def worksheet_invite_collab(worksheet):
     owner = worksheet.owner()
@@ -577,6 +573,7 @@ def worksheet_invite_collab(worksheet):
     if len(collaborators-old_collaborators)>500:
         # to prevent abuse, you can't add more than 500 collaborators at a time
         return current_app.message(_("Error: can't add more than 500 collaborators at a time"), cont=url_for_worksheet(worksheet))
+    worksheet.set_collaborators(collaborators)
     user_manager = g.notebook.user_manager()
     # add worksheet to new collaborators
     for u in collaborators-old_collaborators:
@@ -593,7 +590,6 @@ def worksheet_invite_collab(worksheet):
             # user doesn't exist
             pass
 
-    worksheet.set_collaborators(collaborators)
     return redirect(url_for_worksheet(worksheet))
     
 ########################################################

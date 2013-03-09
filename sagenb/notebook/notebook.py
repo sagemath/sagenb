@@ -62,7 +62,6 @@ try:
                ('sh', False),
                ('singular', False),
                ('axiom', True),
-               ('fricas', True),
                ('kash', True),
                ('macaulay2', True),
                ('magma', True),
@@ -1369,7 +1368,7 @@ class Notebook(object):
                         username = username, rev = rev, prev_rev = prev_rev,
                         next_rev = next_rev, time_ago = time_ago)
 
-    def html_share(self, worksheet, username, lookup=None):
+    def html_share(self, worksheet, username):
         r"""
         Return the HTML for the "share" page of a worksheet.
 
@@ -1390,19 +1389,10 @@ class Notebook(object):
             sage: nb.html_share(W, 'admin')
             u'...currently shared...add or remove collaborators...'
         """
-        lookup_result = self.user_manager().user_lookup(lookup) if lookup else None
-        if lookup_result is not None:
-            lookup_result.sort(lambda x,y: cmp(x.lower(), y.lower()))
-            if username in lookup_result:
-                lookup_result.remove(username)
-
-
         return template(os.path.join("html", "notebook", "worksheet_share.html"),
                         worksheet = worksheet,
                         notebook = self,
-                        username = username,
-                        lookup = lookup,
-                        lookup_result = lookup_result)
+                        username = username)
 
     def html_download_or_delete_datafile(self, ws, username, filename):
         r"""
