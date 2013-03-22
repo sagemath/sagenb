@@ -505,6 +505,8 @@ def notebook_run(self,
         directory = '%s/sage_notebook.sagenb' % DOT_SAGENB
     else:
         directory = directory.rstrip('/')
+        if not directory.endswith('.sagenb'):
+            directory += '.sagenb'
 
     # First change to the directory that contains the notebook directory
     wd = os.path.split(directory)
