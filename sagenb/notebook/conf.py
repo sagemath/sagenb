@@ -98,7 +98,7 @@ class Configuration(object):
                 # is not in sync with defaults, someone has tampered
                 # with the request arguments, etc.
                 continue
-            val = form.get(key, None)
+            val = form.get(key, '')
 
             if typ == T_BOOL:
                 if val:
@@ -107,10 +107,16 @@ class Configuration(object):
                     val = False
 
             elif typ == T_INTEGER:
-                val = int(val)
+                try:
+                    val = int(val)
+                except ValueError:
+                    val = self[key]
 
             elif typ == T_REAL:
-                val = float(val)
+                try:
+                    val = float(val)
+                except ValueError:
+                    val = self[key]
 
             elif typ == T_LIST:
                 val = val.strip()
