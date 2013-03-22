@@ -107,10 +107,16 @@ class Configuration(object):
                     val = False
 
             elif typ == T_INTEGER:
-                val = int(val)
+                try:
+                    val = int(val)
+                except ValueError:
+                    val = self[key]
 
             elif typ == T_REAL:
-                val = float(val)
+                try:
+                    val = float(val)
+                except ValueError:
+                    val = self[key]
 
             elif typ == T_LIST:
                 val = val.strip()
