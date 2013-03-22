@@ -98,7 +98,7 @@ class Configuration(object):
                 # is not in sync with defaults, someone has tampered
                 # with the request arguments, etc.
                 continue
-            val = form.get(key, None)
+            val = form.get(key, '')
 
             if typ == T_BOOL:
                 if val:
