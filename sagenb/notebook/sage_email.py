@@ -40,8 +40,9 @@ def default_email_address():
         '...@...'
     """
     import socket
+    import getpass
     hostname = socket.gethostname()
-    username = os.popen('whoami').read().strip()
+    username = getpass.getuser()
     return '%s@%s'%(username, hostname)
 
 def email(to, subject, body = '', from_address = None, verbose = True, block = False, kill_on_exit = False):

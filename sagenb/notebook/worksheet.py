@@ -193,6 +193,7 @@ class Worksheet(object):
         EXAMPLES: We test the constructor via an indirect doctest::
 
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: import sagenb.notebook.misc
             sage: sagenb.notebook.misc.notebook = nb
             sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
