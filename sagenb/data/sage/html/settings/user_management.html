@@ -10,10 +10,22 @@
     <p>{{ gettext('The password for the user %(u)s has been reset to <strong>%(p)s</strong>', u=reset[0], p=reset[1]) }}</p>
     {% endif %}
     <table>
-      <tr><th>{{ gettext('Users') }}</th><th>{{ gettext('Password') }}</th><th>{{ gettext('Suspension') }}</th></tr>
-      {% for user in users %}
-      {% if user != 'admin' %}
-      <tr><td><a href="/home/{{ user }}/">{{ user }}</a></td><td><a href="/users/?reset={{ user }}">{{ gettext('Reset') }}</a></td><td><a href="/users/?suspension={{ user }}">{% if user.is_suspended() %}{{ gettext('Unsuspend') }}{% else %}{{ gettext('Suspend') }}{% endif %}</td></tr>
+      <tr>
+        <th>{{ gettext('User') }}</th>
+        <th>{{ gettext('Password') }}</th>
+        <th>{{ gettext('Suspension') }}</th>
+        <th>{{ gettext('Admin') }}</th>
+        <th>{{ gettext('Delete') }}</th>
+      </tr>
+      {% for u in users %}
+      {% if u.username() != 'admin' %}
+      <tr>
+      <td><a href="/home/{{ u }}/">{{ u }}</a></td>
+      <td><a href="{{ url_for('users', reset=u.username()) }}">{{ gettext('Reset') }}</a></td>
+      <td><a href="{{ url_for('suspend_user', user=u.username()) }}">{% if u.is_suspended() %}{{ gettext('Unsuspend') }}{% else %}{{ gettext('Suspend') }}{% endif %}</a></td>
+      <td><a href="{{ url_for('toggle_admin', user=u.username()) }}">{% if u.is_admin() %}{{ gettext('Revoke') }}{% else %}{{ gettext('Grant') }}{% endif %}</a> </td>
+      <td><a href="{{ url_for('del_user', user=u.username()) }} ">{{ gettext('Delete') }}</a></td>
+      </tr>
       {% endif %}
       {% endfor %}
     </table>
