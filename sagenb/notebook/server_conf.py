@@ -14,7 +14,9 @@ _ = lazy_gettext
 defaults = {'word_wrap_cols':72,
             'max_history_length':250,
             
-            'idle_timeout':120,        # 2 minutes
+            'idle_timeout':600,        # for a live documentation worksheet:
+                                       # quit the compute process if it has
+                                       # been idle for 10 minutes
             'idle_check_interval':360,
             
             'save_interval':360,        # seconds
