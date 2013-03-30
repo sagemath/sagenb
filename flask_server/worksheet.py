@@ -656,7 +656,7 @@ def worksheet_cells(worksheet, filename):
 # Data
 ##############################################
 @worksheet_command('data/<path:filename>')
-def worksheed_data_folder(worksheet,filename):
+def worksheed_data_folder(worksheet, filename):
     dir = os.path.abspath(worksheet.data_directory())
     if not os.path.exists(dir):
         return make_response(_('No data file'), 404)
@@ -672,18 +672,41 @@ def worksheet_delete_datafile(worksheet):
     os.unlink(path)
     return ''
 
-# @worksheet_command('save_datafile')
-# def worksheet_save_datafile(worksheet):
-#     filename = request.values['filename']
-#     if 'button_save' in request.values:
-#         text_field = request.values['textfield'] #XXX: Should this be text_field
-#         dest = os.path.join(worksheet.data_directory(), filename) #XXX: Requires access to filesystem
-#         if os.path.exists(dest):
-#             os.unlink(dest)
-#         open(dest, 'w').write(text_field)
+@worksheet_command('edit_datafile/<path:filename>')
+def worksheet_edit_datafile(worksheet, filename):
+    ext = os.path.splitext(filename)[1].lower()
+    file_is_image, file_is_text = False, False
+    text_file_content = ""
 
-#     # TODO
-#     return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
+    path = "/home/%s/data/%s" % (worksheet.filename(), filename)
+
+    if ext in ['.png', '.jpg', '.gif']:
+        file_is_image = True
+    if ext in ['.txt', '.tex', '.sage', '.spyx', '.py', '.f', '.f90', '.c']:
+        file_is_text = True
+        text_file_content = open(os.path.join(worksheet.data_directory(), filename)).read()
+
+    return render_template(os.path.join("html", "datafile_edit.html"),
+                           worksheet = worksheet,
+                           username = g.username,
+                           filename_ = filename,
+                           file_is_image = file_is_image,
+                           file_is_text = file_is_text,
+                           text_file_content = text_file_content,
+                           path = path)
+
+@worksheet_command('save_datafile')
+def worksheet_save_datafile(worksheet):
+    filename = request.values['filename']
+    if 'button_save' in request.values:
+        text_field = request.values['textfield']
+        dest = os.path.join(worksheet.data_directory(), filename) #XXX: Requires access to filesystem
+        if os.path.exists(dest):
+            os.unlink(dest)
+        open(dest, 'w').write(text_field)
+
+    print 'saving datafile, redirect'
+    return redirect(url_for_worksheet(worksheet))
 
 # @worksheet_command('link_datafile')
 # def worksheet_link_datafile(worksheet):

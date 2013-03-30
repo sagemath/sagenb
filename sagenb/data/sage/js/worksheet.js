@@ -441,6 +441,7 @@ sagenb.worksheetapp.worksheet = function() {
 												'<a href="#" class="filename">' + datafile + '</a>' + 
 												'<div class="btn-group">' + 
 													'<a href="#" class="btn btn-mini copy_path_btn" rel="tooltip" title="Get Path"><i class="icon-edit"></i></a>' + 
+													'<a href="edit_datafile/' + datafile + '" class="btn btn-mini download_btn" rel="tooltip" title="Edit"><i class="icon-pencil"></i></a>' + 
 													'<a href="data/' + datafile + '" class="btn btn-mini download_btn" rel="tooltip" title="Download" target="_blank"><i class="icon-download"></i></a>' + 
 													'<a href="#" class="btn btn-mini delete_btn" rel="tooltip" title="Delete"><i class="icon-remove"></i></a>' + 
 												'</div>' + 
