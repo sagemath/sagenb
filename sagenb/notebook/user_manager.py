@@ -112,7 +112,7 @@ class UserManager(object):
             pass
 
         raise KeyError, "no user '%s'"%username
-            
+
     def valid_login_names(self):
         """
         Return a list of users that can log in.
@@ -270,7 +270,7 @@ class UserManager(object):
         return self._accounts
 
 
-    def add_user(self, username, password, email, account_type="user", force=False):
+    def add_user(self, username, password, email, account_type="user", external_auth=None, force=False):
         """
         Adds a new user to the user dictionary.
 
@@ -296,7 +296,7 @@ class UserManager(object):
         us = self.users()
         if us.has_key(username):
             print "WARNING: User '%s' already exists -- and is now being replaced."%username
-        U = user.User(username, password, email, account_type)
+        U = user.User(username, password, email, account_type, external_auth)
         us[username] = U
         self.set_password(username, password)
 
@@ -457,7 +457,7 @@ class SimpleUserManager(UserManager):
         if username == "pub" or password == '':
             return False
         user_password = self.password(username)
-        if user_password is None:
+        if user_password is None and not self.user(username).is_external():
             print "User %s has None password"%username
             return False
         if user_password.find('$') == -1:
@@ -468,7 +468,12 @@ class SimpleUserManager(UserManager):
                 return False
         else:
             salt, user_password = user_password.split('$')[1:]
-            return hashlib.sha256(salt + password).hexdigest() == user_password
+            if hashlib.sha256(salt + password).hexdigest() == user_password:
+                return True
+        try:
+            return self._check_password(username, password)
+        except AttributeError:
+            return False;
 
     def get_accounts(self):
         # need to use notebook's conf because those are already serialized
@@ -481,8 +486,57 @@ class SimpleUserManager(UserManager):
         self._accounts = value
         self._conf['accounts'] = value
 
-class OpenIDUserManager(SimpleUserManager):
+
+
+class ExtAuthUserManager(SimpleUserManager):
     def __init__(self, accounts=None, conf=None):
+        SimpleUserManager.__init__(self, accounts=accounts, conf=conf)
+
+        from auth import LdapAuth
+
+        # keys must match to a T_BOOL option in server_config.py
+        # so we can turn this auth method on/off
+        self._auth_methods = {
+            'auth_ldap': LdapAuth(self._conf),
+        }
+
+    def _user(self, username):
+        """
+        Check all auth methods that are enabled in the notebook's config.
+        If a valid username is found, a new User object will be created.
+        """
+        for a in self._auth_methods:
+            if self._conf[a]:
+                u = self._auth_methods[a].check_user(username)
+                if u:
+                    try:
+                        email = self._auth_methods[a].get_attrib(username, 'email')
+                    except KeyError:
+                        email = None
+
+                    self.add_user(username, password='', email=email, account_type='user', external_auth=a, force=True)
+                    return self.users()[username]
+
+        raise KeyError, "no user '%s'"%username
+
+    def _check_password(self, username, password):
+        """
+        Find auth method for user 'username' and
+        use that auth method to check username/password combination.
+        """
+        u = self.users()[username]
+        if u.is_external():
+            a = u.external_auth()
+        else:
+            return False
+
+        if self._conf[a]:
+            return self._auth_methods[a].check_password(username, password)
+
+        return False
+
+class OpenIDUserManager(ExtAuthUserManager):
+    def __init__(self, accounts=True, conf=None):
         """
         Creates an user_manager that supports OpenID identities
         EXAMPLES:
@@ -492,7 +546,7 @@ class OpenIDUserManager(SimpleUserManager):
             sage: UM.check_password('admin','passpass')
             True
         """
-        SimpleUserManager.__init__(self, accounts=accounts, conf=conf)
+        ExtAuthUserManager.__init__(self, accounts=accounts, conf=conf)
         self._openid = {} 
 
     def load(self, datastore):
@@ -518,6 +572,9 @@ class OpenIDUserManager(SimpleUserManager):
             sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
             'thedude' 
         """
+        if not self._conf['openid']:
+            raise RuntimeError
+
         try:
             return self._openid[identity_url]
         except KeyError:
@@ -534,10 +591,14 @@ class OpenIDUserManager(SimpleUserManager):
             sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
             'thedude'
         """
+        if not self._conf['openid']:
+            raise RuntimeError
         self._openid[identity_url] = username
 
     def get_user_from_openid(self, identity_url):
         """
         Return the user object corresponding ot a given identity_url
         """
+        if not self._conf['openid']:
+            raise RuntimeError
         return self.user(self.get_username_from_openid(identity_url)) 

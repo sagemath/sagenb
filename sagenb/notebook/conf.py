@@ -101,7 +101,7 @@ class Configuration(object):
                 # is not in sync with defaults, someone has tampered
                 # with the request arguments, etc.
                 continue
-            val = form.get(key, None)
+            val = form.get(key, '')
 
             if typ == T_BOOL:
                 if val:
@@ -110,10 +110,16 @@ class Configuration(object):
                     val = False
 
             elif typ == T_INTEGER:
-                val = int(val)
+                try:
+                    val = int(val)
+                except ValueError:
+                    val = self[key]
 
             elif typ == T_REAL:
-                val = float(val)
+                try:
+                    val = float(val)
+                except ValueError:
+                    val = self[key]
 
             elif typ == T_LIST:
                 val = val.strip()
@@ -129,6 +135,14 @@ class Configuration(object):
         return updated
 
     def html_table(self, updated = {}):
+        from server_conf import G_LDAP
+
+        # check if LDAP can be used
+        try:
+            from ldap import __version__ as ldap_version
+        except ImportError:
+            ldap_version = None
+
         # For now, we assume there's a description for each setting.
         D = self.defaults()
         DS = self.defaults_descriptions()
@@ -140,6 +154,9 @@ class Configuration(object):
         for key in K:
             try:
                 gp = DS[key][GROUP]
+                # don't display LDAP settings if the check above failed
+                if gp == G_LDAP and ldap_version is None:
+                    continue
                 DS[key][DESC]
                 DS[key][TYPE]
             except KeyError:

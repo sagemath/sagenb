@@ -7,7 +7,7 @@ from decorators import global_lock
 
 from flaskext.autoindex import AutoIndex
 SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
-from flaskext.openid import OpenID
+from flask.ext.openid import OpenID
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
 from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
 

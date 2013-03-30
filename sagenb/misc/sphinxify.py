@@ -30,6 +30,22 @@ except ImportError:
     SAGE_DOC = ''  # used to be None
 
 
+def is_sphinx_markup(docstring):
+    """
+    Returns whether a string that contains Sphinx-style ReST markup.
+
+    INPUT:
+
+    - ``docstring`` - string to test for markup
+
+    OUTPUT:
+
+    - boolean
+    """
+    # this could be made much more clever
+    return ("`" in docstring or "::" in docstring)
+
+
 def sphinxify(docstring, format='html'):
     r"""
     Runs Sphinx on a ``docstring``, and outputs the processed
@@ -55,7 +71,7 @@ def sphinxify(docstring, format='html'):
         sage: sphinxify('**Testing**\n`monospace`')
         '\n<div class="docstring"...<strong>Testing</strong>\n<span class="math"...</p>\n\n\n</div>'
         sage: sphinxify('`x=y`')
-        '\n<div class="docstring">\n    \n  <p><span class="math">\\(x=y\\)</span></p>\n\n\n</div>'
+        '\n<div class="docstring">\n    \n  <p><span class="math">x=y</span></p>\n\n\n</div>'
         sage: sphinxify('`x=y`', format='text')
         'x=y\n'
         sage: sphinxify(':math:`x=y`', format='text')
@@ -282,7 +298,7 @@ if (os.environ.get('SAGE_DOC_MATHJAX', False)
     mathjax_path = 'MathJax.js?config=TeX-AMS_HTML-full,../mathjax_sage.js'
 
     from sage.misc.latex_macros import sage_mathjax_macros
-    html_theme_options['mathjax_macros'] = sage_mathjax_macros
+    html_theme_options['mathjax_macros'] = sage_mathjax_macros()
 
     from pkg_resources import Requirement, working_set
     sagenb_path = working_set.find(Requirement.parse('sagenb')).location
@@ -386,14 +402,14 @@ latex_elements['preamble'] = '\usepackage{amsmath}\n\usepackage{amssymb}\n'
 try:
     from sage.misc.latex_macros import sage_latex_macros
 except ImportError:
-    sage_latex_macros = []
+    def sage_latex_macros(): return []
 
 try:
     pngmath_latex_preamble  # check whether this is already defined
 except NameError:
     pngmath_latex_preamble = ""
 
-for macro in sage_latex_macros:
+for macro in sage_latex_macros():
     # used when building latex and pdf versions
     latex_elements['preamble'] += macro + '\n'
     # used when building html version

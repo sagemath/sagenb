@@ -1598,7 +1598,7 @@ class Cell(Cell_generic):
         output = output.replace('\r', '')
         # We do not truncate if "notruncate" or "Output truncated!" already
         # appears in the output.  This notruncate tag is used right now
-        # in sage.server.support.help.
+        # in sagenb.notebook.interact, sage.misc.html, and sage.database.sql_db.
         if ('notruncate' not in output and
             'Output truncated!' not in output
             and
@@ -2478,7 +2478,7 @@ def format_exception(s0, ncols):
     s = s0.lstrip()
     # Add a notracebacks option -- if it is in the string then
     # tracebacks aren't shrunk.  This is currently used by the
-    # sage.server.support.help command.
+    # functions sagenb.misc.support.help and sage.server.support.help.
     if TRACEBACK not in s or 'notracebacks' in s:
         return s0
     #if ncols > 0:

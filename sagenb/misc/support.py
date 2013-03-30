@@ -30,13 +30,15 @@ except ImportError:
         return s
 
 try:
-    from sagenb.misc.sphinxify import sphinxify
+    from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
 except ImportError, msg:
     print msg
     print "Sphinx docstrings not available."
     # Don't do any Sphinxifying if sphinx's dependencies aren't around
     def sphinxify(s):
         return s
+    def is_sphinx_markup(s):
+        return False
 
 ######################################################################
 # Initialization
@@ -111,7 +113,7 @@ def help(obj):
         sage: import numpy.linalg
         sage: import os, sage.misc.misc ; current_dir = os.getcwd()
         sage: os.chdir(sage.misc.misc.tmp_dir('server_doctest'))
-        sage: sage.server.support.help(numpy.linalg.norm)
+        sage: sagenb.misc.support.help(numpy.linalg.norm)
         <html><table notracebacks bgcolor="#386074" cellpadding=10 cellspacing=10><tr><td bgcolor="#f5f5f5"><font color="#37546d">
         &nbsp;&nbsp;&nbsp;<a target='_new' href='cell://docs-....html'>Click to open help window</a>&nbsp;&nbsp;&nbsp;
         <br></font></tr></td></table></html>
@@ -276,10 +278,16 @@ def docstring(obj_name, globs, system='sage'):
 
 def html_markup(s):
     try:
-        from sagenb.misc.sphinxify import sphinxify
-        return sphinxify(s)
+        from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
     except ImportError, msg:
-        pass
+        # sphinx not available
+        def is_sphinx_markup(s): return False
+
+    if is_sphinx_markup(s):
+        try:
+            return sphinxify(s)
+        except:
+            pass
     # Not in ReST format, so use docutils
     # to process the preamble ("**File:**" etc.)  and put
     # everything else in a <pre> block.
@@ -459,16 +467,16 @@ def syseval(system, cmd, dir=None):
     EXAMPLES::
 
         sage: from sage.misc.python import python
-        sage: sage.server.support.syseval(python, '2+4/3')
+        sage: sagenb.misc.support.syseval(python, '2+4/3')
         3
         ''
-        sage: sage.server.support.syseval(python, 'import os; os.chdir(".")')
+        sage: sagenb.misc.support.syseval(python, 'import os; os.chdir(".")')
         ''
-        sage: sage.server.support.syseval(python, 'import os; os.chdir(1,2,3)')
+        sage: sagenb.misc.support.syseval(python, 'import os; os.chdir(1,2,3)')
         Traceback (most recent call last):
         ...
         TypeError: chdir() takes exactly 1 argument (3 given)
-        sage: sage.server.support.syseval(gap, "2+3")
+        sage: sagenb.misc.support.syseval(gap, "2+3")
         '5'
     """
     if dir:

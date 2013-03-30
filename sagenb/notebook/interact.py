@@ -2639,6 +2639,8 @@ def interact(f, layout=None, width='100%'):
         ...         html('There is no solution to $$%s x=%s$$'%(latex(A), latex(v)))
         <html>...
     """
+    if not isinstance(f, types.FunctionType) and callable(f):
+        f = f.__call__
     (args, varargs, varkw, defaults) = inspect.getargspec(f)
 
     if defaults is None:
