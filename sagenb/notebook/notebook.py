@@ -1250,12 +1250,12 @@ class Notebook(object):
 
     def quit_idle_worksheet_processes(self):
         timeout = self.conf()['idle_timeout']
-        pub_timeout = self.conf()['pub_timeout']
+        doc_timeout = self.conf()['doc_timeout']
 
         for W in self.__worksheets.values():
             if W.compute_process_has_been_started():
                 if W.docbrowser():
-                    W.quit_if_idle(pub_timeout)
+                    W.quit_if_idle(doc_timeout)
                 else:
                     W.quit_if_idle(timeout)
 

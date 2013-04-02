@@ -15,7 +15,6 @@ defaults = {'word_wrap_cols':72,
             'max_history_length':250,
 
             'idle_timeout': 120,
-            'pub_timeout': 120,
             'doc_timeout': 120,
             'idle_check_interval':360,
 
@@ -72,13 +71,6 @@ defaults_descriptions = {
     'idle_timeout': {
         POS : 1,
         DESC : _('Idle timeout for normal worksheets (seconds)'),
-        GROUP : G_SERVER,
-        TYPE : T_INTEGER,
-        },
-
-    'pub_timeout': {
-        POS : 2,
-        DESC : _('Idle timeout for published worksheets (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
