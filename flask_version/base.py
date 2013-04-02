@@ -5,10 +5,10 @@ from flask import Flask, Module, url_for, render_template, request, session, red
 from decorators import login_required, guest_or_login_required, with_lock
 from decorators import global_lock
 
-from flaskext.autoindex import AutoIndex
+from flask.ext.autoindex import AutoIndex
 SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
 from flask.ext.openid import OpenID
-from flaskext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
+from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
 from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
 
 oid = OpenID()
