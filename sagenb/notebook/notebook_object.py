@@ -102,6 +102,11 @@ class NotebookObject:
           timeout can be useful as this will free the memory used by
           idle sessions.
 
+        - ``doc_timeout`` -- integer (default: 120) seconds until idle
+          live documentation worksheet sessions automatically timeout,
+          i.e., the corresponding Sage session terminates.
+          0 means "never timeout".
+
         - ``server_pool`` -- list of strings (default: None) list;
           this option specifies that worksheet processes run as a
           separate user (chosen from the list in the ``server_pool``
