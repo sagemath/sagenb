@@ -13,14 +13,14 @@ _ = lazy_gettext
 
 defaults = {'word_wrap_cols':72,
             'max_history_length':250,
-            
-            'idle_timeout':120,        # 2 minutes
+
+            'idle_timeout': 120,        # timeout in seconds for worksheets
+            'doc_timeout': 600,         # timeout in seconds for live docs
             'idle_check_interval':360,
-            
+
             'save_interval':360,        # seconds
 
             'doc_pool_size':128,
-            'doc_timeout': 120,
 
             'pub_interact':False,
 
@@ -62,12 +62,6 @@ G_LDAP = _('LDAP')
 
 defaults_descriptions = {
 
-    'word_wrap_cols': {
-        DESC : _('Number of word-wrap columns'),
-        GROUP : G_APPEARANCE,
-        TYPE : T_INTEGER,
-        },
-
     'max_history_length': {
         DESC : _('Maximum history length'),
         GROUP : G_SERVER,
@@ -75,7 +69,15 @@ defaults_descriptions = {
         },
 
     'idle_timeout': {
-        DESC : _('Idle timeout (seconds)'),
+        POS : 1,
+        DESC : _('Idle timeout for normal worksheets (seconds)'),
+        GROUP : G_SERVER,
+        TYPE : T_INTEGER,
+        },
+
+    'doc_timeout': {
+        POS : 3,
+        DESC : _('Idle timeout for live documentation (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
@@ -98,12 +100,6 @@ defaults_descriptions = {
         TYPE : T_INTEGER,
         },
 
-    'doc_timeout': {
-        DESC : _('Doc worksheet idle timeout (seconds)'),
-        GROUP : G_SERVER,
-        TYPE : T_INTEGER,
-        },
-
     'pub_interact': {
         DESC : _('Enable published interacts (EXPERIMENTAL; USE AT YOUR OWN RISK)'),
         GROUP : G_SERVER,
@@ -122,21 +118,42 @@ defaults_descriptions = {
         TYPE : T_STRING,
         },
 
-    'pretty_print': {
-        DESC : _('Pretty print (typeset) output'),
-        GROUP : G_APPEARANCE,
-        TYPE : T_BOOL,
-        },
-
     'ulimit': {
         DESC : _('Worksheet process limits'),
         GROUP : G_SERVER,
         TYPE : T_STRING,
         },
 
-    'email': {
-        POS : 3,
-        DESC : _('Require e-mail for account registration'),
+    'model_version': {
+        DESC : _('Model Version'),
+        GROUP : G_SERVER,
+        TYPE : T_INFO,
+        },
+
+
+    'word_wrap_cols': {
+        DESC : _('Number of word-wrap columns'),
+        GROUP : G_APPEARANCE,
+        TYPE : T_INTEGER,
+        },
+
+    'pretty_print': {
+        DESC : _('Pretty print (typeset) output'),
+        GROUP : G_APPEARANCE,
+        TYPE : T_BOOL,
+        },
+
+    'default_language': {
+        DESC : _('Default Language'),
+        GROUP : G_APPEARANCE,
+        TYPE : T_CHOICE,
+        CHOICES : get_languages(),
+        },
+
+
+    'openid': {
+        POS: 1,
+        DESC : _('Allow OpenID authentication (requires python ssl module)'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
@@ -148,9 +165,9 @@ defaults_descriptions = {
         TYPE : T_BOOL,
         },
 
-    'openid': {
-        POS: 1,
-        DESC : _('Allow OpenID authentication (requires python ssl module)'),
+    'email': {
+        POS : 3,
+        DESC : _('Require e-mail for account registration'),
         GROUP : G_AUTH,
         TYPE : T_BOOL,
         },
@@ -182,17 +199,6 @@ defaults_descriptions = {
         TYPE : T_STRING,
         },
 
-    'default_language': {
-        DESC : _('Default Language'),
-        GROUP : G_APPEARANCE,
-        TYPE : T_CHOICE,
-        CHOICES : get_languages(),
-        },
-    'model_version': {
-        DESC : _('Model Version'),
-        GROUP : G_SERVER,
-        TYPE : T_INFO,
-        },
 
     'auth_ldap': {
         POS : 1,
@@ -200,42 +206,49 @@ defaults_descriptions = {
         GROUP : G_LDAP,
         TYPE : T_BOOL,
         },
+
     'ldap_uri': {
         POS : 2,
         DESC : _('LDAP URI'),
         GROUP : G_LDAP,
         TYPE : T_STRING,
         },
+
     'ldap_binddn': {
         POS : 3,
         DESC : _('Bind DN'),
         GROUP : G_LDAP,
         TYPE : T_STRING,
         },
+
     'ldap_bindpw': {
         POS : 4,
         DESC : _('Bind Password'),
         GROUP : G_LDAP,
         TYPE : T_STRING,
         },
+
     'ldap_gssapi': {
         POS : 5,
         DESC : _('Use GSSAPI instead of Bind DN/Password'),
         GROUP : G_LDAP,
         TYPE : T_BOOL,
         },
+
     'ldap_basedn': {
         POS : 6,
         DESC : _('Base DN'),
         GROUP : G_LDAP,
         TYPE : T_STRING,
         },
+
     'ldap_username_attrib': {
         POS : 7,
         DESC: _('Username Attribute (i.e. cn, uid or userPrincipalName)'),
         GROUP : G_LDAP,
         TYPE : T_STRING,
         },
+
     'ldap_timeout': {
         POS : 8,
         DESC: _('Query timeout (seconds)'),
