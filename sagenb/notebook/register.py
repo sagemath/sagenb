@@ -12,7 +12,7 @@
 """
 Helper functions dealing with the verification of user  
 """
-from flaskext.babel import gettext as _
+from flask.ext.babel import gettext as _
 
 def build_msg(key, username, addr, port, secure):
     url_prefix = "https" if secure else "http"

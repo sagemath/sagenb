@@ -3,7 +3,7 @@ from functools import wraps
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
 from collections import defaultdict
-from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX

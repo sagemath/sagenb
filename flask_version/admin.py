@@ -1,7 +1,7 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, admin_required, with_lock
-from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 admin = Module('flask_version.admin')
@@ -107,7 +107,7 @@ def notebook_settings():
         
     #Make changes to the default language used
     if 'default_language' in request.values:
-        from flaskext.babel import refresh
+        from flask.ext.babel import refresh
         refresh()
         current_app.config['BABEL_DEFAULT_LOCALE'] = request.values['default_language']
         
