@@ -13,16 +13,15 @@ _ = lazy_gettext
 
 defaults = {'word_wrap_cols':72,
             'max_history_length':250,
-            
-            'idle_timeout':600,        # for a live documentation worksheet:
-                                       # quit the compute process if it has
-                                       # been idle for 10 minutes
+
+            'idle_timeout': 120,
+            'pub_timeout': 120,
+            'doc_timeout': 120,
             'idle_check_interval':360,
-            
+
             'save_interval':360,        # seconds
 
             'doc_pool_size':128,
-            'doc_timeout': 120,
 
             'pub_interact':False,
 
@@ -77,7 +76,19 @@ defaults_descriptions = {
         },
 
     'idle_timeout': {
-        DESC : _('Idle timeout (seconds)'),
+        DESC : _('Idle timeout for normal worksheets (seconds)'),
+        GROUP : G_SERVER,
+        TYPE : T_INTEGER,
+        },
+
+    'pub_timeout': {
+        DESC : _('Idle timeout for published worksheets (seconds)'),
+        GROUP : G_SERVER,
+        TYPE : T_INTEGER,
+        },
+
+    'doc_timeout': {
+        DESC : _('Idle timeout for live documentation (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },
@@ -96,12 +107,6 @@ defaults_descriptions = {
 
     'doc_pool_size': {
         DESC : _('Doc worksheet pool size'),
-        GROUP : G_SERVER,
-        TYPE : T_INTEGER,
-        },
-
-    'doc_timeout': {
-        DESC : _('Doc worksheet idle timeout (seconds)'),
         GROUP : G_SERVER,
         TYPE : T_INTEGER,
         },

@@ -1250,16 +1250,14 @@ class Notebook(object):
 
     def quit_idle_worksheet_processes(self):
         timeout = self.conf()['idle_timeout']
-        if timeout == 0:
-            # Quit only the doc browser worksheets
-            for W in self.__worksheets.values():
-                if W.docbrowser() and W.compute_process_has_been_started():
-                    W.quit_if_idle(self.conf()['idle_timeout'])
-            return
+        pub_timeout = self.conf()['pub_timeout']
 
         for W in self.__worksheets.values():
             if W.compute_process_has_been_started():
-                W.quit_if_idle(timeout)
+                if W.docbrowser():
+                    W.quit_if_idle(pub_timeout)
+                else:
+                    W.quit_if_idle(timeout)
 
     def quit_worksheet(self, W):
         try:
