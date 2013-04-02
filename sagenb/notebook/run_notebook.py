@@ -454,7 +454,7 @@ def notebook_run(self,
 
              timeout       = 0,   # timeout for normal worksheets. This is the
                                   # same as idle_timeout in server_conf.py
-             doc_timeout   = 120, # timeout for documentation worksheets
+             doc_timeout   = None, # timeout for documentation worksheets
 
              upload        = None,
              automatic_login = True,
@@ -537,7 +537,8 @@ def notebook_run(self,
         print "The notebook files are stored in:", nb._dir
 
     nb.conf()['idle_timeout'] = int(timeout)
-    nb.conf()['doc_timeout'] = int(doc_timeout)
+    if doc_timeout is not None:
+        nb.conf()['doc_timeout'] = int(doc_timeout)
 
     if openid is not None:
         nb.conf()['openid'] = openid
