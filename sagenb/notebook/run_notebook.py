@@ -387,7 +387,7 @@ def notebook_setup(self=None):
                 'dns_name': None,
                 'crl_dist_points': None,
                 'ip_address': None,
-                'expiration_days': 10000,
+                'expiration_days': 8999,
                 'email': 'sage@sagemath.org',
                 'ca': None,
                 'tls_www_client': None,
@@ -414,10 +414,10 @@ def notebook_setup(self=None):
 
     import subprocess
 
-    if os.uname()[0] != 'Darwin' and cmd_exists('openssl'):
+    if cmd_exists('openssl'):
         # We use openssl by default if it exists, since it is open
         # *vastly* faster on Linux, for some weird reason.
-        cmd = ['openssl genrsa > %s' % private_pem]
+        cmd = ['openssl genrsa 1024 > %s' % private_pem]
         print "Using openssl to generate key"
         print cmd[0]
         subprocess.call(cmd, shell=True)
