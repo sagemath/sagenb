@@ -1,0 +1,6 @@
+0.10.5  Apr __ 2013
+
+ - Add support for LDAP authentication.
+ - Add parameter "doc_timeout" for controlling timeouts of live
+   worksheets.
+
