@@ -6,7 +6,11 @@ from decorators import login_required, guest_or_login_required, with_lock
 from decorators import global_lock
 
 from flask.ext.autoindex import AutoIndex
-SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
+try:
+    from sage.env import SAGE_SRC
+except ImportError:
+    SAGE_SRC = os.environ.get('SAGE_SRC', os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage'))
+SRC = os.path.join(SAGE_SRC, 'sage')
 from flask.ext.openid import OpenID
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
 from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
@@ -84,7 +88,7 @@ class SageNBFlask(Flask):
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
-base = Module('flask_version.base')
+base = Module('sagenb.flask_version.base')
 
 #############
 # Main Page #
@@ -212,7 +216,7 @@ def help():
 @base.route('/history')
 @login_required
 def history():
-    return render_template(os.path.join('html', 'history.html'), username = g.username, 
+    return render_template(os.path.join('html', 'history.html'), username = g.username,
                            text = g.notebook.user_history_text(g.username), actions = False)
 
 @base.route('/live_history')
@@ -285,7 +289,7 @@ def set_profiles():
             if show_challenge:
                 template_dict['challenge_html'] = chal.html()
 
-            return render_template('html/accounts/openid_profile.html', resp=openid_resp, 
+            return render_template('html/accounts/openid_profile.html', resp=openid_resp,
                                    challenge=show_challenge, **template_dict)
         else:
             return redirect(url_for('base.index'))
@@ -329,7 +333,7 @@ def set_profiles():
                 parse_dict['email_invalid'] = True
                 raise ValueError
             try:
-                new_user = User(username, '', email = resp.email, account_type='user') 
+                new_user = User(username, '', email = resp.email, account_type='user')
                 g.notebook.user_manager().add_user_object(new_user)
             except ValueError:
                 parse_dict['creation_error'] = True
@@ -338,7 +342,7 @@ def set_profiles():
             session['username'] = g.username = username
             session.modified = True
         except ValueError:
-            return render_template('html/accounts/openid_profile.html', **parse_dict) 
+            return render_template('html/accounts/openid_profile.html', **parse_dict)
         return redirect(url_for('base.index'))
 
 

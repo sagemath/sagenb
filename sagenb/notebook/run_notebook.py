@@ -46,15 +46,12 @@ sagenb.notebook.misc.DIR = %(cwd)r #We should really get rid of this!
 # Flask #
 #########
 import os, sys, random
-flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_version')
-sys.path.append(flask_dir)
-import base as flask_base
+import sagenb.flask_version.base as flask_base
 opts={}
 startup_token = '{0:x}'.format(random.randint(0, 2**128))
 if %(automatic_login)s:
     opts['startup_token'] = startup_token
 flask_app = flask_base.create_app(%(notebook_opts)s, **opts)
-sys.path.remove(flask_dir)
 
 def save_notebook(notebook):
     print "Quitting all running worksheets..."
