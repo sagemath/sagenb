@@ -9,13 +9,13 @@ _ = gettext
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
 from sagenb.notebook.misc import encode_response
 
-ws = Module('flask_version.worksheet')
+ws = Module('sagenb.flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
 
 def worksheet_view(f):
     """
     The `username` in the wrapper function is the username in the URL to the worksheet, which normally
-    is the owner of the worksheet.  Don't confuse this with `g.username`, the actual username of the 
+    is the owner of the worksheet.  Don't confuse this with `g.username`, the actual username of the
     user looking at the worksheet.
     """
     @login_required
@@ -26,7 +26,7 @@ def worksheet_view(f):
             worksheet = kwds['worksheet'] = g.notebook.get_worksheet_with_filename(worksheet_filename)
         except KeyError:
             return current_app.message(_("You do not have permission to access this worksheet"))
-        
+
         with worksheet_locks[worksheet]:
             owner = worksheet.owner()
 
@@ -58,7 +58,7 @@ def url_for_worksheet(worksheet):
 def get_cell_id():
     """
     Returns the cell ID from the request.
-    
+
     We cast the incoming cell ID to an integer, if it's possible.
     Otherwise, we treat it as a string.
     """
@@ -103,7 +103,7 @@ readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download
 def worksheet_command(target, **route_kwds):
     if 'methods' not in route_kwds:
         route_kwds['methods'] = ['GET', 'POST']
-        
+
     def decorator(f):
         @ws.route('/home/<username>/<id>/' + target, **route_kwds)
         @worksheet_view
@@ -130,7 +130,7 @@ def worksheet_command(target, **route_kwds):
             worksheet = kwds.pop('worksheet', None)
             if worksheet is not None:
                 args = (worksheet,) + args
-                
+
             return f(*args, **kwds)
 
         #This function shares some functionality with url_for_worksheet.
@@ -141,10 +141,10 @@ def worksheet_command(target, **route_kwds):
             return url_for(f.__name__, *args, **kwds)
 
         wrapper.url_for = wc_url_for
-        
+
         return wrapper
     return decorator
-    
+
 
 @worksheet_command('rename')
 def worksheet_rename(worksheet):
@@ -194,7 +194,7 @@ def worksheet_save_snapshot(worksheet):
 
 @worksheet_command('save_and_quit')
 def worksheet_save_and_quit(worksheet):
-    """Save a snapshot of a worksheet then quit it. """    
+    """Save a snapshot of a worksheet then quit it. """
     worksheet.save_snapshot(g.username)
     worksheet.quit()
     return 'saved'
@@ -266,7 +266,7 @@ def worksheet_new_cell_before(worksheet):
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_cell_before(id, input=input)
     worksheet.increase_state_number()
-    
+
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(div_wrap=False)
 
@@ -280,7 +280,7 @@ def worksheet_new_text_cell_before(worksheet):
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_text_cell_before(id, input=input)
     worksheet.increase_state_number()
-    
+
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(editing=True)
 
@@ -311,7 +311,7 @@ def worksheet_new_text_cell_after(worksheet):
     input = unicode_str(request.values.get('input', ''))
     cell = worksheet.new_text_cell_after(id, input=input)
     worksheet.increase_state_number()
-    
+
     r['new_id'] = cell.id()
     r['new_html'] = cell.html(editing=True)
 
@@ -369,9 +369,9 @@ def worksheet_eval(worksheet):
     either introspection to the documentation of the function, or the
     documentation of the function and the source code of the function
     respectively.
-    """    
+    """
     from base import notebook_updates
-    
+
     r = {}
 
     r['id'] = id = get_cell_id()
@@ -429,7 +429,7 @@ def worksheet_eval(worksheet):
     notebook_updates()
 
     return encode_response(r)
-        
+
 
 @worksheet_command('cell_update')
 def worksheet_cell_update(worksheet):
@@ -496,7 +496,7 @@ def worksheet_introspect(worksheet):
         r['command'] = 'error'
         r['message'] = 'Cannot evaluate public cell introspection.'
         return encode_response(r)
-    
+
     before_cursor = request.values.get('before_cursor', '')
     after_cursor = request.values.get('after_cursor', '')
     cell = worksheet.get_cell_with_id(id)
@@ -513,7 +513,7 @@ def worksheet_edit(worksheet):
     """
     Return a window that allows the user to edit the text of the
     worksheet with the given filename.
-    """    
+    """
     return g.notebook.html_edit_window(worksheet, g.username)
 
 
@@ -591,7 +591,7 @@ def worksheet_invite_collab(worksheet):
             pass
 
     return redirect(url_for_worksheet(worksheet))
-    
+
 ########################################################
 # Revisions
 ########################################################
@@ -599,7 +599,7 @@ def worksheet_invite_collab(worksheet):
 def worksheet_revisions(worksheet):
     """
     Show a list of revisions of this worksheet.
-    """    
+    """
     if 'action' not in request.values:
         if 'rev' in request.values:
             return g.notebook.html_specific_revision(g.username, worksheet,
@@ -628,9 +628,9 @@ def worksheet_revisions(worksheet):
             return current_app.message(_('Error'))
 
 
-        
+
 ########################################################
-# Cell directories 
+# Cell directories
 ########################################################
 @worksheet_command('cells/<path:filename>')
 def worksheet_cells(worksheet, filename):
@@ -649,7 +649,7 @@ def worksheet_data_legacy(worksheet, filename):
 
 @worksheet_command('data/<path:filename>')
 def worksheed_data_folder(worksheet,filename):
-    # preferred way of accessing data 
+    # preferred way of accessing data
     return worksheet_data(worksheet, filename)
 
 def worksheet_data(worksheet, filename):
@@ -684,7 +684,7 @@ def worksheet_savedatafile(worksheet):
             os.unlink(dest)
         open(dest, 'w').write(text_field)
     return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
-        
+
 
 @worksheet_command('link_datafile')
 def worksheet_link_datafile(worksheet):
@@ -702,10 +702,10 @@ def worksheet_link_datafile(worksheet):
     os.link(src,target)
     return redirect(worksheet_datafile.url_for(worksheet, name=data_filename))
     #return redirect(url_for_worksheet(target_ws) + '/datafile?name=%s'%data_filename) #XXX: Can we not hardcode this?
-    
+
 @worksheet_command('upload_data')
 def worksheet_upload_data(worksheet):
-    return g.notebook.html_upload_data_window(worksheet, g.username)        
+    return g.notebook.html_upload_data_window(worksheet, g.username)
 
 @worksheet_command('do_upload_data')
 def worksheet_do_upload_data(worksheet):
@@ -721,7 +721,7 @@ def worksheet_do_upload_data(worksheet):
         return current_app.message(_('Error uploading file (missing field "file"). %(backlinks)s', backlinks=backlinks), worksheet_url)
     else:
         file = request.files['file']
-        
+
     text_fields = ['url', 'new', 'name']
     for field in text_fields:
         if field not in request.values:
@@ -775,8 +775,8 @@ def worksheet_do_upload_data(worksheet):
         return response
     else:
         file.save(dest)
-        return response        
-    
+        return response
+
 ################################
 #Publishing
 ################################
@@ -828,7 +828,7 @@ def worksheet_publish(worksheet):
         else:
             return g.notebook.html_beforepublish_window(worksheet, g.username)
 
-############################################    
+############################################
 # Ratings
 ############################################
 @worksheet_command('rating_info')
@@ -879,7 +879,7 @@ def unconditional_download(worksheet, title):
 
     from flask.helpers import send_file
     return send_file(filename, mimetype='application/sage')
-    
+
 
 @worksheet_command('restart_sage')
 def worksheet_restart_sage(worksheet):
@@ -895,7 +895,7 @@ def worksheet_quit_sage(worksheet):
 
 @worksheet_command('interrupt')
 def worksheet_interrupt(worksheet):
-    #XXX: TODO -- this must not block long (!)    
+    #XXX: TODO -- this must not block long (!)
     worksheet.sage().interrupt()
     return 'failed' if worksheet.sage().is_computing() else 'success'
 
@@ -979,7 +979,7 @@ def worksheet_file(path):
     # FIXME: For some reason, an extra cell gets added so we
     # remove it here.
     W.cell_list().pop()
-    
+
     return g.notebook.html(worksheet_filename=W.filename(),
                            username=g.username)
 

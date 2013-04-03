@@ -52,6 +52,7 @@ if __name__ == '__main__':
           install_requires = install_requires,
           test_suite = 'sagenb.testing.run_tests.all_tests',
           packages    = [ 'sagenb'
+                        , 'sagenb.flask_version'
                         , 'sagenb.interfaces'
                         , 'sagenb.misc'
                         , 'sagenb.notebook'
