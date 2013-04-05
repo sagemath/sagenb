@@ -4,7 +4,7 @@ from decorators import login_required, admin_required, with_lock
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
-admin = Module('flask_version.admin')
+admin = Module('sagenb.flask_version.admin')
 
 @admin.route('/users')
 @admin.route('/users/reset/<reset>')
@@ -104,18 +104,18 @@ def notebook_settings():
     updated = {}
     if 'form' in request.values:
         updated = g.notebook.conf().update_from_form(request.values)
-        
+
     #Make changes to the default language used
     if 'default_language' in request.values:
         from flask.ext.babel import refresh
         refresh()
         current_app.config['BABEL_DEFAULT_LOCALE'] = request.values['default_language']
-        
+
     template_dict = {}
     template_dict['auto_table'] = g.notebook.conf().html_table(updated)
     template_dict['admin'] = g.notebook.user_manager().user(g.username).is_admin()
     template_dict['username'] = g.username
-        
+
     return render_template(os.path.join('html', 'settings', 'notebook_settings.html'),
                            **template_dict)
 
