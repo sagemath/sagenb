@@ -116,6 +116,13 @@ def code_parser(text):
         lines.append(prefix + l)
     return '\n'.join(lines)
 
+HEADER_RE = re.compile(r'<h\d>')
+def add_title_if_there_is_none(text):
+    if not HEADER_RE.search(text):
+        return '<h1>Please write a title for this worksheet!</h1>\n' + text
+    else:
+        return text
+
 def worksheet2rst(s, images_dir=''):
     """Parses a string, tipically the content of the file
     worksheet.html inside a sws file, and converts it into
@@ -142,7 +149,7 @@ def worksheet2rst(s, images_dir=''):
     : worksheet2rst(s)
     u'.. -*- coding: utf-8 -*-\n\n\n::\n\n    sage: show(f)\n\n.. MATH::\n\n    \\sqrt{x}\n\n.. end of output\n'       
     """
-    result_parser = results2rst
+    s = add_title_if_there_is_none(s)
     state = States.COMMENT
     result = ['.. -*- coding: utf-8 -*-\n']
     ls = []
@@ -157,7 +164,7 @@ def worksheet2rst(s, images_dir=''):
                 result.append(html2rst(u'\n'.join(ls), img_path))
             elif state == States.RESULT:
                 img_path = os.path.join(images_dir, 'cell_%s_'%last_cell_id)
-                result.append(result_parser(u'\n'.join(ls),
+                result.append(results2rst(u'\n'.join(ls),
                                              img_path))
                 result.append('')
                 result.append('.. end of output')
@@ -191,6 +198,7 @@ if __name__=='__main__':
         fichero.close()
     else:
         text = sys.stdin.read()
+    images_dir = sys.argv[2] if len(sys.argv)>2 else ''
 
-    print worksheet2rst(text).encode('utf-8')
+    print worksheet2rst(text, images_dir).encode('utf-8')
 

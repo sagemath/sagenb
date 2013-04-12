@@ -33,6 +33,8 @@ or by using one of
 in the Sage shell (sage --sh).
 """
 
+#negative lookbehind: http://www.regular-expressions.info/lookaround.html
+double_dollar = re.compile(r'(?<!\\)\$\$')
 def preprocess_display_latex(text):
     r"""replace $$some display latex$$ with <display>some display latex</display>
     before the soup is built.
@@ -58,8 +60,8 @@ def preprocess_display_latex(text):
     """
     ls = []
     start_tag = True
-    partes = text.split('$$')
-    for c in partes[:-1]:
+    parts = double_dollar.split(text)
+    for c in parts[:-1]:
         if start_tag:
             ls.append(c)
             ls.append('<display>')
@@ -74,7 +76,7 @@ def preprocess_display_latex(text):
             elif abs(count)>1:
                 raise Exception, 'display latex was messed up with html code'
         start_tag = not start_tag
-    ls.append(partes[-1])
+    ls.append(parts[-1])
     return ''.join(ls)
 
 def prune_tags(text):
@@ -90,11 +92,25 @@ def escape_chars(text):
         text = text.replace(c,r)
     return text
 
+#This is supposed to be handled by BeautifulSoup, but doesn't work
+xml_entities = {'&lt;':'<',
+            '&gt;':'>',
+            '&amp;':'&',
+            '&quot;':'"',
+            '&apos;':"'",
+}
+def replace_xml_entities(text):
+    for c,r in xml_entities.iteritems():
+        text = text.replace(c,r)
+    return text
+ 
+
 def replace_courier(soup):
     """Lacking a better option, I use courier font to mark <code>
     within tinyMCE. And I want to turn that into real code tags.
 
-    Most users won't be needing this(?)
+    Most users won't be needing this(?), so this code is not called anywhere
+    but kept for reference
     """
     for t in soup.findAll(lambda s:s.has_key('style') and 'courier' in s['style']):
         tag = Tag(soup, 'code')
@@ -102,9 +118,8 @@ def replace_courier(soup):
             tag.append(t.contents[0])
         t.replaceWith(tag)
 
-#inline_latex is careful not to confuse escaped dollars
-inline_latex = re.compile(r'([^\\])\$(.*?)([^\\])\$')
-latex_beginning = re.compile(r'\$(.*?)([^\\])\$')
+#negative lookbehind: http://www.regular-expressions.info/lookaround.html
+single_dollar = re.compile(r'(?<!\\)\$')
 def replace_latex(soup):
     r"""Replaces inline latex by :math:`code` and escapes
     some rst special chars like +, -, * and | outside of inline latex
@@ -125,17 +140,14 @@ def replace_latex(soup):
         <p><strong>2\+2 \| 1\+3</strong></p>
     """
     for t in soup.findAll(text=re.compile('.+')):
-        if latex_beginning.match(t):
-            t.replaceWith(inline_latex.sub('\\1:math:`\\2\\3`',
-                                           latex_beginning.sub(':math:`\\1\\2`',
-                                                               unicode(t),
-                                                               1)))        
-        elif inline_latex.search(t):
-            t.replaceWith(inline_latex.sub('\\1:math:`\\2\\3`',
-                                           unicode(t)))
-        elif not (t.fetchParents(name = 'display')
-                  or t.fetchParents(name = 'pre')):
-            t.replaceWith(escape_chars(t))
+        if (t.fetchParents(name = 'display') or
+            t.fetchParents(name = 'pre')        ):
+            continue
+        parts = single_dollar.split(unicode(t))
+        even  = [escape_chars(parts[i]) for i in range(0,len(parts),2)]
+        odd   = [' :math:`%s`'%parts[i] for i in range(1,len(parts),2)]
+        odd.append('')
+        t.replaceWith(''.join(''.join(p) for p in zip(even,odd) ))
 
 class Soup2Rst(object):
     """builds the rst text from the Soup Tree
@@ -144,7 +156,7 @@ class Soup2Rst(object):
             'h2':'header',
             'h3':'header',
             'h4':'header',
-            'p': 'inline_no_tag',
+            'p': 'p',
             '[document]': 'document',
             'br': 'br',
             'b':'strong',
@@ -170,14 +182,15 @@ class Soup2Rst(object):
 
     headers = {'h1':u'=',
                'h2':u'-',
-               'h3':u'~',
+               'h3':u'^',
                'h4':u'"',
+               'h5':u'~',
                }
     
     def __init__(self, images_dir):
         self.images_dir = images_dir
-        self._nested_list = 0
-        self._inside_ol   = False
+        self._nested_list = -1
+        self._inside_ol_or_ul = []
         self._inside_code_tag = False
 
     def visit(self, node):
@@ -206,7 +219,7 @@ class Soup2Rst(object):
         return t.replace('\n','')
         
     def visit_header(self, node):
-        s = ' '.join(self.visit(tag) for tag in node.contents)
+        s = ''.join(self.visit(tag) for tag in node.contents)
         spacer = self.headers[node.name]*len(s)
         return s.replace( '\n', '') +  '\n' + spacer
 
@@ -215,27 +228,30 @@ class Soup2Rst(object):
 
     def visit_ul(self, node):
         self._nested_list += 1
-        result = '\n'.join(self.visit(tag) for tag in node.contents)
+        self._inside_ol_or_ul.append(False)
+        result = '\n\n'+''.join(self.visit(tag) for tag in node.contents)+'\n'
+        self._inside_ol_or_ul.pop()
         self._nested_list -= 1
         return result
 
     def visit_ol(self, node):
         self._nested_list += 1
-        self._inside_ol = True
-        result = '\n'.join(self.visit(tag) for tag in node.contents)
+        self._inside_ol_or_ul.append(True)
+        result = '\n\n'+''.join(self.visit(tag) for tag in node.contents)+'\n'
+        self._inside_ol_or_ul.pop()
         self._nested_list -= 1
-        self._inside_ol = False
         return result
 
     def visit_li(self, node):
         return (' '*self._nested_list
-                + ('#. ' if self._inside_ol else '- ')
-                +' '.join(self.visit(tag) for tag in node.contents))
+                + ('#. ' if self._inside_ol_or_ul[-1] else '- ')
+                +' '.join(self.visit(tag) for tag in node.contents)
+                + '\n')
 
     def visit_display(self, node):
-        return ('\n.. MATH::\n\n    ' +
+        return ('\n\n.. MATH::\n\n    ' +
                 unicode(node)[9:-10].replace('<br></br>','\n').replace('\n','\n    ') +
-                '\n\n')
+                '\n\n.. end of math\n\n')
 
     def visit_img(self, node):
         return '.. image:: ' + os.path.join(self.images_dir, node['src'].replace(' ','_')) + '\n    :align: center\n'
@@ -251,7 +267,7 @@ class Soup2Rst(object):
                             if hasattr(row,'name') and
                             row.name=='tr')
                 rows.append([]) #this row represents a separator
-            elif elt.name == 'tbody':
+            elif (elt.name == 'tbody') or (elt.name == 'tfoot'):
                 rows.extend(self.prepare_tr(row)
                             for row in elt
                             if hasattr(row,'name') and
@@ -285,7 +301,7 @@ class Soup2Rst(object):
     def visit_strong(self, node):
         if node.contents:
             content = ' '.join(self.visit(tag) for tag in node.contents).strip()
-            if '``' in content or self._inside_code_tag:
+            if '``' in content:
                 return content
             else:
                 return '**' + content + '**'
@@ -294,30 +310,38 @@ class Soup2Rst(object):
 
     def visit_em(self,node):
         if node.contents:
-            return '*' + ' '.join(self.visit(tag) for tag in node.contents).strip() + '*'
+            return ' *' + ' '.join(self.visit(tag) for tag in node.contents).strip() + '* '
         else:
             return ''
 
     def visit_code(self, node):
         if node.contents:
-            self._inside_code_tag = True
             content = self.get_plain_text(node).strip()
-            self._inside_code_tag = False
             return '``' + content + '``'
         else:
             return ''
 
     def visit_inline_no_tag(self, node):
         return (' '.join(self.visit(tag)
-                         for tag in node.contents)).strip() + '\n'
+                         for tag in node.contents)).strip()
 
     def visit_block_no_tag(self, node):
-        return '\n'.join(self.visit(tag) for tag in node.contents)
+        return '\n'.join(self.visit(tag) for tag in node.contents) + '\n'
+
+    def visit_p(self, node):
+        return ''.join(self.visit(tag) for tag in node.contents) + '\n\n'
 
     def visit_a(self, node):
-        return ('`' + ' '.join(self.visit(tag) for tag in node.contents) +
-                ' <' + node['href'] + '>`_'
-                )
+        c = ' '.join(self.visit(tag) for tag in node.contents)
+        try:
+            link = node['href']
+            if link[0]=='#':
+                return ':ref:`%s <%s>`'%(c, link[1:])
+            else:                    
+                return '`%s <%s>`_'%(c, link)
+        except KeyError:
+            return '.. _%s:\n\n'%node['name']
+
 
 def html2rst(text, images_dir):
     """Converts html, tipically generated by tinyMCE, into rst
@@ -364,14 +388,21 @@ def html2rst(text, images_dir):
     #ICantBelieveItsBeautifulSoup is better than BeautifulSoup
     #for html that wasn't generated by humans (like tinyMCE)
     soup = ICantBelieveItsBeautifulSoup(text,
-                       convertEntities=ICantBelieveItsBeautifulSoup.HTML_ENTITIES)    
+                       convertEntities=ICantBelieveItsBeautifulSoup.ALL_ENTITIES)        
 
     #remove all comments
     comments = soup.findAll(text=lambda text:isinstance(text, Comment))
     for comment in comments:
         comment.extract()
 
-    replace_courier(soup)
+#    replace_courier(soup)
     replace_latex(soup)
     v = Soup2Rst(images_dir)
-    return v.visit(soup)
+
+#    return v.visit(soup)
+    text = v.visit(soup)
+    more_than_2_blank_lines = re.compile(r'\n\n+', re.MULTILINE)
+    text = more_than_2_blank_lines.sub('\n\n', text)
+    text = replace_xml_entities(text)
+    return text
+    
