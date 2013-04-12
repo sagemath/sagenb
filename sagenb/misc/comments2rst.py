@@ -156,8 +156,11 @@ class Soup2Rst(object):
             'h2':'header',
             'h3':'header',
             'h4':'header',
+            'h5':'header',
+            'h6':'header',
             'p': 'p',
             '[document]': 'document',
+            'address': 'em',
             'br': 'br',
             'b':'strong',
             'strong':'strong',
@@ -185,6 +188,7 @@ class Soup2Rst(object):
                'h3':u'^',
                'h4':u'"',
                'h5':u'~',
+               'h6':u'*',
                }
     
     def __init__(self, images_dir):
@@ -296,7 +300,7 @@ class Soup2Rst(object):
         return [self.visit(tag) for tag in node.contents if tag!='\n']
         
     def visit_br(self, node):
-        return '\n'
+        return '\n\n'
 
     def visit_strong(self, node):
         if node.contents:
