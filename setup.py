@@ -43,7 +43,7 @@ if __name__ == '__main__':
         distutils.log.set_threshold(distutils.log.DEBUG)
 
     code = setup(name = 'sagenb',
-          version     = '0.10.4',
+          version     = '0.10.5',
           description = 'The Sage Notebook',
           license     = 'GNU General Public License (GPL) v2+',
           author      = 'William Stein et al.',
@@ -52,6 +52,7 @@ if __name__ == '__main__':
           install_requires = install_requires,
           test_suite = 'sagenb.testing.run_tests.all_tests',
           packages    = [ 'sagenb'
+                        , 'sagenb.flask_version'
                         , 'sagenb.interfaces'
                         , 'sagenb.misc'
                         , 'sagenb.notebook'

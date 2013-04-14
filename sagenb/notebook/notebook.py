@@ -45,7 +45,7 @@ from . import server_conf  # server configuration
 from . import user_conf    # user configuration
 from . import user         # users
 from   template import template, prettify_time_ago
-from flaskext.babel import gettext, lazy_gettext
+from flask.ext.babel import gettext, lazy_gettext
 
 try:
     # sage is installed
@@ -1250,16 +1250,14 @@ class Notebook(object):
 
     def quit_idle_worksheet_processes(self):
         timeout = self.conf()['idle_timeout']
-        if timeout == 0:
-            # Quit only the doc browser worksheets
-            for W in self.__worksheets.values():
-                if W.docbrowser() and W.compute_process_has_been_started():
-                    W.quit_if_idle(self.conf()['idle_timeout'])
-            return
+        doc_timeout = self.conf()['doc_timeout']
 
         for W in self.__worksheets.values():
             if W.compute_process_has_been_started():
-                W.quit_if_idle(timeout)
+                if W.docbrowser():
+                    W.quit_if_idle(doc_timeout)
+                else:
+                    W.quit_if_idle(timeout)
 
     def quit_worksheet(self, W):
         try:

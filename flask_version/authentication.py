@@ -2,10 +2,10 @@ import os
 import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import with_lock
-from flaskext.babel import gettext, ngettext, lazy_gettext
+from flask.ext.babel import gettext, ngettext, lazy_gettext
 _ = gettext
 
-authentication = Module('flask_version.authentication')
+authentication = Module('sagenb.flask_version.authentication')
 
 ##################
 # Authentication #
@@ -22,12 +22,12 @@ def login(template_dict={}):
     from sagenb.misc.misc import SAGE_VERSION
     template_dict.update({'accounts': g.notebook.user_manager().get_accounts(),
                           'recovery': g.notebook.conf()['email'],
-                          'next': request.values.get('next', ''), 
+                          'next': request.values.get('next', ''),
                           'sage_version': SAGE_VERSION,
                           'openid': g.notebook.conf()['openid'],
                           'username_error': False,
                           'password_error': False})
-    
+
     if request.method == 'POST':
         username = request.form['email']
         password = request.form['password']
@@ -56,7 +56,7 @@ def login(template_dict={}):
 
         if U is None:
             pass
-        elif (is_valid_password(password, username) and 
+        elif (is_valid_password(password, username) and
               g.notebook.user_manager().check_password(username, password)):
             if U.is_suspended():
                 #suspended
@@ -257,7 +257,7 @@ def confirm():
     if not g.notebook.conf()['email']:
         return current_app.message(_('The confirmation system is not active.'))
     key = int(request.values.get('key', '-1'))
-    
+
     invalid_confirm_key = _("""\
     <h1>Invalid confirmation key</h1>
     <p>You are reporting a confirmation key that has not been assigned by this

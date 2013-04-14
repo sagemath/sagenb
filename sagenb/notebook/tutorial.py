@@ -348,7 +348,7 @@ the "save" command), and get back to where you were quickly.
 
 #####################################
 
-from flaskext.babel import lazy_gettext as _
+from flask.ext.babel import lazy_gettext as _
 
 notebook_help = [
     (_('Find Help and Documentation'),
