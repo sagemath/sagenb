@@ -76,6 +76,12 @@ def sphinxify(docstring, format='html'):
         'x=y\n'
         sage: sphinxify(':math:`x=y`', format='text')
         'x=y\n'
+
+    TESTS::
+
+        sage: n = len(sys.path)
+        sage: _ = sphinxify('A test')
+        sage: assert n == len(sys.path)
     """
     global Sphinx
     if not Sphinx:
@@ -109,9 +115,12 @@ def sphinxify(docstring, format='html'):
     doctreedir = os.path.join(srcdir, 'doctrees')
     confoverrides = {'html_context': {}, 'master_doc': 'docstring'}
 
+    import sys
+    old_sys_path = list(sys.path)  # Sphinx modifies sys.path
     sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, format,
                         confoverrides, None, None, True)
     sphinx_app.build(None, [rst_name])
+    sys.path = old_sys_path
 
     #We need to remove "_" from __builtin__ that the gettext module installs
     import __builtin__
