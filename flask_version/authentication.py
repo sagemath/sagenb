@@ -301,7 +301,6 @@ def forgot_pass():
     chara = string.letters + string.digits
     old_pass = user.password()
     password = ''.join([choice(chara) for i in range(8)])
-    user.set_password(password)
 
     from sagenb.notebook.smtpsend import send_mail
     from sagenb.notebook.register import build_password_msg
@@ -316,8 +315,9 @@ def forgot_pass():
         send_mail(fromaddr, destaddr, "Sage Notebook Account Recovery", body)
     except ValueError:
         # the email address is invalid
-        user.set_password(old_pass)
         return error("The new password couldn't be sent."%destaddr)
+    else:
+        g.notebook.user_manager().set_password(username, password)
 
     return current_app.message("A new password has been sent to your e-mail address.", url_for('base.index'))
 
