@@ -96,7 +96,8 @@ def worksheet(username, id, worksheet=None):
 published_commands_allowed = set(['alive', 'cells', 'cell_update',
                           'data', 'download', 'edit_published_page', 'eval',
                           'quit_sage', 'rate', 'rating_info', 'new_cell_before',
-                          'new_cell_after'])
+                          'new_cell_after', 'introspect', 'delete_all_output',
+                          'copy', 'restart_sage'])
 
 readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download', 'quit_sage', 'rating_info', 'delete_all_output'])
 
