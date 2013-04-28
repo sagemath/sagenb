@@ -7,7 +7,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2009 Design Science, Inc.
+ *  Copyright (c) 2009-2012 Design Science, Inc.
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,14 +22,17 @@
  *  limitations under the License.
  */
 
+MathJax.Extension["TeX/verb"] = {
+  version: "2.1"
+};
+
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
-  var VERSION = "1.1";
   
   var MML = MathJax.ElementJax.mml;
   var TEX = MathJax.InputJax.TeX;
   var TEXDEF = TEX.Definitions;
   
-  TEXDEF.macros.verb = 'Verb';
+  TEXDEF.Add({macros: {verb: 'Verb'}},null,true);
 
   TEX.Parse.Augment({
 
