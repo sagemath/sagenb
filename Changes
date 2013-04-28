@@ -1,0 +1,10 @@
+0.10.6  Apr 27 2013
+
+ - Allow more actions in live documentation.
+ - Add tools for converting sws files to rst files.
+ - Add parameter "doc_timeout" for controlling timeouts of live worksheets.
+
+0.10.5  Apr 01 2013
+
+ - Add support for LDAP authentication.
+ - Remove the old notebook.

@@ -4,10 +4,10 @@ import os
 import urllib, urlparse
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required, with_lock
-from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
-worksheet_listing = Module('flask_version.worksheet_listing')
+worksheet_listing = Module('sagenb.flask_version.worksheet_listing')
 
 def render_worksheet_list(args, pub, username):
     """
@@ -28,10 +28,10 @@ def render_worksheet_list(args, pub, username):
 
     a string
     """
-    
+
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
-    
+
     typ = args['typ'] if 'typ' in args else 'active'
     search = unicode_str(args['search']) if 'search' in args else None
     sort = args['sort'] if 'sort' in args else 'last_edited'
@@ -78,7 +78,7 @@ def bare_home():
 
 def get_worksheets_from_request():
     U = g.notebook.user_manager().user(g.username)
-    
+
     if 'filename' in request.form:
         filenames = [request.form['filename']]
     elif 'filenames' in request.form:
@@ -90,8 +90,8 @@ def get_worksheets_from_request():
     for filename in filenames:
         W = g.notebook.get_worksheet_with_filename(filename)
         if W.owner() != g.username:
-            # TODO BUG: if trying to stop a shared worksheet, this check means that 
-            # only the owner can stop from the worksheet listing (using /send_to_stop), but any 
+            # TODO BUG: if trying to stop a shared worksheet, this check means that
+            # only the owner can stop from the worksheet listing (using /send_to_stop), but any
             # shared person can stop the worksheet by quitting it.
             continue
         worksheets.append(W)
@@ -134,7 +134,7 @@ def empty_trash():
         return redirect(request.headers['referer'])
     else:
         return redirect(url_for('home', typ='trash'))
-                       
+
 
 #####################
 # Public Worksheets #
@@ -155,7 +155,7 @@ def public_worksheet(id):
         except KeyError:
             return _("Requested public worksheet does not exist"), 404
         worksheet = pub_worksheet(original_worksheet)
-        
+
         owner = worksheet.owner()
         worksheet.set_owner('pub')
         s = g.notebook.html(worksheet_filename=worksheet.filename(),
@@ -192,7 +192,7 @@ def public_worksheet_cells(id, filename):
 @login_required
 def download_worksheets():
     from sagenb.misc.misc import walltime, tmp_filename
-    
+
     t = walltime()
     print "Starting zipping a group of worksheets in a separate thread..."
     zip_filename = tmp_filename() + ".zip"

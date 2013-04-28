@@ -27,7 +27,7 @@ AUTHORS:
 import os, random, re, urllib2, urllib
 
 from sagenb.notebook.template import template
-from flaskext.babel import gettext, lazy_gettext
+from flask.ext.babel import gettext, lazy_gettext
 _ = lazy_gettext
 
 class ChallengeResponse(object):
