@@ -22,7 +22,8 @@ MathJax.Hub.Config({
 
     "HTML-CSS": {
 	imageFont: null,
-	availableFonts: ["TeX"]
+	availableFonts: ["TeX"],
+    linebreaks: { automatic: true }
     },
 
     TeX: {
