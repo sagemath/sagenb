@@ -143,11 +143,11 @@ def worksheet2rst(s, images_dir=''):
     http://groups.google.com/group/sage-devel/browse_thread/thread/d82cb049ac102f3a)
 
     : from sagenb.misc.worksheet2rst import worksheet2rst
-    : worksheet2rst('<p>some text</p>\n{{{id=1|\nprint 2+2\n///\n4\n}}}')      
-    u'.. -*- coding: utf-8 -*-\n\nsome text\n\n::\n\n    sage: print 2+2\n    4\n\n.. end of output\n'
+    : worksheet2rst('<p>some text</p>\n{{{id=1|\nprint 2+2\n///\n4\n}}}')
+    u'.. -*- coding: utf-8 -*-\n\nPlease write a title for this worksheet!\n========================================\n\nsome text\n\n\n::\n\n    sage: print 2+2\n    4\n\n.. end of output\n'
     : s = '{{{id=2|\nshow(f)\n///\n<html><div class="math">\\sqrt{x}</div></html>\n}}}\n'
     : worksheet2rst(s)
-    u'.. -*- coding: utf-8 -*-\n\n\n::\n\n    sage: show(f)\n\n.. MATH::\n\n    \\sqrt{x}\n\n.. end of output\n'       
+    u'.. -*- coding: utf-8 -*-\n\nPlease write a title for this worksheet!\n========================================\n::\n\n    sage: show(f)\n\n.. MATH::\n\n    \\sqrt{x}\n\n.. end of output\n'
     """
     s = add_title_if_there_is_none(s)
     state = States.COMMENT
