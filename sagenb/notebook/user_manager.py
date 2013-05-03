@@ -83,18 +83,20 @@ class UserManager(object):
         Otherwise, the underscore _user method is tried.  This is the method that subclasses
         should override to provide custom user functionality.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
             sage: U.user('pub')
             pub
 
-        TESTS:
+        TESTS::
+
             sage: U.user('william')
             Traceback (most recent call last):
             ...
-            LookupError: "no user 'william'"
+            LookupError: no user 'william'
 
             sage: U.user('hello/')
             Traceback (most recent call last):
@@ -570,11 +572,8 @@ class OpenIDUserManager(ExtAuthUserManager):
             sage: UM.create_default_users('passpass')
             sage: UM.create_new_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14', 'thedude')
             sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
-            'thedude' 
+            'thedude'
         """
-        if not self._conf['openid']:
-            raise RuntimeError
-
         try:
             return self._openid[identity_url]
         except KeyError:
@@ -591,14 +590,10 @@ class OpenIDUserManager(ExtAuthUserManager):
             sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
             'thedude'
         """
-        if not self._conf['openid']:
-            raise RuntimeError
         self._openid[identity_url] = username
 
     def get_user_from_openid(self, identity_url):
         """
         Return the user object corresponding ot a given identity_url
         """
-        if not self._conf['openid']:
-            raise RuntimeError
         return self.user(self.get_username_from_openid(identity_url)) 
