@@ -182,7 +182,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: tmp = tmp_dir() + '.sagenb'
+            sage: tmp = tmp_dir(ext='.sagenb')
             sage: nb = sagenb.notebook.notebook.Notebook(tmp)
             sage: sorted(os.listdir(tmp))
             ['home']
@@ -215,7 +215,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: n = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: n = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: n.user_manager() 
             <sagenb.notebook.user_manager.OpenIDUserManager object at 0x...>
         """
@@ -234,7 +234,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: list(sorted(nb.user_manager().users().iteritems()))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
@@ -267,7 +267,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().create_default_users('password')
             sage: nb.user('admin')
             admin
@@ -288,7 +288,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: nb.valid_login_names()
             ['admin']
@@ -408,7 +408,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().add_user('Mark','password','',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('First steps', owner='Mark')
             sage: nb.worksheet_names()
@@ -513,7 +513,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
             sage: W._notebook = nb
@@ -544,7 +544,7 @@ class Notebook(object):
         We make a new notebook with two users and two worksheets,
         then list their names::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.new_worksheet_with_title_from_text('Sage', owner='sage')
             sage: nb.user_manager().add_user('wstein','sage','wstein@sagemath.org',force=True)
@@ -808,7 +808,7 @@ class Notebook(object):
 
         ::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: name = tmp_filename() + '.txt'
             sage: open(name,'w').write('foo\n{{{\n2+3\n}}}')
@@ -880,7 +880,7 @@ class Notebook(object):
         We write a plain text worksheet to a file and import it
         using this function.::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: name = tmp_filename() + '.txt'
             sage: open(name,'w').write('foo\n{{{\na = 10\n}}}')
@@ -916,7 +916,7 @@ class Notebook(object):
         We create a notebook, then make a worksheet from a plain text
         file first.::
 
-            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: name = tmp_filename() + '.txt'
             sage: open(name,'w').write('{{{id=0\n2+3\n}}}')
@@ -971,7 +971,7 @@ class Notebook(object):
         We write a plain text worksheet to a file and import it
         using this function.::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: name = tmp_filename() + '.html'
             sage: fd = open(name,'w')
@@ -1075,7 +1075,7 @@ class Notebook(object):
             sage: fd = open(name,'w')
             sage: fd.write(rst)
             sage: fd.close()
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb._import_worksheet_rst(name, 'admin')
             sage: W.name()
@@ -1159,7 +1159,7 @@ class Notebook(object):
             sage: fd = open(name,'w')
             sage: fd.write(html)
             sage: fd.close()
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb._import_worksheet_docutils_html(name, 'admin')
             sage: W.name()
@@ -1316,7 +1316,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.body()
@@ -1391,7 +1391,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_share(W, 'admin')
@@ -1420,7 +1420,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_download_or_delete_datafile(W, 'admin', 'bar')
@@ -1545,7 +1545,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_plain_text_window(W, 'admin')
@@ -1576,7 +1576,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_edit_window(W, 'admin')
@@ -1605,7 +1605,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_beforepublish_window(W, 'admin')
@@ -1670,7 +1670,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html_upload_data_window(W, 'admin')
@@ -1698,7 +1698,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir()+'.sagenb')
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html(W.filename(), 'admin')
