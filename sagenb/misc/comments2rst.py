@@ -44,18 +44,18 @@ def preprocess_display_latex(text):
 
     EXAMPLES::
 
-        sage: from sagenb.misc.comments2rst import preprocess_display_latex
-        sage: s="$$a=2$$"
-        sage: preprocess_display_latex(s)
-        '<display>a=2</display>'
-        sage: s="<p>$$a=2$$</p>"
-        sage: preprocess_display_latex(s)
+        sage: from sagenb.misc.comments2rst import preprocess_display_latex # optional - beautifulsoup
+        sage: s="$$a=2$$" # optional - beautifulsoup
+        sage: preprocess_display_latex(s) # optional - beautifulsoup
+        '<display>a=2</display>' 
+        sage: s="<p>$$a=2$$</p>" # optional - beautifulsoup
+        sage: preprocess_display_latex(s) # optional - beautifulsoup
         '<p><display>a=2</display></p>'
-        sage: s="<p>$$a=2</p>$$"
-        sage: preprocess_display_latex(s)
+        sage: s="<p>$$a=2</p>$$" # optional - beautifulsoup
+        sage: preprocess_display_latex(s) # optional - beautifulsoup
         '<p><display>a=2</display></p>'
-        sage: s="$$<p>a=2</p>$$"
-        sage: preprocess_display_latex(s)
+        sage: s="$$<p>a=2</p>$$" # optional - beautifulsoup
+        sage: preprocess_display_latex(s) # optional - beautifulsoup
         '<display>a=2</display>'
     """
     ls = []
@@ -128,15 +128,15 @@ def replace_latex(soup):
 
     EXAMPLES::
 
-        sage: from sagenb.misc.comments2rst import replace_latex
-        sage: from BeautifulSoup import ICantBelieveItsBeautifulSoup
-        sage: s = ICantBelieveItsBeautifulSoup("<p>Some <strong>latex: $e^\pi i=-1$</strong></p>")
-        sage: replace_latex(s)
-        sage: s
+        sage: from sagenb.misc.comments2rst import replace_latex # optional - beautifulsoup
+        sage: from BeautifulSoup import ICantBelieveItsBeautifulSoup # optional - beautifulsoup
+        sage: s = ICantBelieveItsBeautifulSoup("<p>Some <strong>latex: $e^\pi i=-1$</strong></p>") # optional - beautifulsoup
+        sage: replace_latex(s) # optional - beautifulsoup
+        sage: s # optional - beautifulsoup
         <p>Some <strong>latex: :math:`e^\pi i=-1`</strong></p>
-        sage: s = ICantBelieveItsBeautifulSoup("<p><strong>2+2 | 1+3</strong></p>")
-        sage: replace_latex(s)
-        sage: s
+        sage: s = ICantBelieveItsBeautifulSoup("<p><strong>2+2 | 1+3</strong></p>") # optional - beautifulsoup
+        sage: replace_latex(s) # optional - beautifulsoup
+        sage: s # optional - beautifulsoup
         <p><strong>2\+2 \| 1\+3</strong></p>
     """
     for t in soup.findAll(text=re.compile('.+')):
@@ -369,17 +369,17 @@ def html2rst(text, images_dir):
 
     EXAMPLES::
 
-        sage: from sagenb.misc.comments2rst import html2rst
-        sage: html2rst('<p>Some text with <em>math</em>: $e^{\pi i}=-1$</p>', '')
-        u'Some text with  *math* : :math:`e^{\\pi i}=-1`\n'
-        sage: html2rst('<p>Text with <em>incorrect</p> nesting</em>.', '')       
-        u'Text with  *incorrect*\n\n nesting\n.'
-        sage: html2rst('<pre>Preformatted: \n    a+2\n</pre><p> Not preformatted: \n    a+2\n</p>', '')
-        u'::\n\n    Preformatted: \n        a+2\n    \nNot preformatted:     a\\+2\n'
-        sage: html2rst('&aacute;ñ&nbsp;&ntildeá','')
+        sage: from sagenb.misc.comments2rst import html2rst # optional - beautifulsoup
+        sage: html2rst('<p>Some text with <em>math</em>: $e^{\pi i}=-1$</p>', '') # optional - beautifulsoup
+        u'Some text with  *math* :  :math:`e^{\\pi i}=-1`\n\n'
+        sage: html2rst('<p>Text with <em>incorrect</p> nesting</em>.', '') # optional - beautifulsoup
+        u'Text with  *incorrect* \n\n nesting\n.'
+        sage: html2rst('<pre>Preformatted: \n    a+2\n</pre><p> Not preformatted: \n    a+2\n</p>', '') # optional - beautifulsoup
+        u'::\n\n    Preformatted: \n        a+2\n    \n Not preformatted:     a\\+2\n\n'
+        sage: html2rst('&aacute;ñ&nbsp;&ntildeá','') # optional - beautifulsoup
         u'\xe1\xf1 \xf1\xe1'
-        sage: html2rst('<p>some text</p><p>$$</p><p>3.183098861 \cdot 10^{-1}</p><p>$$</p>','')
-        u'some text\n\n.. MATH::\n\n    3.183098861 \\cdot 10^{-1}\n'
+        sage: html2rst('<p>some text</p><p>$$</p><p>3.183098861 \cdot 10^{-1}</p><p>$$</p>','') # optional - beautifulsoup
+        u'some text\n\n.. MATH::\n\n    3.183098861 \\cdot 10^{-1}\n\n.. end of math\n\n'
     """
     
     #replace $$some display latex$$ with
