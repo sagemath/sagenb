@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/optable/MiscTechnical.js
  *
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -28,7 +28,9 @@
         '\u23B4': MO.WIDEACCENT, // top square bracket
         '\u23B5': MO.WIDEACCENT, // bottom square bracket
         '\u23DC': MO.WIDEACCENT, // top parenthesis
-        '\u23DD': MO.WIDEACCENT  // bottom parenthesis
+        '\u23DD': MO.WIDEACCENT, // bottom parenthesis
+        '\u23E0': MO.WIDEACCENT, // top tortoise shell bracket
+        '\u23E1': MO.WIDEACCENT  // bottom tortoise shell bracket
       }
     }
   });

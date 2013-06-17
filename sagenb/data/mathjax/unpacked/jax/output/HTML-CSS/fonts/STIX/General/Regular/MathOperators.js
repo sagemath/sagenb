@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/General/Regular/MathOperators.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -200,7 +200,7 @@ MathJax.Hub.Insert(
     0x22FC: [459,-45,486,62,420],      // SMALL CONTAINS WITH VERTICAL BAR AT END OF HORIZONTAL STROKE
     0x22FD: [685,27,685,61,626],       // CONTAINS WITH OVERBAR
     0x22FE: [613,-45,486,67,425],      // SMALL CONTAINS WITH OVERBAR
-    0x22FF: [662,0,560,73,487]         // Z NOTATION BAG MEMBERSHIP
+    0x22FF: [662,158,910,45,865]       // Z NOTATION BAG MEMBERSHIP
   }
 );
 
