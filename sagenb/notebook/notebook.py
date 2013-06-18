@@ -1514,11 +1514,12 @@ class Notebook(object):
         self.__storage.save_worksheet(W, conf_only=conf_only)
 
     def logout(self, username):
-        if username is None:
-            return
-        for filename, W in self.__worksheets.items():
-            if filename.startswith(username + "/"):
-                W.quit()
+        r"""
+        Do not do anything on logout (so far).
+        
+        In particular, do **NOT** stop all ``username``'s worksheets!
+        """
+        pass
 
     def delete_doc_browser_worksheets(self):
         for w in self.users_worksheets('_sage_'):
