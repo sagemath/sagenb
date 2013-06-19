@@ -14,7 +14,7 @@ _ = lazy_gettext
 defaults = {'word_wrap_cols':72,
             'max_history_length':250,
 
-            'idle_timeout': 120,        # timeout in seconds for worksheets
+            'idle_timeout': 0,        # timeout in seconds for worksheets
             'doc_timeout': 600,         # timeout in seconds for live docs
             'idle_check_interval':360,
 

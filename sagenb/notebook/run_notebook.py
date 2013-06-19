@@ -449,7 +449,7 @@ def notebook_run(self,
              server_pool   = None,
              ulimit        = '',
 
-             timeout       = 0,   # timeout for normal worksheets. This is the
+             timeout       = None,   # timeout for normal worksheets. This is the
                                   # same as idle_timeout in server_conf.py
              doc_timeout   = None, # timeout for documentation worksheets
 
@@ -533,7 +533,8 @@ def notebook_run(self,
     if not quiet:
         print "The notebook files are stored in:", nb._dir
 
-    nb.conf()['idle_timeout'] = int(timeout)
+    if timeout is not None:
+        nb.conf()['idle_timeout'] = int(timeout)
     if doc_timeout is not None:
         nb.conf()['doc_timeout'] = int(doc_timeout)
 
