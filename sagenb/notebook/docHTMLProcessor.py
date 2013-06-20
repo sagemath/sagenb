@@ -360,20 +360,20 @@ class genericHTMLProcessor(SGMLParser):
             piece = '\n{{{id=%s|\n'%self.get_cellcount()
             for p in pieces:
 
-                if p[:5] == 'sage:' and not output_flag:
-                    piece += p[5:].lstrip() + '\n'
-                elif p[:5] == 'sage:' and output_flag:
-                    piece += '\n}}}\n\n{{{id=%s|\n'%self.get_cellcount() + p[5:].lstrip() + '\n'
+                if p[:6] == 'sage: ' and not output_flag:
+                    piece += p[6:] + '\n'
+                elif p[:6] == 'sage: ' and output_flag:
+                    piece += '\n}}}\n\n{{{id=%s|\n'%self.get_cellcount() + p[6:] + '\n'
                     output_flag = False
-                elif p[:12] == '&gt;'*3 and not output_flag:
-                    piece += p[12:].lstrip() + '\n'
-                elif p[:12] == '&gt;'*3 and output_flag:
-                    piece += '\n}}}\n\n{{{id=%s|\n'%self.get_cellcount() + p[12:].lstrip() + '\n'
+                elif p[:6] == '....: ':
+                    piece += p[6:] + '\n'
+                elif p[:13] == '&gt;'*3+' ' and not output_flag:
+                    piece += p[13:] + '\n'
+                elif p[:13] == '&gt;'*3+' ' and output_flag:
+                    piece += '\n}}}\n\n{{{id=%s|\n'%self.get_cellcount() + p[13:] + '\n'
                     output_flag = False
                 elif p[:4] == '... ':
                     piece += p[4:] + '\n'
-                elif p[:5] == '....:':
-                    piece += p[5:].lstrip() + '\n'
                 else:
                     # in an output string. replace escaped html
                     # strings so they don't get converted twice.
