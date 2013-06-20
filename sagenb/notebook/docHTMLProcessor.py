@@ -372,6 +372,8 @@ class genericHTMLProcessor(SGMLParser):
                     output_flag = False
                 elif p[:4] == '... ':
                     piece += p[4:] + '\n'
+                elif p[:5] == '....:':
+                    piece += p[5:].lstrip() + '\n'
                 else:
                     # in an output string. replace escaped html
                     # strings so they don't get converted twice.
