@@ -47,6 +47,27 @@ re_script = re.compile(r'<script[^>]*?>.*?</script>', re.DOTALL | re.I)
 # Whether to enable editing of :class:`TextCell`s with TinyMCE.
 JEDITABLE_TINYMCE = True
 
+try:
+    from lxml.html.clean import Cleaner
+    from lxml.etree import XMLSyntaxError
+    class SageCleaner(Cleaner):
+        def allow_element(self, el):
+            # Added this one test for mathjax <script> tags
+            if el.tag=='script' and el.get('type')=='math/tex' and not el.get('src'):
+                return True
+            return super(SageCleaner, self).allow_element(el)
+
+    html_cleaner = SageCleaner(style=True, add_nofollow=True,
+                               remove_tags=('base', 'basefont', 'bdo', 'body', 'isindex', 'noscript'))
+    def clean_html(text):
+        try:
+            return html_cleaner.clean_html(text)
+        except XMLSyntaxError:
+            return ''
+except ImportError:
+    def clean_html(text):
+        # looks ugly, but gets the job done
+        return text.replace('<', '&lt;')
 
 ###########################
 # Generic (abstract) cell #
@@ -564,7 +585,7 @@ class TextCell(Cell_generic):
                         editing = editing, publish = publish)
 
 
-    def plain_text(self, prompts=False):
+    def plain_text(self, prompts=False, sanitize=False):
         ur"""
         Returns a plain text version of this text cell.
 
@@ -586,7 +607,10 @@ class TextCell(Cell_generic):
             sage: C.plain_text()
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
-        return self._text
+        if sanitize:
+            return clean_html(self._text)
+        else:
+            return self._text
 
     def edit_text(self):
         """
@@ -1666,7 +1690,7 @@ class Cell(Cell_generic):
         except AttributeError:
             return None
 
-    def output_html(self):
+    def output_html(self, sanitize=False):
         """
         Returns this compute cell's HTML output.
 
@@ -1684,7 +1708,10 @@ class Cell(Cell_generic):
             u'<strong>5</strong>'
         """
         try:
-            return self._out_html
+            if sanitize:
+                return clean_html(self._out_html)
+            else:
+                return self._out_html
         except AttributeError:
             self._out_html = ''
             return ''
@@ -1718,7 +1745,7 @@ class Cell(Cell_generic):
             urls = urls.replace(s, begin + s[7:-1] + end)
         return urls
 
-    def output_text(self, ncols=0, html=True, raw=False, allow_interact=True):
+    def output_text(self, ncols=0, html=True, raw=False, allow_interact=True, sanitize=False):
         ur"""
         Returns this compute cell's output text.
 
@@ -1734,6 +1761,9 @@ class Cell(Cell_generic):
 
         - ``allow_interact`` - a boolean (default: True); whether to
           allow :func:`sagenb.notebook.interact.interact`\ ion
+
+        - ``sanitize`` - a boolean (default: False); whether to sanitize
+          the html (if html is selected)
 
         OUTPUT:
 
@@ -1759,7 +1789,7 @@ class Cell(Cell_generic):
         """
         if allow_interact and hasattr(self, '_interact_output'):
             # Get the input template
-            z = self.output_text(ncols, html, raw, allow_interact=False)
+            z = self.output_text(ncols, html, raw, allow_interact=False, sanitize=sanitize)
             if not INTERACT_TEXT in z or not INTERACT_HTML in z:
                 return z
             if ncols:
@@ -1767,7 +1797,7 @@ class Cell(Cell_generic):
                 try:
                     # Fill in the output template
                     output, html = self._interact_output
-                    output = self.parse_html(output, ncols)
+                    output = self.parse_html(output, ncols, sanitize=sanitize)
                     z = z.replace(INTERACT_TEXT, output)
                     z = z.replace(INTERACT_HTML, html)
                     return z
@@ -1795,7 +1825,7 @@ class Cell(Cell_generic):
             return s
 
         if html:
-            s = self.parse_html(s, ncols)
+            s = self.parse_html(s, ncols, sanitize=sanitize)
 
         if (not is_interact and not self.is_html() and len(s.strip()) > 0 and
             '<div class="docstring">' not in s):
@@ -1803,7 +1833,7 @@ class Cell(Cell_generic):
 
         return s.strip('\n')
 
-    def parse_html(self, s, ncols):
+    def parse_html(self, s, ncols, sanitize=False):
         r"""
         Parses HTML for output, escaping and wrapping HTML and
         removing script elements.
@@ -1813,6 +1843,8 @@ class Cell(Cell_generic):
         - ``s`` - a string; the HTML to parse
 
         - ``ncols`` - an integer; the number of word wrap columns
+
+        - ``sanitize`` - a boolean; sanitize the html
 
         OUTPUT:
 
@@ -1831,11 +1863,14 @@ class Cell(Cell_generic):
             return word_wrap(escape(x), ncols)
 
         def format_html(x):
-            return self.process_cell_urls(x)
+            t = self.process_cell_urls(x)
+            if sanitize:
+                t = clean_html(t)
+            return t
 
         # If there is an error in the output, specially format it.
         if not self.is_interactive_cell():
-            s = format_exception(format_html(s), ncols)
+            s = format_exception(s, ncols)
 
         # Everything not wrapped in <html> ... </html> should be
         # escaped and word wrapped.

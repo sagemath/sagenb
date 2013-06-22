@@ -96,20 +96,20 @@ INPUT:
                             <div class="cell_output_{{ "print_" if do_print else '' }}{{ cell.cell_output_type() }}"
                                 id="cell_output_{{ cell.id() }}">
                                 {% if cell.introspect() %}
-                                    {{ cell.output_text(0, html=true) }}
+                                    {{ cell.output_text(0, html=true, sanitize=publish) }}
                                 {% else %}
-                                    {{ cell.output_text(wrap_, html=true) }}
+                                    {{ cell.output_text(wrap_, html=true, sanitize=publish) }}
                                 {% endif %}
                             </div>
                             {% if not do_print %}
                                 <div class="cell_output_{{ 'print_' if do_print else '' }}nowrap_{{ cell.cell_output_type() }}"
                                      id="cell_output_nowrap_{{ cell.id() }}">
-                                    {{ cell.output_text(0, html=true) }}
+                                    {{ cell.output_text(0, html=true, sanitize=publish) }}
                                 </div>
                             {% endif %}
                                 <div class="cell_output_html_{{ cell.cell_output_type() }}"
                                      id="cell_output_html_{{ cell.id() }}">
-                                    {{ cell.output_html() }}
+                                    {{ cell.output_html(sanitize=publish) }}
                                 </div>
                         </div>
                     </td>
