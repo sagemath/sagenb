@@ -1,3 +1,6 @@
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
 /*************************************************************
  *
  *  MathJax/config/MMLorHTML.js
@@ -31,7 +34,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2011 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,11 +49,18 @@
  *  limitations under the License.
  */
 
-(function (HUB) {
-  var VERSION = "1.1.1";
+(function (HUB,BROWSER) {
+  var VERSION = "2.2";
   
   var CONFIG = MathJax.Hub.CombineConfig("MMLorHTML",{
-    prefer: {MSIE:"MML", Firefox:"MML", Opera:"HTML", other:"HTML"}
+    prefer: {
+      MSIE:"MML",
+      Firefox:"HTML",
+      Opera:"HTML",
+      Chrome:"HTML",
+      Safari:"HTML",
+      other:"HTML"
+    }
   });
 
   var MINBROWSERVERSION = {
@@ -61,17 +71,14 @@
     Safari: 2.0,
     Konqueror: 4.0
   };
+  
+  var canUseHTML = (BROWSER.version === "0.0" ||
+                    BROWSER.versionAtLeast(MINBROWSERVERSION[BROWSER]||0.0));
 
-  var canUseHTML = (HUB.Browser.version === "0.0" ||
-                    HUB.Browser.versionAtLeast(MINBROWSERVERSION[HUB.Browser]||0.0));
-
-  var MathPlayer = false;
-  if (!HUB.Browser.isIE9) // this crashes IE9 RC, so skip it for now
-    {try {new ActiveXObject("MathPlayer.Factory.1"); MathPlayer = true} catch(err) {}}
-
-  var canUseMML = (HUB.Browser.isFirefox && HUB.Browser.versionAtLeast("1.5")) ||
-                  (HUB.Browser.isMSIE && MathPlayer) ||
-                  (HUB.Browser.isOpera && HUB.Browser.versionAtLeast("9.52"));
+  var canUseMML = (BROWSER.isFirefox && BROWSER.versionAtLeast("1.5")) ||
+                  (BROWSER.isMSIE    && BROWSER.hasMathPlayer) ||
+                  (BROWSER.isSafari  && BROWSER.versionAtLeast("5.0")) ||
+                  (BROWSER.isOpera   && BROWSER.versionAtLeast("9.52"));
 
   HUB.Register.StartupHook("End Config",function () {
     var prefer = (CONFIG.prefer && typeof(CONFIG.prefer) === "object" ? 
@@ -91,11 +98,14 @@
     } else {
       HUB.PreProcess.disabled = true;
       HUB.prepareScripts.disabled = true;
-      MathJax.Message.Set("Your browser does not support MathJax",null,4000);
+      MathJax.Message.Set(
+        ["MathJaxNotSupported","Your browser does not support MathJax"],
+        null,4000
+      );
       HUB.Startup.signal.Post("MathJax not supported");
     }
   });
 
-})(MathJax.Hub);
+})(MathJax.Hub,MathJax.Hub.Browser);
 
 MathJax.Ajax.loadComplete("[MathJax]/config/MMLorHTML.js");

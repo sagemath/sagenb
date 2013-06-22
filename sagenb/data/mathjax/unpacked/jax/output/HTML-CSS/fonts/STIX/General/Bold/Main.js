@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/General/Bold/Main.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -50,8 +50,10 @@ MathJax.OutputJax['HTML-CSS'].FONTDATA.FONTS['STIXGeneral-bold'] = {
     [0x27C0,0x27EF,"MiscMathSymbolsA"],
     [0x2980,0x29FF,"MiscMathSymbolsB"],
     [0x2A00,0x2AFF,"SuppMathOperators"],
+    [0xA720,0xA7FF,"LatinExtendedD"],
     [0xFB00,0xFB4F,"AlphaPresentForms"],
     [0x1D400,0x1D433,"MathBold"],
+    [0x1D538,0x1D56B,"BBBold"],
     [0x1D56C,0x1D59F,"BoldFraktur"],
     [0x1D5D4,0x1D607,"MathSSBold"],
     [0x1D6A8,0x1D6E1,"GreekBold"],

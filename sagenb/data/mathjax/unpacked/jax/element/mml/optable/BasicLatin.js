@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/optable/BasicLatin.js
  *
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,13 +24,19 @@
 
   MathJax.Hub.Insert(MML.mo.prototype,{
     OPTABLE: {
+      prefix: {
+        '||': [0,0,TEXCLASS.BIN,{fence: true, stretchy: true, symmetric: true}], // multiple character operator: ||
+        '|||': [0,0,TEXCLASS.ORD,{fence: true, stretchy: true, symmetric: true}]  // multiple character operator: |||
+      },
       postfix: {
         '!!': [1,0,TEXCLASS.BIN], // multiple character operator: !!
         '\'': MO.ACCENT,       // apostrophe
         '++': [0,0,TEXCLASS.BIN], // multiple character operator: ++
         '--': [0,0,TEXCLASS.BIN], // multiple character operator: --
         '..': [0,0,TEXCLASS.BIN], // multiple character operator: ..
-        '...': MO.ORD          // multiple character operator: ...
+        '...': MO.ORD,         // multiple character operator: ...
+        '||': [0,0,TEXCLASS.BIN,{fence: true, stretchy: true, symmetric: true}], // multiple character operator: ||
+        '|||': [0,0,TEXCLASS.ORD,{fence: true, stretchy: true, symmetric: true}]  // multiple character operator: |||
       },
       infix: {
         '!=': MO.BIN4,         // multiple character operator: !=
@@ -39,16 +45,17 @@
         '*=': MO.BIN4,         // multiple character operator: *=
         '+=': MO.BIN4,         // multiple character operator: +=
         '-=': MO.BIN4,         // multiple character operator: -=
-        '->': MO.BIN4,         // multiple character operator: ->
-        '//': MO.BIN4,         // multiple character operator: //
+        '->': MO.BIN5,         // multiple character operator: ->
+        '//': [1,1,TEXCLASS.BIN], // multiple character operator: //
         '/=': MO.BIN4,         // multiple character operator: /=
         ':=': MO.BIN4,         // multiple character operator: :=
-        '<=': MO.BIN4,         // multiple character operator: <=
+        '<=': MO.BIN5,         // multiple character operator: <=
         '<>': [1,1,TEXCLASS.BIN], // multiple character operator: <>
         '==': MO.BIN4,         // multiple character operator: ==
-        '>=': MO.BIN4,         // multiple character operator: >=
+        '>=': MO.BIN5,         // multiple character operator: >=
         '@': MO.ORD11,         // commercial at
-        '||': MO.BIN3          // multiple character operator: ||
+        '||': [2,2,TEXCLASS.BIN,{fence: true, stretchy: true, symmetric: true}], // multiple character operator: ||
+        '|||': [2,2,TEXCLASS.ORD,{fence: true, stretchy: true, symmetric: true}]  // multiple character operator: |||
       }
     }
   });

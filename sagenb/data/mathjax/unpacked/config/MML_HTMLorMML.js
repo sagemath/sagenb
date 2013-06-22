@@ -1,7 +1,11 @@
-/*
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
+/*************************************************************
+ *
  *  /MathJax/unpacked/config/MML_HTMLorMML.js
  *  
- *  Copyright (c) 2010-11 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Part of the MathJax library.
  *  See http://www.mathjax.org for details.
@@ -14,7 +18,7 @@
 
 MathJax.Hub.Config({
   config: ["MMLorHTML.js"],
-  extensions: ["mml2jax.js","MathZoom.js","MathMenu.js","toMathML.js"],
+  extensions: ["mml2jax.js","MathEvents.js","MathZoom.js","MathMenu.js","toMathML.js"],
   jax: ["input/MathML","output/HTML-CSS","output/NativeMML"]
 });
 
