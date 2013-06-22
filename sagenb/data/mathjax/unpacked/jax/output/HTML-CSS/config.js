@@ -1,3 +1,6 @@
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
 /*************************************************************
  *
  *  MathJax/jax/output/HTML-CSS/config.js
@@ -7,7 +10,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2009-2011 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,7 +27,7 @@
 
 MathJax.OutputJax["HTML-CSS"] = MathJax.OutputJax({
   id: "HTML-CSS",
-  version: "1.1.5",
+  version: "2.2",
   directory: MathJax.OutputJax.directory + "/HTML-CSS",
   extensionDir: MathJax.OutputJax.extensionDir + "/HTML-CSS",
   autoloadDir: MathJax.OutputJax.directory + "/HTML-CSS/autoload",
@@ -32,14 +35,29 @@ MathJax.OutputJax["HTML-CSS"] = MathJax.OutputJax({
   webfontDir: MathJax.OutputJax.fontDir + "/HTML-CSS",      // font name added later
   
   config: {
-    scale: 100, minScaleAdjust: 50,
-    availableFonts: ["STIX","TeX"],
-    preferredFont: "TeX",
-    webFont: "TeX",
-    imageFont: "TeX",
-    undefinedFamily: "STIXGeneral,'Arial Unicode MS',serif",
-    
-    showMathMenu: true,
+    scale: 100, minScaleAdjust: 50, // global math scaling factor, and minimum adjusted scale factor
+    availableFonts: ["STIX","TeX"], // list of local fonts to check for
+    preferredFont: "TeX",           // preferred local font (TeX or STIX)
+    webFont: "TeX",                 // web-based font to use when no local fonts found (TeX is only choice)
+    imageFont: "TeX",               // font to use for image fallback mode (TeX is only choice)
+    undefinedFamily: "STIXGeneral,'Arial Unicode MS',serif", // fonts to use for unknown unicode characters
+    mtextFontInherit: false,        // to make <mtext> be in page font rather than MathJax font
+
+    EqnChunk: (MathJax.Hub.Browser.isMobile ? 10: 50),
+                                    // number of equations to process before showing them
+    EqnChunkFactor: 1.5,            // chunk size is multiplied by this after each chunk
+    EqnChunkDelay: 100,             // milliseconds to delay between chunks (to let browser
+                                    //   respond to other events)
+
+    linebreaks: {
+      automatic: false,   // when false, only process linebreak="newline",
+                          // when true, insert line breaks automatically in long expressions.
+
+      width: "container" // maximum width of a line for automatic line breaks (e.g. "30em").
+                         // use "container" to compute size from containing element,
+                         // use "nn% container" for a portion of the container,
+                         // use "nn%" for a portion of the window size
+    },
     
     styles: {
       ".MathJax_Display": {
@@ -52,12 +70,9 @@ MathJax.OutputJax["HTML-CSS"] = MathJax.OutputJax({
         color:   "#CC0000",
         border:  "1px solid #CC0000",
         padding: "1px 3px",
-        "font-family": "serif",
         "font-style": "normal",
         "font-size":  "90%"
       },
-      
-      ".MathJax_Preview": {color: "#888888"},
       
       "#MathJax_Tooltip": {
         "background-color": "InfoBackground", color: "InfoText",
@@ -67,7 +82,8 @@ MathJax.OutputJax["HTML-CSS"] = MathJax.OutputJax({
         "-moz-box-shadow": "2px 2px 5px #AAAAAA",    // Forefox 3.5
         "-khtml-box-shadow": "2px 2px 5px #AAAAAA",  // Konqueror
         filter: "progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')", // IE
-        padding: "3px 4px"
+        padding: "3px 4px",
+        "z-index": 401
       }
     }
     
@@ -110,7 +126,7 @@ MathJax.Hub.Register.StartupHook("End Config",[function (HUB,HTMLCSS) {
     minBrowserTranslate: function (script) {
       var MJ = HUB.getJaxFor(script), text = ["[Math]"], delim;
       var span = document.createElement("span",{className: "MathJax_Preview"});
-      if (MJ.inputJax.id === "TeX") {
+      if (MJ.inputJax === "TeX") {
         if (MJ.root.Get("displaystyle")) {
           delim = CONFIG.displayMathDelimiters;
           text = [delim[0]+MJ.originalText+delim[1]];
@@ -133,7 +149,8 @@ MathJax.Hub.Register.StartupHook("End Config",[function (HUB,HTMLCSS) {
      !HUB.Browser.versionAtLeast(CONFIG.minBrowserVersion[HUB.Browser]||0.0)) {
        HTMLCSS.Translate = CONFIG.minBrowserTranslate;
        HUB.Config({showProcessingMessages: false});
-       MathJax.Message.Set("Your browser does not support MathJax",null,4000);
+       MathJax.Message.Set(["MathJaxNotSupported",
+                            "Your browser does not support MathJax"],null,4000);
        HUB.Startup.signal.Post("MathJax not supported");
   }
 

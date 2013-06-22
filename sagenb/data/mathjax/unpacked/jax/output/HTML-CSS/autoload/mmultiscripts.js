@@ -1,3 +1,6 @@
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
 /*************************************************************
  *
  *  MathJax/jax/output/HTML-CSS/autoload/mmultiscripts.js
@@ -6,7 +9,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2011 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +25,7 @@
  */
 
 MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
-  var VERSION = "1.1";
+  var VERSION = "2.2";
   var MML = MathJax.ElementJax.mml,
       HTMLCSS = MathJax.OutputJax["HTML-CSS"];
   
@@ -31,18 +34,29 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       span = this.HTMLcreateSpan(span); var scale = this.HTMLgetScale();
       var stack = HTMLCSS.createStack(span), values;
       var base = HTMLCSS.createBox(stack);
-      this.HTMLmeasureChild(this.base,base);
       if (this.data[this.base]) {
-        if (D != null) {HTMLCSS.Remeasured(this.data[this.base].HTMLstretchV(base,HW,D),base)}
-        else if (HW != null) {HTMLCSS.Remeasured(this.data[this.base].HTMLstretchH(base,HW),base)}
-      }
+        var child = this.data[this.base].toHTML(base);
+        if (D != null) {this.data[this.base].HTMLstretchV(base,HW,D)}
+        else if (HW != null) {this.data[this.base].HTMLstretchH(base,HW)}
+        HTMLCSS.Measured(child,base);
+      } else {base.bbox = this.HTMLzeroBBox()}
       var x_height = HTMLCSS.TeX.x_height * scale,
           s = HTMLCSS.TeX.scriptspace * scale * .75;  // FIXME: .75 can be removed when IC is right?
 
       var BOX = this.HTMLgetScripts(stack,s);
       var sub = BOX[0], sup = BOX[1], presub = BOX[2], presup = BOX[3];
 
-      var sscale = (this.data[1]||this).HTMLgetScale();
+      // <mmultiscripts> children other than the base can be <none/>,
+      // <mprescripts/>, <mrow></mrow> etc so try to get HTMLgetScale from the
+      // first element with a spanID. See issue 362.
+      var sscale = this.HTMLgetScale();
+      for (var i = 1; i < this.data.length; i++) {
+        if (this.data[i] && this.data[i].spanID) {
+          sscale = this.data[i].HTMLgetScale();
+          break;
+        }
+      }
+
       var q = HTMLCSS.TeX.sup_drop * sscale, r = HTMLCSS.TeX.sub_drop * sscale;
       var u = base.bbox.h - q, v = base.bbox.d + r, delta = 0, p;
       if (base.bbox.ic) {delta = base.bbox.ic}
@@ -51,9 +65,9 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
         if (this.data[this.base].data.join("").length === 1 && base.bbox.scale === 1 &&
             !this.data[this.base].Get("largeop")) {u = v = 0}
       }
-      var min = this.getValues("subscriptshift","superscriptshift");
-      min.subscriptshift   = (min.subscriptshift === ""   ? 0 : HTMLCSS.length2em(min.subscriptshift));
-      min.superscriptshift = (min.superscriptshift === "" ? 0 : HTMLCSS.length2em(min.superscriptshift));
+      var min = this.getValues("subscriptshift","superscriptshift"), mu = this.HTMLgetMu(span);
+      min.subscriptshift   = (min.subscriptshift === ""   ? 0 : HTMLCSS.length2em(min.subscriptshift,mu));
+      min.superscriptshift = (min.superscriptshift === "" ? 0 : HTMLCSS.length2em(min.superscriptshift,mu));
 
       var dx = 0;
       if (presub) {dx = presub.bbox.w+delta} else if (presup) {dx = presup.bbox.w-delta}

@@ -1,3 +1,6 @@
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
 /*************************************************************
  *
  *  MathJax/jax/output/HTML-CSS/autoload/mtable.js
@@ -6,7 +9,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2011 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +25,7 @@
  */
 
 MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
-  var VERSION = "1.1";
+  var VERSION = "2.2.1";
   var MML = MathJax.ElementJax.mml,
       HTMLCSS = MathJax.OutputJax["HTML-CSS"];
   
@@ -36,10 +39,10 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
                                   "align","useHeight","width","side","minlabelspacing");
       var hasRelativeWidth = values.width.match(/%$/);
       var stack = HTMLCSS.createStack(span);
-      var scale = this.HTMLgetScale(); var LABEL = -1;
+      var scale = this.HTMLgetScale(), mu = this.HTMLgetMu(span), LABEL = -1;
 
-      var H = [], D = [], W = [], A = [], C = [], i, j, J = -1, m, M, s, row;
-      var LHD = HTMLCSS.FONTDATA.baselineskip * scale * values.useHeight,
+      var H = [], D = [], W = [], A = [], C = [], i, j, J = -1, m, M, s, row, cell, mo, entries = [];
+      var LHD = HTMLCSS.FONTDATA.baselineskip * scale * values.useHeight, HD,
           LH = HTMLCSS.FONTDATA.lineH * scale, LD = HTMLCSS.FONTDATA.lineD * scale;
 
       //
@@ -55,8 +58,33 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
             W[j] = -HTMLCSS.BIGDIMEN;
           }
           A[i][j] = HTMLCSS.createBox(C[j]);
-          HTMLCSS.Measured(row.data[j-s].toHTML(A[i][j]),A[i][j]);
-          if (row.data[j-s].isMultiline) {A[i][j].style.width = "100%"}
+          entries.push(row.data[j-s].toHTML(A[i][j]));
+        }
+      }
+      HTMLCSS.MeasureSpans(entries);
+      for (i = 0, m = this.data.length; i < m; i++) {
+        row = this.data[i]; s = (row.type === "mlabeledtr" ? LABEL : 0);
+        for (j = s, M = row.data.length + s; j < M; j++) {
+          cell = row.data[j-s];
+          if (cell.isMultiline) {A[i][j].style.width = "100%"}
+          if (cell.isEmbellished()) {
+            mo = cell.CoreMO();
+            var min = mo.Get("minsize",true);
+            if (min) {
+              var bbox = mo.HTMLspanElement().bbox;
+              if (mo.HTMLcanStretch("Vertical")) {
+                HD = bbox.h + bbox.d;
+                if (HD) {
+                  min = HTMLCSS.length2em(min,mu,HD);
+                  if (min*bbox.h/HD > H[i]) {H[i] = min*bbox.h/HD}
+                  if (min*bbox.d/HD > D[i]) {D[i] = min*bbox.d/HD}
+                }
+              } else if (mo.HTMLcanStretch("Horizontal")) {
+                min = HTMLCSS.length2em(min,mu,bbox.w);
+                if (min > W[j]) {W[j] = min}
+              }
+            }
+          }
           if (A[i][j].bbox.h > H[i]) {H[i] = A[i][j].bbox.h}
           if (A[i][j].bbox.d > D[i]) {D[i] = A[i][j].bbox.d}
           if (A[i][j].bbox.w > W[j]) {W[j] = A[i][j].bbox.w}
@@ -68,16 +96,17 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //
       //  Determine spacing and alignment
       //
-      var CSPACE = values.columnspacing.split(/ /),
-          RSPACE = values.rowspacing.split(/ /),
-          CALIGN = values.columnalign.split(/ /),
-          RALIGN = values.rowalign.split(/ /),
-          CLINES = values.columnlines.split(/ /),
-          RLINES = values.rowlines.split(/ /),
-          CWIDTH = values.columnwidth.split(/ /),
+      var SPLIT = MathJax.Hub.SplitList;
+      var CSPACE = SPLIT(values.columnspacing),
+          RSPACE = SPLIT(values.rowspacing),
+          CALIGN = SPLIT(values.columnalign),
+          RALIGN = SPLIT(values.rowalign),
+          CLINES = SPLIT(values.columnlines),
+          RLINES = SPLIT(values.rowlines),
+          CWIDTH = SPLIT(values.columnwidth),
           RCALIGN = [];
-      for (i = 0, m = CSPACE.length; i < m; i++) {CSPACE[i] = HTMLCSS.length2em(CSPACE[i])}
-      for (i = 0, m = RSPACE.length; i < m; i++) {RSPACE[i] = HTMLCSS.length2em(RSPACE[i])}
+      for (i = 0, m = CSPACE.length; i < m; i++) {CSPACE[i] = HTMLCSS.length2em(CSPACE[i],mu)}
+      for (i = 0, m = RSPACE.length; i < m; i++) {RSPACE[i] = HTMLCSS.length2em(RSPACE[i],mu)}
       while (CSPACE.length <  J) {CSPACE.push(CSPACE[CSPACE.length-1])}
       while (CALIGN.length <= J) {CALIGN.push(CALIGN[CALIGN.length-1])}
       while (CLINES.length <  J) {CLINES.push(CLINES[CLINES.length-1])}
@@ -96,9 +125,19 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
         row = this.data[i]; RCALIGN[i] = [];
         if (row.rowalign) {RALIGN[i] = row.rowalign}
         if (row.columnalign) {
-          RCALIGN[i] = row.columnalign.split(/ /);
+          RCALIGN[i] = SPLIT(row.columnalign);
           while (RCALIGN[i].length <= J) {RCALIGN[i].push(RCALIGN[i][RCALIGN[i].length-1])}
         }
+      }
+
+      //
+      //  Handle equal heights
+      //
+      if (values.equalrows) {
+        // FIXME:  should really be based on row align (below is for baseline)
+        var Hm = Math.max.apply(Math,H), Dm = Math.max.apply(Math,D);
+        for (i = 0, m = A.length; i < m; i++)
+          {s = ((Hm + Dm) - (H[i] + D[i])) / 2;  H[i] += s; D[i] += s}
       }
 
       //  FIXME:  do background colors for entire cell (include half the intercolumn space?)
@@ -106,7 +145,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //
       //  Determine array total height
       //
-      var HD = H[0] + D[A.length-1];
+      HD = H[0] + D[A.length-1];
       for (i = 0, m = A.length-1; i < m; i++) {HD += Math.max((H[i]+D[i] ? LHD : 0),D[i]+H[i+1]+RSPACE[i])}
       //
       //  Determine frame and line sizes
@@ -114,18 +153,35 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       var fx = 0, fy = 0, fW, fH = HD;
       if (values.frame !== "none" ||
          (values.columnlines+values.rowlines).match(/solid|dashed/)) {
-        fx = HTMLCSS.length2em(values.framespacing.split(/[, ]+/)[0]);
-        fy = HTMLCSS.length2em(values.framespacing.split(/[, ]+/)[1]);
+        var frameSpacing = SPLIT(values.framespacing);
+        if (frameSpacing.length != 2) {
+          // invalid attribute value: use the default.
+          frameSpacing = SPLIT(this.defaults.framespacing);
+        }
+        fx = HTMLCSS.length2em(frameSpacing[0],mu);
+        fy = HTMLCSS.length2em(frameSpacing[1],mu);
         fH = HD + 2*fy; // fW waits until stack.bbox.w is determined
       }
       //
       //  Compute alignment
       //
-      var Y, fY;
-      if (String(values.align).match(/^\d+$/)) {
-        // FIXME: do row-based alignment
-        Y = HD/2 + HTMLCSS.TeX.axis_height*scale - H[0];
-        fY = -(HD/2 + fy);
+      var Y, fY, n = "";
+      if (typeof(values.align) !== "string") {values.align = String(values.align)}
+      if (values.align.match(/(top|bottom|center|baseline|axis)( +(-?\d+))?/))
+        {n = RegExp.$3; values.align = RegExp.$1} else {values.align = this.defaults.align}
+      if (n !== "") {
+        //
+        //  Find the height of the given row
+        //
+        n = parseInt(n);
+        if (n < 0) {n = A.length + 1 + n}
+        if (n < 1) {n = 1} else if (n > A.length) {n = A.length}
+        Y = 0; fY = -(HD + fy) + H[0];
+        for (i = 0, m = n-1; i < m; i++) {
+          // FIXME:  Should handle values.align for final row
+          var dY = Math.max((H[i]+D[i] ? LHD : 0),D[i]+H[i+1]+RSPACE[i]);
+          Y += dY; fY += dY;
+        }
       } else {
         Y = ({
           top:    -(H[0] + fy),
@@ -158,7 +214,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           for (i = 0, m = Math.min(J+1,CSPACE.length); i < m; i++) {WW += CSPACE[i]}
         } else {
           //  Get total width minus column spacing
-          WW = HTMLCSS.length2em(values.width);
+          WW = HTMLCSS.length2em(values.width,mu);
           for (i = 0, m = Math.min(J+1,CSPACE.length); i < m; i++) {WW -= CSPACE[i]}
           //  Determine individual column widths
           WW /= J+1;
@@ -174,8 +230,8 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           if (CWIDTH[i] === "auto") {Wt += W[i]}
           else if (CWIDTH[i] === "fit") {F[f] = i; f++; Wt += W[i]}
           else if (CWIDTH[i].match(/%$/))
-            {P[p] = i; p++; Wp += W[i]; WP += HTMLCSS.length2em(CWIDTH[i],1)}
-          else {W[i] = HTMLCSS.length2em(CWIDTH[i]); Wt += W[i]}
+            {P[p] = i; p++; Wp += W[i]; WP += HTMLCSS.length2em(CWIDTH[i],mu,1)}
+          else {W[i] = HTMLCSS.length2em(CWIDTH[i],mu); Wt += W[i]}
         }
         if (hasRelativeWidth) {
           // Get separation width and check percentages
@@ -186,12 +242,12 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           if (values.width === "auto") {
             if (WP > .98) {Wf = Wp/(Wt+Wp); WW = Wt + Wp} else {WW = Wt / (1-WP)}
           } else {
-            WW = HTMLCSS.length2em(values.width);
+            WW = HTMLCSS.length2em(values.width,mu);
             for (i = 0, m = Math.min(J+1,CSPACE.length); i < m; i++) {WW -= CSPACE[i]}
           }
           //  Determine the relative column widths
           for (i = 0, m = P.length; i < m; i++) {
-            W[P[i]] = HTMLCSS.length2em(CWIDTH[P[i]],WW*Wf); Wt += W[P[i]];
+            W[P[i]] = HTMLCSS.length2em(CWIDTH[P[i]],mu,WW*Wf); Wt += W[P[i]];
           }
           //  Stretch fit columns, if any, otherwise stretch (or shrink) everything
           if (Math.abs(WW - Wt) > .01) {
@@ -208,15 +264,6 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           }
         }
       }
-      //
-      //  Handle equal heights
-      //
-      if (values.equalrows) {
-        // FIXME:  should really be based on row align (below is for baseline)
-        var Hm = Math.max.apply(Math,H), Dm = Math.max.apply(Math,D);
-        for (i = 0, m = A.length; i < m; i++)
-          {s = ((Hm + Dm) - (H[i] + D[i])) / 2;  H[i] += s; D[i] += s}
-      }
       
       //
       //  Lay out array columns
@@ -226,21 +273,21 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
         for (i = 0, m = A.length; i < m; i++) {
           if (A[i][j]) {
             s = (this.data[i].type === "mlabeledtr" ? LABEL : 0);
-            var cell = this.data[i].data[j-s];
+            cell = this.data[i].data[j-s];
             if (cell.HTMLcanStretch("Horizontal")) {
-              A[i][j].bbox = cell.HTMLstretchH(C[j],W[j]).bbox
+              A[i][j].bbox = cell.HTMLstretchH(C[j],W[j]).bbox;
             } else if (cell.HTMLcanStretch("Vertical")) {
-              var mo = cell.CoreMO();
+              mo = cell.CoreMO();
               var symmetric = mo.symmetric; mo.symmetric = false;
-              A[i][j].bbox = cell.HTMLstretchV(C[j],H[i],D[i]).bbox;
+              A[i][j].bbox = cell.HTMLstretchV(C[j],H[i],D[i]).bbox; A[i][j].HH = null;
               mo.symmetric = symmetric;
             }
             align = cell.rowalign||this.data[i].rowalign||RALIGN[i];
             dy = ({top:    H[i] - A[i][j].bbox.h,
                    bottom: A[i][j].bbox.d - D[i],
                    center: ((H[i]-D[i]) - (A[i][j].bbox.h-A[i][j].bbox.d))/2,
-                   baseline: 0, axis: 0})[align]; // FIXME:  handle axis better?
-            align = (cell.columnalign||RCALIGN[i][j]||CALIGN[j])
+                   baseline: 0, axis: 0})[align] || 0; // FIXME:  handle axis better?
+            align = (cell.columnalign||RCALIGN[i][j]||CALIGN[j]);
             HTMLCSS.alignBox(A[i][j],align,y+dy);
           }
           if (i < A.length-1) {y -= Math.max((H[i]+D[i] ? LHD : 0),D[i]+H[i+1]+RSPACE[i])}
@@ -335,11 +382,13 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
           }
         }
       }
-      
+      stack.bbox.d = -fY; stack.bbox.h = fH+fY;
+      HTMLCSS.setStackWidth(stack,stack.bbox.w + fx);
+
       //
       //  Add frame
       //
-      fW = stack.bbox.w + fx; var frame;
+      fW = stack.bbox.w; var frame;
       if (values.frame !== "none") {
         frame = HTMLCSS.createFrame(stack,fH,0,fW,1.25/HTMLCSS.em,values.frame);
         HTMLCSS.addBox(stack,frame); HTMLCSS.placeBox(frame,0,fY,true);
@@ -371,6 +420,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       //  Place the labels, if any
       //
       if (C[LABEL]) {
+        var mw = stack.bbox.w, dw;
         var indent = this.getValues("indentalignfirst","indentshiftfirst","indentalign","indentshift");
         if (indent.indentalignfirst !== MML.INDENTALIGN.INDENTALIGN) {indent.indentalign = indent.indentalignfirst}
         if (indent.indentalign === MML.INDENTALIGN.AUTO) {indent.indentalign = this.displayAlign}
@@ -379,15 +429,19 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
         var eqn = HTMLCSS.createStack(span,false,"100%");
         HTMLCSS.addBox(eqn,stack); HTMLCSS.alignBox(stack,indent.indentalign,0);
 	if (indent.indentshift && indent.indentalign !== MML.INDENTALIGN.CENTER) {
-	  stack.style[{left:"Left",right:"Right"}[indent.indentalign]] =
-	    HTMLCSS.Em(HTMLCSS.length2em(indent.indentshift));
+          dw = HTMLCSS.length2em(indent.indentshift,mu); mw += dw;
+	  stack.style[indent.indentalign] = HTMLCSS.Em(dw);
 	}
         C[LABEL].parentNode.parentNode.removeChild(C[LABEL].parentNode);
         HTMLCSS.addBox(eqn,C[LABEL]); HTMLCSS.alignBox(C[LABEL],CALIGN[LABEL],0);
         if (HTMLCSS.msieRelativeWidthBug) {stack.style.top = C[LABEL].style.top = ""}
         if (hasRelativeWidth) {stack.style.width = values.width; span.bbox.width = "100%"}
-        C[LABEL].style.marginRight = C[LABEL].style.marginLeft =
-          HTMLCSS.Em(HTMLCSS.length2em(values.minlabelspacing));
+        dw = HTMLCSS.length2em(values.minlabelspacing,mu);
+        C[LABEL].style.marginRight = C[LABEL].style.marginLeft = HTMLCSS.Em(dw);
+        if (indent.indentalign === MML.INDENTALIGN.CENTER) {mw += 4*dw + 2*C[LABEL].bbox.w}
+          else if (indent.indentalign !== CALIGN[LABEL]) {mw += 2*dw + C[LABEL].bbox.w}
+        span.style.minWidth = span.bbox.minWidth = 
+          eqn.style.minWidth = eqn.bbox.minWidth = HTMLCSS.Em(mw);
       }
       //
       //  Finish the table
@@ -410,7 +464,10 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       return span;
     },
     HTMLhandleSpace: function (span) {
-      span.style.paddingLeft = span.style.paddingRight = ".1667em";
+      span.bbox.keepPadding = true; span.bbox.exact = true;
+      if (!this.hasFrame && span.bbox.width == null)
+        {span.style.paddingLeft = span.style.paddingRight = HTMLCSS.Em(1/6)}
+      this.SUPER(arguments).HTMLhandleSpace.call(this,span);
     }
   });
   
@@ -418,9 +475,9 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
     toHTML: function (span,HW,D) {
       span = this.HTMLcreateSpan(span);
       if (this.data[0]) {
-        var box = HTMLCSS.Measured(this.data[0].toHTML(span),span);
-        if (D != null) {HTMLCSS.Remeasured(this.data[0].HTMLstretchV(span,HW,D),span)}
-        else if (HW != null) {HTMLCSS.Remeasured(this.data[0].HTMLstretchH(span,HW),span)}
+        var box = this.data[0].toHTML(span);
+        if (D != null) {box = this.data[0].HTMLstretchV(span,HW,D)}
+        else if (HW != null) {box = this.data[0].HTMLstretchH(span,HW)}
         span.bbox = box.bbox;
       }
       this.HTMLhandleSpace(span);

@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/optable/GreekAndCoptic.js
  *
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@
 
   MathJax.Hub.Insert(MML.mo.prototype,{
     OPTABLE: {
-      prefix: {
-        '\u03C3': MO.ORD11     // greek small letter sigma
+      infix: {
+        '\u03F6': MO.REL       // greek reversed lunate epsilon symbol
       }
     }
   });

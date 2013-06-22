@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/optable/CombDiactForSymbols.js
  *
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,8 @@
   MathJax.Hub.Insert(MML.mo.prototype,{
     OPTABLE: {
       postfix: {
-        '\u20DB': MO.ACCENT    // combining three dots above
+        '\u20DB': MO.ACCENT,   // combining three dots above
+        '\u20DC': MO.ACCENT    // combining four dots above
       }
     }
   });

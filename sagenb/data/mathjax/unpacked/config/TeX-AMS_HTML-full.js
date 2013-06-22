@@ -1,7 +1,11 @@
-/*
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
+/*************************************************************
+ *
  *  /MathJax/unpacked/config/TeX-AMS_HTML-full.js
  *  
- *  Copyright (c) 2010-11 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Part of the MathJax library.
  *  See http://www.mathjax.org for details.
@@ -13,7 +17,7 @@
  */
 
 MathJax.Hub.Config({
-  extensions: ["tex2jax.js","MathZoom.js","MathMenu.js","toMathML.js","TeX/noErrors.js","TeX/noUndefined.js","TeX/AMSmath.js","TeX/AMSsymbols.js"],
+  extensions: ["tex2jax.js","MathEvents.js","MathZoom.js","MathMenu.js","toMathML.js","TeX/noErrors.js","TeX/noUndefined.js","TeX/AMSmath.js","TeX/AMSsymbols.js"],
   jax: ["input/TeX","output/HTML-CSS"]
 });
 

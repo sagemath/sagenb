@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/General/Italic/GreekItalic.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ MathJax.Hub.Insert(
     0x1D6F3: [669,11,737,50,712],      // MATHEMATICAL ITALIC CAPITAL THETA SYMBOL
     0x1D6F4: [653,0,735,58,760],       // MATHEMATICAL ITALIC CAPITAL SIGMA
     0x1D6F5: [653,0,550,25,670],       // MATHEMATICAL ITALIC CAPITAL TAU
-    0x1D6F6: [668,0,567,28,687],       // MATHEMATICAL ITALIC CAPITAL UPSILON
+    0x1D6F6: [668,0,613,28,743],       // MATHEMATICAL ITALIC CAPITAL UPSILON
     0x1D6F7: [653,0,772,25,747],       // MATHEMATICAL ITALIC CAPITAL PHI
     0x1D6F8: [653,0,790,25,810],       // MATHEMATICAL ITALIC CAPITAL CHI
     0x1D6F9: [667,0,670,28,743],       // MATHEMATICAL ITALIC CAPITAL PSI

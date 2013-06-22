@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/optable/MiscMathSymbolsA.js
  *
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,10 +25,14 @@
   MathJax.Hub.Insert(MML.mo.prototype,{
     OPTABLE: {
       prefix: {
-        '\u27E6': MO.OPEN      // mathematical left white square bracket
+        '\u27E6': MO.OPEN,     // mathematical left white square bracket
+        '\u27EA': MO.OPEN,     // mathematical left double angle bracket
+        '\u27EC': MO.OPEN      // mathematical left white tortoise shell bracket
       },
       postfix: {
-        '\u27E7': MO.CLOSE     // mathematical right white square bracket
+        '\u27E7': MO.CLOSE,    // mathematical right white square bracket
+        '\u27EB': MO.CLOSE,    // mathematical right double angle bracket
+        '\u27ED': MO.CLOSE     // mathematical right white tortoise shell bracket
       }
     }
   });

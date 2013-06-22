@@ -1,3 +1,6 @@
+/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
+/* vim: set ts=2 et sw=2 tw=80: */
+
 /*************************************************************
  *
  *  MathJax/extensions/TeX/noUndefined.js
@@ -22,7 +25,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -39,10 +42,11 @@
 
 //
 //  The configuration defaults, augmented by the user settings
-//  
+//
 MathJax.Extension["TeX/noUndefined"] = {
-  version: "1.1",
+  version: "2.2",
   config: MathJax.Hub.CombineConfig("TeX.noUndefined",{
+    disabled: false,      // set to true to return to original error messages
     attributes: {
       mathcolor: "red"
     }
@@ -52,9 +56,12 @@ MathJax.Extension["TeX/noUndefined"] = {
 MathJax.Hub.Register.StartupHook("TeX Jax Ready",function () {
   var CONFIG = MathJax.Extension["TeX/noUndefined"].config;
   var MML = MathJax.ElementJax.mml;
+  var UNDEFINED = MathJax.InputJax.TeX.Parse.prototype.csUndefined;
 
   MathJax.InputJax.TeX.Parse.Augment({
     csUndefined: function (name) {
+      if (CONFIG.disabled) {return UNDEFINED.apply(this,arguments)}
+      MathJax.Hub.signal.Post(["TeX Jax - undefined control sequence",name]);
       this.Push(MML.mtext(name).With(CONFIG.attributes));
     }
   });

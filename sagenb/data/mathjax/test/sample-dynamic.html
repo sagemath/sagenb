@@ -2,17 +2,11 @@
 <html>
 <head>
 <title>MathJax Dynamic Math Test Page</title>
-<!-- Copyright (c) 2010-2011 Design Science, Inc. -->
+<!-- Copyright (c) 2010-2013 The MathJax Consortium -->
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
-<script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-  });
-</script>
-<script type="text/javascript" src="../MathJax.js"></script>
+<script type="text/javascript" src="../MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 <style>
 input {margin-top: .7em}
@@ -53,22 +47,12 @@ input {margin-top: .7em}
     });
 
     //
-    //  The onchange event handler that typesets the
-    //  math entered by the user
+    //  The onchange event handler that typesets the math entered
+    //  by the user.  Hide the box, then typeset, then show it again
+    //  so we don't see a flash as the math is cleared and replaced.
     //
     window.UpdateMath = function (TeX) {
       QUEUE.Push(HIDEBOX,["Text",math,"\\displaystyle{"+TeX+"}"],SHOWBOX);
-    }
-
-    //
-    //  IE doesn't fire onchange events for RETURN, so
-    //   use onkeypress to do a blur (and refocus) to
-    //   force the onchange to occur
-    //
-    if (MathJax.Hub.Browser.isMSIE) {
-      window.MathInput.onkeypress = function () {
-        if (window.event && window.event.keyCode === 13) {this.blur(); this.focus()}
-      }
     }
   })();
 </script>
@@ -82,6 +66,19 @@ Type some \(\rm\TeX\) code and press RETURN:<br />
 <div class="box" id="box" style="visibility:hidden">
 <div id="MathOutput" class="output">$${}$$</div>
 </div>
+
+<script>
+  //
+  //  IE doesn't fire onchange events for RETURN, so
+  //   use onkeypress to do a blur (and refocus) to
+  //   force the onchange to occur
+  //
+  if (MathJax.Hub.Browser.isMSIE) {
+    MathInput.onkeypress = function () {
+      if (window.event && window.event.keyCode === 13) {this.blur(); this.focus()}
+    }
+  }
+</script>
 
 </body>
 </html>

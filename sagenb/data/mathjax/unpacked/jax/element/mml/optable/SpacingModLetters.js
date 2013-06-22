@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/optable/SpacingModLetters.js
  *
- *  Copyright (c) 2010 Design Science, Inc.
+ *  Copyright (c) 2010-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,8 +25,10 @@
   MathJax.Hub.Insert(MML.mo.prototype,{
     OPTABLE: {
       postfix: {
+        '\u02CD': MO.WIDEACCENT, // modifier letter low macron
         '\u02DA': MO.ACCENT,   // ring above
-        '\u02DD': MO.ACCENT    // double acute accent
+        '\u02DD': MO.ACCENT,   // double acute accent
+        '\u02F7': MO.WIDEACCENT  // modifier letter low tilde
       }
     }
   });
