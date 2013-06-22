@@ -1281,7 +1281,7 @@ class Cell(Cell_generic):
             return False
         s = s[0]
         return bool(re.search('(?<!\w)interact\s*\(.*\).*', s) or
-                    re.search('\s*@\s*interact\s*\n', s))
+                    re.search('\s*@\s*interact', s))
 
     def is_interacting(self):
         r"""
