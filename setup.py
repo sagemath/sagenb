@@ -45,7 +45,7 @@ if __name__ == '__main__':
     code = setup(name = 'sagenb',
           version     = '0.10.6',
           description = 'The Sage Notebook',
-          license     = 'GNU General Public License (GPL) v2+',
+          license     = 'GNU General Public License (GPL) v3+',
           author      = 'William Stein et al.',
           author_email= 'sage-notebook@googlegroups.com',
           url         = 'http://github.com/sagemath/sagenb',
