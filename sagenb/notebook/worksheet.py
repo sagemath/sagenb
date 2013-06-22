@@ -3405,7 +3405,8 @@ except (KeyError, IOError):
         I.e., an ignored worksheet process (since the user closed their
         browser) is also considered idle, even if code is running.
         """
-        if self.time_idle() > timeout:
+        # Quit only if timeout is greater than zero
+        if timeout > 0 and self.time_idle() > timeout:
             # worksheet name may contain unicode, so we use %r, which prints
             # the \xXX form for unicode characters
             print "Quitting ignored worksheet process for %r." % self.name()
