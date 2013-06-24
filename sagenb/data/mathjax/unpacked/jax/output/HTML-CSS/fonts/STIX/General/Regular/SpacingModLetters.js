@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/General/Regular/SpacingModLetters.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -72,7 +72,8 @@ MathJax.Hub.Insert(
     0x2E8: [662,0,405,40,365],         // MODIFIER LETTER LOW TONE BAR
     0x2E9: [662,0,405,40,365],         // MODIFIER LETTER EXTRA-LOW TONE BAR
     0x2EC: [70,147,333,21,311],        // MODIFIER LETTER VOICING
-    0x2ED: [665,-507,405,10,395]       // MODIFIER LETTER UNASPIRATED
+    0x2ED: [665,-507,405,10,395],      // MODIFIER LETTER UNASPIRATED
+    0x2F7: [-113,219,333,1,331]        // ??
   }
 );
 

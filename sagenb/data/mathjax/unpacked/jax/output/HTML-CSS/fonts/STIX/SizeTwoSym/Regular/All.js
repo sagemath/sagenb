@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/SizeTwoSym/Regular/All.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -57,7 +57,8 @@ MathJax.Hub.Insert(
     0x2984: [1565,280,827,135,705],    // RIGHT WHITE CURLY BRACKET
     0x2985: [1566,282,793,155,693],    // LEFT WHITE PARENTHESIS
     0x2986: [1566,282,793,100,638],    // RIGHT WHITE PARENTHESIS
-    0x2AFC: [1586,289,906,133,773]     // LARGE TRIPLE VERTICAL BAR OPERATOR
+    0x2AFC: [1586,289,906,133,773],    // LARGE TRIPLE VERTICAL BAR OPERATOR
+    0x2AFF: [1586,289,636,133,503]     // N-ARY WHITE VERTICAL BAR
   }
 );
 

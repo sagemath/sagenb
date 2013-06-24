@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/General/BoldItalic/GeneralPunctuation.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ MathJax.Hub.Insert(
     0x2031: [706,29,1480,80,1430],     // PER TEN THOUSAND SIGN
     0x2039: [415,-32,333,32,303],      // SINGLE LEFT-POINTING ANGLE QUOTATION MARK
     0x203A: [415,-32,333,10,281],      // SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
-    0x203E: [637,-565,500,0,500],      // OVERLINE
+    0x203E: [838,-766,500,0,500],      // OVERLINE
     0x2044: [688,12,183,-168,345]      // FRACTION SLASH
   }
 );

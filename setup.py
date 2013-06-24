@@ -30,7 +30,7 @@ def all_files(dir, prefix):
 
 
 install_requires = [ 'twisted>=11.0.0'
-                   , 'flask'
+                   , 'flask>=0.10.1'
                    , 'flask-openid'
                    , 'flask-autoindex'
                    , 'babel'
@@ -43,9 +43,9 @@ if __name__ == '__main__':
         distutils.log.set_threshold(distutils.log.DEBUG)
 
     code = setup(name = 'sagenb',
-          version     = '0.10.6',
+          version     = '0.10.7',
           description = 'The Sage Notebook',
-          license     = 'GNU General Public License (GPL) v2+',
+          license     = 'GNU General Public License (GPL) v3+',
           author      = 'William Stein et al.',
           author_email= 'sage-notebook@googlegroups.com',
           url         = 'http://github.com/sagemath/sagenb',
