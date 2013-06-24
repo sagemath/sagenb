@@ -1,7 +1,10 @@
-0.10.7  Jun __ 2013
+0.10.7  Jun 24 2013
 
  - Update license to GPLv3+ from GPLv2+
  - Update MathJax to 2.2
+ - Allow new doctest continuation format in livedocs
+ - Sanitization for published worksheets
+ - Various bug fixes
 
 0.10.6  Apr 27 2013
 
