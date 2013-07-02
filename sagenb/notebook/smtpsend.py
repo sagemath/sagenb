@@ -41,8 +41,8 @@ def handleError(error):
 
 def send_mail(fromaddr, toaddr, subject, body, on_success=sendComplete, on_failure=handleError):
     try:
-        recpt_domain = toaddr.split('@')[1]
-    except (ValueError, IndexError):
+        recpt_domain = toaddr.split('@')[1].encode("ascii")
+    except (ValueError, IndexError, UnicodeDecodeError):
         raise ValueError, "mal-formed destination address"
     message = buildMessage(fromaddr, toaddr, subject, body)
     messageData = message.as_string(unixfrom=False)

@@ -4,10 +4,10 @@ import os
 import urllib, urlparse
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required, with_lock
-from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
-worksheet_listing = Module('flask_version.worksheet_listing')
+worksheet_listing = Module('sagenb.flask_version.worksheet_listing')
 
 @worksheet_listing.route('/worksheet_list')
 @guest_or_login_required
@@ -30,11 +30,11 @@ def worksheet_list():
 
     a string
     """
-    
+
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
     from sagenb.notebook.misc import encode_response
-    
+
     r = {}
 
     pub = 'pub' in request.args    
@@ -82,7 +82,7 @@ def bare_home():
 
 def get_worksheets_from_request():
     U = g.notebook.user_manager().user(g.username)
-    
+
     if 'filename' in request.values:
         filenames = [request.values['filename']]
     elif 'filenames' in request.values:
@@ -94,8 +94,8 @@ def get_worksheets_from_request():
     for filename in filenames:
         W = g.notebook.get_worksheet_with_filename(filename)
         if W.owner() != g.username:
-            # TODO BUG: if trying to stop a shared worksheet, this check means that 
-            # only the owner can stop from the worksheet listing (using /send_to_stop), but any 
+            # TODO BUG: if trying to stop a shared worksheet, this check means that
+            # only the owner can stop from the worksheet listing (using /send_to_stop), but any
             # shared person can stop the worksheet by quitting it.
             continue
         worksheets.append(W)
@@ -138,7 +138,7 @@ def empty_trash():
         return redirect(request.headers['referer'])
     else:
         return redirect(url_for('home', typ='trash'))
-                       
+
 
 #####################
 # Public Worksheets #
@@ -193,7 +193,7 @@ def public_worksheet_cells(id, filename):
 @login_required
 def download_worksheets():
     from sagenb.misc.misc import walltime, tmp_filename
-    
+
     t = walltime()
     print "Starting zipping a group of worksheets in a separate thread..."
     zip_filename = tmp_filename() + ".zip"

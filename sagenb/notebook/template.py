@@ -23,7 +23,7 @@ import os, re, sys, json
 
 from sagenb.misc.misc import SAGE_VERSION, DATA, unicode_str
 from sagenb.notebook.cell import number_of_rows
-from flaskext.babel import gettext, ngettext, lazy_gettext
+from flask.ext.babel import gettext, ngettext, lazy_gettext
 
 from webassets.ext.jinja2 import AssetsExtension
 from webassets import Environment as AssetsEnvironment

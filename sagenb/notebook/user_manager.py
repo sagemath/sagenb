@@ -83,18 +83,20 @@ class UserManager(object):
         Otherwise, the underscore _user method is tried.  This is the method that subclasses
         should override to provide custom user functionality.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
             sage: U.user('pub')
             pub
 
-        TESTS:
+        TESTS::
+
             sage: U.user('william')
             Traceback (most recent call last):
             ...
-            KeyError: "no user 'william'"
+            LookupError: no user 'william'
 
             sage: U.user('hello/')
             Traceback (most recent call last):
@@ -111,7 +113,7 @@ class UserManager(object):
         except AttributeError:
             pass
 
-        raise KeyError, "no user '%s'"%username
+        raise LookupError("no user '{}'".format(username))
 
     def valid_login_names(self):
         """
@@ -392,7 +394,7 @@ class SimpleUserManager(UserManager):
         elif username == 'guest':
             self.add_user('guest', '', '', account_type='guest', force=True)
             return self.users()[username]
-        raise KeyError("no user '{0}'".format(username))
+        raise LookupError("no user '{}'".format(username))
 
         
     def set_password(self, username, new_password, encrypt = True):
@@ -517,7 +519,7 @@ class ExtAuthUserManager(SimpleUserManager):
                     self.add_user(username, password='', email=email, account_type='user', external_auth=a, force=True)
                     return self.users()[username]
 
-        raise KeyError, "no user '%s'"%username
+        raise LookupError("no user '{}'".format(username))
 
     def _check_password(self, username, password):
         """
@@ -570,15 +572,12 @@ class OpenIDUserManager(ExtAuthUserManager):
             sage: UM.create_default_users('passpass')
             sage: UM.create_new_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14', 'thedude')
             sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
-            'thedude' 
+            'thedude'
         """
-        if not self._conf['openid']:
-            raise RuntimeError
-
         try:
             return self._openid[identity_url]
         except KeyError:
-            raise KeyError, "no openID identity '%s'" % identity_url
+            raise LookupError("no openID identity '{}'".format(identity_url))
 
     def create_new_openid(self, identity_url, username):
         """
@@ -591,14 +590,10 @@ class OpenIDUserManager(ExtAuthUserManager):
             sage: UM.get_username_from_openid('https://www.google.com/accounts/o8/id?id=AItdaWgzjV1HJTa552549o1csTDdfeH6_bPxF14')
             'thedude'
         """
-        if not self._conf['openid']:
-            raise RuntimeError
         self._openid[identity_url] = username
 
     def get_user_from_openid(self, identity_url):
         """
         Return the user object corresponding ot a given identity_url
         """
-        if not self._conf['openid']:
-            raise RuntimeError
         return self.user(self.get_username_from_openid(identity_url)) 

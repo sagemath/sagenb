@@ -1,0 +1,21 @@
+0.10.7.1    Jun 25 2013
+ - revert published worksheet sanitization as it is not optional
+
+0.10.7  Jun 24 2013
+
+ - Update license to GPLv3+ from GPLv2+
+ - Update MathJax to 2.2
+ - Allow new doctest continuation format in livedocs
+ - Sanitization for published worksheets
+ - Various bug fixes
+
+0.10.6  Apr 27 2013
+
+ - Allow more actions in live documentation.
+ - Add tools for converting sws files to rst files.
+ - Add parameter "doc_timeout" for controlling timeouts of live worksheets.
+
+0.10.5  Apr 01 2013
+
+ - Add support for LDAP authentication.
+ - Remove the old notebook.

@@ -63,7 +63,7 @@ class NotebookObject:
           ::
 
               from sagenb.notebook.notebook import load_notebook
-              nb = load_notebook(dir)
+              nb = load_notebook("directory_to_run_sage_in")
               user_manager = nb.user_manager()
               user_manager.set_accounts(True)
               user_manager.add_user("username", "password", "email@place", "user")
@@ -101,6 +101,11 @@ class NotebookObject:
           timeout". If your server is running out of memory, setting a
           timeout can be useful as this will free the memory used by
           idle sessions.
+
+        - ``doc_timeout`` -- integer (default: 600) seconds until idle
+          live documentation worksheet sessions automatically timeout,
+          i.e., the corresponding Sage session terminates.
+          0 means "never timeout".
 
         - ``server_pool`` -- list of strings (default: None) list;
           this option specifies that worksheet processes run as a
