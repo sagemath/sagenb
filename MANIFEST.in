@@ -2,7 +2,7 @@ graft sagenb
 graft sass
 graft util
 prune sass/src/.sass-cache
-graft flask_server
+graft flask_version
 include *.txt MANIFEST.in .gitignore dist.sh README.rst
 prune .git
 global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc *.DS_Store

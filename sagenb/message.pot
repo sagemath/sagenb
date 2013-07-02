@@ -17,22 +17,22 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
-#: flask_server/admin.py:67
+#: flask_version/admin.py:67
 #, python-format
 msgid ""
 "The temporary password for the new user <em>%(username)s</em> is "
 "<em>%(password)s</em>"
 msgstr ""
 
-#: flask_server/admin.py:69
+#: flask_version/admin.py:69
 msgid "New User"
 msgstr ""
 
-#: flask_server/authentication.py:258
+#: flask_version/authentication.py:258
 msgid "The confirmation system is not active."
 msgstr ""
 
-#: flask_server/authentication.py:261
+#: flask_version/authentication.py:261
 msgid ""
 "    <h1>Invalid confirmation key</h1>\n"
 "    <p>You are reporting a confirmation key that has not been assigned by"
@@ -42,41 +42,41 @@ msgid ""
 "    "
 msgstr ""
 
-#: flask_server/authentication.py:272
+#: flask_version/authentication.py:272
 #, python-format
 msgid "<h1>Email address confirmed for user %(username)s</h1>"
 msgstr ""
 
-#: flask_server/authentication.py:274
+#: flask_version/authentication.py:274
 msgid "Email Confirmed"
 msgstr ""
 
-#: flask_server/base.py:226
+#: flask_version/base.py:226
 #: sagenb/data/sage/html/base_authenticated.html:15
 msgid "Log"
 msgstr ""
 
-#: flask_server/decorators.py:35
+#: flask_version/decorators.py:35
 msgid "You do not have permission to access this location"
 msgstr ""
 
-#: flask_server/worksheet.py:27 ../flask_server/worksheet.py:36
-#: flask_server/worksheet_listing.py:195
+#: flask_version/worksheet.py:27 ../flask_version/worksheet.py:36
+#: flask_version/worksheet_listing.py:195
 msgid "You do not have permission to access this worksheet"
 msgstr ""
 
-#: flask_server/worksheet.py:75 ../flask_server/worksheet.py:951
+#: flask_version/worksheet.py:75 ../flask_version/worksheet.py:951
 #: sagenb/data/sage/html/notebook/worksheet_page.html:28
 #: sagenb/notebook/misc.py:237 ../sagenb/notebook/worksheet.py:703
 #: sagenb/notebook/worksheet.py:723 ../sagenb/notebook/worksheet.py:4230
 msgid "Untitled"
 msgstr ""
 
-#: flask_server/worksheet.py:578
+#: flask_version/worksheet.py:578
 msgid "Error: can't add more than 500 collaborators at a time"
 msgstr ""
 
-#: flask_server/worksheet.py:631
+#: flask_version/worksheet.py:631
 #: sagenb/data/sage/html/error_message.html:4
 #: sagenb/data/sage/html/login.html:69
 #: sagenb/data/sage/html/login.html:76
@@ -101,21 +101,21 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
-#: flask_server/worksheet.py:661
+#: flask_version/worksheet.py:661
 msgid "No data files"
 msgstr ""
 
-#: flask_server/worksheet.py:702
+#: flask_version/worksheet.py:702
 msgid "illegal link attempt!"
 msgstr ""
 
-#: flask_server/worksheet.py:704
+#: flask_version/worksheet.py:704
 msgid ""
 "The data filename already exists in other worksheet\n"
 "Delete the file in the other worksheet before creating a link."
 msgstr ""
 
-#: flask_server/worksheet.py:720
+#: flask_version/worksheet.py:720
 #, python-format
 msgid ""
 " Return to <a href=\"%(upload_url)s\" title=\"Upload or create a data "
@@ -124,50 +124,50 @@ msgid ""
 "use the worksheet\"><strong>%(worksheet_name)s</strong></a>."
 msgstr ""
 
-#: flask_server/worksheet.py:724
+#: flask_version/worksheet.py:724
 #, python-format
 msgid "Error uploading file (missing field \"file\"). %(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet.py:731
+#: flask_version/worksheet.py:731
 #, python-format
 msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet.py:744
+#: flask_version/worksheet.py:744
 #, python-format
 msgid "Error uploading file (missing filename).%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet.py:752
+#: flask_version/worksheet.py:752
 #, python-format
 msgid "URL must start with http, https, or ftp.%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet.py:759
+#: flask_version/worksheet.py:759
 #, python-format
 msgid ""
 "Suspicious filename \"%(filename)s\" encountered uploading "
 "file.%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet.py:874
+#: flask_version/worksheet.py:874
 msgid "No such worksheet."
 msgstr ""
 
-#: flask_server/worksheet.py:959
+#: flask_version/worksheet.py:959
 msgid "Document does not exist."
 msgstr ""
 
-#: flask_server/worksheet_listing.py:57
+#: flask_version/worksheet_listing.py:57
 msgid "Error displaying worksheet listing."
 msgstr ""
 
-#: flask_server/worksheet_listing.py:176
+#: flask_version/worksheet_listing.py:176
 msgid "Requested public worksheet does not exist"
 msgstr ""
 
-#: flask_server/worksheet_listing.py:295
+#: flask_version/worksheet_listing.py:295
 #, python-format
 msgid ""
 "This Sage notebook is not configured to load worksheets from 'https' "
@@ -176,27 +176,27 @@ msgid ""
 "%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet_listing.py:357
+#: flask_version/worksheet_listing.py:357
 msgid ""
 "Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload"
 " File</strong></a>."
 msgstr ""
 
-#: flask_server/worksheet_listing.py:380
+#: flask_version/worksheet_listing.py:380
 #, python-format
 msgid ""
 "Please specify a worksheet to load.\n"
 "%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet_listing.py:384
+#: flask_version/worksheet_listing.py:384
 #, python-format
 msgid ""
 "Invalid filename.\n"
 "%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet_listing.py:425
+#: flask_version/worksheet_listing.py:425
 #, python-format
 msgid ""
 "There was an error uploading the worksheet.  It could be an old "
@@ -207,7 +207,7 @@ msgid ""
 "%(backlinks)s"
 msgstr ""
 
-#: flask_server/worksheet_listing.py:436
+#: flask_version/worksheet_listing.py:436
 #, python-format
 msgid "Error uploading worksheet '%(msg)s'.%(backlinks)s"
 msgstr ""

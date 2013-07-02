@@ -7,7 +7,7 @@ from decorators import login_required, guest_or_login_required, with_lock
 from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
-worksheet_listing = Module('flask_server.worksheet_listing')
+worksheet_listing = Module('flask_version.worksheet_listing')
 
 @worksheet_listing.route('/worksheet_list')
 @guest_or_login_required

@@ -5,7 +5,7 @@ from flaskext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 from sagenb.notebook.misc import encode_response
 
-admin = Module('flask_server.admin')
+admin = Module('flask_version.admin')
 
 def random_password(length=8):
     from random import choice

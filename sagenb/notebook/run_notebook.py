@@ -46,7 +46,7 @@ sagenb.notebook.misc.DIR = %(cwd)r #We should really get rid of this!
 # Flask #
 #########
 import os, sys, random
-flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_server')
+flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_version')
 sys.path.append(flask_dir)
 import base as flask_base
 opts={}
