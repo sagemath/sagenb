@@ -1,0 +1,87 @@
+@new_cell_button_margin: 10px;
+.new_cell_button {
+	padding-top: @new_cell_button_margin;
+	padding-bottom: @new_cell_button_margin;
+	cursor: pointer;
+	
+	.line {
+		height: 3px;
+	}
+	
+	&:hover .line {
+		background-color: #dadadc;
+	}
+}
+
+.published_mode .new_cell_button {
+	cursor: default;
+	&:hover .line {
+		background-color: transparent;
+	}
+}
+
+.worksheet_name {
+	input {
+		/* -2 to account for padding */
+		height: @title_font_size - 2;
+		width: 100%;
+
+		/* for now, this is a sloppy way to deal with padding issues */
+		padding-left: 0;
+		padding-right: 0;
+
+		display: none;
+		font-size: @title_font_size;
+		font-weight: bold;
+	}
+
+	&:hover {
+		background-color: #ffffcc;
+		cursor: text;
+	}
+
+	&.edit {
+		h1 {
+			display: none;
+		}
+		input {
+			display: block;
+		}
+	}
+}
+
+.published_mode .worksheet_name:hover {
+	background-color: transparent;
+	cursor: default;
+}
+
+.popover {
+	.popover-title {
+		display: none;
+	}
+	.popover-inner {
+		width: 750px;
+		position: relative;
+		left: 250px;
+		.popover-content {
+			max-height: 300px;
+			overflow-y: scroll;
+			opacity: 0.95;
+		}
+	}
+}
+
+#Jmol_zindex_fix {
+	height: 40px;
+	width: 100%;
+	border: none;
+	position: fixed;
+	top: 0;
+	z-index: 99;
+}
+
+@media (max-width: 979px) {
+	#Jmol_zindex_fix {
+		display: none;
+	}
+}

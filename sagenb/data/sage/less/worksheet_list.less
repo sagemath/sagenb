@@ -1,0 +1,53 @@
+#top_toolbar {
+	margin-bottom: 25px;
+	text-align: center;
+	padding: 10px;
+	
+	form {
+		margin-bottom: 0;
+	}
+}
+
+#actions_menu ul li a.disabled {
+	/*display: none;*/
+	background-color: #eee;
+	color: #bbb;
+	&:hover {
+		background-color: #eee;
+		color: #bbb;
+		cursor: default;
+	}
+
+	* {
+		opacity: 0.2;
+	}
+}
+
+.worksheets_table {
+	margin-top: 5px;
+
+	.checkbox_cell {
+		width: 1%;
+	}
+	
+	.worksheet_name_cell {
+		width: 45%
+	}
+	td.worksheet_name_cell {
+		font-weight: bold;
+	}
+
+	.last_edit_cell {
+		width: 15%;
+	}
+	td.last_edit_cell {
+		font-size: 8pt;
+		color: #999;
+	}
+	
+	.empty_table_row td {
+		text-align: center;
+		font-weight: bold;
+		padding: 20px;
+	}
+}

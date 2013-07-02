@@ -273,7 +273,7 @@ def confirm():
     del waiting[key]
     return current_app.message(success, title=_('Email Confirmed'))
 
-@authentication.route('/forgotpass')
+@authentication.route('/forgotpass', methods=['POST'])
 @with_lock
 def forgot_pass():
     if not g.notebook.conf()['email']:
@@ -287,7 +287,7 @@ def forgot_pass():
         return current_app.message(msg, url_for('forgot_pass'))
 
     try:
-        user = g.notebook.user(username)
+        user = g.notebook.user(request.values[username])
     except KeyError:
         return error('Username is invalid.')
 

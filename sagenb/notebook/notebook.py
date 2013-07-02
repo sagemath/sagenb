@@ -36,11 +36,7 @@ from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
                               ignore_nonexistent_files, unicode_str)
 
 # Sage Notebook
-from . import css          # style
-from . import js           # javascript
 from . import worksheet    # individual worksheets (which make up a notebook)
-from . import config       # internal configuration stuff (currently, just keycodes)
-from . import keyboards    # keyboard layouts
 from . import server_conf  # server configuration
 from . import user_conf    # user configuration
 from . import user         # users
@@ -155,13 +151,14 @@ class Notebook(object):
         W = WorksheetDict(self)
         self.__worksheets = W
 
+        # datastore
         # Store / Refresh public worksheets
         for id_number in os.listdir(self.__storage._abspath(self.__storage._user_path("pub"))):
             if id_number.isdigit():
-                a = "pub/"+str(id_number)
+                a = "pub/" + str(id_number)
                 if a not in self.__worksheets:
                     try:
-                        self.__worksheets[a] = self.__storage.load_worksheet("pub",int(id_number))
+                        self.__worksheets[a] = self.__storage.load_worksheet("pub", int(id_number))
                     except Exception:
                         import traceback
                         print "Warning: problem loading %s/%s: %s"%("pub", int(id_number), traceback.format_exc())
@@ -276,6 +273,7 @@ class Notebook(object):
             sage: nb.user('admin').password() #random
             '256$7998210096323979f76e9fedaf1f85bda1561c479ae732f9c1f1abab1291b0b9$373f16b9d5fab80b9a9012af26a6b2d52d92b6d4b64c1836562cbd4264a6e704'
         """
+        # This should be a method of UserManager
         return self.user_manager().user(username)
 
     def valid_login_names(self):
@@ -304,6 +302,8 @@ class Notebook(object):
         """
         Returns True if the user is supposed to only be a read-only user.
         """
+        # It seems as though this should be an instance method of the User
+        # class
         return self.__storage.readonly_user(username)
 
     ##########################################################
@@ -329,6 +329,7 @@ class Notebook(object):
         #      shutil.copytree(src.cells_directory(), W.cells_directory())
         #      shutil.copytree(src.data_directory(), W.data_directory())
 
+        # datastore
         for sub in ['cells', 'data', 'snapshots']:
             target_dir = os.path.join(W.directory(), sub)
             if os.path.exists(target_dir):
@@ -344,19 +345,20 @@ class Notebook(object):
         W.edit_save(src.edit_text())
         W.save()
 
+    # datastore
     def pub_worksheets(self):
         path = self.__storage._abspath(self.__storage._user_path("pub"))
         v = []
-        a = ""
         for id_number in os.listdir(path):
             if id_number.isdigit():
-                a = "pub"+"/"+id_number
+                a = "pub/" + id_number
                 if a in self.__worksheets:
-                    v.append(self.__worksheets[a])
+                    v.append(self.__worksheets[a].worksheet_that_was_published())
                 else:
                     try:
-                        self.__worksheets[a] = self.__storage.load_worksheet("pub", int(id_number))
-                        v.append(self.__worksheets[a])
+                        w = self.__storage.load_worksheet("pub", int(id_number)).worksheet_that_was_published()
+                        v.append(w)
+                        self.__worksheets[a] = w
                     except Exception:
                         import traceback
                         print "Warning: problem loading %s/%s: %s"%("pub", id_number, traceback.format_exc())
@@ -446,7 +448,6 @@ class Notebook(object):
     ##########################################################
     # Moving, copying, creating, renaming, and listing worksheets
     ##########################################################
-
     def scratch_worksheet(self):
         try:
             return self.__scratch_worksheet
@@ -1221,7 +1222,6 @@ class Notebook(object):
     ##########################################################
     # Server configuration
     ##########################################################
-
     def conf(self):
         try:
             return self.__conf
@@ -1234,7 +1234,7 @@ class Notebook(object):
             # model_version property
             # TODO: distinguish between a new server config default values
             #  and default values for missing properties
-            C['model_version']=1
+            C['model_version'] = 1
             self.__conf = C
             return C
 
@@ -1273,10 +1273,10 @@ class Notebook(object):
             pass
 
     ##########################################################
-    # Worksheet HTML generation
+    # Worksheet listing
     ##########################################################
     def worksheet_list_for_public(self, username, sort='last_edited', reverse=False, search=None):
-        W = self.users_worksheets('pub')
+        W = self.pub_worksheets()
 
         if search:
             W = [x for x in W if x.satisfies_search(search)]
@@ -1296,154 +1296,6 @@ class Notebook(object):
             W = [x for x in W if x.satisfies_search(search)]
         sort_worksheet_list(W, sort, reverse)  # changed W in place
         return W
-
-    ##########################################################
-    # Revision history for a worksheet
-    ##########################################################
-    def html_worksheet_revision_list(self, username, worksheet):
-        r"""
-        Return HTML for the revision list of a worksheet.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        - ``worksheet`` - an instance of Worksheet
-
-        OUTPUT:
-
-        - a string - the HTML for the revision list
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: W.body()
-            u'\n\n{{{id=1|\n\n///\n}}}'
-            sage: W.save_snapshot('admin')
-            sage: nb.html_worksheet_revision_list('admin', W)
-            u'...Revision...Last Edited...ago...'
-        """
-        data = worksheet.snapshot_data()  # pairs ('how long ago', key)
-        
-        return template(os.path.join("html", "notebook", "worksheet_revision_list.html"),
-                        data = data, worksheet = worksheet,
-                        notebook = self,
-                        username = username)
-
-
-    def html_specific_revision(self, username, ws, rev):
-        r"""
-        Return the HTML for a specific revision of a worksheet.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        - ``ws`` - an instance of Worksheet
-
-        - ``rev`` - a string containing the key of the revision
-
-        OUTPUT:
-
-        - a string - the revision rendered as HTML
-        """
-        t = time.time() - float(rev[:-4])
-        time_ago = prettify_time_ago(t)
-
-        filename = ws.get_snapshot_text_filename(rev)
-        txt = bz2.decompress(open(filename).read())
-        W = self.scratch_worksheet()
-        W.delete_cells_directory()
-        W.edit_save(txt)
-
-        data = ws.snapshot_data()  # pairs ('how long ago', key)
-        prev_rev = None
-        next_rev = None
-        for i in range(len(data)):
-            if data[i][1] == rev:
-                if i > 0:
-                    prev_rev = data[i - 1][1]
-                if i < len(data)-1:
-                    next_rev = data[i + 1][1]
-                break
-
-        return template(os.path.join("html", "notebook", 
-                                     "specific_revision.html"),
-                        worksheet = ws,
-                        username = username, rev = rev, prev_rev = prev_rev,
-                        next_rev = next_rev, time_ago = time_ago)
-
-    def html_share(self, worksheet, username):
-        r"""
-        Return the HTML for the "share" page of a worksheet.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        - ``worksheet`` - an instance of Worksheet
-
-        OUTPUT:
-
-        - string - the share page's HTML representation
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_share(W, 'admin')
-            u'...currently shared...add or remove collaborators...'
-        """
-        return template(os.path.join("html", "notebook", "worksheet_share.html"),
-                        worksheet = worksheet,
-                        notebook = self,
-                        username = username)
-
-    def html_download_or_delete_datafile(self, ws, username, filename):
-        r"""
-        Return the HTML for the download or delete datafile page.
-
-        INPUT:
-
-        - ``username`` - a string
-
-        - ``ws`` - an instance of Worksheet
-
-        - ``filename`` - a string; the name of the file
-
-        OUTPUT:
-
-        - a string - the page rendered as HTML
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_download_or_delete_datafile(W, 'admin', 'bar')
-            u'...Data file: bar...DATA is a special variable...uploaded...'
-        """
-        ext = os.path.splitext(filename)[1].lower()
-        file_is_image, file_is_text = False, False
-        text_file_content = ""
-
-        if ext in ['.png', '.jpg', '.gif']:
-            file_is_image = True
-        if ext in ['.txt', '.tex', '.sage', '.spyx', '.py', '.f', '.f90', '.c']:
-            file_is_text = True
-            text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
-
-        return template(os.path.join("html", "notebook", "download_or_delete_datafile.html"),
-                        worksheet = ws, notebook = self,
-                        username = username,
-                        filename_ = filename,
-                        file_is_image = file_is_image,
-                        file_is_text = file_is_text,
-                        text_file_content = text_file_content)
-
 
     ##########################################################
     # Accessing all worksheets with certain properties.
@@ -1493,7 +1345,6 @@ class Notebook(object):
     ###########################################################
     # Saving the whole notebook
     ###########################################################
-
     def save(self):
         """
         Save this notebook server to disk.
@@ -1525,212 +1376,6 @@ class Notebook(object):
         for w in self.users_worksheets('_sage_'):
             if w.name().startswith('doc_browser'):
                 self.delete_worksheet(w.filename())
-
-    ###########################################################
-    # HTML -- generate most html related to the whole notebook page
-    ###########################################################
-    def html_plain_text_window(self, worksheet, username):
-        r"""
-        Return HTML for the window that displays a plain text version
-        of the worksheet.
-
-        INPUT:
-
-        -  ``worksheet`` - a Worksheet instance
-
-        -  ``username`` - a string
-
-        OUTPUT:
-
-        - a string - the plain text window rendered as HTML
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_plain_text_window(W, 'admin')
-            u'...pre class="plaintext"...cell_intext...textfield...'
-        """
-        plain_text = worksheet.plain_text(prompts=True, banner=False)
-        plain_text = escape(plain_text).strip()
-
-        return template(os.path.join("html", "notebook", "plain_text_window.html"),
-                        worksheet = worksheet,
-                        notebook = self,
-                        username = username, plain_text = plain_text,
-                        MATHJAX = MATHJAX, JEDITABLE_TINYMCE = JEDITABLE_TINYMCE)
-
-    def html_edit_window(self, worksheet, username):
-        r"""
-        Return HTML for a window for editing ``worksheet``.
-
-        INPUT:
-
-        - ``username`` - a string containing the username
-
-        - ``worksheet`` - a Worksheet instance
-
-        OUTPUT:
-
-        - a string - the editing window's HTML representation
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_edit_window(W, 'admin')
-            u'...textarea class="plaintextedit"...{{{id=1|...//...}}}...'
-        """
-
-        return template(os.path.join("html", "notebook", "edit_window.html"),
-                        worksheet = worksheet,
-                        notebook = self,
-                        username = username)
-
-    def html_beforepublish_window(self, worksheet, username):
-        r"""
-        Return HTML for the warning and decision page displayed prior
-        to publishing the given worksheet.
-
-        INPUT:
-
-        - ``worksheet`` - an instance of Worksheet
-
-        - ``username`` - a string
-
-        OUTPUT:
-
-        - a string - the pre-publication page rendered as HTML
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_beforepublish_window(W, 'admin')
-            u'...want to publish this worksheet?...re-publish when changes...'
-        """
-        msg = """You can publish your worksheet to the Internet, where anyone will be able to access and view it online.
-        Your worksheet will be assigned a unique address (URL) that you can send to your friends and colleagues.<br/><br/>
-        Do you want to publish this worksheet?<br/><br/>
-        <form method="get" action=".">
-        <input type="hidden" name="yes" value="" />
-        <input type="submit" value="Yes" style="margin-left:10px" />
-        <input type="button" value="No" style="margin-left:5px" onClick="parent.location=\'../'"><br/><br/>
-        <input type="checkbox" name="auto" style="margin-left:13px" /> Automatically re-publish when changes are made
-        </form>
-        """
-        return template(os.path.join("html", "notebook", "beforepublish_window.html"),
-                        worksheet = worksheet,
-                        notebook = self,
-                        username = username)
-
-    def html_afterpublish_window(self, worksheet, username, url, dtime):
-        r"""
-        Return HTML for a given worksheet's post-publication page.
-
-        INPUT:
-
-        - ``worksheet`` - an instance of Worksheet
-
-        - ``username`` - a string
-
-        - ``url`` - a string representing the URL of the published
-          worksheet
-
-        - ``dtime`` - an instance of time.struct_time representing the
-          publishing time
-
-        OUTPUT:
-
-        - a string - the post-publication page rendered as HTML
-        """
-        from time import strftime
-        time = strftime("%B %d, %Y %I:%M %p", dtime)
-
-        return template(os.path.join("html", "notebook", "afterpublish_window.html"),
-                        worksheet = worksheet,
-                        notebook = self,
-                        username = username, url = url, time = time)
-
-    def html_upload_data_window(self, ws, username):
-        r"""
-        Return HTML for the "Upload Data" window.
-
-        INPUT:
-
-        - ``worksheet`` - an instance of Worksheet
-
-        - ``username`` - a string
-
-        OUTPUT:
-
-        - a string - the HTML representation of the data upload window
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html_upload_data_window(W, 'admin')
-            u'...Upload or Create Data File...Browse...url...name of a new...'
-        """
-        return template(os.path.join("html", "notebook", "upload_data_window.html"),
-                        worksheet = ws, username = username)
-
-    def html(self, worksheet_filename=None, username='guest', admin=False, 
-             do_print=False):
-        r"""
-        Return the HTML for a worksheet's index page.
-
-        INPUT:
-
-        - ``worksheet_filename`` - a string (default: None)
-
-        - ``username`` - a string (default: 'guest')
-
-        - ``admin`` - a bool (default: False)
-
-        OUTPUT:
-
-        - a string - the worksheet rendered as HTML
-
-        EXAMPLES::
-
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
-            sage: nb.create_default_users('password')
-            sage: W = nb.create_new_worksheet('Test', 'admin')
-            sage: nb.html(W.filename(), 'admin')
-            u'...Test...cell_input...plainclick...state_number...'
-        """
-        if worksheet_filename is None or worksheet_filename == '':
-            worksheet_filename = None
-            W = None
-        else:
-            try:
-                W = self.get_worksheet_with_filename(worksheet_filename)
-            except KeyError:
-                W = None
-
-        from flask import current_app
-        if W is None:
-            return current_app.message("The worksheet does not exist") #XXX: i18n
-
-        if W.docbrowser() or W.is_published():
-            if W.is_published() or self.user_manager().user_is_guest(username):
-                template_page = os.path.join('html', 'notebook', 'guest_worksheet_page.html')
-            else:
-                template_page = os.path.join("html", "notebook", "doc_page.html")
-        elif do_print:
-            template_page = os.path.join('html', 'notebook', 'print_worksheet.html')
-        else:
-            template_page = os.path.join("html", "notebook", "worksheet_page.html")
-
-        return template(template_page, worksheet = W,
-                        notebook = self, do_print=do_print,
-                        username = username)
 
     def upgrade_model(self):
         """
@@ -1776,9 +1421,10 @@ class Notebook(object):
                     pass
             print 'Done upgrading to model version 1'
             self.conf()['model_version'] = 1
-        
+
 ####################################################################
 
+# TODO
 def load_notebook(dir, interface=None, port=None, secure=None, user_manager=None):
     """
     Load and return a notebook from a given directory.  Create a new
@@ -1995,6 +1641,7 @@ def migrate_old_notebook_v1(dir):
     print "Worksheet migration completed."
     return new_nb
 
+# TODO
 def make_path_relative(dir):
     r"""
     Replace an absolute path with a relative path, if possible.

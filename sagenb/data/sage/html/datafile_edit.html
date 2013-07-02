@@ -1,0 +1,66 @@
+{% extends 'html/base.html' %}
+
+{% block head %}
+	{{ super() }}
+	
+	<!-- CodeMirror -->
+	<link rel="stylesheet" href="/data/codemirror-3.0/lib/codemirror.css">
+	
+	<!-- simple hinting -->
+	<link rel="stylesheet" href="/data/codemirror-3.0/lib/util/simple-hint.css">
+{% endblock head %}
+
+{% block navbar %}
+	{% if not published_mode %}
+		<ul class="nav">
+			<li><a href="..">{{ gettext("Back to worksheet") }}</a></li>
+		</ul>
+	{% endif %}
+{% endblock navbar %}
+
+{% block page %}
+	{% if file_is_image %}
+		<div align="center"><img src="{{ path }}"></div>
+	{% elif file_is_text %}
+		<form method="post" action="../save_datafile" enctype="multipart/form-data">
+			<div style="margin-bottom: 15px;">
+				<button type="submit" class="btn btn-primary" name="button_save" id="button_save">{{ gettext('Save Changes') }}</button>
+		    	<button type="submit" class="btn" name="button_cancel">{{ gettext('Cancel') }}</button>
+			</div>
+			<div style="border: 1px solid black; padding: 0px;">
+				<textarea class="plaintextedit" id="cell_intext" name="textfield" style="width: 100%; height: 700px;">{{ text_file_content | escape }}</textarea>
+			</div>
+			<input type="hidden" name="filename" value="{{ filename_ }}" id="filename" />
+		</form>
+	{% else %}
+		{{ gettext('Unknown filetype!') }}
+	{% endif %}
+{% endblock page %}
+
+{% block extra_javascript %}
+	{% assets output="webassets_generated/edit_datafile.js",
+		"codemirror-3.0/lib/codemirror.js",
+		"codemirror-3.0/lib/util/matchbrackets.js",
+		"codemirror-3.0/lib/util/simple-hint.js",
+		"codemirror-3.0/mode/python/python.js",
+		"codemirror-3.0/mode/stex/stex.js",
+		"codemirror-3.0/mode/r/r.js",
+		"codemirror-3.0/mode/shell/shell.js",
+		"codemirror-3.0/mode/xml/xml.js",
+		"codemirror-3.0/mode/javascript/javascript.js",
+		"codemirror-3.0/mode/css/css.js",
+		"codemirror-3.0/mode/htmlmixed/htmlmixed.js"
+	%}
+		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+	{% endassets %}
+	<script type="text/javascript">
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
+
+			{% if file_is_text %}
+			CodeMirror.fromTextArea($('textarea')[0], {});
+			{% endif %}
+		});
+	</script>
+{% endblock extra_javascript %}

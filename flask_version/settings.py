@@ -15,7 +15,7 @@ def settings_page():
     nu = g.notebook.user_manager().user(g.username)
 
     autosave = int(request.values.get('autosave', 0))*60
-    if autosave:
+    if autosave and nu['autosave_interval'] != autosave:
         nu['autosave_interval'] = autosave
         redirect_to_home = True
 
@@ -23,7 +23,7 @@ def settings_page():
     new = request.values.get('new-pass', None)
     two = request.values.get('retype-pass', None)
 
-    if new or two:
+    if old or new or two:
         if not old:
             error = 'Old password not given'
         elif not g.notebook.user_manager().check_password(g.username, old):
@@ -48,8 +48,12 @@ def settings_page():
             ##nu.set_email_confirmation(False)
             redirect_to_home = True
 
+    td = {}
+
     if error:
-        return current_app.message(error, url_for('settings_page'))
+        td["error_msg"] = error
+        redirect_to_home = False
+        redirect_to_logout = False
 
     if redirect_to_logout:
         return redirect(url_for('authentication.logout'))
@@ -57,7 +61,6 @@ def settings_page():
     if redirect_to_home:
         return redirect(url_for('worksheet_listing.home', username=g.username))
 
-    td = {}
     td['username'] = g.username
 
     td['autosave_intervals'] = ((i, ' selected') if nu['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))

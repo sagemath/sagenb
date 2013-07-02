@@ -1,0 +1,113 @@
+{% extends 'html/base.html' %}
+
+{% block head %}
+	{{ super() }}
+	<style type="text/css">
+		.container {
+			width: 700px;
+		}
+		.navbar .btn-navbar {
+			display: none;
+		}
+	</style>
+{% endblock head %}
+
+{% block navbar %}
+{% endblock navbar %}
+
+{% block alerts %}
+	{% include 'html/alerts/worksheet_locked_alert.html' %}
+	{% include 'html/alerts/rename_alert.html' %}
+{% endblock alerts %}
+
+{% block before_page %}
+{% endblock before_page %}
+
+
+{% block page %}
+	<h1 class="title"></h1>
+
+	<div style="height: 10px;"></div>
+
+	{% if not published_mode %}
+	<div class="btn-toolbar well" id="top_toolbar">
+		<a href="/new_worksheet" class="btn btn-primary" target="_blank"><i class="icon-file icon-white"></i> {{ gettext("New Worksheet") }}</a>
+		<a href="#import_modal" class="btn" data-toggle="modal"><i class="icon-upload"></i> {{ gettext("Upload") }}</a>
+		<a href="/download_worksheets.zip" class="btn"><i class="icon-download"></i> {{ gettext("Download All Active") }}</a>
+	</div>
+	{% endif %}
+
+	<div class="btn-toolbar" id="bottom_toolbar">
+		{% if not published_mode %}
+		<div class="btn-group pull-left" id="actions_menu">
+			<button class="btn dropdown-toggle span2" data-toggle="dropdown">Action <span class="caret"></span></button>
+			<ul class="dropdown-menu">
+				<li><a href="#" class="disabled" id="send_to_archive_button"><i class="icon-folder-close"></i> Archive</a></li>
+				<li><a href="#" class="disabled" id="unarchive_button"><i class="icon-folder-open"></i> Unarchive</a></li>
+				<li><a href="#" class="disabled" id="delete_button"><i class="icon-trash"></i> Delete</a></li>
+				<li><a href="#" class="disabled" id="undelete_button"><i class="icon-ok"></i> Undelete</a></li>
+				<li><a href="#" class="disabled" id="stop_button"><i class="icon-stop"></i> Stop</a></li>
+				<li><a href="#" class="disabled" id="download_button"><i class="icon-download"></i> Download</a></li>
+				<li class="divider"></li>
+				<li><a href="#" class="disabled" id="empty_trash"><i class="icon-exclamation-sign"></i> Empty Trash</a></li>
+			</ul>
+		</div>
+		
+		<div class="btn-group pull-left" data-toggle="buttons-radio" style="margin-left:55px;" id="type_buttons">
+			<button type="button" class="btn active" id="show_active">{{ gettext("Active") }}</button>
+			<button type="button" class="btn" id="show_archive">{{ gettext("Archive") }}</button>
+			<button type="button" class="btn" id="show_trash">{{ gettext("Trash") }}</button>
+		</div>
+		{% endif %}
+
+		<form action="#" class="form-search pull-right" style="margin-bottom:0">
+			<div class="input-append">
+				<input type="search" class="input-medium" placeholder="{{ gettext("Search...") }}" size="12" id="search_input"><button class="btn" id="submit_search"><i class="icon-search"></i></button>
+			</div>
+		</form>
+	</div>
+
+	<div style="clear:both"></div>
+
+	<table class="table table-striped worksheets_table">
+		<thead>
+			<tr>
+				{% if not published_mode %}
+				<th class="checkbox_cell"><input type="checkbox" id="main_checkbox"></th>
+				{% endif %}
+				<th class="worksheet_name_cell">{{ gettext("Worksheet") }}</th>
+				<th>{{ gettext("Owner/Collaborators") }}</th>
+				<th class="last_edit_cell">{{ gettext("Last Edited") }}</th>
+			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+	</table>
+{% endblock page %}
+
+{% block after_container %}
+	{% include 'html/modals/sharing_modal.html' %}
+	{% include 'html/modals/import_modal.html' %}
+{% endblock after_container %}
+
+{% block extra_javascript %}
+	{% assets filters="rjsmin", output="webassets_generated/worksheet_list.js",
+		"sage/js/worksheet_list.js"
+	%}
+		<script type="text/javascript" src="{{ ASSET_URL }}"></script>
+	{% endassets %}
+	
+	<script type="text/javascript">
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
+
+			// init the worksheet list
+			sagenb.worksheetlistapp.worksheet_list = new sagenb.worksheetlistapp.worksheet_list();
+			{% if published_mode %}
+			sagenb.worksheetlistapp.worksheet_list.published_mode = true;
+			{% endif %}
+			sagenb.worksheetlistapp.worksheet_list.init();
+		});
+	</script>
+{% endblock extra_javascript %}

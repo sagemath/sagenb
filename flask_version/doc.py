@@ -62,9 +62,5 @@ def doc_static_file(manual, path_static, filename):
 @login_required
 def doc_live(filename):
     filename = os.path.join(DOC, filename)
-    if filename.endswith('.html'):
-        from worksheet import worksheet_file
-        return worksheet_file(filename)
-    else:
-        from flask.helpers import send_file
-        return send_file(filename)
+    from flask.helpers import send_file
+    return send_file(filename)

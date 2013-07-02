@@ -8,7 +8,9 @@
 *.patch
 *.pyc
 *.pyo
+*.kate-swp
 /*.gitk-tmp*
+sdist.log
 
 # sage files to ignore:
 /build
@@ -21,3 +23,5 @@ release_notes.txt
 /sagenb.egg-info
 sagenb/data/jsmath/fonts
 /setup.cfg
+/sagenb/data/.webassets-cache
+/sagenb/data/webassets_generated

@@ -9,9 +9,11 @@ _ = gettext
 
 worksheet_listing = Module('sagenb.flask_version.worksheet_listing')
 
-def render_worksheet_list(args, pub, username):
+@worksheet_listing.route('/worksheet_list')
+@guest_or_login_required
+def worksheet_list():
     """
-    Returns a rendered worksheet listing.
+    Returns a worksheet listing.
 
     INPUT:
 
@@ -31,41 +33,43 @@ def render_worksheet_list(args, pub, username):
 
     from sagenb.notebook.notebook import sort_worksheet_list
     from sagenb.misc.misc import unicode_str, SAGE_VERSION
+    from sagenb.notebook.misc import encode_response
 
-    typ = args['typ'] if 'typ' in args else 'active'
-    search = unicode_str(args['search']) if 'search' in args else None
-    sort = args['sort'] if 'sort' in args else 'last_edited'
-    reverse = (args['reverse'] == 'True') if 'reverse' in args else False
+    r = {}
+
+    pub = 'pub' in request.args    
     readonly = g.notebook.readonly_user(g.username)
+    typ = request.args['type'] if 'type' in request.args else 'active'
+    search = unicode_str(request.args['search']) if 'search' in request.args else None
+    sort = request.args['sort'] if 'sort' in request.args else 'last_edited'
+    reverse = (request.args['reverse'] == 'True') if 'reverse' in request.args else False
     try:
         if not pub:
-            worksheets = g.notebook.worksheet_list_for_user(username, typ=typ, sort=sort,
-                                                              search=search, reverse=reverse)
+            r['worksheets'] = [x.basic() for x in g.notebook.worksheet_list_for_user(g.username, typ=typ, sort=sort, search=search, reverse=reverse)]
         else:
-            worksheets = g.notebook.worksheet_list_for_public(username, sort=sort,
-                                                                search=search, reverse=reverse)
+            r['worksheets'] = [x.basic() for x in g.notebook.worksheet_list_for_public(g.username, sort=sort, search=search, reverse=reverse)]
+
     except ValueError as E:
         # for example, the sort key was not valid
         print "Error displaying worksheet listing: ", E
         return current_app.message(_("Error displaying worksheet listing."))
 
-    worksheet_filenames = [x.filename() for x in worksheets]
+    #if pub and (not g.username or g.username == tuple([])):
+    #    r['username'] = 'pub'
 
-    if pub and (not username or username == tuple([])):
-        username = 'pub'
-
-    accounts = g.notebook.user_manager().get_accounts()
-    sage_version = SAGE_VERSION
-    return render_template('html/worksheet_listing.html', **locals())
+    r['accounts'] = g.notebook.user_manager().get_accounts()
+    r['sage_version'] = SAGE_VERSION
+    # r['pub'] = pub
+    
+    return encode_response(r)
 
 @worksheet_listing.route('/home/<username>/')
 @login_required
 def home(username):
     if not g.notebook.user_manager().user_is_admin(g.username) and username != g.username:
-        #XXX: i18n
-        return current_app.message("User '%s' does not have permission to view the home page of '%s'."%(g.username, username))
+        return current_app.message(_("User '%s' does not have permission to view the home page of '%s'." % (g.username, username)))
     else:
-        return render_worksheet_list(request.args, pub=False, username=username)
+        return render_template('html/worksheet_list.html')
 
 @worksheet_listing.route('/home/')
 @login_required
@@ -79,11 +83,11 @@ def bare_home():
 def get_worksheets_from_request():
     U = g.notebook.user_manager().user(g.username)
 
-    if 'filename' in request.form:
-        filenames = [request.form['filename']]
-    elif 'filenames' in request.form:
+    if 'filename' in request.values:
+        filenames = [request.values['filename']]
+    elif 'filenames' in request.values:
         import json
-        filenames = json.loads(request.form['filenames'])
+        filenames = json.loads(request.values['filenames'])
     else:
         filenames = []
     worksheets = []
@@ -126,7 +130,7 @@ def send_worksheet_to_stop():
         W.quit()
     return ''
 
-@worksheet_listing.route('/emptytrash', methods=['POST'])
+@worksheet_listing.route('/empty_trash', methods=['POST'])
 @login_required
 def empty_trash():
     g.notebook.empty_trash(g.username)
@@ -140,35 +144,32 @@ def empty_trash():
 # Public Worksheets #
 #####################
 @worksheet_listing.route('/pub/')
+@worksheet_listing.route('/published/')
+@guest_or_login_required
+def pub_redirects():
+    return redirect(url_for('pub'))
+
+@worksheet_listing.route('/home/pub/')
 @guest_or_login_required
 def pub():
-    return render_worksheet_list(request.args, pub=True, username=g.username)
+    return render_template(os.path.join('html', 'worksheet_list.html'), published_mode=True)
 
 @worksheet_listing.route('/home/pub/<id>/')
 @guest_or_login_required
 def public_worksheet(id):
-    from worksheet import pub_worksheet
-    filename = 'pub/%s'%id
+    # from worksheet import pub_worksheet
+    filename = 'pub/' + id
     if g.notebook.conf()['pub_interact']:
         try:
             original_worksheet = g.notebook.get_worksheet_with_filename(filename)
         except KeyError:
             return _("Requested public worksheet does not exist"), 404
-        worksheet = pub_worksheet(original_worksheet)
-
-        owner = worksheet.owner()
-        worksheet.set_owner('pub')
-        s = g.notebook.html(worksheet_filename=worksheet.filename(),
-                            username=g.username)
-        worksheet.set_owner(owner)
-    else:
-        s = g.notebook.html(worksheet_filename=filename, username = g.username)
-    return s
+    return render_template(os.path.join('html', 'worksheet.html'), published_mode=True)
 
 @worksheet_listing.route('/home/pub/<id>/download/<path:title>')
 def public_worksheet_download(id, title):
     from worksheet import unconditional_download
-    worksheet_filename =  "pub" + "/" + id
+    worksheet_filename =  "pub/" + id
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
@@ -177,7 +178,7 @@ def public_worksheet_download(id, title):
 
 @worksheet_listing.route('/home/pub/<id>/cells/<path:filename>')
 def public_worksheet_cells(id, filename):
-    worksheet_filename =  "pub" + "/" + id
+    worksheet_filename =  "pub/" + id
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
@@ -391,10 +392,7 @@ def upload_worksheet():
                 zip_file = zipfile.ZipFile(filename)
                 for subfilename in zip_file.namelist():
                     prefix, extension = os.path.splitext(subfilename)
-                    # Mac zip files contain files like __MACOSX/._worksheet.sws
-                    # which are metadata files, so we skip those as
-                    # well as any other files we won't understand
-                    if extension in ['.sws', '.html', '.txt', '.rst'] and not prefix.startswith('__MACOSX/'):
+                    if extension in ['.sws', '.html', '.txt', '.rst'] :
                         tmpfilename = os.path.join(dir, "tmp" + extension)
                         try:
                             tmpfilename = zip_file.extract(subfilename, tmpfilename)

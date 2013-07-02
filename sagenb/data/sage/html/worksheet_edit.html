@@ -1,0 +1,38 @@
+{% extends 'html/base.html' %}
+
+{% block head %}
+	{{ super() }}
+
+	<!-- CodeMirror -->
+	<link rel="stylesheet" href="/data/CodeMirror-2.32/lib/codemirror.css">
+	
+	<!-- simple hinting -->
+	<link rel="stylesheet" href="/data/CodeMirror-2.32/lib/util/simple-hint.css">
+{% endblock head %}
+
+{% block navbar %}
+	{% if not published_mode %}
+		<ul class="nav">
+			<li><a href=".">{{ gettext("Back to worksheet") }}</a></li>
+		</ul>
+	{% endif %}
+{% endblock navbar %}
+
+{% block page %}
+<form method="post" action="save" enctype="multipart/form-data">
+	<div style="margin-bottom: 15px;">
+		<button type="submit" class="btn btn-primary" name="button_save" id="button_save">{{ gettext('Save Changes') }}</button>
+    	<button type="submit" class="btn" name="button_cancel">{{ gettext('Cancel') }}</button>
+	</div>
+	<textarea class="plaintextedit" id="cell_intext" name="textfield" style="width: 100%; height: 700px;">{{ worksheet.edit_text()|escape }}</textarea>
+</form>
+{% endblock page %}
+
+{% block extra_javascript %}
+	<script type="text/javascript">
+		$(function() {
+			// init notebook stuff
+			sagenb.init();
+		});
+	</script>
+{% endblock extra_javascript %}
