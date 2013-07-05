@@ -45,6 +45,20 @@ ignore this section. In particular, if you're installing a copy of Sage
 for your personal use only, you probably won't need OpenID or HTTPS
 support in the notebook.
 
+LDAP authentication
+-------------------
+
+HTTPS support in the Python library is required to download and install
+files, in order to install LDAP authentication support. To enable HTTPS
+support read the section on SSL in Sage's own README file. Next, use the
+following commands to install the python-ldap in Sage::
+
+    $ /path/to/sage -sh
+    $ easy_install python-ldap
+
+Once python-ldap is installed, (re)start the notebook server and the
+options to setup LDAP authentication will be visible in the "Notebook
+Settings" section of the "Settings."
 
 
 Development
