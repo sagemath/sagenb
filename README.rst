@@ -51,7 +51,7 @@ LDAP authentication
 HTTPS support in the Python library is required to download and install
 files, in order to install LDAP authentication support. To enable HTTPS
 support read the section on SSL in Sage's own README file. Next, use the
-following commands to install the python-ldap in Sage::
+following commands to install the python-ldap package in Sage::
 
     $ /path/to/sage -sh
     $ easy_install python-ldap
