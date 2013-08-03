@@ -31,7 +31,7 @@ except ImportError:
 
 try:
     from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
-except ImportError, msg:
+except ImportError as msg:
     print msg
     print "Sphinx docstrings not available."
     # Don't do any Sphinxifying if sphinx's dependencies aren't around
@@ -39,6 +39,14 @@ except ImportError, msg:
         return s
     def is_sphinx_markup(s):
         return False
+
+try:
+    from sage.misc.displayhook import DisplayHook
+    sys.displayhook = DisplayHook()
+except ImportError as msg:
+    print msg
+    print 'Graphics will not be shown automatically'
+
 
 ######################################################################
 # Initialization
