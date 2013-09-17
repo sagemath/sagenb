@@ -357,6 +357,12 @@ function bind_events() {
         cell_focused(this, cell_id);
         return true;
     });
+    $('body').on('focus', 'textarea.cell_input_hide', function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_focused(this, cell_id);
+        return true;
+    });
     $('body').on('blur', 'textarea.cell_input_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
