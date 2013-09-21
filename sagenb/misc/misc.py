@@ -31,41 +31,41 @@ def print_open_msg(address, port, secure=False, path=""):
     INPUT:
 
     - ``address`` -- a string; a computer address or name
-    
+
     - ``port`` -- an int; a port number
-    
+
     - ``secure`` -- a bool (default: False); whether to prefix the URL
       with 'http' or 'https'
-    
+
     - ``path`` -- a string; the URL's path following the port.
-    
+
     EXAMPLES::
 
         sage: from sagenb.misc.misc import print_open_msg
         sage: print_open_msg('localhost', 8080, True)
-        ****************************************************
-        *                                                  *
-        * Open your web browser to https://localhost:8080  *
-        *                                                  *
-        ****************************************************
+        ┌──────────────────────────────────────────────────┐
+        │                                                  │
+        │ Open your web browser to https://localhost:8080  │
+        │                                                  │
+        └──────────────────────────────────────────────────┘
         sage: print_open_msg('sagemath.org', 8080, False)
-        ******************************************************
-        *                                                    *
-        * Open your web browser to http://sagemath.org:8080  *
-        *                                                    *
-        ******************************************************
+        ┌────────────────────────────────────────────────────┐
+        │                                                    │
+        │ Open your web browser to http://sagemath.org:8080  │
+        │                                                    │
+        └────────────────────────────────────────────────────┘
         sage: print_open_msg('sagemath.org', 90, False)
-        ****************************************************
-        *                                                  *
-        * Open your web browser to http://sagemath.org:90  *
-        *                                                  *
-        ****************************************************
+        ┌──────────────────────────────────────────────────┐
+        │                                                  │
+        │ Open your web browser to http://sagemath.org:90  │
+        │                                                  │
+        └──────────────────────────────────────────────────┘
         sage: print_open_msg('sagemath.org', 80, False)
-        **************************************************
-        *                                                *
-        *  Open your web browser to http://sagemath.org  *
-        *                                                *
-        **************************************************
+        ┌────────────────────────────────────────────────┐
+        │                                                │
+        │  Open your web browser to http://sagemath.org  │
+        │                                                │
+        └────────────────────────────────────────────────┘
     """
     if port == 80:
         port = ''
@@ -79,11 +79,12 @@ def print_open_msg(address, port, secure=False, path=""):
     n = max(t+4, 50)
     k = n - t  - 1
     j = k/2 
-    print '*'*n
-    print '*'+ ' '*(n-2) + '*'
-    print '*' + ' '*j + s + ' '*j + '*'
-    print '*'+ ' '*(n-2) + '*'
-    print '*'*n
+    msg = '┌' + '─' * (n - 2) + '┐\n'
+    msg += '│' + ' ' * (n - 2) + '│\n'
+    msg += '│' + ' ' * j + s + ' ' * j + '│\n'
+    msg += '│' + ' ' * (n - 2) + '│\n'
+    msg += '└' + '─' * (n - 2) + '┘'
+    print msg
 
 
 def find_next_available_port(interface, start, max_tries=100, verbose=False):
