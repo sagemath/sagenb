@@ -19,7 +19,7 @@ import shutil
 from cgi import escape
 
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
-                              set_restrictive_permissions, unicode_str,
+                              set_medium_permissions, unicode_str,
                               encoded_str)
 from interact import (INTERACT_RESTART, INTERACT_UPDATE_PREFIX,
                       INTERACT_TEXT, INTERACT_HTML)
@@ -972,7 +972,7 @@ class Cell(Cell_generic):
         dir = self._directory_name()
         if not os.path.exists(dir):
             os.makedirs(dir)
-        set_restrictive_permissions(dir)
+        set_medium_permissions(dir, allow_execute=True)
         return dir
 
     def _directory_name(self):

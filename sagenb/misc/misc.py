@@ -408,6 +408,12 @@ def set_permissive_permissions(filename):
              stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | \
              stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP)
 
+def set_medium_permissions(filename, allow_execute=False):
+    x = stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IROTH
+    if allow_execute:
+        x = x | stat.S_IXGRP | stat.S_IXOTH
+    os.chmod(filename, x)
+
 def encoded_str(obj, encoding='utf-8'):
     ur"""
     Takes an object and returns an encoded str human-readable representation.
