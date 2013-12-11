@@ -227,7 +227,7 @@ function bugreport() {
     /*
       Popup the bug report window.
     */
-    window.open('http://spreadsheets.google.com/viewform?key=pCwvGVwSMxTzT6E2xNdo5fA', '', 'menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,resizable=1');
+    window.open('http://sagemath.org/report-issue', '', 'menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,resizable=1');
 }
 
 function empty_trash() {
