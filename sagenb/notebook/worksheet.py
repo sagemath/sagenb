@@ -41,7 +41,7 @@ import locale
 from sagenb.misc.misc import (cython, load, save,
                               alarm, cancel_alarm, verbose, DOT_SAGENB,
                               walltime, ignore_nonexistent_files,
-                              set_restrictive_permissions,
+                              set_medium_permissions,
                               set_permissive_permissions,
                               encoded_str, unicode_str)
 
@@ -256,9 +256,9 @@ class Worksheet(object):
         # creating directories should be a function of the storage backend, not here
         if not os.path.exists(self.__dir):
             os.makedirs(self.__dir)
-            set_restrictive_permissions(self.__dir, allow_execute=True)
-            set_restrictive_permissions(self.snapshot_directory())
-            set_restrictive_permissions(self.cells_directory())
+            set_medium_permissions(self.__dir, allow_execute=True)
+            set_medium_permissions(self.snapshot_directory(), allow_execute=True)
+            set_medium_permissions(self.cells_directory(), allow_execute=True)
 
     def id_number(self):
         """
@@ -3293,7 +3293,7 @@ except (KeyError, IOError):
                                             ignore=ignore_nonexistent_files)
                         else:
                             shutil.copy(X, target)
-                        set_restrictive_permissions(target)
+                        set_medium_permissions(target)
                         if os.path.isfile(X):
                             try: 
                                 os.unlink(X)
