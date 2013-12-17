@@ -69,4 +69,5 @@ if __name__ == '__main__':
                               all_files('sagenb/data', 'sagenb/') +
                               all_files('sagenb/translations', 'sagenb/')
                          },
+          zip_safe     = False,
           )
