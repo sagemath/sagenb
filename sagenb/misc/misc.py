@@ -505,4 +505,10 @@ def translations_path():
     return os.path.join(SAGENB_ROOT, 'translations')
 
 def get_languages():
-    return ['en_US'] + os.listdir(translations_path())
+    langs = ['en_US']
+    # translations_path() may not exist...
+    try:
+        langs += os.listdir(translations_path())
+    except OSError:
+        pass
+    return langs
