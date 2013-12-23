@@ -1,8 +1,16 @@
+0.10.7.3    Dec 22 2013
+
+ - Minor fix for trac ticket #15510
+ - Fix for Issue #135
+ - unicode "open your browser" message
+ - change URL for bug reports to sagemath.com/report-issue
+
 0.10.7.2    Aug 08 2013
 
  - Minor fix for trac ticket 14469
 
 0.10.7.1    Jun 25 2013
+
  - revert published worksheet sanitization as it is not optional
 
 0.10.7  Jun 24 2013
