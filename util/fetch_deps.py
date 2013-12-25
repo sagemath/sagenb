@@ -10,7 +10,7 @@ need not be run independently.
 # TODO: Automatically generate this (using distribute internals ?)
 required_packages = [ 'zope.interface'
                     , 'twisted>=11.0.0'
-                    , 'pytz>=2011n'
+                    , 'pytz >=2011n, <=2013b'
                     , 'Babel>=0.9.6'
                     , 'Werkzeug>=0.8.2'
                     , 'speaklater>=1.2'
