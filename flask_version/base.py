@@ -4,6 +4,8 @@ from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required, guest_or_login_required, with_lock
 from decorators import global_lock
+# Make flask use the old session foo from <=flask-0.9
+from flask_oldsessions import OldSecureCookieSessionInterface
 
 from flask.ext.autoindex import AutoIndex
 try:
@@ -23,6 +25,7 @@ class SageNBFlask(Flask):
     def __init__(self, *args, **kwds):
         self.startup_token = kwds.pop('startup_token', None)
         Flask.__init__(self, *args, **kwds)
+        self.session_interface = OldSecureCookieSessionInterface()
 
         self.config['SESSION_COOKIE_HTTPONLY'] = False
 
