@@ -357,6 +357,12 @@ function bind_events() {
         cell_focused(this, cell_id);
         return true;
     });
+    $('body').on('focus', 'textarea.cell_input_hide', function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_focused(this, cell_id);
+        return true;
+    });
     $('body').on('blur', 'textarea.cell_input_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
@@ -4620,7 +4626,7 @@ function bugreport() {
     /*
     Popup the bug report window.
     */
-    window.open("http://spreadsheets.google.com/viewform?key=pCwvGVwSMxTzT6E2xNdo5fA", "", "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
+    window.open("http://sagemath.org/report-issue", "", "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
 }
 
 

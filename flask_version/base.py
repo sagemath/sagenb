@@ -4,6 +4,8 @@ from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required, guest_or_login_required, with_lock
 from decorators import global_lock
+# Make flask use the old session foo from <=flask-0.9
+from flask_oldsessions import OldSecureCookieSessionInterface
 
 from flask.ext.autoindex import AutoIndex
 try:
@@ -23,6 +25,7 @@ class SageNBFlask(Flask):
     def __init__(self, *args, **kwds):
         self.startup_token = kwds.pop('startup_token', None)
         Flask.__init__(self, *args, **kwds)
+        self.session_interface = OldSecureCookieSessionInterface()
 
         self.config['SESSION_COOKIE_HTTPONLY'] = False
 
@@ -238,7 +241,7 @@ def create_or_login(resp):
         username = g.notebook.user_manager().get_username_from_openid(resp.identity_url)
         session['username'] = g.username = username
         session.modified = True
-    except KeyError:
+    except (KeyError, LookupError):
         session['openid_response'] = resp
         session.modified = True
         return redirect(url_for('set_profiles'))
@@ -298,26 +301,26 @@ def set_profiles():
                         parse_dict['challenge_html'] = chal.html(error_code = err_code)
                     else:
                         parse_dict['challenge_invalid'] = True
-                    raise ValueError
+                    raise ValueError("Invalid challenge")
                 else:
                     parse_dict['challenge_missing'] = True
-                    raise ValueError
+                    raise ValueError("Missing challenge")
 
             if not is_valid_username(username):
                 parse_dict['username_invalid'] = True
-                raise ValueError
+                raise ValueError("Invalid username")
             if g.notebook.user_manager().user_exists(username):
                 parse_dict['username_taken'] = True
-                raise ValueError
+                raise ValueError("Pre-existing username")
             if not is_valid_email(request.form.get('email')):
                 parse_dict['email_invalid'] = True
-                raise ValueError
+                raise ValueError("Invalid email")
             try:
                 new_user = User(username, '', email = resp.email, account_type='user')
                 g.notebook.user_manager().add_user_object(new_user)
-            except ValueError:
+            except ValueError as msg:
                 parse_dict['creation_error'] = True
-                raise ValueError
+                raise ValueError("Error in creating user\n%s"%msg)
             g.notebook.user_manager().create_new_openid(resp.identity_url, username)
             session['username'] = g.username = username
             session.modified = True
