@@ -10,7 +10,7 @@ need not be run independently.
 # TODO: Automatically generate this (using distribute internals ?)
 required_packages = [ 'zope.interface'
                     , 'twisted>=11.0.0'
-                    , 'pytz>=2011n'
+                    , 'pytz >=2011n, <=2013b'
                     , 'Babel>=0.9.6'
                     , 'Werkzeug>=0.8.2'
                     , 'speaklater>=1.2'
@@ -21,10 +21,18 @@ required_packages = [ 'zope.interface'
                     , 'Flask-AutoIndex>=0.4.0'
                     , 'Flask-Babel>=0.8'
                     , 'Flask-OpenID>=1.0.1'
+                    , 'Flask-OldSessions'
                     , 'webassets>=0.7.1'
                     ]
 
-import os, shutil, sys
+# Format for online_packages:
+# "same pkg name as in required_packages" : (url, local filename)
+online_packages =   { 'Flask-OldSessions':
+         ('http://github.com/mitsuhiko/flask-oldsessions/tarball/master',
+         'Flask-OldSessions-0.10.tar.gz')
+         }
+
+import os, shutil, sys, urllib
 from pkg_resources import Requirement
 from setuptools.package_index import PackageIndex
 
@@ -46,7 +54,18 @@ if __name__ == '__main__':
             dist = pkg_index.fetch_distribution(Requirement.parse(pkg),
                                                 dest_dir, True, True)
             if dist is None:
-                die("Couldn't find package satisfying '{0}'!".format(pkg))
-            print " ---) Fetched {0} {1}".format(dist.project_name,
-                    dist.version)
-            fd.write(os.path.basename(dist.location) + '\n')
+                if pkg in online_packages:
+                    try:
+                        filename = dest_dir + os.sep + online_packages[pkg][1]
+                        urllib.urlretrieve(online_packages[pkg][0],
+                                           filename=filename)
+                        print " ---) Fetched {}".format(online_packages[pkg][1])
+                        fd.write(os.path.basename(filename) + '\n')
+                    except URLError as msg:
+                        die("Couldn't download '{}'!\n{}".format(pkg, msg))
+                else:
+                    die("Couldn't find package satisfying '{0}'!".format(pkg))
+            else:
+                print " ---) Fetched {0} {1}".format(dist.project_name,
+                                                     dist.version)
+                fd.write(os.path.basename(dist.location) + '\n')
