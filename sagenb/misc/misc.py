@@ -187,7 +187,8 @@ except ImportError:
 # TODO: Get macros from server and user settings.
 try:
     import sage.all
-    from sage.misc.latex_macros import sage_mathjax_macros as mathjax_macros
+    from sage.misc.latex_macros import sage_mathjax_macros
+    mathjax_macros = sage_mathjax_macros()
 except ImportError:
     mathjax_macros = [
         "ZZ : '{\\\\Bold{Z}}'",
