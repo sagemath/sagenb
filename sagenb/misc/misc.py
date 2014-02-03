@@ -7,25 +7,8 @@ TESTS:
 Check that github issue #195 is fixed::
 
     sage: from sagenb.misc.misc import mathjax_macros
-    sage: print mathjax_macros
-    ['ZZ: "\\\\Bold{Z}"',
-    'NN: "\\\\Bold{N}"',
-    'RR: "\\\\Bold{R}"',
-    'CC: "\\\\Bold{C}"',
-    'QQ: "\\\\Bold{Q}"',
-    'QQbar: "\\\\overline{\\\\QQ}"',
-    'GF: ["\\\\Bold{F}_{#1}",1]',
-    'Zp: ["\\\\ZZ_{#1}",1]',
-    'Qp: ["\\\\QQ_{#1}",1]',
-    'Zmod: ["\\\\ZZ/#1\\\\ZZ",1]',
-    'CDF: "\\\\Bold{C}"',
-    'CIF: "\\\\Bold{C}"',
-    'CLF: "\\\\Bold{C}"',
-    'RDF: "\\\\Bold{R}"',
-    'RIF: "\\\\Bold{I} \\\\Bold{R}"',
-    'RLF: "\\\\Bold{R}"',
-    'CFF: "\\\\Bold{CFF}"',
-    'Bold: ["\\\\mathbf{#1}",1]']
+    sage: type(mathjax_macros)
+    <type 'list'>
 
 """
 
