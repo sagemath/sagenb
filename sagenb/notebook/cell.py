@@ -2375,16 +2375,18 @@ class Cell(Cell_generic):
                     jmol_file.write(jmol_script)
                     jmol_file.close()
 
-                #script = '<div><script>jmol_applet(%s, "%s?%d");</script></div>' % (size, url, time.time())
-                script = '<div id = "jmol_static%s">Sleeping...<button onClick="javascript:void(jmol_launch(%s, \'%s?%d\', %s))">Make Interactive</button>'  % (self._id, size, url, time.time(), self._id)
                 image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
-                script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
+                script = '<div id = "jmol_static%s"><script>jmol_applet(%s, "%s.png?%d", "%s?%d",%s);</script></div>' % (self._id,size, image_name, time.time(), url, time.time(), self._id)
+                #script = '<div id = "jmol_static%s">Sleeping...<button onClick="javascript:void(jmol_launch(%s, \'%s?%d\', %s))">Make Interactive</button>'  % (self._id, size, url, time.time(), self._id)
+                #script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
                 images.append(script)
                 jmolimagebase = F
                 hasjmol=True
             elif F.endswith('.jmol.zip'):
                 # jmol data
                 jmoldatafile=os.path.join(self.directory(),F)
+                #link ='<div class="jmol_data"><a href="%s?%d">Download 3-D as Jmol file/data</a></div>'% (jmoldatafile, time.time())
+                #images.append(link)
             elif F.endswith('.canvas3d'):
                 script = '<div><script>canvas3d.viewer("%s");</script></div>' % url
                 images.append(script)

@@ -44,9 +44,12 @@ INPUT:
 <script type="text/javascript" src="/javascript/sage3d/sage3d.js"></script>
 
 <!-- Jmol - embedded 3D graphics -->
-<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
+<script type="text/javascript" src="/jsmol/JSmol.min.js"></script>
+<script type="text/javascript" src="/jsmol/js/Jmol2.js"></script>
 <!-- This must stay in head -->
-<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
+<script>//jmolInitialize("/java/jmol");
+jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");
+</script>
 
 {% if JEDITABLE_TINYMCE and not worksheet.docbrowser() and not worksheet.is_published() %}
 <!-- TinyMCE and jEditable - in-place editing of text cells -->

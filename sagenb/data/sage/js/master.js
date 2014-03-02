@@ -14,8 +14,9 @@ $(function () {
 
     if (body.hasClass('active-worksheet')) {
         initialize_the_notebook();
-        $('.introspection .docstring .click-message', '#worksheet_cell_list')
-            .live('click', function (e) {
+//'#worksheet_cell_list' why was it function (e) below.
+        $(document)
+            .on('click','.introspection, .docstring, .click-message, #worksheet_cell_list', function (e) {
                 var ds_elem = $(this).parent(), id, name, style;
 
                 id = toint(ds_elem.parent().attr('id').slice(15));

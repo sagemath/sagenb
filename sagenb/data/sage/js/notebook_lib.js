@@ -326,7 +326,7 @@ function initialize_the_notebook() {
     });
 
     // Resize and save on paste.
-    $('textarea').live('paste', function () {
+    $(document).on('paste','textarea', function () {
         var id = $(this).attr('id').slice(11);
         setTimeout(function () {
             send_cell_input(id);
@@ -806,7 +806,8 @@ function modal_prompt(form_options, options, modal_options) {
     modal_options.title = modal_options.title || title;
 
     if (overlay_close) {
-        $('div.ui-widget-overlay').live('click', close_dialog);
+        //$('div.ui-widget-overlay').live('click', close_dialog);
+        $(document).on('click','div.ui-widget-overlay',close_dialog);
     }
 
     // Form setup.
