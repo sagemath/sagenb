@@ -9,6 +9,8 @@
 
 var jmolApplet; //our generic viewer.
 
+var live_3D_state = false;
+
 var jmolInfo = { //default values
     width: "100%",
     height: "100%",
@@ -65,6 +67,11 @@ var small = 250;
 var medium = 400;
 var large = 600;
 
+//Check whether to load 3-D live
+live_3D_state = $('#3D_check').prop('checked');
+//start the watch function
+jmolWatcher = setInterval('jmolActivator();',500);
+
 function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new applet. 
     var appletID = jmol_count;
     jmol_count = jmol_count + 1;
@@ -74,37 +81,80 @@ function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new 
         }
     Jmol.setDocument(document);
     //Where am I?  Need to know in cases where I need to write directly to this cell.
-    cell_ID = 'cell_output_html_'+cell_num;
-    //however, I might be inside something else like an interact as well...so
-    parent = get_element('jmol_static'+cell_num).parentNode;
+    cell_ID = 'sage_jmol'+cell_num;
     jmolStatus.jmolInfo[appletID] = jmolInfo; //set default values
     jmolStatus.jmolInfo[appletID].coverImage = image; //this should be the image url
     jmolStatus.jmolInfo[appletID].script = "script "+url; //this should be the script url
-    parentStr = parent.innerHTML;
-    //str = parentStr + newJmolTableStr(appletID, size, size, url, wakeMessage, sleepMessage, captionStr, controlStr);
-    //str = parentStr + '<script>Jmol.getAppletHtml("jmolApplet'+appletID+'",jmolStatus.jmolInfo['+appletID+']))</script>';
+    //Check whether to load 3-D live
+    live_3D_state = $('#3D_check').prop('checked');    
+    if (live_3D_state){
+       jmolStatus.jmolInfo[appletID].deferApplet=false;
+       }
     jmolDivStr = "jmol"+appletID;
     jmolStatus.widths[appletID] = size;
     jmolStatus.heights[appletID]= size;
-   $(parent).append('<div id="'+jmolDivStr+'" style="height:'+size+'px; width:'+size+'px;" >JSmol here</div>');
+    //appending to cell_ID
+    $('#'+cell_ID).append('<div id="'+jmolDivStr+'" style="height:'+size+'px; width:'+size+'px;" >JSmol here</div>');
+    //launching JSmol/Jmol applet
     $('#'+jmolDivStr).html(Jmol.getAppletHtml("jmolApplet"+appletID,jmolStatus.jmolInfo[appletID])); 
-    //add debugging div
-    //str += '<div id="JmolDebug">Jmol Debugging goes here</div>';
-    //now we can start the new one
-    //cell_writer.write(str);
-    parent.innerHTML = str;
-    //jmolSetAppletColor("white");
-    //if (appletID==0){
-    //    jmol_checkbrowserOS();
-     //   }
     //we will still set all the data for this applet so that other asynchronously created applets do not grab its ID.
     jmolStatus.signed[appletID]=jmolStatus.loadSigned;
     jmolStatus.urls[appletID]=url;
     //    jmolStatus.numLive = jmolStatus.numLive+1;
-    jmolStatus.controlStrs[appletID] = controlStr;
-    jmolStatus.captionStrs[appletID] = captionStr;
-    jmolStatus.cntrls[appletID]=cntrlPanels;
+    //jmolStatus.controlStrs[appletID] = controlStr;
+    //jmolStatus.captionStrs[appletID] = captionStr;
+    //jmolStatus.cntrls[appletID]=cntrlPanels;
 //Now we wait for the server by calling a function that waits if the div is not yet written.
 //    launchNewJmol(size,scriptStr,appletID);
-    return str;
+    return jmolDivStr;//for historical compatibility
     }
+
+function jmolActivator(){
+    if (document.getElementById("loadJmol")){
+        parentdiv = $("#loadJmol").parent();
+        //parentid = $(parentdiv).attr("id");
+        //alert("The parent id is:"+parentid);
+        cell_num = $(parentdiv).children("#loadJmol").html();//this div must have the ID number
+        //alert("Trying to launch JSmol #"+cell_num);
+        $(parentdiv).children("#loadJmol").remove();
+        size = $(parentdiv).children("#sage_jmol_size"+cell_num).html();
+        img = $(parentdiv).children("#sage_jmol_img"+cell_num).html();
+        script = $(parentdiv).children("#sage_jmol_script"+cell_num).html();
+        tmpdiv = jmol_applet(size, img, script, cell_num);
+        $(parentdiv).children("#sage_jmol_status"+cell_num).html() = "Activated";
+    }
+}
+
+function live_3D_check(s) {
+    /*
+    Send a message back to the server either turn live_3D on of off.
+    INPUT:
+        s -- boolean; whether the pretty print box is checked.
+    */
+    live_3D_state =s;
+    //alert ('live_3D_state:'+live_3D_state);
+    async_request(worksheet_command('live_3D/' + s));
+}
+
+//The following two delete functions do not do anything in this truncated jmol_lib.
+//They are for compatibility with the notebook_lib.js
+function jmol_delete_all_output() {
+    //called by the delete_all_output function of the notebook to get jmol parameters cleaned up.
+    jmol_count=0;
+    jmolStatus.numLive=0;
+    jmolStatus.jmolArray=new Array();
+}
+
+function jmol_delete_check() {
+    //called when cells are evaluated to see if any jmols have been deleted.  If so update their status.
+    liveCount = jmolStatus.jmolArray.length;
+    for ( k = 0; k< liveCount; k++) {
+        testId= 'Jmol_Table_Jmol'+k; //looking for the whole table Jmol is in, since if the table is there it is sleeping.
+        if (!get_element(testId)) { //we need to set this as deleted and maybe free up the ID?
+            jmolStatus.jmolArray[k] = -1;
+            //for the time being old IDs will not be reused.  Shouldn't be real big problem as completely resets
+            //each time a page is opened.
+        }
+    }
+    //jmol_numLiveUpdate();
+}

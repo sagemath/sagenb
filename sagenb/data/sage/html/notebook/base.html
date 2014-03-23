@@ -143,6 +143,9 @@ jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");
         <input type="checkbox" title="{{ gettext('Enable/disable pretty_printing') }}"
                onchange="pretty_print_check(this.checked);"
                class="worksheet" value="pretty_print" {{ "checked" if worksheet.pretty_print() else "" }} />&nbsp;Typeset
+        <input id="3D_check", type="checkbox" title="{{ gettext('Load 3-D Live. Not recommended for worksheets with > 2 3-D Plots.') }}"
+               onchange="live_3D_check(this.checked);"
+               class="worksheet" value="live_3D" {{ "checked" if worksheet.live_3D() else "" }} /> {{ gettext('Load 3-D Live') }}
         {% endif %}
     {% endif %} 
     </div>

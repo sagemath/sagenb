@@ -166,6 +166,15 @@ def worksheet_pretty_print(worksheet, enable):
     worksheet.set_pretty_print(enable)
     return 'success'
 
+@worksheet_command('live_3D/<enable>')
+def worksheet_live_3D(worksheet, enable):
+    if enable == 'true':
+        worksheet.set_live_3D(True)
+    else:
+        worksheet.set_live_3D(False)
+    return 'success'
+
+
 @worksheet_command('conf')
 def worksheet_conf(worksheet):
     return str(worksheet.conf())
