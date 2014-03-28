@@ -786,9 +786,9 @@ function modal_prompt(form_options, options, modal_options) {
     },
     modal_options);
 
-    new_prompt = $(modal_prompt_element);
-    $('body').append(new_prompt);
-    new_prompt.css(css);
+        new_prompt = $($.parseHTML(modal_prompt_element));
+        $('body').append(temp_new_prompt);
+        new_prompt.css(css);
 
     new_form = new_prompt.find('form');
     if (options.id) {
