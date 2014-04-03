@@ -276,7 +276,7 @@ function initialize_the_notebook() {
         }
         return toint(id);
     });
-
+    //TODO: why do we do the following twice?
     // Parse active cell IDs and mark these cells as running.  We
     // don't use $.map here, to avoid the possibility of overwriting a
     // debug version of the list.  See debug.js for details.
@@ -786,9 +786,9 @@ function modal_prompt(form_options, options, modal_options) {
     },
     modal_options);
 
-        new_prompt = $($.parseHTML(modal_prompt_element));
-        $('body').append(temp_new_prompt);
-        new_prompt.css(css);
+    new_prompt = $($.parseHTML(modal_prompt_element));
+    $('body').append(new_prompt);
+    new_prompt.css(css);
 
     new_form = new_prompt.find('form');
     if (options.id) {
@@ -816,7 +816,6 @@ function modal_prompt(form_options, options, modal_options) {
         old_success_function(new_form, new_prompt);
         close_dialog();
     };
-
     new_form.ajaxForm(form_options);
     hide_java_applets();
     new_prompt.dialog(modal_options);
@@ -1770,9 +1769,10 @@ function rename_worksheet() {
     };
     modal_prompt({
         success: function (form, prompt) {
-            callback($(':text', form).attr('value'));
+            callback($(':text',form).prop('value'));
         }
     }, {
+        id: "rename_prompt",
         title: translations["Rename worksheet"],
         message: translations['Please enter a name for this worksheet.'],
         'default': worksheet_name,
@@ -3743,7 +3743,7 @@ function set_input_text(id, text) {
 // Dynamic evaluation of javascript related in cell output.
 ///////////////////////////////////////////////////////////////////
 function CellWriter() {
-    /*
+    /*TODO: Jmol does not use anymore. Remove if nothing else depends on it.
     When a new cell is loaded, this class is used to let javascript
     write directly to the document. After that, make sure javascript
     writes to a CellWriter object.  This is used in order to get jmol
