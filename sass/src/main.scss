@@ -966,12 +966,11 @@ a.file_link {
 
 div {
   &.insert_new_cell {
-    height: 6px;
+    height: 16px;
     display: block;
     margin: 3px;
-    &:hover {
-      background-color: #8888fe;
-      margin: 3px; } } }
+  &.wksht-icon_button {
+    display:inline-block;}}
 
 a {
   &.worksheetname {
