@@ -970,7 +970,13 @@ div {
     display: block;
     margin: 3px;
   &.wksht-icon_button {
-    display:inline-block;}}
+    display:inline-block;}
+    &:hover {background-color:cyan;}
+  &.legacy_insert_new_cell{
+    height: 13px;
+    width: 95%;
+    display: inline-block;
+    &:hover{background-color:cyan;}}
 
 a {
   &.worksheetname {

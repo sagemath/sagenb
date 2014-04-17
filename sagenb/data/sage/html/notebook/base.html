@@ -13,18 +13,13 @@ INPUT:
 
 
 {% block javascript %}
-<!-- Jmol - embedded 3D graphics **needs to be before jquery plugin loads, maybe?**-->
-<script type="text/javascript" src="/jsmol/JSmol.min.js"></script>
-<script type="text/javascript" src="/jsmol/js/Jmol2.js"></script>
-<!-- This must stay in head -->
-<script>//jmolInitialize("/java/jmol");
-//jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");
-</script>
+
 <!-- trying to work around JSmol collisions with jquery--->
 <script type="text/javascript" src="/javascript/jquery/jquery-1.11.0.min.js"></script>
 <!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
 <link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.10.4.custom.css" />
 <script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.10.4.custom.min.js"></script>
+
 <!-- jQuery plugins - color pickers, shift-click, AJAX forms, IE fixes, notifications -->
 <link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />
 <script type="text/javascript" src="/javascript/jquery/plugins/farbtastic/farbtastic.min.js"></script>
@@ -48,6 +43,13 @@ INPUT:
 <script type="text/javascript" src="/javascript/mathjax/MathJax.js?config=TeX-AMS_HTML-full,../../dynamic/mathjax_sage.js"></script>
 {% endif %}
 
+<!-- Jmol - embedded 3D graphics **needs to be before jquery plugin loads, maybe?**-->
+<script type="text/javascript" src="/jsmol/JSmol.min.nojq.js"></script>
+<script type="text/javascript" src="/jsmol/js/Jmol2.js"></script>
+<!-- This must stay in head -->
+<script>//jmolInitialize("/java/jmol");
+//jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");
+</script>
 
 <!-- Sage3d - accelerated 3D graphics -->
 <script type="text/javascript" src="/javascript/sage3d/sage3d.js"></script>

@@ -483,6 +483,10 @@ a.file_link { text-decoration: underline; }
 
 /* line 968, ../../../../sass/src/main.scss */
 div.insert_new_cell { height: 16px; display: block; margin: 3px; }
+div.insert_new_cell:hover{background-color:cyan;}
+div.legacy_insert_new_cell {height:13px; display:inline-block; width:95%;}
+div.legacy_insert_new_cell:hover{background-color:cyan;}
+
 /* line 974 */
 div.wksht-icon_button {display:inline-block;}
 

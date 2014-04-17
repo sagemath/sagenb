@@ -4,9 +4,6 @@
   Jonathan Gutow <gutow@uwosh.edu> February 2014 
 */
 
-//This probably needs to be in header of pages that might use jmol
-//Jmol.setDocument(document);  //will try in jmol_applet code.
-
 var jmolApplet; //our generic viewer.
 
 var live_3D_state = false;
@@ -33,7 +30,8 @@ var jmolInfo = { //default values
     //disableJ2SLoadMonitor: true,
     disableInitialConsole: true,
     readyFunction:'',//jmol_isReady,
-    script: ""
+    script: "",
+    menuFile: "/java/jmol/appletweb/SageMenu.mnu" //special sagemenu
 }
 
 jmol_isReady = function(jmolApplet) {
@@ -106,6 +104,7 @@ function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new 
     //jmolStatus.cntrls[appletID]=cntrlPanels;
 //Now we wait for the server by calling a function that waits if the div is not yet written.
 //    launchNewJmol(size,scriptStr,appletID);
+    Jmol.script("load menu "+jmolStatus.jmolInfo[appletID].menuFile);
     return jmolDivStr;//for historical compatibility
     }
 
@@ -121,7 +120,7 @@ function jmolActivator(){
         img = $(parentdiv).children("#sage_jmol_img"+cell_num).html();
         script = $(parentdiv).children("#sage_jmol_script"+cell_num).html();
         tmpdiv = jmol_applet(size, img, script, cell_num);
-        $(parentdiv).children("#sage_jmol_status"+cell_num).html() = "Activated";
+        $(parentdiv).children("#sage_jmol_status"+cell_num).html("Activated");
     }
 }
 
@@ -129,7 +128,7 @@ function live_3D_check(s) {
     /*
     Send a message back to the server either turn live_3D on of off.
     INPUT:
-        s -- boolean; whether the pretty print box is checked.
+        s -- boolean; whether the live 3D box is checked.
     */
     live_3D_state =s;
     //alert ('live_3D_state:'+live_3D_state);
