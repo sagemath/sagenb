@@ -8,6 +8,12 @@ var jmolApplet; //our generic viewer.
 
 var live_3D_state = false;
 
+jmol_isReady = function(jmolApplet) {
+  Jmol.script(jmolApplet,"set platformSpeed 6;");
+  //alert("Applet: "+jmolApplet+" has launched.");
+	//TODO will need to activate widgets
+ }
+
 var jmolInfo = { //default values
     width: "100%",
     height: "100%",
@@ -29,14 +35,14 @@ var jmolInfo = { //default values
     isSigned: true,
     //disableJ2SLoadMonitor: true,
     disableInitialConsole: true,
-    readyFunction:'',//jmol_isReady,
+    readyFunction: jmol_isReady,
     script: "",
-    menuFile: "/java/jmol/appletweb/SageMenu.mnu" //special sagemenu
+    z: 5,
+    zIndexBase: 5,
+    menuFile: "/java/jmol/appletweb/SageMenu.mnu", //special sagemenu
+    //platformSpeed: 6
 }
 
-jmol_isReady = function(jmolApplet) {
-	//TODO will need to activate widgets
- }
 var jmol_count = 0;
 
 var jmolStatus = {//most of these not used in the lightweight version, kept to make widgets easy to add back.
@@ -66,7 +72,7 @@ var medium = 400;
 var large = 600;
 
 //Check whether to load 3-D live
-live_3D_state = $('#3D_check').prop('checked');
+//live_3D_state = $('#3D_check').prop('checked');
 //start the watch function
 jmolWatcher = setInterval('jmolActivator();',500);
 
@@ -87,11 +93,14 @@ function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new 
     live_3D_state = $('#3D_check').prop('checked');    
     if (live_3D_state){
        jmolStatus.jmolInfo[appletID].deferApplet=false;
+       }else{
+       jmolStatus.jmolInfo[appletID].deferApplet=true;
        }
     jmolDivStr = "jmol"+appletID;
     jmolStatus.widths[appletID] = size;
     jmolStatus.heights[appletID]= size;
     //appending to cell_ID
+    $('#'+cell_ID).append('<span>Click on 3-D image to make it live.  Right-click on live image for a control menu.</span>');
     $('#'+cell_ID).append('<div id="'+jmolDivStr+'" style="height:'+size+'px; width:'+size+'px;" >JSmol here</div>');
     //launching JSmol/Jmol applet
     $('#'+jmolDivStr).html(Jmol.getAppletHtml("jmolApplet"+appletID,jmolStatus.jmolInfo[appletID])); 
@@ -104,7 +113,7 @@ function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new 
     //jmolStatus.cntrls[appletID]=cntrlPanels;
 //Now we wait for the server by calling a function that waits if the div is not yet written.
 //    launchNewJmol(size,scriptStr,appletID);
-    Jmol.script("load menu "+jmolStatus.jmolInfo[appletID].menuFile);
+//    Jmol.script("jmolApplet"+appletID,"set platformspeed 6;");
     return jmolDivStr;//for historical compatibility
     }
 
