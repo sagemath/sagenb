@@ -2370,14 +2370,14 @@ class Cell(Cell_generic):
                     jmol_file.close()
                     
                     # The ".jmol" script has defaultdirectory pointing
-                    # to a zip file [see Graphics3d.show()].  But it is 
+                    # to a zip file [see Graphics3d.show()]. But it is 
                     # relative to the worksheet URL as seen in the browser.
                     # But that doesn't make sense for live help.
                     #
-                    # So we need to preppend the worksheet URL, in order
-                    # to the zip be accessed correctly.
+                    # So we need to prepend the worksheet URL, in order
+                    # for the zip to be accessed correctly.
                     #
-                    # There is no Worsheet.url_to_self(), so calculate it
+                    # There is no Worksheet.url_to_self(), so calculate it
                     # in similar manner to Cell.url_to_self()
                     url_to_ws = '/home/%s/' % self.worksheet_filename()
                     jmol_script = jmol_script.replace('defaultdirectory "', 
