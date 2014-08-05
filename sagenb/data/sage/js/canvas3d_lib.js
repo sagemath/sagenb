@@ -320,10 +320,9 @@ canvas3d = (function() {
                 }
             }
             if("face_colors" in model)
-                ctx.fillStyle = model.face_colors[i]
+                ctx.strokeStyle = model.face_colors[i]
             ctx.closePath();
             ctx.stroke();
-            ctx.fill();
         }
     }
 
