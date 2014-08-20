@@ -2,7 +2,7 @@
  *
  *  MathJax/jax/output/HTML-CSS/fonts/STIX/General/Bold/SuppMathOperators.js
  *
- *  Copyright (c) 2009-2010 Design Science, Inc.
+ *  Copyright (c) 2009-2013 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ MathJax.Hub.Insert(
     0x2A27: [563,247,780,65,778],      // PLUS SIGN WITH SUBSCRIPT TWO
     0x2A2A: [297,37,750,66,685],       // MINUS SIGN WITH DOT BELOW
     0x2A2B: [543,37,750,66,685],       // MINUS SIGN WITH FALLING DOTS
+    0x2A2C: [543,37,750,66,685],       // MINUS SIGN WITH RISING DOTS
     0x2A30: [745,33,702,66,636],       // MULTIPLICATION SIGN WITH DOT ABOVE
     0x2A31: [538,191,702,66,636],      // MULTIPLICATION SIGN WITH UNDERBAR
     0x2A32: [538,59,702,66,636],       // SEMIDIRECT PRODUCT WITH BOTTOM CLOSED

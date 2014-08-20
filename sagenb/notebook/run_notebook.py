@@ -46,15 +46,12 @@ sagenb.notebook.misc.DIR = %(cwd)r #We should really get rid of this!
 # Flask #
 #########
 import os, sys, random
-flask_dir = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sagenb', 'flask_version')
-sys.path.append(flask_dir)
-import base as flask_base
+import sagenb.flask_version.base as flask_base
 opts={}
 startup_token = '{0:x}'.format(random.randint(0, 2**128))
 if %(automatic_login)s:
     opts['startup_token'] = startup_token
 flask_app = flask_base.create_app(%(notebook_opts)s, **opts)
-sys.path.remove(flask_dir)
 
 def save_notebook(notebook):
     print "Quitting all running worksheets..."
@@ -160,10 +157,14 @@ with open(%(pidfile)r, 'w') as pidfile:
     pidfile.write(str(os.getpid()))
 
 if %(secure)s:
-    from OpenSSL import SSL
-    ssl_context = SSL.Context(SSL.SSLv23_METHOD)
-    ssl_context.use_privatekey_file(%(private_pem)r)
-    ssl_context.use_certificate_file(%(public_pem)r)
+    try:
+        from OpenSSL import SSL
+        ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+        ssl_context.use_privatekey_file(%(private_pem)r)
+        ssl_context.use_certificate_file(%(public_pem)r)
+    except ImportError:
+        raise RuntimeError("HTTPS cannot be used without pyOpenSSL"
+                " installed. See the Sage README for more information.")
 else:
     ssl_context = None
 
@@ -383,7 +384,7 @@ def notebook_setup(self=None):
                 'dns_name': None,
                 'crl_dist_points': None,
                 'ip_address': None,
-                'expiration_days': 10000,
+                'expiration_days': 8999,
                 'email': 'sage@sagemath.org',
                 'ca': None,
                 'tls_www_client': None,
@@ -410,10 +411,10 @@ def notebook_setup(self=None):
 
     import subprocess
 
-    if os.uname()[0] != 'Darwin' and cmd_exists('openssl'):
+    if cmd_exists('openssl'):
         # We use openssl by default if it exists, since it is open
         # *vastly* faster on Linux, for some weird reason.
-        cmd = ['openssl genrsa > %s' % private_pem]
+        cmd = ['openssl genrsa 1024 > %s' % private_pem]
         print "Using openssl to generate key"
         print cmd[0]
         subprocess.call(cmd, shell=True)
@@ -448,7 +449,9 @@ def notebook_run(self,
              server_pool   = None,
              ulimit        = '',
 
-             timeout       = 0,
+             timeout       = None,   # timeout for normal worksheets. This is the
+                                  # same as idle_timeout in server_conf.py
+             doc_timeout   = None, # timeout for documentation worksheets
 
              upload        = None,
              automatic_login = True,
@@ -466,9 +469,25 @@ def notebook_run(self,
              address = None,
              ):
 
+    # Check whether pyOpenSSL is installed or not (see Sage trac #13385)
+    if secure:
+        try:
+            import OpenSSL
+        except ImportError:
+            raise RuntimeError("HTTPS cannot be used without pyOpenSSL"
+                    " installed. See the Sage README for more information.")
+
     # Turn it into a full path for later conversion to a file URL
     if upload:
-        upload = os.path.abspath(upload)
+        upload_abs = os.path.abspath(upload)
+        if os.path.exists(upload_abs):
+            upload = upload_abs
+        else:
+            # They might have expected ~ to be expanded to their user directory
+            upload = os.path.expanduser(upload)
+            if not os.path.exists(upload):
+                raise ValueError("Unable to find the file %s to upload" % upload)
+
 
     if subnets is not None:
         raise ValueError("""The subnets parameter is no longer supported. Please use a firewall to block subnets, or even better, volunteer to write the code to implement subnets again.""")
@@ -485,6 +504,8 @@ def notebook_run(self,
         directory = '%s/sage_notebook.sagenb' % DOT_SAGENB
     else:
         directory = directory.rstrip('/')
+        if not directory.endswith('.sagenb'):
+            directory += '.sagenb'
 
     # First change to the directory that contains the notebook directory
     wd = os.path.split(directory)
@@ -512,7 +533,10 @@ def notebook_run(self,
     if not quiet:
         print "The notebook files are stored in:", nb._dir
 
-    nb.conf()['idle_timeout'] = int(timeout)
+    if timeout is not None:
+        nb.conf()['idle_timeout'] = int(timeout)
+    if doc_timeout is not None:
+        nb.conf()['doc_timeout'] = int(doc_timeout)
 
     if openid is not None:
         nb.conf()['openid'] = openid
@@ -537,7 +561,7 @@ def notebook_run(self,
 
     if reset:
         passwd = get_admin_passwd()
-        if reset:
+        if nb.user_manager().user_exists('admin'):
             admin = nb.user_manager().user('admin')
             admin.set_password(passwd)
             print "Password changed for user 'admin'."

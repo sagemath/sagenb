@@ -4,11 +4,17 @@ from functools import partial
 from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
 from decorators import login_required, guest_or_login_required, with_lock
 from decorators import global_lock
+# Make flask use the old session foo from <=flask-0.9
+from flask_oldsessions import OldSecureCookieSessionInterface
 
-from flaskext.autoindex import AutoIndex
-SRC = os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage', 'sage')
-from flaskext.openid import OpenID
-from flaskext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
+from flask.ext.autoindex import AutoIndex
+try:
+    from sage.env import SAGE_SRC
+except ImportError:
+    SAGE_SRC = os.environ.get('SAGE_SRC', os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage'))
+SRC = os.path.join(SAGE_SRC, 'sage')
+from flask.ext.openid import OpenID
+from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
 from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
 
 oid = OpenID()
@@ -19,6 +25,9 @@ class SageNBFlask(Flask):
     def __init__(self, *args, **kwds):
         self.startup_token = kwds.pop('startup_token', None)
         Flask.__init__(self, *args, **kwds)
+        self.session_interface = OldSecureCookieSessionInterface()
+
+        self.config['SESSION_COOKIE_HTTPONLY'] = False
 
         self.root_path = SAGENB_ROOT
 
@@ -55,28 +64,6 @@ class SageNBFlask(Flask):
                           endpoint='/static'+base_url,
                           view_func=partial(self.static_view_func, root_path))
 
-    def save_session(self, session, response):
-        """
-        This method needs to stay in sync with the version in Flask.
-        The only modification made to it is the ``httponly=False``
-        passed to ``save_cookie``.
-
-        Saves the session if it needs updates.  For the default
-        implementation, check :meth:`open_session`.
-
-        :param session: the session to be saved (a
-                        :class:`~werkzeug.contrib.securecookie.SecureCookie`
-                        object)
-        :param response: an instance of :attr:`response_class`
-        """
-        expires = domain = None
-        if session.permanent:
-            expires = datetime.utcnow() + self.permanent_session_lifetime
-        if self.config['SERVER_NAME'] is not None:
-            domain = '.' + self.config['SERVER_NAME']
-        session.save_cookie(response, self.session_cookie_name,
-                            expires=expires, httponly=False, domain=domain)
-
     def message(self, msg, cont='/', username=None, **kwds):
         """Returns an error message to the user."""
         template_dict = {'msg': msg, 'cont': cont, 'username': username}
@@ -84,7 +71,7 @@ class SageNBFlask(Flask):
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
 
-base = Module('flask_version.base')
+base = Module('sagenb.flask_version.base')
 
 #############
 # Main Page #
@@ -92,6 +79,10 @@ base = Module('flask_version.base')
 @base.route('/')
 def index():
     if 'username' in session:
+        # If there is a next request use that.  See issue #76
+        if 'next' in request.args:
+            response = redirect(request.values.get('next', ''))
+            return response
         response = redirect(url_for('worksheet_listing.home', username=session['username']))
         if 'remember' in request.args:
             response.set_cookie('nb_session_%s'%g.notebook.port,
@@ -208,7 +199,7 @@ def help():
 @base.route('/history')
 @login_required
 def history():
-    return render_template(os.path.join('html', 'history.html'), username = g.username, 
+    return render_template(os.path.join('html', 'history.html'), username = g.username,
                            text = g.notebook.user_history_text(g.username), actions = False)
 
 @base.route('/live_history')
@@ -250,7 +241,7 @@ def create_or_login(resp):
         username = g.notebook.user_manager().get_username_from_openid(resp.identity_url)
         session['username'] = g.username = username
         session.modified = True
-    except KeyError:
+    except (KeyError, LookupError):
         session['openid_response'] = resp
         session.modified = True
         return redirect(url_for('set_profiles'))
@@ -281,7 +272,7 @@ def set_profiles():
             if show_challenge:
                 template_dict['challenge_html'] = chal.html()
 
-            return render_template('html/accounts/openid_profile.html', resp=openid_resp, 
+            return render_template('html/accounts/openid_profile.html', resp=openid_resp,
                                    challenge=show_challenge, **template_dict)
         else:
             return redirect(url_for('base.index'))
@@ -310,31 +301,31 @@ def set_profiles():
                         parse_dict['challenge_html'] = chal.html(error_code = err_code)
                     else:
                         parse_dict['challenge_invalid'] = True
-                    raise ValueError
+                    raise ValueError("Invalid challenge")
                 else:
                     parse_dict['challenge_missing'] = True
-                    raise ValueError
+                    raise ValueError("Missing challenge")
 
             if not is_valid_username(username):
                 parse_dict['username_invalid'] = True
-                raise ValueError
+                raise ValueError("Invalid username")
             if g.notebook.user_manager().user_exists(username):
                 parse_dict['username_taken'] = True
-                raise ValueError
+                raise ValueError("Pre-existing username")
             if not is_valid_email(request.form.get('email')):
                 parse_dict['email_invalid'] = True
-                raise ValueError
+                raise ValueError("Invalid email")
             try:
-                new_user = User(username, '', email = resp.email, account_type='user') 
+                new_user = User(username, '', email = resp.email, account_type='user')
                 g.notebook.user_manager().add_user_object(new_user)
-            except ValueError:
+            except ValueError as msg:
                 parse_dict['creation_error'] = True
-                raise ValueError
+                raise ValueError("Error in creating user\n%s"%msg)
             g.notebook.user_manager().create_new_openid(resp.identity_url, username)
             session['username'] = g.username = username
             session.modified = True
         except ValueError:
-            return render_template('html/accounts/openid_profile.html', **parse_dict) 
+            return render_template('html/accounts/openid_profile.html', **parse_dict)
         return redirect(url_for('base.index'))
 
 

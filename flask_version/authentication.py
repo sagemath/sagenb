@@ -2,10 +2,10 @@ import os
 import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import with_lock
-from flaskext.babel import gettext, ngettext, lazy_gettext
+from flask.ext.babel import gettext, ngettext, lazy_gettext
 _ = gettext
 
-authentication = Module('flask_version.authentication')
+authentication = Module('sagenb.flask_version.authentication')
 
 ##################
 # Authentication #
@@ -22,12 +22,12 @@ def login(template_dict={}):
     from sagenb.misc.misc import SAGE_VERSION
     template_dict.update({'accounts': g.notebook.user_manager().get_accounts(),
                           'recovery': g.notebook.conf()['email'],
-                          'next': request.values.get('next', ''), 
+                          'next': request.values.get('next', ''),
                           'sage_version': SAGE_VERSION,
                           'openid': g.notebook.conf()['openid'],
                           'username_error': False,
                           'password_error': False})
-    
+
     if request.method == 'POST':
         username = request.form['email']
         password = request.form['password']
@@ -56,7 +56,7 @@ def login(template_dict={}):
 
         if U is None:
             pass
-        elif (is_valid_password(password, username) and 
+        elif (is_valid_password(password, username) and
               g.notebook.user_manager().check_password(username, password)):
             if U.is_suspended():
                 #suspended
@@ -257,7 +257,7 @@ def confirm():
     if not g.notebook.conf()['email']:
         return current_app.message(_('The confirmation system is not active.'))
     key = int(request.values.get('key', '-1'))
-    
+
     invalid_confirm_key = _("""\
     <h1>Invalid confirmation key</h1>
     <p>You are reporting a confirmation key that has not been assigned by this
@@ -287,7 +287,7 @@ def forgot_pass():
         return current_app.message(msg, url_for('forgot_pass'))
 
     try:
-        user = g.notebook.user(request.values[username])
+        user = g.notebook.user(username)
     except KeyError:
         return error('Username is invalid.')
 
@@ -301,7 +301,6 @@ def forgot_pass():
     chara = string.letters + string.digits
     old_pass = user.password()
     password = ''.join([choice(chara) for i in range(8)])
-    user.set_password(password)
 
     from sagenb.notebook.smtpsend import send_mail
     from sagenb.notebook.register import build_password_msg
@@ -316,8 +315,9 @@ def forgot_pass():
         send_mail(fromaddr, destaddr, "Sage Notebook Account Recovery", body)
     except ValueError:
         # the email address is invalid
-        user.set_password(old_pass)
         return error("The new password couldn't be sent."%destaddr)
+    else:
+        g.notebook.user_manager().set_password(username, password)
 
     return current_app.message("A new password has been sent to your e-mail address.", url_for('base.index'))
 

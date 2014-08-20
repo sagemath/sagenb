@@ -351,39 +351,44 @@ function bind_events() {
     /*
      * Attaches events to DOM elements.
      */
-
-    $('.cell_input').focus(function () {
+    $('body').on('focus', 'textarea.cell_input', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         cell_focused(this, cell_id);
         return true;
     });
-    $('.cell_input').blur(function () {
+    $('body').on('focus', 'textarea.cell_input_hide', function () {
+        var id = $(this).attr("id");
+        var cell_id = get_cell_id_from_id(id);
+        cell_focused(this, cell_id);
+        return true;
+    });
+    $('body').on('blur', 'textarea.cell_input_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         cell_blur(cell_id);
         return true;
     });
-    $('.cell_input').keyup(function (event) {
+    $('body').on('keyup', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keyup(cell_id, event);
     });
-    $('.cell_input').keydown(function (event) {
+    $('body').on('keydown', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keydown(cell_id, event);
     });
-    $('.cell_input').keypress(function (event) {
+    $('body').on('keypress', 'textarea.cell_input_active', function (event) {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         return input_keypress(cell_id, event);
     });
-    $('.eval_button').click(function () {
+    $('body').on('click', 'input.eval_button_active', function () {
         var id = $(this).attr("id");
         var cell_id = get_cell_id_from_id(id);
         evaluate_cell(cell_id, 0);
-    }
+    });
 }
 
 
@@ -3705,7 +3710,6 @@ function set_output_text(id, status, output_text, output_text_wrapped,
     if (status === 'd' && introspect_html === '' && is_interacting_cell(id)) {
         // This is the first time that the underlying Python interact
         // function (i.e., interact.recompute) is actually called!
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,cell_output]);
         return 'trigger_interact';
     }
 
@@ -4622,7 +4626,7 @@ function bugreport() {
     /*
     Popup the bug report window.
     */
-    window.open("http://spreadsheets.google.com/viewform?key=pCwvGVwSMxTzT6E2xNdo5fA", "", "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
+    window.open("http://sagemath.org/report-issue", "", "menubar=1,location=1,scrollbars=1,width=800,height=650,toolbar=1,  resizable=1");
 }
 
 

@@ -63,7 +63,7 @@ class NotebookObject:
           ::
 
               from sagenb.notebook.notebook import load_notebook
-              nb = load_notebook(dir)
+              nb = load_notebook("directory_to_run_sage_in")
               user_manager = nb.user_manager()
               user_manager.set_accounts(True)
               user_manager.add_user("username", "password", "email@place", "user")
@@ -102,6 +102,11 @@ class NotebookObject:
           timeout can be useful as this will free the memory used by
           idle sessions.
 
+        - ``doc_timeout`` -- integer (default: 600) seconds until idle
+          live documentation worksheet sessions automatically timeout,
+          i.e., the corresponding Sage session terminates.
+          0 means "never timeout".
+
         - ``server_pool`` -- list of strings (default: None) list;
           this option specifies that worksheet processes run as a
           separate user (chosen from the list in the ``server_pool``
@@ -131,6 +136,10 @@ class NotebookObject:
        the first time you do this you'll be prompted to set an
        administrator password.  Use this to login. NOTE: You may have
        to run ``notebook.setup()`` again and change the hostname.
+       ANOTHER NOTE: You must have installed pyOpenSSL in order to use
+       secure mode; see the top-level Sage README file or the "Install
+       from Source Code" section in the Sage manual for more
+       information.
 
     3. I want to create a Sage notebook server that is open to anybody
        in the world to create new accounts. To run the Sage notebook

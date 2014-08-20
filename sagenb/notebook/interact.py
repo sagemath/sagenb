@@ -2639,6 +2639,8 @@ def interact(f, layout=None, width='800px'):
         ...         html('There is no solution to $$%s x=%s$$'%(latex(A), latex(v)))
         <html>...
     """
+    if not isinstance(f, types.FunctionType) and callable(f):
+        f = f.__call__
     (args, varargs, varkw, defaults) = inspect.getargspec(f)
 
     if defaults is None:
@@ -3184,7 +3186,7 @@ class slider_generic(control):
 
             #Compute list of values
             num_steps = int(math.ceil((self.__vmax-self.__vmin)/float(self.__step_size)))
-            if num_steps <= 2:
+            if num_steps <= 1:
                 vals = [self.__vmin, self.__vmax]
             else:
                 vals = srange(self.__vmin, self.__vmax, self.__step_size, include_endpoint=True)

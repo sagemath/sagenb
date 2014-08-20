@@ -1,6 +1,15 @@
 # -*- coding: utf-8 -*-
 """
 Miscellaneous Notebook Functions
+
+TESTS:
+
+Check that github issue #195 is fixed::
+
+    sage: from sagenb.misc.misc import mathjax_macros
+    sage: type(mathjax_macros)
+    <type 'list'>
+
 """
 
 #############################################################################
@@ -31,40 +40,41 @@ def print_open_msg(address, port, secure=False, path=""):
     INPUT:
 
     - ``address`` -- a string; a computer address or name
-    
+
     - ``port`` -- an int; a port number
-    
+
     - ``secure`` -- a bool (default: False); whether to prefix the URL
       with 'http' or 'https'
-    
+
     - ``path`` -- a string; the URL's path following the port.
-    
+
     EXAMPLES::
 
-        sage: sage.server.misc.print_open_msg('localhost', 8080, True)
-        ****************************************************
-        *                                                  *
-        * Open your web browser to https://localhost:8080  *
-        *                                                  *
-        ****************************************************
-        sage: sage.server.misc.print_open_msg('sagemath.org', 8080, False)
-        ******************************************************
-        *                                                    *
-        * Open your web browser to http://sagemath.org:8080  *
-        *                                                    *
-        ******************************************************
-        sage: sage.server.misc.print_open_msg('sagemath.org', 90, False)
-        ****************************************************
-        *                                                  *
-        * Open your web browser to http://sagemath.org:90  *
-        *                                                  *
-        ****************************************************
-        sage: sage.server.misc.print_open_msg('sagemath.org', 80, False)
-        **************************************************
-        *                                                *
-        *  Open your web browser to http://sagemath.org  *
-        *                                                *
-        **************************************************
+        sage: from sagenb.misc.misc import print_open_msg
+        sage: print_open_msg('localhost', 8080, True)
+        ┌──────────────────────────────────────────────────┐
+        │                                                  │
+        │ Open your web browser to https://localhost:8080  │
+        │                                                  │
+        └──────────────────────────────────────────────────┘
+        sage: print_open_msg('sagemath.org', 8080, False)
+        ┌────────────────────────────────────────────────────┐
+        │                                                    │
+        │ Open your web browser to http://sagemath.org:8080  │
+        │                                                    │
+        └────────────────────────────────────────────────────┘
+        sage: print_open_msg('sagemath.org', 90, False)
+        ┌──────────────────────────────────────────────────┐
+        │                                                  │
+        │ Open your web browser to http://sagemath.org:90  │
+        │                                                  │
+        └──────────────────────────────────────────────────┘
+        sage: print_open_msg('sagemath.org', 80, False)
+        ┌────────────────────────────────────────────────┐
+        │                                                │
+        │  Open your web browser to http://sagemath.org  │
+        │                                                │
+        └────────────────────────────────────────────────┘
     """
     if port == 80:
         port = ''
@@ -78,20 +88,23 @@ def print_open_msg(address, port, secure=False, path=""):
     n = max(t+4, 50)
     k = n - t  - 1
     j = k/2 
-    print '*'*n
-    print '*'+ ' '*(n-2) + '*'
-    print '*' + ' '*j + s + ' '*j + '*'
-    print '*'+ ' '*(n-2) + '*'
-    print '*'*n
+    msg = '┌' + '─' * (n - 2) + '┐\n'
+    msg += '│' + ' ' * (n - 2) + '│\n'
+    msg += '│' + ' ' * j + s + ' ' * j + '│\n'
+    msg += '│' + ' ' * (n - 2) + '│\n'
+    msg += '└' + '─' * (n - 2) + '┘'
+    print msg
 
 
 def find_next_available_port(interface, start, max_tries=100, verbose=False):
     """
-    Find the next available port, that is, a port for which a
-    current connection attempt returns a 'Connection refused' error
-    message.  If no port is found, raise a RuntimError exception.
+    Find the next available port at a given interface, that is, a port for
+    which a current connection attempt returns a 'Connection refused'
+    error message.  If no port is found, raise a RuntimeError exception.
 
     INPUT:
+
+    - ``interface`` - address to check
 
     - ``start`` - an int; the starting port number for the scan
 
@@ -106,14 +119,14 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
 
     EXAMPLES::
 
-        sage: import sagenb
-        sage: sagenb.misc.misc.find_next_available_port('127.0.0.1', 9000, verbose=False)   # random output -- depends on network
+        sage: from sagenb.misc.misc import find_next_available_port
+        sage: find_next_available_port('127.0.0.1', 9000, verbose=False)   # random output -- depends on network
         9002
     """
     alarm_count = 0  
     for port in range(start, start+max_tries+1):
         try:
-            alarm(1)
+            alarm(5)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.connect((interface, port))
         except socket.error, msg:
@@ -183,7 +196,8 @@ except ImportError:
 # TODO: Get macros from server and user settings.
 try:
     import sage.all
-    from sage.misc.latex_macros import sage_mathjax_macros as mathjax_macros
+    from sage.misc.latex_macros import sage_mathjax_macros
+    mathjax_macros = sage_mathjax_macros()
 except ImportError:
     mathjax_macros = [
         "ZZ : '{\\\\Bold{Z}}'",

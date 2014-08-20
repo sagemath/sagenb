@@ -71,11 +71,17 @@ def sphinxify(docstring, format='html'):
         sage: sphinxify('**Testing**\n`monospace`')
         '\n<div class="docstring"...<strong>Testing</strong>\n<span class="math"...</p>\n\n\n</div>'
         sage: sphinxify('`x=y`')
-        '\n<div class="docstring">\n    \n  <p><span class="math">\\(x=y\\)</span></p>\n\n\n</div>'
+        '\n<div class="docstring">\n    \n  <p><span class="math">x=y</span></p>\n\n\n</div>'
         sage: sphinxify('`x=y`', format='text')
         'x=y\n'
         sage: sphinxify(':math:`x=y`', format='text')
         'x=y\n'
+
+    TESTS::
+
+        sage: n = len(sys.path)
+        sage: _ = sphinxify('A test')
+        sage: assert n == len(sys.path)
     """
     global Sphinx
     if not Sphinx:
@@ -90,9 +96,6 @@ def sphinxify(docstring, format='html'):
     else:
         suffix = '.txt'
     output_name = base_name + suffix
-
-    # This is needed for MathJax to work.
-    docstring = docstring.replace('\\\\', '\\')
 
     filed = open(rst_name, 'w')
     filed.write(docstring)
@@ -112,9 +115,12 @@ def sphinxify(docstring, format='html'):
     doctreedir = os.path.join(srcdir, 'doctrees')
     confoverrides = {'html_context': {}, 'master_doc': 'docstring'}
 
+    import sys
+    old_sys_path = list(sys.path)  # Sphinx modifies sys.path
     sphinx_app = Sphinx(srcdir, confdir, srcdir, doctreedir, format,
                         confoverrides, None, None, True)
     sphinx_app.build(None, [rst_name])
+    sys.path = old_sys_path
 
     #We need to remove "_" from __builtin__ that the gettext module installs
     import __builtin__
@@ -133,6 +139,8 @@ def sphinxify(docstring, format='html'):
         output = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
                           'src="/doc/static/reference/media/\\2"',
                           output)
+        # Remove spurious \(, \), \[, \].
+        output = output.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
     else:
         print "BUG -- Sphinx error"
         if format == 'html':
@@ -299,7 +307,7 @@ if (os.environ.get('SAGE_DOC_MATHJAX', False)
     mathjax_path = 'MathJax.js?config=TeX-AMS_HTML-full,../mathjax_sage.js'
 
     from sage.misc.latex_macros import sage_mathjax_macros
-    html_theme_options['mathjax_macros'] = sage_mathjax_macros
+    html_theme_options['mathjax_macros'] = sage_mathjax_macros()
 
     from pkg_resources import Requirement, working_set
     sagenb_path = working_set.find(Requirement.parse('sagenb')).location
@@ -403,14 +411,14 @@ latex_elements['preamble'] = '\usepackage{amsmath}\n\usepackage{amssymb}\n'
 try:
     from sage.misc.latex_macros import sage_latex_macros
 except ImportError:
-    sage_latex_macros = []
+    def sage_latex_macros(): return []
 
 try:
     pngmath_latex_preamble  # check whether this is already defined
 except NameError:
     pngmath_latex_preamble = ""
 
-for macro in sage_latex_macros:
+for macro in sage_latex_macros():
     # used when building latex and pdf versions
     latex_elements['preamble'] += macro + '\n'
     # used when building html version
