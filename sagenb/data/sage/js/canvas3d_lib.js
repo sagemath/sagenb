@@ -291,8 +291,8 @@ canvas3d = (function() {
     }
 
     function render_model(ctx, transform, model) {
-        if("edge_color" in model)
-            ctx.strokeStyle = model.edge_color;
+        if("color" in model)
+            ctx.strokeStyle = model.color;
         else
             ctx.strokeStyle = "black";
 
