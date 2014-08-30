@@ -26,12 +26,14 @@ how to do this are as follows.
         $ git clone git@github.com:<your username>/sagenb sagenb
 
 #.  Where ``$SAGE_ROOT`` represents the base path of your Sage
-    installation, perform the following commands::
+    installation, perform the following commands. If you have more than one
+    sagenb installation in ``$SAGE_ROOT/local/lib/python/site-packages``,
+    then change directory into the latest version::
 
-        $ cd $SAGE_ROOT/devel
-        $ rm sagenb
-        $ ln -s ~/src/sagenb sagenb     # or wherever your clone is
-        $ cd sagenb
+        $ cd $SAGE_ROOT/local/lib/python/site-packages/sagenb-*
+        $ mv sagenb sagenb-old
+        $ ln -s ~/src/sagenb/sagenb sagenb  # or wherever your clone is
+        $ cd ~/src/sagenb
         $ $SAGE_ROOT/sage --python setup.py develop
 
 #.  You can also add the `sagenb`_ git repository as a remote branch
