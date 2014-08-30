@@ -20,10 +20,10 @@ how to do this are as follows.
     upper right corner of the webpage.
 
 #.  Clone your fork of sagenb to somewhere on your local disk, for
-    example ``~/src/sagenb``::
+    example ``~/src/sagenb-git``::
 
         $ cd ~/src
-        $ git clone git@github.com:<your username>/sagenb sagenb
+        $ git clone git@github.com:<your username>/sagenb sagenb-git
 
 #.  Where ``$SAGE_ROOT`` represents the base path of your Sage
     installation, perform the following commands. If you have more than one
@@ -32,8 +32,8 @@ how to do this are as follows.
 
         $ cd $SAGE_ROOT/local/lib/python/site-packages/sagenb-*
         $ mv sagenb sagenb-old
-        $ ln -s ~/src/sagenb/sagenb sagenb  # or wherever your clone is
-        $ cd ~/src/sagenb
+        $ ln -s ~/src/sagenb-git/sagenb sagenb  # or wherever your clone is
+        $ cd ~/src/sagenb-git
         $ $SAGE_ROOT/sage --python setup.py develop
 
 #.  You can also add the `sagenb`_ git repository as a remote branch
@@ -51,7 +51,7 @@ how to do this are as follows.
         $ git merge upstream/master     # merge changes to local master
 
 This completes the installation process. Now you can modify files in
-your ``sagenb`` directory and submit your modifications to us using pull
+your ``sagenb-git`` directory and submit your modifications to us using pull
 requests on GitHub. (A full walkthrough of using git and GitHub are
 beyond the scope of this file -- for more information see `the relevant
 section in the Sage manual`_.)
