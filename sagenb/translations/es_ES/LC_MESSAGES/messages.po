@@ -76,11 +76,11 @@ msgstr ""
 
 #: flask_version/authentication.py:272
 #, python-format
-msgid "<h1>E-mail address confirmed for user %(username)s</h1>"
+msgid "<h1>Email address confirmed for user %(username)s</h1>"
 msgstr "<h1>Dirección de e-mail confirmada para el usuario %(username)s</h1>"
 
 #: flask_version/authentication.py:274
-msgid "E-mail Confirmed"
+msgid "Email Confirmed"
 msgstr "E-mail confirmado"
 
 #: flask_version/base.py:226
@@ -848,8 +848,8 @@ msgstr "Recuperación de Cuenta"
 
 #: sagenb/data/sage/html/accounts/account_recovery.html:9
 msgid ""
-"A new password will be e-mailed to the e-mail address connected to your "
-"account. However if you didn't confirm your e-mail address you will be "
+"A new password will be emailed to the email address connected to your "
+"account. However if you didn't confirm your email address you will be "
 "unable to recover your account."
 msgstr ""
 "Se le enviará una nueva contraseña a su dirección de e-mail. "
@@ -933,13 +933,13 @@ msgid "Passwords didn't match"
 msgstr "Las contraseñas no coinciden"
 
 #: sagenb/data/sage/html/accounts/registration.html:54
-msgid "Enter your e-mail address"
+msgid "Enter your email address"
 msgstr "Introduzca su dirección de e-mail"
 
 #: sagenb/data/sage/html/accounts/registration.html:56
 msgid ""
-"Your e-mail address is required for account confirmation and recovery. You"
-" will be e-mailed a confirmation link right after you successfully sign "
+"Your email address is required for account confirmation and recovery. You"
+" will be emailed a confirmation link right after you successfully sign "
 "up."
 msgstr ""
 "Se requiere su dirección de e-mail para la confirmación de su cuenta y su "
@@ -947,11 +947,11 @@ msgstr ""
 "de que se registre."
 
 #: sagenb/data/sage/html/accounts/registration.html:62
-msgid "No e-mail address given"
+msgid "No email address given"
 msgstr "No se ha proporcionado una dirección de e-mail"
 
 #: sagenb/data/sage/html/accounts/registration.html:65
-msgid "Invalid e-mail address"
+msgid "Invalid email address"
 msgstr "Dirección de e-mail no válida"
 
 #: sagenb/data/sage/html/accounts/registration.html:71
@@ -1554,7 +1554,7 @@ msgid "New e-mail"
 msgstr "Nuevo e-mail"
 
 #: sagenb/data/sage/html/settings/account_settings.html:64
-msgid "Your E-mail"
+msgid "Your Email"
 msgstr "Su e-mail"
 
 #: sagenb/data/sage/html/settings/admin_add_user.html:2
