@@ -76,10 +76,12 @@ def add_user():
     template_dict = {'admin': g.notebook.user_manager().user(g.username).is_admin(),
                      'username': g.username}
     if 'username' in request.values:
+        if request.values['cancel']:
+            return redirect(url_for('users'))
         username = request.values['username']
         if not is_valid_username(username):
             return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
-                                   error='username_invalid', username=username, **template_dict)
+                                   error='username_invalid', username_input=username, **template_dict)
 
         from random import choice
         import string
