@@ -60,12 +60,12 @@ msgstr ""
 msgid "You do not have permission to access this location"
 msgstr ""
 
-#: flask_version/worksheet.py:27 ../flask_version/worksheet.py:36
+#: flask_version/worksheet.py:27 flask_version/worksheet.py:36
 #: flask_version/worksheet_listing.py:195
 msgid "You do not have permission to access this worksheet"
 msgstr ""
 
-#: flask_version/worksheet.py:75 ../flask_version/worksheet.py:951
+#: flask_version/worksheet.py:75 flask_version/worksheet.py:951
 #: sagenb/data/sage/html/notebook/worksheet_page.html:28
 #: sagenb/notebook/misc.py:237 ../sagenb/notebook/worksheet.py:703
 #: sagenb/notebook/worksheet.py:723 ../sagenb/notebook/worksheet.py:4230
