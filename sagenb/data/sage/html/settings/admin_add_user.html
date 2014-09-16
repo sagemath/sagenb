@@ -4,25 +4,24 @@
 
 {% block main %}
 <h1>{{ gettext('Add New User') }}</h1>
-{% if error %}
-<h2 class="error_found">{{ gettext('Username Error') }}</h2>
-{% endif %}
 <form method="POST" action="/adduser">
   <ol>
     <li><h2>{{ gettext('Pick a username') }}</h2>
       <p>{{ gettext('The username must start with a letter and be between 4 and 32 characters long. It can only consist of letters, numbers, underscores, and one dot (.).') }}</p>
       <input type="text" name="username" value="{{ username_input if username_input else '' }}" />
-      {% if username_error %}
-      {% if username_error == 'invalid' %}
+      {% if error %}
+      {% if error == 'username_invalid' %}
       <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Invalid username') }}</p>
-      {% else %}
+      {% elif error == 'username_taken' %}
       <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Username taken') }}</p>
+      {% else %}
+      <p><span class="error">{{ gettext('Error') }}:</span> {{ gettext('Username Error') }}</p>
       {% endif %}
       {% endif %}
     </li>
   </ol>
   <div id="buttons">
-    <button type="submit" name="cancel" value="">{{ gettext('Create Account') }}</buttoN>
+    <button type="submit" name="cancel" value="">{{ gettext('Create Account') }}</button>
     <button type="submit" name="cancel" value="yes">{{ gettext('Cancel') }}</button>
   </div>
 </form>
