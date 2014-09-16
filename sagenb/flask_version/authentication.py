@@ -40,7 +40,7 @@ def login(template_dict={}):
         if is_valid_username(username):
             try:
                 U = g.notebook.user_manager().user(username)
-            except KeyError:
+            except (KeyError, LookupError):
                 U = None
                 template_dict['username_error'] = True
         else:

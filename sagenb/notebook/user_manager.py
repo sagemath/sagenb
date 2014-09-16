@@ -384,6 +384,28 @@ class SimpleUserManager(UserManager):
             sage: U.user('admin')
             admin
 
+        TESTS::
+
+            sage: U.user('william')
+            Traceback (most recent call last):
+            ...
+            LookupError: no user 'william'
+
+            sage: U._user('william')
+            Traceback (most recent call last):
+            ...
+            LookupError: no user 'william'
+
+            sage: U.user('hello/')
+            Traceback (most recent call last):
+            ...
+            ValueError: no user 'hello/'
+
+            sage: U._user('hello/')
+            Traceback (most recent call last):
+            ...
+            LookupError: no user 'hello/'
+
         """
         if username in ['pub', '_sage_']:
             self.add_user(username, '', '', account_type='user', force=True)
