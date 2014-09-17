@@ -20,6 +20,27 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
+msgid "cs_CZ"
+msgstr "čeština (Česká republika)"
+
+msgid "de_AT"
+msgstr "Deutsch (Österreich)"
+
+msgid "en_US"
+msgstr "English (United States)"
+
+msgid "es_ES"
+msgstr "español (España)"
+
+msgid "pt_BR"
+msgstr "português (Brasil)"
+
+msgid "ru_RU"
+msgstr "русский (Россия)"
+
+msgid "fr_FR"
+msgstr "français (France)"
+
 #: data/sage/html/base.html:31
 #: data/sage/html/login.html:35
 msgid "The Sage Notebook"
