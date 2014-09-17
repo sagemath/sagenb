@@ -191,7 +191,8 @@ def main_css():
 @login_required
 def help():
     from sagenb.notebook.tutorial import notebook_help
-    return render_template(os.path.join('html', 'docs.html'), username = g.username, notebook_help = notebook_help)
+    from sagenb.misc.misc import SAGE_VERSION
+    return render_template(os.path.join('html', 'docs.html'), username = g.username, notebook_help = notebook_help, sage_version=SAGE_VERSION)
 
 ###########
 # History #
