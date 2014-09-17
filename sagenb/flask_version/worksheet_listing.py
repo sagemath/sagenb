@@ -236,10 +236,11 @@ def download_worksheets():
 @worksheet_listing.route('/upload')
 @login_required
 def upload():
+    from sagenb.misc.misc import SAGE_VERSION
     if g.notebook.readonly_user(g.username):
         return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
     return render_template(os.path.join('html', 'upload.html'),
-                           username=g.username)
+                           username=g.username, sage_version=SAGE_VERSION)
 
 class RetrieveError(Exception):
     """

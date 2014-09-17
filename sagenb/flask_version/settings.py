@@ -10,7 +10,7 @@ settings = Module('sagenb.flask_version.settings')
 @with_lock
 def settings_page():
     from sagenb.notebook.misc import is_valid_password, is_valid_email
-
+    from sagenb.misc.misc import SAGE_VERSION
     error = None
     redirect_to_home = None
     redirect_to_logout = None
@@ -65,6 +65,7 @@ def settings_page():
         return redirect(url_for('worksheet_listing.home', username=g.username))
 
     td = {}
+    td['sage_version'] = SAGE_VERSION
     td['username'] = g.username
 
     td['autosave_intervals'] = ((i, ' selected') if nu['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))
