@@ -1,6 +1,6 @@
 {% extends "html/base_authenticated.html" %}
 
-{% block title %}Upload File{% endblock %}
+{% block title %}{{ gettext('Upload File') }}{% endblock %}
 
 {% block page_id %}upload-worksheet-page{% endblock %}
 
@@ -19,13 +19,13 @@
             <label for="name">{{ gettext('What do you want to call it? (if different than the original name') }}</label>
             <input size="50" type="text" name="name" />
         </div>
-        <button type="submit">Upload Worksheet</button>
+        <button type="submit">{{ gettext('Upload Worksheet') }}</button>
     </form>
 </div>
 {% else: %}
 <div>
     <h2>{{ gettext('Upload worksheet to the Sage Notebook') }}</h2>
-    <p>Supported file formats:</p>
+    <p>{{ gettext('Supported file formats:') }}</p>
     <ul class="simple">
         <li><tt>.sws</tt> - {{ gettext('a Sage worksheet') }}</li>
         <li><tt>.html</tt> {{ gettext('or <tt>.txt</tt> - a worksheet text file with html code and cells surrounded by <tt>&#123;&#123;&#123;</tt> and <tt>&#125;&#125;&#125;</tt> that defines a worksheet') }}</li>

@@ -58,10 +58,18 @@ msgstr "Tiempo de espera inactivo para la documentación dinámica (segundos)"
 
 
 
+#: sagenb/data/sage/html/upload.html:3
+msgid "Upload File"
+msgstr "Subir fichero"
+
 #: sagenb/data/sage/html/upload.html:11
 #: sagenb/data/sage/html/upload.html:27
 msgid "Upload worksheet to the Sage Notebook"
 msgstr "Subir una hoja al Notebook Sage"
+
+#: sagenb/data/sage/html/upload.html:28
+msgid "Supported file formats:"
+msgstr "Formatos de archivo soportados"
 
 #: sagenb/data/sage/html/upload.html:15
 msgid "URL of file on web"
