@@ -14,6 +14,27 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.6\n"
 
+msgid "cs_CZ"
+msgstr "čeština (Česká republika)"
+
+msgid "de_AT"
+msgstr "Deutsch (Österreich)"
+
+msgid "en_US"
+msgstr "English (United States)"
+
+msgid "es_ES"
+msgstr "español (España)"
+
+msgid "pt_BR"
+msgstr "português (Brasil)"
+
+msgid "ru_RU"
+msgstr "русский (Россия)"
+
+msgid "fr_FR"
+msgstr "français (France)"
+
 #: flask_version/admin.py:67
 #, python-format
 msgid ""
@@ -521,7 +542,7 @@ msgstr ""
 #: ../sagenb/data/sage/html/login.html:51
 msgid "Use a Mainstream Programming Language"
 msgstr "Используйте современный широко "
-распространенный язык программирования"
+"распространенный язык программирования"
 
 #: ../sagenb/data/sage/html/login.html:52
 msgid ""
