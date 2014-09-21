@@ -367,7 +367,8 @@ def source_code(s, globs, system='sage'):
         return html_markup(output)
     
     except (TypeError, IndexError), msg:
-        return html_markup("Source code for %s not available."%obj)
+        return html_markup("Source code for {} is not available.".format(s) +
+                           "\nUse {}? to see the documentation.".format(s))
     
 def tabulate(v, width=90, ncols=3):
     e = len(v)

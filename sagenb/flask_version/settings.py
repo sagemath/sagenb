@@ -9,6 +9,8 @@ settings = Module('sagenb.flask_version.settings')
 @login_required
 @with_lock
 def settings_page():
+    from sagenb.notebook.misc import is_valid_password, is_valid_email
+    from sagenb.misc.misc import SAGE_VERSION
     error = None
     redirect_to_home = None
     redirect_to_logout = None
@@ -30,6 +32,8 @@ def settings_page():
             error = 'Incorrect password given'
         elif not new:
             error = 'New password not given'
+        elif not is_valid_password(new, g.username):
+            error = 'Password not acceptable. Must be 4 to 32 characters and not contain spaces or username.'
         elif not two:
             error = 'Please type in new password again.'
         elif new != two:
@@ -44,9 +48,12 @@ def settings_page():
     if g.notebook.conf()['email']:
         newemail = request.values.get('new-email', None)
         if newemail:
-            nu.set_email(newemail)
-            ##nu.set_email_confirmation(False)
-            redirect_to_home = True
+            if is_valid_email(newemail):
+                nu.set_email(newemail)
+                ##nu.set_email_confirmation(False)
+                redirect_to_home = True
+            else:
+                error = 'Invalid e-mail address.'
 
     if error:
         return current_app.message(error, url_for('settings_page'))
@@ -58,6 +65,7 @@ def settings_page():
         return redirect(url_for('worksheet_listing.home', username=g.username))
 
     td = {}
+    td['sage_version'] = SAGE_VERSION
     td['username'] = g.username
 
     td['autosave_intervals'] = ((i, ' selected') if nu['autosave_interval']/60 == i else (i, '') for i in range(1, 10, 2))

@@ -1,3 +1,10 @@
+0.10.8.3    Sep 21 2014
+
+ - New Spanish translation
+ - New French translation
+ - Update sagenb and documentation for new development workflow
+ - Numerous bug fixes for settings, jmol, user management, and text fields
+
 0.10.8.2    Feb 03 2014
 
  - Change doctest (#197)

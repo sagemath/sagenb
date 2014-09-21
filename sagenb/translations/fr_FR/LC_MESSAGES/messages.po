@@ -1,23 +1,23 @@
 # Translations template for SAGE Notebook.
-# Copyright (C) 2011 SAGE
+# Copyright (C) 2013 SAGE
 # This file is distributed under the same license as the SAGE project.
-# FIRST AUTHOR bla@achfa.de, 2011.
+# FIRST AUTHOR chapoton@math.univ-lyon1.fr, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Sage Notebook 0.8\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2011-06-18 15:38-0300\n"
-"PO-Revision-Date: 2011-06-18 20:43-0300\n"
-"Last-Translator: Achim Faßbender <bla@achfa.de>\n"
-"Language-Team: Achim Faßbender <bla@achfa.de>\n"
+"PO-Revision-Date: 2014-03-08 21:21+0100\n"
+"Last-Translator: Frédéric Chapoton <chapoton@math.univ-lyon1.fr>\n"
+"Language-Team: Frédéric Chapoton <chapoton@math.univ-lyon1.fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 0.9.5\n"
 "Plural-Forms: nplurals=2; plural=n>1;\n"
-"X-Poedit-Language: German\n"
-"X-Poedit-Country: GERMANY\n"
+"X-Poedit-Language: French\n"
+"X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
 msgid "cs_CZ"
@@ -44,11 +44,11 @@ msgstr "français (France)"
 #: data/sage/html/base.html:31
 #: data/sage/html/login.html:35
 msgid "The Sage Notebook"
-msgstr "Sage Notebook"
+msgstr "Bloc-note Sage"
 
 #: data/sage/html/base.html:33
 msgid "Searching for Sage server..."
-msgstr "Suche Sage-Server..."
+msgstr "Recherche du serveur Sage..."
 
 #: data/sage/html/base.html:35
 msgid "Version"
@@ -56,145 +56,145 @@ msgstr "Version"
 
 #: data/sage/html/base_authenticated.html:7
 msgid "Please log in to the Sage notebook"
-msgstr "Bitte loggen Sie sich ins Sage-Notebook ein"
+msgstr "Veuillez vous connecter au Bloc-note Sage"
 
 #: data/sage/html/base_authenticated.html:7
 msgid "Log in"
-msgstr "Einloggen"
+msgstr "Connexion"
 
 #: data/sage/html/base_authenticated.html:9
 msgid "Toggle the top bar"
-msgstr "Die Kopfleiste wechseln"
+msgstr "Afficher/cacher la barre horizontale"
 
 #: data/sage/html/base_authenticated.html:9
 #: data/sage/html/test_report.html:123
 msgid "Toggle"
-msgstr "Wechseln"
+msgstr "■■■■"
 
 #: data/sage/html/base_authenticated.html:10
 msgid "Back to your personal worksheet list"
-msgstr "Zurück zur persönlichen Liste der Arbeitsblätter"
+msgstr "Revenir à la liste de vos feuilles de travail"
 
 #: data/sage/html/base_authenticated.html:10
 msgid "Home"
-msgstr "Ausgangspunkt"
+msgstr "Page principale"
 
 #: data/sage/html/base_authenticated.html:12
 #: data/sage/html/base_authenticated.html:14
 msgid "Published"
-msgstr "Veröffentlicht"
+msgstr "Publié"
 
 #: data/sage/html/base_authenticated.html:14
 msgid "Browse the published worksheets"
-msgstr "Alle veröffentlichten Arbeitsblätter durchsuchen"
+msgstr "Parcourir les feuilles de travail publiées"
 
 #: data/sage/html/base_authenticated.html:15
 msgid "View a log of recent computations"
-msgstr "Protokoll der letzten Berechnungen anzeigen"
+msgstr "Consulter un historique des calculs récents"
 
 #: data/sage/html/base_authenticated.html:15
 msgid "Log"
-msgstr "Protokoll"
+msgstr "Historique"
 
 #: data/sage/html/base_authenticated.html:17
 msgid "Change account settings including password"
-msgstr "Kontoeinstellungen ändern, einschließlich Passwort"
+msgstr "Changer les paramètres du compte, dont le mot de passe"
 
 #: data/sage/html/base_authenticated.html:17
 msgid "Settings"
-msgstr "Einstellungen"
+msgstr "Paramètres"
 
 #: data/sage/html/base_authenticated.html:18
 msgid "Documentation"
-msgstr "Dokumentation"
+msgstr "Documentation"
 
 #: data/sage/html/base_authenticated.html:18
 msgid "Help"
-msgstr "Hilfe"
+msgstr "Aide"
 
 #: data/sage/html/base_authenticated.html:19
 msgid "Report a problem or submit a bug to improve Sage"
-msgstr "Problem melden oder auf Fehler aufmerksam machen"
+msgstr "Signaler un problème ou un bug pour améliorer Sage"
 
 #: data/sage/html/base_authenticated.html:19
 msgid "Report a Problem"
-msgstr "Problem melden"
+msgstr "Signaler un problème"
 
 #: data/sage/html/base_authenticated.html:20
 msgid "Log out of the Sage notebook"
-msgstr "Aus dem Sage-Notebook ausloggen"
+msgstr "Déconnexion du Bloc-note Sage"
 
 #: data/sage/html/base_authenticated.html:20
 msgid "Sign out"
-msgstr "Abmelden"
+msgstr "Déconnexion"
 
 #: data/sage/html/docs.html:3
 msgid "Sage Documentation"
-msgstr "Dokumentation zu Sage"
+msgstr "Documentation de Sage"
 
 #: data/sage/html/docs.html:15
 msgid "To quickly try out Sage start here"
-msgstr "Starten Sie hier, um Sage mal eben auszuprobieren"
+msgstr "Pour essayer Sage, commencer ici"
 
 #: data/sage/html/docs.html:15
 msgid "Tutorial"
-msgstr "Lehrpfad"
+msgstr "Tutoriel"
 
 #: data/sage/html/docs.html:16
 msgid "View a 4000+ page reference manual about Sage"
-msgstr "Mehr als 4000 Seiten des Referenzhandbuchs zu Sage anzeigen"
+msgstr "Consulter le manuel de référence de Sage (+ de 4000 pages)"
 
 #: data/sage/html/docs.html:16
 msgid "Reference Manual"
-msgstr "Referenzhandbuch"
+msgstr "Manuel de référence"
 
 #: data/sage/html/docs.html:17
 msgid "Learn to write Sage programs"
-msgstr "Lernen Sie Sage-Programme zu schreiben"
+msgstr "Apprendre à écrire des programmes Sage"
 
 #: data/sage/html/docs.html:17
 msgid "Developer Guide"
-msgstr "Anleitung für Entwickler"
+msgstr "Guide du développeur"
 
 #: data/sage/html/docs.html:18
 msgid "How do I construct ... in Sage?"
-msgstr "Wie erstelle ich ... in Sage?"
+msgstr "Comment construire ... dans Sage ?"
 
 #: data/sage/html/docs.html:18
 msgid "Constructions"
-msgstr "Konstruktionen"
+msgstr "Constructions"
 
 #: data/sage/html/docs.html:21
 msgid "Static version..."
-msgstr "Statische Fassung..."
+msgstr "Version statique..."
 
 #: data/sage/html/docs.html:21
 msgid "Fast Static Versions of the Documentation"
-msgstr "Schnelle statische Fassungen der Dokumentation"
+msgstr "Version statique rapide de la documentation"
 
 #: data/sage/html/docs.html:22
 msgid "Help via Internet Chat (IRC)"
-msgstr "Hilfe per Internet-Chat beziehen (IRC)"
+msgstr "Aide par clavardage (IRC)"
 
 #: data/sage/html/docs.html:28
 msgid "How to use the Sage Notebook"
-msgstr "Benutzung von Sage Notebook"
+msgstr "Comment utiliser le Bloc-note Sage"
 
 #: data/sage/html/docs.html:30
 msgid "A <em>worksheet</em> is an ordered list of Sage calculations with output."
-msgstr "Ein <em>Arbeitsblatt</em> ist eine geordnete Liste von Berechnungen in Sage samt Ausgaben."
+msgstr "Une <em>feuille de travail</em> est une liste ordonnée de commandes Sage avec leurs résultats."
 
 #: data/sage/html/docs.html:31
 msgid "A <em>session</em> is a worksheet and a set of variables in some state."
-msgstr "Eine <em>Sitzung</em> ist ein Arbeitsblatt mit einer Menge von Variablen in einem gewissen Zustand."
+msgstr "Une <em>session</em> est une feuille de travail et un ensemble de variables dans un état donné."
 
 #: data/sage/html/docs.html:32
 msgid "The <em>Sage notebook</em> is a collection of worksheets, saved objects, and user information."
-msgstr "<em>Sage Notebook</em> ist eine Sammlung von Arbeitsblättern, gespeicherten Objekten und Benutzerinformationen"
+msgstr "Le <em>Bloc-note Sage</em> est une collection de feuilles de travail, d'objets sauvés et d'information sur les utilisateurs"
 
 #: data/sage/html/docs.html:45
 msgid "The Sage Notebook was primarily written by William Stein with substantial contributions from Tom Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, Bobby Moretti, Yi Qiang, and Dorian Raymer."
-msgstr "Sage Notebook wurde ursprünglich geschrieben von William Stein mit wesentlichen Beiträgen von Tom Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, Bobby Moretti, Yi Qiang und Dorian Raymer."
+msgstr "Le Bloc-note Sage a été écrit principalement par William Stein avec des contributions notables de Tom Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, Bobby Moretti, Yi Qiang et Dorian Raymer."
 
 #: data/sage/html/error_message.html:4
 #: data/sage/html/login.html:63
@@ -218,383 +218,380 @@ msgstr "Sage Notebook wurde ursprünglich geschrieben von William Stein mit wese
 #: data/sage/html/settings/admin_add_user.html:19
 #: data/sage/js/translated-messages.js:17
 msgid "Error"
-msgstr "Fehler"
+msgstr "Erreur"
 
 #: data/sage/html/error_message.html:19
 msgid "Continue"
-msgstr "Fortsetzen"
+msgstr "Continuer"
 
 #: data/sage/html/history.html:3
 #, python-format
 msgid "Sage: History for %(u)s"
-msgstr "Sage: Verlauf für %(u)s"
+msgstr "Sage : historique pour %(u)s"
 
 #: data/sage/html/history.html:13
 msgid "Click here to turn the above into a Sage worksheet"
-msgstr "Hier klicken, um Obiges in ein Sage Arbeitsblatt umzuwandeln"
+msgstr "Cliquer ici pour transformer ce qui précède en une feuille de travail"
 
 #: data/sage/html/history.html:13
 msgid "Create a new Sage worksheet version of the last 100 commands in the above log."
-msgstr "Neue Sage-Arbeitsblatt-Fassung aus den letzten 100 Befehlen im obigen Protokoll erzeugen."
+msgstr "Créer une nouvelle feuille de travail avec les 100 dernières commandes de la liste ci-dessus"
 
 #: data/sage/html/login.html:12
-#, fuzzy
 msgid "username"
-msgstr "Benutzername"
+msgstr "Nom d'utilisateur"
 
 #: data/sage/html/login.html:13
 msgid "Select an OpenID provider"
-msgstr "Wählen Sie einen OpenID-Anbieter"
+msgstr "Choisir un fournisseur OpenID"
 
 #: data/sage/html/login.html:14
-#, fuzzy
 msgid "Send"
-msgstr "Abschicken"
+msgstr "Envoyer"
 
 #: data/sage/html/login.html:22
 #: data/sage/html/login.html:78
 msgid "Sign in"
-msgstr "Anmelden"
+msgstr "Connexion"
 
 #: data/sage/html/login.html:28
 #, python-format
 msgid "Congratulations %(u)s! You can now sign into the Sage Notebook."
-msgstr "Herzlichen Glückwunsch! Sie können sich jetzt bei Sage Notebook anmelden."
+msgstr "Bravo %(u)s ! Vous pouvez maintenant vous connecter au Bloc-note Sage."
 
 #: data/sage/html/login.html:32
 msgid "Welcome!"
-msgstr "Willkommen!"
+msgstr "Bienvenue&nbsp;!"
 
 #: data/sage/html/login.html:33
 msgid "<strong>Sage</strong> is a different approach to mathematics software."
-msgstr "<strong>Sage</strong> ist ein alternativer Ansatz mathematischer Software"
+msgstr "<strong>Sage</strong> est une approche différente des logiciels mathématiques."
 
 #: data/sage/html/login.html:36
 msgid "With the Sage Notebook anyone can create, collaborate on, and publish interactive worksheets. In a worksheet, one can write code using Sage, Python, and other software included in Sage."
-msgstr "Mit Sage Notebook kann jeder interaktive Arbeitsblätter erstellen, gemeinsam mit anderen bearbeiten und veröffentlichen. In einem Arbeitsblatt kann man Code schreiben unter Verwendung von Sage, Python sowie anderer in Sage enthaltener Software."
+msgstr "Avec le Bloc-note Sage, chacun peut créer et publier des feuilles de travail interactives, et aussi collaborer. Dans une feuille de travail, on peut écrire du code en Sage, en Python ou dans d'autres langages inclus dans Sage."
 
 #: data/sage/html/login.html:39
 msgid "General and Advanced Pure and Applied Mathematics"
-msgstr "Allgemeine und Fortgeschrittene Reine und Angewandte Mathematik"
+msgstr "Mathématiques pures et appliquées, générales et avancées"
 
 #: data/sage/html/login.html:40
 msgid "Use Sage for studying calculus, elementary to very advanced number theory, cryptography, commutative algebra, group theory, graph theory, numerical and exact linear algebra, and more."
-msgstr "Verwenden Sie Sage zum Studium der Algebra, elementaren bis sehr fortgeschrittenen Zahlentheorie, Kryptografie, kommutativen Algebra, Gruppentheorie, Graphentheorie, numerischen und exakten linearen Algebra und mehr."
+msgstr "Utilisez Sage pour étudier le calcul différentiel, la théorie des nombres élémentaire ou avancée, la cryptographie, l'algèbre commutative, la théorie des groupes, la théorie des graphes, l'algèbre linéaire numérique et exacte et bien d'autres choses."
 
 #: data/sage/html/login.html:43
 msgid "Use an Open Source Alternative"
-msgstr "Nutzen Sie eine freie Alternative"
+msgstr "Utiliser une alternative libre"
 
 #: data/sage/html/login.html:44
 msgid "By using Sage you help to support a viable open source alternative to Magma, Maple, Mathematica, and MATLAB. Sage includes many high-quality open source math packages."
-msgstr "Indem Sie Sage nutzen, helfen Sie, eine respektable freie alternative zu Magma, Maple, Mathematica und MATLAB zu unterstützen. Sage umfasst viele qualitativ hochwertige freie Mathematik-Pakete."
+msgstr "En utilisant Sage, vous soutenez une alternative libre à Magma®, Maple®, Mathematica® et MATLAB®. Sage incorpore de nombreux logiciels mathématiques libres de grande qualité."
 
 #: data/sage/html/login.html:47
 msgid "Use Most Mathematics Software from Within Sage"
-msgstr "Greifen Sie innerhalb Sage auf einen Großteil mathematischer Software zurück"
+msgstr "Utiliser la plupart des logiciels mathématiques via Sage"
 
 #: data/sage/html/login.html:48
 msgid "Sage makes it easy for you to use most mathematics software together. Sage includes GAP, GP/PARI, Maxima, and Singular, and dozens of other open packages."
-msgstr "Sage macht es Ihnen leicht, einen Großteil der Mathematik-Software gemeinsam zu benutzen. Sage beinhaltet GAP, GP/PARI, Maxima, Singular und Dutzende anderer freier Pakete."
+msgstr "Sage permet d'utiliser facilement dans un cadre unique la plupart des logiciels mathématiques. Sage incorpore GAP, GP/PARI, Maxima, Singular et des douzaines d'autres logiciels libres."
 
 #: data/sage/html/login.html:51
 msgid "Use a Mainstream Programming Language"
-msgstr "Benutzen Sie eine gängige Programmiersprache"
+msgstr "Utiliser un langage de programmation majeur"
 
 #: data/sage/html/login.html:52
 msgid "You work with Sage using the highly regarded scripting language Python. You can write programs that combine serious mathematics with anything else."
-msgstr "Sie verwenden beim Arbeiten mit Sage die hoch angesehene Skriptsprache Python. Sie können Programme schreiben, die ernste Mathematik mit beliebigen anderen Dingen verknüpfen."
+msgstr "Votre travail dans Sage utilise Python, un langage de programmation très renommé. Vous pouvez combiner dans un programme des mathématiques et beaucoup d'autres choses."
 
 #: data/sage/html/login.html:60
 #: data/sage/html/accounts/account_recovery.html:13
 msgid "Username"
-msgstr "Benutzername"
+msgstr "Nom d'utilisateur"
 
 #: data/sage/html/login.html:63
 msgid "Username is not in the system"
-msgstr "Der Benutzername ist dem System unbekannt"
+msgstr "Nom d'utilisateur inconnu"
 
 #: data/sage/html/login.html:67
-
 #: data/sage/html/settings/user_management.html:13
 msgid "Password"
-msgstr "Passwort"
+msgstr "Mot de passe"
 
 #: data/sage/html/login.html:70
 msgid "Wrong password"
-msgstr "Falsches Passwort"
+msgstr "Mot de passe erroné"
 
 #: data/sage/html/login.html:74
 msgid "Remember me"
-msgstr "Meine Anmeldedaten merken"
+msgstr "Se rappeler de moi"
 
 #: data/sage/html/login.html:83
 msgid "Sign up for a new Sage Notebook account"
-msgstr "Anmelden für neues Sage-Notebook-Konto"
+msgstr "Connexion à un nouveau compte de Bloc-note Sage"
 
 #: data/sage/html/login.html:87
 msgid "Browse published Sage worksheets<br>(no login required)"
-msgstr "Veröffentlichte Sage-Arbeitsblätter durchsuchen<br>(kein Login erforderlich)"
+msgstr "Consulter les feuilles de travail publiées<br/>(pas de connexion nécessaire)"
 
 #: data/sage/html/login.html:91
 msgid "Forgot password"
-msgstr "Passwort vergessen"
+msgstr "Mot de passe oublié"
 
 #: data/sage/html/login.html:98
 msgid "Creating new users is disabled by the administrator."
-msgstr "Die Funktion, neue Benutzer anzulegen, wurde vom Administrator deaktiviert."
+msgstr "L'ouverture de compte est interdite par l'administrateur."
 
 #: data/sage/html/login.html:100
 msgid "Javascript must be enabled in order to use the Sage Notebook."
-msgstr "Um Sage Notebook zu benutzen, muss Javascript muss aktiv sein."
+msgstr "Pour utiliser le Bloc-note Sage, il faut autoriser Javascript."
 
 #: data/sage/html/source_code.html:3
 #: notebook/tutorial.py:358
 msgid "Source Code"
-msgstr "Quellcode"
+msgstr "Code source"
 
 #: data/sage/html/source_code.html:13
 msgid "Sage Source Browser"
-msgstr "Sage Quelltext-Browser"
+msgstr "Navigateur des sources Sage"
 
 #: data/sage/html/source_code.html:14
 msgid "browse directory"
-msgstr "Verzeichnis durchsuchen"
+msgstr "Parcourir le répertoire"
 
 #: data/sage/html/test_report.html:79
 msgid "Sage Notebook version"
-msgstr "Sage Notebook Version"
+msgstr "Bloc-note Sage version"
 
 #: data/sage/html/test_report.html:85
 msgid "Sage version"
-msgstr "Sage Version"
+msgstr "Sage version"
 
 #: data/sage/html/test_report.html:91
 msgid "Environment"
-msgstr "Umgebung"
+msgstr "Environnement"
 
 #: data/sage/html/test_report.html:96
 msgid "Start"
-msgstr "Starten"
+msgstr "Commencer"
 
 #: data/sage/html/test_report.html:100
 #: data/sage/html/worksheet_listing.html:73
 msgid "Stop"
-msgstr "Anhalten"
+msgstr "Terminer"
 
 #: data/sage/html/test_report.html:104
 msgid "Elapsed"
-msgstr "Verstrichene Zeit"
+msgstr "Temps écoulé"
 
 #: data/sage/html/test_report.html:108
 msgid "Status"
-msgstr "Zustand"
+msgstr "Statut"
 
 #: data/sage/html/test_report.html:110
 #: data/sage/html/test_report.html:129
 msgid "Pass"
-msgstr "Durchlaufen"
+msgstr "Passer"
 
 #: data/sage/html/test_report.html:111
 #: data/sage/html/test_report.html:130
 msgid "Fail"
-msgstr "Fehler"
+msgstr "Échec"
 
 #: data/sage/html/test_report.html:113
 msgid "Total"
-msgstr "Gesamt"
+msgstr "Total"
 
 #: data/sage/html/test_report.html:121
 msgid "Hide"
-msgstr "Verbergen"
+msgstr "Cacher"
 
 #: data/sage/html/test_report.html:122
 msgid "Show"
-msgstr "Anzeigen"
+msgstr "Montrer"
 
 #: data/sage/html/test_report.html:128
 msgid "Cases / Tests"
-msgstr "Testfälle"
+msgstr "Cas / Tests"
 
 #: data/sage/html/test_report.html:132
 msgid "Count"
-msgstr "Anzahl"
+msgstr "Compte"
 
 #: data/sage/html/test_report.html:141
 msgid "Totals"
-msgstr "Insgesamt"
+msgstr "Totaux"
 
 #: data/sage/html/upload.html:10
 msgid "Upload worksheet (an sws or txt file) to the Sage Notebook"
-msgstr "Arbeitsblatt in Sage Notebook hochladen (sws- oder txt-Datei)"
+msgstr "Importer une feuille de travail (fichier .sws) vers le Bloc-note Sage"
 
 #: data/sage/html/upload.html:14
 msgid "Browse your computer to select a worksheet file to upload:"
-msgstr "Durchsuchen Sie Ihren Computer, um ein Arbeitsblatt zum Hochladen auszuwählen:"
+msgstr "Choisir un fichier .sws sur votre ordinateur :"
 
 #: data/sage/html/upload.html:18
 msgid "Or enter the URL of a worksheet file on the web:"
-msgstr "Oder geben Sie den URL eines Arbeitsblatts im Internet ein:"
+msgstr "Ou bien entrer l'adresse URL d'une feuille de travail sur internet :"
 
 #: data/sage/html/upload.html:22
 #: data/sage/html/notebook/upload_data_window.html:27
 msgid "What do you want to call it? (if different than the original name)"
-msgstr "Wie möchten Sie es nennen? (falls abweichend vom ursprünglichen Namen)"
+msgstr "Comment nommer cette feuille de travail ? (si un nouveau nom est souhaité)"
 
 #: data/sage/html/upload.html:25
 msgid "Upload Worksheet"
-msgstr "Arbeitsblatt hochladen"
+msgstr "Importer une feuille de travail"
 
 #: data/sage/html/worksheet_listing.html:9
 msgid "Published Worksheets"
-msgstr "Veröffentlichte Arbeitsblätter"
+msgstr "Feuilles de travail publiées"
 
 #: data/sage/html/worksheet_listing.html:11
 msgid "Deleted Worksheets"
-msgstr "Gelöschte Arbeitsblätter"
+msgstr "Feuilles de travail supprimées"
 
 #: data/sage/html/worksheet_listing.html:13
 msgid "Active Worksheets"
-msgstr "Aktive Arbeitsblätter"
+msgstr "Feuilles de travail actives"
 
 #: data/sage/html/worksheet_listing.html:15
 msgid "Archived Worksheets"
-msgstr "Abgelegte Arbeitsblätter"
+msgstr "Feuilles de travail archivées"
 
 #: data/sage/html/worksheet_listing.html:45
 msgid "New Worksheet"
-msgstr "Neues Arbeitsblatt"
+msgstr "Nouvelle feuille de travail"
 
 #: data/sage/html/worksheet_listing.html:46
 msgid "Upload"
-msgstr "Hochladen"
+msgstr "Importer"
 
 #: data/sage/html/worksheet_listing.html:47
 msgid "Download All Active"
-msgstr "Alle aktiven herunterladen"
+msgstr "Exporter toutes les feuilles de travail actives"
 
 #: data/sage/html/worksheet_listing.html:54
 msgid "Search Worksheets"
-msgstr "Arbeitsblätter durchsuchen"
+msgstr "Rechercher des feuilles de travail"
 
 #: data/sage/html/worksheet_listing.html:62
 msgid "Unarchive selected worksheets so it appears in the default worksheet list"
-msgstr "Ausgewählte Arbeitsblätter von der Ablage nehmen, so dass sie in der vorausgewählten Liste der Arbeitsblätter erscheinen"
+msgstr "Extraire des archives les feuilles de travail choisies, pour les faire apparaître dans la liste par défaut"
 
 #: data/sage/html/worksheet_listing.html:62
 msgid "Unarchive"
-msgstr "Von der Ablage nehmen"
+msgstr "Extraire des archives"
 
 #: data/sage/html/worksheet_listing.html:64
 msgid "Archive selected worksheets so they do not appear in the default worksheet list"
-msgstr "Ausgewählte Arbeitsblätter ablegen, so dass sie nicht in der vorausgewählten Liste der Arbeitsblätter erscheinen"
+msgstr "Archiver les feuilles de travail choisies, pour les faire disparaître dans la liste par défaut"
 
 #: data/sage/html/worksheet_listing.html:64
 msgid "Archive"
-msgstr "Ablegen"
+msgstr "Archiver"
 
 #: data/sage/html/worksheet_listing.html:68
 msgid "Move the selected worksheets to the trash"
-msgstr "Ausgewählte Arbeitsblätter in den Mülleimer verschieben"
+msgstr "Mettre à la corbeille les feuilles de travail choisies"
 
 #: data/sage/html/worksheet_listing.html:68
 msgid "Delete"
-msgstr "Löschen"
+msgstr "Supprimer"
 
 #: data/sage/html/worksheet_listing.html:70
 msgid "Move the selected worksheets out of the trash"
-msgstr "Ausgewählte Arbeitsblätter aus dem Mülleimer holen"
+msgstr "Récupérer depuis la corbeille"
 
 #: data/sage/html/worksheet_listing.html:70
 msgid "Undelete"
-msgstr "Löschen rückgängig machen"
+msgstr "Annuler la suppression"
 
 #: data/sage/html/worksheet_listing.html:73
 msgid "Stop selected worksheets"
-msgstr "Ausgewählte Arbeitsblätter anhalten"
+msgstr "Stopper les feuilles de travail choisies"
 
 #: data/sage/html/worksheet_listing.html:75
 msgid "Download selected worksheets"
-msgstr "Ausgewählte Arbeitsblätter herunterladen"
+msgstr "Exporter les feuilles de travail choisies"
 
 #: data/sage/html/worksheet_listing.html:75
 msgid "Download"
-msgstr "Herunterladen"
+msgstr "Exporter"
 
 #: data/sage/html/worksheet_listing.html:79
 msgid "Current Folder"
-msgstr "Aktuelles Verzeichnis"
+msgstr "Dossier actuel"
 
 #: data/sage/html/worksheet_listing.html:80
 msgid "Active"
-msgstr "Aktiv"
+msgstr "Actif"
 
 #: data/sage/html/worksheet_listing.html:81
 msgid "Archived"
-msgstr "Abgelegt"
+msgstr "Archivé"
 
 #: data/sage/html/worksheet_listing.html:82
 msgid "Trash"
-msgstr "Mülleimer"
+msgstr "Corbeille"
 
 #: data/sage/html/worksheet_listing.html:86
 msgid "Empty Trash"
-msgstr "Mülleimer leeren"
+msgstr "Vider la corbeille"
 
 #: data/sage/html/worksheet_listing.html:101
 #: data/sage/html/worksheet/ratings_info.html:9
 msgid "Rating"
-msgstr "Bewertung"
+msgstr "Évaluation"
 
 #: data/sage/html/worksheet_listing.html:112
 msgid "Owner"
-msgstr "Eigentümer"
+msgstr "Propriétaire"
 
 #: data/sage/html/worksheet_listing.html:112
 msgid "Collaborators"
-msgstr "Mitarbeiter"
+msgstr "Collaborateurs"
 
 #: data/sage/html/worksheet_listing.html:118
 #: data/sage/html/notebook/worksheet_revision_list.html:16
 msgid "Last Edited"
-msgstr "Letzte Änderung"
+msgstr "Dernière modification"
 
 #: data/sage/html/worksheet_listing.html:128
 msgid "There are no published worksheets."
-msgstr "Keine veröffentlichten Arbeitsblätter vorhanden."
+msgstr "Il n'y a aucune feuille de travail publiée."
 
 #: data/sage/html/worksheet_listing.html:134
 msgid "Welcome to Sage! You can <a href=\"/new_worksheet\">create a new worksheet</a>, view <a href=\"/pub/\">published worksheets</a>, or read the <a href=\"/help\" target=\"_new\">documentation</a>."
-msgstr "Willkommen bei Sage! Sie können ein <a href=\"/new_worksheet\">neues Arbeitsblatt erstellen</a>, <a href=\"/pub/\">veröffentlichte Arbeitsblätter</a> anzeigen oder die <a href=\"/help\" target=\"_new\">Dokumentation</a> lesen."
+msgstr "Bienvenue dans Sage ! Vous pouvez <a href=\"/new_worksheet\">créer une nouvelle feuille de travail</a>, consulter les <a href=\"/pub/\">feuilles de travail publiées</a> ou lire la <a href=\"/help\" target=\"_new\">Documentation</a>."
 
 #: data/sage/html/worksheet_listing.html:176
 msgid "running"
-msgstr "laufend"
+msgstr "exécution en cours"
 
 #: data/sage/html/worksheet_listing.html:209
 msgid "Add or Delete"
-msgstr "Hinzufügen oder löschen"
+msgstr "Ajouter ou supprimer"
 
 #: data/sage/html/worksheet_listing.html:211
 msgid "Share now"
-msgstr "Jetzt freigeben"
+msgstr "Partager maintenant"
 
 #: data/sage/html/worksheet_listing.html:216
 msgid "published"
-msgstr "veröffentlicht"
+msgstr "publié"
 
 #: data/sage/html/accounts/account_recovery.html:3
 #: data/sage/html/accounts/account_recovery.html:8
 msgid "Account Recovery"
-msgstr "Kontowiederherstellung"
+msgstr "Récupération de compte"
 
 #: data/sage/html/accounts/account_recovery.html:9
 msgid "A new password will be emailed to the email address connected to your account. However if you didn't confirm your email address you will be unable to recover your account."
-msgstr "Ein neues Passwort wird an die mit Ihrem Konto verbundene E-Mail-Adresse gesendet. Falls Sie Ihre E-Mail-Adresse jedoch nicht bestätigt haben, können Sie Ihr Konto nicht wiederherstellen."
+msgstr "Un nouveau mot de passe sera envoyé à l'adresse courriel du compte. Si vous n'avez pas confirmé cette adresse, vous ne pourrez pas récupérer votre compte."
 
 #: data/sage/html/accounts/account_recovery.html:17
 msgid "Submit"
-msgstr "Abschicken"
+msgstr "Soumettre"
 
 #: data/sage/html/accounts/account_recovery.html:17
 #: data/sage/html/accounts/registration.html:78
@@ -606,135 +603,135 @@ msgstr "Abschicken"
 #: data/sage/html/settings/notebook_settings.html:20
 #: data/sage/html/settings/notebook_settings.html:27
 msgid "Cancel"
-msgstr "Abbrechen"
+msgstr "Annuler"
 
 #: data/sage/html/accounts/registration.html:3
 msgid "Sign up"
-msgstr "Anmelden"
+msgstr "Inscription"
 
 #: data/sage/html/accounts/registration.html:9
 msgid "Sign up for a Sage Notebook account"
-msgstr "Anmelden für ein Konto in Sage Notebook"
+msgstr "Ouvrir un compte dans le Bloc-note Sage"
 
 #: data/sage/html/accounts/registration.html:11
 msgid "Errors found"
-msgstr "Fehler gefunden"
+msgstr "Erreurs trouvées"
 
 #: data/sage/html/accounts/registration.html:11
 msgid "Error found"
-msgstr "Fehler gefunden"
+msgstr "Erreur trouvée"
 
 #: data/sage/html/accounts/registration.html:16
 msgid "Create a username"
-msgstr "Benutzernamen erstellen"
+msgstr "Créer un utilisateur"
 
 #: data/sage/html/accounts/registration.html:17
 msgid "Your username must start with a letter and be between 3 and 64 characters long. You may only use letters, numbers, underscores, @, and dots."
-msgstr "Ihr Benutzername muss mit einem Buchstaben beginnen und zwischen 3 und 64 Zeichen lang sein. Sie dürfen nur Buchstaben, Zahlen, Unterstrich, @ und Punkt verwenden."
+msgstr "Votre nom d'utilisateur doit commencer par une lettre et comporter entre 3 et 64 signes. Vous pouvez utiliser des lettres, des nombres, les caractères _ @ et des points."
 
 #: data/sage/html/accounts/registration.html:20
 msgid "No username given"
-msgstr "Kein Benutzername angegeben"
+msgstr "Pas de nom d'utilisateur fourni"
 
 #: data/sage/html/accounts/registration.html:23
 msgid "Username already in use"
-msgstr "Benutzername bereits belegt"
+msgstr "Nom d'utilisateur déjà pris"
 
 #: data/sage/html/accounts/registration.html:26
 msgid "Bad username"
-msgstr "Unzulässiger Benutzername"
+msgstr "Nom d'utilisateur incorrect"
 
 #: data/sage/html/accounts/registration.html:30
 msgid "Create a good password"
-msgstr "Zulässiges Passwort erstellen"
+msgstr "Créer un bon mot de passe"
 
 #: data/sage/html/accounts/registration.html:32
 msgid "Your password must be between 4 and 32 characters long. Your password can not contain your username nor spaces."
-msgstr "Ihr Passwort muss zwischen 4 und 32 Zeichen lang sein. Es darf weder Ihren Benutzernamen noch Leerzeichen enthalten."
+msgstr "Votre mot de passe doit comporter entre 4 et 32 caractères. Il ne doit pas contenir votre nom d'utilisateur, ni d'espace."
 
 #: data/sage/html/accounts/registration.html:36
 msgid "No password given"
-msgstr "Kein Passwort angegeben"
+msgstr "Pas de mot de passe fourni"
 
 #: data/sage/html/accounts/registration.html:39
 msgid "Bad password"
-msgstr "Unzulässiges Passwort"
+msgstr "Mot de passe incorrect"
 
 #: data/sage/html/accounts/registration.html:43
 msgid "Re-type your password"
-msgstr "Geben Sie Ihr Passwort nochmals ein"
+msgstr "Veuillez re-taper votre mot de passe"
 
 #: data/sage/html/accounts/registration.html:46
 msgid "Passwords didn't match"
-msgstr "Die Passwörter stimmen nicht überein"
+msgstr "Les mots de passe ne correspondent pas"
 
 #: data/sage/html/accounts/registration.html:51
 msgid "Enter your email address"
-msgstr "Geben Sie Ihre E-Mail-Adresse ein"
+msgstr "Entrez votre adresse courriel"
 
 #: data/sage/html/accounts/registration.html:53
 msgid "Your email address is required for account confirmation and recovery. You will be emailed a confirmation link right after you successfully sign up."
-msgstr "Zur Bestätigung sowie ggf. Wiederherstellung des Kontos wird Ihre E-Mail-Adresse benötigt. Unmittelbar nach erfolgreicher Anmeldung erhalten Sie einen Bestätigungslink per E-Mail."
+msgstr "Votre adresse courriel est requise pour confirmation du compte et récupération éventuelle. Vous allez recevoir par mail un lien de confirmation après votre connexion."
 
 #: data/sage/html/accounts/registration.html:57
 msgid "No email address given"
-msgstr "Keine E-Mail-Adresse angegeben"
+msgstr "Pas d'adresse courriel fournie"
 
 #: data/sage/html/accounts/registration.html:60
 msgid "Invalid email address"
-msgstr "Ungültige E-Mail-Adresse"
+msgstr "Adresse courriel invalide"
 
 #: data/sage/html/accounts/registration.html:66
 msgid "Answer a challenge"
-msgstr "Eine Herausforderung beantworten"
+msgstr "Veuillez répondre à la question"
 
 #: data/sage/html/accounts/registration.html:69
 msgid "No challenge response given"
-msgstr "Keine Antwort auf die Herausforderung angegeben"
+msgstr "Pas de réponse fournie"
 
 #: data/sage/html/accounts/registration.html:72
 msgid "Invalid challenge response"
-msgstr "Ungültige Anfrage auf eine Herausforderung"
+msgstr "Réponse incorrecte"
 
 #: data/sage/html/accounts/registration.html:77
 msgid "Create account"
-msgstr "Konto erstellen"
+msgstr "Créer un compte"
 
 #: data/sage/html/notebook/afterpublish_window.html:8
 #, python-format
 msgid "Worksheet is publicly viewable at <a href=\"%(u)s\" style=\"color:#FFF\" target=\"_blank\">%(u)s"
-msgstr "Das Arbeitsblatt ist öffentlich einsehbar unter <a href=\"%(u)s\" style=\"color:#FFF\" target=\"_blank\">%(u)s"
+msgstr "La feuille de travail est visible au public à l'adresse <a href=\"%(u)s\" style=\"color:#FFF\" target=\"_blank\">%(u)s"
 
 #: data/sage/html/notebook/afterpublish_window.html:9
 #, python-format
 msgid "Published on %(t)s"
-msgstr "Veröffentlicht am %(t)s"
+msgstr "Publié le %(t)s"
 
 #: data/sage/html/notebook/afterpublish_window.html:11
 msgid "Re-publish worksheet"
-msgstr "Arbeitsblatt erneut veröffentlichen"
+msgstr "Re-publier la feuille de travail"
 
 #: data/sage/html/notebook/afterpublish_window.html:12
 msgid "Stop publishing"
-msgstr "Veröffentlichen anhalten."
+msgstr "Cesser de publier"
 
 #: data/sage/html/notebook/afterpublish_window.html:14
 #: data/sage/html/notebook/beforepublish_window.html:18
 msgid "Automatically re-publish when changes are made"
-msgstr "Nach Änderungen automatisch erneut veröffentlichen"
+msgstr "Re-publier automatiquement lors de modifications"
 
 #: data/sage/html/notebook/base.html:74
 msgid "Click to rename this worksheet"
-msgstr "Klicken, um dieses Arbeitsblatt umzubenennen"
+msgstr "Cliquer pour renommer cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:79
 msgid "Someone else is viewing this worksheet"
-msgstr "Jemand anderes sieht gerade dieses Arbeitsblatt ein"
+msgstr "Quelqu'un d'autre regarde cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:84
 #: data/sage/html/notebook/text_cell.html:46
 msgid "Save changes"
-msgstr "Änderungen speichern"
+msgstr "Sauver les modifications"
 
 #: data/sage/html/notebook/base.html:84
 #: data/sage/html/settings/account_settings.html:9
@@ -742,406 +739,406 @@ msgstr "Änderungen speichern"
 #: data/sage/html/settings/notebook_settings.html:19
 #: data/sage/html/settings/notebook_settings.html:26
 msgid "Save"
-msgstr "Speichern"
+msgstr "Sauver"
 
 #: data/sage/html/notebook/base.html:84
 msgid "Save changes and close window"
-msgstr "Speichern und Fenster schließen"
+msgstr "Sauver les modifications et fermer la fenêtre"
 
 #: data/sage/html/notebook/base.html:84
 msgid "Save & quit"
-msgstr "Speichern & verlassen"
+msgstr "Sauver & quitter"
 
 #: data/sage/html/notebook/base.html:84
 msgid "Discard changes to this worksheet"
-msgstr "Änderungen an diesem Arbeitsblatt verwerfen"
+msgstr "Oublier les modifications de la feuille de travail"
 
 #: data/sage/html/notebook/base.html:84
 msgid "Discard & quit"
-msgstr "Verwerfen & verlassen"
+msgstr "Quitter sans sauver"
 
 #: data/sage/html/notebook/base.html:90
 msgid "Select a file related function"
-msgstr "Dateibezogene Funktion auswählen"
+msgstr "Choisir un fonction agissant sur un fichier"
 
 #: data/sage/html/notebook/base.html:90
 msgid "File..."
-msgstr "Datei..."
+msgstr "Fichier..."
 
 #: data/sage/html/notebook/base.html:91
 msgid "Load a new worksheet stored in a file"
-msgstr "In Datei gespeichertes neues Arbeitsblatt laden"
+msgstr "Charger une feuille de travail depuis un fichier"
 
 #: data/sage/html/notebook/base.html:91
 msgid "Load worksheet from a file..."
-msgstr "Arbeitsblatt aus Datei laden..."
+msgstr "Charger une feuille de travail"
 
 #: data/sage/html/notebook/base.html:92
 msgid "Create a new worksheet"
-msgstr "Neues Arbeitsblatt erstellen"
+msgstr "Créer un nouvelle feuille de travail"
 
 #: data/sage/html/notebook/base.html:92
 msgid "New worksheet"
-msgstr "Neues Arbeitsblatt"
+msgstr "Nouvelle feuille de travail"
 
 #: data/sage/html/notebook/base.html:93
 msgid "Save this worksheet to an sws file"
-msgstr "Dieses Arbeitsblatt in einer sws-Datei speichern"
+msgstr "Sauver cette feuille de travail dans un fichier .sws"
 
 #: data/sage/html/notebook/base.html:93
 msgid "Save worksheet to a file..."
-msgstr "Arbeitsblatt in einer Datei speichern..."
+msgstr "Sauver cette feuille de travail dans un fichier"
 
 #: data/sage/html/notebook/base.html:94
 #: data/sage/html/notebook/base.html:143
 msgid "Print this worksheet"
-msgstr "Dieses Arbeitsblatt drucken"
+msgstr "Imprimer cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:94
 #: data/sage/html/notebook/base.html:143
 msgid "Print"
-msgstr "Drucken"
+msgstr "Imprimer"
 
 #: data/sage/html/notebook/base.html:95
 msgid "Rename this worksheet"
-msgstr "Dieses Arbeitsblatt umbenennen"
+msgstr "Renommer cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:95
 #: data/sage/js/translated-messages.js:11
 msgid "Rename worksheet"
-msgstr "Arbeitsblatt umbenennen"
+msgstr "Renommer cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:96
 msgid "Copy this worksheet"
-msgstr "Dieses Arbeitsblatt kopieren"
+msgstr "Copier cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:96
 msgid "Copy worksheet"
-msgstr "Arbeitsblatt kopieren"
+msgstr "Copier cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:97
 msgid "Move this worksheet to the trash"
-msgstr "Dieses Arbeitsblatt in den Mülleimer verschieben"
+msgstr "Mettre cette feuille de travail à la corbeille"
 
 #: data/sage/html/notebook/base.html:97
 msgid "Delete worksheet"
-msgstr "Arbeitsblatt löschen"
+msgstr "Supprimer cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:101
 msgid "Select a worksheet function"
-msgstr "Eine Arbeitsblatt-Funktion auswählen"
+msgstr "Choisir une fonction"
 
 #: data/sage/html/notebook/base.html:101
 msgid "Action..."
-msgstr "Vorgang..."
+msgstr "Action..."
 
 #: data/sage/html/notebook/base.html:102
 msgid "Interrupt currently running calculations, if possible"
-msgstr "Aktuell laufende Berechnungen unterbrechen, sofern möglich"
+msgstr "Interrompre les calculs en cours, si possible"
 
 #: data/sage/html/notebook/base.html:102
 msgid "Interrupt"
-msgstr "Unterbrechen"
+msgstr "Interrompre"
 
 #: data/sage/html/notebook/base.html:103
 msgid "Restart the worksheet process"
-msgstr "Arbeitsblatt-Prozess neu starten"
+msgstr "Relancer le processus de la feuille de travail"
 
 #: data/sage/html/notebook/base.html:103
 msgid "Restart worksheet"
-msgstr "Arbeitsblatt neu starten"
+msgstr "Relancer la feuille de travail"
 
 #: data/sage/html/notebook/base.html:104
 msgid "Quit the worksheet process"
-msgstr "Arbeitsblatt-Prozess beenden"
+msgstr "Quitter le processus de la feuille de travail"
 
 #: data/sage/html/notebook/base.html:104
 msgid "Save and quit worksheet"
-msgstr "Speichern und Arbeitsblatt schließen"
+msgstr "Sauver et quitter la feuille de travail"
 
 #: data/sage/html/notebook/base.html:106
 msgid "Evaluate all input cells in the worksheet"
-msgstr "Alle Eingabezellen in diesem Arbeitsblatt auswerten"
+msgstr "Évaluer toutes les cellules de la feuille de travail"
 
 #: data/sage/html/notebook/base.html:106
 msgid "Evaluate All"
-msgstr "Alles auswerten"
+msgstr "Tout évaluer"
 
 #: data/sage/html/notebook/base.html:107
 msgid "Hide all output"
-msgstr "Alle Ausgaben verbergen"
+msgstr "Cacher tous les résultats"
 
 #: data/sage/html/notebook/base.html:107
 msgid "Hide All Output"
-msgstr "Alle Ausgaben verbergen"
+msgstr "Cacher tous les résultats"
 
 #: data/sage/html/notebook/base.html:108
 msgid "Show all output"
-msgstr "Alle Ausgaben anzeigen"
+msgstr "Montrer tous les résultats"
 
 #: data/sage/html/notebook/base.html:108
 msgid "Show All Output"
-msgstr "Alle Ausgaben anzeigen"
+msgstr "Montrer tous les résultats"
 
 #: data/sage/html/notebook/base.html:109
 msgid "Delete all output"
-msgstr "Alle Ausgaben löschen"
+msgstr "Supprimer tous les résultats"
 
 #: data/sage/html/notebook/base.html:109
 msgid "Delete All Output"
-msgstr "Alle Ausgaben löschen"
+msgstr "Supprimer tous les résultats"
 
 #: data/sage/html/notebook/base.html:111
 msgid "Switch to single-cell mode"
-msgstr "Auf Ein-Zell-Modus umschalten"
+msgstr "Passer au mode mono-cellule"
 
 #: data/sage/html/notebook/base.html:111
 msgid "One Cell Mode"
-msgstr "Ein-Zell-Modus"
+msgstr "Mode mono-cellule"
 
 #: data/sage/html/notebook/base.html:112
 msgid "Switch to multi-cell mode"
-msgstr "Auf Mehr-Zell-Modus umschalten"
+msgstr "Passer au mode multi-cellule"
 
 #: data/sage/html/notebook/base.html:112
 msgid "Multi Cell Mode"
-msgstr "Mehr-Zell-Modus"
+msgstr "Mode multi-cellule"
 
 #: data/sage/html/notebook/base.html:115
 msgid "Select an attached file"
-msgstr "Angehängte Datei auswählen"
+msgstr "Choisir un fichier attaché"
 
 #: data/sage/html/notebook/base.html:115
 msgid "Data..."
-msgstr "Daten..."
+msgstr "Données..."
 
 #: data/sage/html/notebook/base.html:116
 msgid "Upload or create a data file in a wide range of formats"
-msgstr "Daten-Datei nahezu beliebigen Formats hochladen oder erstellen"
+msgstr "Importer ou créer un fichier de données dans un large choix de formats"
 
 #: data/sage/html/notebook/base.html:116
 msgid "Upload or create file..."
-msgstr "Datei hochladen oder erstellen..."
+msgstr "Importer ou créer un fichier"
 
 #: data/sage/html/notebook/base.html:126
 #, python-format
 msgid "Evaluate all input cells using %(i)s"
-msgstr "Alle Eingabezellen unter Verwendung von %(i)s auswerten"
+msgstr "Évaluer toutes les cellules avec %(i)s"
 
 #: data/sage/html/notebook/base.html:132
 msgid "Enable/disable pretty_printing"
-msgstr "Edle Druckausgabe aktivieren/deaktivieren"
+msgstr "Activer/désactiver l'affichage amélioré"
 
 #: data/sage/html/notebook/base.html:144
 msgid "Interactively use this worksheet"
-msgstr "Dieses Arbeitsblatt interaktiv verwenden"
+msgstr "Utiliser cette feuille de travail en mode interactif"
 
 #: data/sage/html/notebook/base.html:144
 msgid "Worksheet"
-msgstr "Arbeitsblatt"
+msgstr "Feuille de travail"
 
 #: data/sage/html/notebook/base.html:145
 msgid "Edit text version of this worksheet"
-msgstr "Text-Fassung dieses Arbeitsblatts bearbeiten"
+msgstr "Éditer cette feuille de travail en version texte"
 
 #: data/sage/html/notebook/base.html:145
 msgid "Edit"
-msgstr "Bearbeiten"
+msgstr "Éditer"
 
 #: data/sage/html/notebook/base.html:146
 msgid "View plain text version of this worksheet"
-msgstr "Klartext-Fassung dieses Arbeitsblatts anzeigen"
+msgstr "Voir cette feuille de travail en version texte brut"
 
 #: data/sage/html/notebook/base.html:146
 msgid "Text"
-msgstr "Text"
+msgstr "Texte"
 
 #: data/sage/html/notebook/base.html:147
 msgid "View changes to this worksheet over time"
-msgstr "Im Laufe der Zeit an diesem Arbeitsblatt vorgenommene Änderungen anzeigen"
+msgstr "Voir les modifications successives de cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:147
 msgid "Undo"
-msgstr "Rückgängig"
+msgstr "Défaire"
 
 #: data/sage/html/notebook/base.html:148
 msgid "Let others edit this worksheet"
-msgstr "Zulassen, dass andere dieses Arbeitsblatt bearbeiten"
+msgstr "Autoriser d'autres utilisateurs à modifier cette feuille de travail"
 
 #: data/sage/html/notebook/base.html:148
 msgid "Share"
-msgstr "Freigeben"
+msgstr "Partager"
 
 #: data/sage/html/notebook/base.html:149
 msgid "Make this worksheet publicly viewable"
-msgstr "Dieses Arbeitsblatt öffentlich einsehbar machen"
+msgstr "Rendre cette feuille de travail visible au public"
 
 #: data/sage/html/notebook/base.html:149
 msgid "Publish"
-msgstr "Veröffentlichen"
+msgstr "Publier"
 
 #: data/sage/html/notebook/base.html:157
 msgid "Exit"
-msgstr "Verlassen"
+msgstr "Quitter"
 
 #: data/sage/html/notebook/beforepublish_window.html:5
 msgid "You can publish your worksheet to the Internet, where anyone will be able to access and view it online."
-msgstr "Sie können Ihr Arbeitsblatt im Internet veröffentlichen, wo jeder darauf zugreifen und es online einsehen kann."
+msgstr "Vous pouvez publier votre feuille de travail sur internet, tout le monde pourra alors y accéder."
 
 #: data/sage/html/notebook/beforepublish_window.html:7
 msgid "Your worksheet will be assigned a unique address (URL) that you can send to your friends and colleagues."
-msgstr "Ihrem Arbeitsblatt wird eine eindeutige Adresse (URL) zugeordnet, die Sie Ihren Freunden und Kollegen schicken können."
+msgstr "Votre feuille de travail aura une adresse unique (URL) que vous pourrez donner à vos amis et collègues."
 
 #: data/sage/html/notebook/beforepublish_window.html:9
 msgid "Do you want to publish this worksheet?"
-msgstr "Wollen Sie dieses Arbeitsblatt veröffentlichen?"
+msgstr "Voulez-vous publier cette feuille de travail ?"
 
 #: data/sage/html/notebook/beforepublish_window.html:14
 msgid "Yes"
-msgstr "Ja"
+msgstr "Oui"
 
 #: data/sage/html/notebook/beforepublish_window.html:15
 msgid "No"
-msgstr "Nein"
+msgstr "Non"
 
 #: data/sage/html/notebook/cell.html:63
 msgid "Click here or press shift-return to evaluate"
-msgstr "Zum Auswerten klicken Sie hier oder drücken Sie Shift+Enter"
+msgstr "Cliquer ici ou taper <strong>Maj-Entrée</strong> pour évaluer"
 
 #: data/sage/html/notebook/cell.html:64
 msgid "evaluate"
-msgstr "auswerten"
+msgstr "Évaluer"
 
 #: data/sage/html/notebook/download_or_delete_datafile.html:35
 msgid "Data file"
-msgstr "Daten-Datei"
+msgstr "Fichier de données"
 
 #: data/sage/html/notebook/download_or_delete_datafile.html:39
 #, python-format
 msgid "You may download <a href=\"%(p)s\">%(f)s</a> or create a linked copy to the worksheet"
-msgstr "Sie können eine verlinkte Kopie des Arbeitsblatts herunterladen <a href=\"%(p)s\">%(f)s</a> oder erstellen"
+msgstr "Vous pouvez sauver <a href=\"%(p)s\">%(f)s</a> ou créer un copie liée à la feuille de travail."
 
 #: data/sage/html/notebook/download_or_delete_datafile.html:40
 msgid "select worksheet"
-msgstr "Arbeitsblatt auswählen"
+msgstr "Choisir une feuille de travail"
 
 #: data/sage/html/notebook/download_or_delete_datafile.html:44
 #, python-format
 msgid "or <a href=\"/home/%(wf)s/datafile?name=%(f)s&action=delete\">delete %(f)s.</a>"
-msgstr "oder <a href=\"/home/%(wf)s/datafile?name=%(f)s&action=delete\">löschen %(f)s.</a>"
+msgstr "ou <a href=\"/home/%(wf)s/datafile?name=%(f)s&action=delete\">supprimer %(f)s.</a>"
 
 #: data/sage/html/notebook/download_or_delete_datafile.html:46
 #, python-format
 msgid "Access %(f)s in this worksheet by typing <tt>DATA+'%(f)s'</tt>. Here DATA is a special variable that gives the exact path to all data files uploaded to this worksheet."
-msgstr "Durch Eingabe von <tt>DATA+'%(f)s'</tt> erhalten Sie Zugriff auf %(f)s in diesem Arbeitsblatt. DATA ist hier eine spezielle Variable, die den genauen Pfad aller in dieses Arbeitsblatt hochgeladenen Daten-Dateien angibt."
+msgstr "Utiliser <tt>DATA+'%(f)s'</tt> pour accéder à %(f)s dans cette feuille de travail. DATA est ici une variable spéciale, qui contient le chemin exact vers les fichiers attachés à la feuille de travail."
 
 #: data/sage/html/notebook/download_or_delete_datafile.html:54
 #: data/sage/html/notebook/edit_window.html:11
 msgid "Save Changes"
-msgstr "Änderungen speichern"
+msgstr "Sauver les modifications"
 
 #: data/sage/html/notebook/edit_window.html:10
 msgid "Edit plain text"
-msgstr "Klartext bearbeiten"
+msgstr "Éditer en mode texte"
 
 #: data/sage/html/notebook/guest_worksheet_page.html:14
 msgid "Edit this."
-msgstr "Bearbeiten."
+msgstr "Éditer cette feuille de travail."
 
 #: data/sage/html/notebook/guest_worksheet_page.html:16
 msgid "Log in to edit a copy."
-msgstr "Loggen Sie sich ein, um eine Kopie zu bearbeiten."
+msgstr "Se connecter pour éditer un copie"
 
 #: data/sage/html/notebook/guest_worksheet_page.html:19
 msgid "Edit a copy."
-msgstr "Kopie bearbeiten."
+msgstr "Éditer une copie."
 
 #: data/sage/html/notebook/guest_worksheet_page.html:28
 msgid "Download."
-msgstr "Herunterladen."
+msgstr "Exporter."
 
 #: data/sage/html/notebook/guest_worksheet_page.html:34
 #, python-format
 msgid "This page is rated %(wr).1f."
-msgstr "Diese Seite wurde mit %(wr).1f bewertet."
+msgstr "Cette page est évaluée %(wr).1f."
 
 #: data/sage/html/notebook/guest_worksheet_page.html:39
 msgid "Rerate it:"
-msgstr "Nochmals bewerten:"
+msgstr "Évaluer à nouveau"
 
 #: data/sage/html/notebook/guest_worksheet_page.html:39
 msgid "Rate it:"
-msgstr "Bewerten:"
+msgstr "Évaluer"
 
 #: data/sage/html/notebook/guest_worksheet_page.html:49
-msgid "Other published documents..."
-msgstr "Andere veröffentlichte Dokumente..."
+msgid "Other published feuilles de travail..."
+msgstr "Autres feuilles de travail publiées..."
 
 #: data/sage/html/notebook/plain_text_window.html:4
 msgid "View plain text"
-msgstr "Klartext anzeigen"
+msgstr "Voir en mode texte"
 
 #: data/sage/html/notebook/specific_revision.html:5
 #, python-format
 msgid "Revision from %(ta)s ago"
-msgstr "Revision von vor %(ta)s"
+msgstr "Révision datant de %(ta)s"
 
 #: data/sage/html/notebook/specific_revision.html:5
 msgid "Revision List"
-msgstr "Liste der Revisionen"
+msgstr "Liste des révisions"
 
 #: data/sage/html/notebook/specific_revision.html:12
 msgid "Older"
-msgstr "Ältere"
+msgstr "Plus ancien"
 
 #: data/sage/html/notebook/specific_revision.html:14
 msgid "Oldest"
-msgstr "Älteste"
+msgstr "Le plus ancien"
 
 #: data/sage/html/notebook/specific_revision.html:18
 msgid "Newer"
-msgstr "Neuere"
+msgstr "Plus nouveau"
 
 #: data/sage/html/notebook/specific_revision.html:20
 msgid "Newest"
-msgstr "Neueste"
+msgstr "Le plus nouveau"
 
 #: data/sage/html/notebook/specific_revision.html:23
 msgid "Revert to this one"
-msgstr "Auf diese Revision zurücksetzen"
+msgstr "Rétablir cette version"
 
 #: data/sage/html/notebook/specific_revision.html:23
 msgid "(note that images are not recorded)"
-msgstr "(beachten Sie, dass Bilder nicht aufgezeichnet werden)"
+msgstr "(note : les images ne sont pas enregistrées)"
 
 #: data/sage/html/notebook/specific_revision.html:24
 msgid "Publish this one"
-msgstr "Dieses veröffentlichen"
+msgstr "Publier cette feuille de travail"
 
 #: data/sage/html/notebook/text_cell.html:47
 msgid "Cancel changes"
-msgstr "Änderungen verwerfen"
+msgstr "Annuler les modifications"
 
 #: data/sage/html/notebook/upload_data_window.html:7
 #, python-format
 msgid "Upload or Create Data File to attach to worksheet \"%(wn)s\""
-msgstr "An das Arbeitsblatt \"%(wn)s\" anzuhängende Daten-Datei hochladen oder erstellen"
+msgstr "Importer ou créer un fichier de données attaché à la feuille de travail \"%(wn)s\" "
 
 #: data/sage/html/notebook/upload_data_window.html:15
 msgid "Browse your computer to select a file to upload:"
-msgstr "Durchsuchen Sie Ihren Computer, um eine Datei zum Hochladen auszuwählen:"
+msgstr "Choisir un fichier à charger :"
 
 #: data/sage/html/notebook/upload_data_window.html:19
 msgid "Or enter the URL of a file on the web:"
-msgstr "Oder geben Sie den URL einer Datei im Internet ein:"
+msgstr "Ou bien entrer l'adresse URL d'un fichier sur internet :"
 
 #: data/sage/html/notebook/upload_data_window.html:23
 msgid "Or enter the name of a new file, which will be created:"
-msgstr "Oder geben Sie den Namen einer neuen Datei ein, die erstellt werden soll:"
+msgstr "Ou donner le nom d'un nouveau fichier, qui sera créé :"
 
 #: data/sage/html/notebook/upload_data_window.html:30
 msgid "Upload or Create Data File"
-msgstr "Daten-Datei hochladen oder erstellen"
+msgstr "Importer ou créer un fichier de données"
 
 #: data/sage/html/notebook/worksheet_page.html:27
 #: notebook/twist.py:413
@@ -1150,358 +1147,358 @@ msgstr "Daten-Datei hochladen oder erstellen"
 #: notebook/worksheet.py:723
 #: notebook/worksheet.py:4079
 msgid "Untitled"
-msgstr "Unbenannt"
+msgstr "Sans titre"
 
 #: data/sage/html/notebook/worksheet_revision_list.html:6
 msgid "Revision History"
-msgstr "Verlauf der Revisionen"
+msgstr "Historique des versions"
 
 #: data/sage/html/notebook/worksheet_revision_list.html:15
 msgid "Revision"
-msgstr "Revision"
+msgstr "Révision"
 
 #: data/sage/html/notebook/worksheet_revision_list.html:22
 #, python-format
 msgid "Revision %(lr)s"
-msgstr "Revision %(lr)s"
+msgstr "Révision %(lr)s"
 
 #: data/sage/html/notebook/worksheet_share.html:10
 msgid "Share this document"
-msgstr "Dieses Dokument freigeben"
+msgstr "Partager cette feuille de travail"
 
 #: data/sage/html/notebook/worksheet_share.html:17
 msgid "Only the owner of a worksheet is allowed to share it. You can do whatever you want if you <a href=\"copy\">make your own copy</a>."
-msgstr "Nur der Eigentümer eines Arbeitsblatts ist zu dessen Freigabe berechtigt. Sie können tun, was immer Sie möchten, wenn Sie <a href=\"copy\">Ihre eigene Kopie anfertigen</a>."
+msgstr "Seul le possesseur d'une feuille de travail peut la partager. Vous pouvez faire ce que vous voulez en <a href=\"copy\">faisant votre propre copie</a>."
 
 #: data/sage/html/notebook/worksheet_share.html:19
 msgid "This Sage Worksheet is currently shared with the people listed in the box below."
-msgstr "Dieses Sage-Arbeitsblatt ist zur Zeit freigegeben für die im unteren Kasten aufgelisteten Personen."
+msgstr "Cette feuille de travail est actuellement partagée avec les personnes listées dans la boîte ci-dessous."
 
 #: data/sage/html/notebook/worksheet_share.html:20
 msgid "You may add or remove collaborators (separate user names by commas)."
-msgstr "Sie können Mitarbeiter hinzufügen oder entfernen (Trennen der Namen durch Kommata)."
+msgstr "Vous pouvez ajouter ou enlever des collaborateurs (séparer les noms d'utilisateurs par des virgules)"
 
 #: data/sage/html/notebook/worksheet_share.html:24
 msgid "Give access to your worksheet to the above collaborators"
-msgstr "Den obigen Mitarbeitern Zugang zu Ihrem Arbeitsblatt gewähren"
+msgstr "Donner accès à votre feuille de travail aux collaborateurs ci-dessus"
 
 #: data/sage/html/notebook/worksheet_share.html:24
 msgid "Invite Collaborators"
-msgstr "Mitarbeiter einladen"
+msgstr "Inviter des collaborateurs"
 
 #: data/sage/html/notebook/worksheet_share.html:28
 msgid "Sage Users:"
-msgstr "Sage-Benutzer:"
+msgstr "Utilisateurs de Sage :"
 
 #: data/sage/html/settings/account_settings.html:3
 #: data/sage/html/settings/base.html:13
 msgid "Account Settings"
-msgstr "Kontoeinstellungen"
+msgstr "Paramètres du compte"
 
 #: data/sage/html/settings/account_settings.html:13
 msgid "Change Auto-Save Interval"
-msgstr "Intervall für automatisches Speichern abändern"
+msgstr "Intervalle pour la sauvegarde automatique"
 
 #: data/sage/html/settings/account_settings.html:15
 msgid "Minutes:"
-msgstr "Minuten:"
+msgstr "Minutes :"
 
 #: data/sage/html/settings/account_settings.html:24
 msgid "Change Password"
-msgstr "Passwort ändern"
+msgstr "Changer le mot de passe"
 
 #: data/sage/html/settings/account_settings.html:30
 msgid "Old password"
-msgstr "Altes Passwort"
+msgstr "Ancien mot de passe"
 
 #: data/sage/html/settings/account_settings.html:34
 msgid "New password"
-msgstr "Neues Passwort"
+msgstr "Nouveau mot de passe"
 
 #: data/sage/html/settings/account_settings.html:38
 msgid "Retype new password"
-msgstr "Neues Passwort nochmals eingeben"
+msgstr "Saisir à nouveau le nouveau mot de passe"
 
 #: data/sage/html/settings/account_settings.html:46
 msgid "Change E-mail Address"
-msgstr "E-Mail-Adresse ändern"
+msgstr "Changer l'adresse courriel"
 
 #: data/sage/html/settings/account_settings.html:50
 msgid "Current e-mail"
-msgstr "Aktuelle E-mail"
+msgstr "Adresse courriel actuelle"
 
 #: data/sage/html/settings/account_settings.html:54
 msgid "New e-mail"
-msgstr "Neue E-Mail"
+msgstr "Nouvelle adresse courriel"
 
 #: data/sage/html/settings/admin_add_user.html:2
 #: data/sage/html/settings/admin_add_user.html:6
 msgid "Add New User"
-msgstr "Neuen Benutzer hinzufügen"
+msgstr "Ajouter un utilisateur"
 
 #: data/sage/html/settings/admin_add_user.html:8
 msgid "Username Error"
-msgstr "Fehlerhafter Benutzername"
+msgstr "Erreur de nom d'utilisateur"
 
 #: data/sage/html/settings/admin_add_user.html:12
 msgid "Pick a username"
-msgstr "Benutzernamen wählen"
+msgstr "Choisir un nom d'utilisateur"
 
 #: data/sage/html/settings/admin_add_user.html:13
 msgid "The username must start with a letter and be between 4 and 32 characters long. It can only consist of letters, numbers, underscores, and one dot (.)."
-msgstr "Der Benutzername muss mit einem Buchstaben beginnen und zwischen 4 und 32 Zeichen lang sein. Er darf nur Buchstaben, Zahlen, Unterstrich sowie einen Punkt (.) enthalten."
+msgstr "Le nom d'utilisateur doit commencer par un lettre, comporter entre 4 et 32 signes. Il peut contenir seulement des lettres, des nombres, des _ et un point (.)."
 
 #: data/sage/html/settings/admin_add_user.html:17
 msgid "Invalid username"
-msgstr "Ungültiger Benutzername"
+msgstr "Nom d'utilisateur invalide"
 
 #: data/sage/html/settings/admin_add_user.html:19
 msgid "Username taken"
-msgstr "Gewählter Benutzername"
+msgstr "Nom d'utilisateur indisponible"
 
 #: data/sage/html/settings/admin_add_user.html:25
 msgid "Create Account"
-msgstr "Konto erstellen"
+msgstr "Créer un compte"
 
 #: data/sage/html/settings/base.html:10
 msgid "Manage Users"
-msgstr "Benutzer verwalten"
+msgstr "Gérer les comptes utilisateurs"
 
 #: data/sage/html/settings/base.html:11
 #: data/sage/html/settings/notebook_settings.html:2
 msgid "Notebook Settings"
-msgstr "Notebook-Einstellungen"
+msgstr "Paramètres du Bloc-note Sage"
 
 #: data/sage/html/settings/user_management.html:3
 #: data/sage/html/settings/user_management.html:13
 msgid "Users"
-msgstr "Benutzer"
+msgstr "utilisateurs"
 
 #: data/sage/html/settings/user_management.html:7
 msgid "User Management"
-msgstr "Benutzerverwaltung"
+msgstr "Gestion des utilisateurs"
 
 #: data/sage/html/settings/user_management.html:8
 msgid "Add User"
-msgstr "Benutzer hinzufügen"
+msgstr "Ajouter un utilisateur"
 
 #: data/sage/html/settings/user_management.html:10
 #, python-format
 msgid "The password for the user %(u)s has been reset to <strong>%(p)s</strong>"
-msgstr "Das Passwort für den Benutzer %(u)s wurde zurückgesetzt auf <strong>%(p)s</strong>"
+msgstr "Le mot de passe de l'utilisateur %(u)s a été réinitialisé en <strong>%(p)s</strong>"
 
 #: data/sage/html/settings/user_management.html:13
 msgid "Suspension"
-msgstr "Sperrung"
+msgstr "Suspendre"
 
 #: data/sage/html/settings/user_management.html:16
 msgid "Reset"
-msgstr "Zurücksetzen"
+msgstr "Réinitialiser"
 
 #: data/sage/html/settings/user_management.html:16
 msgid "Unsuspend"
-msgstr "Entsperren"
+msgstr "Reprendre"
 
 #: data/sage/html/settings/user_management.html:16
 msgid "Suspend"
-msgstr "Sperren"
+msgstr "Suspendre"
 
 #: data/sage/html/worksheet/ratings_info.html:3
 #: data/sage/html/worksheet/ratings_info.html:6
 #, python-format
 msgid "Ratings for %(wn)s"
-msgstr "Bewertungen für %(wn)s"
+msgstr "Évaluations pour %(wn)s"
 
 #: data/sage/html/worksheet/ratings_info.html:7
 msgid "Go to the worksheet."
-msgstr "Zum Arbeitsblatt navigieren."
+msgstr "Aller à la feuille de travail"
 
 #: data/sage/html/worksheet/ratings_info.html:9
 msgid "User"
-msgstr "Benutzer"
+msgstr "Utilisateur"
 
 #: data/sage/html/worksheet/ratings_info.html:9
 msgid "Comment"
-msgstr "Kommentar"
+msgstr "Commentaire"
 
 #: data/sage/html/worksheet/time_last_edited.html:6
 #, python-format
 msgid "last edited on %(t)s by %(le)s"
-msgstr "letzte Änderung am %(t)s durch %(le)s"
+msgstr "Dernière modification le %(t)s par %(le)s"
 
 #: data/sage/html/worksheet/time_since_last_edited.html:6
 #: notebook/worksheet.py:2009
 #, python-format
 msgid "%(t)s ago by %(le)s"
-msgstr "vor %(t)s durch %(le)s"
+msgstr "depuis %(t)s par %(le)s"
 
 #: data/sage/js/translated-messages.js:4
 msgid "Click to download and install tex fonts."
-msgstr "Klicken, um die Tex-Schriftart herunterzuladen und zu installieren."
+msgstr "Cliquer pour télécharger et installer les fontes TeX"
 
 #: data/sage/js/translated-messages.js:5
 msgid ""
 "Your browser / OS combination is not supported.\\n"
 "Please use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari."
 msgstr ""
-"Ihre Kombination von Browser und Betriebssystem wird nicht unterstützt.\\n"
-"Bitte benutzen Sie Firefox oder Opera unter Linux, Mac OS X, Safari oder Windows."
+"Votre combinaison Système/navigateur n'est pas supportée.\\n"
+"Merci d'utiliser Firefox ou Opera sous Linux, Mac OS X ou Windows, ou encore Safari."
 
 #: data/sage/js/translated-messages.js:6
 msgid "Java Applet Hidden"
-msgstr "Verborgenes Java-Applet"
+msgstr "Applet Java cachée"
 
 #: data/sage/js/translated-messages.js:7
 msgid "Click here to pop out"
-msgstr "Klicken Sie hier, um herauszuspringen"
+msgstr "Cliquer ici pour ouvrir une mini-fenêtre"
 
 #: data/sage/js/translated-messages.js:8
 msgid "Error applying function to worksheet(s)."
-msgstr "Fehler beim Anwenden der Funktion auf das Arbeitsblatt / die Arbeitsblätter."
+msgstr "Erreur lors de l'application de la fonction à la feuille de travail"
 
 #: data/sage/js/translated-messages.js:9
 msgid "Title of saved worksheet"
-msgstr "Titel des gespeicherten Arbeitsblatts"
+msgstr "Titre de la feuille de travail sauvée"
 
 #: data/sage/js/translated-messages.js:10
 msgid "Failed to save worksheet."
-msgstr "Fehler beim Speichern des Arbeitsblatts."
+msgstr "Échec de sauvegarde de la feuille de travail"
 
 #: data/sage/js/translated-messages.js:12
 msgid "Please enter a name for this worksheet."
-msgstr "Bitte geben Sie einen Namen ein für dieses Arbeitsblatt."
+msgstr "Entrer un nom pour cette feuille de travail"
 
 #: data/sage/js/translated-messages.js:13
 msgid "Rename"
-msgstr "Umbenennen"
+msgstr "Renommer"
 
 #: data/sage/js/translated-messages.js:14
 msgid "Possible failure deleting worksheet."
-msgstr "Möglicher Fehler beim Löschen des Arbeitsblatts."
+msgstr "Échec possible de suppression de la feuille de travail."
 
 #: data/sage/js/translated-messages.js:15
 msgid "unprinted"
-msgstr "ungedruckt"
+msgstr "pas imprimé"
 
 #: data/sage/js/translated-messages.js:16
 msgid "You requested to evaluate a cell that, for some reason, the server is unaware of."
-msgstr "Sie haben die Auswertung einer Zelle angefragt, die der Server aus irgendeinem Grunde nicht kennt."
+msgstr "Vous demandez à évaluer une cellule que le serveur ne connaît pas."
 
 #: data/sage/js/translated-messages.js:18
 msgid "This worksheet is read only. Please make a copy or contact the owner to change it."
-msgstr "Dieses Arbeitsblatt kann nur gelesen werden. Bitte fertigen Sie eine Kopie davon an oder bitten Sie den Eigentümer es zu abzuändern."
+msgstr "Cette feuille de travail est en mode lecture seule. Faire une copie ou contacter son possesseur pour la modifier."
 
 #: data/sage/js/translated-messages.js:19
 msgid "loading..."
-msgstr "lade..."
+msgstr "chargement en cours..."
 
 #: data/sage/js/translated-messages.js:20
 msgid "Error updating cell output after "
-msgstr "Fehler beim Aktualisieren der Zell-Ausgabe hinter "
+msgstr "Erreur d'actualisation du résultat de la cellule après "
 
 #: data/sage/js/translated-messages.js:21
 msgid "s (canceling further update checks)."
-msgstr "s (breche weitere Aktualisierungsprüfungen ab)."
+msgstr "s (fin des essais d'actualisation)."
 
 #: data/sage/js/translated-messages.js:22
 msgid "Problem inserting new input cell after current input cell.\\n"
-msgstr "Problem beim Einfügen einer neuen Eingabezelle hinter der aktuellen Eingabezelle.\\n"
+msgstr "Problème lors de l'insertion d'une cellule après la cellule courante.\\n"
 
 #: data/sage/js/translated-messages.js:23
 msgid "Worksheet is locked. Cannot insert cells."
-msgstr "Das Arbeitsblatt ist gesperrt. Kann keine Zellen einfügen."
+msgstr "La feuille de travail est verrouillée. Insertion de cellules impossible."
 
 #: data/sage/js/translated-messages.js:24
 msgid "Unable to interrupt calculation."
-msgstr "Berechnung kann nicht unterbrochen werden."
+msgstr "impossible d'interrompre le calcul."
 
 #: data/sage/js/translated-messages.js:25
 msgid "Close this box to stop trying."
-msgstr "Schließen Sie diesen Kasten, um die Versuche einzustellen."
+msgstr "Fermer cette boîte pour cesser d'essayer."
 
 #: data/sage/js/translated-messages.js:26
 msgid "Interrupt attempt"
-msgstr "Unterbrechungsversuch"
+msgstr "Tentative d'interruption."
 
 #: data/sage/js/translated-messages.js:27
 msgid "<a href='javascript:restart_sage();'>Restart</a>, instead?"
-msgstr "Stattdessen <a href='javascript:restart_sage();'>neu starten</a>?"
+msgstr "Plutôt <a href='javascript:restart_sage();'>relancer</a> Sage ?"
 
 #: data/sage/js/translated-messages.js:28
 msgid "Emptying the trash will permanently delete all items in the trash. Continue?"
-msgstr "Beim Leeren des Mülleimers werden alle darin befindlichen Objekte entgültig gelöscht. Fortsetzen?"
+msgstr "Vider la corbeille supprimera définitivement son contenu. Continuer ?"
 
 #: data/sage/js/translated-messages.js:29
 msgid "Get Image"
-msgstr "Bild holen"
+msgstr "Obtenir l'image"
 
 #: data/sage/js/translated-messages.js:30
 msgid "Jmol Image"
-msgstr "Jmol-Bild"
+msgstr "Image Jmol"
 
 #: data/sage/js/translated-messages.js:31
 msgid "To save this image, you can try right-clicking on the image to copy it or save it to a file, or you may be able to just drag the image to your desktop."
-msgstr "Mit einem Rechts-Klick auf dieses Bild können sie versuchen, es zu speichern. Sie können es kopieren oder in einer Datei abspeichern. Oder Sie könnten das Bild einfach auf Ihr Desktop ziehen."
+msgstr "Pour sauver cette image, essayer un clic droit sur l'image pour la copier ou la sauver dans un fichier. Il est peut-être aussi possible de glisser-déposer vers le bureau."
 
 #: data/sage/js/translated-messages.js:32
 msgid "Sorry, but you need a browser that supports the &lt;canvas&gt; tag."
-msgstr "Entschuldigung, aber Sie benötigen einen Browser, der den &lt;canvas&gt;-Tag unterstützt."
+msgstr "Désolé, il vous faut un navigateur supportant la balise &lt;canvas&gt;."
 
 #: data/sage/js/translated-messages.js:33
 #, python-format
 msgid "Trying again in %(num)d second..."
 msgid_plural "Trying again in %(num)d seconds..."
-msgstr[0] "Erneuter Versuch in %(num)d Sekunde..."
-msgstr[1] "Erneuter Versuch in %(num)d Sekunden..."
+msgstr[0] "Essayer à nouveau dans %(num)d seconde..."
+msgstr[1] "Essayer à nouveau dans %(num)d secondes..."
 
 #: notebook/challenge.py:179
 msgid "Please ask the server administrator to configure a challenge!"
-msgstr "Bitte, bitten Sie den Administrator eine Herausforderung einzurichten!"
+msgstr "Merci de demander à l'administrateur du serveur de choisir une question !"
 
 #: notebook/challenge.py:217
 msgid "Is pi > e?"
-msgstr "Gilt pi > e ?"
+msgstr "Est-ce que pi > e ?"
 
 #: notebook/challenge.py:217
 msgid "y|yes"
-msgstr "j|ja"
+msgstr "o|oui"
 
 #: notebook/challenge.py:218
 msgid "What is 3 times 8?"
-msgstr "Was ist 3 mal 8?"
+msgstr "Combien font 3 fois 8 ?"
 
 #: notebook/challenge.py:218
 msgid "24|twenty-four"
-msgstr "24|vierundzwanzig"
+msgstr "24|vingt-quatre"
 
 #: notebook/challenge.py:219
 msgid "What is 2 plus 3?"
-msgstr "Was ist 2 plus 3?"
+msgstr "Combien font 2 plus 3 ?"
 
 #: notebook/challenge.py:219
 #: notebook/challenge.py:221
 msgid "5|five"
-msgstr "5|fünf"
+msgstr "5|cinq"
 
 #: notebook/challenge.py:220
 msgid "How many bits are in one byte?"
-msgstr "Wie viele Bits sind ein Byte?"
+msgstr "Combien de bits y a-t-il dans un octet ?"
 
 #: notebook/challenge.py:220
 msgid "8|eight"
-msgstr "8|acht"
+msgstr "8|huit"
 
 #: notebook/challenge.py:221
 msgid "What is the largest prime factor of 15?"
-msgstr "Was ist der größte Primfaktor von 15?"
+msgstr "Quel est le plus grand facteur premier de 15 ?"
 
 #: notebook/conf.py:120
 msgid "Updated"
-msgstr "Aktualisiert"
+msgstr "Actualisé"
 
 #: notebook/notebook.py:169
 msgid "optional"
-msgstr "optional"
+msgstr "optionnel"
 
 #: notebook/register.py:19
 #: notebook/register.py:26
@@ -1510,7 +1507,7 @@ msgid ""
 "Hi %s!\n"
 "\n"
 msgstr ""
-"Hallo %s!\n"
+"Bonjour %s!\n"
 "\n"
 
 #: notebook/register.py:20
@@ -1522,11 +1519,11 @@ msgid ""
 "\n"
 "You will be taken to a page which will confirm that you have indeed registered."
 msgstr ""
-"Danke, dass Sie sich bei Sage-Notebook registriert haben. Um die Registrierung abzuschließen, kopieren sie bitte den folgenden Link und fügen ihn in Ihren Browser ein:\n"
+"Merci de votre enregistrement dans le Bloc-note Sage. Pour compléter l'enregistrement, veuillez copier-coller le lien suivant dans votre navigateur :\n"
 "\n"
 "%s://%s:%s/confirm?key=%s\n"
 "\n"
-"Sie werden auf eine Seite geleitet, die bestätigt, dass Sie sich tatsächlich registriert haben."
+"Ce lien vous mènera à une page qui confirmera que vous avez bien été enregistrés."
 
 #: notebook/register.py:27
 #, python-format
@@ -1537,614 +1534,622 @@ msgid ""
 "\n"
 "Make sure to reset your password by going to Settings in the upper right bar."
 msgstr ""
-"Ihr neues Passwort lautet: %s\n"
+"Votre nouveau mot de passe est : %s\n"
 "\n"
-"Melden Sie sich an bei: %s://%s:%s/\n"
+"Connectez-vous : %s://%s:%s/\n"
 "\n"
-"Vergewissern Sie sich, Ihr Passwort zurückzusetzen. Gehen Sie dazu auf Einstellungen im rechten oberen Balken."
+"Assurez-vous de modifier votre mot de passe via le menu Paramètres de la barre horizontale."
 
 #: notebook/server_conf.py:42
 #: notebook/user_conf.py:24
 msgid "Appearance"
-msgstr "Erscheinungsbild"
+msgstr "Apparence"
 
 #: notebook/server_conf.py:43
 msgid "Authentication"
-msgstr "Echtheitsnachweis"
+msgstr "Authentification"
 
 #: notebook/server_conf.py:44
 msgid "Server"
-msgstr "Server"
+msgstr "Serveur"
 
 #: notebook/server_conf.py:49
 msgid "Number of word-wrap columns"
-msgstr "Anzahl der Spalten pro Zeile"
+msgstr "Choix du nombre de colonnes"
 
 #: notebook/server_conf.py:55
 msgid "Maximum history length"
-msgstr "Maximale Länge des Verlaufs"
+msgstr "Longueur maximale de l'historique"
 
 #: notebook/server_conf.py:61
 msgid "Idle timeout (seconds)"
-msgstr "Beenden nach Leerlaufdauer in Sekunden"
+msgstr "Terminaison après durée d'inactivité (en secondes)"
 
 #: notebook/server_conf.py:67
 msgid "Idle check interval (seconds)"
-msgstr "Intervall für Überprüfung auf Leerlauf (Sekunden)"
+msgstr "Intervalle de vérification d'inactivité (en secondes)"
 
 #: notebook/server_conf.py:73
 msgid "Save interval (seconds)"
-msgstr "Intervall für automatisches Speichern (Sekunden)"
+msgstr "Intervalle de sauvegarde automatique (en secondes)"
 
 #: notebook/server_conf.py:79
 msgid "Doc pool size"
-msgstr "Größe des Dokumentenspeichers"
+msgstr "Volume de stockage des documents"
 
 #: notebook/server_conf.py:85
 msgid "Worksheet process users (comma-separated list)"
-msgstr "Benutzer des Arbeitsblatt-Prozesses (Komma-separierte Liste)"
+msgstr "Utilisateurs des processus de la feuille de travail (liste séparée par des virgules)"
 
 #: notebook/server_conf.py:91
 msgid "Default system"
-msgstr "Vorausgewähltes System"
+msgstr "Système par défaut"
 
 #: notebook/server_conf.py:97
 msgid "Pretty print (typeset) output"
-msgstr "Edle Druckausgabe (Schriftsatz)"
+msgstr "Affichage amélioré (typographie)"
 
 #: notebook/server_conf.py:103
 msgid "Worksheet process limits"
-msgstr "Beschränkungen für den Arbeitsblatt-Prozess"
+msgstr "Limites des processus des feuilles de travail"
+
+#: notebook/server_conf.py:107
+msgid "Enable published interacts (EXPERIMENTAL; USE AT YOUR OWN RISK)"
+msgstr "Autoriser les feuilles de travail interactives publiées (EXPÉRIMENTAL : À VOS RISQUES ET PÉRILS)"
 
 #: notebook/server_conf.py:109
 msgid "Require e-mail for account registration"
-msgstr "Zur Konto-Registrierung die Angabe der E-Mail-Adresse fordern"
+msgstr "Exiger une adresse courriel pour ouvrir un compte"
 
 #: notebook/server_conf.py:115
 msgid "Enable user registration"
-msgstr "Registierung von Benutzern aktivieren"
+msgstr "Autoriser l'ouverture de comptes"
 
 #: notebook/server_conf.py:121
 msgid "Use a challenge for account registration"
-msgstr "Eine Herausforderung zur Konto-Registrierung verwenden"
+msgstr "utiliser une question/défi pour l'ouverture de compte"
 
 #: notebook/server_conf.py:127
 msgid "Type of challenge"
-msgstr "Art der Herausforderung"
+msgstr "Type de question/défi"
 
 #: notebook/server_conf.py:134
 msgid "reCAPTCHA public key"
-msgstr "reCAPTCHA öffentlicher Schlüssel"
+msgstr "reCAPTCHA clé publique"
 
 #: notebook/server_conf.py:140
 msgid "reCAPTCHA private key"
-msgstr "reCAPTCHA privater Schlüssel"
+msgstr "reCAPTCHA clé privée"
 
 #: notebook/server_conf.py:146
 msgid "Default Language"
-msgstr "Vorausgewählte Sprache"
+msgstr "Langue par défaut"
+
+#: notebook/server_conf.py:156
+msgid "Allow OpenID authentication (requires python ssl module)"
+msgstr "Autoriser l'authentification par OpenID (nécessite le module python ssl)"
 
 #: notebook/template.py:68
 #, python-format
 msgid "%(num)d second"
 msgid_plural "%(num)d seconds"
-msgstr[0] "%(num)d Sekunde"
-msgstr[1] "%(num)d Sekunden"
+msgstr[0] "%(num)d seconde"
+msgstr[1] "%(num)d secondes"
 
 #: notebook/template.py:71
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
-msgstr[0] "%(num)d Minute"
-msgstr[1] "%(num)d Minuten"
+msgstr[0] "%(num)d minute"
+msgstr[1] "%(num)d minutes"
 
 #: notebook/template.py:74
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
-msgstr[0] "%(num)d Stunde"
-msgstr[1] "%(num)d Stunden"
+msgstr[0] "%(num)d heure"
+msgstr[1] "%(num)d heures"
 
 #: notebook/template.py:76
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
-msgstr[0] "%(num)d Tag"
-msgstr[1] "%(num)d Tage"
+msgstr[0] "%(num)d jour"
+msgstr[1] "%(num)d jours"
 
 #: notebook/template.py:135
 msgid "Sage Notebook"
-msgstr "Sage Notebook"
+msgstr "Bloc-note Sage"
 
 #: notebook/tutorial.py:354
 msgid "Find Help and Documentation"
-msgstr "Hilfe und Dokumentation beziehen"
+msgstr "Trouver Aide et Documentation"
 
 #: notebook/tutorial.py:355
 msgid "Get Started with Sage"
-msgstr "Erste Schritte mit Sage"
+msgstr "Premiers pas en Sage"
 
 #: notebook/tutorial.py:355
 msgid "<a href=\"/doc/live/tutorial/index.html\">Work through the tutorial</a> (if you have trouble with it, view the <a href=\"/doc/static/tutorial/index.html\">static version</a>)."
-msgstr "<a href=\"/doc/live/tutorial/index.html\">Den Lehrpfad durcharbeiten</a> (wenn Sie Schwierigkeiten damit haben, sehen Sie die <a href=\"/doc/static/tutorial/index.html\">statische Fassung</a> ein)."
+msgstr "<a href=\"/doc/live/tutorial/index.html\">Utiliser le tutoriel</a> (si vous avez des difficultés, voir la <a href=\"/doc/static/tutorial/index.html\">version statique</a>)."
 
 #: notebook/tutorial.py:356
 msgid "Help About"
-msgstr "Kontextbezogene Hilfe"
+msgstr "Aide contextuelle"
 
 #: notebook/tutorial.py:357
 msgid "Type ? immediately after the object or function and press tab or shift-enter (shift-enter overwrites output and saves to worksheet)."
-msgstr "Geben Sie ? unmittelbar hinter dem Objekt oder der Funktion ein und drücken Sie Tab oder Shift+Enter (die Kombination Shift+Enter überschreibt Ausgaben und speichert ins Arbeitsblatt)."
+msgstr "Taper ? après un objet ou une fonction et appuyer sur Tab ou Maj+Entrée (la combinaison Maj+Entrée écrit la documentation dans la feuille de travail)."
 
 #: notebook/tutorial.py:359
 msgid "Put ?? after the object and press tab or shift-enter (shift-enter overwrites output and saves to worksheet)."
-msgstr "Geben Sie ?? unmittelbar hinter dem Objekt und drücken Sie Tab oder Shift+Enter (die Kombination Shift+Enter überschreibt Ausgaben und speichert ins Arbeitsblatt)."
+msgstr "Taper ?? après un objet ou une fonction et appuyer sur Tab ou Maj+Entrée (la combinaison Maj+Entrée écrit les sources dans la feuille de travail)."
 
 #: notebook/tutorial.py:360
 msgid "Full Text Search of Docs and Source"
-msgstr "Volltextsuche nach Dokumenten und Quelltext"
+msgstr "Recherche dans la documentation et le code source"
 
 #: notebook/tutorial.py:361
 msgid "Search the SAGE documentation by typing <pre>search_doc(\"my query\")</pre> in an input cell and press shift-enter.  Search the source code of SAGE by typing <pre>search_src(\"my query\")</pre> and pressing shift-enter.  Arbitrary regular expressions are allowed as queries."
-msgstr "Durchsuchen Sie die Dokumentation von Sage, indem Sie <pre>search_doc(\"meine Anfrage\")</pre> in eine Input-Zelle eingeben und Shift+Enter drücken.  Beliebige reguläre Ausdrücke sind als Anfragen zulässig."
+msgstr "Chercher dans la documentation en tapant <pre>search_doc(\"ma requête\")</pre> dans une cellule puis taper Maj+Entrée.  Chercher dans le code source de Sage en tapant <pre>search_src(\"ma requête\")</pre> dans une cellule puis taper Maj+Entrée. Les requêtes peuvent être des expressions régulières."
 
 #: notebook/tutorial.py:365
 msgid "Key and Mouse Bindings"
-msgstr "Tastatur- und Mausanbindung"
+msgstr "Raccourcis claviers et souris"
 
 #: notebook/tutorial.py:366
 msgid "Evaluate Input"
-msgstr "Eingaben auswerten"
+msgstr "Évaluer la cellule"
 
 #: notebook/tutorial.py:367
 msgid "Press <strong>shift-enter</strong>.  You can start several calculations at once.  If you press <strong>alt-enter</strong> instead, then a new cell is created after the current one.  If you press <strong>ctrl-enter</strong> then the cell is split and both pieces are evaluated separately."
-msgstr "Drücken Sie <strong>Shift+Enter</strong>, um mehrere Berechnungen auf einmal zu starten.  Wenn Sie stattdessen <strong>Alt+Enter</strong> drücken, wird eine neue Zelle hinter der aktuellen erzeugt. Drücken Sie <strong>Ctrl+Enter</strong>, so wird die Zelle gespalten und beide Teile getrennt ausgewertet."
+msgstr "Taper <strong>Maj+Entrée</strong>. On peut lancer plusieurs calculs à la fois.  En tapant plutôt <strong>Alt+Entrée</strong>, une nouvelle cellule est crée après la cellule courante. En tapant <strong>Ctrl+Entrée</strong>, la cellule est coupée en deux et les deux parties évaluées séparément."
 
 #: notebook/tutorial.py:368
 msgid "Tab Completion"
-msgstr "Tabulator-Vervollständigung"
+msgstr "Complétion par Tab"
 
 #: notebook/tutorial.py:369
 msgid "Press <strong>tab</strong> while the cursor is on an identifier. On some web browsers (e.g., Opera) you must use control-space instead of tab."
-msgstr "Drücken Sie <strong>Tab</strong> während der Cursor auf einem Bezeichner steht. Bei einigen Internetbrowsern (z.B. Opera) müssen Sie Ctrl+Leertaste benutzen anstatt Tab."
+msgstr "Taper <strong>Tab</strong> avec le curseur sur une commande. Dans certains navigateurs (par ex. Opera) il faut taper Ctrl-Espace plutôt que Tab."
 
 #: notebook/tutorial.py:370
 msgid "Insert New Cell"
-msgstr "Neue Zelle einfügen"
+msgstr "Insérer une nouvelle cellule"
 
 #: notebook/tutorial.py:371
 msgid "Put the mouse between an output and input until the horizontal line appears and click.  If you press Alt-Enter in a cell, the cell is evaluated and a new cell is inserted after it."
-msgstr "Bringen Sie den Mauszeiger zwischen eine Ausgabe und eine Eingabe bis die waagerechte Linie erscheint und klicken dann. Wenn Sie in einer Zelle Alt+Enter drücken, wird sie ausgewertet und eine neue Zelle wird hinter ihr eingefügt."
+msgstr "Placer la souris entre une sortie et une entrée, pour faire apparaître la ligne horizontale, puis cliquer. En tapant Alt+Entrée dans une cellule, une nouvelle cellule est créée juste en dessous."
 
 #: notebook/tutorial.py:372
 msgid "Delete Cell"
-msgstr "Zelle löschen"
+msgstr "Supprimer une cellule"
 
 #: notebook/tutorial.py:373
 msgid "Delete all cell contents, then press <strong>backspace</strong>."
-msgstr "Löschen Sie den gesamten Zellinhalt und drücken Sie dann <strong>Backspace</strong>."
+msgstr "Supprimer le contenu de la cellule puis taper <strong>Backspace</strong>."
 
 #: notebook/tutorial.py:374
 msgid "Split and Join Cells"
-msgstr "Zellen spalten und vereinigen"
+msgstr "Découper ou fusionner des cellules"
 
 #: notebook/tutorial.py:375
 msgid "Press <strong>ctrl-;</strong> in a cell to split it into two cells, and <strong>ctrl-backspace</strong> to join them.  Press <strong>ctrl-enter</strong> to split a cell and evaluate both pieces."
-msgstr "Drücken Sie <strong>Ctrl+;</strong> in einer Zelle, um sie in zwei Zellen zu spalten und <strong>Ctrl+Backspace</strong>, um sie zu vereinigen.  Drücken Sie <strong>Ctrl+Enter</strong>, um eine Zelle zu spalten und beide Teile auszuwerten."
+msgstr "Taper <strong>Ctrl+;</strong> dans une cellule pour la couper en deux et <strong>Ctrl+Backspace</strong> pour fusionner deux cellules.  Taper <strong>Ctrl+Entrée</strong> pour couper une cellule en deux et évaluer les deux parties."
 
 #: notebook/tutorial.py:376
 msgid "Insert New Text Cell"
-msgstr "Neue Text-Zelle einfügen"
+msgstr "Insérer une cellule de texte"
 
 #: notebook/tutorial.py:377
 msgid "Move the mouse between cells until a blue bar appears.  <strong>Shift-click</strong> on the blue bar to create a new text cell.  Double click on existing text to edit it.  Use $...$ and $$...$$ to include typeset math in the text block."
-msgstr "Bewegen Sie den Mauszeiger zwischen Zellen bis ein blauer Balken erscheint.  Mit <strong>Shift+Klick</strong> auf dem blauen Balken können Sie eine neue Textzelle erstellen.  Doppelklicken Sie vorhandenen Text, um ihn zu bearbeiten.  Verwenden Sie $...$ und $$...$$, um mathematische Formeln in den Textblock einzuschließen."
+msgstr "Déplacer la souris jusqu'à faire apparaître une barre bleue.  Utiliser <strong>Maj+Clic</strong> sur la barre bleue pour créer une nouvelle cellule texte.  Double-cliquer sur le texte pour l'éditer.  Utiliser $...$ et $$...$$, pour insérer des formules mathématiques dans une cellule texte."
 
 #: notebook/tutorial.py:378
 msgid "Hide/Show Output"
-msgstr "Ausgaben verbergen/anzeigen"
+msgstr "Cacher/montrer les résultats"
 
 #: notebook/tutorial.py:379
 msgid "Click on the left side of output to toggle between hidden, shown with word wrap, and shown without word wrap."
-msgstr "Klicken Sie links der Ausgabe, um zwischen verborgen, sichtbar mit Zeilenumbruch und sichtbar ohne Zeilenumbruch zu wechseln."
+msgstr "Cliquer à gauche du résultat pour basculer entre trois modes : caché, montré avec retour à la ligne, montré sans retour à la ligne"
 
 #: notebook/tutorial.py:380
 msgid "Indenting Blocks"
-msgstr "Blöcke einrücken"
+msgstr "Indenter les blocs"
 
 #: notebook/tutorial.py:381
 msgid "Highlight text and press > to indent it all and < to unindent it all (works in Safari and Firefox).  In Firefox you can also press tab and shift-tab."
-msgstr "Heben Sie Text hervor und drücken Sie >, um alles einzurücken und <, um alles auszurücken (funktioniert in Safari und Firefox).  In Firefox können Sie auch Tab und Shift+Tab drücken."
+msgstr "Sélectionner du texte et taper > pour l'indenter et < pour le désindenter (marche avec Safari et Firefox).  Dans Firefox, marche aussi avec Tab et Maj+Tab."
 
 #: notebook/tutorial.py:382
 msgid "Comment/Uncomment Blocks"
-msgstr "Kommentieren / Entfernen von Kommentaren von Blöcken"
+msgstr "Commenter/dé-commenter les blocs"
 
 #: notebook/tutorial.py:383
 msgid "Highlight text and press <strong>ctrl-.</strong> to comment it and <strong>ctrl-,</strong> to uncomment it. Alternatively, use <strong>ctrl-3</strong> and <strong>ctrl-4</strong>."
-msgstr "Heben Sie Text hervor und drücken Sie <strong>Ctrl+.</strong>, um ihn zu kommentieren und <strong>Ctrl+,</strong>, um einen Kommentar zu entfernen. Alternativ können Sie <strong>Ctrl+3</strong> und <strong>Ctrl+4</strong> verwenden."
+msgstr "Sélectionner du texte et faire <strong>Ctrl+.</strong> pour le commenter et <strong>Ctrl+,</strong> pour le dé-commenter. Aussi possible avec <strong>Ctrl+3</strong> et <strong>Ctrl+4</strong>."
 
 #: notebook/tutorial.py:384
 msgid "Paren matching"
-msgstr "Korrektheit der Klammerung"
+msgstr "Correction des parenthèses"
 
 #: notebook/tutorial.py:384
 msgid "To fix unmatched or mis-matched parentheses, braces or brackets, press <strong>ctrl-0</strong>.  Parentheses before the cursor will be matched, minding strings and (Python) comments."
-msgstr "Zur Korrektur unpaariger oder fehlgepaarter Klammern drücken Sie <strong>Ctrl+0</strong>.  Klammern vor dem Cursor werden gepaart unter Beachtung von Zeichenfolgenkonstanten und (Python-) Kommentaren."
+msgstr "Pour corriger des parenthèses manquantes ou incorrectes, taper <strong>Ctrl+0</strong>.  Les parenthèses avant le curseur seront complétées, en tenant compte des chaînes de caractères et des commentaires Python."
 
 #: notebook/tutorial.py:388
 msgid "Interrupt and Restart Sessions"
-msgstr "Sitzungen unterbrechen und neu starten"
+msgstr "Interrompre et relancer les sessions"
 
 #: notebook/tutorial.py:389
 msgid "Interrupt Running Calculations"
-msgstr "Laufende Berechnungen unterbrechen"
+msgstr "Interrompre les calculs en cours"
 
 #: notebook/tutorial.py:390
 msgid "Click <u>Interrupt</u> or press escape in any input cell. This will (attempt) to interrupt SAGE by sending many interrupt signals."
-msgstr "Klicken Sie auf <u>Unterbrechen</u> oder drücken Sie Escape in einer beliebigen Zelle. Dadurch werden viele Interrupt-Signale gesendet, die SAGE (versuchen zu) unterbrechen."
+msgstr "Cliquer sur <u>Interrompre</u> ou taper Escape dans une cellule. Ceci va tenter d'interrompre Sage en envoyant de nombreux signaux d'interruption."
 
 #: notebook/tutorial.py:391
 msgid "Restart"
-msgstr "Neu starten"
+msgstr "Relancer"
 
 #: notebook/tutorial.py:392
 msgid "Type \"restart\" to restart the SAGE interpreter for a given worksheet.  (You have to interrupt first.)"
-msgstr "Geben Sie \"restart\" ein, um den SAGE-Interpreter für ein gegebenes Arbeitsblatt neu zu starten.  (Sie müssen zunächst unterbrechen.)"
+msgstr "Taper \"restart\", pour relancer l’interpréteur Sage pour une feuille de travail donné.  (Il faut d'abord l'interrompre.)"
 
 #: notebook/tutorial.py:394
 msgid "Special Cell Blocks"
-msgstr "Spezielle Zell-Blöcke"
+msgstr "Blocs de cellules spéciales"
 
 #: notebook/tutorial.py:395
 msgid "Evaluate Cell using GAP, Singular, etc."
-msgstr "Zelle auswerten unter Verwendung von GAP, Singular usw."
+msgstr "Évaluer la cellule avec GAP, Singular, etc."
 
 #: notebook/tutorial.py:396
 #, python-format
 msgid "Put \"%gap\", \"%singular\", etc. as the first input line of a cell; the rest of the cell is evaluated in that system."
-msgstr "Setzen Sie \"%gap\", \"%singular\" usw. als erste Eingabezeile einer Zelle, so wird der Rest der Zelle im jeweiligen System ausgewertet."
+msgstr "Écrire \"%gap\", \"%singular\" etc. comme première ligne d'une cellule, le reste de la cellule est alors évalué avec ce système."
 
 #: notebook/tutorial.py:397
 msgid "Shell Scripts"
-msgstr "Shell-Scripte"
+msgstr "Scripts Shell"
 
 #: notebook/tutorial.py:398
 #, python-format
 msgid "Begin a block with %sh to have the rest of the block evaluated as a shell script.  The current working directory is maintained."
-msgstr "Beginnen Sie einen Block mit %sh, so wird der Rest des Blocks als Shell-Script ausgewertet.  Das aktuelle Arbeitsverzeichnis wird beibehalten."
+msgstr "Commencer un bloc par %sh pour que le reste du bloc soit évalué comme un script shell.  Le répertoire de travail actuel est préservé."
 
 #: notebook/tutorial.py:399
 msgid "Interactive Dynamic Widgets"
-msgstr "Interaktive dynamische Fenstererweiterungen"
+msgstr "Gadgets dynamiques interactifs"
 
 #: notebook/tutorial.py:400
 msgid "Put @interact on the line before a function definition.  Type interact? for more details."
-msgstr "Setzen Sie @interact in die Zeile vor einer Funktionsdefinition.  Geben Sie interact? ein für nähere Informationen."
+msgstr "Écrire @interact dans la ligne précédant la définition d'une fonction.  Voir interact? pour plus d'informations."
 
 #: notebook/tutorial.py:401
 msgid "Autoevaluate Cells on Load"
-msgstr "Zellen beim Laden automatisch auswerten"
+msgstr "Auto-évaluer les cellules lors du chargement"
 
 #: notebook/tutorial.py:402
 msgid "Any cells with \"#auto\" in the input is automatically evaluated when the worksheet is first opened."
-msgstr "Alle Zellen mit \"#auto\" in der Eingabe werden beim ersten Öffnen des Arbeitsblatts automatisch ausgewertet."
+msgstr "Les cellules contenant \"#auto\" sont évaluées automatiquement lors de l'ouverture de la feuille de travail."
 
 #: notebook/tutorial.py:403
 msgid "Time"
-msgstr "Zeit"
+msgstr "Temps"
 
 #: notebook/tutorial.py:404
 msgid "Type \"%time\" at the beginning of the cell."
-msgstr "Geben Sie \"%time\" am Anfang der Zelle ein."
+msgstr "Taper \"%time\" au début de la cellule."
 
 #: notebook/tutorial.py:406
 msgid "Useful Tips"
-msgstr "Nützliche Tipps"
+msgstr "Trucs et Astuces"
 
 #: notebook/tutorial.py:407
 msgid "Input Rules"
-msgstr "Eingaberegeln"
+msgstr "Règles d'entrée"
 
 #: notebook/tutorial.py:408
 msgid "Code is evaluated by exec'ing (after preparsing).  Only the output of the last line of the cell is implicitly printed.  If any line starts with \"sage:\" or \">>>\" the entire block is assumed to contain text and examples, so only lines that begin with a prompt are executed.   Thus you can paste in complete examples from the docs without any editing, and you can write input cells that contains non-evaluated plain text mixed with examples by starting the block with \">>>\" or including an example."
-msgstr "Code wird durch Ausführen (nach dem Vorparsen) ausgewertet.  Nur die Ausgabe der letzten Zeile einer Zelle wird implizit gedruckt.  Wann immer eine Zeile mit \"sage:\" oder \">>>\" beginnt, wird davon ausgegangen, dass der gesamte Block Text und Beispiele enthält und folglich nur solche Zeilen ausgeführt, die mit einer Eingabeaufforderung beginnen.   Daher können Sie vollständige Beispiele aus der Dokumentation ohne irgendwelche Anpassungen einfügen.  Und Sie können Eingabezellen schreiben, die unausgewerteten Klartext, gemischt mit Beispielen, enthalten, indem Sie den Block mit \">>>\" beginnen oder ein Beispiel einschließen."
+msgstr "Le code est évalué par exec (après un filtre). Seul le résultat de la dernière ligne de la cellule est affiché. Si une ligne commence par \"sage:\" ou \">>>\" le bloc entier est supposé contenir du texte et des exemples, et seules les lignes commençant par \"sage:\" sont exécutées. Vous pouvez ainsi copier-coller des exemples complets depuis la documentation. Vous pouvez écrire des cellules qui mélangent texte non-évalué et exemples, en commençant par \">>>\" ou en incluant un exemple."
 
 #: notebook/tutorial.py:409
 msgid "History"
-msgstr "Verlauf"
+msgstr "Historique"
 
 #: notebook/tutorial.py:410
 msgid "Click <a href=\"/history\">log</a> commands you have entered in any worksheet of this notebook."
-msgstr "Klicken Sie auf <a href=\"/history\">Protokoll</a>, um alle Befehle anzuzeigen, die Sie bisher in beliebigen Arbeitsblättern dieses Notebooks eingegeben haben."
+msgstr "Cliquer sur <a href=\"/history\">Historique</a> pour voir toutes les commandes entrées dans tous les feuilles de travail de ce carnet."
 
 #: notebook/tutorial.py:411
 msgid "Typesetting All Output"
-msgstr "Alle Ausgaben setzen"
+msgstr "Mise en forme de tous les résultats"
 
 #: notebook/tutorial.py:412
 msgid "Type pretty_print_default() in an input cell and press shift-enter.  All future output will be typeset automatically."
-msgstr "Geben Sie pretty_print_default() in eine Eingabezelle ein und drücken Sie Shift+Enter.  Der Schriftsatz aller zukünftiger Ausgaben erfolgt automatisch."
+msgstr "Taper <strong>pretty_print_default()</strong> dans une cellule puis taper <strong>Maj+Entrée</strong>.  Les sorties suivantes seront alors typographiées."
 
 #: notebook/tutorial.py:416
 msgid "Files and Scripts"
-msgstr "Dateien und <i>Scripte</i>"
+msgstr "Fichiers et Scripts"
 
 #: notebook/tutorial.py:417
 msgid "Loading SAGE/Python Scripts"
-msgstr "Lade SAGE/Python-<i>Scripte</i>"
+msgstr "Charger des fichiers Sage ou Python"
 
 #: notebook/tutorial.py:418
 msgid "Use \"load filename.sage\" and \"load filename.py\".  Load is relative to the path you started the notebook in.  The .sage files are preparsed and .py files are not.   You may omit the .sage or .py extension.  Files may load other files."
-msgstr "Verwenden Sie \"load Dateiname.sage\" und \"load Dateiname.py\".  Das Laden erfolgt relativ zu dem Verzeichnis, in dem Sie das Notebook gestartet haben.  Die .sage-Dateien werden vorgeparst, .py-Dateien hingegen nicht.  Dateien dürfen andere Dateien laden."
+msgstr "Utiliser \"load nomdefichier.sage\" et \"load nomdefichier.py\".  L'adresse est relative au répertoire dans lequel le Bloc-note Sage a été lancé.  Les fichiers .sage sont d'abord passés par un filtre, mais pas les fichiers .py.  On peut omettre l'extension (.py ou .sage). Des fichiers peuvent charger d'autres fichiers."
 
 #: notebook/tutorial.py:419
 msgid "Attaching Scripts"
-msgstr "Anhängen von <i>Scripten</i>"
+msgstr "Attacher des fichiers Sage ou Python"
 
 #: notebook/tutorial.py:420
 msgid "Use \"attach filename.sage\" or \"attach filename.py\".  Attached files are automatically reloaded when the file changes.  The file $HOME/.sage/init.sage is attached on startup if it exists."
-msgstr "Verwenden Sie \"attach Dateiname.sage\" oder \"attach Dateiname.py\".  Angehängte Dateien werden nach Änderungen automatisch neu geladen.  Die Datei $HOME/.sage/init.sage wird beim Start angehängt, sofern sie existiert."
+msgstr "Utiliser \"load nomdefichier.sage\" et \"load nomdefichier.py\".  Les fichiers attachés modifiés sont rechargés automatiquement.  Le fichier $HOME/.sage/init.sage est attaché au démarrage s'il existe."
 
 #: notebook/tutorial.py:421
 msgid "Working Directory"
-msgstr "Arbeitsverzeichnis"
+msgstr "Répertoire de travail"
 
 #: notebook/tutorial.py:422
 msgid "Each block of code is run from its own directory.  If any images are created as a side effect, they will automatically be displayed."
-msgstr "Jeder Code-Block wird in seinem eigenen Verzeichnis ausgeführt.  Eventuell als Nebeneffekt erzeugte Bilder werden automatisch dargestellt."
+msgstr "Chaque bloc de code est executé depuis son propre répertoire. Si des images sont crées, elles sont automatiquement affichées."
 
 #: notebook/tutorial.py:423
 msgid "DIR Variable"
-msgstr "DIR-Variable"
+msgstr "Variable DIR"
 
 #: notebook/tutorial.py:424
 msgid "The variable DIR contains the directory from which you started the SAGE notebook.  For example, to open a file in that directory, do \"open(DIR+'filename')\"."
-msgstr "Die DIR-Variable enthält das Verzeichnis, von dem aus SAGE-Notebook gestartet wurde.  Um z.B. eine Datei in diesem Verzeichnis zu öffnen, verwenden Sie \"open(DIR+'Dateiname')\"."
+msgstr "La variable DIR contient le répertoire dans lequel le Bloc-note Sage a été lancé.  Pour ouvrir un fichier dans ce répertoire, taper \"open(DIR+'nomdefichier')\"."
 
 #: notebook/tutorial.py:425
 msgid "DATA Variable"
-msgstr "DATA-Variable"
+msgstr "Variable DATA"
 
 #: notebook/tutorial.py:426
 msgid "Use the Data menu to upload images and other files, and create new files that can be shared between worksheets.  The DATA variable contains the path to the data files.  For example, to open a file in that directory, do \"open(DATA+'filename')\".  If foo.sage is a Sage file that you uploaded, type \"load foo.sage\"; if foo.py is a Python file, you can import it by typing \"import foo\"."
-msgstr "Verwenden Sie das Datenmenü, um Bilder und andere Dateien hochzuladen sowie neue Dateien zu erstellen, auf die von mehreren Arbeitsblättern aus zugegriffen werden kann.  Die DATA-Variable enthält den Pfad zu den Daten-Dateien.  Um z.B. eine Datei in diesem Verzeichnis zu öffnen, verwenden Sie \"open(DATA+'Dateiname')\".  Wenn Beispiel.sage eine von Ihnen hochgeladene SAGE-Datei ist, geben Sie \"load Beispiel.sage\" ein.  Wenn Beispiel.py eine Python-Datei ist, können Sie sie importieren, indem Sie \"import Beispiel\" eingeben."
+msgstr "Utiliser le menu Données pour charger des images et autres fichiers, et créer de nouveaux fichiers qui peuvent être partagés entre les feuilles de travail. La variable DATA contient le chemin vers les fichiers de données. Par exemple, pour ouvrir un fichier dans ce répertoire, écrire \"open(DATA+'nomdefichier')\". Si truc.sage est un fichier Sage que vous avez chargé, taper  \"load truc.sage\" ; si truc.py est un fichier Python, vous pouvez l'importer en tapant \"import truc\"."
 
 #: notebook/tutorial.py:427
 msgid "Loading and Saving Objects"
-msgstr "Laden und Speichern von Objekten"
+msgstr "Charger et sauver des objets"
 
 #: notebook/tutorial.py:428
 msgid "Use \"save obj1 obj2 ...\" and \"load obj1 obj2 ...\".  This allows for easy moving of objects from one worksheet to another, and saving of objects for later use."
-msgstr "Verwenden Sie \"save obj1 obj2 ...\" und \"load obj1 obj2 ...\". Das macht es leicht, Objekte von einem Arbeitsblatt zu einem anderen zu bewegen oder zur späteren Verwendung zu speichern."
+msgstr "Utiliser \"save obj1 obj2 ...\" und \"load obj1 obj2 ...\". Ceci permer de transférer facilement des objets d'une feuille de travail à un autre, ou de les conserver pour usage ultérieur."
 
 #: notebook/tutorial.py:429
 msgid "Loading and Saving Sessions"
-msgstr "Sitzungen laden und speichern"
+msgstr "Charger et sauver des sessions"
 
 #: notebook/tutorial.py:430
 msgid "Use \"save_session('name')\" to save all variables to an object.  Use \"load_session('name')\" to <i>merge</i> in all variables from a saved session."
-msgstr "Verwenden Sie \"save_session('Name')\", um alle Variablen in ein Objekt zu speichern. Verwenden Sie \"load_session('Name')\", um alle Variablen einer gespeicherten Sitzung <i>einzulesen</i>."
+msgstr "Utiliser \"save_session('Nom')\" pour sauver toutes les variables dans un objet. Utiliser \"load_session('Nom')\" pour <i>restaurer</i> toutes les variables d'une session sauvgardée."
 
 #: notebook/tutorial.py:431
 msgid "Customizing the Notebook CSS"
-msgstr "Persönliche Anpassungen des Notebook-CSS"
+msgstr "Personnaliser le style CSS du Bloc-note Sage"
 
 #: notebook/tutorial.py:432
 msgid "If you create a file <tt>$HOME/.sage/notebook.css</tt> then it will get applied when rendering the notebook.   See "
-msgstr "Wenn Sie eine Datei <tt>$HOME/.sage/notebook.css</tt> erstellen, dann wird sie beim Rendern des Notebooks angewandt.   Sehen Sie "
+msgstr "Si vous créez un fichier <tt>$HOME/.sage/notebook.css</tt>, il sera utilisé pour le rendu du Bloc-note Sage. Voir "
 
 #: notebook/twist.py:448
 #, python-format
 msgid "Please specify a worksheet to load.%s"
-msgstr "Bitte geben Sie ein Arbeitsblatt zum Laden an.%s"
+msgstr "Merci de choisir une feuille de travail à charger.%s"
 
 #: notebook/twist.py:486
 #, python-format
 msgid "There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href=\"http://groups.google.com/group/sage-support\">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!%s"
-msgstr "Beim Hochladen des Arbeitsblatts ist ein Fehler aufgetreten.  Es könnte sich um ein altes, nicht unterstütztes Format handeln oder Schlimmeres.  Wenn Sie unbedingt dessen Inhalt benötigen, kontaktieren Sie die <a href=\"http://groups.google.com/group/sage-support\">Sage-Support-Gruppe</a> und posten einen Link auf Ihr Arbeitsblatt.  Alternativ: eine sws-Datei ist nur ein bzip2-tar-Archiv; werfen Sie einen Blick hinein!%s"
+msgstr "Il s'est produit une erreur lors du chargement de la feuille de travail.  Peut-être est-elle dans un format obsolète, ou pire encore. Si vous avez désespérement besoin de son contenu, vous pouvez contacter le <a href=\"http://groups.google.com/group/sage-support\">groupe sage-support</a> et y poster un lien vers votre feuille de travail. Autre solution : un fichier .sws est juste un fichier compressé au format tar+bzip ; regardez son contenu ! %s"
 
 #: notebook/twist.py:515
 #: notebook/twist.py:645
 #, python-format
 msgid "There was an error uploading \"%s\" (please recheck the URL).%s"
-msgstr "Beim Hochladen von \"%s\" ist ein Fehler aufgetreten (bitte überprüfen Sie den URL nochmal).%s"
+msgstr "Erreur lors du chargement de \"%s\" (merci de vérifier l'URL).%s"
 
 #: notebook/twist.py:597
 #, python-format
 msgid "Return to <a href=\"%s\" title=\"Upload or create a data file in a wide range of formats\"><strong>Upload or Create Data File</strong></a> or <a href=\"%s\" title=\"Interactively use the worksheet\"><strong>%s</strong></a>."
-msgstr "Zurück zu <a href=\"%s\" title=\"Daten-Datei nahezu beliebigen Formats hochladen oder erstellen\"><strong>Hochladen oder Erstellen einer Daten-Datei</strong></a> oder <a href=\"%s\" title=\"Dieses Arbeitsblatt interaktiv verwenden\"><strong>%s</strong></a>."
+msgstr "Revenir à <a href=\"%s\" title=\"Importer ou créer un fichier dans un large choix de formats\"><strong>Importer ou créer un fichier de données</strong></a> ou <a href=\"%s\" title=\"Utiliser cette feuille de travail en mode interactif\"><strong>%s</strong></a>."
 
 #: notebook/twist.py:601
 #, python-format
 msgid "Error uploading file (missing fileField file).%s"
-msgstr "Fehler beim Hochladen der Datei (fehlendes Dateifeld Datei).%s"
+msgstr "Erreur de chargement du fichier (fichier manquant ?).%s"
 
 #: notebook/twist.py:606
 #, python-format
 msgid "Error uploading file (missing %s arg).%s"
-msgstr "Fehler beim Hochladen der Datei (fehlendes %s-Argument).%s"
+msgstr "Erreur de chargement du fichier (argument %s manquant).%s"
 
 #: notebook/twist.py:623
 #, python-format
 msgid "Error uploading file (missing filename).%s"
-msgstr "Fehler beim Hochladen der Datei (fehlender Dateiname).%s"
+msgstr "Erreur de chargement du fichier (nom de fichier manquant).%s"
 
 #: notebook/twist.py:627
 #, python-format
 msgid "Suspicious filename \"%s\" encountered uploading file.%s"
-msgstr "Verdächtigen Dateinamen \"%s\" beim Hochladen der Datei .%s gefunden"
+msgstr "Nom de fichier suspect \"%s\" trouvé lors du chargement .%s"
 
 #: notebook/twist.py:674
 #, python-format
 msgid "Successfully deleted \"%s\""
-msgstr "\"%s\" erfolgreich gelöscht"
+msgstr "Suppression réussie de \"%s\" "
 
 #: notebook/twist.py:691
 msgid "No data files"
-msgstr "Keine Daten-Dateien vorhanden"
+msgstr "Pas de fichiers de données"
 
 #: notebook/twist.py:770
 msgid "Error in introspection -- invalid cell id."
-msgstr "Fehler bei der Selbstüberprüfung -- ungültige Zell-ID."
+msgstr "Erreur d'introspection -- identifiant de cellule invalide."
 
 #: notebook/twist.py:824
 msgid "You must <a href=\"/\">login first</a> in order to edit this worksheet."
-msgstr "Sie müssen sich <a href=\"/\">erst einloggen</a>, um dieses Arbeitsblatt bearbeiten zu können."
+msgstr "Vous devez <a href=\"/\">vous connecter</a> pour pouvoir éditer cette feuille de travail."
 
 #: notebook/twist.py:998
 msgid "Old password not given"
-msgstr "Altes Passwort nicht angegeben"
+msgstr "Ancien mot de passe non fourni"
 
 #: notebook/twist.py:1000
 msgid "Incorrect password given"
-msgstr "Falsches Passwort angegeben"
+msgstr "Mot de passe incorrect"
 
 #: notebook/twist.py:1002
 msgid "New password not given"
-msgstr "Neues Passwort nicht angegeben"
+msgstr "Pas de nouveau mot de passe fourni"
 
 #: notebook/twist.py:1004
 msgid "Please type in new password again."
-msgstr "Bitte geben Sie das neue Passwort nochmals ein."
+msgstr "Merci de taper à nouveau le nouveau mot de passe."
 
 #: notebook/twist.py:1006
 msgid "The passwords you entered do not match."
-msgstr "Die von Ihnen eingegebenen Passwörter stimmen nicht überein."
+msgstr "Les mots de passe ne correspondent pas."
 
 #: notebook/twist.py:1039
 msgid "Confirmed"
-msgstr "Bestätigt"
+msgstr "Confirmé"
 
 #: notebook/twist.py:1041
 msgid "Not confirmed"
-msgstr "Unbestätigt"
+msgstr "Non confirmé"
 
 #: notebook/twist.py:1294
 msgid "can't evaluate worksheet cells"
-msgstr "kann Arbeitsblatt-Zellen nicht auswerten"
+msgstr "Impossible d'évaluer les cellules de la feuille de travail"
 
 #: notebook/twist.py:1391
 msgid "You must <a href=\"/\">login first</a> in order to rate this worksheet."
-msgstr "Sie müssen <a href=\"/\">angemeldet</a> sein, um dieses Arbeitsblatt bewerten zu können."
+msgstr "Vous devez <a href=\"/\">vous connecter</a>, pour pouvoir évaluer cette feuille de travail."
 
 #: notebook/twist.py:1395
 msgid "Gees -- You can't fool the rating system that easily!"
-msgstr "Ätsch! -- So einfach lässt sich das Bewertungssystem nicht überlisten!"
+msgstr "Pouah, vous ne pouvez pas tromper le système d'évaluation aussi facilement !"
 
 #: notebook/twist.py:1398
 #, python-format
 msgid "Thank you for rating the worksheet <b><i>%s</i></b>! You can <a href=\"rating_info\">see all ratings of this worksheet.</a>"
-msgstr "Danke, dass Sie das Arbeitsblatt bewertet haben <b><i>%s</i></b>! Sie können <a href=\"rating_info\">alle Bewertungen zu diesem Arbeitsblatt ansehen.</a>"
+msgstr "Merci d'avoir évalué la feuille de travail <b><i>%s</i></b> ! Vous pouvez voir <a href=\"rating_info\">toutes les évaluations</a> de cette feuille de travail."
 
 #: notebook/twist.py:1398
 msgid "Rating Accepted"
-msgstr "Bewertung entgegengenommen"
+msgstr "Évaluation acceptée"
 
 #: notebook/twist.py:1415
 msgid "No such worksheet."
-msgstr "Kein solches Arbeitsblatt vorhanden."
+msgstr "Pas de feuille de travail de ce nom."
 
 #: notebook/twist.py:1521
 #, python-format
 msgid "The worksheet operation \"%s\" is not defined."
-msgstr "Der Arbeitsblatt-Vorgang \"%s\" ist nicht definiert."
+msgstr "La fonction \"%s\" n'est pas définie."
 
 #: notebook/twist.py:1618
 #, python-format
 msgid "User \"%s\" does not have permission to view the home page of \"%s\"."
-msgstr "Der Benutzer \"%s\" ist nicht berechtigt die Homepage von \"%s\" anzuzeigen."
+msgstr "L'utilisateur \"%s\" n'est pas autorisé à voir la page principale de \"%s\"."
 
 #: notebook/twist.py:1629
 #, python-format
 msgid "The user \"%s\" has no worksheet \"%s\"."
-msgstr "Der Benutzer \"%s\" hat kein Arbeitsblatt \"%s\"."
+msgstr "L'utilisateur \"%s\" ne possède pas de feuille de travail \"%s\"."
 
 #: notebook/twist.py:1632
 #, python-format
 msgid "There is no published worksheet with name \"%s\".  Redirecting to the index of published worksheets in 10 seconds...<br><br>"
-msgstr "Es gibt kein veröffentlichtes Arbeitsblatt namens \"%s\".  Umleitung zum Verzeichnis veröffentlichter Arbeitsblätter in 10 Sekunden...<br><br>"
+msgstr "Il n'y a pas de feuille de travail publié sous le nom \"%s\".  Redirection vers la liste des feuilles de travail publiées dans 10 secondes...<br><br>"
 
 #: notebook/twist.py:1637
 #, python-format
 msgid "You are not logged in or do not have access to the worksheet \"%s\"."
-msgstr "Sie sind nicht eingeloggt oder haben keinen Zugriff das Arbeitsblatt \"%s\"."
+msgstr "Vous n'êtes pas connecté ou n'avez pas accès à la feuille de travail \"%s\"."
 
 #: notebook/twist.py:1662
 msgid "This url can only be accessed through a POST request."
-msgstr "Auf diesen URL kann nur über eine POST-Anfrage zugegriffen werden."
+msgstr "Cette URL n'est accessible que via une requête POST."
 
 #: notebook/twist.py:1712
 #, python-format
 msgid "You are not authorized to move \"%s\""
-msgstr "Sie sind nicht berechtigt, \"%s\" zu verschieben"
+msgstr "Vous n'êtes pas autorisé à déplacer  \"%s\""
 
 #: notebook/twist.py:1781
 msgid "Please request a specific worksheet"
-msgstr "Bitte fragen Sie nach einem bestimmten Arbeitsblatt"
+msgstr "Merci de demander une feuille de travail spécifique"
 
 #: notebook/twist.py:2022
 msgid "The confirmation system is not active."
-msgstr "Das Bestätigungssystem ist nicht aktiv."
+msgstr "Le système de configuration n'est pas actif."
 
 #: notebook/twist.py:2024
 msgid "<h1>Invalid confirmation key</h1><p>You are reporting a confirmation key that has not been assigned by this server. Please <a href=\"/register\">register</a> with the server.</p>"
-msgstr "<h1>Ungültiger Bestätigungsschlüssel</h1><p>Sie bringen einen Bestätigungsschlüssel mit, der nicht von diesem Server ausgestellt wurde. Bitte <a href=\"/register\">registrieren Sie sich</a> beim Server.</p>"
+msgstr "<h1>Clé de confirmation invalide</h1><p>Vous proposez une clé qui n'a pas été donnée par ce serveur. Merci de vous <a href=\"/register\">enregistrer</a> sur le serveur.</p>"
 
 #: notebook/twist.py:2033
 #, python-format
 msgid "<h1>Email address confirmed for user %s</h1>"
-msgstr "<h1>E-Mail-Adresse bestätigt für Benutzer %s</h1>"
+msgstr "<h1>Adresse courriel confirmée pour l'utilisateur %s</h1>"
 
 #: notebook/twist.py:2035
 msgid "Email Confirmed"
-msgstr "E-Mail bestätigt"
+msgstr "Adresse courriel confirmée"
 
 #: notebook/user_conf.py:23
 msgid "Language"
-msgstr "Sprache"
+msgstr "Langue"
 
 #: notebook/wiki2html.py:647
 #, python-format
 msgid "Expected \"%(wanted)s\" after \"%(key)s\", got \"%(token)s\""
-msgstr "\"%(wanted)s\" erwartet hinter \"%(key)s\", aber \"%(token)s\" vorgefunden"
+msgstr " \"%(wanted)s\" attendu après \"%(key)s\", trouvé \"%(token)s\" à la place"
 
 #: notebook/wiki2html.py:653
 #, python-format
 msgid "Expected an integer \"%(key)s\" before \"%(token)s\""
-msgstr "Ganzzahl \"%(key)s\" vor \"%(token)s\" erwartet"
+msgstr "Entier \"%(key)s\" attendu avant \"%(token)s\""
 
 #: notebook/wiki2html.py:663
 #: notebook/wiki2html.py:673
 #, python-format
 msgid "Expected an integer \"%(arg)s\" after \"%(key)s\""
-msgstr "Ganzzahl \"%(arg)s\" nach \"%(key)s\" erwartet"
+msgstr "Entier \"%(arg)s\" attendu après \"%(key)s\""
 
 #: notebook/wiki2html.py:699
 #, python-format
 msgid "Expected a color value \"%(arg)s\" after \"%(key)s\""
-msgstr "Farbwert \"%(arg)s\" nach \"%(key)s\" erwartet"
+msgstr "Couleur \"%(arg)s\" attendue après \"%(key)s\""
 
 #: notebook/worksheet.py:2014
 #, python-format
 msgid "%(seconds)s ago"
-msgstr "vor %(seconds)s"
+msgstr "depuis %(seconds)s"
 
 #: notebook/worksheet.py:4155
 msgid "January"
-msgstr "Januar"
+msgstr "Janvier"
 
 #: notebook/worksheet.py:4156
 msgid "February"
-msgstr "Februar"
+msgstr "Février"
 
 #: notebook/worksheet.py:4157
 msgid "March"
-msgstr "März"
+msgstr "Mars"
 
 #: notebook/worksheet.py:4158
 msgid "April"
-msgstr "April"
+msgstr "Avril"
 
 #: notebook/worksheet.py:4159
 msgid "May"
@@ -2152,76 +2157,96 @@ msgstr "Mai"
 
 #: notebook/worksheet.py:4160
 msgid "June"
-msgstr "Juni"
+msgstr "Juin"
 
 #: notebook/worksheet.py:4161
 msgid "July"
-msgstr "Juli"
+msgstr "Juillet"
 
 #: notebook/worksheet.py:4162
 msgid "August"
-msgstr "August"
+msgstr "Août"
 
 #: notebook/worksheet.py:4163
 msgid "September"
-msgstr "September"
+msgstr "Septembre"
 
 #: notebook/worksheet.py:4164
 msgid "October"
-msgstr "Oktober"
+msgstr "Octobre"
 
 #: notebook/worksheet.py:4165
 msgid "November"
-msgstr "November"
+msgstr "Novembre"
 
 #: notebook/worksheet.py:4166
 msgid "December"
-msgstr "Dezember"
+msgstr "Décembre"
 
 #~ msgid "Sign into the Sage Notebook v%(v)s"
 #~ msgstr "Im Sage-Notebook anmelden v%(v)s"
+
 #~ msgid "Problem inserting new input cell before current input cell."
 #~ msgstr "Problem beim Einfügen einer neuen Eingabezelle vor der aktuellen Eingabezelle."
+
 #~ msgid "Problem inserting new text cell before current input cell."
 #~ msgstr ""
 #~ "Problem beim Einfügen einer neuen Text-Zelle vor der aktuellen Eingabezelle."
+
 #~ msgid "simple"
 #~ msgstr "einfach"
+
 #~ msgid "recaptcha"
 #~ msgstr "recaptcha"
+
 #~ msgid "Sage Notebook Registration"
 #~ msgstr "Sage-Notebook-Registrierung"
+
 #~ msgid "The account recovery system is not active."
 #~ msgstr "Das Kontowiederherstellungssystem ist nicht aktiv."
+
 #~ msgid "Username is invalid."
 #~ msgstr "Ungültiger Benutzername."
+
 #~ msgid "The e-mail address hasn't been confirmed."
 #~ msgstr "Die E-Mail-Adresse wurde nicht unbestätigt."
+
 #~ msgid "Sage Notebook Account Recovery"
 #~ msgstr "Sage-Notebook-Kontowiederherstellung"
+
 #~ msgid "The new password couldn't be sent to %s."
 #~ msgstr "Das neue Passwort konnte nicht an %s gesendet werden."
+
 #~ msgid "A new password has been sent to your e-mail address."
 #~ msgstr "Ein neues Passwort wurde an Ihre E-Mail-Adresse gesendet."
+
 #~ msgid "The temporary password for the new user <em>%s</em> is <em>%s</em>"
 #~ msgstr "Das vorläufige Passwort für den neuen Benutzer <em>%s</em> lautet <em>%s</em>"
+
 #~ msgid "This is an invalid page."
 #~ msgstr "Diese Seite ist ungültig."
+
 #~ msgid " You might have to login to view this page."
 #~ msgstr " Möglicherweise müssen Sie sich einloggen, um diese Seite anzeigen zu können."
+
 #~ msgid "unauthorized request"
 #~ msgstr "unberechtigte Anfrage"
+
 #~ msgid "Your account is currently suspended."
 #~ msgstr "Ihr Konto ist zur Zeit gesperrt."
+
 #~ msgid ""
 #~ "Please enable cookies or delete all Sage cookies and localhost cookies in "
 #~ "your browser and try again."
 #~ msgstr ""
 #~ "Bitte aktivieren Sie Cookies oder löschen Sie alle Cookies mit Bezug zu "
 #~ "Sage oder localhost in Ihrem Browser und versuchen es erneut."
+
 #~ msgid "%s ago"
 #~ msgstr "vor %s"
+
 #~ msgid "No data file (%s)"
 #~ msgstr "Keine Daten-Datei (%s)"
+
 #~ msgid "ago by %s"
 #~ msgstr "durch %s"

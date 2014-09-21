@@ -11,7 +11,9 @@ admin = Module('sagenb.flask_version.admin')
 @admin_required
 @with_lock
 def users(reset=None):
+    from sagenb.misc.misc import SAGE_VERSION
     template_dict = {}
+    template_dict['sage_version'] = SAGE_VERSION
     if reset:
         from random import choice
         import string
@@ -73,13 +75,16 @@ def toggle_admin(user):
 @with_lock
 def add_user():
     from sagenb.notebook.misc import is_valid_username
+    from sagenb.misc.misc import SAGE_VERSION
     template_dict = {'admin': g.notebook.user_manager().user(g.username).is_admin(),
-                     'username': g.username}
+            'username': g.username, 'sage_version': SAGE_VERSION}
     if 'username' in request.values:
+        if request.values['cancel']:
+            return redirect(url_for('users'))
         username = request.values['username']
         if not is_valid_username(username):
             return render_template(os.path.join('html', 'settings', 'admin_add_user.html'),
-                                   error='username_invalid', username=username, **template_dict)
+                                   error='username_invalid', username_input=username, **template_dict)
 
         from random import choice
         import string
@@ -101,6 +106,7 @@ def add_user():
 @admin_required
 @with_lock
 def notebook_settings():
+    from sagenb.misc.misc import SAGE_VERSION
     updated = {}
     if 'form' in request.values:
         updated = g.notebook.conf().update_from_form(request.values)
@@ -112,6 +118,7 @@ def notebook_settings():
         current_app.config['BABEL_DEFAULT_LOCALE'] = request.values['default_language']
 
     template_dict = {}
+    template_dict['sage_version'] = SAGE_VERSION
     template_dict['auto_table'] = g.notebook.conf().html_table(updated)
     template_dict['admin'] = g.notebook.user_manager().user(g.username).is_admin()
     template_dict['username'] = g.username

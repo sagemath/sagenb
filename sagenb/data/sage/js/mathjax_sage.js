@@ -28,7 +28,10 @@ MathJax.Hub.Config({
     TeX: {
 	Macros: {
 	    {{ theme_mathjax_macros|join(',\n') }}
-	}
+	},
+    // the following makes \color in MathJax compatible with the \color
+    // command from LaTeX
+    extensions: ["color.js"]
     },
 
 });
