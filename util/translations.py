@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 # -*- coding: utf-8 -*-
-import argparse
-import shutil
+
 import os
 import os.path as pth
+import shutil
 import logging
+import argparse
 
 from babel.core import Locale
 from babel.messages.pofile import read_po, write_po
@@ -43,6 +44,7 @@ SORT_BY_FILE=True
 WIDTH = 76
 
 src_path =pth.dirname(pth.dirname(pth.realpath(__file__)))
+command_name = pth.basename(__file__)
 nb_path = pth.join(src_path, 'sagenb')
 trans_path = pth.join(nb_path, 'translations')
 nb_pot_path = pth.join(nb_path, 'message.pot')
@@ -161,28 +163,25 @@ class LangsAction(argparse.Action):
             values = old_values
         setattr(namespace, self.dest, values)
 
-class TranslationFrontend(argparse.ArgumentParser):
+class TranslationFrontend(object):
     def __init__(self, **kwargs):
-        super(self.__class__, self).__init__(
-            formatter_class=argparse.RawTextHelpFormatter,
-            description='Localization management for sage notebook', **kwargs)
-        self.add_argument(
-            'action',
-            choices=['update', 'restore', 'clean', 'compile'],
-            metavar = 'ACTION',
-            help='Actions: update - updates pot and po files\n'
-                 '         restore - restores pot and po files backed-up\n'
-                 '         clean - deletes backup pot and po files\n'
-                 '         compile - generate mo files from po files\n',
+        self.parser = argparse.ArgumentParser(
+            description='Localization management for sage notebook',
+            epilog='This command does nothing without additional options.\n'
+                   'To see options available for every subcommand, type:\n'
+                   '    {} SUBCOMMAND -h'.format(command_name),
             )
-        self.add_argument(
+        pot_parser = argparse.ArgumentParser(add_help=False)
+        pot_parser.add_argument(
             '--pot',
             dest='pot',
             action='store_true',
             help='Perform ACTION on sage message.pot file\n'
                  'This option has no efect on compile Action',
             )
-        self.add_argument(
+
+        langs_parser = argparse.ArgumentParser(add_help=False)
+        langs_parser.add_argument(
             '--langs', '--nolangs',
             dest='langs',
             action=LangsAction,
@@ -190,40 +189,93 @@ class TranslationFrontend(argparse.ArgumentParser):
             choices=LANGS,
             default=set(),
             metavar=('xx_XX', 'yy_YY'),
-            help='--langs - add all available lang\n'
+            help='--langs - add all available langs\n'
                  '--langs xx_XX ... - add selected langs\n'
                  '--nolangs - remove all langs processing\n'
                  '--nolangs xx_XX ... - remove selected langs\n'
-                 'By default no lenguage is processed.\n'
+                 'no language is processed by default.\n'
                  'Examples:\n'
                  '  To process only spanish and french:\n'
                  '    translations.py ACTION --langs es_ES fr_FR\n'
                  '  To process all but spanish and french:\n'
                  '    translations.py ACTION --langs --nolangs es_ES fr_FR\n'
             )
-        self.add_argument(
+
+        backup_parser = argparse.ArgumentParser(add_help=False)
+        backup_parser.add_argument(
             '--nobackup',
             dest='backup',
             action='store_false',
-            help='Deactivate backup of pot and po files\n',
+            help='Deactivate backup for processed files\n',
             )
-        self.add_argument(
+
+        subparsers = self.parser.add_subparsers(
+                metavar='SUBCOMMAND',
+                title='subcommands',
+                description='',
+                help='is one of:',
+
+                )
+
+        parser_update = subparsers.add_parser(
+            'update', parents=(pot_parser, langs_parser, backup_parser),
+            help='updates pot and/or po files',
+            description='updates pot and/or po files from source tree',
+            epilog='Warning: If backup is active, previous backup files '
+                   'are overwritten',
+            formatter_class=argparse.RawTextHelpFormatter,
+            )
+        parser_update.add_argument(
             '--nowarn',
             dest='warn',
             action='store_false',
             help='Prevent warning about fuzzy, untranslated and\n'
                  'obsolete messages to be printed',
             )
-        self.add_argument(
+        parser_update.add_argument(
             '--fuzzy',
             dest='nofuzzy',
             action='store_false',
             help='Fuzzy matching of message IDs\n',
             )
-        self.args = self.parse_args()
+        parser_update.set_defaults(func=self.update)
+
+        parser_restore = subparsers.add_parser(
+            'restore', parents=(pot_parser, langs_parser),
+            help='restores pot and/or po from backup files',
+            description='restores pot and/or po from backup files if exist',
+            epilog='Warning: If a particular backup file is not present, '
+                   'the corresponding file\n'
+                   '         is not restored',
+            formatter_class=argparse.RawTextHelpFormatter,
+            )
+        parser_restore.set_defaults(func=self.restore)
+
+        parser_clear = subparsers.add_parser(
+            'clear', parents=(pot_parser, langs_parser),
+            help='clear pot and/or po backup files',
+            description='clear pot and/or po backup files',
+            epilog='Warning: Backups for the corresponding mo files are also '
+                   'cleared',
+            formatter_class=argparse.RawTextHelpFormatter,
+            )
+        parser_clear.set_defaults(func=self.clear)
+
+        parser_compile = subparsers.add_parser(
+            'compile', parents=(langs_parser, backup_parser),
+            help='generate mo files from po files',
+            description='generate mo files from po files',
+            epilog='Warning: Previous mo files are overwritten.\n'
+                   '         If backup is active, previous backup files '
+                   'are overwritten',
+            formatter_class=argparse.RawTextHelpFormatter,
+            )
+        parser_compile.set_defaults(func=self.compile)
+
+        self.args = self.parser.parse_args()
         
     def __call__(self):
-        getattr(self, self.args.action)()
+        self.args.func()
 
     def update(self):
         pot_new = Pot()
@@ -247,7 +299,7 @@ class TranslationFrontend(argparse.ArgumentParser):
             restore(po_path)
             restore(mo_path)
 
-    def clean(self):
+    def clear(self):
         if self.args.pot:
             clean(nb_pot_path)
         for lang in self.args.langs:
@@ -259,14 +311,9 @@ class TranslationFrontend(argparse.ArgumentParser):
     def compile(self):
         for lang in self.args.langs:
             po = Po(lang)
-            po.compile()
+            po.compile(backup=self.args.backup)
 
 
 if __name__ == '__main__':
     frontend = TranslationFrontend()
     frontend()
-
-
-
-
-
