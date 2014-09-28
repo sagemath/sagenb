@@ -627,8 +627,6 @@ class TranslationFrontend(object):
         po.to_file(backup=False, warn=False, **self.data.to_file)
 
 
-
-
 if __name__ == '__main__':
     frontend = TranslationFrontend()
     frontend()
