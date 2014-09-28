@@ -282,7 +282,7 @@ class Pot(object):
             untrans = 0
             obsolete = len(self.catalog.obsolete)
             for message in self.catalog:
-                if message.fuzzy:
+                if message.fuzzy and message.id:
                     fuzzy += 1
                 if not message.string:
                     untrans += 1
@@ -468,7 +468,6 @@ class TranslationFrontend(object):
                 title='subcommands',
                 description='',
                 help='is one of:',
-
                 )
 
         parser_update = subparsers.add_parser(
