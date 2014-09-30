@@ -24,7 +24,7 @@ import logging
 import argparse
 from datetime import datetime
 
-from babel.core import Locale
+from babel.core import Locale, UnknownLocaleError
 from babel.messages.pofile import read_po, write_po
 from babel.messages.mofile import write_mo
 from babel.messages.catalog import Catalog
@@ -162,10 +162,17 @@ class LocalData(object):
         self.width = 76
 
         #: Available translations in the source tree
-        self.langs = os.listdir(self.path.trans)
-        self.langs.sort()
-        self.lang_names = [Locale.parse(lang_id).display_name
-                for lang_id in self.langs]
+        names = os.listdir(self.path.trans)
+        self.langs = []
+        self.lang_names = []
+        for name in names:
+            try:
+                locale = Locale.parse(name)
+            except UnknownLocaleError:
+                pass
+            else:
+                self.langs.append(name)
+                self.lang_names.append(locale.display_name)
 
     @property
     def extract(self):
@@ -203,10 +210,11 @@ class Pot(object):
                      `None` in other case.
     """
     def __init__(self, file_path=None, **kwargs):
-        self.catalog = Catalog(**kwargs)
         self.path = file_path
         if self.path is not None:
-            self.from_file(self.path)
+            self.from_file(self.path, **kwargs)
+        else:
+            self.catalog = Catalog(**kwargs)
         
     def extract(self, src_path='.', charset='utf-8', locale=None, **kwargs):
         """Extracts translatable messages from source this function is based on
@@ -288,13 +296,13 @@ class Pot(object):
                     untrans += 1
             if fuzzy:
                 logging.warning('There are {} fuzzy messages in {}.\n'.format(
-                    fuzzy, self.path))
+                    fuzzy, file_path))
             if untrans:
                 logging.warning('There are {} untranslated messages '
-                'in {}.\n'.format(untrans, self.path))
+                'in {}.\n'.format(untrans, file_path))
             if obsolete:
                 logging.warning('There are {} obsolete  messages '
-                'in {}.\n'.format(obsolete, self.path))
+                'in {}.\n'.format(obsolete, file_path))
         else:
             logging.basicConfig(level=logging.INFO)
 
@@ -562,16 +570,28 @@ class TranslationFrontend(object):
         """
         pot_new = Pot()
         pot_new.extract(**self.data.extract)
+
         if self.args.pot:
             pot_old = Pot(self.data.path.pot)
             pot_old.update(pot_new, no_fuzzy_matching=self.args.nofuzzy)
             pot_old.to_file(backup=self.args.backup, warn=self.args.warn,
                             **self.data.to_file)
+        
         for lang in self.args.langs.difference(('en_US',)):
-            po = Po(self.data.path.lang(lang))
+            po = Po(self.data.path.lang(lang), locale=lang)
             po.update(pot_new, no_fuzzy_matching=self.args.nofuzzy)
-            po.to_file(backup=self.args.backup, warn=self.args.warn,
-                       **self.data.to_file)
+            for lang in self.data.langs:
+                po.catalog.obsolete.pop(lang, None)
+            self.complete_update(po)
+        if 'en_US' in self.args.langs:
+            po = Po(self.data.path.lang('en_US'), locale='en_US')
+            self.complete_update(po)
+
+    def complete_update(self, po):
+        for lang, name in zip(self.data.langs, self.data.lang_names):
+            po.catalog.add(lang, name)
+        po.to_file(backup=self.args.backup, warn=self.args.warn,
+                   **self.data.to_file)
 
     def extract(self):
         """Action function for the `update` subcommand
@@ -623,7 +643,9 @@ class TranslationFrontend(object):
         po.catalog.fuzzy = False
 
         os.makedirs(pth.dirname(po.path))
-        po.to_file(backup=False, warn=False, **self.data.to_file)
+        self.args.backup=False
+        self.args.warn=False
+        self.complete_update(po)
 
 
 if __name__ == '__main__':
