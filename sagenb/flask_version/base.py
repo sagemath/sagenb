@@ -420,9 +420,20 @@ def create_app(path_to_notebook, *args, **kwds):
     babel = Babel(app, default_locale='en_US',
                   default_timezone='UTC',
                   date_formats=None, configure_jinja=True)
+    
+    #Check if saved default language exists. If not fallback to default
+    @app.before_first_request
+    def check_default_lang():
+        def_lang = notebook.conf()['default_language']
+        trans_ids = [str(trans) for trans in babel.list_translations()]
+        if def_lang not in trans_ids:
+            notebook.conf()['default_language'] = None
+
+    #register callback function for locale selection
+    #this function must be modified to add per user language support
     @babel.localeselector
     def get_locale():
-        return notebook.conf()['default_language']
+        return g.notebook.conf()['default_language']
 
     ########################
     # Register the modules #
