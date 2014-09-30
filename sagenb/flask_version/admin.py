@@ -112,10 +112,10 @@ def notebook_settings():
         updated = g.notebook.conf().update_from_form(request.values)
 
     #Make changes to the default language used
-    if 'default_language' in request.values:
-        from flask.ext.babel import refresh
-        refresh()
-        current_app.config['BABEL_DEFAULT_LOCALE'] = request.values['default_language']
+    #if 'default_language' in request.values:
+    #    from flask.ext.babel import refresh
+    #    refresh()
+    #    current_app.config['BABEL_DEFAULT_LOCALE'] = request.values['default_language']
 
     template_dict = {}
     template_dict['sage_version'] = SAGE_VERSION

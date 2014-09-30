@@ -417,9 +417,12 @@ def create_app(path_to_notebook, *args, **kwds):
     ####################################
     # create Babel translation manager #
     ####################################
-    babel = Babel(app, default_locale=notebook.conf()['default_language'],
+    babel = Babel(app, default_locale='en_US',
                   default_timezone='UTC',
                   date_formats=None, configure_jinja=True)
+    @babel.localeselector
+    def get_locale():
+        return notebook.conf()['default_language']
 
     ########################
     # Register the modules #
