@@ -4,33 +4,33 @@
   Jonathan Gutow <gutow@uwosh.edu> February 2014 
 */
 
-var jmolApplet; //our generic viewer.
-
-var live_3D_state = false;
+// Turn off the JSmolCore.js: synchronous binary file transfer is
+// requested but not available" warning
+Jmol._alertNoBinary = false
 
 jmol_isReady = function(jmolApplet) {
-  Jmol.script(jmolApplet,"set platformSpeed 6;");
-  //alert("Applet: "+jmolApplet+" has launched.");
-	//TODO will need to activate widgets
- }
+    console.log('Jmol is ready');
+    Jmol.script(jmolApplet, "set platformSpeed 6;");
+    //alert("Applet: "+jmolApplet+" has launched.");
+}
 
 var jmolInfo = { //default values
     width: "100%",
     height: "100%",
+    // debug=true will pop up alert boxes
     debug: false,
     color: "white",
     addSelectionOptions: false,
-    serverURL: "http://chemapps.stolaf.edu/jmol/jsmol/php/jsmol.php", //you can change this to your own server.
-    use: "HTML5",
-    coverImage: "/jsmol/j2s/img/play_make_live.jpg", // initial image instead of applet
-    coverScript: "",	// special script for click of cover image (otherwise equal to script)
+    use: "HTML5 WebGL Java",
+    // Tooltip when the mouse is over the static image
+    coverTitle: 'Click on 3-D image to make it live.  Right-click on live image for a control menu.',
     deferApplet: true,                  // wait to load applet until click
     deferUncover: true,                 // wait to uncover applet until script completed
     //The paths below assume your server is set up with standard JSmol directory.  If not
     //they will need modification for the page to work.
     jarPath: "/jsmol/java", //path to applet .jar files on server.
     j2sPath: "/jsmol/j2s",//path to javascript version.
-    makeLiveImg:"/jsmol/j2s/img/play_make_live.jpg",//path to activate 3-D image.
+    makeLiveImg:"/jsmol/j2s/img/play_make_live.jpg",  //path to activate 3-D image.
     jarFile: "JmolAppletSigned0.jar",
     isSigned: true,
     //disableJ2SLoadMonitor: true,
@@ -40,12 +40,12 @@ var jmolInfo = { //default values
     z: 5,
     zIndexBase: 5,
     menuFile: "/jsmol/appletweb/SageMenu.mnu", //special sagemenu
-    //platformSpeed: 6
+    platformSpeed: 6,
 }
 
 var jmol_count = 0;
 
-var jmolStatus = {//most of these not used in the lightweight version, kept to make widgets easy to add back.
+jmolStatus = {//most of these not used in the lightweight version, kept to make widgets easy to add back.
     maxLiveAllowed: 4,
     numLive: 0,
     loadSigned: false, //when set to true will load signed applets.
@@ -61,75 +61,61 @@ var jmolStatus = {//most of these not used in the lightweight version, kept to m
     stateScripts: new Array(),
     cntrls: new Array(),
     attempts: new Array(),
-    jmolInfo: new Array(),
-    }
+    jmolInfo: new Object(),
+}
 
 //Some default constants
 //applet sizes
 var miniature = 100;
 var small = 250;
-var medium = 400;
-var large = 600;
+var medium = 500;
+var large = 800;
 
 //Check whether to load 3-D live
 //live_3D_state = $('#3D_check').prop('checked');
 //start the watch function
 jmolWatcher = setInterval('jmolActivator();',500);
 
-function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new applet. 
+// makes a new applet and puts it into the dom
+function make_jmol_applet(size, image, script, server_url, cell_num, functionnames) {
     var appletID = jmol_count;
     jmol_count = jmol_count + 1;
     jmolStatus.jmolArray[appletID] = 3; //queued to load.
-    if (size==500){
-        size = medium; //set to medium size otherwise we will keep other sizes.
-        }
-    Jmol.setDocument(document);
-    //Where am I?  Need to know in cases where I need to write directly to this cell.
-    cell_ID = 'sage_jmol'+cell_num;
-    jmolStatus.jmolInfo[appletID] = jQuery.extend({}, jmolInfo);; // shallow copy default values
+    if (size == 500)
+        size = medium; // set to medium size otherwise we will keep other sizes.
+    Jmol.setDocument(false); // manually insert Jmol.getAppletHtml later
+    jmolStatus.jmolInfo[appletID] = jQuery.extend({}, jmolInfo); // shallow copy default values
     jmolStatus.jmolInfo[appletID].coverImage = image; //this should be the image url
-    jmolStatus.jmolInfo[appletID].script = "script "+url; //this should be the script url
-    //Check whether to load 3-D live
-    live_3D_state = $('#3D_check').prop('checked');    
-    if (live_3D_state){
-       jmolStatus.jmolInfo[appletID].deferApplet=false;
-       }else{
-       jmolStatus.jmolInfo[appletID].deferApplet=true;
-       }
+    jmolStatus.jmolInfo[appletID].script = "script "+script; //this should be the script name
+    jmolStatus.jmolInfo[appletID].serverURL = server_url;
+    // jmolStatus.jmolInfo[appletID].deferApplet = jQuery('#3D_check').prop('checked');
     jmolDivStr = "jmol"+appletID;
     jmolStatus.widths[appletID] = size;
     jmolStatus.heights[appletID]= size;
-    //appending to cell_ID
-    $('#'+cell_ID).append('<span>Click on 3-D image to make it live.  Right-click on live image for a control menu.</span>');
+    // appending to cell_ID
+    var cell_ID = 'sage_jmol_' + cell_num;
+    // $('#'+cell_ID).append('<span></span>');
     $('#'+cell_ID).append('<div id="'+jmolDivStr+'" style="height:'+size+'px; width:'+size+'px;" >JSmol here</div>');
-    //launching JSmol/Jmol applet
-    $('#'+jmolDivStr).html(Jmol.getAppletHtml("jmolApplet"+appletID,jmolStatus.jmolInfo[appletID])); 
-    //we will still set all the data for this applet so that other asynchronously created applets do not grab its ID.
-    jmolStatus.signed[appletID]=jmolStatus.loadSigned;
-    jmolStatus.urls[appletID]=url;
-    //    jmolStatus.numLive = jmolStatus.numLive+1;
-    //jmolStatus.controlStrs[appletID] = controlStr;
-    //jmolStatus.captionStrs[appletID] = captionStr;
-    //jmolStatus.cntrls[appletID]=cntrlPanels;
-//Now we wait for the server by calling a function that waits if the div is not yet written.
-//    launchNewJmol(size,scriptStr,appletID);
-//    Jmol.script("jmolApplet"+appletID,"set platformspeed 6;");
+    // launching JSmol/Jmol applet
+    var applet_html = Jmol.getAppletHtml("jmolApplet"+appletID, jmolStatus.jmolInfo[appletID]);
+    $('#'+jmolDivStr).html(applet_html);
+    // we will still set all the data for this applet so that other asynchronously created applets do not grab its ID.
+    jmolStatus.signed[appletID] = jmolStatus.loadSigned;
     return jmolDivStr;//for historical compatibility
-    }
+}
 
 function jmolActivator(){
     if (document.getElementById("loadJmol")){
-        parentdiv = $("#loadJmol").parent();
-        //parentid = $(parentdiv).attr("id");
-        //alert("The parent id is:"+parentid);
-        cell_num = $(parentdiv).children("#loadJmol").html();//this div must have the ID number
-        //alert("Trying to launch JSmol #"+cell_num);
-        $(parentdiv).children("#loadJmol").remove();
-        size = $(parentdiv).children("#sage_jmol_size"+cell_num).html();
-        img = $(parentdiv).children("#sage_jmol_img"+cell_num).html();
-        script = $(parentdiv).children("#sage_jmol_script"+cell_num).html();
-        tmpdiv = jmol_applet(size, img, script, cell_num);
-        $(parentdiv).children("#sage_jmol_status"+cell_num).html("Activated");
+        var parentdiv = jQuery("#loadJmol").parent();
+        // This div contains the ID number
+        var cell_num = parentdiv.children("#loadJmol").html();
+        parentdiv.children("#loadJmol").remove();
+        var size = parentdiv.children("#sage_jmol_size_"+cell_num).html();
+        var img = parentdiv.children("#sage_jmol_img_"+cell_num).html();
+        var script = parentdiv.children("#sage_jmol_script_"+cell_num).html();
+        var server_url = parentdiv.children("#sage_jmol_server_url_"+cell_num).html();
+        make_jmol_applet(size, img, script, server_url, cell_num);
+        parentdiv.children("#sage_jmol_status_"+cell_num).html("Activated");
     }
 }
 
@@ -139,7 +125,7 @@ function live_3D_check(s) {
     INPUT:
         s -- boolean; whether the live 3D box is checked.
     */
-    live_3D_state =s;
+    var live_3D_state = s;
     //alert ('live_3D_state:'+live_3D_state);
     async_request(worksheet_command('live_3D/' + s));
 }

@@ -1,8 +1,9 @@
 import os, threading, collections
 from functools import wraps
-from flask import Module, url_for, render_template, request, session, redirect, g, current_app
+from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
 from collections import defaultdict
+from werkzeug.utils import secure_filename
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
@@ -649,6 +650,74 @@ def worksheet_cells(worksheet, filename):
     from flask.helpers import send_from_directory
     return send_from_directory(worksheet.cells_directory(), filename)
 
+
+########################################################
+# Jmol/JSmol callback to read data files
+########################################################
+@worksheet_command('jsmol/<celldir>')
+def worksheet_jsmol_data(worksheet, celldir):
+    """
+    Jmol/JSmol callback
+
+    The jmol applet does not take the data inline, but calls back at
+    this URI to get one or more base64-encoded data files.
+    """
+    # Defaults taken from upstream jsmol.php
+    query = request.values.get('query', "http://cactus.nci.nih.gov/chemical/structure/ethanol/file?format=sdf&get3d=True")
+    call = request.values.get('call', u'getRawDataFromDatabase')
+    database = request.values.get('database', '_')
+    encoding = request.values.get('encoding', None)
+
+    # Bugs: It seems that JSmol isn't designed for our use case
+    if query.endswith('.jmol'):
+        # jmol asks for the script.jmol to be base64-encoded but then
+        # doesn't understand the reply
+        encoding = None
+    if query.endswith('.jmol.zip'):
+        # jmol asks for the script.jmol.zip to be base64-encoded but
+        # then doesn't understand the reply, and doesn't understand
+        encoding = u'unzip_SCRIPT'
+
+    if encoding == None:
+        def encoder(x): 
+            return x
+    elif encoding == u'base64':
+        import base64
+        def encoder(x): 
+            return base64.encodestring(x)
+    elif encoding == u'unzip_SCRIPT':   # unofficial
+        import StringIO
+        import zipfile
+        def encoder(x):
+            s = StringIO.StringIO(x)
+            return zipfile.ZipFile(s, 'r').read('SCRIPT')
+    else:
+        return current_app.message(_('Invalid JSmol encoding: ' + str(encoding)))
+
+    if call == u'getRawDataFromDatabase':
+        # Annoyingly, JMol prepends the worksheet url (not: the
+        # request url) to the query. Strip off:
+        pos = query.rfind('/')
+        if pos >= 0:
+            query = query[pos+1:]
+        query = secure_filename(query)   # never trust input
+        filename = os.path.join(worksheet.cells_directory(), celldir, query)
+        with open(filename, 'r') as f:
+            data = f.read()
+            response = make_response(encoder(data))
+    else:
+        return current_app.message(_('Invalid JSmol request: ' + str(call)))
+
+    # Taken from upstream jsmol.php
+    is_binary = '.gz' in query
+    # Non-standard Content-Type taken from upstream jsmol.php
+    if is_binary:
+        response.headers['Content-Type'] = 'Content-Type: text/plain; charset=x-user-defined';
+    else:
+        response.headers['Content-Type'] = 'Content-Type: application/json';
+    return response
+
+
 ##############################################
 # Data
 ##############################################
@@ -719,8 +788,6 @@ def worksheet_upload_data(worksheet):
 
 @worksheet_command('do_upload_data')
 def worksheet_do_upload_data(worksheet):
-    from werkzeug.utils import secure_filename
-
     worksheet_url = url_for_worksheet(worksheet)
     upload_url = worksheet_upload_data.url_for(worksheet)
 

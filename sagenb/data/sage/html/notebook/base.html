@@ -32,6 +32,10 @@ INPUT:
 <script type="text/javascript" src="/javascript/jquery/plugins/colorpicker/js/colorpicker.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/achtung/ui.achtung-mod.min.js"></script>
 
+<!-- Jmol - embedded 3D graphics **needs to be before jmol_lib.js** -->
+<script type="text/javascript" src="/jsmol/JSmol.min.nojq.js"></script>
+<!-- <script type="text/javascript" src="/jsmol/js/Jmol2.js"></script> -->
+
 {% if not worksheet.is_published() or worksheet.notebook().conf()['pub_interact'] %}
 <script type="text/javascript" src="/javascript/sage/js/notebook_lib.js"></script>
 <script type="text/javascript" src="/javascript/dynamic/notebook_dynamic.js"></script>
@@ -42,14 +46,6 @@ INPUT:
 {% if MATHJAX %}
 <script type="text/javascript" src="/javascript/mathjax/MathJax.js?config=TeX-AMS_HTML-full,../../dynamic/mathjax_sage.js"></script>
 {% endif %}
-
-<!-- Jmol - embedded 3D graphics **needs to be before jquery plugin loads, maybe?**-->
-<script type="text/javascript" src="/jsmol/JSmol.min.nojq.js"></script>
-<script type="text/javascript" src="/jsmol/js/Jmol2.js"></script>
-<!-- This must stay in head -->
-<script>//jmolInitialize("/java/jmol");
-//jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");
-</script>
 
 <!-- Sage3d - accelerated 3D graphics -->
 <script type="text/javascript" src="/javascript/sage3d/sage3d.js"></script>

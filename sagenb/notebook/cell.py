@@ -16,6 +16,8 @@ a list of cells.
 import os
 import re
 import shutil
+import textwrap
+import time
 from cgi import escape
 
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
@@ -2232,6 +2234,25 @@ class Cell(Cell_generic):
                 self.worksheet_filename(), self.id())
             return self._url_to_self
 
+    def url_to_worksheet(self):
+        """
+        Returns a URL for the worksheet
+
+        OUTPUT:
+
+        - a string
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
+            sage: W = nb.create_new_worksheet('Test', 'sage')
+            sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
+            sage: C.url_to_worksheet()
+            '/home/sage/0'
+        """
+        return '/home/{0}'.format(self.worksheet_filename())
+
     def files(self):
         """
         Returns a list of all the files in this compute cell's
@@ -2293,6 +2314,55 @@ class Cell(Cell_generic):
         if os.path.exists(dir):
             shutil.rmtree(dir, ignore_errors=True)
 
+    def _jmol_files_html(self, F):
+        """
+        Helper for jmol files in :meth:`files_html`
+        """
+        # If F ends in -size500.jmol then we make the viewer applet
+        # with size 500.
+        i = F.rfind('-size')
+        if i != -1:
+            size = F[i + 5:-5]
+        else:
+            size = 500
+
+        # The ".jmol" script has defaultdirectory pointing
+        # to a zip file [see Graphics3d.show()]. But it is 
+        # relative to the worksheet URL as seen in the browser.
+        # But that doesn't make sense for live help.
+        #
+        # So we need to prepend the worksheet URL, in order
+        # for the zip to be accessed correctly.
+        if self.worksheet().docbrowser():
+            jmol_name = os.path.join(self.directory(), F)
+            with open(jmol_name, 'r') as f:
+                jmol_script = f.read()
+            jmol_script = jmol_script.replace(
+                'defaultdirectory "', 
+                'defaultdirectory "{0}'.format(self.url_to_worksheet()))
+            with open(jmol_name, 'w') as f:
+                f.write(jmol_script)
+
+        image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
+        return textwrap.dedent("""
+        <div id="sage_jmol_{id}" class="3DPlotDiv">
+            <div id="loadJmol" style="display:none;">{id}</div>
+            <div id="sage_jmol_size_{id}" style="display:none;">{size}</div>
+            <div id="sage_jmol_img_{id}" style="display:none;">{image_name}.png?{timestamp}</div>
+            <div id="sage_jmol_script_{id}" style="display:none;">{filename}</div>
+            <div id="sage_jmol_server_url_{id}" style="display:none;">{callback}</div>
+            <div id="sage_jmol_status_{id}" style="display:none;">notActivated</div>
+        </div>
+        """).format(
+            id=self._id,
+            size=size,
+            image_name=image_name,
+            timestamp=time.time(),
+            filename=F,
+            url=os.path.join(self.url_to_self(), F),
+            callback=os.path.join(self.url_to_worksheet(), 'jsmol', str(self._id)),
+        )
+
     def files_html(self, out):
         """
         Returns HTML to display the files in this compute cell's
@@ -2324,7 +2394,6 @@ class Cell(Cell_generic):
             sage: W.quit()
             sage: nb.delete()
         """
-        import time
         D = self.files()
         D.sort()
         if len(D) == 0:
@@ -2355,57 +2424,12 @@ class Cell(Cell_generic):
             elif F.endswith('.svg'):
                 images.append('<embed src="%s" type="image/svg+xml" name="emap">' % url)
             elif F.endswith('.jmol'):
-                # If F ends in -size500.jmol then we make the viewer
-                # applet with size 500.
-                i = F.rfind('-size')
-                if i != -1:
-                    size = F[i + 5:-5]
-                else:
-                    size = 500
-
-                if self.worksheet().docbrowser():
-                    jmol_name = os.path.join(self.directory(), F)
-                    jmol_file = open(jmol_name, 'r')
-                    jmol_script = jmol_file.read()
-                    jmol_file.close()
-                    
-                    # The ".jmol" script has defaultdirectory pointing
-                    # to a zip file [see Graphics3d.show()]. But it is 
-                    # relative to the worksheet URL as seen in the browser.
-                    # But that doesn't make sense for live help.
-                    #
-                    # So we need to prepend the worksheet URL, in order
-                    # for the zip to be accessed correctly.
-                    #
-                    # There is no Worksheet.url_to_self(), so calculate it
-                    # in similar manner to Cell.url_to_self()
-                    url_to_ws = '/home/%s/' % self.worksheet_filename()
-                    jmol_script = jmol_script.replace('defaultdirectory "', 
-                                                      'defaultdirectory "' + url_to_ws )
-
-                    jmol_file = open(jmol_name, 'w')
-                    jmol_file.write(jmol_script)
-                    jmol_file.close()
-
-                image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
-                #script = '<div id = "jmol_static%s"><script>jmol_applet(%s, "%s.png?%d", "%s?%d",%s);</script></div>' % (self._id,size, image_name, time.time(), url, time.time(), self._id)
-                script = '\n<div id="sage_jmol%s" class="3DPlotDiv">'%(self._id)
-                script += '\n  <div id = "loadJmol" style="display:none;">%s</div>'%(self._id)
-                script += '\n  <div id="sage_jmol_size%s" class="JmolSize" style="display:none;">%s</div>'%(self._id,size)
-                script += '\n  <div id="sage_jmol_img%s" class="JmolImg" style="display:none;">%s.png?%d </div>'%(self._id, image_name, time.time())
-                script += '\n  <div id="sage_jmol_script%s" class="JmolScript" style="display:none;">%s?%d</div>'%(self._id, url, time.time())
-                script += '\n  <div id="sage_jmol_status%s" class="JmolStatus" style="display:none;">notActivated</div>'%(self._id)
-                script += '\n</div>'
-                #script = '<div id = "jmol_static%s">Sleeping...<button onClick="javascript:void(jmol_launch(%s, \'%s?%d\', %s))">Make Interactive</button>'  % (self._id, size, url, time.time(), self._id)
-                #script += '<br><img src="%s.png?%d" alt="If no image appears re-execute the cell. 3-D viewer has been updated."></div>' % (image_name, time.time())
-                images.append(script)
+                images.append(self._jmol_files_html(F))
                 jmolimagebase = F
                 hasjmol=True
             elif F.endswith('.jmol.zip'):
                 # jmol data
                 jmoldatafile=os.path.join(self.directory(),F)
-                #link ='<div class="jmol_data"><a href="%s?%d">Download 3-D as Jmol file/data</a></div>'% (jmoldatafile, time.time())
-                #images.append(link)
             elif F.endswith('.canvas3d'):
                 script = '<div><script>canvas3d.viewer("%s");</script></div>' % url
                 images.append(script)
@@ -2418,6 +2442,9 @@ class Cell(Cell_generic):
                     link_text = link_text[:10] + '...' + link_text[-20:]
                 files.append('<a target="_new" href="%s" class="file_link">%s</a>' % (url, link_text))
 
+        # TODO: remove this fugly in-place upgrading of worksheets
+        # and all the associated variables. If the worksheet is old
+        # just require a reevaluation.
         if(hasjmol and not hasjmolimages):
             # This is probably an old worksheet. Generate the missing jmol static image(s)
             # Note: this is problematic in the notebook as it uses tools from Sage to
