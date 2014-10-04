@@ -17,10 +17,12 @@ $(function () {
 //'#worksheet_cell_list' why was it function (e) below.
         $(document)
             .on('click','.introspection, .docstring, .click-message, #worksheet_cell_list', function (e) {
-                var ds_elem = $(this).parent(), id, name, style;
+                var ds_elem = $(this).parent(), style;
 
-                id = toint(ds_elem.parent().attr('id').slice(15));
-                name = introspect[id].before_replacing_word;
+                var id = toint(ds_elem.parent().attr('id').slice(15));
+                if (!Number.isInteger(id))
+                    return;  /* not every click is on a cell */
+                var name = introspect[id].before_replacing_word;
 
                 if (name.slice(-2) === '??') {
                     // Source code.
