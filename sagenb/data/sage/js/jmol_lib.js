@@ -39,7 +39,7 @@ var jmolInfo = { //default values
     script: "",
     z: 5,
     zIndexBase: 5,
-    menuFile: "/java/jmol/appletweb/SageMenu.mnu", //special sagemenu
+    menuFile: "/jsmol/appletweb/SageMenu.mnu", //special sagemenu
     //platformSpeed: 6
 }
 
