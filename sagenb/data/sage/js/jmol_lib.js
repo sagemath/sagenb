@@ -86,7 +86,7 @@ function jmol_applet(size, image, url, cell_num, functionnames) { //makes a new 
     Jmol.setDocument(document);
     //Where am I?  Need to know in cases where I need to write directly to this cell.
     cell_ID = 'sage_jmol'+cell_num;
-    jmolStatus.jmolInfo[appletID] = jmolInfo; //set default values
+    jmolStatus.jmolInfo[appletID] = jQuery.extend({}, jmolInfo);; // shallow copy default values
     jmolStatus.jmolInfo[appletID].coverImage = image; //this should be the image url
     jmolStatus.jmolInfo[appletID].script = "script "+url; //this should be the script url
     //Check whether to load 3-D live
