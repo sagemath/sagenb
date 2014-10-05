@@ -447,8 +447,8 @@ def html_color_selector(id, change, input_change, default='000000',
       a 6-character HTML hexadecimal string.
 
     - ``widget`` - a string (default: 'colorpicker'); the color
-      selector widget to use; choices are 'colorpicker', 'jpicker' and
-      'farbtastic'
+      selector widget to use; choices are 'colorpicker', 'farbtastic' and
+      'jpicker' (currently broken)
 
     - ``hide_box`` - a boolean (default: False); whether to hide the
       input box associated with the color selector widget
