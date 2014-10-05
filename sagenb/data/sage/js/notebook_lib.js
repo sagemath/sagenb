@@ -2148,7 +2148,7 @@ function evaluate_text_cell_input(id, value, settings) {
         input: value
     });
     //update jmol applet list
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 }
 
 
@@ -2318,7 +2318,7 @@ function cell_delete(id) {
         id: id
     });
     //update jmol applet list
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 }
 
 
@@ -2367,9 +2367,8 @@ function cell_delete_callback(status, response) {
     if (in_slide_mode) {
         current_cell = -1;
         slide_mode();
-    //update jmol applet list
-    jmol_delete_check();
-
+        //update jmol applet list
+        sage_jmol.delete_callback();
     }
 }
 
@@ -2393,7 +2392,7 @@ function cell_delete_output(id) {
                       id: id
                   });
     //update jmol applet list
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 
 }
 
@@ -2424,7 +2423,7 @@ function cell_delete_output_callback(status, response) {
     // Set the cell to not evaluated.
     cell_set_not_evaluated(X.id);
     //update list of jmol applets
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 }
 
 
@@ -3069,8 +3068,7 @@ function evaluate_cell(id, newcell) {
         input: cell_input.value
     });
     //update jmol applet list
-    jmol_delete_check();
-
+    sage_jmol.delete_callback();
 }
 
 
@@ -3231,8 +3229,7 @@ function evaluate_cell_callback(status, response) {
 
     start_update_check();
     //update jmol applet list
-    jmol_delete_check();
-
+    sage_jmol.delete_callback();
 }
 
 
@@ -4512,7 +4509,7 @@ function delete_all_output() {
     // of the user interface.
     async_request(worksheet_command('delete_all_output'));
     //update jmol applet info
-    jmol_delete_all_output();
+    sage_jmol.delete_all_callback();
 }
 
 
