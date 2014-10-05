@@ -668,15 +668,13 @@ def worksheet_jsmol_data(worksheet, celldir):
     database = request.values.get('database', '_')
     encoding = request.values.get('encoding', None)
 
-    # Bugs: It seems that JSmol isn't designed for our use case
-    if query.endswith('.jmol'):
-        # jmol asks for the script.jmol to be base64-encoded but then
-        # doesn't understand the reply
-        encoding = None
-    if query.endswith('.jmol.zip'):
-        # jmol asks for the script.jmol.zip to be base64-encoded but
-        # then doesn't understand the reply, and doesn't understand
-        encoding = u'unzip_SCRIPT'
+    if True:
+        print('---- JSmol callback: worksheet_jsmol_data() ---------')
+        print('request url: {0}, method: {1}'.format(request.url, request.method))
+        print('query: ' + query)
+        print('call: ' + call)
+        print('database: ' + database)
+        print('encoding: ' + str(encoding))
 
     if encoding == None:
         def encoder(x): 
@@ -684,13 +682,8 @@ def worksheet_jsmol_data(worksheet, celldir):
     elif encoding == u'base64':
         import base64
         def encoder(x): 
-            return base64.encodestring(x)
-    elif encoding == u'unzip_SCRIPT':   # unofficial
-        import StringIO
-        import zipfile
-        def encoder(x):
-            s = StringIO.StringIO(x)
-            return zipfile.ZipFile(s, 'r').read('SCRIPT')
+            # JSmol expects the magic ';base64,' in front of output
+            return ';base64,' + base64.encodestring(x)
     else:
         return current_app.message(_('Invalid JSmol encoding: ' + str(encoding)))
 
