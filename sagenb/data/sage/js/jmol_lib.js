@@ -1,18 +1,21 @@
 
 
 SageJmolManager = function() {
-    this._prepare_jmol();
     this._count = 0;
-    this._applets = new Object();  
-    this._limit = 1;     // allow at most this many active jmols.
-    this._watcher = setInterval(this.activator.bind(this), 500);
-}
+    this._applets = {};  
+    this._lru_names = [];      // most recently used (uncovered) applet name
+    this._limit = 3;           // allow at most this many active jmols.
+    if (typeof(Jmol) !== 'undefined') {
+        this._prepare_jmol();
+        this._watcher = setInterval(this.activator.bind(this), 500);
+    }
+};
 
 SageJmolManager.prototype._prepare_jmol = function() {
     // Turn off the JSmolCore.js: synchronous binary file transfer is
     // requested but not available" warning
     Jmol._alertNoBinary = false;
-}
+};
 
 
 SageJmolManager.prototype.default_info = function() {
@@ -48,26 +51,43 @@ SageJmolManager.prototype.default_info = function() {
         menuFile: "/jsmol/appletweb/SageMenu.mnu", //special sagemenu
         platformSpeed: 6,
     };
-}
+};
 
 SageJmolManager.prototype.ready_callback = function (name, applet) {
     console.log('Jmol applet has launched ' + name);
     this._applets[name] = applet;
+    this._lru_names.push(name);
     this.enforce_limit();
-}
+};
 
+// Get the most recently used applet names
+/* Remove duplicate and stale applet names from this._lru_names as a
+ * side effect
+ */
+SageJmolManager.prototype.most_recently_used = function () {
+    var result = [];
+    for (i = this._lru_names.length-1; i >= 0; i--) {
+        var name = this._lru_names[i];
+        if (result.indexOf(name) >= 0)
+            continue;
+        if (name in this._applets)
+            result.push(name);
+    }
+    result.reverse();
+    this._lru_names = result;
+    return result;
+};
 
 // Make sure that there are not too many active applets
 SageJmolManager.prototype.enforce_limit = function() {
-    var applet_names = Object.keys(this._applets);
-    // alphabetical sort equals order of construction because of the counter
-    applet_names.sort();
+    var applet_names = this.most_recently_used();
     for (i = 0; i < applet_names.length - this._limit; i++) {
         var name = applet_names[i];
         var applet = this._applets[name];
+        console.log('Covening applet ' + name);
         Jmol.coverApplet(applet, true);
     }
-}
+};
 
 
 SageJmolManager.prototype.add_applet = 
@@ -81,7 +101,9 @@ SageJmolManager.prototype.add_applet =
     info.script = 'script ' + script;
     info.serverURL = server_url;
     info.readyFunction = this.ready_callback.bind(this, applet_name);
-    info.deferApplet = !jQuery('#3D_check').prop('checked');
+    var live_3d = jQuery('#3D_check').prop('checked');
+    info.deferUncover = !live_3d;
+    info.deferApplet = !live_3d;
 
     // append container to dom
     jQuery('#sage_jmol_' + cell_num).append(
@@ -95,25 +117,24 @@ SageJmolManager.prototype.add_applet =
 
     // Finished
     this._count += 1;
-}
+};
 
 // Callback for Action -> Delete all Output
 SageJmolManager.prototype.delete_all_callback = function() {
-    console.log('jmol: delete_all');
+    // console.log('jmol: delete_all');
     this.delete_callback();
-}
+};
 
 // Callback for deleting single cell (may not contain jmol)
 SageJmolManager.prototype.delete_callback = function() {
-    console.log('jmol: delete_check');
+    // console.log('jmol: delete_check');
     var applet_names = Object.keys(this._applets);
     for (i = 0; i < applet_names.length; i++) {
         var name = applet_names[i];
-        console.log('checking ' + name);
-        if (jQuery('#' + name).length == 0)
+        if (jQuery('#' + name).length === 0)
             delete this._applets[name];
     }
-}
+};
 
 SageJmolManager.prototype.activator = function () {
     if (document.getElementById("loadJmol")) {
@@ -128,7 +149,7 @@ SageJmolManager.prototype.activator = function () {
         sage_jmol.add_applet(size, img, script, server_url, cell_num);
         parentdiv.children("#sage_jmol_status_"+cell_num).html("Activated");
     }
-}
+};
 
 
 sage_jmol = new SageJmolManager();
