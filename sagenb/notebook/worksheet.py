@@ -1066,6 +1066,7 @@ class Worksheet(object):
             check = True
         self.__pretty_print = check
         self.eval_asap_no_output("pretty_print_default(%r)" % check)
+
     ##########################################################
     # 3-D plots
     ##########################################################
@@ -1117,8 +1118,6 @@ class Worksheet(object):
             sage: nb.delete()
         """
         self.__live_3D = check
-        self.eval_asap_no_output("live_3D_default(%r)" % check)
-        #not sure the line above does anything as I cannot trace the equivalent for pretty_print!
 
     ##########################################################
     # Publication
@@ -3066,17 +3065,6 @@ except (KeyError, IOError):
         A = self.attached_files()
         for F in A.iterkeys():
             A[F] = 0  # expire all
-
-        # Check to see if the typeset/pretty print button is checked.
-        # If so, send code to initialize the worksheet to have the
-        # right pretty printing mode.
-        if self.pretty_print():
-            S.execute('pretty_print_default(True);')
-        # Check to see if the live_3D button is checked.  If so,
-        # send code to initialize the worksheet to have the right
-        # setting.
-        if self.live_3D():
-            S.execute('live_3D_default(True);')
             
         if not self.is_published():
             self._enqueue_auto_cells()
