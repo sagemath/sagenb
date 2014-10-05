@@ -1817,6 +1817,15 @@ function pretty_print_check(s) {
     async_request(worksheet_command('pretty_print/' + s));
 }
 
+function live_3D_check(s) {
+    /*
+    Send a message back to the server either turn live 3D on or off.
+
+    INPUT:
+        s -- boolean; whether the pretty Live 3D box is now checked.
+    */
+    async_request(worksheet_command('live_3D/' + s));
+}
 
 function handle_data_menu(form) {
     /*
