@@ -2344,6 +2344,7 @@ class Cell(Cell_generic):
                 f.write(jmol_script)
 
         image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
+        script_name = os.path.join(self.url_to_self(), F)
         return textwrap.dedent("""
         <div id="sage_jmol_{id}" class="3DPlotDiv">
             <div id="loadJmol" style="display:none;">{id}</div>
@@ -2358,9 +2359,8 @@ class Cell(Cell_generic):
             size=size,
             image_name=image_name,
             timestamp=time.time(),
-            filename=F,
-            url=os.path.join(self.url_to_self(), F),
-            callback=os.path.join(self.url_to_worksheet(), 'jsmol', str(self._id)),
+            filename=script_name,
+            callback=os.path.join(self.url_to_worksheet(), 'jsmol'),
         )
 
     def files_html(self, out):

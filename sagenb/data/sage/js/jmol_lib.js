@@ -19,6 +19,7 @@ SageJmolManager.prototype.default_info = function() {
     // Before adding anything here make sure it is not overwritten in
     // add_applet()
     return {
+        // actual size is controlled by the parent <div id='#sage_jmol_N'>
         width: "100%",
         height: "100%",
         // debug=true will pop up alert boxes
@@ -81,9 +82,6 @@ SageJmolManager.prototype.add_applet =
     info.serverURL = server_url;
     info.readyFunction = this.ready_callback.bind(this, applet_name);
     info.deferApplet = !jQuery('#3D_check').prop('checked');
-    if (size != 500)
-        // 500 is the hardcoded (and ill-chosen) default, ignore it
-        info.width = info.height = size;
 
     // append container to dom
     jQuery('#sage_jmol_' + cell_num).append(

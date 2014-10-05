@@ -1,3 +1,4 @@
+import re
 import os, threading, collections
 from functools import wraps
 from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
@@ -654,8 +655,8 @@ def worksheet_cells(worksheet, filename):
 ########################################################
 # Jmol/JSmol callback to read data files
 ########################################################
-@worksheet_command('jsmol/<celldir>')
-def worksheet_jsmol_data(worksheet, celldir):
+@worksheet_command('jsmol')
+def worksheet_jsmol_data(worksheet):
     """
     Jmol/JSmol callback
 
@@ -663,19 +664,14 @@ def worksheet_jsmol_data(worksheet, celldir):
     this URI to get one or more base64-encoded data files.
     """
     # Defaults taken from upstream jsmol.php
-    query = request.values.get('query', "http://cactus.nci.nih.gov/chemical/structure/ethanol/file?format=sdf&get3d=True")
+    query = request.values.get('query', 
+        "http://cactus.nci.nih.gov/chemical/structure/ethanol/file?format=sdf&get3d=True")
     call = request.values.get('call', u'getRawDataFromDatabase')
     database = request.values.get('database', '_')
     encoding = request.values.get('encoding', None)
 
-    if True:
-        print('---- JSmol callback: worksheet_jsmol_data() ---------')
-        print('request url: {0}, method: {1}'.format(request.url, request.method))
-        print('query: ' + query)
-        print('call: ' + call)
-        print('database: ' + database)
-        print('encoding: ' + str(encoding))
-
+    current_app.logger.debug('JSmol call:  %s', call)
+    current_app.logger.debug('JSmol query: %s', query)
     if encoding == None:
         def encoder(x): 
             return x
@@ -685,20 +681,27 @@ def worksheet_jsmol_data(worksheet, celldir):
             # JSmol expects the magic ';base64,' in front of output
             return ';base64,' + base64.encodestring(x)
     else:
+        current_app.logger.error('Invalid JSmol encoding %s', encoding)
         return current_app.message(_('Invalid JSmol encoding: ' + str(encoding)))
 
     if call == u'getRawDataFromDatabase':
         # Annoyingly, JMol prepends the worksheet url (not: the
         # request url) to the query. Strip off:
-        pos = query.rfind('/')
-        if pos >= 0:
-            query = query[pos+1:]
-        query = secure_filename(query)   # never trust input
-        filename = os.path.join(worksheet.cells_directory(), celldir, query)
+        worksheet_url = request.base_url[:-len('/jsmol')]
+        pattern = worksheet_url + '/cells/(?P<cell_id>[0-9]*)/(?P<filename>.*)'
+        match = re.match(pattern, query)
+        if match is None:
+            current_app.logger.error('Invalid JSmol query %s, does not match %s', query, pattern)
+            return current_app.message(_('Invalid JSmol query: ' + query))
+        cell_id = match.group('cell_id')
+        filename = match.group('filename')
+        filename = secure_filename(filename)   # never trust input
+        filename = os.path.join(worksheet.cells_directory(), cell_id, filename)
         with open(filename, 'r') as f:
             data = f.read()
             response = make_response(encoder(data))
     else:
+        current_app.logger.error('Invalid JSmol request %s', call)
         return current_app.message(_('Invalid JSmol request: ' + str(call)))
 
     # Taken from upstream jsmol.php
