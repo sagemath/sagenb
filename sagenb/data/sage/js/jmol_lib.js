@@ -80,11 +80,10 @@ SageJmolManager.prototype.add_applet =
     info.script = 'script ' + script;
     info.serverURL = server_url;
     info.readyFunction = this.ready_callback.bind(this, applet_name);
+    info.deferApplet = !jQuery('#3D_check').prop('checked');
     if (size != 500)
         // 500 is the hardcoded (and ill-chosen) default, ignore it
         info.width = info.height = size;
-
-    // jmolStatus.jmolInfo[appletID].deferApplet = jQuery('#3D_check').prop('checked');
 
     // append container to dom
     jQuery('#sage_jmol_' + cell_num).append(
