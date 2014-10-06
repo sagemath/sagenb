@@ -60,7 +60,7 @@
 </div>
 
 <div id="sign-in-box">
-    <h2>Sign into the Sage Notebook v{{ sage_version }}</h2>
+    <h2>{{ gettext('Sign into the Sage Notebook v%(v)s', v=sage_version) }}</h2>
     <form method="POST" action="/login" id="sign-in-form">
         <div>
             <label for="email">{{ gettext('Username') }}</label>
