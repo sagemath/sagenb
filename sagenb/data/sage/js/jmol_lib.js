@@ -105,6 +105,8 @@ SageJmolManager.prototype.add_applet =
     var live_3d = jQuery('#3D_check').prop('checked');
     info.deferUncover = !live_3d;
     info.deferApplet = !live_3d;
+    var use_java=$('#3D_use_java').prop('checked');
+    if (use_java) {info.use='JAVA';}
 
     // append container to dom
     jQuery('#sage_jmol_' + cell_num).append(
