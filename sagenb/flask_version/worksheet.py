@@ -1,8 +1,10 @@
+import re
 import os, threading, collections
 from functools import wraps
-from flask import Module, url_for, render_template, request, session, redirect, g, current_app
+from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
 from collections import defaultdict
+from werkzeug.utils import secure_filename
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
@@ -165,6 +167,15 @@ def worksheet_system(worksheet, system):
 def worksheet_pretty_print(worksheet, enable):
     worksheet.set_pretty_print(enable)
     return 'success'
+
+@worksheet_command('live_3D/<enable>')
+def worksheet_live_3D(worksheet, enable):
+    if enable == 'true':
+        worksheet.set_live_3D(True)
+    else:
+        worksheet.set_live_3D(False)
+    return 'success'
+
 
 @worksheet_command('conf')
 def worksheet_conf(worksheet):
@@ -640,6 +651,69 @@ def worksheet_cells(worksheet, filename):
     from flask.helpers import send_from_directory
     return send_from_directory(worksheet.cells_directory(), filename)
 
+
+########################################################
+# Jmol/JSmol callback to read data files
+########################################################
+@worksheet_command('jsmol')
+def worksheet_jsmol_data(worksheet):
+    """
+    Jmol/JSmol callback
+
+    The jmol applet does not take the data inline, but calls back at
+    this URI to get one or more base64-encoded data files.
+    """
+    # Defaults taken from upstream jsmol.php
+    query = request.values.get('query', 
+        "http://cactus.nci.nih.gov/chemical/structure/ethanol/file?format=sdf&get3d=True")
+    call = request.values.get('call', u'getRawDataFromDatabase')
+    database = request.values.get('database', '_')
+    encoding = request.values.get('encoding', None)
+
+    current_app.logger.debug('JSmol call:  %s', call)
+    current_app.logger.debug('JSmol query: %s', query)
+    if encoding == None:
+        def encoder(x): 
+            return x
+    elif encoding == u'base64':
+        import base64
+        def encoder(x): 
+            # JSmol expects the magic ';base64,' in front of output
+            return ';base64,' + base64.encodestring(x)
+    else:
+        current_app.logger.error('Invalid JSmol encoding %s', encoding)
+        return current_app.message(_('Invalid JSmol encoding: ' + str(encoding)))
+
+    if call == u'getRawDataFromDatabase':
+        # Annoyingly, JMol prepends the worksheet url (not: the
+        # request url) to the query. Strip off:
+        worksheet_url = request.base_url[:-len('/jsmol')]
+        pattern = worksheet_url + '/cells/(?P<cell_id>[0-9]*)/(?P<filename>.*)'
+        match = re.match(pattern, query)
+        if match is None:
+            current_app.logger.error('Invalid JSmol query %s, does not match %s', query, pattern)
+            return current_app.message(_('Invalid JSmol query: ' + query))
+        cell_id = match.group('cell_id')
+        filename = match.group('filename')
+        filename = secure_filename(filename)   # never trust input
+        filename = os.path.join(worksheet.cells_directory(), cell_id, filename)
+        with open(filename, 'r') as f:
+            data = f.read()
+            response = make_response(encoder(data))
+    else:
+        current_app.logger.error('Invalid JSmol request %s', call)
+        return current_app.message(_('Invalid JSmol request: ' + str(call)))
+
+    # Taken from upstream jsmol.php
+    is_binary = '.gz' in query
+    # Non-standard Content-Type taken from upstream jsmol.php
+    if is_binary:
+        response.headers['Content-Type'] = 'Content-Type: text/plain; charset=x-user-defined';
+    else:
+        response.headers['Content-Type'] = 'Content-Type: application/json';
+    return response
+
+
 ##############################################
 # Data
 ##############################################
@@ -710,8 +784,6 @@ def worksheet_upload_data(worksheet):
 
 @worksheet_command('do_upload_data')
 def worksheet_do_upload_data(worksheet):
-    from werkzeug.utils import secure_filename
-
     worksheet_url = url_for_worksheet(worksheet)
     upload_url = worksheet_upload_data.url_for(worksheet)
 
