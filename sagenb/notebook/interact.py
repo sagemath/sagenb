@@ -461,7 +461,7 @@ def html_color_selector(id, change, input_change, default='000000',
 
         sage: sagenb.notebook.interact.html_color_selector(0, 'alert("changed")', '', default='0afcac')
         '...<table>...colorpicker...'
-        sage: sagenb.notebook.interact.html_color_selector(99, 'console.log(color);', '', default='fedcba', widget='colorpicker', hide_box=True)
+        sage: sagenb.notebook.interact.html_color_selector(99, 'console.log(color);', '', default='fedcba', widget='farbtastic', hide_box=True)
         '...<table>...colorpicker...'
     """
     input_style = ''
@@ -2493,12 +2493,11 @@ def interact(f, layout=None, width='800px'):
         ...     show(plot(a, -zoom*pi,zoom*pi, color=clr, thickness=thickness, plot_points=plot_points))
         <html>...
 
-    For a more compact color control, use an empty label, a different
-    widget (``'colorpicker'`` or ``'jpicker'``), and hide the input
-    box::
+    For a more compact color control, use an empty label and
+    hide the input box::
 
         sage: @interact
-        ... def _(color=color_selector((1,0,1), label='', widget='colorpicker', hide_box=True)):
+        ... def _(color=color_selector((1,0,1), label='', hide_box=True)):
         ...     show(plot(x/(8/7+sin(x)), (x,-50,50), fill=True, fillcolor=color))
         <html>...
 
