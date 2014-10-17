@@ -59,6 +59,7 @@ SageJmolManager.prototype.ready_callback = function (name, applet) {
     this._lru_names.push(name);
     Jmol.script(applet, "set platformSpeed 6;");
     this.enforce_limit();
+    jQuery('#'+name).parent().append('<div id="'+name+'_hint">Right-click to get options menu.</div>');
 };
 
 // Get the most recently used applet names
@@ -87,6 +88,7 @@ SageJmolManager.prototype.enforce_limit = function() {
         var applet = this._applets[name];
         console.log('Covening applet ' + name);
         Jmol.coverApplet(applet, true);
+        jQuery('#'+name+'_hint').remove();
     }
 };
 
