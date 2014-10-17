@@ -575,6 +575,15 @@ def notebook_run(self,
                 print "Login to the Sage notebook as admin with the password you specified above."
         #nb.del_user('root')
 
+    # For old notebooks, make sure that default users are always created.
+    # This fixes issue #175 (https://github.com/sagemath/sagenb/issues/175)
+    um = nb.user_manager()
+    for user in ('_sage_', 'pub'):
+        if not um.user_exists(user):
+            um.add_user(user, '', '', account_type='user', force=True)
+    if not um.user_exists('guest'):
+        um.add_user('guest', '', '', account_type='guest', force=True)
+
     nb.set_server_pool(server_pool)
     nb.set_ulimit(ulimit)
 
