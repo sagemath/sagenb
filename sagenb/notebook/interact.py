@@ -446,9 +446,9 @@ def html_color_selector(id, change, input_change, default='000000',
     - ``default`` - a string (default: ``'000000'``); default color as
       a 6-character HTML hexadecimal string.
 
-    - ``widget`` - a string (default: 'jpicker'); the color
-      selector widget to use; choices are 'colorpicker', 'jpicker' and
-      'farbtastic'
+    - ``widget`` - a string (default: 'colorpicker'); the color
+      selector widget to use; choices are 'colorpicker', 'farbtastic' and
+      'jpicker' (currently broken)
 
     - ``hide_box`` - a boolean (default: False); whether to hide the
       input box associated with the color selector widget
@@ -460,7 +460,7 @@ def html_color_selector(id, change, input_change, default='000000',
     EXAMPLES::
 
         sage: sagenb.notebook.interact.html_color_selector(0, 'alert("changed")', '', default='0afcac')
-        '...<table>...jpicker...'
+        '...<table>...colorpicker...'
         sage: sagenb.notebook.interact.html_color_selector(99, 'console.log(color);', '', default='fedcba', widget='colorpicker', hide_box=True)
         '...<table>...colorpicker...'
     """
@@ -2938,7 +2938,7 @@ class color_selector(input_box):
             sage: color_selector(Color('red'), 'line color').__repr__()
             "Interact color selector labeled 'line color', with default RGB color (1.0, 0.0, 0.0), widget 'colorpicker', and visible input box"
             sage: color_selector(Color((1,0,1)), 'circle color', widget='jpicker', hide_box=True).__repr__()
-            "Interact color selector labeled 'circle color', with default RGB color (1.0, 0.0, 1.0), widget 'colorpicker', and hidden input box"
+            "Interact color selector labeled 'circle color', with default RGB color (1.0, 0.0, 1.0), widget 'jpicker', and hidden input box"
         """
         s = "Interact color selector labeled %r, with default %r, widget %r, and " % (self.label(), self.default(), self.widget())
         if self.hide_box():
@@ -2960,10 +2960,10 @@ class color_selector(input_box):
             'colorpicker'
             sage: color_selector('#abcdef', hide_box=True, widget='farbtastic').widget()
             'farbtastic'
-            sage: color_selector(widget='colorpicker').widget()
-            'colorpicker'
-            sage: color_selector(default=Color(0,0.5,0.25)).widget()
+            sage: color_selector(widget='jpicker').widget()
             'jpicker'
+            sage: color_selector(default=Color(0,0.5,0.25)).widget()
+            'colorpicker'
         """
         return self.__widget
 
