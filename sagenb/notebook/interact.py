@@ -462,7 +462,7 @@ def html_color_selector(id, change, input_change, default='000000',
         sage: sagenb.notebook.interact.html_color_selector(0, 'alert("changed")', '', default='0afcac')
         '...<table>...colorpicker...'
         sage: sagenb.notebook.interact.html_color_selector(99, 'console.log(color);', '', default='fedcba', widget='farbtastic', hide_box=True)
-        '...<table>...colorpicker...'
+        '...<table>...farbtastic...'
     """
     input_style = ''
     if hide_box:
