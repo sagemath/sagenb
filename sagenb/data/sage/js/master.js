@@ -20,8 +20,6 @@ $(function () {
                 var ds_elem = $(this).parent(), style;
 
                 var id = toint(ds_elem.parent().attr('id').slice(15));
-                if (!Number.isInteger(id))
-                    return;  /* not every click is on a cell */
                 var name = introspect[id].before_replacing_word;
 
                 if (name.slice(-2) === '??') {
