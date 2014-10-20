@@ -16,7 +16,7 @@ $(function () {
         initialize_the_notebook();
 //'#worksheet_cell_list' why was it function (e) below.
         $(document)
-            .on('click','.introspection .docstring .click-message #worksheet_cell_list', function (e) {
+            .on('click','#worksheet_cell_list .introspection .docstring .click-message', function (e) {
                 var ds_elem = $(this).parent(), style;
 
                 var id = toint(ds_elem.parent().attr('id').slice(15));
