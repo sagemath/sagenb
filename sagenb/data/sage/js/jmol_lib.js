@@ -23,13 +23,13 @@ SageJmolManager.prototype.default_info = function() {
     // add_applet()
     return {
         // actual size is controlled by the parent <div id='#sage_jmol_N'>
-        width: "100%",
-        height: "100%",
+        width: "95%", //This allows the jquery resize to work do not set to 100%
+        height: "95%",
         // debug=true will pop up alert boxes
         debug: false,
         color: "white",
         addSelectionOptions: false,
-        use: "HTML5 WebGL Java",
+        use: "HTML5 WebGL Java", //This should probably only be HTML5
         // Tooltip when the mouse is over the static image
         coverTitle: 
             'Click on 3-D image to make it live. ' + 
@@ -48,8 +48,8 @@ SageJmolManager.prototype.default_info = function() {
         script: "",
         z: 5,
         zIndexBase: 5,
-        menuFile: "/jsmol/appletweb/SageMenu.mnu", //special sagemenu
-        platformSpeed: 6,
+        menuFile: "/java/jmol/appletweb/SageMenu.mnu", //special sagemenu
+        //platformSpeed: 6, does not work have to do it in the ready function
     };
 };
 
@@ -57,7 +57,9 @@ SageJmolManager.prototype.ready_callback = function (name, applet) {
     console.log('Jmol applet has launched ' + name);
     this._applets[name] = applet;
     this._lru_names.push(name);
+    Jmol.script(applet, "set platformSpeed 6;");
     this.enforce_limit();
+    jQuery('#'+name).parent().append('<div id="'+name+'_hint">Right-click to get options menu.</div>');
 };
 
 // Get the most recently used applet names
@@ -86,6 +88,7 @@ SageJmolManager.prototype.enforce_limit = function() {
         var applet = this._applets[name];
         console.log('Covening applet ' + name);
         Jmol.coverApplet(applet, true);
+        jQuery('#'+name+'_hint').remove();
     }
 };
 
@@ -104,16 +107,18 @@ SageJmolManager.prototype.add_applet =
     var live_3d = jQuery('#3D_check').prop('checked');
     info.deferUncover = !live_3d;
     info.deferApplet = !live_3d;
+    var use_java=$('#3D_use_java').prop('checked');
+    if (use_java) {info.use='JAVA';}
 
     // append container to dom
     jQuery('#sage_jmol_' + cell_num).append(
-        '<div id="'+applet_name+'" style="height:'+size+'px; width:'+size+'px;" >JSmol here</div>'
-    );
-
+        '<div id="'+applet_name+'" style="height:'+size+'px; width:'+size+'px;" ></div>');
+    //make resizable
+    $('#'+applet_name).resizable({aspectRatio:true});
+    $('#'+applet_name).append('<div id="'+applet_name+'_wrapper" style="height:100%;width:100%;"> JSmol Here</div>');
    // launching JSmol/Jmol applet
     Jmol.setDocument(false); // manually insert Jmol.getAppletHtml
-    var applet_html = Jmol.getAppletHtml(applet_name, info);
-    jQuery('#' + applet_name).html(applet_html);
+    jQuery('#' + applet_name+'_wrapper').html( Jmol.getAppletHtml(applet_name, info));
 
     // Finished
     this._count += 1;

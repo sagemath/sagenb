@@ -1,4 +1,4 @@
-/*global $, window */
+$/*global $, window */
 /*jslint white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
@@ -16,7 +16,7 @@ $(function () {
         initialize_the_notebook();
 //'#worksheet_cell_list' why was it function (e) below.
         $(document)
-            .on('click','.introspection, .docstring, .click-message, #worksheet_cell_list', function (e) {
+            .on('click','.introspection .docstring .click-message #worksheet_cell_list', function (e) {
                 var ds_elem = $(this).parent(), style;
 
                 var id = toint(ds_elem.parent().attr('id').slice(15));
