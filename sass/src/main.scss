@@ -392,8 +392,14 @@ div.attached_filename {
 
 /*********** WORKSHEETS ************************* */
 
-div.docstring-introspection-dialog {
+div.docstring-introspection-dialog-source {
   font-size: inherit;
+  color: #007020;
+  @include sans-serif-stack; }
+
+div.docstring-introspection-dialog-doc {
+  font-size: inherit;
+  color: #0000aa;
   @include sans-serif-stack; }
 
 .docstring {
