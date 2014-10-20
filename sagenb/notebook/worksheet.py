@@ -160,7 +160,7 @@ class Worksheet(object):
     def __init__(self, name=None, id_number=None,
                  notebook_worksheet_directory=None, system=None,
                  owner=None, pretty_print=False,
-                 auto_publish=False, create_directories=True):
+                 auto_publish=False, create_directories=True, live_3D=False):
         ur"""
         Create and initialize a new worksheet.
 
@@ -189,6 +189,9 @@ class Worksheet(object):
           creates various files and directories where data will be
           stored.  This option is here only for the
           migrate_old_notebook method in notebook.py
+        -  ``live_3D`` - bool (default: False); whether 3-D plots should
+           be loaded live (interactive). To many live plots may make a
+           worksheet unresponsive because of the javascript load.
 
         EXAMPLES: We test the constructor via an indirect doctest::
 
@@ -213,6 +216,7 @@ class Worksheet(object):
         self.__collaborators = []
         self.__autopublish = auto_publish
         self.__saved_by_info = {}
+        self.__live_3D = live_3D
 
         # state sequence number, used for sync
         self.__state_number = 0
@@ -341,6 +345,12 @@ class Worksheet(object):
              # worksheet by default
              'pretty_print': self.pretty_print(),
 
+             # Whether to load 3-D live.  Should only be set to
+             # true by the user as worksheets with more than 1 or 2
+             # live (interactive) 3-D plots may bog down because of
+             # javascript overload.
+             'live_3D': self.live_3D(),
+
              # what other users think of this worksheet: list of
              # triples
              #       (username, rating, comment)
@@ -407,7 +417,7 @@ class Worksheet(object):
                     self.__filename = filename
                     self.__dir = os.path.join(notebook_worksheet_directory, str(value))
             elif key in ['system', 'owner', 'viewers', 'collaborators',
-                         'pretty_print', 'ratings']:
+                         'pretty_print', 'ratings', 'live_3D']:
                 # ugly
                 setattr(self, '_Worksheet__' + key, value)
             elif key == 'auto_publish':
@@ -1056,6 +1066,58 @@ class Worksheet(object):
             check = True
         self.__pretty_print = check
         self.eval_asap_no_output("pretty_print_default(%r)" % check)
+
+    ##########################################################
+    # 3-D plots
+    ##########################################################
+    def live_3D(self):
+        """
+        Return True if the 3-D plots should be loaded live (interactive) by default.
+
+        OUTPUT:
+
+        -  ``bool`` - True of False
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.create_default_users('password')
+            sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
+            sage: W.live_3D()
+            False
+            sage: W.quit()
+            sage: nb.delete()
+        """
+        try:
+            return self.__live_3D
+        except AttributeError:
+            self.__live_3D = False
+            return self.__live_3D
+
+    def set_live_3D(self, check=False):
+        """
+        Set whether or not 3-D plots should be live by default.  Not a good idea for
+        worksheets with more than 1 or 2 3-D plots.
+
+        INPUT:
+
+        -  ``check`` - boolean
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.create_default_users('password')
+            sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
+            sage: W.set_live_3D(False)
+            sage: W.live_3D()
+            False
+            sage: W.set_live_3D(True)
+            sage: W.live_3D()
+            True
+            sage: W.quit()
+            sage: nb.delete()
+        """
+        self.__live_3D = check
 
     ##########################################################
     # Publication
@@ -3003,12 +3065,6 @@ except (KeyError, IOError):
         A = self.attached_files()
         for F in A.iterkeys():
             A[F] = 0  # expire all
-
-        # Check to see if the typeset/pretty print button is checked.
-        # If so, send code to initialize the worksheet to have the
-        # right pretty printing mode.
-        if self.pretty_print():
-            S.execute('pretty_print_default(True);')
             
         if not self.is_published():
             self._enqueue_auto_cells()
