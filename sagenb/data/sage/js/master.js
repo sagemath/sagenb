@@ -16,7 +16,7 @@ $(function () {
         initialize_the_notebook();
 //'#worksheet_cell_list' why was it function (e) below.
         $(document)
-            .on('click','.introspection .docstring .click-message #worksheet_cell_list', function (e) {
+            .on('click','#worksheet_cell_list .introspection .docstring .click-message', function (e) {
                 var ds_elem = $(this).parent(), style;
 
                 var id = toint(ds_elem.parent().attr('id').slice(15));
@@ -27,11 +27,11 @@ $(function () {
                 if (name.slice(-2) === '??') {
                     // Source code.
                     name = name.slice(0, -2);
-                    style = 'color: #007020';
+                    style = 'source';
                 } else if (name.slice(-1) === '?' || name.slice(-1) === '(') {
                     // Docstring.
                     name = name.slice(0, -1);
-                    style = 'color: #0000aa';
+                    style = 'doc';
                 }
 
                 halt_introspection(id);
@@ -39,8 +39,8 @@ $(function () {
                 ds_elem.dialog({
                     height: 600,
                     width: '90%',
-                    title: '<span style="' + style + '">' + name + '<span>',
-                    dialogClass: 'docstring-introspection-dialog',
+                    title: name,
+                    dialogClass: 'docstring-introspection-dialog-'+style,
                     'close': function (event, ui) {
                         ds_elem.dialog('destroy').remove();
                     }
