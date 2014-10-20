@@ -225,7 +225,8 @@ div.attached_filename { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
 /*********** WORKSHEETS ************************* */
 /* line 395, ../../../../sass/src/main.scss */
-div.docstring-introspection-dialog { font-size: inherit; font-family: 'Arial', 'Helvetica', sans-serif; }
+div.docstring-introspection-dialog-source { font-size: inherit; color: #007020; font-family: 'Arial', 'Helvetica', sans-serif; }
+div.docstring-introspection-dialog-doc { font-size: inherit; color: #0000aa; font-family: 'Arial', 'Helvetica', sans-serif; }
 
 /* line 399, ../../../../sass/src/main.scss */
 .docstring { font-family: 'Arial', 'Helvetica', sans-serif; }
