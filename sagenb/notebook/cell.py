@@ -2350,7 +2350,7 @@ class Cell(Cell_generic):
             <div id="loadJmol" style="display:none;">{id}</div>
             <div id="sage_jmol_size_{id}" style="display:none;">{size}</div>
             <div id="sage_jmol_img_{id}" style="display:none;">{image_name}.png?{timestamp}</div>
-            <div id="sage_jmol_script_{id}" style="display:none;">{filename}</div>
+            <div id="sage_jmol_script_{id}" style="display:none;">{filename}?{timestamp}</div>
             <div id="sage_jmol_server_url_{id}" style="display:none;">{callback}</div>
             <div id="sage_jmol_status_{id}" style="display:none;">notActivated</div>
         </div>

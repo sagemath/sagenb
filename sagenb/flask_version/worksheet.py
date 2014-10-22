@@ -695,6 +695,7 @@ def worksheet_jsmol_data(worksheet):
             return current_app.message(_('Invalid JSmol query: ' + query))
         cell_id = match.group('cell_id')
         filename = match.group('filename')
+        filename = filename.rsplit('?',1)[0] # appended query is only for cache busting
         filename = secure_filename(filename)   # never trust input
         filename = os.path.join(worksheet.cells_directory(), cell_id, filename)
         with open(filename, 'r') as f:
