@@ -3065,6 +3065,12 @@ except (KeyError, IOError):
         A = self.attached_files()
         for F in A.iterkeys():
             A[F] = 0  # expire all
+
+        # Check to see if the typeset/pretty print button is checked.
+        # If so, send code to initialize the worksheet to have the
+        # right pretty printing mode.
+        if self.pretty_print():
+            S.execute('pretty_print_default(True);')
             
         if not self.is_published():
             self._enqueue_auto_cells()
