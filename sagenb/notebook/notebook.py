@@ -451,11 +451,11 @@ class Notebook(object):
         try:
             return self.__scratch_worksheet
         except AttributeError:
-            W = self.create_new_worksheet('scratch', '_sage_', add_to_list=False)
+            W = self.create_new_worksheet('scratch', '_sage_')
             self.__scratch_worksheet = W
             return W
 
-    def create_new_worksheet(self, worksheet_name, username, add_to_list=True):
+    def create_new_worksheet(self, worksheet_name, username):
         if username!='pub' and self.user_manager().user_is_guest(username):
             raise ValueError("guests cannot create new worksheets")
 
@@ -1355,6 +1355,7 @@ class Notebook(object):
         filename = ws.get_snapshot_text_filename(rev)
         txt = bz2.decompress(open(filename).read())
         W = self.scratch_worksheet()
+        W.set_name('Revision of ' + ws.name())
         W.delete_cells_directory()
         W.edit_save(txt)
 
@@ -1371,7 +1372,7 @@ class Notebook(object):
 
         return template(os.path.join("html", "notebook", 
                                      "specific_revision.html"),
-                        worksheet = ws,
+                        worksheet = W, # the revision, not the original!
                         username = username, rev = rev, prev_rev = prev_rev,
                         next_rev = next_rev, time_ago = time_ago)
 
