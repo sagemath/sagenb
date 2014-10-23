@@ -190,7 +190,7 @@ class Worksheet(object):
           stored.  This option is here only for the
           migrate_old_notebook method in notebook.py
         -  ``live_3D`` - bool (default: False); whether 3-D plots should
-           be loaded live (interactive). To many live plots may make a
+           be loaded live (interactive). Too many live plots may make a
            worksheet unresponsive because of the javascript load.
 
         EXAMPLES: We test the constructor via an indirect doctest::
