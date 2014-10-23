@@ -1619,7 +1619,7 @@ class Notebook(object):
         <input type="hidden" name="yes" value="" />
         <input type="submit" value="Yes" style="margin-left:10px" />
         <input type="button" value="No" style="margin-left:5px" onClick="parent.location=\'../'"><br/><br/>
-        <input type="checkbox" name="auto" style="margin-left:13px" /> Automatically re-publish when changes are made
+        <input type="checkbox" name="auto" style="margin-left:13px" /> Automatically re-publish when changes are made and saved
         </form>
         """
         return template(os.path.join("html", "notebook", "beforepublish_window.html"),
