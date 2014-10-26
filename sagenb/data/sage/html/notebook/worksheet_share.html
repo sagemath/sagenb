@@ -21,7 +21,7 @@ INPUT:
 
 <form width=70% method="post" action="invite_collab" style="margin-bottom:1em">
     <textarea name="collaborators" rows=5 cols=70 class="edit" id="collaborators" style="display:block; margin-bottom:1em;">{{ worksheet.collaborators()|join(', ') }}</textarea>
-    <input type="submit" title="{{ gettext('Give access to your worksheet to the above collaborators') }}" value="{{ gettext('Invite Collaborators') }}" />
+    <input type="submit" title="{{ gettext('Give access to your worksheet to the above collaborators') }}" value="{{ gettext('Update Collaborators') }}" />
 </form>
 {% endif %}
 {% endblock %}
