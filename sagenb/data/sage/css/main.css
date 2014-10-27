@@ -274,6 +274,7 @@ button.add_new_worksheet_menu { font-size: 14px; }
 
 /* line 479, ../../../../sass/src/main.scss */
 #specific-revision-page #revision-data { padding: 1em 0.5em; border-top: 1px solid #c9d7f1; border-bottom: 1px solid #c9d7f1; }
+#specific-revision-page .sharebar a { color: white; border-left: 2px white solid; padding-left: 1em; }
 
 /* line 485, ../../../../sass/src/main.scss */
 #revision-list-page #revision-list { width: 100%; }
