@@ -1704,7 +1704,7 @@ class Notebook(object):
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: nb.html(W.filename(), 'admin')
-            u'...Test...cell_input...plainclick...state_number...'
+            u'...Test...cell_input...if (e.shiftKey)...state_number...'
         """
         if worksheet_filename is None or worksheet_filename == '':
             worksheet_filename = None
