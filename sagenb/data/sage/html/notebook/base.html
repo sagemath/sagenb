@@ -13,9 +13,12 @@ INPUT:
 
 
 {% block javascript %}
+
+<!-- trying to work around JSmol collisions with jquery--->
+<script type="text/javascript" src="/javascript/jquery/jquery-1.11.0.min.js"></script>
 <!-- jQuery UI - interacts, widgets, drag-drop, etc. -->
-<link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.8.11.custom.css" />
-<script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.8.11.custom.min.js"></script>
+<link rel="stylesheet" href="/javascript/jqueryui/css/sage/jquery-ui-1.10.4.custom.css" />
+<script type="text/javascript" src="/javascript/jqueryui/js/jquery-ui-1.10.4.custom.min.js"></script>
 
 <!-- jQuery plugins - color pickers, shift-click, AJAX forms, IE fixes, notifications -->
 <link rel="stylesheet" href="/javascript/jquery/plugins/farbtastic/farbtastic.css" type="text/css" />
@@ -28,6 +31,9 @@ INPUT:
 <link rel="stylesheet" media="screen" type="text/css" href="/javascript/jquery/plugins/colorpicker/css/colorpicker.css" />
 <script type="text/javascript" src="/javascript/jquery/plugins/colorpicker/js/colorpicker.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/achtung/ui.achtung-mod.min.js"></script>
+
+<!-- Jmol - embedded 3D graphics **needs to be before jmol_lib.js** -->
+<script type="text/javascript" src="/jsmol/JSmol.min.nojq.js"></script>
 
 {% if not worksheet.is_published() or worksheet.notebook().conf()['pub_interact'] %}
 <script type="text/javascript" src="/javascript/sage/js/notebook_lib.js"></script>
@@ -42,11 +48,6 @@ INPUT:
 
 <!-- Sage3d - accelerated 3D graphics -->
 <script type="text/javascript" src="/javascript/sage3d/sage3d.js"></script>
-
-<!-- Jmol - embedded 3D graphics -->
-<script type="text/javascript" src="/java/jmol/appletweb/Jmol.js"></script>
-<!-- This must stay in head -->
-<script>jmolInitialize("/java/jmol");jmolSetCallback("menuFile","/java/jmol/appletweb/SageMenu.mnu");</script>
 
 {% if JEDITABLE_TINYMCE and not worksheet.docbrowser() and not worksheet.is_published() %}
 <!-- TinyMCE and jEditable - in-place editing of text cells -->
@@ -139,8 +140,14 @@ INPUT:
         </select>    
         <input type="checkbox" title="{{ gettext('Enable/disable pretty_printing') }}"
                onchange="pretty_print_check(this.checked);"
-               class="worksheet" value="pretty_print" {{ "checked" if worksheet.pretty_print() else "" }} />&nbsp;Typeset
-        {% endif %}
+               class="worksheet" value="pretty_print" {{ "checked" if worksheet.pretty_print() else "" }} />&nbsp;{{ gettext('Typeset') }}
+        <input id="3D_check", type="checkbox" title="{{ gettext('Load 3-D Live. Not recommended for worksheets with > 2 3-D Plots.') }}"
+               onchange="live_3D_check(this.checked);"
+               class="worksheet" value="live_3D" {{ "checked" if worksheet.live_3D() else "" }} />&nbsp;{{ gettext('Load 3-D Live') }}
+        <input id="3D_use_java", type="checkbox" title="{{ gettext('Use java for 3-D. Only applies to this running of worksheet.') }}"
+               onchange="3D_use_java_check(this.checked);"
+               class="worksheet" value="3D_use_java"/>&nbsp;{{ gettext('Use java for 3-D') }}
+         {% endif %}
     {% endif %} 
     </div>
     <div id="share-publish-buttons">

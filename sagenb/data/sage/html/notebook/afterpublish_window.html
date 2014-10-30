@@ -11,7 +11,7 @@
     <a href="publish?re"><button>{{ gettext('Re-publish worksheet') }}</button></a>
     <a onClick="parent.location+='?stop'"><button>{{ gettext('Stop publishing') }}</button></p></a>
 </div>
-<input type="checkbox" name="auto" {{ checked }} onchange="parent.location='?auto'"/> <label for="auto">{{ gettext('Automatically re-publish when changes are made') }}</label>
+<input type="checkbox" name="auto" {{ checked }} onchange="parent.location='?auto'"/> <label for="auto">{{ gettext('Automatically re-publish when changes are made and saved') }}</label>
 {% endblock %}
 {% set select = "publish" %}
 {% set backwards = true %}

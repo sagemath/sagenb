@@ -276,7 +276,7 @@ function initialize_the_notebook() {
         }
         return toint(id);
     });
-
+    //TODO: why do we do the following twice?
     // Parse active cell IDs and mark these cells as running.  We
     // don't use $.map here, to avoid the possibility of overwriting a
     // debug version of the list.  See debug.js for details.
@@ -326,7 +326,7 @@ function initialize_the_notebook() {
     });
 
     // Resize and save on paste.
-    $('textarea').live('paste', function () {
+    $(document).on('paste','textarea', function () {
         var id = $(this).attr('id').slice(11);
         setTimeout(function () {
             send_cell_input(id);
@@ -786,7 +786,7 @@ function modal_prompt(form_options, options, modal_options) {
     },
     modal_options);
 
-    new_prompt = $(modal_prompt_element);
+    new_prompt = $($.parseHTML(modal_prompt_element));
     $('body').append(new_prompt);
     new_prompt.css(css);
 
@@ -806,7 +806,8 @@ function modal_prompt(form_options, options, modal_options) {
     modal_options.title = modal_options.title || title;
 
     if (overlay_close) {
-        $('div.ui-widget-overlay').live('click', close_dialog);
+        //$('div.ui-widget-overlay').live('click', close_dialog);
+        $(document).on('click','div.ui-widget-overlay',close_dialog);
     }
 
     // Form setup.
@@ -815,7 +816,6 @@ function modal_prompt(form_options, options, modal_options) {
         old_success_function(new_form, new_prompt);
         close_dialog();
     };
-
     new_form.ajaxForm(form_options);
     hide_java_applets();
     new_prompt.dialog(modal_options);
@@ -1769,9 +1769,10 @@ function rename_worksheet() {
     };
     modal_prompt({
         success: function (form, prompt) {
-            callback($(':text', form).attr('value'));
+            callback($(':text',form).prop('value'));
         }
     }, {
+        id: "rename_prompt",
         title: translations["Rename worksheet"],
         message: translations['Please enter a name for this worksheet.'],
         'default': worksheet_name,
@@ -1816,6 +1817,15 @@ function pretty_print_check(s) {
     async_request(worksheet_command('pretty_print/' + s));
 }
 
+function live_3D_check(s) {
+    /*
+    Send a message back to the server either turn live 3D on or off.
+
+    INPUT:
+        s -- boolean; whether the pretty Live 3D box is now checked.
+    */
+    async_request(worksheet_command('live_3D/' + s));
+}
 
 function handle_data_menu(form) {
     /*
@@ -2147,7 +2157,7 @@ function evaluate_text_cell_input(id, value, settings) {
         input: value
     });
     //update jmol applet list
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 }
 
 
@@ -2317,7 +2327,7 @@ function cell_delete(id) {
         id: id
     });
     //update jmol applet list
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 }
 
 
@@ -2366,9 +2376,8 @@ function cell_delete_callback(status, response) {
     if (in_slide_mode) {
         current_cell = -1;
         slide_mode();
-    //update jmol applet list
-    jmol_delete_check();
-
+        //update jmol applet list
+        sage_jmol.delete_callback();
     }
 }
 
@@ -2392,7 +2401,7 @@ function cell_delete_output(id) {
                       id: id
                   });
     //update jmol applet list
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 
 }
 
@@ -2423,7 +2432,7 @@ function cell_delete_output_callback(status, response) {
     // Set the cell to not evaluated.
     cell_set_not_evaluated(X.id);
     //update list of jmol applets
-    jmol_delete_check();
+    sage_jmol.delete_callback();
 }
 
 
@@ -3068,8 +3077,7 @@ function evaluate_cell(id, newcell) {
         input: cell_input.value
     });
     //update jmol applet list
-    jmol_delete_check();
-
+    sage_jmol.delete_callback();
 }
 
 
@@ -3230,8 +3238,7 @@ function evaluate_cell_callback(status, response) {
 
     start_update_check();
     //update jmol applet list
-    jmol_delete_check();
-
+    sage_jmol.delete_callback();
 }
 
 
@@ -3742,7 +3749,7 @@ function set_input_text(id, text) {
 // Dynamic evaluation of javascript related in cell output.
 ///////////////////////////////////////////////////////////////////
 function CellWriter() {
-    /*
+    /*TODO: Jmol does not use anymore. Remove if nothing else depends on it.
     When a new cell is loaded, this class is used to let javascript
     write directly to the document. After that, make sure javascript
     writes to a CellWriter object.  This is used in order to get jmol
@@ -4511,7 +4518,7 @@ function delete_all_output() {
     // of the user interface.
     async_request(worksheet_command('delete_all_output'));
     //update jmol applet info
-    jmol_delete_all_output();
+    sage_jmol.delete_all_callback();
 }
 
 

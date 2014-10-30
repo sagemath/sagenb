@@ -225,7 +225,8 @@ div.attached_filename { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
 /*********** WORKSHEETS ************************* */
 /* line 395, ../../../../sass/src/main.scss */
-div.docstring-introspection-dialog { font-size: inherit; font-family: 'Arial', 'Helvetica', sans-serif; }
+div.docstring-introspection-dialog-source .ui-dialog-title { font-size: inherit; color: #007020; font-family: 'Arial', 'Helvetica', sans-serif; }
+div.docstring-introspection-dialog-doc .ui-dialog-title { font-size: inherit; color: #0000aa; font-family: 'Arial', 'Helvetica', sans-serif; }
 
 /* line 399, ../../../../sass/src/main.scss */
 .docstring { font-family: 'Arial', 'Helvetica', sans-serif; }
@@ -273,6 +274,7 @@ button.add_new_worksheet_menu { font-size: 14px; }
 
 /* line 479, ../../../../sass/src/main.scss */
 #specific-revision-page #revision-data { padding: 1em 0.5em; border-top: 1px solid #c9d7f1; border-bottom: 1px solid #c9d7f1; }
+#specific-revision-page .sharebar a { color: white; border-left: 2px white solid; padding-left: 1em; }
 
 /* line 485, ../../../../sass/src/main.scss */
 #revision-list-page #revision-list { width: 100%; }
@@ -482,9 +484,13 @@ pre.cell_output_hidden, pre.cell_output_hide { display: none; }
 a.file_link { text-decoration: underline; }
 
 /* line 968, ../../../../sass/src/main.scss */
-div.insert_new_cell { height: 6px; display: block; margin: 3px; }
-/* line 972, ../../../../sass/src/main.scss */
-div.insert_new_cell:hover { background-color: #8888fe; margin: 3px; }
+div.insert_new_cell { height: 16px; display: block; margin: 3px; }
+div.insert_new_cell:hover{background-color:#8888fe;}
+div.legacy_insert_new_cell {height:13px; display:inline-block; width:95%;}
+div.legacy_insert_new_cell:hover{background-color:#8888fe;}
+
+/* line 974 */
+div.wksht-icon_button {display:inline-block;}
 
 /* line 977, ../../../../sass/src/main.scss */
 a.worksheetname { text-decoration: none; font-weight: bold; font-size: 14px; color: #222222; }

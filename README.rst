@@ -73,7 +73,9 @@ Development
 ===========
 
 See the Sage Developer's guide, part of the Sage documentation, for
-instructions.
+instructions.  There is also a useful, if somewhat outdated, overview
+of the directory structure, evaluation and serving flow at
+http://wiki.sagemath.org/devel/SageNotebook
 
 Miscellaneous Release Instructions
 ----------------------------------
