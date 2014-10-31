@@ -118,7 +118,7 @@ class LocalData(object):
                                 documentation)
         :attribute charset: charset for `babel.messages.catalog.Catalog`.
         :attribute sort_by_file: message ordering for po and pot files. This
-                                 option kepps changes in po and pot files small
+                                 option keeps changes in po and pot files small
                                  when changes in notebook sources are small.
         :attribute width: max line length for po and pot files. This option 
                           contributes to keep changes in po and pot files small
@@ -199,7 +199,7 @@ class LocalData(object):
 
 
 class Pot(object):
-    """This class encapsulates file operations and update from source
+    """This class encapsulates file operations and update from sources
     for a po or pot file. It uses the public API of the `babel` package.
 
     :param file_path: if is not `None`, the catalog is read from this file.
@@ -217,9 +217,9 @@ class Pot(object):
             self.catalog = Catalog(**kwargs)
         
     def extract(self, src_path='.', charset='utf-8', locale=None, **kwargs):
-        """Extracts translatable messages from source this function is based on
-        the extract function of the `pybabel` command, which is not part of the
-        public API of `babel`. Only the public API of `babel` is used here.
+        """Extracts translatable messages from sources. This function is based
+        on the extract function of the `pybabel` command, which is not part of
+        the public API of `babel`. Only the public API of `babel` is used here.
 
         :param src_path: base path of the source tree, default is the current
                          path.
@@ -320,22 +320,24 @@ class Pot(object):
 
 class Po(Pot):
     """a class specific for actual localizations, not templates (po files).
-    It is like Pot, but with .mo ouput capabilities
-
-    :param file_path: if the `file_path` attribute is  `None`, `path` is
-                      taken as the output file and `file_path` parameter is 
-                      discarded. If `file_path` is not `None`, the output
-                      file is `file_path` and `path` is not updated.
-                      Default is `None`. File extension is supposed to be '.po'
-                      and is changed to `.mo` before writing.
-    :param backup: if `True` and the output file exists, a backup is made
-                   prior to overwrite the file. Further backups overwrite
-                   the previous.
-
-    Other optional keyword parameters are passed to
-    `babel.messages.mofile.read_mo()` see `babel` public API docs.
+    It is like Pot, but with .mo ouput capabilities.
     """
+
     def compile(self, file_path=None, backup=True, **kwargs):
+        """
+        :param file_path: if the `file_path` attribute is  `None`, `path` is
+                          taken as the output file and `file_path` parameter is 
+                          discarded. If `file_path` is not `None`, the output
+                          file is `file_path` and `path` is not updated.
+                          Default is `None`. File extension is supposed
+                          to be '.po' and is changed to `.mo` before writing.
+        :param backup: if `True` and the output file exists, a backup is made
+                       prior to overwrite the file. Further backups overwrite
+                       the previous.
+
+        Other optional keyword parameters are passed to
+        `babel.messages.mofile.write_mo()` see `babel` public API docs.
+        """
         if file_path is None:
             file_path = self.path
         if file_path is not None:
