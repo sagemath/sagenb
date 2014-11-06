@@ -2339,10 +2339,10 @@ class Cell(Cell_generic):
                 jmol_script = f.read()
             jmol_script = jmol_script.replace(
                 'defaultdirectory "', 
-                'defaultdirectory "{0}'.format(self.url_to_worksheet()))
+                'defaultdirectory "{0}/'.format(self.url_to_worksheet()))
             with open(jmol_name, 'w') as f:
                 f.write(jmol_script)
-
+ 
         image_name = os.path.join(self.url_to_self(),'.jmol_images',F)
         script_name = os.path.join(self.url_to_self(), F)
         return textwrap.dedent("""
