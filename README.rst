@@ -72,13 +72,41 @@ Settings" section of the "Settings."
 Development
 ===========
 
-See the Sage Developer's guide, part of the Sage documentation, for
+See the Sage Developer's guide, part of the Sage documentation, at
+http://www.sagemath.org/doc/developer/index.html for
 instructions.  There is also a useful, if somewhat outdated, overview
 of the directory structure, evaluation and serving flow at
 http://wiki.sagemath.org/devel/SageNotebook
 
-Miscellaneous Release Instructions
-----------------------------------
+
+Stylesheets (CSS)
+-----------------
+See ``sass/readme.txt``.
+
+
+Localization
+------------
+
+To add a locale to an existing install, we have some
+possibly outdated instructions:
+
+    * Create a new locale, or download one from
+      http://wiki.sagemath.org/i18n . To create a new locale:
+
+      * Edit and save a copy of ``sagenb.pot`` using your favorite text
+        editor or POEdit (http://poedit.net)
+
+      * (Recommended) Post the new locale to
+        http://wiki.sagemath.org/i18n
+
+    * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
+
+    * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
+      xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+
+
+Older Release Instructions
+--------------------------
 
 The following advice for release managers of sagenb is taken from the
 old SPKG.txt file that was sitting around. Most of it is probably
@@ -116,36 +144,18 @@ make sense in some cases.
 
       * Replace ``sagenb.pot`` with ``sagenb.po``.
 
-      * Then, update the version in ``setup.py`` and commit this change.
+    * Then, update the version in ``setup.py`` and commit this change.
 
-      * Run ``dist.sh``, optionally with a ``-g`` argument to package
-        the git repo too.
+    * Run ``dist.sh``, optionally with a ``-g`` argument to package
+      the git repo too.
 
-      * Copy the newly generated ``dist/`` directory from the sagenb
-        repo to the SPKG's root directory and rename it ``src/``
-        , replacing the ``src/`` directory that is currently there
+    * Copy the newly generated ``dist/`` directory from the sagenb
+      repo to the SPKG's root directory and rename it ``src/``
+      , replacing the ``src/`` directory that is currently there
 
-      * Pack up the SPKG with ``sage --pkg --no-compress`` (because
-        everything in ``src/`` is already compressed)
+    * Pack up the SPKG with ``sage --pkg --no-compress`` (because
+      everything in ``src/`` is already compressed)
 
-      * Install and test the new spkg: ``sage -f sagenb-*.spkg``
+    * Install and test the new spkg: ``sage -f sagenb-*.spkg``
 
-      * Don't forget to push all changes in the sagenb repo to github.
-
-    Stylesheets (CSS): see ``sass/readme.txt``.
-
-    To add a locale to an existing install:
-
-    * Create a new locale, or download one from
-      http://wiki.sagemath.org/i18n . To create a new locale:
-
-      * Edit and save a copy of ``sagenb.pot`` using your favorite text
-        editor or POEdit (http://poedit.net)
-
-      * (Recommended) Post the new locale to
-        http://wiki.sagemath.org/i18n
-
-    * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
-
-    * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
-      xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+    * Don't forget to push all changes in the sagenb repo to github.
