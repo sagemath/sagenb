@@ -23,7 +23,6 @@ INPUT:
               <div class="legacy_insert_new_cell" id="legacy_new_cell_before{{ cell.id() }}"></div>
             </div>
             <script type="text/javascript">
-                {% if not cell.worksheet().docbrowser() %}
                 $("#insert_new_compute_cell_before{{ cell.id() }}").bind("click",function (e) {
                     insert_new_cell_before({{ '%r'|format(cell.id()) }});
                 });
@@ -37,7 +36,6 @@ INPUT:
                       insert_new_cell_before({{ '%r'|format(cell.id()) }});
                    }
                 });
-                {% endif %}
             </script>
     {% endif %}
     <div class="text_cell" id="cell_text_{{ cell.id() }}">
