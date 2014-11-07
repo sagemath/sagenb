@@ -2,6 +2,6 @@ graft sagenb
 graft sass
 graft util
 prune sass/src/.sass-cache
-include *.txt MANIFEST.in .gitignore dist.sh README.rst
+include *.txt MANIFEST.in .gitignore dist.sh README.rst ReleaseInstr.md
 prune .git
 global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc *.DS_Store

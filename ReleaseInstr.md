@@ -58,9 +58,16 @@ in your local `SAGENB_ROOT`.
     ./dist.sh -s
     ```
 
-1. Create the sagenb tar file for inclusion into Sage.
+   Be careful to check that the ``dist`` directory still has a copy of
+   each upstream package and the sagenb package; it's worth also checking
+   that ``dist/sagenb-<version>.tar.gz`` only contains sagenb and not
+   extra copies of the upstream files, by checking the output of
 
-    FIXME - probably the dist is actually the right one
+    ```sh
+    tar -tzf dist/sagenb-<version>.tar.gz
+    ```
+
+1. Create the sagenb tar file for inclusion into Sage.
 
     ```sh
     mv dist sagenb-<version>
