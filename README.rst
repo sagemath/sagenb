@@ -72,8 +72,17 @@ Settings" section of the "Settings."
 Development
 ===========
 
+Development and issue tracking of sagenb happens primarily on
+Github at https://github.com/sagemath/sagenb, with certain
+discussions at the sage-notebook Google group
+https://groups.google.com/forum/#!forum/sage-notebook.
+
+Instructions for getting started with sagenb development
+are found in the file ``HACKING.rst``, including how to link
+a local clone of the source to an existing Sage installation.
+
 See the Sage Developer's guide, part of the Sage documentation, at
-http://www.sagemath.org/doc/developer/index.html for
+http://www.sagemath.org/doc/developer/index.html for some further
 instructions.  There is also a useful, if somewhat outdated, overview
 of the directory structure, evaluation and serving flow at
 http://wiki.sagemath.org/devel/SageNotebook
