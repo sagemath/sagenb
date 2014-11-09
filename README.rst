@@ -90,7 +90,8 @@ http://wiki.sagemath.org/devel/SageNotebook
 
 Stylesheets (CSS)
 -----------------
-See ``sass/readme.txt``.
+See ``sass/readme.txt`` for information about how to
+use sagenb's SCSS files to update its CSS *properly*.
 
 
 Localization
@@ -112,6 +113,20 @@ possibly outdated instructions:
 
     * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
       xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+
+Release Instructions
+--------------------
+
+Currently, sagenb is an upstream project from Sage proper.
+That means any new sagenb release needs to be packaged properly
+in order to be included in Sage.  Read ``ReleaseInstr.md`` for
+basic details on how to create such a release, including minor changes
+needed on the Sage side to ``build/pkgs/sagenb/package-version.txt``
+and the checksum file.
+
+See the older instructions below for some additional details that would
+need to be taken into account for more major changes, especially the
+ones about the manifest and localization updates.
 
 
 Older Release Instructions
