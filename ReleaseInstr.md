@@ -51,10 +51,9 @@ in your local `SAGENB_ROOT`.
 
 1. (Optional) If the above command was already run once, then to avoid
    downloading all the dependencies all over again, and to just repackage
-   only sagenb, the following command can also be run:
+   only sagenb, one can also run the dist script with the ``-s`` option:
 
     ```sh
-    rm -f dist/sagenb*
     ./dist.sh -s
     ```
 
