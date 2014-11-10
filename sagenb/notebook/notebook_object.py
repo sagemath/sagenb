@@ -48,6 +48,12 @@ class NotebookObject:
           must have OpenSSL installed to use this feature, or if you compile
           Sage yourself, have the OpenSSL development libraries installed.
           *Highly recommended!*
+          
+          When ``notebook()`` is run for first time with ``secure=True``, it
+          will generate new keys and store them to ``.sage/notebook/``.
+          Remove this when you want to generate new keys, for example if an
+          older version of Sage has generated keys that are too short for
+          current browsers.
 
         - ``reset`` -- boolean (default: ``False``) if True allows you
           to set the admin password.  Use this if you forget your

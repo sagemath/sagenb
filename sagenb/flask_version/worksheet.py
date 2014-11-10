@@ -99,9 +99,9 @@ published_commands_allowed = set(['alive', 'cells', 'cell_update',
                           'data', 'download', 'edit_published_page', 'eval',
                           'quit_sage', 'rate', 'rating_info', 'new_cell_before',
                           'new_cell_after', 'introspect', 'delete_all_output',
-                          'copy', 'restart_sage'])
+                          'copy', 'restart_sage', 'jsmol'])
 
-readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download', 'quit_sage', 'rating_info', 'delete_all_output'])
+readonly_commands_allowed = set(['alive', 'cells', 'data', 'datafile', 'download', 'quit_sage', 'rating_info', 'delete_all_output', 'jsmol'])
 
 def worksheet_command(target, **route_kwds):
     if 'methods' not in route_kwds:

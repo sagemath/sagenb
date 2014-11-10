@@ -31,7 +31,7 @@ fi
 
 if [ -n "$SAGENB_ONLY" ]; then
     if [ -d dist ]; then
-        rm -f dist/sagenb-*.tar.gz
+        rm -f dist/sagenb-*
     else
         mkdir -p dist
     fi

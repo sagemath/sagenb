@@ -50,6 +50,7 @@ SageJmolManager.prototype.default_info = function() {
         zIndexBase: 5,
         menuFile: "/java/jmol/appletweb/SageMenu.mnu", //special sagemenu
         //platformSpeed: 6, does not work have to do it in the ready function
+        //or set to 7 or 8 for additional rotation graphics capabilities
     };
 };
 
@@ -57,7 +58,7 @@ SageJmolManager.prototype.ready_callback = function (name, applet) {
     console.log('Jmol applet has launched ' + name);
     this._applets[name] = applet;
     this._lru_names.push(name);
-    Jmol.script(applet, "set platformSpeed 6;");
+    Jmol.script(applet, "set platformSpeed 8;"); // 8 for best rotation graphics
     this.enforce_limit();
     jQuery('#'+name).parent().append('<div id="'+name+'_hint">Right-click to get options menu.</div>');
 };

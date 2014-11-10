@@ -72,13 +72,65 @@ Settings" section of the "Settings."
 Development
 ===========
 
-See the Sage Developer's guide, part of the Sage documentation, for
+Development and issue tracking of sagenb happens primarily on
+Github at https://github.com/sagemath/sagenb, with certain
+discussions at the sage-notebook Google group
+https://groups.google.com/forum/#!forum/sage-notebook.
+
+Instructions for getting started with sagenb development
+are found in the file ``HACKING.rst``, including how to link
+a local clone of the source to an existing Sage installation.
+
+See the Sage Developer's guide, part of the Sage documentation, at
+http://www.sagemath.org/doc/developer/index.html for some further
 instructions.  There is also a useful, if somewhat outdated, overview
 of the directory structure, evaluation and serving flow at
 http://wiki.sagemath.org/devel/SageNotebook
 
-Miscellaneous Release Instructions
-----------------------------------
+
+Stylesheets (CSS)
+-----------------
+See ``sass/readme.txt`` for information about how to
+use sagenb's SCSS files to update its CSS *properly*.
+
+
+Localization
+------------
+
+To add a locale to an existing install, we have some
+possibly outdated instructions:
+
+    * Create a new locale, or download one from
+      http://wiki.sagemath.org/i18n . To create a new locale:
+
+      * Edit and save a copy of ``sagenb.pot`` using your favorite text
+        editor or POEdit (http://poedit.net)
+
+      * (Recommended) Post the new locale to
+        http://wiki.sagemath.org/i18n
+
+    * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
+
+    * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
+      xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+
+Release Instructions
+--------------------
+
+Currently, sagenb is an upstream project from Sage proper.
+That means any new sagenb release needs to be packaged properly
+in order to be included in Sage.  Read ``ReleaseInstr.md`` for
+basic details on how to create such a release, including minor changes
+needed on the Sage side to ``build/pkgs/sagenb/package-version.txt``
+and the checksum file.
+
+See the older instructions below for some additional details that would
+need to be taken into account for more major changes, especially the
+ones about the manifest and localization updates.
+
+
+Older Release Instructions
+--------------------------
 
 The following advice for release managers of sagenb is taken from the
 old SPKG.txt file that was sitting around. Most of it is probably
@@ -116,36 +168,18 @@ make sense in some cases.
 
       * Replace ``sagenb.pot`` with ``sagenb.po``.
 
-      * Then, update the version in ``setup.py`` and commit this change.
+    * Then, update the version in ``setup.py`` and commit this change.
 
-      * Run ``dist.sh``, optionally with a ``-g`` argument to package
-        the git repo too.
+    * Run ``dist.sh``, optionally with a ``-g`` argument to package
+      the git repo too.
 
-      * Copy the newly generated ``dist/`` directory from the sagenb
-        repo to the SPKG's root directory and rename it ``src/``
-        , replacing the ``src/`` directory that is currently there
+    * Copy the newly generated ``dist/`` directory from the sagenb
+      repo to the SPKG's root directory and rename it ``src/``
+      , replacing the ``src/`` directory that is currently there
 
-      * Pack up the SPKG with ``sage --pkg --no-compress`` (because
-        everything in ``src/`` is already compressed)
+    * Pack up the SPKG with ``sage --pkg --no-compress`` (because
+      everything in ``src/`` is already compressed)
 
-      * Install and test the new spkg: ``sage -f sagenb-*.spkg``
+    * Install and test the new spkg: ``sage -f sagenb-*.spkg``
 
-      * Don't forget to push all changes in the sagenb repo to github.
-
-    Stylesheets (CSS): see ``sass/readme.txt``.
-
-    To add a locale to an existing install:
-
-    * Create a new locale, or download one from
-      http://wiki.sagemath.org/i18n . To create a new locale:
-
-      * Edit and save a copy of ``sagenb.pot`` using your favorite text
-        editor or POEdit (http://poedit.net)
-
-      * (Recommended) Post the new locale to
-        http://wiki.sagemath.org/i18n
-
-    * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
-
-    * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
-      xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+    * Don't forget to push all changes in the sagenb repo to github.
