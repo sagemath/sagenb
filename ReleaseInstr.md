@@ -103,6 +103,7 @@ in your local `SAGENB_ROOT`.
     git reset --mixed  HEAD^
     <fix whatever needs fixing>
     <perhaps run tests again, from SAGE_ROOT>
+    <set up changes with git add>
     git commit -m 'Fix doctests' # or whatever is appropriate
     <edit Changes and setup.py again if necessary>
     git add Changes
@@ -110,8 +111,8 @@ in your local `SAGENB_ROOT`.
     git commit
     ```
 
-   Now return to the previous step (in `SAGE_ROOT`) as needed,
-   and then proceed.
+   Now return to the previous steps for creating the distribution and
+   new tar files, update checksums etc. as needed, and then proceed.
 
 1. Now we can create a branch for the ticket `<ticket>`, commit our changes,
    and push to Trac.  Warning: do not use `git commit -a`
