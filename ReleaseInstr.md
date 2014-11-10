@@ -86,6 +86,14 @@ in your local `SAGENB_ROOT`.
     make ptestlong              # test sage
     ```
 
+   If you are not using your sagenb repository directly inside
+   Sage as described in the file HACKING.rst, you may need to
+   use the following command before actually testing it out.
+
+    ```sh
+    ./sage -f sagenb  # if necessary to install the new sagenb
+    ```
+
 1. (Optional) If you encounter errors or realize there was a mistake,
    you can try to fix them back in sagenb, after reverting the last
    change (the updated sagenb version).
