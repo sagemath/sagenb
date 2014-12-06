@@ -2251,7 +2251,7 @@ class UpdateButton(JavascriptCodeButton):
         return self.__var
 
         
-from sage.misc.misc import decorator_defaults
+from sage.misc.decorators import decorator_defaults
 
 @decorator_defaults
 def interact(f, layout=None, width='800px'):

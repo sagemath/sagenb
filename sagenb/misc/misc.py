@@ -184,12 +184,12 @@ else:
     DOT_SAGENB = os.path.join(os.environ['HOME'], '.sagenb')
 
 try:
-    from sage.misc.misc import SAGE_URL
+    from sage.env import SAGE_URL
 except ImportError:
     SAGE_URL = 'http://sagemath.org'
 
 try:
-    from sage.misc.misc import SAGE_DOC
+    from sage.env import SAGE_DOC
 except ImportError:
     SAGE_DOC = "stub"
     
@@ -260,7 +260,7 @@ except ImportError:
         open(filename,'wb').write(s)
 
 try:
-    from sage.misc.misc import alarm, cancel_alarm, verbose
+    from sage.misc.all import alarm, cancel_alarm, verbose
 except ImportError:
     # TODO!
     @stub
@@ -318,7 +318,7 @@ def word_wrap(s, ncols=85):
 
 
 try:
-    from sage.misc.preparser import strip_string_literals
+    from sage.repl.preparse import strip_string_literals
 except ImportError:
     def strip_string_literals(code, state=None):
         # todo -- do we need this?
@@ -354,7 +354,7 @@ def is_Matrix(x):
     return is_Matrix(x)
 
 try:
-    from sage.misc.misc import srange
+    from sage.misc.all import srange
 except ImportError:
     # TODO: need to put a really srange here!
     def srange(start, end=None, step=1, universe=None, check=True, include_endpoint=False, endpoint_tolerance=1e-5):
@@ -372,7 +372,7 @@ def register_with_cleaner(pid):
         print "generic cleaner needs to be written"
 
 try:
-    from sage.misc.misc import tmp_filename, tmp_dir
+    from sage.misc.all import tmp_filename, tmp_dir
 except ImportError:
     def tmp_filename(name='tmp'):
         # We use mktemp instead of mkstemp since the semantics of the
