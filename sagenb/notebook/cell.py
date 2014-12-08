@@ -2431,7 +2431,7 @@ class Cell(Cell_generic):
                 # jmol data
                 jmoldatafile=os.path.join(self.directory(),F)
             elif F.endswith('.canvas3d'):
-                script = '<div><script>canvas3d.viewer("%s");</script></div>' % url
+                script = '<div><script>canvas3d.viewer("%s?%s");</script></div>' %(url,time.time())
                 images.append(script)
             elif F.startswith('.jmol_'):
                 # static jmol data and images
