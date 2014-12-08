@@ -25,7 +25,7 @@ from tempfile import mkdtemp
 Sphinx = None
 
 try:
-    from sage.misc.misc import SAGE_DOC
+    from sage.env import SAGE_DOC
 except ImportError:
     SAGE_DOC = ''  # used to be None
 

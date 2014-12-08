@@ -119,8 +119,8 @@ def help(obj):
     TESTS::
     
         sage: import numpy.linalg
-        sage: import os, sage.misc.misc ; current_dir = os.getcwd()
-        sage: os.chdir(sage.misc.misc.tmp_dir('server_doctest'))
+        sage: current_dir = os.getcwd()
+        sage: os.chdir(tmp_dir('server_doctest'))
         sage: sagenb.misc.support.help(numpy.linalg.norm)
         <html><table notracebacks bgcolor="#386074" cellpadding=10 cellspacing=10><tr><td bgcolor="#f5f5f5"><font color="#37546d">
         &nbsp;&nbsp;&nbsp;<a target='_new' href='cell://docs-....html'>Click to open help window</a>&nbsp;&nbsp;&nbsp;
@@ -550,14 +550,13 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
 # Preparser
 ###################################################
 try:
-    from sage.misc.preparser import preparse, preparse_file
+    from sage.repl.preparse import preparse, preparse_file
     def do_preparse():
         """
         Return True if the preparser is set to on, and False otherwise.
         """
-        import sage.misc.interpreter
-        return sage.misc.interpreter.do_preparse
-    
+        import sage.repl.interpreter
+        return sage.repl.interpreter._do_preparse
 except ImportError:
     def preparse(line, *args, **kwds):
         return line
@@ -725,7 +724,7 @@ def preparse_worksheet_cell(s, globals):
     Preparse the contents of a worksheet cell in the notebook,
     respecting the user using ``preparser(False)`` to turn off the
     preparser.  This function calls
-    :func:`~sage.misc.preparser.preparse_file` which also reloads
+    :func:`~sage.repl.preparse.preparse_file` which also reloads
     attached files.  It also does displayhook formatting by calling
     the :func:`~sagenb.notebook.interfaces.format.displayhook_hack`
     function.
@@ -735,7 +734,7 @@ def preparse_worksheet_cell(s, globals):
     - ``s`` - a string containing code
 
     - ``globals`` - a string:object dictionary; passed directly to
-      :func:`~sage.misc.preparser.preparse_file`
+      :func:`~sage.repl.preparse.preparse_file`
 
     OUTPUT:
 

@@ -333,7 +333,7 @@ def parse_link_rel(url, fn):
 @worksheet_listing.route('/upload_worksheet', methods=['GET', 'POST'])
 @login_required
 def upload_worksheet():
-    from sage.misc.misc import tmp_filename, tmp_dir
+    from sage.misc.all import tmp_filename, tmp_dir
     from werkzeug.utils import secure_filename
     import zipfile
 
