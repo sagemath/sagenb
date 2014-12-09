@@ -170,6 +170,25 @@ class FilesystemDatastore(Datastore):
         return result
 
     def _save(self, obj, filename):
+        """
+        TESTS:
+
+        Check that interrupting ``_save`` is safe::
+
+            sage: from sagenb.storage.filesystem_storage import FilesystemDatastore
+            sage: D = FilesystemDatastore("")
+            sage: fn = tmp_filename()
+            sage: s = "X" * 100000
+            sage: D._save(s, fn)
+            sage: try:  # long time
+            ....:     alarm(1)
+            ....:     while True:
+            ....:         D._save(s, fn)
+            ....: except AlarmInterrupt:
+            ....:     pass
+            sage: len(D._load(fn))
+            100000
+        """
         s = cPickle.dumps(obj)
         if len(s) == 0:
             raise ValueError("Invalid Pickle")
