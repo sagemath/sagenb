@@ -405,9 +405,8 @@ def notebook_setup(self=None):
             w = '"%s"' % val
         s += '%s = %s \n' % (key, w)
 
-    f = open(template_file, 'w')
-    f.write(s)
-    f.close()
+    with open(template_file, 'w') as f:
+        f.write(s)
 
     import subprocess
 
