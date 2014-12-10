@@ -184,7 +184,9 @@ class FilesystemDatastore(Datastore):
             ....:     alarm(1)
             ....:     while True:
             ....:         D._save(s, fn)
-            ....: except AlarmInterrupt:
+            ....: except (AlarmInterrupt, OSError):
+            ....:     # OSError could happen due to a double close() in
+            ....:     # Python's tempfile module.
             ....:     pass
             sage: len(D._load(fn))
             100000
