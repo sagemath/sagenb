@@ -44,6 +44,8 @@ import os
 from abstract_storage import Datastore
 from sagenb.misc.misc import set_restrictive_permissions, encoded_str
 
+from sage.misc.temporary_file import atomic_write
+
 def is_safe(a):
     """
     Used when importing contents of various directories from Sage
@@ -168,10 +170,31 @@ class FilesystemDatastore(Datastore):
         return result
 
     def _save(self, obj, filename):
+        """
+        TESTS:
+
+        Check that interrupting ``_save`` is safe::
+
+            sage: from sagenb.storage.filesystem_storage import FilesystemDatastore
+            sage: D = FilesystemDatastore("")
+            sage: fn = tmp_filename()
+            sage: s = "X" * 100000
+            sage: D._save(s, fn)
+            sage: try:  # long time
+            ....:     alarm(1)
+            ....:     while True:
+            ....:         D._save(s, fn)
+            ....: except (AlarmInterrupt, OSError):
+            ....:     # OSError could happen due to a double close() in
+            ....:     # Python's tempfile module.
+            ....:     pass
+            sage: len(D._load(fn))
+            100000
+        """
         s = cPickle.dumps(obj)
-        if len(s)==0:
+        if len(s) == 0:
             raise ValueError("Invalid Pickle")
-        with open(self._abspath(filename), 'w') as f:
+        with atomic_write(self._abspath(filename)) as f:
             f.write(s)
 
     def _permissions(self, filename):
@@ -352,7 +375,7 @@ class FilesystemDatastore(Datastore):
             # only save if loaded
             # todo -- add check if changed
             filename = self._worksheet_html_filename(username, id_number)
-            with open(self._abspath(filename),'w') as f:
+            with atomic_write(self._abspath(filename)) as f:
                 f.write(worksheet.body().encode('utf-8', 'ignore'))
 
     def create_worksheet(self, username, id_number):
@@ -470,7 +493,7 @@ class FilesystemDatastore(Datastore):
               os.path.join('sage_worksheet','worksheet.txt'))
         os.unlink(worksheet_txt)
         # important, so we don't leave an open file handle!
-        os.fdopen(fd,'w').close()
+        os.close(fd)
         # end backwards compat block.
 
 

@@ -10,6 +10,8 @@ SALT = 'aa'
 
 import user_conf
 
+from sage.misc.temporary_file import atomic_write
+
 def User_from_basic(basic):
     """
     Create a user from a basic data structure.
@@ -105,7 +107,8 @@ class User(object):
             his = cPickle.dumps(self.history)
         except AttributeError:
             his = cPickle.dumps([])
-        open(history_file,'w').write(his)
+        with atomic_write(history_file) as f:
+            f.write(his)
 
     def username(self):
         """
