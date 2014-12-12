@@ -1451,7 +1451,9 @@ class Cell(Cell_generic):
                 break
 
         self._percent_directives = directives
-        return "\n".join(text[i:]).strip()
+        if not self._system == 'fortran':
+            return "\n".join(text[i:]).strip()
+        return "\n".join(text[i:]).rstrip()
 
     def percent_directives(self):
         r"""
