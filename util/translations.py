@@ -137,7 +137,10 @@ class LocalData(object):
             'dgettext': (2,),
             'dngettext': (2, 3),
             'N_': None,
-            'pgettext': ((1, 'c'), 2)
+            'pgettext': ((1, 'c'), 2),
+            'npgettext': ((1, 'c'), 2, 3),
+            'lazy_gettext': None,
+            'lazy_pgettext': ((1, 'c'), 2),
         }
         #: Source files to extract messages
         self.method_map = [
@@ -215,7 +218,7 @@ class Pot(object):
             self.from_file(self.path, **kwargs)
         else:
             self.catalog = Catalog(**kwargs)
-        
+
     def extract(self, src_path='.', charset='utf-8', locale=None, **kwargs):
         """Extracts translatable messages from sources. This function is based
         on the extract function of the `pybabel` command, which is not part of
