@@ -917,7 +917,7 @@ def worksheet_rate(worksheet):
 
     rating = int(request.values['rating'])
     if rating < 0 or rating >= 5:
-        return current_app.messge("Gees -- You can't fool the rating system that easily!",
+        return current_app.message("Gees -- You can't fool the rating system that easily!",
                           url_for_worksheet(worksheet))
 
     comment = request.values['comment']
