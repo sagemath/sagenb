@@ -33,16 +33,17 @@ from babel.messages.extract import extract_from_dir
 
 def restore(file_path):
     """Restores a file from a backup file of the same name ended by `~`.
-    
+
     :param file_path: the absolute path of the file to restore.
     """
     backup_path = '{}~'.format(file_path)
     if pth.isfile(backup_path):
         shutil.copyfile(backup_path, file_path)
 
+
 def clear(file_path):
     """Clears a backup file.
-    
+
     :param file_path: the absolute path of the file whose backup ends by `~`.
     """
     backup_path = '{}~'.format(file_path)
@@ -76,7 +77,7 @@ class Paths(object):
         self.src = pth.dirname(pth.dirname(pth.realpath(__file__)))
         self.trans = pth.join(self.src, 'sagenb', 'translations')
         self.pot = pth.join(self.src, 'sagenb', 'message.pot')
-        
+
     def lang(self, lang_id):
         """Returns the path of the language `lang_id` in the source tree.
 
@@ -93,9 +94,11 @@ class LocalData(object):
     :attribute path: a Path instance. It is available before `get_data()` is
                      called
     :attribute extract: a dictionary with kwargs for `Pot.extract`. Must be
-                        overridden for other projects. Implemented as @property.
+                        overridden for other projects. Implemented as
+                        @property.
     :attribute to_file: a dictionary with kwargs for `Pot.to_file`. Must be
-                        overridden for other projects. Implemented as @property.
+                        overridden for other projects. Implemented as
+                        @property.
     """
     def __init__(self):
         self.path = Paths()
@@ -120,9 +123,9 @@ class LocalData(object):
         :attribute sort_by_file: message ordering for po and pot files. This
                                  option keeps changes in po and pot files small
                                  when changes in notebook sources are small.
-        :attribute width: max line length for po and pot files. This option 
+        :attribute width: max line length for po and pot files. This option
                           contributes to keep changes in po and pot files small
-                          when changes in notebook sources are small. 
+                          when changes in notebook sources are small.
         :attribute langs: list of identifiers for available localizations in
                           the notebook.
         :attribute lang_names: localized names of available localizations.
@@ -151,7 +154,7 @@ class LocalData(object):
         #: Some configuration for each type of file
         self.options_map = {
             'sagenb/data/sage/html/**.html': {
-                'encoding':'utf-8',
+                'encoding': 'utf-8',
                 'extensions': 'jinja2.ext.autoescape,jinja2.ext.with_'},
             'sagenb/data/sage/js/**.js': {
                 'encoding': 'utf-8',
@@ -234,14 +237,14 @@ class Pot(object):
         Other optional keyword parameters are passed to
         `babel.messages.extract.extract_from_dir` see `babel` public API docs.
         """
-        #: This is the babel.messages.catalog.Catalog to contain the 
+        #: This is the babel.messages.catalog.Catalog to contain the
         #: extracted messages
         self.catalog = Catalog(charset=charset, locale=locale)
 
         if not pth.isdir(src_path):
             raise IOError('{} is not a directory'.format(src_path))
 
-        #: Extracts the data from source in a low level format. This is 
+        #: Extracts the data from source in a low level format. This is
         #: the only way present in babel's public API.
         extracted = extract_from_dir(src_path, **kwargs)
 
@@ -257,7 +260,7 @@ class Pot(object):
 
         :param file_path: a path to a po/pot file. A exception is raised if the
         file does not exist. The `path` attribute is updated with this value.
- 
+
         Other optional keyword parameters are passed to
         `babel.messages.pofile.read_po()` see `babel` public API docs.
         """
@@ -266,10 +269,10 @@ class Pot(object):
         self.path = file_path
 
     def to_file(self, file_path=None, backup=True, warn=False, **kwargs):
-        """Writes the catalog to a file. 
+        """Writes the catalog to a file.
 
         :param file_path: if the `file_path` attribute is  `None`, `path` is
-                          taken as the output file and `file_path` parameter is 
+                          taken as the output file and `file_path` parameter is
                           discarded. If `file_path` is not `None`, the output
                           file is `file_path` and `path` is not updated.
                           Default is `None`.
@@ -278,7 +281,7 @@ class Pot(object):
                        the previous.
         :param warn: if `True` warnings about fuzzy, untranslated and obsolete
                      messages are issued.
- 
+
         Other optional keyword parameters are passed to
         `babel.messages.pofile.write_po()` see `babel` public API docs.
         """
@@ -302,10 +305,10 @@ class Pot(object):
                     fuzzy, file_path))
             if untrans:
                 logging.warning('There are {} untranslated messages '
-                'in {}.\n'.format(untrans, file_path))
+                                'in {}.\n'.format(untrans, file_path))
             if obsolete:
                 logging.warning('There are {} obsolete  messages '
-                'in {}.\n'.format(obsolete, file_path))
+                                'in {}.\n'.format(obsolete, file_path))
         else:
             logging.basicConfig(level=logging.INFO)
 
@@ -329,7 +332,7 @@ class Po(Pot):
     def compile(self, file_path=None, backup=True, **kwargs):
         """
         :param file_path: if the `file_path` attribute is  `None`, `path` is
-                          taken as the output file and `file_path` parameter is 
+                          taken as the output file and `file_path` parameter is
                           discarded. If `file_path` is not `None`, the output
                           file is `file_path` and `path` is not updated.
                           Default is `None`. File extension is supposed
@@ -395,7 +398,7 @@ class TranslationFrontend(object):
             from messages from the source tree. obsolete, fuzzy and
             untranslated messages must be edited by hand in every file. This
             command makes backups of all the files.
-        
+
         `translations.py update --langs es_ES pt_BR`
             the same, but only for the listed localizations.
 
@@ -418,7 +421,7 @@ class TranslationFrontend(object):
             generate .mo files from .po for all the localizations.
 
         `translations.py extract`
-            generates a new template file (message.pot) and backup the 
+            generates a new template file (message.pot) and backup the
             existing.
 
         `translations.py init zh_CN`
@@ -477,11 +480,11 @@ class TranslationFrontend(object):
             )
 
         subparsers = parser.add_subparsers(
-                metavar='SUBCOMMAND',
-                title='subcommands',
-                description='',
-                help='is one of:',
-                )
+            metavar='SUBCOMMAND',
+            title='subcommands',
+            description='',
+            help='is one of:',
+            )
 
         parser_update = subparsers.add_parser(
             'update', parents=(pot_parser, langs_parser, backup_parser),
@@ -566,12 +569,12 @@ class TranslationFrontend(object):
         parser_init.set_defaults(func=self.init)
 
         return parser
-        
+
     def __call__(self):
         self.args.func()
 
     def update(self):
-        """Action function for the `update`subcommand
+        """Action function for the `update` subcommand
         """
         pot_new = Pot()
         pot_new.extract(**self.data.extract)
@@ -581,7 +584,7 @@ class TranslationFrontend(object):
             pot_old.update(pot_new, no_fuzzy_matching=self.args.nofuzzy)
             pot_old.to_file(backup=self.args.backup, warn=self.args.warn,
                             **self.data.to_file)
-        
+
         for lang in self.args.langs.difference(('en_US',)):
             po = Po(self.data.path.lang(lang), locale=lang)
             po.update(pot_new, no_fuzzy_matching=self.args.nofuzzy)
@@ -599,7 +602,7 @@ class TranslationFrontend(object):
                    **self.data.to_file)
 
     def extract(self):
-        """Action function for the `update` subcommand
+        """Action function for the `extract` subcommand
         """
         pot = Pot()
         pot.extract(**self.data.extract)
@@ -648,8 +651,8 @@ class TranslationFrontend(object):
         po.catalog.fuzzy = False
 
         os.makedirs(pth.dirname(po.path))
-        self.args.backup=False
-        self.args.warn=False
+        self.args.backup = False
+        self.args.warn = False
         self.complete_update(po)
 
 
