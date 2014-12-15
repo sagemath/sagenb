@@ -427,7 +427,7 @@ notebook_help = [
       (_('DATA Variable'),
        _('Use the Data menu to upload images and other files, and create new files that can be shared between worksheets.  The DATA variable contains the path to the data files.  For example, to open a file in that directory, do "open(DATA+\'filename\')".  If foo.sage is a Sage file that you uploaded, type "load foo.sage"; if foo.py is a Python file, you can import it by typing "import foo".')),
       (_('Loading and Saving Objects'),
-       _('Use "save(obj1,DATA+'foo')" to save an object to the data directory of a worksheet, and "obj1 = load(DATA+'foo')" to load it again.  To use such objects between worksheets, you may save to any filename (given as a string) Sage can write to on your system.')),
+       _('Use "save(obj1,DATA+\'foo\')" to save an object to the data directory of a worksheet, and "obj1 = load(DATA+\'foo\')" to load it again.  To use such objects between worksheets, you may save to any filename (given as a string) Sage can write to on your system.')),
       (_('Loading and Saving Sessions'),
        _('Use "save_session(\'name\')" to save all variables to an object.  Use "load_session(\'name\')" to <i>merge</i> in all variables from a saved session.')),
       (_('Customizing the Notebook CSS'),
