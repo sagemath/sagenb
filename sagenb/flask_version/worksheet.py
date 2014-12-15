@@ -745,8 +745,8 @@ def worksheet_datafile(worksheet):
     if request.values.get('action', '') == 'delete':
         path = os.path.join(dir, filename)
         os.unlink(path)
-        return current_app.message("Successfully deleted '%s'"%filename,
-                                   cont=url_for_worksheet(worksheet)) #XXX: i18n
+        return current_app.message(_("Successfully deleted '%(filename)s'", filename=filename),
+                                   cont=url_for_worksheet(worksheet))
     else:
         return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
@@ -917,15 +917,15 @@ def worksheet_rate(worksheet):
 
     rating = int(request.values['rating'])
     if rating < 0 or rating >= 5:
-        return current_app.messge("Gees -- You can't fool the rating system that easily!",
+        return current_app.message(_("Gees -- You can't fool the rating system that easily!"),
                           url_for_worksheet(worksheet))
 
     comment = request.values['comment']
     worksheet.rate(rating, comment, g.username)
-    s = """
-    Thank you for rating the worksheet <b><i>%s</i></b>!
+    s = _("""
+    Thank you for rating the worksheet <b><i>%(worksheet_name)s</i></b>!
     You can <a href="rating_info">see all ratings of this worksheet.</a>
-    """%(worksheet.name())
+    """, worksheet_name=worksheet.name())
     #XXX: Hardcoded url
     return current_app.message(s.strip(), '/pub/', title=u'Rating Accepted')
 
