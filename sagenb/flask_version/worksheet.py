@@ -927,7 +927,7 @@ def worksheet_rate(worksheet):
     You can <a href="rating_info">see all ratings of this worksheet.</a>
     """, worksheet_name=worksheet.name())
     #XXX: Hardcoded url
-    return current_app.message(s.strip(), '/pub/', title=u'Rating Accepted')
+    return current_app.message(s.strip(), '/pub/', title=_('Rating Accepted'))
 
 
 ########################################################

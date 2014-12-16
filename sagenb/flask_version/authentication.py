@@ -236,7 +236,7 @@ def register():
         # Send a confirmation message to the user.
         try:
             send_mail(fromaddr, email_address,
-                      "Sage Notebook Registration", body)
+                      _("Sage Notebook Registration"), body)
             waiting[key] = username
         except ValueError:
             pass
