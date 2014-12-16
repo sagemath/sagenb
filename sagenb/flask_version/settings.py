@@ -2,6 +2,9 @@ import os
 import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
+from flask.ext.babel import gettext, ngettext, lazy_gettext
+_ = gettext
+
 
 settings = Module('sagenb.flask_version.settings')
 
@@ -27,17 +30,17 @@ def settings_page():
 
     if new or two:
         if not old:
-            error = 'Old password not given'
+            error = _('Old password not given')
         elif not g.notebook.user_manager().check_password(g.username, old):
-            error = 'Incorrect password given'
+            error = _('Incorrect password given')
         elif not new:
-            error = 'New password not given'
+            error = _('New password not given')
         elif not is_valid_password(new, g.username):
-            error = 'Password not acceptable. Must be 4 to 32 characters and not contain spaces or username.'
+            error = _('Password not acceptable. Must be 4 to 32 characters and not contain spaces or username.')
         elif not two:
-            error = 'Please type in new password again.'
+            error = _('Please type in new password again.')
         elif new != two:
-            error = 'The passwords you entered do not match.'
+            error = _('The passwords you entered do not match.')
 
         if not error:
             # The browser may auto-fill in "old password," even
@@ -53,7 +56,7 @@ def settings_page():
                 ##nu.set_email_confirmation(False)
                 redirect_to_home = True
             else:
-                error = 'Invalid e-mail address.'
+                error = _('Invalid e-mail address.')
 
     if error:
         return current_app.message(error, url_for('settings_page'), username=g.username)
@@ -74,9 +77,9 @@ def settings_page():
     if td['email']:
         td['email_address'] = nu.get_email() or 'None'
         if nu.is_email_confirmed():
-            td['email_confirmed'] = 'Confirmed'
+            td['email_confirmed'] = _('Confirmed')
         else:
-            td['email_confirmed'] = 'Not confirmed'
+            td['email_confirmed'] = _('Not confirmed')
 
     td['admin'] = nu.is_admin()
 
