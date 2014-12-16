@@ -461,6 +461,16 @@ def create_app(path_to_notebook, *args, **kwds):
     from settings import settings
     app.register_blueprint(settings)
 
+    # Handles all uncaught exceptions by sending an e-mail to the
+    # administrator(s) and displaying an error page.
+    @app.errorhandler(Exception)
+    def log_exception(error):
+        from sagenb.notebook.notification import logger
+        logger.exception(error)
+        return app.message(
+            '''500: Internal server error.
+            An e-mail has been sent to the administrator(s).'''), 500
+
     #autoindex v0.3 doesnt seem to work with modules
     #routing with app directly does the trick
     #TODO: Check to see if autoindex 0.4 works with modules
