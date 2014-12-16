@@ -17,6 +17,9 @@ import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, guest_or_login_required
 
+from flask.ext.babel import gettext, ngettext, lazy_gettext
+_ = gettext
+
 doc = Module('sagenb.flask_version.doc')
 
 from sagenb.misc.misc import SAGE_DOC
@@ -35,7 +38,7 @@ def docs_static_index():
 @doc.route('/doc/live/')
 @login_required
 def doc_live_base():
-    return current_app.message('nothing to see.', username=g.username)
+    return current_app.message(_('nothing to see.'), username=g.username)
 
 @doc.route('/doc/live/<manual>/<path:path_static>/_static/<path:filename>')
 @login_required

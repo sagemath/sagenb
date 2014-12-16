@@ -20,6 +20,9 @@
 {{ gettext('Error updating cell output after ') }}
 {{ gettext('s (canceling further update checks).') }}
 {{ gettext('Problem inserting new input cell after current input cell.\\n') }}
+{{ gettext('Problem inserting new input cell before current input cell.\\n') }}
+{{ gettext('Problem inserting new text cell before current input cell.') }}
+{{ gettext('Problem inserting new text cell before current input cell.\\n') }}
 {{ gettext('Worksheet is locked. Cannot insert cells.') }}
 {{ gettext('Unable to interrupt calculation.') }}
 {{ gettext('Close this box to stop trying.') }}

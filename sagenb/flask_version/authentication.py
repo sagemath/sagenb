@@ -33,7 +33,7 @@ def login(template_dict={}):
         password = request.form['password']
 
         if username == 'COOKIESDISABLED':
-            return "Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again."
+            return _("Please enable cookies or delete all Sage cookies and localhost cookies in your browser and try again.")
 
         # we only handle ascii usernames.
         from sagenb.notebook.misc import is_valid_username, is_valid_password
@@ -60,7 +60,7 @@ def login(template_dict={}):
               g.notebook.user_manager().check_password(username, password)):
             if U.is_suspended():
                 #suspended
-                return "Your account is currently suspended"
+                return _("Your account is currently suspended")
             else:
                 #Valid user, everything is okay
                 session['username'] = username
@@ -236,7 +236,7 @@ def register():
         # Send a confirmation message to the user.
         try:
             send_mail(fromaddr, email_address,
-                      "Sage Notebook Registration", body)
+                      _("Sage Notebook Registration"), body)
             waiting[key] = username
         except ValueError:
             pass
@@ -277,7 +277,7 @@ def confirm():
 @with_lock
 def forgot_pass():
     if not g.notebook.conf()['email']:
-        return current_app.message('The account recovery system is not active.')
+        return current_app.message(_('The account recovery system is not active.'))
 
     username = request.values.get('username', '').strip()
     if not username:
@@ -289,10 +289,10 @@ def forgot_pass():
     try:
         user = g.notebook.user(username)
     except KeyError:
-        return error('Username is invalid.')
+        return error(_('Username is invalid.'))
 
     if not user.is_email_confirmed():
-        return error("The e-mail address hasn't been confirmed.")
+        return error(_("The e-mail address hasn't been confirmed."))
 
     #XXX: some of this could be factored out into a random passowrd
     #function.  There are a few places in admin.py that also use it.
@@ -312,12 +312,12 @@ def forgot_pass():
     body = build_password_msg(password, username, listenaddr, port, g.notebook.secure)
     destaddr = user.get_email()
     try:
-        send_mail(fromaddr, destaddr, "Sage Notebook Account Recovery", body)
+        send_mail(fromaddr, destaddr, _("Sage Notebook Account Recovery"), body)
     except ValueError:
         # the email address is invalid
-        return error("The new password couldn't be sent."%destaddr)
+        return error(_("The new password couldn't be sent to %(dest)s.", dest=destaddr))
     else:
         g.notebook.user_manager().set_password(username, password)
 
-    return current_app.message("A new password has been sent to your e-mail address.", url_for('base.index'))
+    return current_app.message(_("A new password has been sent to your e-mail address."), url_for('base.index'))
 
