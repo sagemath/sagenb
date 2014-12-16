@@ -1718,6 +1718,7 @@ class Notebook(object):
         from flask import current_app
         if W is None:
             return current_app.message(gettext("The worksheet does not exist"), username=username)
+
         if W.docbrowser() or W.is_published():
             if W.is_published() or self.user_manager().user_is_guest(username):
                 template_page = os.path.join('html', 'notebook', 'guest_worksheet_page.html')
