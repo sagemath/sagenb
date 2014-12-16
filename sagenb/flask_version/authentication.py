@@ -271,7 +271,7 @@ def confirm():
         return current_app.message(invalid_confirm_key, '/register')
     success = _("""<h1>Email address confirmed for user %(username)s</h1>""", username=username)
     del waiting[key]
-    return current_app.message(success, title=_('Email Confirmed'))
+    return current_app.message(success, title=_('Email Confirmed'), username=username)
 
 @authentication.route('/forgotpass')
 @with_lock

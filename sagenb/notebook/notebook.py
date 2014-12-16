@@ -1717,7 +1717,7 @@ class Notebook(object):
 
         from flask import current_app
         if W is None:
-            return current_app.message("The worksheet does not exist") #XXX: i18n
+            return current_app.message("The worksheet does not exist", username=username) #XXX: i18n
 
         if W.docbrowser() or W.is_published():
             if W.is_published() or self.user_manager().user_is_guest(username):
