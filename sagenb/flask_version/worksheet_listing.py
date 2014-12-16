@@ -181,7 +181,6 @@ def public_worksheet_cells(id, filename):
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
         return current_app.message(_("You do not have permission to access this worksheet"), username=g.username)
->>>>>>> master
     from flask.helpers import send_from_directory
     return send_from_directory(worksheet.cells_directory(), filename)
 
