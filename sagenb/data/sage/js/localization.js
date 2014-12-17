@@ -2,41 +2,41 @@
 /*jslint maxerr: 10000, white: true, onevar: true, undef: true, nomen: true, eqeqeq: true, plusplus: true, bitwise: true, regexp: true, strict: true, newcap: true, immed: true */
 //"use strict";
 
-{# If you add any new strings to this list, please also add them to translated-messages.js. This indirection and duplication
- is in place becase pybabel canoot parse this Jinja for some reason. #}
+{# If you add any new strings to this list, please enclose them in the dummy
+  translation function N_ (or nN_ for singular/plural forms). #}
 
 translations = {
-    {% for string in ['Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.',
-                      "Java Applet Hidden",
-                      "Click here to pop out",
-                      'Error applying function to worksheet(s).',
-                      'Title of saved worksheet',
-                      'Failed to save worksheet.',
-                      "Rename worksheet",
-                      "Please enter a name for this worksheet.",
-                      "Rename",
-                      'Possible failure deleting worksheet.',
-                      "unprinted",
-                      'You requested to evaluate a cell that, for some reason, the server is unaware of.',
-                      "Error",
-                      'This worksheet is read only. Please make a copy or contact the owner to change it.',
-                      "loading..."
-                      'Error updating cell output after ',
-                      's (canceling further update checks).',
-                      'Problem inserting new input cell after current input cell.\\n',
-                      'Problem inserting new input cell before current input cell.\\n',
-                      'Problem inserting new text cell before current input cell.',
-                      'Problem inserting new text cell before current input cell.\\n',
-                      'Worksheet is locked. Cannot insert cells.',
-                      'Unable to interrupt calculation.',
-                      'Close this box to stop trying.',
-                      'Interrupt attempt',
-                      "<a href='javascript:restart_sage();'>Restart</a>, instead?",
-                      "Emptying the trash will permanently delete all items in the trash. Continue?",
-                      "Get Image",
-                      'Jmol Image',
-                      "To save this image, you can try right-clicking on the image to copy it or save it to a file, or you may be able to just drag the image to your desktop.",
-                      "Sorry, but you need a browser that supports the &lt;canvas&gt; tag."
+    {% for string in [N_('Your browser / OS combination is not supported.\\nPlease use Firefox or Opera under Linux, Windows, or Mac OS X, or Safari.'),
+                      N_("Java Applet Hidden"),
+                      N_("Click here to pop out"),
+                      N_('Error applying function to worksheet(s).'),
+                      N_('Title of saved worksheet'),
+                      N_('Failed to save worksheet.'),
+                      N_("Rename worksheet"),
+                      N_("Please enter a name for this worksheet."),
+                      N_("Rename"),
+                      N_('Possible failure deleting worksheet.'),
+                      N_("unprinted"),
+                      N_('You requested to evaluate a cell that, for some reason, the server is unaware of.'),
+                      N_("Error"),
+                      N_('This worksheet is read only. Please make a copy or contact the owner to change it.'),
+                      N_("loading..."),
+                      N_('Error updating cell output after '),
+                      N_('s (canceling further update checks).'),
+                      N_('Problem inserting new input cell after current input cell.\\n'),
+                      N_('Problem inserting new input cell before current input cell.\\n'),
+                      N_('Problem inserting new text cell before current input cell.'),
+                      N_('Problem inserting new text cell before current input cell.\\n'),
+                      N_('Worksheet is locked. Cannot insert cells.'),
+                      N_('Unable to interrupt calculation.'),
+                      N_('Close this box to stop trying.'),
+                      N_('Interrupt attempt'),
+                      N_("<a href='javascript:restart_sage();'>Restart</a>, instead?"),
+                      N_("Emptying the trash will permanently delete all items in the trash. Continue?"),
+                      N_("Get Image"),
+                      N_('Jmol Image'),
+                      N_("To save this image, you can try right-clicking on the image to copy it or save it to a file, or you may be able to just drag the image to your desktop."),
+                      N_("Sorry, but you need a browser that supports the &lt;canvas&gt; tag."),
                      ] %}
     "{{ string }}" : "{{ gettext(string) }}",
     {% endfor %}
@@ -46,7 +46,7 @@ translations = {
         {% endfor %}
     },
     2: {
-        {% for pair in [['Trying again in %(num)d second...', 'Trying again in %(num)d seconds...']] %}
+        {% for pair in [nN_('Trying again in %(num)d second...', 'Trying again in %(num)d seconds...')] %}
         '{{ pair[0] }}' : function (n) {return '{{ ngettext(pair[1], pair[1], 2) }}'.replace("%(num)d", n)} {% if not loop.last %},{% endif %}
         {% endfor %}
     }

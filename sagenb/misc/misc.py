@@ -530,3 +530,8 @@ def get_languages():
     langs.sort()
     langs.insert(0, 'en_US')
     return langs
+
+def N_(message):
+    return message
+def nN_(message_singular, message_plural):
+    return [message_singular, message_plural]
