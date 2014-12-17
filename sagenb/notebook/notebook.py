@@ -145,6 +145,13 @@ class Notebook(object):
         from user_manager import SimpleUserManager, OpenIDUserManager
         self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
 
+        # Set up email notification logger
+        import logging
+        from sagenb.notebook.notification import logger, TwistedEmailHandler
+        logger.addHandler(TwistedEmailHandler(self.conf(), logging.ERROR))
+        # also log to stderr
+        logger.addHandler(logging.StreamHandler())
+
         # Set the list of users
         try:
             S.load_users(self._user_manager)

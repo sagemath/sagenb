@@ -423,7 +423,7 @@ def create_app(path_to_notebook, *args, **kwds):
     # create Babel translation manager #
     ####################################
     babel = Babel(app, default_locale='en_US')
-    
+
     #Check if saved default language exists. If not fallback to default
     @app.before_first_request
     def check_default_lang():
@@ -460,6 +460,17 @@ def create_app(path_to_notebook, *args, **kwds):
 
     from settings import settings
     app.register_blueprint(settings)
+
+    # Handles all uncaught exceptions by sending an e-mail to the
+    # administrator(s) and displaying an error page.
+    @app.errorhandler(Exception)
+    def log_exception(error):
+        from sagenb.notebook.notification import logger
+        logger.exception(error)
+        return app.message(
+            '''500: Internal server error.
+            An e-mail has been sent to the administrator(s).''',
+            username=getattr(g, 'username', 'guest')), 500
 
     #autoindex v0.3 doesnt seem to work with modules
     #routing with app directly does the trick

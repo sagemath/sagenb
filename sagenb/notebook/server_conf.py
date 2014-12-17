@@ -32,6 +32,8 @@ defaults = {'word_wrap_cols':72,
 
             'ulimit':'',
 
+            'notification_recipients': ['root@localhost'],
+
             'email':False,
 
             'accounts':False,
@@ -130,6 +132,11 @@ defaults_descriptions = {
         TYPE : T_INFO,
         },
 
+    'notification_recipients': {
+        DESC : _('Send notification e-mails to (comma-separated list)'),
+        GROUP : G_SERVER,
+        TYPE : T_LIST,
+        },
 
     'word_wrap_cols': {
         DESC : _('Number of word-wrap columns'),
