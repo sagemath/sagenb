@@ -140,6 +140,7 @@ class LocalData(object):
             'dgettext': (2,),
             'dngettext': (2, 3),
             'N_': None,
+            'nN_': (1,2),
             'pgettext': ((1, 'c'), 2),
             'npgettext': ((1, 'c'), 2, 3),
             'lazy_gettext': None,
@@ -488,8 +489,8 @@ class TranslationFrontend(object):
 
         parser_update = subparsers.add_parser(
             'update', parents=(pot_parser, langs_parser, backup_parser),
-            help='updates pot and/or po files from sources',
-            description='updates pot and/or po files from source tree',
+            help='update pot and/or po files from sources',
+            description='update pot and/or po files from source tree',
             epilog='Warning: If backup is active, previous backup files '
                    'are overwritten',
             formatter_class=argparse.RawTextHelpFormatter,
@@ -521,8 +522,8 @@ class TranslationFrontend(object):
 
         parser_restore = subparsers.add_parser(
             'restore', parents=(pot_parser, langs_parser),
-            help='restores pot and/or po from backup files',
-            description='restores pot and/or po from backup files if exist',
+            help='restore pot and/or po from backup files',
+            description='restore pot and/or po from backup files if exist',
             epilog='Warning: If a particular backup file is not present, '
                    'the corresponding file\n'
                    '         is not restored',
