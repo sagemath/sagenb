@@ -40,17 +40,7 @@ translations = {
                      ] %}
     "{{ string }}" : "{{ gettext(string) }}",
     {% endfor %}
-    1 : {
-        {% for string in ['Trying again in %(num)d second...'] %}
-        '{{ string }}' : function (n) {return '{{ ngettext(string, string, 1) }}'.replace("%(num)d", 1)} {% if not loop.last %},{% endif %}
-        {% endfor %}
-    },
-    2: {
-        {% for pair in [nN_('Trying again in %(num)d second...', 'Trying again in %(num)d seconds...')] %}
-        '{{ pair[0] }}' : function (n) {return '{{ ngettext(pair[1], pair[1], 2) }}'.replace("%(num)d", n)} {% if not loop.last %},{% endif %}
-        {% endfor %}
-    }
+    {% for singular, plural in [nN_('Trying again in %(num)d second...', 'Trying again in %(num)d seconds...')] %}
+    "{{ singular }}" : function (n) {return n >1 ? '{{ ngettext(singular, plural, 2) }}'.replace("2", n) : '{{ ngettext(singular, plural, 1) }}'} {% if not loop.last %},{% endif %}
+    {% endfor %}
 };
-
-
-
