@@ -15,7 +15,7 @@ except ImportError:
 SRC = os.path.join(SAGE_SRC, 'sage')
 from flask.ext.openid import OpenID
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
-from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
+from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path, N_, nN_
 
 oid = OpenID()
 
@@ -131,7 +131,7 @@ def localization_js():
     global _localization_cache
     locale=repr(get_locale())
     if _localization_cache.get(locale,None) is None:
-        data= render_template(os.path.join('js/localization.js'))
+        data = render_template(os.path.join('js/localization.js'), N_=N_, nN_=nN_)
         _localization_cache[locale] = (data, sha1(repr(data)).hexdigest())
     data,datahash = _localization_cache[locale]
 
