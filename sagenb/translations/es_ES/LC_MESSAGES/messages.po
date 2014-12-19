@@ -363,7 +363,8 @@ msgstr ""
 #: sagenb/data/sage/html/settings/admin_add_user.html:14
 #: sagenb/data/sage/html/settings/admin_add_user.html:16
 #: sagenb/data/sage/html/settings/admin_add_user.html:18
-#: sagenb/data/sage/js/localization.js:21 sagenb/flask_version/worksheet.py:640
+#: sagenb/data/sage/js/localization.js:21
+#: sagenb/flask_version/worksheet.py:640
 msgid "Error"
 msgstr "Error"
 
@@ -800,19 +801,19 @@ msgstr "Tipografía avanzada"
 
 #: sagenb/data/sage/html/notebook/base.html:144
 msgid "Load 3-D Live. Not recommended for worksheets with > 2 3-D Plots."
-msgstr ""
+msgstr "Cargar 3-D Live. No se recomienda para hojas con más de 2 gráficas 3-D."
 
 #: sagenb/data/sage/html/notebook/base.html:146
 msgid "Load 3-D Live"
-msgstr ""
+msgstr "Cargar 3-D Live"
 
 #: sagenb/data/sage/html/notebook/base.html:147
 msgid "Use java for 3-D. Only applies to this running of worksheet."
-msgstr ""
+msgstr "Usar java para 3-D. Sólo para esta ejecución de la hoja."
 
 #: sagenb/data/sage/html/notebook/base.html:149
 msgid "Use java for 3-D"
-msgstr ""
+msgstr "Usar java para 3-D"
 
 #: sagenb/data/sage/html/notebook/base.html:159
 msgid "Interactively use this worksheet"
@@ -898,13 +899,13 @@ msgstr "No"
 #: sagenb/data/sage/html/notebook/text_cell.html:19
 #: sagenb/data/sage/html/notebook/worksheet_page.html:21
 msgid "Click to insert new compute cell."
-msgstr ""
+msgstr "Pulsar para insertar un nueva celda de cálculo."
 
 #: sagenb/data/sage/html/notebook/cell.html:39
 #: sagenb/data/sage/html/notebook/text_cell.html:22
 #: sagenb/data/sage/html/notebook/worksheet_page.html:25
 msgid "Click to insert new rich-text cell."
-msgstr ""
+msgstr "Pulsar para insertar una nueva celda de texto."
 
 #: sagenb/data/sage/html/notebook/cell.html:90
 msgid "Click here or press shift-return to evaluate"
@@ -1225,7 +1226,7 @@ msgstr "Suspensión"
 
 #: sagenb/data/sage/html/settings/user_management.html:17
 msgid "Admin"
-msgstr ""
+msgstr "Admin"
 
 #: sagenb/data/sage/html/settings/user_management.html:26
 msgid "Reset"
@@ -1456,7 +1457,7 @@ msgstr "Hojas Archivadas"
 #: sagenb/data/sage/html/worksheet_listing.html:45
 #: sagenb/data/sage/html/notebook/base.html:75
 msgid "Account is read only.  You may download or delete worksheets or data."
-msgstr ""
+msgstr "La cuenta es de sólo lectura. Se pueden descargar o borrar hojas o datos."
 
 #: sagenb/data/sage/html/worksheet_listing.html:49
 msgid "New Worksheet"
@@ -1740,8 +1741,8 @@ msgstr "Lo siento, pero necesita un navegador que soporte &lt;canvas&gt;"
 #, python-format
 msgid "Trying again in %(num)d second..."
 msgid_plural "Trying again in %(num)d seconds..."
-msgstr[0] "Se intentará de de nuevo en %(num)d segundo..."
-msgstr[1] "Se intentará de de nuevo en %(num)d segundos..."
+msgstr[0] "Se intentará de nuevo en %(num)d segundo..."
+msgstr[1] "Se intentará de nuevo en %(num)d segundos..."
 
 #: sagenb/flask_version/admin.py:98
 #, python-format
@@ -1761,10 +1762,12 @@ msgid ""
 "Please enable cookies or delete all Sage cookies and localhost cookies in"
 " your browser and try again."
 msgstr ""
+"Por favor, active las cookies o borre todas las cookies de Sage y de "
+"localhost de su navegador e inténtelo de nuevo"
 
 #: sagenb/flask_version/authentication.py:63
 msgid "Your account is currently suspended"
-msgstr ""
+msgstr "Su cuenta se encuentra suspendida actualmente"
 
 #: sagenb/flask_version/authentication.py:239
 msgid "Sage Notebook Registration"
@@ -1805,11 +1808,11 @@ msgstr "El sistem de recuperación de cuentas no está activo."
 
 #: sagenb/flask_version/authentication.py:292
 msgid "Username is invalid."
-msgstr ""
+msgstr "El nombre de usuario no es válido."
 
 #: sagenb/flask_version/authentication.py:295
 msgid "The e-mail address hasn't been confirmed."
-msgstr ""
+msgstr "No se ha confirmado la dirección de e-mail."
 
 #: sagenb/flask_version/authentication.py:315
 msgid "Sage Notebook Account Recovery"
@@ -1818,17 +1821,19 @@ msgstr "Recuperación de cuentas del Notebook de Sage"
 #: sagenb/flask_version/authentication.py:318
 #, python-format
 msgid "The new password couldn't be sent to %(dest)s."
-msgstr ""
+msgstr "No se ha podido enviar la nueva contraseña a %(dest)s."
 
 #: sagenb/flask_version/authentication.py:322
 msgid "A new password has been sent to your e-mail address."
-msgstr ""
+msgstr "Se ha enviado una nueva contraseña a su dirección de e-mail."
 
 #: sagenb/flask_version/base.py:471
 msgid ""
 "500: Internal server error.\n"
 "            An e-mail has been sent to the administrator(s)."
 msgstr ""
+"500: Error interno del servidor.\n"
+"            Se ha enviado un e-mail al administrador."
 
 #: sagenb/flask_version/decorators.py:30
 msgid "You do not have permission to access this location"
@@ -1836,7 +1841,7 @@ msgstr "Usted no está autorizado para acceder a esta página"
 
 #: sagenb/flask_version/doc.py:41
 msgid "nothing to see."
-msgstr ""
+msgstr "nada que mostrar"
 
 #: sagenb/flask_version/settings.py:33
 msgid "Old password not given"
@@ -1888,7 +1893,7 @@ msgstr "Usted no está autorizado para acceder a esta hoja"
 #: sagenb/flask_version/worksheet_listing.py:240
 #: sagenb/flask_version/worksheet_listing.py:340
 msgid "Account is in read-only mode"
-msgstr ""
+msgstr "La cuenta está en modo de sólo lectura"
 
 #: sagenb/flask_version/worksheet.py:587
 msgid "Error: can't add more than 500 collaborators at a time"
@@ -1896,11 +1901,11 @@ msgstr "Error: No se pueden añadir más de 500 colaboradores a la vez"
 
 #: sagenb/flask_version/worksheet.py:685
 msgid "Invalid JSmol encoding: "
-msgstr ""
+msgstr "Codificación JSmol inválida: "
 
 #: sagenb/flask_version/worksheet.py:695
 msgid "Invalid JSmol query: "
-msgstr ""
+msgstr "Petición JSmol inválida: "
 
 #: sagenb/flask_version/worksheet.py:706
 msgid "Invalid JSmol request: "
@@ -1913,7 +1918,7 @@ msgstr "No hay archivos de datos"
 #: sagenb/flask_version/worksheet.py:748
 #, python-format
 msgid "Successfully deleted '%(filename)s'"
-msgstr ""
+msgstr "'%(filename)s' Se ha borrado con éxito"
 
 #: sagenb/flask_version/worksheet.py:775
 msgid "illegal link attempt!"
@@ -1971,7 +1976,7 @@ msgstr ""
 
 #: sagenb/flask_version/worksheet.py:920
 msgid "Gees -- You can't fool the rating system that easily!"
-msgstr ""
+msgstr "¡No se puede engañar tan fácilmente al sistema de puntuación!"
 
 #: sagenb/flask_version/worksheet.py:928
 #, python-format
@@ -1982,10 +1987,15 @@ msgid ""
 "worksheet.</a>\n"
 "    "
 msgstr ""
+"\n"
+"    Gracias por puntuar la hoja <b><i>%(worksheet_name)s</i></b>!\n"
+"    Puede <a href=\"rating_info\">ver todas las puntuaciones de esta "
+"hoja.</a>\n"
+"    "
 
 #: sagenb/flask_version/worksheet.py:930
 msgid "Rating Accepted"
-msgstr ""
+msgstr "Puntuación aceptada"
 
 #: sagenb/flask_version/worksheet.py:952
 msgid "No such worksheet."
@@ -2005,6 +2015,8 @@ msgid ""
 "User '%(user)s' does not have permission to view the home page of "
 "'%(name)s'."
 msgstr ""
+"El usuario '%(user)s' no tiene permiso para ver la página personal de "
+"'%(name)s'."
 
 #: sagenb/flask_version/worksheet_listing.py:155
 msgid "Requested public worksheet does not exist"
@@ -2034,7 +2046,7 @@ msgstr ""
 #: sagenb/flask_version/worksheet_listing.py:354
 #, python-format
 msgid "Unknown worksheet extension: %(ext)s. %(links)s"
-msgstr ""
+msgstr "Extensión de hoja desconocida: %(ext)s. %(links)s"
 
 #: sagenb/flask_version/worksheet_listing.py:361
 #, python-format
@@ -2042,6 +2054,9 @@ msgid ""
 "Unable to load file URL's when not running on localhost.\n"
 "%(backlinks)s"
 msgstr ""
+"No se pueden cargar URL de archivos cuando no está ejecutando la "
+"aplicación en la máquina local.\n"
+"%(backlinks)s"
 
 #: sagenb/flask_version/worksheet_listing.py:376
 #, python-format
@@ -2243,7 +2258,7 @@ msgstr "Versión del Modelo"
 
 #: sagenb/notebook/server_conf.py:136
 msgid "Send notification e-mails to (comma-separated list)"
-msgstr ""
+msgstr "Enviar e-mails de notificación a (lista separada por comas)"
 
 #: sagenb/notebook/server_conf.py:142
 msgid "Number of word-wrap columns"
@@ -2283,7 +2298,7 @@ msgstr "simple"
 
 #: sagenb/notebook/server_conf.py:194
 msgid "recaptcha"
-msgstr ""
+msgstr "recaptcha"
 
 #: sagenb/notebook/server_conf.py:198
 msgid "reCAPTCHA public key"
@@ -2299,7 +2314,7 @@ msgstr "Activar Autentificación LDAP"
 
 #: sagenb/notebook/server_conf.py:219
 msgid "LDAP URI"
-msgstr ""
+msgstr "LDAP URI"
 
 #: sagenb/notebook/server_conf.py:226
 msgid "Bind DN"
@@ -2311,7 +2326,7 @@ msgstr "Contraseña Bind"
 
 #: sagenb/notebook/server_conf.py:240
 msgid "Use GSSAPI instead of Bind DN/Password"
-msgstr ""
+msgstr "Utilizar GSSAPI en vez de Bind DN/clave"
 
 #: sagenb/notebook/server_conf.py:247
 msgid "Base DN"
@@ -2427,6 +2442,9 @@ msgid ""
 "the full Sage documentation \"live\". (Only new compute cells allowed, "
 "click the icon.)"
 msgstr ""
+"Utilice la <a href=\"/doc/live/index.html\">documentación activa</a> para "
+"obtener toda la documentación de Sage en forma \"activa\". (Sólo se "
+"permiten celdas de cálculo nuevas, pulsar el icono.)"
 
 #: sagenb/notebook/tutorial.py:367
 msgid "Key and Mouse Bindings"
@@ -2523,11 +2541,11 @@ msgstr ""
 
 #: sagenb/notebook/tutorial.py:380
 msgid "Edit Text Cell"
-msgstr ""
+msgstr "Editar la celda de texto"
 
 #: sagenb/notebook/tutorial.py:381
 msgid "Double click on existing text to edit it."
-msgstr ""
+msgstr "Haga doble click sobre el texto preexistente para editarlo."
 
 #: sagenb/notebook/tutorial.py:382
 msgid "Hide/Show Output"
@@ -2824,6 +2842,11 @@ msgid ""
 "such objects between worksheets, you may save to any filename (given as a"
 " string) Sage can write to on your system."
 msgstr ""
+"Utilice \"save(obj1,DATA+'foo') para guardar un objeto en el directorio "
+"de datos de una hoja, y \"obj1 = load(DATA+'foo')\" para cargarlo de "
+"nuevo. Para utilizar tales objetos entre distintas hojas, se pueden "
+"guardar en cualquier archivo (cuyo nombre se da en forma de cadena de "
+"caracteres) en el que Sage pueda escribir."
 
 #: sagenb/notebook/tutorial.py:431
 msgid "Loading and Saving Sessions"
@@ -2884,15 +2907,15 @@ msgstr "hace %(seconds)s"
 
 #: sagenb/notebook/worksheet.py:4421
 msgid "January"
-msgstr ""
+msgstr "Enero"
 
 #: sagenb/notebook/worksheet.py:4422
 msgid "February"
-msgstr ""
+msgstr "Febrero"
 
 #: sagenb/notebook/worksheet.py:4423
 msgid "March"
-msgstr ""
+msgstr "Marzo"
 
 #: sagenb/notebook/worksheet.py:4424
 msgid "April"
@@ -2900,19 +2923,19 @@ msgstr "Abril"
 
 #: sagenb/notebook/worksheet.py:4425
 msgid "May"
-msgstr ""
+msgstr "Mayo"
 
 #: sagenb/notebook/worksheet.py:4426
 msgid "June"
-msgstr ""
+msgstr "Junio"
 
 #: sagenb/notebook/worksheet.py:4427
 msgid "July"
-msgstr ""
+msgstr "Julio"
 
 #: sagenb/notebook/worksheet.py:4428
 msgid "August"
-msgstr ""
+msgstr "Agosto"
 
 #: sagenb/notebook/worksheet.py:4429
 msgid "September"
@@ -2920,11 +2943,11 @@ msgstr "Septiembre"
 
 #: sagenb/notebook/worksheet.py:4430
 msgid "October"
-msgstr ""
+msgstr "Octubre"
 
 #: sagenb/notebook/worksheet.py:4431
 msgid "November"
-msgstr ""
+msgstr "Noviembre"
 
 #: sagenb/notebook/worksheet.py:4432
 msgid "December"
