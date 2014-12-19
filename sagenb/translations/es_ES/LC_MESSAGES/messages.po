@@ -577,9 +577,9 @@ msgstr "Dejar de publicar"
 
 #: sagenb/data/sage/html/notebook/afterpublish_window.html:14
 #: sagenb/data/sage/html/notebook/beforepublish_window.html:18
-#, fuzzy
 msgid "Automatically re-publish when changes are made and saved"
-msgstr "Re-publicar automáticamente cuando se realicen cambios"
+msgstr "Re-publicar automáticamente cuando se realicen cambios y sean "
+"guardados"
 
 #: sagenb/data/sage/html/notebook/base.html:82
 msgid "Click to rename this worksheet"
@@ -795,9 +795,8 @@ msgid "Enable/disable pretty_printing"
 msgstr "Activar/desactivar impresión avanzada"
 
 #: sagenb/data/sage/html/notebook/base.html:143
-#, fuzzy
 msgid "Typeset"
-msgstr "Reiniciar"
+msgstr "Tipografía avanzada"
 
 #: sagenb/data/sage/html/notebook/base.html:144
 msgid "Load 3-D Live. Not recommended for worksheets with > 2 3-D Plots."
@@ -1068,9 +1067,8 @@ msgid "Untitled"
 msgstr "Sin título"
 
 #: sagenb/data/sage/html/notebook/worksheet_revision_list.html:6
-#, fuzzy
 msgid "Revision History -- List of Snapshots"
-msgstr "Historial de Revisiones -- Sesiones previas"
+msgstr "Historial de revisiones -- Lista de sesiones guardadas"
 
 #: sagenb/data/sage/html/notebook/worksheet_revision_list.html:15
 msgid "Revision"
@@ -1110,9 +1108,8 @@ msgid "Give access to your worksheet to the above collaborators"
 msgstr "Dar acceso a su hoja a los colaboradores anteriores"
 
 #: sagenb/data/sage/html/notebook/worksheet_share.html:24
-#, fuzzy
 msgid "Update Collaborators"
-msgstr "Invitar a Colaboradores"
+msgstr "Actualizar colaboradores"
 
 #: sagenb/data/sage/html/settings/account_settings.html:3
 #: sagenb/data/sage/html/settings/base.html:13
@@ -1674,24 +1671,21 @@ msgstr ""
 "entrada actual.\\n"
 
 #: sagenb/data/sage/js/localization.js:27
-#, fuzzy
 msgid "Problem inserting new input cell before current input cell.\\n"
 msgstr ""
-"Problema al insertar una celda de entrada nueva después de la celda de "
+"Problema al insertar una celda de entrada nueva antes de la celda de "
 "entrada actual.\\n"
 
 #: sagenb/data/sage/js/localization.js:28
-#, fuzzy
 msgid "Problem inserting new text cell before current input cell."
 msgstr ""
-"Problema al insertar una celda de entrada nueva después de la celda de "
-"entrada actual.\\n"
+"Problema al insertar una celda de texto nueva antes de la celda de "
+"entrada actual."
 
 #: sagenb/data/sage/js/localization.js:29
-#, fuzzy
 msgid "Problem inserting new text cell before current input cell.\\n"
 msgstr ""
-"Problema al insertar una celda de entrada nueva después de la celda de "
+"Problema al insertar una celda de texto nueva antes de la celda de "
 "entrada actual.\\n"
 
 #: sagenb/data/sage/js/localization.js:30
@@ -1773,9 +1767,8 @@ msgid "Your account is currently suspended"
 msgstr ""
 
 #: sagenb/flask_version/authentication.py:239
-#, fuzzy
 msgid "Sage Notebook Registration"
-msgstr "Versión del Notebook Sage"
+msgstr "Registro en el Notebook de Sage"
 
 #: sagenb/flask_version/authentication.py:258
 msgid "The confirmation system is not active."
@@ -1807,9 +1800,8 @@ msgid "Email Confirmed"
 msgstr "E-mail confirmado"
 
 #: sagenb/flask_version/authentication.py:280
-#, fuzzy
 msgid "The account recovery system is not active."
-msgstr "El sistema de confirmación está desactivado"
+msgstr "El sistem de recuperación de cuentas no está activo."
 
 #: sagenb/flask_version/authentication.py:292
 msgid "Username is invalid."
@@ -1820,9 +1812,8 @@ msgid "The e-mail address hasn't been confirmed."
 msgstr ""
 
 #: sagenb/flask_version/authentication.py:315
-#, fuzzy
 msgid "Sage Notebook Account Recovery"
-msgstr "Recuperación de Cuenta"
+msgstr "Recuperación de cuentas del Notebook de Sage"
 
 #: sagenb/flask_version/authentication.py:318
 #, python-format
@@ -1848,53 +1839,44 @@ msgid "nothing to see."
 msgstr ""
 
 #: sagenb/flask_version/settings.py:33
-#, fuzzy
 msgid "Old password not given"
-msgstr "No se ha proporcionado una contraseña"
+msgstr "No se ha introducido la contraseña antigua"
 
 #: sagenb/flask_version/settings.py:35
-#, fuzzy
 msgid "Incorrect password given"
-msgstr "No se ha proporcionado una contraseña"
+msgstr "Se ha introducido una contraseña incorrecta"
 
 #: sagenb/flask_version/settings.py:37
-#, fuzzy
 msgid "New password not given"
-msgstr "No se ha proporcionado una contraseña"
+msgstr "No se ha introducido la nueva contraseña"
 
 #: sagenb/flask_version/settings.py:39
-#, fuzzy
 msgid ""
 "Password not acceptable. Must be 4 to 32 characters and not contain "
 "spaces or username."
 msgstr ""
-"Su contraseña debe tener al menos 4 caracteres. Su contraseña no puede "
-"contener ni su usuario ni espacios."
+"Su contraseña no es aceptable. Debe tener al menos 4 caracteres y no debe "
+"contener espacios ni su nombre de usuario."
 
 #: sagenb/flask_version/settings.py:41
-#, fuzzy
 msgid "Please type in new password again."
-msgstr "Volver a introducir la nueva contraseña"
+msgstr "Vuelva a introducir la nueva contraseña, por favor"
 
 #: sagenb/flask_version/settings.py:43
-#, fuzzy
 msgid "The passwords you entered do not match."
-msgstr "Las contraseñas no coinciden"
+msgstr "Las contraseñas introducidas no coinciden"
 
 #: sagenb/flask_version/settings.py:59
-#, fuzzy
 msgid "Invalid e-mail address."
-msgstr "Dirección de e-mail no válida"
+msgstr "La dirección de e-mail no es válida."
 
 #: sagenb/flask_version/settings.py:80
-#, fuzzy
 msgid "Confirmed"
-msgstr "E-mail confirmado"
+msgstr "Confirmado"
 
 #: sagenb/flask_version/settings.py:82
-#, fuzzy
 msgid "Not confirmed"
-msgstr "E-mail confirmado"
+msgstr "No confirmado"
 
 #: sagenb/flask_version/worksheet.py:30 sagenb/flask_version/worksheet.py:39
 #: sagenb/flask_version/worksheet_listing.py:174
@@ -1921,9 +1903,8 @@ msgid "Invalid JSmol query: "
 msgstr ""
 
 #: sagenb/flask_version/worksheet.py:706
-#, fuzzy
 msgid "Invalid JSmol request: "
-msgstr "Dirección de e-mail no válida"
+msgstr "Petición JSmol inválida: "
 
 #: sagenb/flask_version/worksheet.py:734
 msgid "No data files"
@@ -2148,14 +2129,12 @@ msgid "Updated"
 msgstr "Actualizado"
 
 #: sagenb/notebook/notebook.py:211
-#, fuzzy
 msgid "optional"
-msgstr "Total"
+msgstr "opcional"
 
 #: sagenb/notebook/notebook.py:1727
-#, fuzzy
 msgid "The worksheet does not exist"
-msgstr "La hoja pública requerida no existe"
+msgstr "La hoja no existe"
 
 #: sagenb/notebook/register.py:19 sagenb/notebook/register.py:29
 #, python-format
@@ -2299,9 +2278,8 @@ msgid "Type of challenge"
 msgstr "Tipo de reto"
 
 #: sagenb/notebook/server_conf.py:194
-#, fuzzy
 msgid "simple"
-msgstr "Tiempo"
+msgstr "simple"
 
 #: sagenb/notebook/server_conf.py:194
 msgid "recaptcha"
@@ -2344,9 +2322,8 @@ msgid "Username Attribute (i.e. cn, uid or userPrincipalName)"
 msgstr "Atributo de usuario (i.e. cn, uid o userPrincipalName)"
 
 #: sagenb/notebook/server_conf.py:261
-#, fuzzy
 msgid "Query timeout (seconds)"
-msgstr "Tiempo de espera inactivo (segundos)"
+msgstr "Tiempo de espera para peticiones (segundos)"
 
 #: sagenb/notebook/template.py:73
 #, python-format
@@ -2403,24 +2380,25 @@ msgid "Help About"
 msgstr "Ayuda Acerca de"
 
 #: sagenb/notebook/tutorial.py:357
-#, fuzzy
 msgid ""
 "Type ? immediately after the object or function and press tab or shift-"
 "enter (shift-enter overwrites output and saves to worksheet).  Doing this"
 " twice or more toggles with formatted source code."
 msgstr ""
-"Teclee ? inmediatamente después del objeto o función y presione tab or "
-"shift-enter (shift-enter sobrescribe la salida y guarda la hoja)."
+"Teclee ? inmediatamente después del objeto o función y presione tab o "
+"shift-enter (shift-enter sobrescribe la salida y con la ayuda en la "
+"propia hoja). Realizar esta acción dos o más veces cambia entre la "
+"documentación y el código fuente formateado."
 
 #: sagenb/notebook/tutorial.py:359
-#, fuzzy
 msgid ""
 "Put ?? after the object and press tab or shift-enter (shift-enter "
 "overwrites output and saves to worksheet).  Doing this twice or more "
 "toggles with just the documentation."
 msgstr ""
-"Teclee ?? después del objeto y pule tab o shift-enter (shift-enter "
-"sobrescribe la salida y guarda la hoja)."
+"Teclee ?? después del objeto y pulse tab o shift-enter (shift-enter "
+"sobrescribe la salida y guarda el código en la propia hoja).Realizar esta "
+"acción dos o más veces cambia entre el código fuente y la documentación."
 
 #: sagenb/notebook/tutorial.py:360
 msgid "Full Text Search of Docs and Source"
@@ -2440,9 +2418,8 @@ msgstr ""
 "las búsquedas."
 
 #: sagenb/notebook/tutorial.py:362
-#, fuzzy
 msgid "Live Documentation"
-msgstr "Documentación de Sage"
+msgstr "Documentación activa"
 
 #: sagenb/notebook/tutorial.py:363
 msgid ""
@@ -2460,7 +2437,6 @@ msgid "Evaluate Input"
 msgstr "Evaluar Entrada"
 
 #: sagenb/notebook/tutorial.py:369
-#, fuzzy
 msgid ""
 "Press <strong>shift-enter</strong> or click the \"evaluate\" button.  You"
 " can start several calculations at once.  If you press <strong>alt-"
@@ -2468,11 +2444,11 @@ msgid ""
 "  If you press <strong>ctrl-enter</strong> then the cell is split and "
 "both pieces are evaluated separately."
 msgstr ""
-"Pulse <strong>shift-enter</strong>. Se pueden iniciar varios cálculos de "
-"una vez. Si en lugar de ello, pulsa <strong>alt-enter</strong>, se crea "
-"una celda nueva después de la actual. Si pulsa <strong>ctrl-"
-"enter</strong>, la celda se divide y se evalúan ambos trozos por "
-"separado."
+"Pulse <strong>shift-enter</strong> o pinche en el botón \"evaluate\". Se "
+"pueden iniciar varios cálculos a la vez. Si en lugar de ello, pulsa "
+"<strong>alt-enter</strong>, se crea una celda nueva después de la actual."
+" Si pulsa <strong>ctrl-enter</strong>, la celda se divide en dos y se evalúan "
+"ambas partes por separado."
 
 #: sagenb/notebook/tutorial.py:370
 msgid "Tab Completion"
@@ -2492,15 +2468,15 @@ msgid "Insert New Cell"
 msgstr "Insertar Celda Nueva"
 
 #: sagenb/notebook/tutorial.py:373
-#, fuzzy
 msgid ""
 "Put the mouse between an output and input until the blue horizontal line "
 "appears and click, or click the \"plus\" icon.  If you press Alt-Enter in"
 " a cell, the cell is evaluated and a new cell is inserted after it."
 msgstr ""
 "Sitúe el ratón entre un cuadro de salida y uno de entrada hasta que "
-"aparezca  una línea horizontal y pulse. Si pulsa Alt-Enter en una celda, "
-"ésta se evalúa y se inserta una nueva después de ella."
+"aparezca una línea horizontal y pinche, o bien pinche en el icono \"más\". "
+"Si pulsa Alt-Enter en una celda, ésta se evalúa y se inserta una nueva "
+"a continuación."
 
 #: sagenb/notebook/tutorial.py:374
 msgid "Delete Cell"
@@ -2531,7 +2507,6 @@ msgid "Insert New Text Cell"
 msgstr "Insertar una celda de texto nueva"
 
 #: sagenb/notebook/tutorial.py:379
-#, fuzzy
 msgid ""
 "Move the mouse between cells until a blue bar appears.  <strong>Shift-"
 "click</strong> on the blue bar, or click on the text bubble icon, to "
@@ -2539,10 +2514,12 @@ msgid ""
 " the text block.  Click the button to save changes, or press <strong"
 ">shift-enter</strong>."
 msgstr ""
-"Mueva el ratón hasta que aparezca una barra azul. <strong>Shift-"
-"click</strong> en la barra azul para crear una celda de texto nueva. Haga"
-" doble pulsación sobre el texto preexistente para editarlo. Utilice $...$"
-" y $$...$$ para incluir expresiones matemáticas en el bloque de texto."
+"Mueva el ratón entre celdas hasta que aparezca una barra azul. Pinche "
+"imientras mantiene pulsada la tecla <strong>Mayúsculas</strong> en la barra "
+"azul, o bien pinche en el icono de texto"
+" para crear una celda de texto nueva. Utilice $...$ y $$...$$ para "
+"incluir tipografía matemática en el bloque de texto. Pinche el botón "
+"para guardar los cambios o pulse <strong>Mayúsculas-Entrar</strong>."
 
 #: sagenb/notebook/tutorial.py:380
 msgid "Edit Text Cell"
@@ -2583,7 +2560,6 @@ msgid "Comment/Uncomment Blocks"
 msgstr "Comentar/Des-comentar bloques"
 
 #: sagenb/notebook/tutorial.py:387
-#, fuzzy
 msgid ""
 "Highlight text and press <strong>ctrl-.</strong> to comment it and "
 "<strong>ctrl-,</strong> to uncomment it. As an alternative (necessary in "
@@ -2591,7 +2567,8 @@ msgid ""
 msgstr ""
 "Seleccione un texto y pulse <strong>ctrl-.</strong> para comentarlo y "
 "<strong>ctrl-,</strong> para quitar los comentarios. También se puede "
-"usar <strong>ctrl-3</strong> y <strong>ctrl-4</strong>."
+"usar <strong>ctrl-3</strong> y <strong>ctrl-4</strong> (esto es necesario"
+" en algunos navegadores)."
 
 #: sagenb/notebook/tutorial.py:388
 msgid "Paren matching"
@@ -2775,7 +2752,6 @@ msgid "Attaching Scripts"
 msgstr "Adjuntar Scripts"
 
 #: sagenb/notebook/tutorial.py:422
-#, fuzzy
 msgid ""
 "(Currently no different from \"load\", see <a "
 "href=\"https://github.com/sagemath/sagenb/issues/169\" "
@@ -2784,10 +2760,12 @@ msgid ""
 "the file changes.  The file $HOME/.sage/init.sage is attached on startup "
 "if it exists."
 msgstr ""
-"Utilice \"attach filename.sage\" o \"attach filename.py\". Los archivos "
-"adjuntos son recargados automáticamente cuando el archivo cambia. El "
-"archivo $HOME/.sage/init.sage, si existe, se adjunta automáticamente al "
-"inicio."
+"(Actualmente \"attach\" funciona como \"load\", ver <a "
+"href=\"https://github.com/sagemath/sagenb/issues/169\" "
+"target=\"_blank\">informe de errores</a>) Utilice \"attach "
+"filename.sage\" o \"attach filename.py\". Los archivos adjuntos se "
+"recargargan automáticamente cuando se pruducen cambios en ellos. El archivo "
+"$HOME/.sage/init.sage, si existe, se adjunta automáticamente al inicio."
 
 #: sagenb/notebook/tutorial.py:423
 msgid "Working Directory"
@@ -2874,9 +2852,8 @@ msgstr ""
 "cuando se muestre el notebook. Ver"
 
 #: sagenb/notebook/user_conf.py:22
-#, fuzzy
 msgid "Language"
-msgstr "Idioma por defecto"
+msgstr "Idioma"
 
 #: sagenb/notebook/wiki2html.py:647
 #, python-format
@@ -2918,9 +2895,8 @@ msgid "March"
 msgstr ""
 
 #: sagenb/notebook/worksheet.py:4424
-#, fuzzy
 msgid "April"
-msgstr "Fallo"
+msgstr "Abril"
 
 #: sagenb/notebook/worksheet.py:4425
 msgid "May"
@@ -2939,9 +2915,8 @@ msgid "August"
 msgstr ""
 
 #: sagenb/notebook/worksheet.py:4429
-#, fuzzy
 msgid "September"
-msgstr "Recordarme"
+msgstr "Septiembre"
 
 #: sagenb/notebook/worksheet.py:4430
 msgid "October"
@@ -2952,7 +2927,6 @@ msgid "November"
 msgstr ""
 
 #: sagenb/notebook/worksheet.py:4432
-#, fuzzy
 msgid "December"
-msgstr "Recordarme"
+msgstr "Diciembre"
 
