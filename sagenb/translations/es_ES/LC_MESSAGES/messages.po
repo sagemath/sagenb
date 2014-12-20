@@ -2237,12 +2237,14 @@ msgstr "Espacio para hojas de documentación "
 #: sagenb/notebook/server_conf.py:106
 msgid "Enable published interacts (EXPERIMENTAL; USE AT YOUR OWN RISK)"
 msgstr ""
-"Activar interacciones publicadas (EXPERIMENTAL; UTILÍZELO SEGÚN SU "
+"Activar interacciones en hojas publicadas (EXPERIMENTAL; UTILÍZELO A SU "
 "CRITERIO)"
 
 #: sagenb/notebook/server_conf.py:112
 msgid "Worksheet process users (comma-separated list)"
-msgstr "Usuarios del proceso de hojas (lista separada por coma)"
+msgstr ""
+"Usuarios del sistema para el procesado de hojas (lista separada por"
+" coma)"
 
 #: sagenb/notebook/server_conf.py:118
 msgid "Default system"
@@ -2250,7 +2252,7 @@ msgstr "Sistema por defecto"
 
 #: sagenb/notebook/server_conf.py:124
 msgid "Worksheet process limits"
-msgstr "Límites del proceso de hojas"
+msgstr "Límites para el procesado de hojas"
 
 #: sagenb/notebook/server_conf.py:130
 msgid "Model Version"
@@ -2266,7 +2268,7 @@ msgstr "Número de columnas para el ajuste de línea"
 
 #: sagenb/notebook/server_conf.py:148
 msgid "Pretty print (typeset) output"
-msgstr "Impresión Avanzada"
+msgstr "Typografía avanzada"
 
 #: sagenb/notebook/server_conf.py:154
 msgid "Default Language"
@@ -2278,7 +2280,7 @@ msgstr "Permitir autentificación OpenID (se requiere el módulo ssl de python)"
 
 #: sagenb/notebook/server_conf.py:170
 msgid "Enable user registration"
-msgstr "Activar registro de usuarios"
+msgstr "Permitir el registro de usuarios"
 
 #: sagenb/notebook/server_conf.py:177
 msgid "Require e-mail for account registration"
@@ -2286,7 +2288,7 @@ msgstr "Requerir e-mail para el registro de cuentas"
 
 #: sagenb/notebook/server_conf.py:184
 msgid "Use a challenge for account registration"
-msgstr "Usar un reto para el registro de cuentas"
+msgstr "Utilizar un reto para el registro de cuentas"
 
 #: sagenb/notebook/server_conf.py:191
 msgid "Type of challenge"
