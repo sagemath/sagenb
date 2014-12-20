@@ -2394,7 +2394,7 @@ msgstr ""
 
 #: sagenb/notebook/tutorial.py:356
 msgid "Help About"
-msgstr "Ayuda Acerca de"
+msgstr "Ayuda sobre..."
 
 #: sagenb/notebook/tutorial.py:357
 msgid ""
@@ -2403,8 +2403,8 @@ msgid ""
 " twice or more toggles with formatted source code."
 msgstr ""
 "Teclee ? inmediatamente después del objeto o función y presione tab o "
-"shift-enter (shift-enter sobrescribe la salida y con la ayuda en la "
-"propia hoja). Realizar esta acción dos o más veces cambia entre la "
+"shift-enter (shift-enter sobrescribe la salida de la celda con la ayuda en"
+" la propia hoja). Realizar esta acción dos o más veces cambia entre la "
 "documentación y el código fuente formateado."
 
 #: sagenb/notebook/tutorial.py:359
@@ -2414,7 +2414,8 @@ msgid ""
 "toggles with just the documentation."
 msgstr ""
 "Teclee ?? después del objeto y pulse tab o shift-enter (shift-enter "
-"sobrescribe la salida y guarda el código en la propia hoja).Realizar esta "
+"sobrescribe la salida de la hoja con el código fuente en la propia hoja)."
+" Realizar esta "
 "acción dos o más veces cambia entre el código fuente y la documentación."
 
 #: sagenb/notebook/tutorial.py:360
@@ -2454,7 +2455,7 @@ msgstr "Teclas Rápidas"
 
 #: sagenb/notebook/tutorial.py:368
 msgid "Evaluate Input"
-msgstr "Evaluar Entrada"
+msgstr "Evaluar una celda de entrada"
 
 #: sagenb/notebook/tutorial.py:369
 msgid ""
@@ -2506,7 +2507,7 @@ msgstr "Borrar Celda"
 msgid "Delete all cell contents, then press <strong>backspace</strong>."
 msgstr ""
 "Borrar todo el contenido de una celda y después pulsar "
-"<strong>backspace</strong>."
+"<strong>retroceso</strong>."
 
 #: sagenb/notebook/tutorial.py:376
 msgid "Split and Join Cells"
@@ -2519,8 +2520,8 @@ msgid ""
 "enter</strong> to split a cell and evaluate both pieces."
 msgstr ""
 "Pulse <strong>ctrl-;</strong> en una celda para dividirla en dos, y "
-"<strong>ctrl-backspace</strong> para unirlas. Pulse <strong>ctrl-"
-"enter</strong> para dividir una celda y evaluar ambas."
+"<strong>ctrl-retroceso</strong> para unirlas. Pulse <strong>ctrl-"
+"entrar</strong> para dividir una celda y evaluar ambas."
 
 #: sagenb/notebook/tutorial.py:378
 msgid "Insert New Text Cell"
@@ -2534,16 +2535,16 @@ msgid ""
 " the text block.  Click the button to save changes, or press <strong"
 ">shift-enter</strong>."
 msgstr ""
-"Mueva el ratón entre celdas hasta que aparezca una barra azul. Pinche "
-"imientras mantiene pulsada la tecla <strong>Mayúsculas</strong> en la barra "
-"azul, o bien pinche en el icono de texto"
+"Mueva el ratón entre celdas hasta que aparezca una barra horizontal. Pinche "
+"mientras mantiene pulsada la tecla <strong>Mayúsculas</strong> en la barra "
+"horizontal, o bien pinche en el icono de texto"
 " para crear una celda de texto nueva. Utilice $...$ y $$...$$ para "
 "incluir tipografía matemática en el bloque de texto. Pinche el botón "
 "para guardar los cambios o pulse <strong>Mayúsculas-Entrar</strong>."
 
 #: sagenb/notebook/tutorial.py:380
 msgid "Edit Text Cell"
-msgstr "Editar la celda de texto"
+msgstr "Editar una celda de texto"
 
 #: sagenb/notebook/tutorial.py:381
 msgid "Double click on existing text to edit it."
@@ -2572,7 +2573,7 @@ msgid ""
 "shift-tab."
 msgstr ""
 "Seleccione un texto y pulse > para sangrarlo < para reducir la sangría "
-"\"\"(funciona en Safari y Firefox). En Firefox también se puede pulsar "
+"(funciona en Safari y Firefox). En Firefox también se puede pulsar "
 "tab y shift-tab."
 
 #: sagenb/notebook/tutorial.py:386
@@ -2618,8 +2619,8 @@ msgid ""
 "(attempt) to interrupt SAGE by sending many interrupt signals."
 msgstr ""
 "Pulse <u>Interrupt</u> o pulse escape en cualquier celda de entrada. Esto"
-" interrumpirá (o al menos lo intentará) SAGE enviando múltiples señales "
-"de interrupción."
+" interrumpirá (o al menos intentará interrumpir) a SAGE enviando múltiples "
+"señales de interrupción."
 
 #: sagenb/notebook/tutorial.py:395
 msgid "Restart"
@@ -2630,12 +2631,12 @@ msgid ""
 "Type \"restart\" to restart the SAGE interpreter for a given worksheet.  "
 "(You have to interrupt first.)"
 msgstr ""
-"Teclear \"restart\" para reiniciar el intérprete de SAGE de una "
-"determinada hoja. (Primero hay que interrumpir los cálculos)."
+"Teclee \"restart\" para reiniciar el intérprete de SAGE para una "
+"determinada hoja. (Primero hay que interrumpir los cálculos en curso)."
 
 #: sagenb/notebook/tutorial.py:398
 msgid "Special Cell Blocks"
-msgstr "Bloques Especiales de Celdas"
+msgstr "Bloques de Celdas Especiales"
 
 #: sagenb/notebook/tutorial.py:399
 msgid "Evaluate Cell using GAP, Singular, etc."
@@ -2714,7 +2715,7 @@ msgid ""
 "you can write input cells that contains non-evaluated plain text mixed "
 "with examples by starting the block with \">>>\" or including an example."
 msgstr ""
-"El código se evalúa ejecutando (después de preprocesarlo). Sólo se "
+"El código se evalúa mediante ejecución (después de un preprocesado). Sólo se "
 "muestra la salida de la última línea. Si alguna línea comienza por "
 "\"sage:\" o \">>>\" se asume que todo el bloque contiene texto y "
 "ejemplos, por lo que solo se ejecutan las líneas que comiencen por un "
@@ -2744,8 +2745,8 @@ msgid ""
 "Type pretty_print_default() in an input cell and press shift-enter.  All "
 "future output will be typeset automatically."
 msgstr ""
-"Teclee pretty_print_default() en una celda de entrada y pulse shift-"
-"enter. Todo la salida a partir de ahora se imprimirá automáticamente."
+"Teclee pretty_print_default() en una celda de entrada y pulse mayúsculas-"
+"entrar. Todo la salida a partir de ahora se imprimirá automáticamente."
 
 #: sagenb/notebook/tutorial.py:418
 msgid "Files and Scripts"
@@ -2762,7 +2763,7 @@ msgid ""
 " .py files are not.   You may omit the .sage or .py extension.  Files may"
 " load other files."
 msgstr ""
-"Utilice \"load filename.sage\" y \"load filename.py\". La ruta es "
+"Utilice \"load filename.sage\" y \"load filename.py\". La ruta será "
 "relativa a la del directorio donde inició el notebook. Los archivos .sage"
 " son preprocesados y los .py no. Se puede omitir la extensión .sage o "
 ".py. Los archivos pueden cargar otros archivos."
@@ -2784,7 +2785,7 @@ msgstr ""
 "href=\"https://github.com/sagemath/sagenb/issues/169\" "
 "target=\"_blank\">informe de errores</a>) Utilice \"attach "
 "filename.sage\" o \"attach filename.py\". Los archivos adjuntos se "
-"recargargan automáticamente cuando se pruducen cambios en ellos. El archivo "
+"recargarán automáticamente cuando se produzcan cambios en ellos. El archivo "
 "$HOME/.sage/init.sage, si existe, se adjunta automáticamente al inicio."
 
 #: sagenb/notebook/tutorial.py:423
@@ -2797,7 +2798,7 @@ msgid ""
 "created as a side effect, they will automatically be displayed."
 msgstr ""
 "Cada bloque de código se ejecuta en su propio directorio. Si se crea "
-"alguna imagen como efecto lateral, se mostrará automáticamente."
+"alguna imagen como efecto colateral, se mostrará automáticamente."
 
 #: sagenb/notebook/tutorial.py:425
 msgid "DIR Variable"
@@ -2810,7 +2811,7 @@ msgid ""
 "\"open(DIR+'filename')\"."
 msgstr ""
 "La variable DIR contiene el directorio desde el que se inicio el notebook"
-" SAGE. Por ejemplo, para abrir un archivo en ese directorio, teclee "
+" de SAGE. Por ejemplo, para abrir un archivo en ese directorio, teclee "
 "\"open(DIR+'filename')\"."
 
 #: sagenb/notebook/tutorial.py:427
@@ -2844,8 +2845,8 @@ msgid ""
 "such objects between worksheets, you may save to any filename (given as a"
 " string) Sage can write to on your system."
 msgstr ""
-"Utilice \"save(obj1,DATA+'foo') para guardar un objeto en el directorio "
-"de datos de una hoja, y \"obj1 = load(DATA+'foo')\" para cargarlo de "
+"Utilice \"save(obj1, DATA + 'foo') para guardar un objeto en el directorio "
+"de datos de una hoja, y \"obj1 = load(DATA + 'foo')\" para cargarlo de "
 "nuevo. Para utilizar tales objetos entre distintas hojas, se pueden "
 "guardar en cualquier archivo (cuyo nombre se da en forma de cadena de "
 "caracteres) en el que Sage pueda escribir."
@@ -2873,7 +2874,7 @@ msgid ""
 "If you create a file <tt>$HOME/.sage/notebook.css</tt> then it will get "
 "applied when rendering the notebook.   See "
 msgstr ""
-"Si crea un archivo <tt>$HOME/.sage/notebook.css</tt>, será aplicado "
+"Si crea un archivo <tt>$HOME/.sage/notebook.css</tt>, se aplicará "
 "cuando se muestre el notebook. Ver"
 
 #: sagenb/notebook/user_conf.py:22
