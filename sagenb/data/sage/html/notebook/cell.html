@@ -104,7 +104,7 @@ INPUT:
             <table class="cell_output_box">
                 <tr>
                     <td class="cell_number" id="cell_number_{{ cell.id() }}"
-                        {{ '' if do_print else 'onClick="cycle_cell_output_type(%r);"'|format(cell.id())| safe }} >
+                        {{ '' if do_print else 'onClick=cycle_cell_output_type(%r);'|format(cell.id()) }} >
                         {% for i in range(7) %}&nbsp;{% endfor %}
                     </td>
                     <td class="output_cell">
