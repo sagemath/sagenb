@@ -20,7 +20,7 @@
       <a href="/"><button>{{ gettext('Cancel') }}</button></a>
   </div>
   {%- if auto_table %}
-  {{ auto_table }}
+  {{ auto_table | safe }}
   {%- endif %}
   <div class="buttons">
       <button type="submit">{{ gettext('Save') }}</button>

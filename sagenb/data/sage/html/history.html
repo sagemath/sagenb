@@ -9,7 +9,7 @@
 {% block page_id %}history-page{% endblock %}
 
 {% block body %}
-    <pre>{{ text | escape }}</pre>
+    <pre>{{ text }}</pre>
     <a title="{{ gettext('Click here to turn the above into a Sage worksheet') }}" href="/live_history">{{ gettext('Create a new Sage worksheet version of the last 100 commands in the above log.') }}</a>
     <a name="bottom"></a>
     <script type="text/javascript">

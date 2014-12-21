@@ -53,7 +53,7 @@ INPUT:
 <form method="post" action="savedatafile" enctype="multipart/form-data">
     <input type="submit" value="{{ gettext('Save Changes') }}" name="button_save" /> <input type="submit" value="{{ gettext('Cancel') }}" name="button_cancel" style="display:block" />
     <div style="border: 1px solid black; padding: 0px;">
-        <textarea class="edit" name="textfield" rows=20 cols=100 id="textfield" style="overflow: auto;">{{ text_file_content | escape }}</textarea>
+        <textarea class="edit" name="textfield" rows=20 cols=100 id="textfield" style="overflow: auto;">{{ text_file_content }}</textarea>
     </div>
     <script type="text/javascript">
     $(document).ready(function () {

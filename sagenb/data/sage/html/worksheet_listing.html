@@ -30,7 +30,7 @@ INPUT:
 <script type="text/javascript" src="/javascript/jquery/plugins/form/jquery.form.min.js"></script>
 <script type="text/javascript" src="/javascript/jquery/plugins/jquery.bgiframe.min.js"></script>
 <script type="text/javascript">
-    var worksheet_filenames = {{ worksheet_filenames|tojson|safe }}; 
+    var worksheet_filenames = {{ worksheet_filenames|tojson| safe }}; 
 </script>
 <script type="text/javascript" src="/javascript/sage/js/notebook_lib.js"></script>
 <script type="text/javascript" src="/javascript/dynamic/notebook_dynamic.js"></script>
@@ -174,9 +174,9 @@ INPUT:
             </td>
 
             <td class="worksheet_link">
-                <a title="{{ worksheet.name() | escape }}" id="name-{{ name|css_escape }}" class="worksheetname" href="/home/{{ name }}/">
+                <a title="{{ worksheet.name() }}" id="name-{{ name|css_escape }}" class="worksheetname" href="/home/{{ name }}/">
                     {% if worksheet.compute_process_has_been_started() %}({{ gettext('running') }}){% endif %}
-                    {{ worksheet.truncated_name(50) | escape}}
+                    {{ worksheet.truncated_name(50) }}
                 </a>
                 
                 {% if not pub and worksheet.is_published() %}(Published){% endif %}
@@ -222,7 +222,7 @@ INPUT:
                 {% endif %}
             </td>
             <td>
-                {{ worksheet.html_time_nice_edited(username) }}
+                {{ worksheet.html_time_nice_edited(username) | safe }}
             </td>
         </tr>
         {% endfor %}

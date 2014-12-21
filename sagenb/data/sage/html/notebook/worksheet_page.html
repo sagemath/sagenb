@@ -14,7 +14,7 @@ INPUT:
 {% block worksheet_main %}
 {% set toggle=true %}
 <div class="worksheet" id="worksheet">
-    {{ worksheet.html(username=username) }}
+    {{ worksheet.html(username=username) | safe }}
     <div class="insert_new_cell" id="insert_last_cell">
         <div class="ui-icon ui-icon-circle-plus wksht-icon_button" 
             id="insert_new_last_compute_cell" 

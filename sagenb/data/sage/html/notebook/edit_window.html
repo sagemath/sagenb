@@ -20,6 +20,6 @@
     function save_worksheet_and_close() {
     }
 </script>
-    <textarea class="plaintextedit" id="cell_intext" name="textfield" rows="{{ worksheet.edit_text().count("\n")+1 }}">{{ worksheet.edit_text()|escape }}</textarea>
+    <textarea class="plaintextedit" id="cell_intext" name="textfield" rows="{{ worksheet.edit_text().count("\n")+1 }}">{{ worksheet.edit_text() }}</textarea>
 </form>
 {% endblock %}
