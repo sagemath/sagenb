@@ -20,8 +20,6 @@ Check that github issue #195 is fixed::
 #############################################################################
 
 from pkg_resources import resource_filename
-from babel import Locale
-from babel.core import UnknownLocaleError
 
 def stub(f):
     def g(*args, **kwds):
@@ -517,6 +515,8 @@ def translations_path():
     return os.path.join(SAGENB_ROOT, 'translations')
 
 def get_languages():
+    from babel import Locale
+    from babel.core import UnknownLocaleError
     langs = []
     dir_names = [lang for lang in os.listdir(translations_path())
                        if lang != 'en_US']
