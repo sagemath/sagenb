@@ -1119,7 +1119,7 @@ msgstr "Configurar Cuenta"
 
 #: sagenb/data/sage/html/settings/account_settings.html:13
 msgid "Change Auto-Save Interval"
-msgstr "Cambiar intervalo de auto-guardado"
+msgstr "Cambiar el intervalo de auto-guardado"
 
 #: sagenb/data/sage/html/settings/account_settings.html:15
 msgid "Minutes"
@@ -1127,7 +1127,7 @@ msgstr "Minutos"
 
 #: sagenb/data/sage/html/settings/account_settings.html:25
 msgid "Change Password"
-msgstr "Cambiar Contraseña"
+msgstr "Cambiar la Contraseña"
 
 #: sagenb/data/sage/html/settings/account_settings.html:31
 msgid "Old password"
