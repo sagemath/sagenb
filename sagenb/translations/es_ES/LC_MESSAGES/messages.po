@@ -909,7 +909,7 @@ msgstr "Pulsar para insertar una nueva celda de texto."
 
 #: sagenb/data/sage/html/notebook/cell.html:90
 msgid "Click here or press shift-return to evaluate"
-msgstr "Pulsar aquí o teclear shift-return para evaluar"
+msgstr "Pulsar aquí o teclear mayúsculas-entrar para evaluar"
 
 #: sagenb/data/sage/html/notebook/cell.html:91
 msgid "evaluate"
@@ -1804,7 +1804,7 @@ msgstr "E-mail confirmado"
 
 #: sagenb/flask_version/authentication.py:280
 msgid "The account recovery system is not active."
-msgstr "El sistem de recuperación de cuentas no está activo."
+msgstr "El sistema de recuperación de cuentas no está activo."
 
 #: sagenb/flask_version/authentication.py:292
 msgid "Username is invalid."
@@ -2403,9 +2403,9 @@ msgid ""
 " twice or more toggles with formatted source code."
 msgstr ""
 "Teclee ? inmediatamente después del objeto o función y presione tab o "
-"shift-enter (shift-enter sobrescribe la salida de la celda con la ayuda en"
-" la propia hoja). Realizar esta acción dos o más veces cambia entre la "
-"documentación y el código fuente formateado."
+"mayúsculas-entrar (mayúsculas-entrar sobrescribe la salida de la celda"
+" con la ayuda en la propia hoja). Realizar esta acción dos o más veces cambia"
+" entre la documentación y el código fuente formateado."
 
 #: sagenb/notebook/tutorial.py:359
 msgid ""
@@ -2413,10 +2413,10 @@ msgid ""
 "overwrites output and saves to worksheet).  Doing this twice or more "
 "toggles with just the documentation."
 msgstr ""
-"Teclee ?? después del objeto y pulse tab o shift-enter (shift-enter "
-"sobrescribe la salida de la hoja con el código fuente en la propia hoja)."
-" Realizar esta "
-"acción dos o más veces cambia entre el código fuente y la documentación."
+"Teclee ?? después del objeto y pulse tab o mayúsculas-entrar"
+" (mayúsculas-entrar sobrescribe la salida de la hoja con el código fuente en"
+" la propia hoja). Realizar esta acción dos o más veces cambia entre el código"
+" fuente y la documentación."
 
 #: sagenb/notebook/tutorial.py:360
 msgid "Full Text Search of Docs and Source"
@@ -2430,10 +2430,10 @@ msgid ""
 "shift-enter.  Arbitrary regular expressions are allowed as queries."
 msgstr ""
 "Busque en la documentación de SAGE escribiendo <pre>search_doc(\"mi "
-"búsqueda\")</pre> en una celda de entrada y pulse shift-enter. Busque en "
-"el código fuente de SAGE tecleando <pre>search_src(\"mi búsqueda\")</pre>"
-" y pulsando shift-enter. Se admiten expresiones regulares arbitrarias en "
-"las búsquedas."
+"búsqueda\")</pre> en una celda de entrada y pulse mayúsculas-entrar. Busque"
+" en el código fuente de SAGE tecleando <pre>search_src(\"mi búsqueda\")</pre>"
+" y pulsando mayúsculas-entrar. Se admiten expresiones regulares arbitrarias"
+" en las búsquedas."
 
 #: sagenb/notebook/tutorial.py:362
 msgid "Live Documentation"
@@ -2465,10 +2465,10 @@ msgid ""
 "  If you press <strong>ctrl-enter</strong> then the cell is split and "
 "both pieces are evaluated separately."
 msgstr ""
-"Pulse <strong>shift-enter</strong> o pinche en el botón \"evaluar\". Se "
+"Pulse <strong>mayúsculas-entrar</strong> o pinche en el botón \"evaluar\". Se "
 "pueden iniciar varios cálculos a la vez. Si en lugar de ello, pulsa "
-"<strong>alt-enter</strong>, se crea una celda nueva después de la actual."
-" Si pulsa <strong>ctrl-enter</strong>, la celda se divide en dos y se evalúan "
+"<strong>alt-entrar</strong>, se crea una celda nueva después de la actual."
+" Si pulsa <strong>ctrl-entrar</strong>, la celda se divide en dos y se evalúan "
 "ambas partes por separado."
 
 #: sagenb/notebook/tutorial.py:370
@@ -2574,7 +2574,7 @@ msgid ""
 msgstr ""
 "Seleccione un texto y pulse > para sangrarlo < para reducir la sangría "
 "(funciona en Safari y Firefox). En Firefox también se puede pulsar "
-"tab y shift-tab."
+"tab y mayúsculas-tab."
 
 #: sagenb/notebook/tutorial.py:386
 msgid "Comment/Uncomment Blocks"
@@ -2738,7 +2738,7 @@ msgstr ""
 
 #: sagenb/notebook/tutorial.py:415
 msgid "Typesetting All Output"
-msgstr "Mostrar toda la Salida"
+msgstr "Utilizar siempre tipografía avanzada"
 
 #: sagenb/notebook/tutorial.py:416
 msgid ""
@@ -2746,7 +2746,7 @@ msgid ""
 "future output will be typeset automatically."
 msgstr ""
 "Teclee pretty_print_default() en una celda de entrada y pulse mayúsculas-"
-"entrar. Todo la salida a partir de ahora se imprimirá automáticamente."
+"entrar. Toda la salida a partir de ahora se mostrará con tipografía avanzada."
 
 #: sagenb/notebook/tutorial.py:418
 msgid "Files and Scripts"
