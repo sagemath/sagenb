@@ -73,6 +73,15 @@ in your local `SAGENB_ROOT`.
     tar cf sagenb-<version>.tar sagenb-<version>
     mv sagenb-<version>.tar SAGE_ROOT/upstream
     ```
+
+   Be very careful to use the GNU version of `tar`; on Mac you should probably use
+   the `gnutar` command, as the default is the BSD version.  When you run the command
+   
+   ```sh
+   file sagenb-<version>.tar
+   ```
+   
+   you should get a result like `sagenb-<version>.tar:       POSIX tar archive (GNU)`.
     
 1. Let Sage know about the new sagenb and update its checksums, and then
    try out the new sagenb and test it.  Here we are not yet committing,
