@@ -97,22 +97,21 @@ use sagenb's SCSS files to update its CSS *properly*.
 Localization
 ------------
 
-To add a locale to an existing install, we have some
-possibly outdated instructions:
+The Sage notebook has various localizations available, and
+welcomes updates to those as well as new ones.  The current
+localizations are available in ``sagenb/translations``.
 
-    * Create a new locale, or download one from
-      http://wiki.sagemath.org/i18n . To create a new locale:
+The file ``util/translations.py`` encapsulates much of the
+Python Babel localization utility in an easy-to-use
+interface meant for the Sage notebook.  We recommend its
+use to update and create new translations.  Full help
+is available by running the file in the Sage Python
+shell with the ``-h`` argument::
 
-      * Edit and save a copy of ``sagenb.pot`` using your favorite text
-        editor or POEdit (http://poedit.net)
+    cd $SAGENB_ROOT
+    sage -python ./util/translations.py -h
 
-      * (Recommended) Post the new locale to
-        http://wiki.sagemath.org/i18n
-
-    * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
-
-    * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
-      xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+A more advanced introduction is in preparation.
 
 Release Instructions
 --------------------
