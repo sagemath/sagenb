@@ -33,7 +33,7 @@ function interrupt_callback(status, response) {
     if (response === 'failed') {
         if (!is.count) {
             is.count = 1;
-            message = translations['Unable to interrupt calculation.'] + " " + translations[timeout > 1 ? 2 : 1]['Trying again in %(num)d second...'](timeout) + ' ' + translations['Close this box to stop trying.'];
+            message = translations['Unable to interrupt calculation.'] + " " + translations['Trying again in %(num)d second...'](timeout) + ' ' + translations['Close this box to stop trying.'];
 
             is.alert = $.achtung({
                 className: 'interrupt-fail-notification',

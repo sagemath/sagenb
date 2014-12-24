@@ -1,7 +1,7 @@
 import re
 import os, threading, collections
 from functools import wraps
-from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
+from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app, escape
 from decorators import login_required, with_lock
 from collections import defaultdict
 from werkzeug.utils import secure_filename
@@ -591,14 +591,14 @@ def worksheet_invite_collab(worksheet):
     for u in collaborators-old_collaborators:
         try:
             user_manager.user(u).viewable_worksheets().add((owner, id_number))
-        except KeyError:
+        except (ValueError, LookupError):
             # user doesn't exist
             pass
     # remove worksheet from ex-collaborators
     for u in old_collaborators-collaborators:
         try:
             user_manager.user(u).viewable_worksheets().discard((owner, id_number))
-        except KeyError:
+        except (ValueError, LookupError):
             # user doesn't exist
             pass
 
@@ -745,8 +745,8 @@ def worksheet_datafile(worksheet):
     if request.values.get('action', '') == 'delete':
         path = os.path.join(dir, filename)
         os.unlink(path)
-        return current_app.message("Successfully deleted '%s'"%filename,
-                                   cont=url_for_worksheet(worksheet)) #XXX: i18n
+        return current_app.message(_("Successfully deleted '%(filename)s'", filename=filename),
+                                   cont=url_for_worksheet(worksheet))
     else:
         return g.notebook.html_download_or_delete_datafile(worksheet, g.username, filename)
 
@@ -917,17 +917,17 @@ def worksheet_rate(worksheet):
 
     rating = int(request.values['rating'])
     if rating < 0 or rating >= 5:
-        return current_app.messge("Gees -- You can't fool the rating system that easily!",
+        return current_app.message(_("Gees -- You can't fool the rating system that easily!"),
                           url_for_worksheet(worksheet))
 
-    comment = request.values['comment']
+    comment = str(escape(request.values['comment']))
     worksheet.rate(rating, comment, g.username)
-    s = """
-    Thank you for rating the worksheet <b><i>%s</i></b>!
+    s = _("""
+    Thank you for rating the worksheet <b><i>%(worksheet_name)s</i></b>!
     You can <a href="rating_info">see all ratings of this worksheet.</a>
-    """%(worksheet.name())
+    """, worksheet_name=worksheet.name())
     #XXX: Hardcoded url
-    return current_app.message(s.strip(), '/pub/', title=u'Rating Accepted')
+    return current_app.message(s.strip(), '/pub/', title=_('Rating Accepted'))
 
 
 ########################################################

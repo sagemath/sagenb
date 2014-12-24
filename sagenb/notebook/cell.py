@@ -1451,7 +1451,9 @@ class Cell(Cell_generic):
                 break
 
         self._percent_directives = directives
-        return "\n".join(text[i:]).strip()
+        if not self._system == 'fortran':
+            return "\n".join(text[i:]).strip()
+        return "\n".join(text[i:]).rstrip()
 
     def percent_directives(self):
         r"""
@@ -2431,7 +2433,7 @@ class Cell(Cell_generic):
                 # jmol data
                 jmoldatafile=os.path.join(self.directory(),F)
             elif F.endswith('.canvas3d'):
-                script = '<div><script>canvas3d.viewer("%s");</script></div>' % url
+                script = '<div><script>canvas3d.viewer("%s?%s");</script></div>' %(url,time.time())
                 images.append(script)
             elif F.startswith('.jmol_'):
                 # static jmol data and images

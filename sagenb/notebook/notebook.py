@@ -145,6 +145,13 @@ class Notebook(object):
         from user_manager import SimpleUserManager, OpenIDUserManager
         self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
 
+        # Set up email notification logger
+        import logging
+        from sagenb.notebook.notification import logger, TwistedEmailHandler
+        logger.addHandler(TwistedEmailHandler(self.conf(), logging.ERROR))
+        # also log to stderr
+        logger.addHandler(logging.StreamHandler())
+
         # Set the list of users
         try:
             S.load_users(self._user_manager)
@@ -1717,7 +1724,7 @@ class Notebook(object):
 
         from flask import current_app
         if W is None:
-            return current_app.message("The worksheet does not exist") #XXX: i18n
+            return current_app.message(gettext("The worksheet does not exist"))
 
         if W.docbrowser() or W.is_published():
             if W.is_published() or self.user_manager().user_is_guest(username):
@@ -1967,7 +1974,7 @@ def migrate_old_notebook_v1(dir):
     worksheets = WorksheetDict(new_nb)
     num_worksheets = len(old_nb._Notebook__worksheets)
     print "Migrating (at most) %s worksheets..." % num_worksheets
-    from sage.misc.misc import walltime
+    from sage.misc.all import walltime
     tm = walltime()
     i = 0
     for ws_name, old_ws in old_nb._Notebook__worksheets.iteritems():

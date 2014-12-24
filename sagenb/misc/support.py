@@ -119,8 +119,8 @@ def help(obj):
     TESTS::
     
         sage: import numpy.linalg
-        sage: import os, sage.misc.misc ; current_dir = os.getcwd()
-        sage: os.chdir(sage.misc.misc.tmp_dir('server_doctest'))
+        sage: current_dir = os.getcwd()
+        sage: os.chdir(tmp_dir('server_doctest'))
         sage: sagenb.misc.support.help(numpy.linalg.norm)
         <html><table notracebacks bgcolor="#386074" cellpadding=10 cellspacing=10><tr><td bgcolor="#f5f5f5"><font color="#37546d">
         &nbsp;&nbsp;&nbsp;<a target='_new' href='cell://docs-....html'>Click to open help window</a>&nbsp;&nbsp;&nbsp;
@@ -395,64 +395,6 @@ def tabulate(v, width=90, ncols=3):
         s += '\n'
     return s
 
-def save_session(filename):
-    D = {}
-    v = variables(with_types=False)
-    for k in v:
-        x = sage_globals[k]
-        try:
-            _ = loads(dumps(x))
-        except (IOError, TypeError, PicklingError):
-            if k != 'fortran':  # this is a hack to get around the inline fortran object being
-                                # *incredibly* hackish in how it is implemented; the right
-                                # fix is to rewrite the fortran inline to *not* be so incredibly
-                                # hackish.  See trac #2891.
-                print "Unable to save %s"%k
-        else:
-            D[k] = x
-    print "Saving variables to object %s.sobj"%filename
-    save(D, filename)
-
-def load_session(v, filename, state):
-    D = {}
-    for k, x in v.iteritems():
-        try:
-            _ = loads(dumps(x))
-        except (IOError, TypeError):
-            print "Unable to save %s"%k
-        else:
-            D[k] = x
-    print "Saving variables to %s"%filename
-    save(D, filename)
-
-def _is_new_var(x, v):
-    if x[:2] == '__':
-        return False
-    if not x in global_names_at_init:
-        return True
-
-    # You might think this would take a long time
-    # since globals_at_init has several thousand entries.
-    # However, it takes 0.0 seconds, which is not noticeable
-    # given that there is at least 0.1 seconds delay
-    # when refreshing the web page!
-    for y in globals_at_init:
-        if v is y:
-            return False
-    return True
-
-def variables(with_types=True):
-    if with_types:
-        w = ['%s-%s'%(x,type(v)) for x, v in sage_globals.iteritems() if \
-             _is_new_var(x, v)]
-    else:
-        w = [x for x, v in sage_globals.iteritems() if \
-             _is_new_var(x, v)]
-    w.sort()
-    return w
-
-
-
 def syseval(system, cmd, dir=None):
     """
     Evaluate an input with a "system" object that can evaluate inputs
@@ -550,14 +492,13 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
 # Preparser
 ###################################################
 try:
-    from sage.misc.preparser import preparse, preparse_file
+    from sage.repl.preparse import preparse, preparse_file
     def do_preparse():
         """
         Return True if the preparser is set to on, and False otherwise.
         """
-        import sage.misc.interpreter
-        return sage.misc.interpreter.do_preparse
-    
+        import sage.repl.interpreter
+        return sage.repl.interpreter._do_preparse
 except ImportError:
     def preparse(line, *args, **kwds):
         return line
@@ -725,7 +666,7 @@ def preparse_worksheet_cell(s, globals):
     Preparse the contents of a worksheet cell in the notebook,
     respecting the user using ``preparser(False)`` to turn off the
     preparser.  This function calls
-    :func:`~sage.misc.preparser.preparse_file` which also reloads
+    :func:`~sage.repl.preparse.preparse_file` which also reloads
     attached files.  It also does displayhook formatting by calling
     the :func:`~sagenb.notebook.interfaces.format.displayhook_hack`
     function.
@@ -735,7 +676,7 @@ def preparse_worksheet_cell(s, globals):
     - ``s`` - a string containing code
 
     - ``globals`` - a string:object dictionary; passed directly to
-      :func:`~sage.misc.preparser.preparse_file`
+      :func:`~sage.repl.preparse.preparse_file`
 
     OUTPUT:
 

@@ -7,7 +7,7 @@ import copy
 import conf
 from conf import (POS, DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
                   T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST, T_INFO)
-from sagenb.misc.misc import get_languages
+from sagenb.misc.misc import get_languages, N_
 from flask.ext.babel import gettext, lazy_gettext
 _ = lazy_gettext
 
@@ -31,6 +31,8 @@ defaults = {'word_wrap_cols':72,
             'pretty_print':False,
 
             'ulimit':'',
+
+            'notification_recipients': ['root@localhost'],
 
             'email':False,
 
@@ -130,6 +132,11 @@ defaults_descriptions = {
         TYPE : T_INFO,
         },
 
+    'notification_recipients': {
+        DESC : _('Send notification e-mails to (comma-separated list)'),
+        GROUP : G_SERVER,
+        TYPE : T_LIST,
+        },
 
     'word_wrap_cols': {
         DESC : _('Number of word-wrap columns'),
@@ -184,7 +191,7 @@ defaults_descriptions = {
         DESC : _('Type of challenge'),
         GROUP : G_AUTH,
         TYPE : T_CHOICE,
-        CHOICES : ['simple', 'recaptcha'],
+        CHOICES : [N_('simple'), N_('recaptcha')],
         },
 
     'recaptcha_public_key': {

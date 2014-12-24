@@ -1,3 +1,10 @@
+0.11.2      Dec 22 2014
+ - Improved language support
+ - Fixed several bugs
+ - init.sage works again
+ - Email configuration for crash report
+
+
 0.11.1      Nov 10 2014
  - Live documentation fixes
  - Release Manager and other developer instruction updates

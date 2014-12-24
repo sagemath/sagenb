@@ -15,7 +15,7 @@ except ImportError:
 SRC = os.path.join(SAGE_SRC, 'sage')
 from flask.ext.openid import OpenID
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
-from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path
+from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path, N_, nN_
 
 oid = OpenID()
 
@@ -131,7 +131,7 @@ def localization_js():
     global _localization_cache
     locale=repr(get_locale())
     if _localization_cache.get(locale,None) is None:
-        data= render_template(os.path.join('js/localization.js'))
+        data = render_template(os.path.join('js/localization.js'), N_=N_, nN_=nN_)
         _localization_cache[locale] = (data, sha1(repr(data)).hexdigest())
     data,datahash = _localization_cache[locale]
 
@@ -422,9 +422,21 @@ def create_app(path_to_notebook, *args, **kwds):
     ####################################
     # create Babel translation manager #
     ####################################
-    babel = Babel(app, default_locale=notebook.conf()['default_language'],
-                  default_timezone='UTC',
-                  date_formats=None, configure_jinja=True)
+    babel = Babel(app, default_locale='en_US')
+
+    #Check if saved default language exists. If not fallback to default
+    @app.before_first_request
+    def check_default_lang():
+        def_lang = notebook.conf()['default_language']
+        trans_ids = [str(trans) for trans in babel.list_translations()]
+        if def_lang not in trans_ids:
+            notebook.conf()['default_language'] = None
+
+    #register callback function for locale selection
+    #this function must be modified to add per user language support
+    @babel.localeselector
+    def get_locale():
+        return g.notebook.conf()['default_language']
 
     ########################
     # Register the modules #
@@ -448,6 +460,17 @@ def create_app(path_to_notebook, *args, **kwds):
 
     from settings import settings
     app.register_blueprint(settings)
+
+    # Handles all uncaught exceptions by sending an e-mail to the
+    # administrator(s) and displaying an error page.
+    @app.errorhandler(Exception)
+    def log_exception(error):
+        from sagenb.notebook.notification import logger
+        logger.exception(error)
+        return app.message(
+            gettext('''500: Internal server error.
+            An e-mail has been sent to the administrator(s).'''),
+            username=getattr(g, 'username', 'guest')), 500
 
     #autoindex v0.3 doesnt seem to work with modules
     #routing with app directly does the trick

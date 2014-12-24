@@ -3044,7 +3044,8 @@ sage.misc.latex.EMBEDDED_MODE=True
 # gets removed from the sage library.
 from sagenb.notebook.all import *
 try:
-    attach(os.path.join(os.environ['DOT_SAGE'], 'init.sage'))
+    from sage.misc.preparser import load
+    load(os.path.join(os.environ['DOT_SAGE'], 'init.sage'), globals(),attach=True)
 except (KeyError, IOError):
     pass
     """ % (os.path.join(os.path.abspath(self.data_directory()),''), misc.DIR)

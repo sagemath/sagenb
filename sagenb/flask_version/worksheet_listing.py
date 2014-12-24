@@ -62,8 +62,7 @@ def render_worksheet_list(args, pub, username):
 @login_required
 def home(username):
     if not g.notebook.user_manager().user_is_admin(g.username) and username != g.username:
-        #XXX: i18n
-        return current_app.message("User '%s' does not have permission to view the home page of '%s'."%(g.username, username))
+        return current_app.message(_("User '%(user)s' does not have permission to view the home page of '%(name)s'.", user=g.username, name=username))
     else:
         return render_worksheet_list(request.args, pub=False, username=username)
 
@@ -181,7 +180,7 @@ def public_worksheet_cells(id, filename):
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
-        return current_app.message("You do not have permission to access this worksheet") #XXX: i18n
+        return current_app.message(_("You do not have permission to access this worksheet"))
     from flask.helpers import send_from_directory
     return send_from_directory(worksheet.cells_directory(), filename)
 
@@ -333,7 +332,7 @@ def parse_link_rel(url, fn):
 @worksheet_listing.route('/upload_worksheet', methods=['GET', 'POST'])
 @login_required
 def upload_worksheet():
-    from sage.misc.misc import tmp_filename, tmp_dir
+    from sage.misc.all import tmp_filename, tmp_dir
     from werkzeug.utils import secure_filename
     import zipfile
 
@@ -352,7 +351,7 @@ def upload_worksheet():
         extension = os.path.splitext(path)[1].lower()
         if extension not in ["", ".txt", ".sws", ".zip", ".html", ".rst"]:
             # Or shall we try to import the document as an sws when in doubt?
-            return current_app.message("Unknown worksheet extension: %s. %s" % (extension, backlinks))
+            return current_app.message(_("Unknown worksheet extension: %(ext)s. %(links)s", ext=extension, links=backlinks))
         filename = tmp_filename()+extension
         try:
             import re

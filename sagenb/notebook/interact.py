@@ -2251,7 +2251,7 @@ class UpdateButton(JavascriptCodeButton):
         return self.__var
 
         
-from sage.misc.misc import decorator_defaults
+from sage.misc.decorators import decorator_defaults
 
 @decorator_defaults
 def interact(f, layout=None, width='800px'):
@@ -3767,7 +3767,7 @@ def automatic_control(default):
         else:
             C = slider(list(default), default=default_value, label=label)
     elif is_Matrix(default):
-        C = input_grid(default.nrows(), default.ncols(), default=default.list(), to_value=default.parent())
+        C = input_grid(default.nrows(), default.ncols(), default=default.list(), to_value=default.parent(), label=label)
     else:
         C = input_box(default, label=label)
 
