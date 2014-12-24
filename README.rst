@@ -118,67 +118,9 @@ Release Instructions
 
 Currently, sagenb is an upstream project from Sage proper.
 That means any new sagenb release needs to be packaged properly
-in order to be included in Sage.  Read ``ReleaseInstr.md`` for
-basic details on how to create such a release, including minor changes
+in order to be included in Sage.
+
+Read ``ReleaseInstr.md`` for step-by-step details on how
+to create such a release, including minor changes
 needed on the Sage side to ``build/pkgs/sagenb/package-version.txt``
 and the checksum file.
-
-See the older instructions below for some additional details that would
-need to be taken into account for more major changes, especially the
-ones about the manifest and localization updates.
-
-
-Older Release Instructions
---------------------------
-
-The following advice for release managers of sagenb is taken from the
-old SPKG.txt file that was sitting around. Most of it is probably
-outdated, but here it is anyway. It is modified slightly to cause it to
-make sense in some cases.
-
-    To cut a new release of sagenb, make sure that:
-
-    * All changes are committed.
-
-    * ``.gitignore`` and ``MANIFEST.in`` are current.
-
-    * The notebook runs.
-
-    * The doctests pass: ``sage -t --sagenb``
-
-    * The notebook will be possible to install from the new SPKG without
-      an internet connection.
-
-      * Any dependencies that must be downloaded can be added in
-        ``util/fetch_deps.py`` and inserted in ``setup.py``.
-        Dependencies of dependencies need not be put in ``setup.py``,
-        but need to be put in ``util/fetch_deps.py`` (until we can make
-        it smarter).
-
-    * The Selenium tests pass (optional, for now).
-
-    * The localization file ``sagenb.pot`` is up-to-date.
-
-      * Run ``pybabel extract -F /path/to/babel.cfg /path/to/project -o
-        /path/to/sagenb.po`` (get pybabel with ``easy_install
-        pybabel``).
-
-      * Copy the headers from the existing ``sagenb.pot``.
-
-      * Replace ``sagenb.pot`` with ``sagenb.po``.
-
-    * Then, update the version in ``setup.py`` and commit this change.
-
-    * Run ``dist.sh``, optionally with a ``-g`` argument to package
-      the git repo too.
-
-    * Copy the newly generated ``dist/`` directory from the sagenb
-      repo to the SPKG's root directory and rename it ``src/``
-      , replacing the ``src/`` directory that is currently there
-
-    * Pack up the SPKG with ``sage --pkg --no-compress`` (because
-      everything in ``src/`` is already compressed)
-
-    * Install and test the new spkg: ``sage -f sagenb-*.spkg``
-
-    * Don't forget to push all changes in the sagenb repo to github.
