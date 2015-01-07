@@ -331,9 +331,12 @@ class WorksheetProcess_RemoteExpectImplementation(WorksheetProcess_ExpectImpleme
           .ssh/authorized_keys.  You must make the permissions of
           files and directories right.
           
-        - ``local_directory`` -- name of a directory on the local
-          computer that the notebook server can write to, which the
-          remote computer also has read/write access to, e.g., /tmp/
+        - ``local_directory`` -- (default: None) name of a directory on
+          the local computer that the notebook server can write to,
+          which the remote computer also has read/write access to.  If
+          set to ``None``, then first try the environment variable
+          :envvar:`SAGENB_TMPDIR` if it exists, then :envvar:`TMPDIR`.
+          Otherwise, fall back to ``/tmp``.
 
         - ``remote_directory`` -- (default: None) if the local_directory is
           mounted on the remote machine as a different directory name,
@@ -345,16 +348,25 @@ class WorksheetProcess_RemoteExpectImplementation(WorksheetProcess_ExpectImpleme
     def __init__(self,
                  user_at_host,
                  remote_python,
-                 local_directory = os.path.sep + 'tmp',
+                 local_directory = None,
                  remote_directory = None,
                  process_limits = None,
                  timeout = 0.05):
         WorksheetProcess_ExpectImplementation.__init__(self, process_limits, timeout=timeout)
         self._user_at_host = user_at_host
+
+        if local_directory is None:
+            local_directory = os.environ.get("SAGENB_TMPDIR")
+        if local_directory is None:
+            local_directory = os.environ.get("TMPDIR")
+        if local_directory is None:
+            local_directory = "/tmp"
         self._local_directory = local_directory
+
         if remote_directory is None:
             remote_directory = local_directory
         self._remote_directory = remote_directory
+
         self._remote_python = remote_python
 
     def command(self):

@@ -180,13 +180,18 @@ class NotebookObject:
 
           logs in without requiring a password, e.g., by typing
           ``ssh-keygen`` as the notebook server user, then putting
-          ``~/.ssh/id_rsa.pub`` as the file
-          ``.ssh/authorized_keys``. Note: you have to get the
-          permissions of files and directories just right -- see `this
-          Sage wiki page`_ for more details.  Also, every user in the
-          server pool must share the same ``/tmp`` directory right
-          now, so if the machines are separate the server machine must
-          NSF export ``/tmp``.
+          ``~/.ssh/id_rsa.pub`` as the file ``.ssh/authorized_keys``.
+          Note: you have to get the permissions of files and
+          directories just right -- see `this Sage wiki page`_ for
+          more details.
+
+          Files between the main Sage process and the ``server_pool``
+          workers are transferred through ``/tmp`` by default.  If the
+          environment variable :envvar:`SAGENB_TMPDIR` or
+          :envvar:`TMPDIR` exists, that directory is used instead.  This
+          directory must be shared, so if the machines are separate the
+          server machine must NFS-export ``/tmp`` or
+          :envvar:`SAGENB_TMPDIR`.
 
         - ``server`` -- string ("twistd" (default) or "flask").  The server
           to use to server content.
