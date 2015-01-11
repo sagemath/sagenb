@@ -1,4 +1,4 @@
-# Translations template for SAGE Notebook.
+# Spanish (Spain) translations for SAGE Notebook.
 # Copyright (C) 2013 SAGE
 # This file is distributed under the same license as the SAGE project.
 # FIRST AUTHOR J. Miguel Farto <migeruhito@gmail.com>, 2013, 2014.
@@ -8,15 +8,24 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sage Notebook 0.9.2\n"
 "Report-Msgid-Bugs-To: migeruhito@gmail.com\n"
-"POT-Creation-Date: 2012-03-18 08:47+0400\n"
+"POT-Creation-Date: 2014-12-19 22:07+0100\n"
 "PO-Revision-Date: 2013-02-18 10:24+0100\n"
 "Last-Translator: J. Miguel Farto <migeruhito@gmail.com>\n"
 "Language-Team: J. Miguel Farto <migeruhito@gmail.com>\n"
+"Plural-Forms: nplurals=2; plural=n != 1\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 0.9.6\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"Generated-By: Babel 1.3\n"
+
+msgid "ru_RU"
+msgstr "русский (Россия)"
+
+msgid "pt_BR"
+msgstr "português (Brasil)"
+
+msgid "en_US"
+msgstr "English (United States)"
 
 msgid "cs_CZ"
 msgstr "čeština (Česká republika)"
@@ -24,364 +33,141 @@ msgstr "čeština (Česká republika)"
 msgid "de_AT"
 msgstr "Deutsch (Österreich)"
 
-msgid "en_US"
-msgstr "English (United States)"
-
 msgid "es_ES"
 msgstr "español (España)"
-
-msgid "pt_BR"
-msgstr "português (Brasil)"
-
-msgid "ru_RU"
-msgstr "русский (Россия)"
 
 msgid "fr_FR"
 msgstr "français (France)"
 
-#: sagenb/notebook/server_conf.py:30
-msgid "Grant"
-msgstr "Permitir"
+#: sagenb/data/sage/html/accounts/account_recovery.html:3
+#: sagenb/data/sage/html/accounts/account_recovery.html:8
+msgid "Account Recovery"
+msgstr "Recuperación de Cuenta"
 
-#: sagenb/notebook/server_conf.py:30
-msgid "Revoke"
-msgstr "Revocar"
-
-#: sagenb/notebook/server_conf.py:73
-msgid "Idle timeout for normal worksheets (seconds)"
-msgstr "Tiempo de espera inactivo para las hojas normales (segundos)"
-
-#: sagenb/notebook/server_conf.py:80
-msgid "Idle timeout for live documentation (seconds)"
-msgstr "Tiempo de espera inactivo para la documentación dinámica (segundos)"
-
-
-
-
-#: sagenb/data/sage/html/upload.html:3
-msgid "Upload File"
-msgstr "Subir fichero"
-
-#: sagenb/data/sage/html/upload.html:11
-#: sagenb/data/sage/html/upload.html:27
-msgid "Upload worksheet to the Sage Notebook"
-msgstr "Subir una hoja al Notebook Sage"
-
-#: sagenb/data/sage/html/upload.html:28
-msgid "Supported file formats:"
-msgstr "Formatos de archivo soportados"
-
-#: sagenb/data/sage/html/upload.html:15
-msgid "URL of file on web"
-msgstr "URL de un archivo de la web"
-
-#: sagenb/data/sage/html/upload.html:30
-msgid "a Sage worksheet"
-msgstr "una hoja Sage"
-
-#: sagenb/data/sage/html/upload.html:31
+#: sagenb/data/sage/html/accounts/account_recovery.html:9
 msgid ""
-"or <tt>.txt</tt> - a worksheet text file with html code and cells surrounded "
-"by <tt>&#123;&#123;&#123;</tt> and <tt>&#125;&#125;&#125;</tt> that defines "
-"a worksheet"
+"A new password will be emailed to the email address connected to your "
+"account. However if you didn't confirm your email address you will be "
+"unable to recover your account."
 msgstr ""
-"o <tt>.txt</tt> - una hoja en un archivo de texto con html y celdas entre "
-"<tt>&#123;&#123;&#123;</tt> y <tt>&#125;&#125;&#125;</tt> que definan "
-"una hoja"
+"Se le enviará una nueva contraseña a su dirección de e-mail. Sin embargo "
+"no podrá recuperar su cuenta si no ha confirmado su dirección de e-mail."
 
-#: sagenb/data/sage/html/upload.html:32
+#: sagenb/data/sage/html/accounts/account_recovery.html:16
+msgid "Submit"
+msgstr "Enviar"
+
+#: sagenb/data/sage/html/accounts/account_recovery.html:19
+#: sagenb/data/sage/html/accounts/registration.html:83
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:54
+#: sagenb/data/sage/html/notebook/edit_window.html:12
+#: sagenb/data/sage/html/settings/account_settings.html:10
+#: sagenb/data/sage/html/settings/account_settings.html:67
+#: sagenb/data/sage/html/settings/admin_add_user.html:25
+#: sagenb/data/sage/html/settings/notebook_settings.html:20
+#: sagenb/data/sage/html/settings/notebook_settings.html:27
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: sagenb/data/sage/html/accounts/registration.html:3
+msgid "Sign up"
+msgstr "Registrarse"
+
+#: sagenb/data/sage/html/accounts/registration.html:9
+msgid "Sign up for a Sage Notebook account"
+msgstr "Registrase para una cuenta de Notebook Sage"
+
+#: sagenb/data/sage/html/accounts/registration.html:16
+msgid "Create a username"
+msgstr "Crear un usuario"
+
+#: sagenb/data/sage/html/accounts/registration.html:17
 msgid ""
-"the URL of a page of the Sage Documentation, for example the URL of "
-"<a class=\"reference external\" href=\"http://www.sagemath.org/doc/reference/"
-"sage/rings/integer.html\">this page</a>"
+"Your username must start with a letter and be between 3 and 64 characters"
+" long. You may only use letters, numbers, underscores, @, and dots."
 msgstr ""
-"el URL de una página de Documentación de Sage, por ejemplo el URL de "
-"<a class=\"reference external\" href=\"http://www.sagemath.org/doc/reference/"
-"sage/rings/integer.html\">esta página</a>"
+"Su usuario debe comenzar con una letra y tener entre 3 y 64 caracteres. "
+"Sólo se puede utilizar letras, números, guiones bajos, @, y puntos."
 
-#: sagenb/data/sage/html/upload.html:33
-msgid "an HTML page generated by docutils from a ReStructuredText file"
-msgstr "una página HTML generada por docutils a partir de un archivo en "
-"formato ReStructuredText"
-
-#: sagenb/data/sage/html/upload.html:34
-msgid ""
-"a ReStructuredText file (Add \"<tt>.. escape-backslashes</tt>\" as a "
-"line in the file if you want backslashes to be escaped. Put latex code "
-"inside backticks \"<tt>`</tt>\" or dollar signs \"<tt>$</tt>\" or "
-"\"<tt>$$</tt>\". Math role is not supported for now.)"
-msgstr ""
-"un archivo en formato ReStructuredText (Añadir "
-"\"<tt>.. escape-backslashes</tt>\" al "
-"archivo para que \"\\\" sea un carácter de escape. Poner el código de latex "
-"entre acentos graves \"<tt>`</tt>\" o dólares \"<tt>$</tt>\" o "
-"\"<tt>$$</tt>\". El modo matemático no esta soportado por ahora.)"
-
-#: sagenb/data/sage/html/upload.html:35
-msgid "a zip archive of any of the above"
-msgstr "un archivo zip de cualquiera de los anteriores"
-
-#: sagenb/data/sage/html/upload.html:44
-msgid ""
-"Or enter the URL of a file on the web. This can be a direct link to any of "
-"the above kinds of files, or the URL of any HTML page that supports \"linked "
-"worksheet autodiscovery\"."
-msgstr ""
-"O introducir el URL de un archivo de la web. Puede ser un enlace directo a "
-"cualquiera de las clases anteriores de archivos, o el URL de cualquier "
-"página HTML que soporte la característica \"linked "
-"worksheet autodiscovery\"."
-
-#: sagenb/data/sage/html/upload.html:22
-#: sagenb/data/sage/html/upload.html:51
-msgid "Upload Worksheet"
-msgstr "Subir Hoja"
-
-
-
-
-
-
-
-
-
-
-
-
-
-#: sagenb/data/sage/html/login.html:69
-#, python-format
-msgid "Sign into the Sage Notebook v%(v)s"
-msgstr "Entra en el notebook Sage v%(v)s"
-
-#: flask_version/admin.py:67
-#, python-format
-msgid ""
-"The temporary password for the new user <em>%(username)s</em> is "
-"<em>%(password)s</em>"
-msgstr ""
-"La contraseña provisional para el nuevo usuario <em>%(username)s</em> es "
-"<em>%(password)s</em>"
-
-#: flask_version/admin.py:69
-msgid "New User"
-msgstr "Nuevo usuario"
-
-#: flask_version/authentication.py:258
-msgid "The confirmation system is not active."
-msgstr "El sistema de confirmación está desactivado"
-
-#: flask_version/authentication.py:261
-msgid ""
-"    <h1>Invalid confirmation key</h1>\n"
-"    <p>You are reporting a confirmation key that has not been assigned by"
-" this\n"
-"    server. Please <a href=\"/register\">register</a> with the "
-"server.</p>\n"
-"    "
-msgstr ""
-"    <h1>Contraseña de confirmación inválida</h1>\n"
-"    <p>Usted ha proporcionado una contraseña de confirmación no asignada por"
-" este\n"
-"    servidor. Por favor <a href=\"/register\">regístrese</a> en el "
-"servidor.</p>\n"
-"    "
-
-#: flask_version/authentication.py:272
-#, python-format
-msgid "<h1>Email address confirmed for user %(username)s</h1>"
-msgstr "<h1>Dirección de e-mail confirmada para el usuario %(username)s</h1>"
-
-#: flask_version/authentication.py:274
-msgid "Email Confirmed"
-msgstr "E-mail confirmado"
-
-#: flask_version/base.py:226
-#: sagenb/data/sage/html/base_authenticated.html:15
-msgid "Log"
-msgstr "Historial"
-
-#: flask_version/decorators.py:35
-msgid "You do not have permission to access this location"
-msgstr "Usted no está autorizado para acceder a esta página"
-
-#: flask_version/worksheet.py:27 ../flask_version/worksheet.py:36
-#: flask_version/worksheet_listing.py:195
-msgid "You do not have permission to access this worksheet"
-msgstr "Usted no está autorizado para acceder a esta hoja"
-
-#: flask_version/worksheet.py:75 ../flask_version/worksheet.py:951
-#: sagenb/data/sage/html/notebook/worksheet_page.html:28
-#: sagenb/notebook/misc.py:237 ../sagenb/notebook/worksheet.py:703
-#: sagenb/notebook/worksheet.py:723 ../sagenb/notebook/worksheet.py:4230
-msgid "Untitled"
-msgstr "Sin título"
-
-#: flask_version/worksheet.py:578
-msgid "Error: can't add more than 500 collaborators at a time"
-msgstr "Error: No se pueden añadir más de 500 colaboradores a la vez"
-
-#: flask_version/worksheet.py:631
-#: sagenb/data/sage/html/error_message.html:4
-#: sagenb/data/sage/html/login.html:69
-#: sagenb/data/sage/html/login.html:76
-#: sagenb/data/sage/html/login.html:104
-#: sagenb/data/sage/html/login.html:106
-#: sagenb/data/sage/html/recaptcha.html:27
-#: sagenb/data/sage/html/test_report.html:112
-#: sagenb/data/sage/html/test_report.html:131
 #: sagenb/data/sage/html/accounts/registration.html:22
+msgid "No username given"
+msgstr "No se ha proporcionado un usuario"
+
 #: sagenb/data/sage/html/accounts/registration.html:25
+msgid "Username already in use"
+msgstr "El usuario está en uso"
+
 #: sagenb/data/sage/html/accounts/registration.html:28
+msgid "Bad username"
+msgstr "Usuario incorrecto"
+
+#: sagenb/data/sage/html/accounts/registration.html:32
+msgid "Create a good password"
+msgstr "Cree una contraseña robusta"
+
+#: sagenb/data/sage/html/accounts/registration.html:34
+msgid ""
+"Your password must have at least 4 characters. Your password can not "
+"contain your username or spaces."
+msgstr ""
+"Su contraseña debe tener al menos 4 caracteres. Su contraseña no puede "
+"contener ni su usuario ni espacios."
+
 #: sagenb/data/sage/html/accounts/registration.html:39
+msgid "No password given"
+msgstr "No se ha proporcionado una contraseña"
+
 #: sagenb/data/sage/html/accounts/registration.html:42
+msgid "Bad password"
+msgstr "Contraseña incorrecta"
+
+#: sagenb/data/sage/html/accounts/registration.html:46
+msgid "Re-type your password"
+msgstr "Vuelva a introducir su contraseña"
+
 #: sagenb/data/sage/html/accounts/registration.html:49
+msgid "Passwords didn't match"
+msgstr "Las contraseñas no coinciden"
+
+#: sagenb/data/sage/html/accounts/registration.html:54
+msgid "Enter your email address"
+msgstr "Introduzca su dirección de e-mail"
+
+#: sagenb/data/sage/html/accounts/registration.html:56
+msgid ""
+"Your email address is required for account confirmation and recovery. You"
+" will be emailed a confirmation link right after you successfully sign "
+"up."
+msgstr ""
+"Se requiere su dirección de e-mail para la confirmación de su cuenta y su"
+" recuperación. Le será enviado un e-mail con un enlace de confirmación "
+"después de que se registre."
+
 #: sagenb/data/sage/html/accounts/registration.html:62
+msgid "No email address given"
+msgstr "No se ha proporcionado una dirección de e-mail"
+
 #: sagenb/data/sage/html/accounts/registration.html:65
+msgid "Invalid email address"
+msgstr "Dirección de e-mail no válida"
+
+#: sagenb/data/sage/html/accounts/registration.html:71
+msgid "Answer a challenge"
+msgstr "Conteste un reto"
+
 #: sagenb/data/sage/html/accounts/registration.html:74
+msgid "No challenge response given"
+msgstr "No se ha proporcionado contestación al reto"
+
 #: sagenb/data/sage/html/accounts/registration.html:77
-#: sagenb/data/sage/html/settings/admin_add_user.html:17
-#: sagenb/data/sage/html/settings/admin_add_user.html:19
-#: sagenb/data/sage/js/translated-messages.js:17
-msgid "Error"
-msgstr "Error"
+msgid "Invalid challenge response"
+msgstr "Contestación al reto inválida"
 
-#: flask_version/worksheet.py:661
-msgid "No data files"
-msgstr "No hay archivos de datos"
+#: sagenb/data/sage/html/accounts/registration.html:82
+msgid "Create account"
+msgstr "Crear cuenta"
 
-#: flask_version/worksheet.py:702
-msgid "illegal link attempt!"
-msgstr "Intento no permitido de enlace"
-
-#: flask_version/worksheet.py:704
-msgid ""
-"The data filename already exists in other worksheet\n"
-"Delete the file in the other worksheet before creating a link."
-msgstr "El nombre del archivo de datos ya existe en otra hoja\n"
-"Borre el archivo en la otra hoja antes de crear el enlace."
-
-#: flask_version/worksheet.py:720
-#, python-format
-msgid ""
-" Return to <a href=\"%(upload_url)s\" title=\"Upload or create a data "
-"file in a wide range of formats\"><strong>Upload or Create Data "
-"File</strong></a> or <a href=\"%(worksheet_url)s\" title=\"Interactively "
-"use the worksheet\"><strong>%(worksheet_name)s</strong></a>."
-msgstr ""
-" Vuelva a <a href=\"%(upload_url)s\" title=\"Subir o crear un archivo "
-"de datos en una amplia variedad de formatos\"><strong>Subir o Crear Archivo "
-"de Datos</strong></a> o <a href=\"%(worksheet_url)s\" title=\"Utilizar la "
-"hoja en modo interactivo \"><strong>%(worksheet_name)s</strong></a>."
-
-#: flask_version/worksheet.py:724
-#, python-format
-msgid "Error uploading file (missing field \"file\"). %(backlinks)s"
-msgstr "Error subiendo archivo (falta el campo \"archivo\"). %(backlinks)s"
-
-#: flask_version/worksheet.py:731
-#, python-format
-msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
-msgstr "Error subiendo archivo (falta el argumento de " 
-"%(field)s).%(backlinks)s"
-
-#: flask_version/worksheet.py:744
-#, python-format
-msgid "Error uploading file (missing filename).%(backlinks)s"
-msgstr "Error subiendo archivo (falta el nombre del archivo).%(backlinks)s"
-
-#: flask_version/worksheet.py:752
-#, python-format
-msgid "URL must start with http, https, or ftp.%(backlinks)s"
-msgstr "El URL debe comenzar con http, https, o ftp.%(backlinks)s"
-
-#: flask_version/worksheet.py:759
-#, python-format
-msgid ""
-"Suspicious filename \"%(filename)s\" encountered uploading "
-"file.%(backlinks)s"
-msgstr ""
-"Se ha encontrado un nombre de archivo \"%(filename)s\" sospechoso subiendo "
-"archivo.%(backlinks)s"
-#: flask_version/worksheet.py:874
-msgid "No such worksheet."
-msgstr "No existe la hoja."
-
-#: flask_version/worksheet.py:959
-msgid "Document does not exist."
-msgstr "No existe el documento."
-
-#: flask_version/worksheet_listing.py:57
-msgid "Error displaying worksheet listing."
-msgstr "Error al mostrar la lista de hojas"
-
-#: flask_version/worksheet_listing.py:176
-msgid "Requested public worksheet does not exist"
-msgstr "La hoja pública requerida no existe"
-
-#: flask_version/worksheet_listing.py:295
-#, python-format
-msgid ""
-"This Sage notebook is not configured to load worksheets from 'https' "
-"URLs. Try a different URL or download the worksheet and upload it "
-"directly from your computer.\n"
-"%(backlinks)s"
-msgstr ""
-"Este notebook Sage no está configurado para recuperar hojas desde URLs "
-"'https'. Pruebe con un URL diferente, o descargue la hoja y súbala "
-"directamente desde su ordenador.\n"
-"%(backlinks)s"
-
-#: flask_version/worksheet_listing.py:357
-msgid ""
-"Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload"
-" File</strong></a>."
-msgstr ""
-"Vuelva a <a href=\"/upload\" title=\"Bajar una hoja\"><strong>Subir"
-" Archivo</strong></a>."
-
-#: flask_version/worksheet_listing.py:380
-#, python-format
-msgid ""
-"Please specify a worksheet to load.\n"
-"%(backlinks)s"
-msgstr ""
-"Por favor, especifique una hoja para recuperar.\n"
-"%(backlinks)s"
-
-#: flask_version/worksheet_listing.py:384
-#, python-format
-msgid ""
-"Invalid filename.\n"
-"%(backlinks)s"
-msgstr ""
-"Nombre de archivo no válido.\n"
-"%(backlinks)s"
-
-#: flask_version/worksheet_listing.py:425
-#, python-format
-msgid ""
-"There was an error uploading the worksheet.  It could be an old "
-"unsupported format or worse.  If you desperately need its contents "
-"contact the <a href=\"http://groups.google.com/group/sage-support\">sage-"
-"support group</a> and post a link to your worksheet.  Alternatively, an "
-"sws file is just a bzip2 tarball; take a look inside!\n"
-"%(backlinks)s"
-msgstr ""
-"Ocurrió un error al subir la hoja. Pudiera estar en un formato "
-"antiguo no soportado o peor aún. Si necesita sus contenidos desesperadamente "
-"contacte con el grupo <a href=\"http://groups.google.com/group/sage-support\">"
-"sage-support</a> y envíe un enlace a su hoja. Alternativamente, un archivo "
-"sws simplemente es un tarball comprimido con bzip2; "
-"¡Eche un vistazo dentro de él!\n"
-"%(backlinks)s"
-
-#: flask_version/worksheet_listing.py:436
-#, python-format
-msgid "Error uploading worksheet '%(msg)s'.%(backlinks)s"
-msgstr "Error subiendo la hoja '%(msg)s'.%(backlinks)s"
-
-#: sagenb/data/sage/html/base.html:33 ../sagenb/data/sage/html/login.html:35
+#: sagenb/data/sage/html/base.html:33 sagenb/data/sage/html/login.html:35
 msgid "The Sage Notebook"
 msgstr "Notebook Sage"
 
@@ -431,6 +217,11 @@ msgstr "Revisar las hojas publicadas"
 msgid "View a log of recent computations"
 msgstr "Ver un historial de cálculos recientes"
 
+#: sagenb/data/sage/html/base_authenticated.html:15
+#: sagenb/flask_version/base.py:214
+msgid "Log"
+msgstr "Historial"
+
 #: sagenb/data/sage/html/base_authenticated.html:17
 msgid "Change account settings including password"
 msgstr "Cambiar la configuración de la cuenta, incluyendo la contraseña"
@@ -477,8 +268,7 @@ msgstr "Tutorial"
 
 #: sagenb/data/sage/html/docs.html:16
 msgid "Explore a collection of in-depth tutorials on specific topics"
-msgstr "Explorar una colección de tutoriales avanzados sobre materias " 
-"específicas"
+msgstr "Explorar una colección de tutoriales avanzados sobre materias específicas"
 
 #: sagenb/data/sage/html/docs.html:16
 msgid "Thematic Tutorials"
@@ -526,19 +316,23 @@ msgstr "Cómo usar el Notebook Sage"
 
 #: sagenb/data/sage/html/docs.html:31
 msgid "A <em>worksheet</em> is an ordered list of Sage calculations with output."
-msgstr "Una <em>hoja</em> es una lista ordenada de cálculos en Sage con resultados."
+msgstr ""
+"Una <em>hoja</em> es una lista ordenada de cálculos en Sage con "
+"resultados."
 
 #: sagenb/data/sage/html/docs.html:32
 msgid "A <em>session</em> is a worksheet and a set of variables in some state."
-msgstr "Una <em>sesión</em> es una hoja y un conjunto de variables con algún estado."
+msgstr ""
+"Una <em>sesión</em> es una hoja y un conjunto de variables con algún "
+"estado."
 
 #: sagenb/data/sage/html/docs.html:33
 msgid ""
 "The <em>Sage notebook</em> is a collection of worksheets, saved objects, "
 "and user information."
 msgstr ""
-"El <em>Notebook sage</em> es una colección de hojas, objetos grabados "
-"e información del usuario."
+"El <em>Notebook sage</em> es una colección de hojas, objetos grabados e "
+"información del usuario."
 
 #: sagenb/data/sage/html/docs.html:46
 msgid ""
@@ -547,8 +341,32 @@ msgid ""
 "Hansen, Bobby Moretti, Yi Qiang, and Dorian Raymer."
 msgstr ""
 "El Notebook Sage fue escrito principalmente por William Stein con "
-"contribuciones sustanciales de Tom Boothby, Timothy Clemans, Alex Clemesha, "
-"Mike Hansen, Bobby Moretti, Yi Qiang, y Dorian Raymer."
+"contribuciones sustanciales de Tom Boothby, Timothy Clemans, Alex "
+"Clemesha, Mike Hansen, Bobby Moretti, Yi Qiang, y Dorian Raymer."
+
+#: sagenb/data/sage/html/error_message.html:4
+#: sagenb/data/sage/html/login.html:69 sagenb/data/sage/html/login.html:76
+#: sagenb/data/sage/html/login.html:108 sagenb/data/sage/html/login.html:110
+#: sagenb/data/sage/html/recaptcha.html:27
+#: sagenb/data/sage/html/test_report.html:112
+#: sagenb/data/sage/html/test_report.html:131
+#: sagenb/data/sage/html/accounts/registration.html:22
+#: sagenb/data/sage/html/accounts/registration.html:25
+#: sagenb/data/sage/html/accounts/registration.html:28
+#: sagenb/data/sage/html/accounts/registration.html:39
+#: sagenb/data/sage/html/accounts/registration.html:42
+#: sagenb/data/sage/html/accounts/registration.html:49
+#: sagenb/data/sage/html/accounts/registration.html:62
+#: sagenb/data/sage/html/accounts/registration.html:65
+#: sagenb/data/sage/html/accounts/registration.html:74
+#: sagenb/data/sage/html/accounts/registration.html:77
+#: sagenb/data/sage/html/settings/admin_add_user.html:14
+#: sagenb/data/sage/html/settings/admin_add_user.html:16
+#: sagenb/data/sage/html/settings/admin_add_user.html:18
+#: sagenb/data/sage/js/localization.js:21
+#: sagenb/flask_version/worksheet.py:640
+msgid "Error"
+msgstr "Error"
 
 #: sagenb/data/sage/html/error_message.html:19
 msgid "Continue"
@@ -583,8 +401,7 @@ msgstr "Elegir un proveedor de OpenID"
 msgid "Send"
 msgstr "Enviar"
 
-#: sagenb/data/sage/html/login.html:22
-#: sagenb/data/sage/html/login.html:84
+#: sagenb/data/sage/html/login.html:22 sagenb/data/sage/html/login.html:81
 msgid "Sign in"
 msgstr "Entrar"
 
@@ -599,7 +416,8 @@ msgstr "¡Bienvenido!"
 
 #: sagenb/data/sage/html/login.html:33
 msgid "<strong>Sage</strong> is a different approach to mathematics software."
-msgstr "<strong>Sage</strong> presenta un enfoque diferente del software para "
+msgstr ""
+"<strong>Sage</strong> presenta un enfoque diferente del software para "
 "matemáticas."
 
 #: sagenb/data/sage/html/login.html:36
@@ -609,8 +427,9 @@ msgid ""
 "Python, and other software included in Sage."
 msgstr ""
 "Con el Notebook Sage, cualquiera puede crear, colaborar en, y publicar "
-"hojas interactivas. En una hoja se puede escribir código de Sage, de Python y "
-"de otro software incluido en Sage"
+"hojas interactivas. En una hoja se puede escribir código de Sage, de "
+"Python y de otro software incluido en Sage"
+
 #: sagenb/data/sage/html/login.html:39
 msgid "General and Advanced Pure and Applied Mathematics"
 msgstr "Matemática General y Avanzada, Pura y Aplicada"
@@ -621,9 +440,10 @@ msgid ""
 "theory, cryptography, commutative algebra, group theory, graph theory, "
 "numerical and exact linear algebra, and more."
 msgstr ""
-"Utilice Sage para estudiar cálculo infinitesimal, teoría de números desde "
-"elemental a muy avanzada, criptografía, álgebra conmutativa, teoría de "
+"Utilice Sage para estudiar cálculo infinitesimal, teoría de números desde"
+" elemental a muy avanzada, criptografía, álgebra conmutativa, teoría de "
 "grupos, teoría de grafos, álgebra lineal numérica y exacta, etc."
+
 #: sagenb/data/sage/html/login.html:43
 msgid "Use an Open Source Alternative"
 msgstr "Utilice una Alternativa de Fuente Abierta"
@@ -635,8 +455,8 @@ msgid ""
 "open source math packages."
 msgstr ""
 "Cuando utiliza Sage, ayuda a mantener una alternativa viable de fuente "
-"abierta a Magma, Maple, Mathematica y MATLAB. Sage incluye muchos paquetes "
-"matemáticos de fuente abierta y alta calidad."
+"abierta a Magma, Maple, Mathematica y MATLAB. Sage incluye muchos "
+"paquetes matemáticos de fuente abierta y alta calidad."
 
 #: sagenb/data/sage/html/login.html:47
 msgid "Use Most Mathematics Software from Within Sage"
@@ -648,9 +468,9 @@ msgid ""
 "Sage includes GAP, GP/PARI, Maxima, and Singular, and dozens of other "
 "open packages."
 msgstr ""
-"Con Sage usted puede utilizar fácilmente la mayoría del software matemático. "
-"Sage incluye GAP, GP/PARI, Maxima y Singular, y otros muchos paquetes "
-"de fuente abierta."
+"Con Sage usted puede utilizar fácilmente la mayoría del software "
+"matemático. Sage incluye GAP, GP/PARI, Maxima y Singular, y otros muchos "
+"paquetes de fuente abierta."
 
 #: sagenb/data/sage/html/login.html:51
 msgid "Use a Mainstream Programming Language"
@@ -662,9 +482,9 @@ msgid ""
 "You can write programs that combine serious mathematics with anything "
 "else."
 msgstr ""
-"Trabaje con Sage utilizando el muy reputado lenguaje Python. "
-"Podrá escribir programas que combinen matemáticas de verdad con cualquier "
-"otra cosa."
+"Trabaje con Sage utilizando el muy reputado lenguaje Python. Podrá "
+"escribir programas que combinen matemáticas de verdad con cualquier otra "
+"cosa."
 
 #: sagenb/data/sage/html/login.html:55
 msgid "Acknowledgement"
@@ -681,14 +501,20 @@ msgid ""
 "Foundation.   See also <a href=\"http://sagemath.org/development-"
 "ack.html\">http://sagemath.org/development-ack.html</a>."
 msgstr ""
-"El Notebook Sage está basado en trabajos financiados por The National Science "
-"Foundation bajo los proyectos DMS-0821725, DMS-1020378, DMS-0713225, "
-"DMS-0555776, DMS-0545904, DMS-0838212, DMS-0757627, DUE-1020378, "
-"DUE-1022574, DMS-1015114, etc. Cualesquiera opiniones, investigaciones, y "
-"conclusiones o recomendaciones expresadas en este material son del autor(es), "
-"no reflejan necesariamente los puntos de vista de The National Science "
-"Foundation. Ver también <a href=\"http://sagemath.org/development-"
-"ack.html\">http://sagemath.org/development-ack.html</a>."
+"El Notebook Sage está basado en trabajos financiados por The National "
+"Science Foundation bajo los proyectos DMS-0821725, DMS-1020378, "
+"DMS-0713225, DMS-0555776, DMS-0545904, DMS-0838212, DMS-0757627, "
+"DUE-1020378, DUE-1022574, DMS-1015114, etc. Cualesquiera opiniones, "
+"investigaciones, y conclusiones o recomendaciones expresadas en este "
+"material son del autor(es), no reflejan necesariamente los puntos de "
+"vista de The National Science Foundation. Ver también <a "
+"href=\"http://sagemath.org/development-ack.html\">http://sagemath.org"
+"/development-ack.html</a>."
+
+#: sagenb/data/sage/html/login.html:63
+#, python-format
+msgid "Sign into the Sage Notebook v%(v)s"
+msgstr "Entra en el notebook Sage v%(v)s"
 
 #: sagenb/data/sage/html/login.html:66
 #: sagenb/data/sage/html/accounts/account_recovery.html:13
@@ -700,7 +526,7 @@ msgid "Username is not in the system"
 msgstr "El usuario no está en el sistema"
 
 #: sagenb/data/sage/html/login.html:73
-#: sagenb/data/sage/html/settings/user_management.html:13
+#: sagenb/data/sage/html/settings/user_management.html:15
 msgid "Password"
 msgstr "Contraseña"
 
@@ -708,388 +534,32 @@ msgstr "Contraseña"
 msgid "Wrong password"
 msgstr "Contraseña errónea"
 
-#: sagenb/data/sage/html/login.html:80
-msgid "Remember me"
-msgstr "Recordarme"
-
-#: sagenb/data/sage/html/login.html:89
+#: sagenb/data/sage/html/login.html:86
 msgid "Sign up for a new Sage Notebook account"
 msgstr "Abrir una cuenta nueva en el Notebook de Sage"
 
-#: sagenb/data/sage/html/login.html:93
+#: sagenb/data/sage/html/login.html:90
 msgid "Browse published Sage worksheets<br>(no login required)"
 msgstr "Ver las hojas de Sage publicadas<br>(no se requiere entrar)"
 
-#: sagenb/data/sage/html/login.html:97
+#: sagenb/data/sage/html/login.html:94
 msgid "Forgot password"
 msgstr "Olvidar la contraseña"
 
-#: sagenb/data/sage/html/login.html:104
+#: sagenb/data/sage/html/login.html:108
 msgid "Creating new users is disabled by the administrator."
 msgstr "El administrador ha desactivado la creación de usuarios nuevos."
 
-#: sagenb/data/sage/html/login.html:106
+#: sagenb/data/sage/html/login.html:110
 msgid "Javascript must be enabled in order to use the Sage Notebook."
 msgstr "Para utilizar el Notebook Sage se debe activar Javascript"
-
-#: sagenb/data/sage/html/source_code.html:3
-#: sagenb/notebook/tutorial.py:358
-msgid "Source Code"
-msgstr "Código Fuente"
-
-#: sagenb/data/sage/html/source_code.html:13
-msgid "Sage Source Browser"
-msgstr "Visualizador de Fuentes de Sage"
-
-#: sagenb/data/sage/html/source_code.html:14
-msgid "browse directory"
-msgstr "Ver directorio"
-
-#: sagenb/data/sage/html/test_report.html:79
-msgid "Sage Notebook version"
-msgstr "Versión del Notebook Sage"
-
-#: sagenb/data/sage/html/test_report.html:85
-msgid "Sage version"
-msgstr "Versión de Sage"
-
-#: sagenb/data/sage/html/test_report.html:91
-msgid "Environment"
-msgstr "Entorno"
-
-#: sagenb/data/sage/html/test_report.html:96
-msgid "Start"
-msgstr "Iniciar"
-
-#: sagenb/data/sage/html/test_report.html:100
-#: sagenb/data/sage/html/worksheet_listing.html:127
-msgid "Stop"
-msgstr "Parar"
-
-#: sagenb/data/sage/html/test_report.html:104
-msgid "Elapsed"
-msgstr "Transcurrido"
-
-#: sagenb/data/sage/html/test_report.html:108
-msgid "Status"
-msgstr "Estado"
-
-#: sagenb/data/sage/html/test_report.html:110
-#: sagenb/data/sage/html/test_report.html:129
-msgid "Pass"
-msgstr "Pasa"
-
-#: sagenb/data/sage/html/test_report.html:111
-#: sagenb/data/sage/html/test_report.html:130
-msgid "Fail"
-msgstr "Fallo"
-
-#: sagenb/data/sage/html/test_report.html:113
-msgid "Total"
-msgstr "Total"
-
-#: sagenb/data/sage/html/test_report.html:121
-msgid "Hide"
-msgstr "Ocultar"
-
-#: sagenb/data/sage/html/test_report.html:122
-msgid "Show"
-msgstr "Mostrar"
-
-#: sagenb/data/sage/html/test_report.html:128
-msgid "Cases / Tests"
-msgstr "Casos / Tests"
-
-#: sagenb/data/sage/html/test_report.html:132
-msgid "Count"
-msgstr "Contador"
-
-#: sagenb/data/sage/html/test_report.html:141
-msgid "Totals"
-msgstr "Total"
-
-#: sagenb/data/sage/html/worksheet_listing.html:9
-msgid "Published Worksheets"
-msgstr "Hojas Publicadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:11
-msgid "Deleted Worksheets"
-msgstr "Hojas Eliminadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:13
-msgid "Active Worksheets"
-msgstr "Hojas activas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:15
-msgid "Archived Worksheets"
-msgstr "Hojas Archivadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:99
-msgid "New Worksheet"
-msgstr "Hoja Nueva"
-
-#: sagenb/data/sage/html/worksheet_listing.html:100
-msgid "Upload"
-msgstr "Subir"
-
-#: sagenb/data/sage/html/worksheet_listing.html:101
-msgid "Download All Active"
-msgstr "Descargar activas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:108
-msgid "Search Worksheets"
-msgstr "Buscar hojas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:116
-msgid "Unarchive selected worksheets so it appears in the default worksheet list"
-msgstr "Des-archivar las hojas seleccionadas para que aparezcan en la lista normal de hojas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:116
-msgid "Unarchive"
-msgstr "Des-archivar"
-
-#: sagenb/data/sage/html/worksheet_listing.html:118
-msgid ""
-"Archive selected worksheets so they do not appear in the default "
-"worksheet list"
-msgstr ""
-"Archivar hojas seleccionadas para que no aparezcan en la lista normal de hojas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:118
-msgid "Archive"
-msgstr "Archivar"
-
-#: sagenb/data/sage/html/worksheet_listing.html:122
-msgid "Move the selected worksheets to the trash"
-msgstr "Enviar las hojas seleccionadas a la papelera"
-
-#: sagenb/data/sage/html/worksheet_listing.html:122
-msgid "Delete"
-msgstr "Borrar"
-
-#: sagenb/data/sage/html/worksheet_listing.html:124
-msgid "Move the selected worksheets out of the trash"
-msgstr "Sacar las hojas seleccionadas de la papelera"
-
-#: sagenb/data/sage/html/worksheet_listing.html:124
-msgid "Undelete"
-msgstr "Recuperar"
-
-#: sagenb/data/sage/html/worksheet_listing.html:127
-msgid "Stop selected worksheets"
-msgstr "Parar las hojas seleccionadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:128
-msgid "Download selected worksheets"
-msgstr "Descargar las hojas seleccionadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:128
-msgid "Download"
-msgstr "Descargar"
-
-#: sagenb/data/sage/html/worksheet_listing.html:131
-msgid "Current Folder"
-msgstr "Carpeta actual"
-
-#: sagenb/data/sage/html/worksheet_listing.html:132
-msgid "Active"
-msgstr "Activas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:133
-msgid "Archived"
-msgstr "Archivadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:134
-msgid "Trash"
-msgstr "Papelera"
-
-#: sagenb/data/sage/html/worksheet_listing.html:138
-msgid "Empty Trash"
-msgstr "Vaciar Papelera"
-
-#: sagenb/data/sage/html/worksheet_listing.html:153
-#: sagenb/data/sage/html/worksheet/ratings_info.html:9
-msgid "Rating"
-msgstr "Puntuación"
-
-#: sagenb/data/sage/html/worksheet_listing.html:164
-msgid "Owner"
-msgstr "Propietario"
-
-#: sagenb/data/sage/html/worksheet_listing.html:164
-msgid "Collaborators"
-msgstr "Colaboradores"
-
-#: sagenb/data/sage/html/worksheet_listing.html:170
-#: sagenb/data/sage/html/notebook/worksheet_revision_list.html:16
-msgid "Last Edited"
-msgstr "Editada"
-
-#: sagenb/data/sage/html/worksheet_listing.html:180
-msgid "There are no published worksheets."
-msgstr "No hay hojas publicadas"
-
-#: sagenb/data/sage/html/worksheet_listing.html:186
-msgid ""
-"Welcome to Sage! You can <a href=\"/new_worksheet\">create a new "
-"worksheet</a>, view <a href=\"/pub/\">published worksheets</a>, or read "
-"the <a href=\"/help\" target=\"_new\">documentation</a>."
-msgstr ""
-"¡Bienvenido a Sage! Puede <a href=\"/new_worksheet\">crear una hoja "
-"nueva</a>, ver las <a href=\"/pub/\">hojas publicadas</a>, o leer "
-"la <a href=\"/help\" target=\"_new\">documentación</a>."
-
-#: sagenb/data/sage/html/worksheet_listing.html:228
-msgid "running"
-msgstr "ejecutando"
-
-#: sagenb/data/sage/html/worksheet_listing.html:261
-msgid "Add or Delete"
-msgstr "Añadir o Borrar"
-
-#: sagenb/data/sage/html/worksheet_listing.html:263
-msgid "Share now"
-msgstr "Compartir"
-
-#: sagenb/data/sage/html/worksheet_listing.html:268
-msgid "published"
-msgstr "publicadas"
-
-#: sagenb/data/sage/html/accounts/account_recovery.html:3
-#: sagenb/data/sage/html/accounts/account_recovery.html:8
-msgid "Account Recovery"
-msgstr "Recuperación de Cuenta"
-
-#: sagenb/data/sage/html/accounts/account_recovery.html:9
-msgid ""
-"A new password will be emailed to the email address connected to your "
-"account. However if you didn't confirm your email address you will be "
-"unable to recover your account."
-msgstr ""
-"Se le enviará una nueva contraseña a su dirección de e-mail. "
-"Sin embargo no podrá recuperar su cuenta si no ha confirmado "
-"su dirección de e-mail."
-
-#: sagenb/data/sage/html/accounts/account_recovery.html:17
-msgid "Submit"
-msgstr "Enviar"
-
-#: sagenb/data/sage/html/accounts/account_recovery.html:17
-#: sagenb/data/sage/html/accounts/registration.html:83
-#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:54
-#: sagenb/data/sage/html/notebook/edit_window.html:12
-#: sagenb/data/sage/html/settings/account_settings.html:10
-#: sagenb/data/sage/html/settings/account_settings.html:75
-#: sagenb/data/sage/html/settings/admin_add_user.html:26
-#: sagenb/data/sage/html/settings/notebook_settings.html:20
-#: sagenb/data/sage/html/settings/notebook_settings.html:27
-msgid "Cancel"
-msgstr "Cancelar"
-
-#: sagenb/data/sage/html/accounts/registration.html:3
-msgid "Sign up"
-msgstr "Registrarse"
-
-#: sagenb/data/sage/html/accounts/registration.html:9
-msgid "Sign up for a Sage Notebook account"
-msgstr "Registrase para una cuenta de Notebook Sage"
-
-#: sagenb/data/sage/html/accounts/registration.html:16
-msgid "Create a username"
-msgstr "Crear un usuario"
-
-#: sagenb/data/sage/html/accounts/registration.html:17
-msgid ""
-"Your username must start with a letter and be between 3 and 64 characters"
-" long. You may only use letters, numbers, underscores, @, and dots."
-msgstr ""
-"Su usuario debe comenzar con una letra y tener entre 3 y 64 caracteres."
-" Sólo se puede utilizar letras, números, guiones bajos, @, y puntos." 
-
-#: sagenb/data/sage/html/accounts/registration.html:22
-msgid "No username given"
-msgstr "No se ha proporcionado un usuario"
-
-#: sagenb/data/sage/html/accounts/registration.html:25
-msgid "Username already in use"
-msgstr "El usuario está en uso"
-
-#: sagenb/data/sage/html/accounts/registration.html:28
-msgid "Bad username"
-msgstr "Usuario incorrecto"
-
-#: sagenb/data/sage/html/accounts/registration.html:32
-msgid "Create a good password"
-msgstr "Cree una contraseña robusta"
-
-#: sagenb/data/sage/html/accounts/registration.html:34
-msgid ""
-"Your password must have at least 4 characters. Your password can not "
-"contain your username or spaces."
-msgstr ""
-"Su contraseña debe tener al menos 4 caracteres. Su contraseña no puede contener ni "
-"su usuario ni espacios."
-
-#: sagenb/data/sage/html/accounts/registration.html:39
-msgid "No password given"
-msgstr "No se ha proporcionado una contraseña"
-
-#: sagenb/data/sage/html/accounts/registration.html:42
-msgid "Bad password"
-msgstr "Contraseña incorrecta"
-
-#: sagenb/data/sage/html/accounts/registration.html:46
-msgid "Re-type your password"
-msgstr "Vuelva a introducir su contraseña"
-
-#: sagenb/data/sage/html/accounts/registration.html:49
-msgid "Passwords didn't match"
-msgstr "Las contraseñas no coinciden"
-
-#: sagenb/data/sage/html/accounts/registration.html:54
-msgid "Enter your email address"
-msgstr "Introduzca su dirección de e-mail"
-
-#: sagenb/data/sage/html/accounts/registration.html:56
-msgid ""
-"Your email address is required for account confirmation and recovery. You"
-" will be emailed a confirmation link right after you successfully sign "
-"up."
-msgstr ""
-"Se requiere su dirección de e-mail para la confirmación de su cuenta y su "
-"recuperación. Le será enviado un e-mail con un enlace de confirmación después "
-"de que se registre."
-
-#: sagenb/data/sage/html/accounts/registration.html:62
-msgid "No email address given"
-msgstr "No se ha proporcionado una dirección de e-mail"
-
-#: sagenb/data/sage/html/accounts/registration.html:65
-msgid "Invalid email address"
-msgstr "Dirección de e-mail no válida"
-
-#: sagenb/data/sage/html/accounts/registration.html:71
-msgid "Answer a challenge"
-msgstr "Conteste un reto"
-
-#: sagenb/data/sage/html/accounts/registration.html:74
-msgid "No challenge response given"
-msgstr "No se ha proporcionado contestación al reto"
-
-#: sagenb/data/sage/html/accounts/registration.html:77
-msgid "Invalid challenge response"
-msgstr "Contestación al reto inválida"
-
-#: sagenb/data/sage/html/accounts/registration.html:82
-msgid "Create account"
-msgstr "Crear cuenta"
 
 #: sagenb/data/sage/html/notebook/afterpublish_window.html:8
 #, python-format
 msgid ""
 "Worksheet is publicly viewable at <a href=\"%(u)s\" style=\"color:#FFF\" "
 "target=\"_blank\">%(u)s"
-msgstr "" 
+msgstr ""
 "La hoja se puede ver públicamente en <a href=\"%(u)s\" "
 "style=\"color:#FFF\" target=\"_blank\">%(u)s"
 
@@ -1108,271 +578,292 @@ msgstr "Dejar de publicar"
 
 #: sagenb/data/sage/html/notebook/afterpublish_window.html:14
 #: sagenb/data/sage/html/notebook/beforepublish_window.html:18
-msgid "Automatically re-publish when changes are made"
-msgstr "Re-publicar automáticamente cuando se realicen cambios"
+msgid "Automatically re-publish when changes are made and saved"
+msgstr "Re-publicar automáticamente cuando se realicen cambios y sean "
+"guardados"
 
-#: sagenb/data/sage/html/notebook/base.html:78
+#: sagenb/data/sage/html/notebook/base.html:82
 msgid "Click to rename this worksheet"
 msgstr "Pulsar para renombrar esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:81
+#: sagenb/data/sage/html/notebook/base.html:85
 msgid "last edited"
 msgstr "editado"
 
-#: sagenb/data/sage/html/notebook/base.html:83
+#: sagenb/data/sage/html/notebook/base.html:87
 msgid "Someone else is viewing this worksheet"
 msgstr "Alguien más está viendo esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:88
-#: sagenb/data/sage/html/notebook/text_cell.html:48
+#: sagenb/data/sage/html/notebook/base.html:92
+msgid "Save changes and close window"
+msgstr "Guardar cambios y cerrar"
+
+#: sagenb/data/sage/html/notebook/base.html:92
+msgid "Save & quit"
+msgstr "Guardar y salir"
+
+#: sagenb/data/sage/html/notebook/base.html:92
+msgid "Discard changes to this worksheet"
+msgstr "Descartar los cambios en esta hoja"
+
+#: sagenb/data/sage/html/notebook/base.html:92
+msgid "Discard & quit"
+msgstr "Descartar y Salir"
+
+#: sagenb/data/sage/html/notebook/base.html:92
+#: sagenb/data/sage/html/notebook/text_cell.html:56
 msgid "Save changes"
 msgstr "Guardar cambios"
 
-#: sagenb/data/sage/html/notebook/base.html:88
+#: sagenb/data/sage/html/notebook/base.html:92
 #: sagenb/data/sage/html/settings/account_settings.html:9
-#: sagenb/data/sage/html/settings/account_settings.html:74
+#: sagenb/data/sage/html/settings/account_settings.html:66
 #: sagenb/data/sage/html/settings/notebook_settings.html:19
 #: sagenb/data/sage/html/settings/notebook_settings.html:26
 msgid "Save"
 msgstr "Guardar"
 
-#: sagenb/data/sage/html/notebook/base.html:88
-msgid "Save changes and close window"
-msgstr "Guardar cambios y cerrar"
-
-#: sagenb/data/sage/html/notebook/base.html:88
-msgid "Save & quit"
-msgstr "Guardar y salir"
-
-#: sagenb/data/sage/html/notebook/base.html:88
-msgid "Discard changes to this worksheet"
-msgstr "Descartar los cambios en esta hoja"
-
-#: sagenb/data/sage/html/notebook/base.html:88
-msgid "Discard & quit"
-msgstr "Descartar y Salir"
-
-#: sagenb/data/sage/html/notebook/base.html:95
+#: sagenb/data/sage/html/notebook/base.html:99
 msgid "Select a file related function"
 msgstr "Seleccionar una función de archivos"
 
-#: sagenb/data/sage/html/notebook/base.html:95
+#: sagenb/data/sage/html/notebook/base.html:99
 msgid "File..."
 msgstr "Archivos..."
 
-#: sagenb/data/sage/html/notebook/base.html:96
+#: sagenb/data/sage/html/notebook/base.html:100
 msgid "Load a new worksheet stored in a file"
 msgstr "Carga una hoja nueva guardada en un archivo"
 
-#: sagenb/data/sage/html/notebook/base.html:96
+#: sagenb/data/sage/html/notebook/base.html:100
 msgid "Load worksheet from a file..."
 msgstr "Cargar hoja de archivo..."
 
-#: sagenb/data/sage/html/notebook/base.html:97
+#: sagenb/data/sage/html/notebook/base.html:101
 msgid "Create a new worksheet"
 msgstr "Crear una hoja nueva"
 
-#: sagenb/data/sage/html/notebook/base.html:97
+#: sagenb/data/sage/html/notebook/base.html:101
 msgid "New worksheet"
 msgstr "Hoja nueva"
 
-#: sagenb/data/sage/html/notebook/base.html:98
+#: sagenb/data/sage/html/notebook/base.html:102
 msgid "Save this worksheet to an sws file"
 msgstr "Guardar esta hoja en un archivo sws"
 
-#: sagenb/data/sage/html/notebook/base.html:98
+#: sagenb/data/sage/html/notebook/base.html:102
 msgid "Save worksheet to a file..."
 msgstr "Guardar esta hoja en un archivo..."
 
-#: sagenb/data/sage/html/notebook/base.html:99
-#: sagenb/data/sage/html/notebook/base.html:148
+#: sagenb/data/sage/html/notebook/base.html:103
+#: sagenb/data/sage/html/notebook/base.html:158
 msgid "Print this worksheet"
 msgstr "Imprimir esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:99
-#: sagenb/data/sage/html/notebook/base.html:148
+#: sagenb/data/sage/html/notebook/base.html:103
+#: sagenb/data/sage/html/notebook/base.html:158
 msgid "Print"
 msgstr "Imprimir"
 
-#: sagenb/data/sage/html/notebook/base.html:100
+#: sagenb/data/sage/html/notebook/base.html:104
 msgid "Rename this worksheet"
 msgstr "Cambiar el nombre de esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:100
-#: sagenb/data/sage/js/translated-messages.js:11
+#: sagenb/data/sage/html/notebook/base.html:104
+#: sagenb/data/sage/js/localization.js:15
 msgid "Rename worksheet"
 msgstr "Renombrar hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:101
+#: sagenb/data/sage/html/notebook/base.html:105
 msgid "Copy this worksheet"
 msgstr "Copiar esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:101
+#: sagenb/data/sage/html/notebook/base.html:105
 msgid "Copy worksheet"
 msgstr "Copiar hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:102
+#: sagenb/data/sage/html/notebook/base.html:106
 msgid "Move this worksheet to the trash"
 msgstr "Enviar esta hoja a la papelera"
 
-#: sagenb/data/sage/html/notebook/base.html:102
+#: sagenb/data/sage/html/notebook/base.html:106
 msgid "Delete worksheet"
 msgstr "Borrar hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:106
+#: sagenb/data/sage/html/notebook/base.html:110
 msgid "Select a worksheet function"
 msgstr "Seleccionar una función de hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:106
+#: sagenb/data/sage/html/notebook/base.html:110
 msgid "Action..."
 msgstr "Acción..."
 
-#: sagenb/data/sage/html/notebook/base.html:107
+#: sagenb/data/sage/html/notebook/base.html:111
 msgid "Interrupt currently running calculations, if possible"
 msgstr "Interrumpir los cálculos en curso si es posible"
 
-#: sagenb/data/sage/html/notebook/base.html:107
+#: sagenb/data/sage/html/notebook/base.html:111
 msgid "Interrupt"
 msgstr "Interrumpir"
 
-#: sagenb/data/sage/html/notebook/base.html:108
+#: sagenb/data/sage/html/notebook/base.html:112
 msgid "Restart the worksheet process"
 msgstr "Reiniciar el proceso de la hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:108
+#: sagenb/data/sage/html/notebook/base.html:112
 msgid "Restart worksheet"
 msgstr "Reiniciar hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:109
+#: sagenb/data/sage/html/notebook/base.html:113
 msgid "Quit the worksheet process"
 msgstr "Salir del proceso de la hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:109
+#: sagenb/data/sage/html/notebook/base.html:113
 msgid "Save and quit worksheet"
 msgstr "Salir y guardar hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:111
+#: sagenb/data/sage/html/notebook/base.html:115
 msgid "Evaluate all input cells in the worksheet"
 msgstr "Evaluar todas las celdas de entrada de la hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:111
+#: sagenb/data/sage/html/notebook/base.html:115
 msgid "Evaluate All"
 msgstr "Evaluar todo"
 
-#: sagenb/data/sage/html/notebook/base.html:112
+#: sagenb/data/sage/html/notebook/base.html:116
 msgid "Hide all output"
 msgstr "Ocultar todos los resultados"
 
-#: sagenb/data/sage/html/notebook/base.html:112
+#: sagenb/data/sage/html/notebook/base.html:116
 msgid "Hide All Output"
 msgstr "Ocultar Resultados"
 
-#: sagenb/data/sage/html/notebook/base.html:113
+#: sagenb/data/sage/html/notebook/base.html:117
 msgid "Show all output"
 msgstr "Mostrar todos los resultados"
 
-#: sagenb/data/sage/html/notebook/base.html:113
+#: sagenb/data/sage/html/notebook/base.html:117
 msgid "Show All Output"
 msgstr "Mostrar Resultados"
 
-#: sagenb/data/sage/html/notebook/base.html:114
+#: sagenb/data/sage/html/notebook/base.html:118
 msgid "Delete all output"
 msgstr "Borrar todos los resultados"
 
-#: sagenb/data/sage/html/notebook/base.html:114
+#: sagenb/data/sage/html/notebook/base.html:118
 msgid "Delete All Output"
 msgstr "Borrar Resultados"
 
-#: sagenb/data/sage/html/notebook/base.html:116
+#: sagenb/data/sage/html/notebook/base.html:120
 msgid "Switch to single-cell mode"
 msgstr "Cambiar a modo de celda única"
 
-#: sagenb/data/sage/html/notebook/base.html:116
+#: sagenb/data/sage/html/notebook/base.html:120
 msgid "One Cell Mode"
 msgstr "Modo de Celda Única"
 
-#: sagenb/data/sage/html/notebook/base.html:117
+#: sagenb/data/sage/html/notebook/base.html:121
 msgid "Switch to multi-cell mode"
 msgstr "Cambiar a modo multi-celda"
 
-#: sagenb/data/sage/html/notebook/base.html:117
+#: sagenb/data/sage/html/notebook/base.html:121
 msgid "Multi Cell Mode"
 msgstr "Modo Multi-Celda"
 
-#: sagenb/data/sage/html/notebook/base.html:120
+#: sagenb/data/sage/html/notebook/base.html:124
 msgid "Select an attached file"
 msgstr "Seleccionar un archivo adjunto"
 
-#: sagenb/data/sage/html/notebook/base.html:120
+#: sagenb/data/sage/html/notebook/base.html:124
 msgid "Data..."
 msgstr "Datos..."
 
-#: sagenb/data/sage/html/notebook/base.html:121
+#: sagenb/data/sage/html/notebook/base.html:125
 msgid "Upload or create a data file in a wide range of formats"
 msgstr "Subir o crear un archivo de datos en múltiples formatos"
 
-#: sagenb/data/sage/html/notebook/base.html:121
+#: sagenb/data/sage/html/notebook/base.html:125
 msgid "Upload or create file..."
 msgstr "Subir o crear archivo..."
 
-#: sagenb/data/sage/html/notebook/base.html:131
+#: sagenb/data/sage/html/notebook/base.html:135
 #, python-format
 msgid "Evaluate all input cells using %(i)s"
 msgstr "Evaluar todas las celdas de entrada utilizando %(i)s"
 
-#: sagenb/data/sage/html/notebook/base.html:137
+#: sagenb/data/sage/html/notebook/base.html:141
 msgid "Enable/disable pretty_printing"
 msgstr "Activar/desactivar impresión avanzada"
 
+#: sagenb/data/sage/html/notebook/base.html:143
+msgid "Typeset"
+msgstr "Tipografía avanzada"
+
+#: sagenb/data/sage/html/notebook/base.html:144
+msgid "Load 3-D Live. Not recommended for worksheets with > 2 3-D Plots."
+msgstr "Cargar 3-D Live. No se recomienda para hojas con más de 2 gráficas 3-D."
+
+#: sagenb/data/sage/html/notebook/base.html:146
+msgid "Load 3-D Live"
+msgstr "Cargar 3-D Live"
+
+#: sagenb/data/sage/html/notebook/base.html:147
+msgid "Use java for 3-D. Only applies to this running of worksheet."
+msgstr "Usar java para 3-D. Sólo para esta ejecución de la hoja."
+
 #: sagenb/data/sage/html/notebook/base.html:149
+msgid "Use java for 3-D"
+msgstr "Usar java para 3-D"
+
+#: sagenb/data/sage/html/notebook/base.html:159
 msgid "Interactively use this worksheet"
 msgstr "Utilizar esta hoja en modo interactivo"
 
-#: sagenb/data/sage/html/notebook/base.html:149
+#: sagenb/data/sage/html/notebook/base.html:159
 msgid "Worksheet"
 msgstr "Hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:150
+#: sagenb/data/sage/html/notebook/base.html:160
 msgid "Edit text version of this worksheet"
 msgstr "Editar la versión de texto de esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:150
+#: sagenb/data/sage/html/notebook/base.html:160
 msgid "Edit"
 msgstr "Editar"
 
-#: sagenb/data/sage/html/notebook/base.html:151
+#: sagenb/data/sage/html/notebook/base.html:161
 msgid "View plain text version of this worksheet"
 msgstr "Ver la versión en modo texto de esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:151
+#: sagenb/data/sage/html/notebook/base.html:161
 msgid "Text"
 msgstr "Texto"
 
-#: sagenb/data/sage/html/notebook/base.html:152
+#: sagenb/data/sage/html/notebook/base.html:162
 msgid "View changes to this worksheet over time"
 msgstr "Ver historial de cambios de esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:152
+#: sagenb/data/sage/html/notebook/base.html:162
 msgid "Revisions"
 msgstr "Revisiones"
 
-#: sagenb/data/sage/html/notebook/base.html:153
+#: sagenb/data/sage/html/notebook/base.html:163
 msgid "Let others edit this worksheet"
 msgstr "Permitir que otros editen esta hoja"
 
-#: sagenb/data/sage/html/notebook/base.html:153
+#: sagenb/data/sage/html/notebook/base.html:163
 msgid "Share"
 msgstr "Compartir"
 
-#: sagenb/data/sage/html/notebook/base.html:154
+#: sagenb/data/sage/html/notebook/base.html:164
 msgid "Make this worksheet publicly viewable"
 msgstr "Permitir que esta hoja se pueda ver públicamente"
 
-#: sagenb/data/sage/html/notebook/base.html:154
+#: sagenb/data/sage/html/notebook/base.html:164
 msgid "Publish"
 msgstr "Publicar"
 
-#: sagenb/data/sage/html/notebook/base.html:162
+#: sagenb/data/sage/html/notebook/base.html:172
 msgid "Exit"
 msgstr "Salir"
 
@@ -1381,8 +872,8 @@ msgid ""
 "You can publish your worksheet to the Internet, where anyone will be able"
 " to access and view it online."
 msgstr ""
-"Puede publicar su hoja en Internet de modo que cualquiera pueda acceder "
-"a ella y visualizarla remotamente."
+"Puede publicar su hoja en Internet de modo que cualquiera pueda acceder a"
+" ella y visualizarla remotamente."
 
 #: sagenb/data/sage/html/notebook/beforepublish_window.html:7
 msgid ""
@@ -1404,11 +895,23 @@ msgstr "Sí"
 msgid "No"
 msgstr "No"
 
-#: sagenb/data/sage/html/notebook/cell.html:80
-msgid "Click here or press shift-return to evaluate"
-msgstr "Pulsar aquí o teclear shift-return para evaluar"
+#: sagenb/data/sage/html/notebook/cell.html:35
+#: sagenb/data/sage/html/notebook/text_cell.html:19
+#: sagenb/data/sage/html/notebook/worksheet_page.html:21
+msgid "Click to insert new compute cell."
+msgstr "Pulsar para insertar un nueva celda de cálculo."
 
-#: sagenb/data/sage/html/notebook/cell.html:81
+#: sagenb/data/sage/html/notebook/cell.html:39
+#: sagenb/data/sage/html/notebook/text_cell.html:22
+#: sagenb/data/sage/html/notebook/worksheet_page.html:25
+msgid "Click to insert new rich-text cell."
+msgstr "Pulsar para insertar una nueva celda de texto."
+
+#: sagenb/data/sage/html/notebook/cell.html:90
+msgid "Click here or press shift-return to evaluate"
+msgstr "Pulsar aquí o teclear mayúsculas-entrar para evaluar"
+
+#: sagenb/data/sage/html/notebook/cell.html:91
 msgid "evaluate"
 msgstr "evaluar"
 
@@ -1446,8 +949,8 @@ msgid ""
 "uploaded to this worksheet."
 msgstr ""
 "Acceda a %(f)s en esta hoja escribiendo <tt>DATA+'%(f)s'</tt>. Aquí DATA "
-"es una variable especial que proporciona la ruta exacta a todos los archivos "
-"de datos subidos a esta hoja."
+"es una variable especial que proporciona la ruta exacta a todos los "
+"archivos de datos subidos a esta hoja."
 
 #: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:54
 #: sagenb/data/sage/html/notebook/edit_window.html:11
@@ -1536,7 +1039,7 @@ msgstr "(observar que las imágenes no se han guardado)"
 msgid "Publish this one"
 msgstr "Publicar esta"
 
-#: sagenb/data/sage/html/notebook/text_cell.html:49
+#: sagenb/data/sage/html/notebook/text_cell.html:57
 msgid "Cancel changes"
 msgstr "Cancelar cambios"
 
@@ -1544,10 +1047,6 @@ msgstr "Cancelar cambios"
 #, python-format
 msgid "Upload or Create Data File to attach to worksheet \"%(wn)s\""
 msgstr "Subir o Crear Archivo de datos para adjuntar a la hoja \"%(wn)s\""
-
-#: sagenb/data/sage/html/notebook/upload_data_window.html:15
-msgid "Browse your computer to select a file to upload:"
-msgstr "Seleccionar un archivo para subir en su ordenador:"
 
 #: sagenb/data/sage/html/notebook/upload_data_window.html:19
 msgid "Or enter the URL of a file on the web:"
@@ -1557,17 +1056,20 @@ msgstr "O introducir el URL de un archivo en la web:"
 msgid "Or enter the name of a new file, which will be created:"
 msgstr "O introducir el nombre de un archivo nuevo que será creado:"
 
-#: sagenb/data/sage/html/notebook/upload_data_window.html:27
-msgid "What do you want to call it? (if different than the original name)"
-msgstr "¿Cómo quiere llamarlo? (en caso de que sea diferente al nombre original)"
-
 #: sagenb/data/sage/html/notebook/upload_data_window.html:30
 msgid "Upload or Create Data File"
 msgstr "Subir o Crear Archivo de Datos"
 
+#: sagenb/data/sage/html/notebook/worksheet_page.html:40
+#: sagenb/flask_version/worksheet.py:81 sagenb/flask_version/worksheet.py:1029
+#: sagenb/notebook/misc.py:237 sagenb/notebook/worksheet.py:725
+#: sagenb/notebook/worksheet.py:746 sagenb/notebook/worksheet.py:4345
+msgid "Untitled"
+msgstr "Sin título"
+
 #: sagenb/data/sage/html/notebook/worksheet_revision_list.html:6
-msgid "Revision History -- Previous sessions"
-msgstr "Historial de Revisiones -- Sesiones previas"
+msgid "Revision History -- List of Snapshots"
+msgstr "Historial de revisiones -- Lista de sesiones guardadas"
 
 #: sagenb/data/sage/html/notebook/worksheet_revision_list.html:15
 msgid "Revision"
@@ -1582,15 +1084,15 @@ msgstr "Revisión %(lr)s"
 msgid "Share this document"
 msgstr "Compartir este documento"
 
-#: sagenb/data/sage/html/notebook/worksheet_share.html:27
+#: sagenb/data/sage/html/notebook/worksheet_share.html:17
 msgid ""
 "Only the owner of a worksheet is allowed to share it. You can do whatever"
 " you want if you <a href=\"copy\">make your own copy</a>."
 msgstr ""
-"Sólo se permite compartir una hoja a su propietario. Usted podrá hacer lo "
-"que desee si <a href=\"copy\">realiza su propia copia</a>."
+"Sólo se permite compartir una hoja a su propietario. Usted podrá hacer lo"
+" que desee si <a href=\"copy\">realiza su propia copia</a>."
 
-#: sagenb/data/sage/html/notebook/worksheet_share.html:29
+#: sagenb/data/sage/html/notebook/worksheet_share.html:19
 msgid ""
 "This Sage Worksheet is currently shared with the people listed in the box"
 " below."
@@ -1598,33 +1100,17 @@ msgstr ""
 "Se ha compartido la hoja de Sage con los usuarios que figuran en el "
 "recuadro de abajo."
 
-#: sagenb/data/sage/html/notebook/worksheet_share.html:30
+#: sagenb/data/sage/html/notebook/worksheet_share.html:20
 msgid "You may add or remove collaborators (separate user names by commas)."
 msgstr "Puede añadir o eliminar colaboradores (separe los usuarios con comas)"
 
-#: sagenb/data/sage/html/notebook/worksheet_share.html:34
+#: sagenb/data/sage/html/notebook/worksheet_share.html:24
 msgid "Give access to your worksheet to the above collaborators"
 msgstr "Dar acceso a su hoja a los colaboradores anteriores"
 
-#: sagenb/data/sage/html/notebook/worksheet_share.html:34
-msgid "Invite Collaborators"
-msgstr "Invitar a Colaboradores"
-
-#: sagenb/data/sage/html/notebook/worksheet_share.html:40
-msgid "Search results:"
-msgstr "Buscar resultados:"
-
-#: sagenb/data/sage/html/notebook/worksheet_share.html:46
-msgid "sorry, no match found"
-msgstr "lo siento, no se han encontrado coincidencias"
-
-#: sagenb/data/sage/html/notebook/worksheet_share.html:50
-msgid "Search Users"
-msgstr "Buscar usuarios"
-
-#: sagenb/data/sage/html/notebook/worksheet_share.html:60
-msgid "Known Sage Users:"
-msgstr "Usuarios de Sage Conocidos:"
+#: sagenb/data/sage/html/notebook/worksheet_share.html:24
+msgid "Update Collaborators"
+msgstr "Actualizar colaboradores"
 
 #: sagenb/data/sage/html/settings/account_settings.html:3
 #: sagenb/data/sage/html/settings/base.html:13
@@ -1633,7 +1119,7 @@ msgstr "Configurar Cuenta"
 
 #: sagenb/data/sage/html/settings/account_settings.html:13
 msgid "Change Auto-Save Interval"
-msgstr "Cambiar intervalo de auto-guardado"
+msgstr "Cambiar el intervalo de auto-guardado"
 
 #: sagenb/data/sage/html/settings/account_settings.html:15
 msgid "Minutes"
@@ -1641,7 +1127,7 @@ msgstr "Minutos"
 
 #: sagenb/data/sage/html/settings/account_settings.html:25
 msgid "Change Password"
-msgstr "Cambiar Contraseña"
+msgstr "Cambiar la Contraseña"
 
 #: sagenb/data/sage/html/settings/account_settings.html:31
 msgid "Old password"
@@ -1655,36 +1141,28 @@ msgstr "Contraseña Nueva"
 msgid "Retype new password"
 msgstr "Volver a introducir la nueva contraseña"
 
-#: sagenb/data/sage/html/settings/account_settings.html:48
+#: sagenb/data/sage/html/settings/account_settings.html:46
 msgid "Change E-mail Address"
 msgstr "Cambiar la dirección de e-mail"
 
-#: sagenb/data/sage/html/settings/account_settings.html:52
+#: sagenb/data/sage/html/settings/account_settings.html:50
 msgid "Current e-mail"
 msgstr "E-mail actual"
 
-#: sagenb/data/sage/html/settings/account_settings.html:56
+#: sagenb/data/sage/html/settings/account_settings.html:54
 msgid "New e-mail"
 msgstr "Nuevo e-mail"
-
-#: sagenb/data/sage/html/settings/account_settings.html:64
-msgid "Your Email"
-msgstr "Su e-mail"
 
 #: sagenb/data/sage/html/settings/admin_add_user.html:2
 #: sagenb/data/sage/html/settings/admin_add_user.html:6
 msgid "Add New User"
 msgstr "Añadir Usuario Nuevo"
 
-#: sagenb/data/sage/html/settings/admin_add_user.html:8
-msgid "Username Error"
-msgstr "Error de Usuario"
-
-#: sagenb/data/sage/html/settings/admin_add_user.html:12
+#: sagenb/data/sage/html/settings/admin_add_user.html:9
 msgid "Pick a username"
 msgstr "Elija un usuario"
 
-#: sagenb/data/sage/html/settings/admin_add_user.html:13
+#: sagenb/data/sage/html/settings/admin_add_user.html:10
 msgid ""
 "The username must start with a letter and be between 4 and 32 characters "
 "long. It can only consist of letters, numbers, underscores, and one dot "
@@ -1692,15 +1170,20 @@ msgid ""
 msgstr ""
 "El usuario debe comenzar por una letra y tener entre 4 y 32 caracteres. "
 "Sólo puede contener letras, números, guiones bajos y un punto."
-#: sagenb/data/sage/html/settings/admin_add_user.html:17
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:14
 msgid "Invalid username"
 msgstr "Usuario no válido"
 
-#: sagenb/data/sage/html/settings/admin_add_user.html:19
+#: sagenb/data/sage/html/settings/admin_add_user.html:16
 msgid "Username taken"
 msgstr "Usuario en uso"
 
-#: sagenb/data/sage/html/settings/admin_add_user.html:25
+#: sagenb/data/sage/html/settings/admin_add_user.html:18
+msgid "Username Error"
+msgstr "Error de Usuario"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:24
 msgid "Create Account"
 msgstr "Crear Cuenta"
 
@@ -1714,7 +1197,6 @@ msgid "Notebook Settings"
 msgstr "Configuración del Notebook"
 
 #: sagenb/data/sage/html/settings/user_management.html:3
-#: sagenb/data/sage/html/settings/user_management.html:13
 msgid "Users"
 msgstr "Usuarios"
 
@@ -1729,23 +1211,207 @@ msgstr "Añadir Usuario"
 #: sagenb/data/sage/html/settings/user_management.html:10
 #, python-format
 msgid "The password for the user %(u)s has been reset to <strong>%(p)s</strong>"
-msgstr "La contraseña para el usuario %(u)s se ha reiniciado a <strong>%(p)s</strong>"
+msgstr ""
+"La contraseña para el usuario %(u)s se ha reiniciado a "
+"<strong>%(p)s</strong>"
 
-#: sagenb/data/sage/html/settings/user_management.html:13
+#: sagenb/data/sage/html/settings/user_management.html:14
+#: sagenb/data/sage/html/worksheet/ratings_info.html:9
+msgid "User"
+msgstr "Usuario"
+
+#: sagenb/data/sage/html/settings/user_management.html:16
 msgid "Suspension"
 msgstr "Suspensión"
 
-#: sagenb/data/sage/html/settings/user_management.html:16
+#: sagenb/data/sage/html/settings/user_management.html:17
+msgid "Admin"
+msgstr "Admin"
+
+#: sagenb/data/sage/html/settings/user_management.html:26
 msgid "Reset"
 msgstr "Reiniciar"
 
-#: sagenb/data/sage/html/settings/user_management.html:16
+#: sagenb/data/sage/html/settings/user_management.html:29
 msgid "Unsuspend"
 msgstr "Restablecer"
 
-#: sagenb/data/sage/html/settings/user_management.html:16
+#: sagenb/data/sage/html/settings/user_management.html:29
 msgid "Suspend"
 msgstr "Suspender"
+
+#: sagenb/data/sage/html/settings/user_management.html:30
+msgid "Revoke"
+msgstr "Revocar"
+
+#: sagenb/data/sage/html/settings/user_management.html:30
+msgid "Grant"
+msgstr "Permitir"
+
+#: sagenb/data/sage/html/source_code.html:3 sagenb/notebook/tutorial.py:358
+msgid "Source Code"
+msgstr "Código Fuente"
+
+#: sagenb/data/sage/html/source_code.html:13
+msgid "Sage Source Browser"
+msgstr "Visualizador de Fuentes de Sage"
+
+#: sagenb/data/sage/html/source_code.html:14
+msgid "browse directory"
+msgstr "Ver directorio"
+
+#: sagenb/data/sage/html/test_report.html:79
+msgid "Sage Notebook version"
+msgstr "Versión del Notebook Sage"
+
+#: sagenb/data/sage/html/test_report.html:85
+msgid "Sage version"
+msgstr "Versión de Sage"
+
+#: sagenb/data/sage/html/test_report.html:91
+msgid "Environment"
+msgstr "Entorno"
+
+#: sagenb/data/sage/html/test_report.html:96
+msgid "Start"
+msgstr "Iniciar"
+
+#: sagenb/data/sage/html/test_report.html:100
+#: sagenb/data/sage/html/worksheet_listing.html:77
+msgid "Stop"
+msgstr "Parar"
+
+#: sagenb/data/sage/html/test_report.html:104
+msgid "Elapsed"
+msgstr "Transcurrido"
+
+#: sagenb/data/sage/html/test_report.html:108
+msgid "Status"
+msgstr "Estado"
+
+#: sagenb/data/sage/html/test_report.html:110
+#: sagenb/data/sage/html/test_report.html:129
+msgid "Pass"
+msgstr "Pasa"
+
+#: sagenb/data/sage/html/test_report.html:111
+#: sagenb/data/sage/html/test_report.html:130
+msgid "Fail"
+msgstr "Fallo"
+
+#: sagenb/data/sage/html/test_report.html:113
+msgid "Total"
+msgstr "Total"
+
+#: sagenb/data/sage/html/test_report.html:121
+msgid "Hide"
+msgstr "Ocultar"
+
+#: sagenb/data/sage/html/test_report.html:122
+msgid "Show"
+msgstr "Mostrar"
+
+#: sagenb/data/sage/html/test_report.html:128
+msgid "Cases / Tests"
+msgstr "Casos / Tests"
+
+#: sagenb/data/sage/html/test_report.html:132
+msgid "Count"
+msgstr "Contador"
+
+#: sagenb/data/sage/html/test_report.html:141
+msgid "Totals"
+msgstr "Total"
+
+#: sagenb/data/sage/html/upload.html:3
+msgid "Upload File"
+msgstr "Subir fichero"
+
+#: sagenb/data/sage/html/upload.html:11 sagenb/data/sage/html/upload.html:27
+msgid "Upload worksheet to the Sage Notebook"
+msgstr "Subir una hoja al Notebook Sage"
+
+#: sagenb/data/sage/html/upload.html:15
+msgid "URL of file on web"
+msgstr "URL de un archivo de la web"
+
+#: sagenb/data/sage/html/upload.html:19 sagenb/data/sage/html/upload.html:48
+#: sagenb/data/sage/html/notebook/upload_data_window.html:27
+msgid "What do you want to call it? (if different than the original name)"
+msgstr "¿Cómo quiere llamarlo? (en caso de que sea diferente al nombre original)"
+
+#: sagenb/data/sage/html/upload.html:22 sagenb/data/sage/html/upload.html:51
+msgid "Upload Worksheet"
+msgstr "Subir Hoja"
+
+#: sagenb/data/sage/html/upload.html:28
+msgid "Supported file formats:"
+msgstr "Formatos de archivo soportados"
+
+#: sagenb/data/sage/html/upload.html:30
+msgid "a Sage worksheet"
+msgstr "una hoja Sage"
+
+#: sagenb/data/sage/html/upload.html:31
+msgid ""
+"or <tt>.txt</tt> - a worksheet text file with html code and cells "
+"surrounded by <tt>&#123;&#123;&#123;</tt> and <tt>&#125;&#125;&#125;</tt>"
+" that defines a worksheet"
+msgstr ""
+"o <tt>.txt</tt> - una hoja en un archivo de texto con html y celdas entre"
+" <tt>&#123;&#123;&#123;</tt> y <tt>&#125;&#125;&#125;</tt> que definan "
+"una hoja"
+
+#: sagenb/data/sage/html/upload.html:32
+msgid ""
+"the URL of a page of the Sage Documentation, for example the URL of <a "
+"class=\"reference external\" "
+"href=\"http://www.sagemath.org/doc/reference/sage/rings/integer.html\">this"
+" page</a>"
+msgstr ""
+"el URL de una página de Documentación de Sage, por ejemplo el URL de <a "
+"class=\"reference external\" "
+"href=\"http://www.sagemath.org/doc/reference/sage/rings/integer.html\">esta"
+" página</a>"
+
+#: sagenb/data/sage/html/upload.html:33
+msgid "an HTML page generated by docutils from a ReStructuredText file"
+msgstr ""
+"una página HTML generada por docutils a partir de un archivo en formato "
+"ReStructuredText"
+
+#: sagenb/data/sage/html/upload.html:34
+msgid ""
+"a ReStructuredText file (Add \"<tt>.. escape-backslashes</tt>\" as a line"
+" in the file if you want backslashes to be escaped. Put latex code inside"
+" backticks \"<tt>`</tt>\" or dollar signs \"<tt>$</tt>\" or "
+"\"<tt>$$</tt>\". Math role is not supported for now.)"
+msgstr ""
+"un archivo en formato ReStructuredText (Añadir \"<tt>.. escape-"
+"backslashes</tt>\" al archivo para que \"\\\" sea un carácter de escape. "
+"Poner el código de latex entre acentos graves \"<tt>`</tt>\" o dólares "
+"\"<tt>$</tt>\" o \"<tt>$$</tt>\". El modo matemático no esta soportado "
+"por ahora.)"
+
+#: sagenb/data/sage/html/upload.html:35
+msgid "a zip archive of any of the above"
+msgstr "un archivo zip de cualquiera de los anteriores"
+
+#: sagenb/data/sage/html/upload.html:40
+#: sagenb/data/sage/html/notebook/upload_data_window.html:15
+msgid "Browse your computer to select a file to upload:"
+msgstr "Seleccionar un archivo para subir en su ordenador:"
+
+#: sagenb/data/sage/html/upload.html:44
+msgid ""
+"Or enter the URL of a file on the web. This can be a direct link to any "
+"of the above kinds of files, or the URL of any HTML page that supports "
+"\"linked worksheet autodiscovery\"."
+msgstr ""
+"O introducir el URL de un archivo de la web. Puede ser un enlace directo "
+"a cualquiera de las clases anteriores de archivos, o el URL de cualquier "
+"página HTML que soporte la característica \"linked worksheet "
+"autodiscovery\"."
 
 #: sagenb/data/sage/html/worksheet/ratings_info.html:3
 #: sagenb/data/sage/html/worksheet/ratings_info.html:6
@@ -1758,10 +1424,6 @@ msgid "Go to the worksheet."
 msgstr "Ir a la hoja"
 
 #: sagenb/data/sage/html/worksheet/ratings_info.html:9
-msgid "User"
-msgstr "Usuario"
-
-#: sagenb/data/sage/html/worksheet/ratings_info.html:9
 msgid "Comment"
 msgstr "Comentario"
 
@@ -1771,16 +1433,169 @@ msgid "%(t)s by %(le)s"
 msgstr "%(t)s por %(le)s"
 
 #: sagenb/data/sage/html/worksheet/time_since_last_edited.html:6
-#: sagenb/notebook/worksheet.py:2010
+#: sagenb/notebook/worksheet.py:2125
 #, python-format
 msgid "%(t)s ago by %(le)s"
 msgstr "hace %(t)s por %(le)s"
 
-#: sagenb/data/sage/js/translated-messages.js:4
-msgid "Click to download and install tex fonts."
-msgstr "Pulsar para descargar e instalar fuentes de tex"
+#: sagenb/data/sage/html/worksheet_listing.html:10
+msgid "Published Worksheets"
+msgstr "Hojas Publicadas"
 
-#: sagenb/data/sage/js/translated-messages.js:5
+#: sagenb/data/sage/html/worksheet_listing.html:12
+msgid "Deleted Worksheets"
+msgstr "Hojas Eliminadas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:14
+msgid "Active Worksheets"
+msgstr "Hojas activas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:16
+msgid "Archived Worksheets"
+msgstr "Hojas Archivadas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:45
+#: sagenb/data/sage/html/notebook/base.html:75
+msgid "Account is read only.  You may download or delete worksheets or data."
+msgstr "La cuenta es de sólo lectura. Se pueden descargar o borrar hojas o datos."
+
+#: sagenb/data/sage/html/worksheet_listing.html:49
+msgid "New Worksheet"
+msgstr "Hoja Nueva"
+
+#: sagenb/data/sage/html/worksheet_listing.html:50
+msgid "Upload"
+msgstr "Subir"
+
+#: sagenb/data/sage/html/worksheet_listing.html:51
+msgid "Download All Active"
+msgstr "Descargar activas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:58
+msgid "Search Worksheets"
+msgstr "Buscar hojas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:66
+msgid "Unarchive selected worksheets so it appears in the default worksheet list"
+msgstr ""
+"Des-archivar las hojas seleccionadas para que aparezcan en la lista "
+"normal de hojas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:66
+msgid "Unarchive"
+msgstr "Des-archivar"
+
+#: sagenb/data/sage/html/worksheet_listing.html:68
+msgid ""
+"Archive selected worksheets so they do not appear in the default "
+"worksheet list"
+msgstr ""
+"Archivar hojas seleccionadas para que no aparezcan en la lista normal de "
+"hojas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:68
+msgid "Archive"
+msgstr "Archivar"
+
+#: sagenb/data/sage/html/worksheet_listing.html:72
+msgid "Move the selected worksheets to the trash"
+msgstr "Enviar las hojas seleccionadas a la papelera"
+
+#: sagenb/data/sage/html/worksheet_listing.html:72
+#: sagenb/data/sage/html/settings/user_management.html:18
+#: sagenb/data/sage/html/settings/user_management.html:31
+msgid "Delete"
+msgstr "Borrar"
+
+#: sagenb/data/sage/html/worksheet_listing.html:74
+msgid "Move the selected worksheets out of the trash"
+msgstr "Sacar las hojas seleccionadas de la papelera"
+
+#: sagenb/data/sage/html/worksheet_listing.html:74
+msgid "Undelete"
+msgstr "Recuperar"
+
+#: sagenb/data/sage/html/worksheet_listing.html:77
+msgid "Stop selected worksheets"
+msgstr "Parar las hojas seleccionadas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:78
+msgid "Download selected worksheets"
+msgstr "Descargar las hojas seleccionadas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:78
+msgid "Download"
+msgstr "Descargar"
+
+#: sagenb/data/sage/html/worksheet_listing.html:81
+msgid "Current Folder"
+msgstr "Carpeta actual"
+
+#: sagenb/data/sage/html/worksheet_listing.html:82
+msgid "Active"
+msgstr "Activas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:83
+msgid "Archived"
+msgstr "Archivadas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:84
+msgid "Trash"
+msgstr "Papelera"
+
+#: sagenb/data/sage/html/worksheet_listing.html:88
+msgid "Empty Trash"
+msgstr "Vaciar Papelera"
+
+#: sagenb/data/sage/html/worksheet_listing.html:103
+#: sagenb/data/sage/html/worksheet/ratings_info.html:9
+msgid "Rating"
+msgstr "Puntuación"
+
+#: sagenb/data/sage/html/worksheet_listing.html:114
+msgid "Owner"
+msgstr "Propietario"
+
+#: sagenb/data/sage/html/worksheet_listing.html:114
+msgid "Collaborators"
+msgstr "Colaboradores"
+
+#: sagenb/data/sage/html/worksheet_listing.html:120
+#: sagenb/data/sage/html/notebook/worksheet_revision_list.html:16
+msgid "Last Edited"
+msgstr "Editada"
+
+#: sagenb/data/sage/html/worksheet_listing.html:130
+msgid "There are no published worksheets."
+msgstr "No hay hojas publicadas"
+
+#: sagenb/data/sage/html/worksheet_listing.html:136
+msgid ""
+"Welcome to Sage! You can <a href=\"/new_worksheet\">create a new "
+"worksheet</a>, view <a href=\"/pub/\">published worksheets</a>, or read "
+"the <a href=\"/help\" target=\"_new\">documentation</a>."
+msgstr ""
+"¡Bienvenido a Sage! Puede <a href=\"/new_worksheet\">crear una hoja "
+"nueva</a>, ver las <a href=\"/pub/\">hojas publicadas</a>, o leer la <a "
+"href=\"/help\" target=\"_new\">documentación</a>."
+
+#: sagenb/data/sage/html/worksheet_listing.html:178
+msgid "running"
+msgstr "ejecutando"
+
+#: sagenb/data/sage/html/worksheet_listing.html:211
+msgid "Add or Delete"
+msgstr "Añadir o Borrar"
+
+#: sagenb/data/sage/html/worksheet_listing.html:213
+msgid "Share now"
+msgstr "Compartir"
+
+#: sagenb/data/sage/html/worksheet_listing.html:218
+msgid "published"
+msgstr "publicadas"
+
+#: sagenb/data/sage/js/localization.js:9
 msgid ""
 "Your browser / OS combination is not supported.\\nPlease use Firefox or "
 "Opera under Linux, Windows, or Mac OS X, or Safari."
@@ -1788,49 +1603,49 @@ msgstr ""
 "Su combinación navegador / OS no está soportada.\\nPor favor, utilice "
 "Firefox u Opera bajo Linux, Windows o Mac OS X, o Safari."
 
-#: sagenb/data/sage/js/translated-messages.js:6
+#: sagenb/data/sage/js/localization.js:10
 msgid "Java Applet Hidden"
 msgstr "Applet Java Oculta"
 
-#: sagenb/data/sage/js/translated-messages.js:7
+#: sagenb/data/sage/js/localization.js:11
 msgid "Click here to pop out"
 msgstr "Pulsar aquí para activar"
 
-#: sagenb/data/sage/js/translated-messages.js:8
+#: sagenb/data/sage/js/localization.js:12
 msgid "Error applying function to worksheet(s)."
 msgstr "Error al aplicar función a la hoja(s)"
 
-#: sagenb/data/sage/js/translated-messages.js:9
+#: sagenb/data/sage/js/localization.js:13
 msgid "Title of saved worksheet"
 msgstr "Título de la hojas guardadas"
 
-#: sagenb/data/sage/js/translated-messages.js:10
+#: sagenb/data/sage/js/localization.js:14
 msgid "Failed to save worksheet."
 msgstr "Fallo al guardar la hoja."
 
-#: sagenb/data/sage/js/translated-messages.js:12
+#: sagenb/data/sage/js/localization.js:16
 msgid "Please enter a name for this worksheet."
 msgstr "Por favor, introduzca un nombre para esta hoja."
 
-#: sagenb/data/sage/js/translated-messages.js:13
+#: sagenb/data/sage/js/localization.js:17
 msgid "Rename"
 msgstr "Renombrar"
 
-#: sagenb/data/sage/js/translated-messages.js:14
+#: sagenb/data/sage/js/localization.js:18
 msgid "Possible failure deleting worksheet."
 msgstr "Posible fallo al borrar la hoja."
 
-#: sagenb/data/sage/js/translated-messages.js:15
+#: sagenb/data/sage/js/localization.js:19
 msgid "unprinted"
 msgstr "no impresa"
 
-#: sagenb/data/sage/js/translated-messages.js:16
+#: sagenb/data/sage/js/localization.js:20
 msgid ""
 "You requested to evaluate a cell that, for some reason, the server is "
 "unaware of."
 msgstr "El servidor no puede evaluar la celda solicitada por alguna razón"
 
-#: sagenb/data/sage/js/translated-messages.js:18
+#: sagenb/data/sage/js/localization.js:22
 msgid ""
 "This worksheet is read only. Please make a copy or contact the owner to "
 "change it."
@@ -1838,76 +1653,451 @@ msgstr ""
 "Esta hoja es de sólo lectura. Por favor haga una copia o contacte con el "
 "propietario para cambiarlo."
 
-#: sagenb/data/sage/js/translated-messages.js:19
+#: sagenb/data/sage/js/localization.js:23
 msgid "loading..."
 msgstr "cargando..."
 
-#: sagenb/data/sage/js/translated-messages.js:20
+#: sagenb/data/sage/js/localization.js:24
 msgid "Error updating cell output after "
 msgstr "Error al actualizar el resultado de la celda después de "
 
-#: sagenb/data/sage/js/translated-messages.js:21
+#: sagenb/data/sage/js/localization.js:25
 msgid "s (canceling further update checks)."
 msgstr "s (cancelando comprobaciones de actualización posteriores)."
 
-#: sagenb/data/sage/js/translated-messages.js:22
+#: sagenb/data/sage/js/localization.js:26
 msgid "Problem inserting new input cell after current input cell.\\n"
-msgstr "Problema al insertar una celda de entrada nueva después de la celda de entrada actual.\\n"
+msgstr ""
+"Problema al insertar una celda de entrada nueva después de la celda de "
+"entrada actual.\\n"
 
-#: sagenb/data/sage/js/translated-messages.js:23
+#: sagenb/data/sage/js/localization.js:27
+msgid "Problem inserting new input cell before current input cell.\\n"
+msgstr ""
+"Problema al insertar una celda de entrada nueva antes de la celda de "
+"entrada actual.\\n"
+
+#: sagenb/data/sage/js/localization.js:28
+msgid "Problem inserting new text cell before current input cell."
+msgstr ""
+"Problema al insertar una celda de texto nueva antes de la celda de "
+"entrada actual."
+
+#: sagenb/data/sage/js/localization.js:29
+msgid "Problem inserting new text cell before current input cell.\\n"
+msgstr ""
+"Problema al insertar una celda de texto nueva antes de la celda de "
+"entrada actual.\\n"
+
+#: sagenb/data/sage/js/localization.js:30
 msgid "Worksheet is locked. Cannot insert cells."
 msgstr "La hoja está bloqueada. No se pueden insertar celdas"
 
-#: sagenb/data/sage/js/translated-messages.js:24
+#: sagenb/data/sage/js/localization.js:31
 msgid "Unable to interrupt calculation."
 msgstr "Imposible interrumpir cálculo."
 
-#: sagenb/data/sage/js/translated-messages.js:25
+#: sagenb/data/sage/js/localization.js:32
 msgid "Close this box to stop trying."
 msgstr "Cerrar este cuadro para dejar de intentarlo."
 
-#: sagenb/data/sage/js/translated-messages.js:26
+#: sagenb/data/sage/js/localization.js:33
 msgid "Interrupt attempt"
 msgstr "Intento de interrupción"
 
-#: sagenb/data/sage/js/translated-messages.js:27
+#: sagenb/data/sage/js/localization.js:34
 msgid "<a href='javascript:restart_sage();'>Restart</a>, instead?"
 msgstr "<a href='javascript:restart_sage();'>¿Reiniciar</a>, si no?"
 
-#: sagenb/data/sage/js/translated-messages.js:28
+#: sagenb/data/sage/js/localization.js:35
 msgid ""
 "Emptying the trash will permanently delete all items in the trash. "
 "Continue?"
-msgstr ""
-"Vaciar la papelera borrará permanente sus elementos. ¿Continuar?"
-#: sagenb/data/sage/js/translated-messages.js:29
+msgstr "Vaciar la papelera borrará permanente sus elementos. ¿Continuar?"
+
+#: sagenb/data/sage/js/localization.js:36
 msgid "Get Image"
 msgstr "Obtener Imagen"
 
-#: sagenb/data/sage/js/translated-messages.js:30
+#: sagenb/data/sage/js/localization.js:37
 msgid "Jmol Image"
 msgstr "Imagen Jmol"
 
-#: sagenb/data/sage/js/translated-messages.js:31
+#: sagenb/data/sage/js/localization.js:38
 msgid ""
 "To save this image, you can try right-clicking on the image to copy it or"
 " save it to a file, or you may be able to just drag the image to your "
 "desktop."
 msgstr ""
-"Para guardar esta imagen, puede intentar pulsar el botón derecho sobre ella "
-"y copiarla o guardarla en un archivo, o puede intentar arrastrar la imagen "
-"a su escritorio."
+"Para guardar esta imagen, puede intentar pulsar el botón derecho sobre "
+"ella y copiarla o guardarla en un archivo, o puede intentar arrastrar la "
+"imagen a su escritorio."
 
-#: sagenb/data/sage/js/translated-messages.js:32
+#: sagenb/data/sage/js/localization.js:39
 msgid "Sorry, but you need a browser that supports the &lt;canvas&gt; tag."
 msgstr "Lo siento, pero necesita un navegador que soporte &lt;canvas&gt;"
 
-#: sagenb/data/sage/js/translated-messages.js:33
+#: sagenb/data/sage/js/localization.js:43
 #, python-format
 msgid "Trying again in %(num)d second..."
 msgid_plural "Trying again in %(num)d seconds..."
-msgstr[0] "Se intentará de de nuevo en %(num)d segundo..."
-msgstr[1] "Se intentará de de nuevo en %(num)d segundos..."
+msgstr[0] "Se intentará de nuevo en %(num)d segundo..."
+msgstr[1] "Se intentará de nuevo en %(num)d segundos..."
+
+#: sagenb/flask_version/admin.py:98
+#, python-format
+msgid ""
+"The temporary password for the new user <em>%(username)s</em> is "
+"<em>%(password)s</em>"
+msgstr ""
+"La contraseña provisional para el nuevo usuario <em>%(username)s</em> es "
+"<em>%(password)s</em>"
+
+#: sagenb/flask_version/admin.py:100
+msgid "New User"
+msgstr "Nuevo usuario"
+
+#: sagenb/flask_version/authentication.py:36
+msgid ""
+"Please enable cookies or delete all Sage cookies and localhost cookies in"
+" your browser and try again."
+msgstr ""
+"Por favor, active las cookies o borre todas las cookies de Sage y de "
+"localhost de su navegador e inténtelo de nuevo"
+
+#: sagenb/flask_version/authentication.py:63
+msgid "Your account is currently suspended"
+msgstr "Su cuenta se encuentra suspendida actualmente"
+
+#: sagenb/flask_version/authentication.py:239
+msgid "Sage Notebook Registration"
+msgstr "Registro en el Notebook de Sage"
+
+#: sagenb/flask_version/authentication.py:258
+msgid "The confirmation system is not active."
+msgstr "El sistema de confirmación está desactivado"
+
+#: sagenb/flask_version/authentication.py:261
+msgid ""
+"    <h1>Invalid confirmation key</h1>\n"
+"    <p>You are reporting a confirmation key that has not been assigned by"
+" this\n"
+"    server. Please <a href=\"/register\">register</a> with the "
+"server.</p>\n"
+"    "
+msgstr ""
+"    <h1>Contraseña de confirmación inválida</h1>\n"
+"    <p>Usted ha proporcionado una contraseña de confirmación no asignada "
+"por este\n"
+"    servidor. Por favor <a href=\"/register\">regístrese</a> en el "
+"servidor.</p>\n"
+"    "
+
+#: sagenb/flask_version/authentication.py:272
+#, python-format
+msgid "<h1>Email address confirmed for user %(username)s</h1>"
+msgstr "<h1>Dirección de e-mail confirmada para el usuario %(username)s</h1>"
+
+#: sagenb/flask_version/authentication.py:274
+msgid "Email Confirmed"
+msgstr "E-mail confirmado"
+
+#: sagenb/flask_version/authentication.py:280
+msgid "The account recovery system is not active."
+msgstr "El sistema de recuperación de cuentas no está activo."
+
+#: sagenb/flask_version/authentication.py:292
+msgid "Username is invalid."
+msgstr "El nombre de usuario no es válido."
+
+#: sagenb/flask_version/authentication.py:295
+msgid "The e-mail address hasn't been confirmed."
+msgstr "No se ha confirmado la dirección de e-mail."
+
+#: sagenb/flask_version/authentication.py:315
+msgid "Sage Notebook Account Recovery"
+msgstr "Recuperación de cuentas del Notebook de Sage"
+
+#: sagenb/flask_version/authentication.py:318
+#, python-format
+msgid "The new password couldn't be sent to %(dest)s."
+msgstr "No se ha podido enviar la nueva contraseña a %(dest)s."
+
+#: sagenb/flask_version/authentication.py:322
+msgid "A new password has been sent to your e-mail address."
+msgstr "Se ha enviado una nueva contraseña a su dirección de e-mail."
+
+#: sagenb/flask_version/base.py:471
+msgid ""
+"500: Internal server error.\n"
+"            An e-mail has been sent to the administrator(s)."
+msgstr ""
+"500: Error interno del servidor.\n"
+"            Se ha enviado un e-mail al administrador."
+
+#: sagenb/flask_version/decorators.py:30
+msgid "You do not have permission to access this location"
+msgstr "Usted no está autorizado para acceder a esta página"
+
+#: sagenb/flask_version/doc.py:41
+msgid "nothing to see."
+msgstr "nada que mostrar"
+
+#: sagenb/flask_version/settings.py:33
+msgid "Old password not given"
+msgstr "No se ha introducido la contraseña antigua"
+
+#: sagenb/flask_version/settings.py:35
+msgid "Incorrect password given"
+msgstr "Se ha introducido una contraseña incorrecta"
+
+#: sagenb/flask_version/settings.py:37
+msgid "New password not given"
+msgstr "No se ha introducido la nueva contraseña"
+
+#: sagenb/flask_version/settings.py:39
+msgid ""
+"Password not acceptable. Must be 4 to 32 characters and not contain "
+"spaces or username."
+msgstr ""
+"Su contraseña no es aceptable. Debe tener al menos 4 caracteres y no debe "
+"contener espacios ni su nombre de usuario."
+
+#: sagenb/flask_version/settings.py:41
+msgid "Please type in new password again."
+msgstr "Vuelva a introducir la nueva contraseña, por favor"
+
+#: sagenb/flask_version/settings.py:43
+msgid "The passwords you entered do not match."
+msgstr "Las contraseñas introducidas no coinciden"
+
+#: sagenb/flask_version/settings.py:59
+msgid "Invalid e-mail address."
+msgstr "La dirección de e-mail no es válida."
+
+#: sagenb/flask_version/settings.py:80
+msgid "Confirmed"
+msgstr "Confirmado"
+
+#: sagenb/flask_version/settings.py:82
+msgid "Not confirmed"
+msgstr "No confirmado"
+
+#: sagenb/flask_version/worksheet.py:30 sagenb/flask_version/worksheet.py:39
+#: sagenb/flask_version/worksheet_listing.py:174
+#: sagenb/flask_version/worksheet_listing.py:183
+msgid "You do not have permission to access this worksheet"
+msgstr "Usted no está autorizado para acceder a esta hoja"
+
+#: sagenb/flask_version/worksheet.py:79 sagenb/flask_version/worksheet.py:129
+#: sagenb/flask_version/worksheet_listing.py:240
+#: sagenb/flask_version/worksheet_listing.py:340
+msgid "Account is in read-only mode"
+msgstr "La cuenta está en modo de sólo lectura"
+
+#: sagenb/flask_version/worksheet.py:587
+msgid "Error: can't add more than 500 collaborators at a time"
+msgstr "Error: No se pueden añadir más de 500 colaboradores a la vez"
+
+#: sagenb/flask_version/worksheet.py:685
+msgid "Invalid JSmol encoding: "
+msgstr "Codificación JSmol inválida: "
+
+#: sagenb/flask_version/worksheet.py:695
+msgid "Invalid JSmol query: "
+msgstr "Petición JSmol inválida: "
+
+#: sagenb/flask_version/worksheet.py:706
+msgid "Invalid JSmol request: "
+msgstr "Petición JSmol inválida: "
+
+#: sagenb/flask_version/worksheet.py:734
+msgid "No data files"
+msgstr "No hay archivos de datos"
+
+#: sagenb/flask_version/worksheet.py:748
+#, python-format
+msgid "Successfully deleted '%(filename)s'"
+msgstr "'%(filename)s' Se ha borrado con éxito"
+
+#: sagenb/flask_version/worksheet.py:775
+msgid "illegal link attempt!"
+msgstr "Intento no permitido de enlace"
+
+#: sagenb/flask_version/worksheet.py:777
+msgid ""
+"The data filename already exists in other worksheet\n"
+"Delete the file in the other worksheet before creating a link."
+msgstr ""
+"El nombre del archivo de datos ya existe en otra hoja\n"
+"Borre el archivo en la otra hoja antes de crear el enlace."
+
+#: sagenb/flask_version/worksheet.py:791
+#, python-format
+msgid ""
+" Return to <a href=\"%(upload_url)s\" title=\"Upload or create a data "
+"file in a wide range of formats\"><strong>Upload or Create Data "
+"File</strong></a> or <a href=\"%(worksheet_url)s\" title=\"Interactively "
+"use the worksheet\"><strong>%(worksheet_name)s</strong></a>."
+msgstr ""
+" Vuelva a <a href=\"%(upload_url)s\" title=\"Subir o crear un archivo de "
+"datos en una amplia variedad de formatos\"><strong>Subir o Crear Archivo "
+"de Datos</strong></a> o <a href=\"%(worksheet_url)s\" title=\"Utilizar la"
+" hoja en modo interactivo \"><strong>%(worksheet_name)s</strong></a>."
+
+#: sagenb/flask_version/worksheet.py:795
+#, python-format
+msgid "Error uploading file (missing field \"file\"). %(backlinks)s"
+msgstr "Error subiendo archivo (falta el campo \"archivo\"). %(backlinks)s"
+
+#: sagenb/flask_version/worksheet.py:802
+#, python-format
+msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
+msgstr "Error subiendo archivo (falta el argumento de %(field)s).%(backlinks)s"
+
+#: sagenb/flask_version/worksheet.py:815
+#, python-format
+msgid "Error uploading file (missing filename).%(backlinks)s"
+msgstr "Error subiendo archivo (falta el nombre del archivo).%(backlinks)s"
+
+#: sagenb/flask_version/worksheet.py:823
+#, python-format
+msgid "URL must start with http, https, or ftp.%(backlinks)s"
+msgstr "El URL debe comenzar con http, https, o ftp.%(backlinks)s"
+
+#: sagenb/flask_version/worksheet.py:830
+#, python-format
+msgid ""
+"Suspicious filename \"%(filename)s\" encountered uploading "
+"file.%(backlinks)s"
+msgstr ""
+"Se ha encontrado un nombre de archivo \"%(filename)s\" sospechoso "
+"subiendo archivo.%(backlinks)s"
+
+#: sagenb/flask_version/worksheet.py:920
+msgid "Gees -- You can't fool the rating system that easily!"
+msgstr "¡No se puede engañar tan fácilmente al sistema de puntuación!"
+
+#: sagenb/flask_version/worksheet.py:928
+#, python-format
+msgid ""
+"\n"
+"    Thank you for rating the worksheet <b><i>%(worksheet_name)s</i></b>!\n"
+"    You can <a href=\"rating_info\">see all ratings of this "
+"worksheet.</a>\n"
+"    "
+msgstr ""
+"\n"
+"    Gracias por puntuar la hoja <b><i>%(worksheet_name)s</i></b>!\n"
+"    Puede <a href=\"rating_info\">ver todas las puntuaciones de esta "
+"hoja.</a>\n"
+"    "
+
+#: sagenb/flask_version/worksheet.py:930
+msgid "Rating Accepted"
+msgstr "Puntuación aceptada"
+
+#: sagenb/flask_version/worksheet.py:952
+msgid "No such worksheet."
+msgstr "No existe la hoja."
+
+#: sagenb/flask_version/worksheet.py:1037
+msgid "Document does not exist."
+msgstr "No existe el documento."
+
+#: sagenb/flask_version/worksheet_listing.py:50
+msgid "Error displaying worksheet listing."
+msgstr "Error al mostrar la lista de hojas"
+
+#: sagenb/flask_version/worksheet_listing.py:65
+#, python-format
+msgid ""
+"User '%(user)s' does not have permission to view the home page of "
+"'%(name)s'."
+msgstr ""
+"El usuario '%(user)s' no tiene permiso para ver la página personal de "
+"'%(name)s'."
+
+#: sagenb/flask_version/worksheet_listing.py:155
+msgid "Requested public worksheet does not exist"
+msgstr "La hoja pública requerida no existe"
+
+#: sagenb/flask_version/worksheet_listing.py:277
+#, python-format
+msgid ""
+"This Sage notebook is not configured to load worksheets from 'https' "
+"URLs. Try a different URL or download the worksheet and upload it "
+"directly from your computer.\n"
+"%(backlinks)s"
+msgstr ""
+"Este notebook Sage no está configurado para recuperar hojas desde URLs "
+"'https'. Pruebe con un URL diferente, o descargue la hoja y súbala "
+"directamente desde su ordenador.\n"
+"%(backlinks)s"
+
+#: sagenb/flask_version/worksheet_listing.py:342
+msgid ""
+"Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload"
+" File</strong></a>."
+msgstr ""
+"Vuelva a <a href=\"/upload\" title=\"Bajar una hoja\"><strong>Subir "
+"Archivo</strong></a>."
+
+#: sagenb/flask_version/worksheet_listing.py:354
+#, python-format
+msgid "Unknown worksheet extension: %(ext)s. %(links)s"
+msgstr "Extensión de hoja desconocida: %(ext)s. %(links)s"
+
+#: sagenb/flask_version/worksheet_listing.py:361
+#, python-format
+msgid ""
+"Unable to load file URL's when not running on localhost.\n"
+"%(backlinks)s"
+msgstr ""
+"No se pueden cargar URL de archivos cuando no está ejecutando la "
+"aplicación en la máquina local.\n"
+"%(backlinks)s"
+
+#: sagenb/flask_version/worksheet_listing.py:376
+#, python-format
+msgid ""
+"Please specify a worksheet to load.\n"
+"%(backlinks)s"
+msgstr ""
+"Por favor, especifique una hoja para recuperar.\n"
+"%(backlinks)s"
+
+#: sagenb/flask_version/worksheet_listing.py:380
+#, python-format
+msgid ""
+"Invalid filename.\n"
+"%(backlinks)s"
+msgstr ""
+"Nombre de archivo no válido.\n"
+"%(backlinks)s"
+
+#: sagenb/flask_version/worksheet_listing.py:424
+#, python-format
+msgid ""
+"There was an error uploading the worksheet.  It could be an old "
+"unsupported format or worse.  If you desperately need its contents "
+"contact the <a href=\"http://groups.google.com/group/sage-support\">sage-"
+"support group</a> and post a link to your worksheet.  Alternatively, an "
+"sws file is just a bzip2 tarball; take a look inside!\n"
+"%(backlinks)s"
+msgstr ""
+"Ocurrió un error al subir la hoja. Pudiera estar en un formato antiguo no"
+" soportado o peor aún. Si necesita sus contenidos desesperadamente "
+"contacte con el grupo <a href=\"http://groups.google.com/group/sage-"
+"support\">sage-support</a> y envíe un enlace a su hoja. Alternativamente,"
+" un archivo sws simplemente es un tarball comprimido con bzip2; ¡Eche un "
+"vistazo dentro de él!\n"
+"%(backlinks)s"
+
+#: sagenb/flask_version/worksheet_listing.py:435
+#, python-format
+msgid "Error uploading worksheet '%(msg)s'.%(backlinks)s"
+msgstr "Error subiendo la hoja '%(msg)s'.%(backlinks)s"
 
 #: sagenb/notebook/challenge.py:180
 msgid "Please ask the server administrator to configure a challenge!"
@@ -1933,7 +2123,7 @@ msgstr "24|veinticuatro"
 msgid "What is 2 plus 3?"
 msgstr "¿Cuánto es 2 más 3?"
 
-#: sagenb/notebook/challenge.py:223 ../sagenb/notebook/challenge.py:225
+#: sagenb/notebook/challenge.py:223 sagenb/notebook/challenge.py:225
 msgid "5|five"
 msgstr "5|cinco"
 
@@ -1949,11 +2139,19 @@ msgstr "8|ocho"
 msgid "What is the largest prime factor of 15?"
 msgstr "¿Cuál es el mayor factor primo de 15?"
 
-#: sagenb/notebook/conf.py:124
+#: sagenb/notebook/conf.py:130
 msgid "Updated"
 msgstr "Actualizado"
 
-#: sagenb/notebook/register.py:19 ../sagenb/notebook/register.py:29
+#: sagenb/notebook/notebook.py:211
+msgid "optional"
+msgstr "opcional"
+
+#: sagenb/notebook/notebook.py:1727
+msgid "The worksheet does not exist"
+msgstr "La hoja no existe"
+
+#: sagenb/notebook/register.py:19 sagenb/notebook/register.py:29
 #, python-format
 msgid ""
 "Hi %(username)s!\n"
@@ -1996,159 +2194,183 @@ msgstr ""
 "\n"
 "Asegúrese de reiniciar su contraseña entrando en Configuración."
 
-#: sagenb/notebook/server_conf.py:57
+#: sagenb/notebook/server_conf.py:60 sagenb/notebook/user_conf.py:23
 msgid "Appearance"
 msgstr "Apariencia"
 
-#: sagenb/notebook/server_conf.py:58
+#: sagenb/notebook/server_conf.py:61
 msgid "Authentication"
 msgstr "Autentificación"
 
-#: sagenb/notebook/server_conf.py:59
-msgid "LDAP"
-msgstr "LDAP"
-
-#: sagenb/notebook/server_conf.py:60
+#: sagenb/notebook/server_conf.py:62
 msgid "Server"
 msgstr "Servidor"
 
-#: sagenb/notebook/server_conf.py:65
-msgid "Number of word-wrap columns"
-msgstr "Número de columnas para el ajuste de línea"
+#: sagenb/notebook/server_conf.py:63
+msgid "LDAP"
+msgstr "LDAP"
 
-#: sagenb/notebook/server_conf.py:71
+#: sagenb/notebook/server_conf.py:68
 msgid "Maximum history length"
 msgstr "Longitud máxima del historial"
 
-#: sagenb/notebook/server_conf.py:77
-msgid "Idle timeout (seconds)"
-msgstr "Tiempo de espera inactivo (segundos)"
+#: sagenb/notebook/server_conf.py:75
+msgid "Idle timeout for normal worksheets (seconds)"
+msgstr "Tiempo de espera inactivo para las hojas normales (segundos)"
 
-#: sagenb/notebook/server_conf.py:83
+#: sagenb/notebook/server_conf.py:82
+msgid "Idle timeout for live documentation (seconds)"
+msgstr "Tiempo de espera inactivo para la documentación dinámica (segundos)"
+
+#: sagenb/notebook/server_conf.py:88
 msgid "Idle check interval (seconds)"
 msgstr "Comprobación del intervalo de inactividad (segundos)"
 
-#: sagenb/notebook/server_conf.py:89
+#: sagenb/notebook/server_conf.py:94
 msgid "Save interval (seconds)"
 msgstr "Intervalo de guardado (segundos)"
 
-#: sagenb/notebook/server_conf.py:95
+#: sagenb/notebook/server_conf.py:100
 msgid "Doc worksheet pool size"
 msgstr "Espacio para hojas de documentación "
 
-#: sagenb/notebook/server_conf.py:101
-msgid "Doc worksheet idle timeout (seconds)"
-msgstr "Tiempo de espera inactivo para hojas de documentación"
-
-#: sagenb/notebook/server_conf.py:107
+#: sagenb/notebook/server_conf.py:106
 msgid "Enable published interacts (EXPERIMENTAL; USE AT YOUR OWN RISK)"
-msgstr "Activar interacciones publicadas (EXPERIMENTAL; UTILÍZELO SEGÚN SU CRITERIO)"
+msgstr ""
+"Activar interacciones en hojas publicadas (EXPERIMENTAL; UTILÍZELO A SU "
+"CRITERIO)"
 
-#: sagenb/notebook/server_conf.py:113
+#: sagenb/notebook/server_conf.py:112
 msgid "Worksheet process users (comma-separated list)"
-msgstr "Usuarios del proceso de hojas (lista separada por coma)"
+msgstr ""
+"Usuarios del sistema para el procesado de hojas (lista separada por"
+" coma)"
 
-#: sagenb/notebook/server_conf.py:119
+#: sagenb/notebook/server_conf.py:118
 msgid "Default system"
 msgstr "Sistema por defecto"
 
-#: sagenb/notebook/server_conf.py:125
-msgid "Pretty print (typeset) output"
-msgstr "Impresión Avanzada"
-
-#: sagenb/notebook/server_conf.py:131
+#: sagenb/notebook/server_conf.py:124
 msgid "Worksheet process limits"
-msgstr "Límites del proceso de hojas"
+msgstr "Límites para el procesado de hojas"
 
-#: sagenb/notebook/server_conf.py:138
-msgid "Require e-mail for account registration"
-msgstr "Requerir e-mail para el registro de cuentas"
-
-#: sagenb/notebook/server_conf.py:145
-msgid "Enable user registration"
-msgstr "Activar registro de usuarios"
-
-#: sagenb/notebook/server_conf.py:152
-msgid "Allow OpenID authentication (requires python ssl module)"
-msgstr "Permitir autentificación OpenID (se requiere el módulo ssl de python)"
-
-#: sagenb/notebook/server_conf.py:159
-msgid "Use a challenge for account registration"
-msgstr "Usar un reto para el registro de cuentas"
-
-#: sagenb/notebook/server_conf.py:166
-msgid "Type of challenge"
-msgstr "Tipo de reto"
-
-#: sagenb/notebook/server_conf.py:173
-msgid "reCAPTCHA public key"
-msgstr "reCAPTCHA public key"
-
-#: sagenb/notebook/server_conf.py:179
-msgid "reCAPTCHA private key"
-msgstr "reCAPTCHA private key"
-
-#: sagenb/notebook/server_conf.py:185
-msgid "Default Language"
-msgstr "Idioma por defecto"
-
-#: sagenb/notebook/server_conf.py:191
+#: sagenb/notebook/server_conf.py:130
 msgid "Model Version"
 msgstr "Versión del Modelo"
 
-#: sagenb/notebook/server_conf.py:197
+#: sagenb/notebook/server_conf.py:136
+msgid "Send notification e-mails to (comma-separated list)"
+msgstr "Enviar e-mails de notificación a (lista separada por comas)"
+
+#: sagenb/notebook/server_conf.py:142
+msgid "Number of word-wrap columns"
+msgstr "Número de columnas para el ajuste de línea"
+
+#: sagenb/notebook/server_conf.py:148
+msgid "Pretty print (typeset) output"
+msgstr "Typografía avanzada"
+
+#: sagenb/notebook/server_conf.py:154
+msgid "Default Language"
+msgstr "Idioma por defecto"
+
+#: sagenb/notebook/server_conf.py:163
+msgid "Allow OpenID authentication (requires python ssl module)"
+msgstr "Permitir autentificación OpenID (se requiere el módulo ssl de python)"
+
+#: sagenb/notebook/server_conf.py:170
+msgid "Enable user registration"
+msgstr "Permitir el registro de usuarios"
+
+#: sagenb/notebook/server_conf.py:177
+msgid "Require e-mail for account registration"
+msgstr "Requerir e-mail para el registro de cuentas"
+
+#: sagenb/notebook/server_conf.py:184
+msgid "Use a challenge for account registration"
+msgstr "Utilizar un reto para el registro de cuentas"
+
+#: sagenb/notebook/server_conf.py:191
+msgid "Type of challenge"
+msgstr "Tipo de reto"
+
+#: sagenb/notebook/server_conf.py:194
+msgid "simple"
+msgstr "simple"
+
+#: sagenb/notebook/server_conf.py:194
+msgid "recaptcha"
+msgstr "recaptcha"
+
+#: sagenb/notebook/server_conf.py:198
+msgid "reCAPTCHA public key"
+msgstr "reCAPTCHA public key"
+
+#: sagenb/notebook/server_conf.py:204
+msgid "reCAPTCHA private key"
+msgstr "reCAPTCHA private key"
+
+#: sagenb/notebook/server_conf.py:212
 msgid "Enable LDAP Authentication"
 msgstr "Activar Autentificación LDAP"
 
-#: sagenb/notebook/server_conf.py:209
+#: sagenb/notebook/server_conf.py:219
+msgid "LDAP URI"
+msgstr "LDAP URI"
+
+#: sagenb/notebook/server_conf.py:226
 msgid "Bind DN"
 msgstr "Bind DN"
 
-#: sagenb/notebook/server_conf.py:215
+#: sagenb/notebook/server_conf.py:233
 msgid "Bind Password"
 msgstr "Contraseña Bind"
 
-#: sagenb/notebook/server_conf.py:221
+#: sagenb/notebook/server_conf.py:240
+msgid "Use GSSAPI instead of Bind DN/Password"
+msgstr "Utilizar GSSAPI en vez de Bind DN/clave"
+
+#: sagenb/notebook/server_conf.py:247
 msgid "Base DN"
 msgstr "Base DN"
 
-#: sagenb/notebook/server_conf.py:227
+#: sagenb/notebook/server_conf.py:254
 msgid "Username Attribute (i.e. cn, uid or userPrincipalName)"
 msgstr "Atributo de usuario (i.e. cn, uid o userPrincipalName)"
 
-#: sagenb/notebook/server_conf.py:233
-msgid "Attributes for user lookup"
-msgstr "Atributos para la búsqueda de usuario"
+#: sagenb/notebook/server_conf.py:261
+msgid "Query timeout (seconds)"
+msgstr "Tiempo de espera para peticiones (segundos)"
 
-#: sagenb/notebook/template.py:74
+#: sagenb/notebook/template.py:73
 #, python-format
 msgid "%(num)d second"
 msgid_plural "%(num)d seconds"
 msgstr[0] "%(num)d segundo"
 msgstr[1] "%(num)d segundos"
 
-#: sagenb/notebook/template.py:77
+#: sagenb/notebook/template.py:76
 #, python-format
 msgid "%(num)d minute"
 msgid_plural "%(num)d minutes"
 msgstr[0] "%(num)d minuto"
 msgstr[1] "%(num)d minutos"
 
-#: sagenb/notebook/template.py:80
+#: sagenb/notebook/template.py:79
 #, python-format
 msgid "%(num)d hour"
 msgid_plural "%(num)d hours"
 msgstr[0] "%(num)d hora"
 msgstr[1] "%(num)d horas"
 
-#: sagenb/notebook/template.py:82
+#: sagenb/notebook/template.py:81
 #, python-format
 msgid "%(num)d day"
 msgid_plural "%(num)d days"
 msgstr[0] "%(num)d día"
 msgstr[1] "%(num)d días"
 
-#: sagenb/notebook/template.py:141
+#: sagenb/notebook/template.py:139
 msgid "Sage Notebook"
 msgstr "Notebook Sage"
 
@@ -2166,29 +2388,35 @@ msgid ""
 "(if you have trouble with it, view the <a "
 "href=\"/doc/static/tutorial/index.html\">static version</a>)."
 msgstr ""
-"<a href=\"/doc/live/tutorial/index.html\">Tutorial interactivo</a> "
-"(si tiene problemas con él, utilice la <a "
+"<a href=\"/doc/live/tutorial/index.html\">Tutorial interactivo</a> (si "
+"tiene problemas con él, utilice la <a "
 "href=\"/doc/static/tutorial/index.html\">versión estática</a>)."
 
 #: sagenb/notebook/tutorial.py:356
 msgid "Help About"
-msgstr "Ayuda Acerca de"
+msgstr "Ayuda sobre..."
 
 #: sagenb/notebook/tutorial.py:357
 msgid ""
 "Type ? immediately after the object or function and press tab or shift-"
-"enter (shift-enter overwrites output and saves to worksheet)."
+"enter (shift-enter overwrites output and saves to worksheet).  Doing this"
+" twice or more toggles with formatted source code."
 msgstr ""
-"Teclee ? inmediatamente después del objeto o función y presione tab or shift-"
-"enter (shift-enter sobrescribe la salida y guarda la hoja)."
+"Teclee ? inmediatamente después del objeto o función y presione tab o "
+"mayúsculas-entrar (mayúsculas-entrar sobrescribe la salida de la celda"
+" con la ayuda en la propia hoja). Realizar esta acción dos o más veces cambia"
+" entre la documentación y el código fuente formateado."
 
 #: sagenb/notebook/tutorial.py:359
 msgid ""
 "Put ?? after the object and press tab or shift-enter (shift-enter "
-"overwrites output and saves to worksheet)."
+"overwrites output and saves to worksheet).  Doing this twice or more "
+"toggles with just the documentation."
 msgstr ""
-"Teclee ?? después del objeto y pule tab o shift-enter (shift-enter "
-"sobrescribe la salida y guarda la hoja)."
+"Teclee ?? después del objeto y pulse tab o mayúsculas-entrar"
+" (mayúsculas-entrar sobrescribe la salida de la hoja con el código fuente en"
+" la propia hoja). Realizar esta acción dos o más veces cambia entre el código"
+" fuente y la documentación."
 
 #: sagenb/notebook/tutorial.py:360
 msgid "Full Text Search of Docs and Source"
@@ -2202,186 +2430,219 @@ msgid ""
 "shift-enter.  Arbitrary regular expressions are allowed as queries."
 msgstr ""
 "Busque en la documentación de SAGE escribiendo <pre>search_doc(\"mi "
-"búsqueda\")</pre> en una celda de entrada y pulse shift-enter. " 
-"Busque en el código fuente de SAGE tecleando "
-"<pre>search_src(\"mi búsqueda\")</pre> y pulsando "
-"shift-enter. Se admiten expresiones regulares arbitrarias en las búsquedas."
+"búsqueda\")</pre> en una celda de entrada y pulse mayúsculas-entrar. Busque"
+" en el código fuente de SAGE tecleando <pre>search_src(\"mi búsqueda\")</pre>"
+" y pulsando mayúsculas-entrar. Se admiten expresiones regulares arbitrarias"
+" en las búsquedas."
 
-#: sagenb/notebook/tutorial.py:365
+#: sagenb/notebook/tutorial.py:362
+msgid "Live Documentation"
+msgstr "Documentación activa"
+
+#: sagenb/notebook/tutorial.py:363
+msgid ""
+"Use <a href=\"/doc/live/index.html\">live documentation</a> to try out "
+"the full Sage documentation \"live\". (Only new compute cells allowed, "
+"click the icon.)"
+msgstr ""
+"Utilice la <a href=\"/doc/live/index.html\">documentación activa</a> para "
+"obtener toda la documentación de Sage en forma \"activa\". (Sólo se "
+"permiten celdas de cálculo nuevas, pulsar el icono.)"
+
+#: sagenb/notebook/tutorial.py:367
 msgid "Key and Mouse Bindings"
 msgstr "Teclas Rápidas"
 
-#: sagenb/notebook/tutorial.py:366
-msgid "Evaluate Input"
-msgstr "Evaluar Entrada"
-
-#: sagenb/notebook/tutorial.py:367
-msgid ""
-"Press <strong>shift-enter</strong>.  You can start several calculations "
-"at once.  If you press <strong>alt-enter</strong> instead, then a new "
-"cell is created after the current one.  If you press <strong>ctrl-"
-"enter</strong> then the cell is split and both pieces are evaluated "
-"separately."
-msgstr ""
-"Pulse <strong>shift-enter</strong>. Se pueden iniciar varios cálculos de una "
-"vez. Si en lugar de ello, pulsa <strong>alt-enter</strong>, se crea una celda "
-"nueva después de la actual. Si pulsa <strong>ctrl-"
-"enter</strong>, la celda se divide y se evalúan ambos trozos por separado."
-
 #: sagenb/notebook/tutorial.py:368
+msgid "Evaluate Input"
+msgstr "Evaluar una celda de entrada"
+
+#: sagenb/notebook/tutorial.py:369
+msgid ""
+"Press <strong>shift-enter</strong> or click the \"evaluate\" button.  You"
+" can start several calculations at once.  If you press <strong>alt-"
+"enter</strong> instead, then a new cell is created after the current one."
+"  If you press <strong>ctrl-enter</strong> then the cell is split and "
+"both pieces are evaluated separately."
+msgstr ""
+"Pulse <strong>mayúsculas-entrar</strong> o pinche en el botón \"evaluar\". Se "
+"pueden iniciar varios cálculos a la vez. Si en lugar de ello, pulsa "
+"<strong>alt-entrar</strong>, se crea una celda nueva después de la actual."
+" Si pulsa <strong>ctrl-entrar</strong>, la celda se divide en dos y se evalúan "
+"ambas partes por separado."
+
+#: sagenb/notebook/tutorial.py:370
 msgid "Tab Completion"
 msgstr "Completar con Tab"
 
-#: sagenb/notebook/tutorial.py:369
+#: sagenb/notebook/tutorial.py:371
 msgid ""
 "Press <strong>tab</strong> while the cursor is on an identifier. On some "
 "web browsers (e.g., Opera) you must use control-space instead of tab."
 msgstr ""
-"Pulse <strong>tab</strong> cuando el cursor está sobre un identificador. En "
-"algunos navegadores (e.g., Opera) se debe usar control-space en vez de tab."
+"Pulse <strong>tab</strong> cuando el cursor está sobre un identificador. "
+"En algunos navegadores (e.g., Opera) se debe usar control-space en vez de"
+" tab."
 
-#: sagenb/notebook/tutorial.py:370
+#: sagenb/notebook/tutorial.py:372
 msgid "Insert New Cell"
 msgstr "Insertar Celda Nueva"
 
-#: sagenb/notebook/tutorial.py:371
+#: sagenb/notebook/tutorial.py:373
 msgid ""
-"Put the mouse between an output and input until the horizontal line "
-"appears and click.  If you press Alt-Enter in a cell, the cell is "
-"evaluated and a new cell is inserted after it."
+"Put the mouse between an output and input until the blue horizontal line "
+"appears and click, or click the \"plus\" icon.  If you press Alt-Enter in"
+" a cell, the cell is evaluated and a new cell is inserted after it."
 msgstr ""
-"Sitúe el ratón entre un cuadro de salida y uno de entrada hasta que aparezca "
-" una línea horizontal y pulse. Si pulsa Alt-Enter en una celda, ésta se "
-"evalúa y se inserta una nueva después de ella."
+"Sitúe el ratón entre un cuadro de salida y uno de entrada hasta que "
+"aparezca una línea horizontal y pinche, o bien pinche en el icono \"más\". "
+"Si pulsa Alt-Enter en una celda, ésta se evalúa y se inserta una nueva "
+"a continuación."
 
-#: sagenb/notebook/tutorial.py:372
+#: sagenb/notebook/tutorial.py:374
 msgid "Delete Cell"
 msgstr "Borrar Celda"
 
-#: sagenb/notebook/tutorial.py:373
+#: sagenb/notebook/tutorial.py:375
 msgid "Delete all cell contents, then press <strong>backspace</strong>."
-msgstr "Borrar todo el contenido de una celda y después pulsar <strong>backspace</strong>."
+msgstr ""
+"Borrar todo el contenido de una celda y después pulsar "
+"<strong>retroceso</strong>."
 
-#: sagenb/notebook/tutorial.py:374
+#: sagenb/notebook/tutorial.py:376
 msgid "Split and Join Cells"
 msgstr "Dividir y Unir Celdas"
 
-#: sagenb/notebook/tutorial.py:375
+#: sagenb/notebook/tutorial.py:377
 msgid ""
 "Press <strong>ctrl-;</strong> in a cell to split it into two cells, and "
 "<strong>ctrl-backspace</strong> to join them.  Press <strong>ctrl-"
 "enter</strong> to split a cell and evaluate both pieces."
 msgstr ""
 "Pulse <strong>ctrl-;</strong> en una celda para dividirla en dos, y "
-"<strong>ctrl-backspace</strong> para unirlas. Pulse <strong>ctrl-"
-"enter</strong> para dividir una celda y evaluar ambas."
+"<strong>ctrl-retroceso</strong> para unirlas. Pulse <strong>ctrl-"
+"entrar</strong> para dividir una celda y evaluar ambas."
 
-#: sagenb/notebook/tutorial.py:376
+#: sagenb/notebook/tutorial.py:378
 msgid "Insert New Text Cell"
 msgstr "Insertar una celda de texto nueva"
 
-#: sagenb/notebook/tutorial.py:377
+#: sagenb/notebook/tutorial.py:379
 msgid ""
 "Move the mouse between cells until a blue bar appears.  <strong>Shift-"
-"click</strong> on the blue bar to create a new text cell.  Double click "
-"on existing text to edit it.  Use $...$ and $$...$$ to include typeset "
-"math in the text block."
+"click</strong> on the blue bar, or click on the text bubble icon, to "
+"create a new text cell.  Use $...$ and $$...$$ to include typeset math in"
+" the text block.  Click the button to save changes, or press <strong"
+">shift-enter</strong>."
 msgstr ""
-"Mueva el ratón hasta que aparezca una barra azul. <strong>Shift-"
-"click</strong> en la barra azul para crear una celda de texto nueva. Haga "
-"doble pulsación sobre el texto preexistente para editarlo. Utilice $...$ "
-"y $$...$$ para incluir expresiones matemáticas en el bloque de texto."
+"Mueva el ratón entre celdas hasta que aparezca una barra horizontal. Pinche "
+"mientras mantiene pulsada la tecla <strong>Mayúsculas</strong> en la barra "
+"horizontal, o bien pinche en el icono de texto"
+" para crear una celda de texto nueva. Utilice $...$ y $$...$$ para "
+"incluir tipografía matemática en el bloque de texto. Pinche el botón "
+"para guardar los cambios o pulse <strong>Mayúsculas-Entrar</strong>."
 
-#: sagenb/notebook/tutorial.py:378
+#: sagenb/notebook/tutorial.py:380
+msgid "Edit Text Cell"
+msgstr "Editar una celda de texto"
+
+#: sagenb/notebook/tutorial.py:381
+msgid "Double click on existing text to edit it."
+msgstr "Haga doble click sobre el texto preexistente para editarlo."
+
+#: sagenb/notebook/tutorial.py:382
 msgid "Hide/Show Output"
 msgstr "Ocultar/Mostrar Resultados"
 
-#: sagenb/notebook/tutorial.py:379
+#: sagenb/notebook/tutorial.py:383
 msgid ""
 "Click on the left side of output to toggle between hidden, shown with "
 "word wrap, and shown without word wrap."
 msgstr ""
-"Pulse en el lado izquierdo para cambiar entre ocultar, mostrar con ajuste de línea, y mostrar sin ajuste de línea."
+"Pulse en el lado izquierdo para cambiar entre ocultar, mostrar con ajuste"
+" de línea, y mostrar sin ajuste de línea."
 
-#: sagenb/notebook/tutorial.py:380
+#: sagenb/notebook/tutorial.py:384
 msgid "Indenting Blocks"
 msgstr "Sangrar bloques"
 
-#: sagenb/notebook/tutorial.py:381
+#: sagenb/notebook/tutorial.py:385
 msgid ""
 "Highlight text and press > to indent it all and < to unindent it all "
 "(works in Safari and Firefox).  In Firefox you can also press tab and "
 "shift-tab."
 msgstr ""
-"Seleccione un texto y pulse > para sangrarlo < para reducir la sangría ""(funciona en Safari y Firefox). En Firefox también se puede pulsar tab y "
-"shift-tab."
+"Seleccione un texto y pulse > para sangrarlo < para reducir la sangría "
+"(funciona en Safari y Firefox). En Firefox también se puede pulsar "
+"tab y mayúsculas-tab."
 
-#: sagenb/notebook/tutorial.py:382
+#: sagenb/notebook/tutorial.py:386
 msgid "Comment/Uncomment Blocks"
 msgstr "Comentar/Des-comentar bloques"
 
-#: sagenb/notebook/tutorial.py:383
+#: sagenb/notebook/tutorial.py:387
 msgid ""
 "Highlight text and press <strong>ctrl-.</strong> to comment it and "
-"<strong>ctrl-,</strong> to uncomment it. Alternatively, use "
-"<strong>ctrl-3</strong> and <strong>ctrl-4</strong>."
+"<strong>ctrl-,</strong> to uncomment it. As an alternative (necessary in "
+"some browsers), use <strong>ctrl-3</strong> and <strong>ctrl-4</strong>."
 msgstr ""
 "Seleccione un texto y pulse <strong>ctrl-.</strong> para comentarlo y "
-"<strong>ctrl-,</strong> para quitar los comentarios. También se puede usar "
-"<strong>ctrl-3</strong> y <strong>ctrl-4</strong>."
+"<strong>ctrl-,</strong> para quitar los comentarios. También se puede "
+"usar <strong>ctrl-3</strong> y <strong>ctrl-4</strong> (esto es necesario"
+" en algunos navegadores)."
 
-#: sagenb/notebook/tutorial.py:384
+#: sagenb/notebook/tutorial.py:388
 msgid "Paren matching"
 msgstr "Emparejado de Paréntesis"
 
-#: sagenb/notebook/tutorial.py:384
+#: sagenb/notebook/tutorial.py:388
 msgid ""
 "To fix unmatched or mis-matched parentheses, braces or brackets, press "
 "<strong>ctrl-0</strong>.  Parentheses before the cursor will be matched, "
 "minding strings and (Python) comments."
 msgstr ""
 "Para emparejar paréntesis, llaves o corchetes, pulse "
-"<strong>ctrl-0</strong>. Se emparejarán los paréntesis que estén antes del "
-"cursor, teniendo en cuenta strings y comentarios de Python."
+"<strong>ctrl-0</strong>. Se emparejarán los paréntesis que estén antes "
+"del cursor, teniendo en cuenta strings y comentarios de Python."
 
-#: sagenb/notebook/tutorial.py:388
+#: sagenb/notebook/tutorial.py:392
 msgid "Interrupt and Restart Sessions"
 msgstr "Interrumpir y Reiniciar Sesiones"
 
-#: sagenb/notebook/tutorial.py:389
+#: sagenb/notebook/tutorial.py:393
 msgid "Interrupt Running Calculations"
 msgstr "Interrumpir Cálculos"
 
-#: sagenb/notebook/tutorial.py:390
+#: sagenb/notebook/tutorial.py:394
 msgid ""
 "Click <u>Interrupt</u> or press escape in any input cell. This will "
 "(attempt) to interrupt SAGE by sending many interrupt signals."
 msgstr ""
-"Pulse <u>Interrupt</u> o pulse escape en cualquier celda de entrada. "
-"Esto interrumpirá (o al menos lo intentará) SAGE enviando múltiples señales "
-"de interrupción."
+"Pulse <u>Interrupt</u> o pulse escape en cualquier celda de entrada. Esto"
+" interrumpirá (o al menos intentará interrumpir) a SAGE enviando múltiples "
+"señales de interrupción."
 
-#: sagenb/notebook/tutorial.py:391
+#: sagenb/notebook/tutorial.py:395
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: sagenb/notebook/tutorial.py:392
+#: sagenb/notebook/tutorial.py:396
 msgid ""
 "Type \"restart\" to restart the SAGE interpreter for a given worksheet.  "
 "(You have to interrupt first.)"
 msgstr ""
-"Teclear \"restart\" para reiniciar el intérprete de SAGE de una determinada "
-"hoja. (Primero hay que interrumpir los cálculos)."
+"Teclee \"restart\" para reiniciar el intérprete de SAGE para una "
+"determinada hoja. (Primero hay que interrumpir los cálculos en curso)."
 
-#: sagenb/notebook/tutorial.py:394
+#: sagenb/notebook/tutorial.py:398
 msgid "Special Cell Blocks"
-msgstr "Bloques Especiales de Celdas"
+msgstr "Bloques de Celdas Especiales"
 
-#: sagenb/notebook/tutorial.py:395
+#: sagenb/notebook/tutorial.py:399
 msgid "Evaluate Cell using GAP, Singular, etc."
 msgstr "Evaluar celdas usando GAP, Singular, etc."
 
-#: sagenb/notebook/tutorial.py:396
+#: sagenb/notebook/tutorial.py:400
 #, python-format
 msgid ""
 "Put \"%%gap\", \"%%singular\", etc. as the first input line of a cell; "
@@ -2390,23 +2651,24 @@ msgstr ""
 "Escriba \"%%gap\", \"%%singular\", etc. como primera línea de la celda; "
 "el resto de la celda se evaluará en ese sistema."
 
-#: sagenb/notebook/tutorial.py:397
+#: sagenb/notebook/tutorial.py:401
 msgid "Shell Scripts"
 msgstr "Scripts de Shell"
 
-#: sagenb/notebook/tutorial.py:398
+#: sagenb/notebook/tutorial.py:402
 #, python-format
 msgid ""
 "Begin a block with %%sh to have the rest of the block evaluated as a "
 "shell script.  The current working directory is maintained."
 msgstr ""
-"Comience un bloque con %%sh para que el resto se evalúe como un script "
-"de shell. Se mantiene el directorio por defecto actual."
-#: sagenb/notebook/tutorial.py:399
+"Comience un bloque con %%sh para que el resto se evalúe como un script de"
+" shell. Se mantiene el directorio por defecto actual."
+
+#: sagenb/notebook/tutorial.py:403
 msgid "Interactive Dynamic Widgets"
 msgstr "Widgets Dinámicas Interactivas"
 
-#: sagenb/notebook/tutorial.py:400
+#: sagenb/notebook/tutorial.py:404
 msgid ""
 "Put @interact on the line before a function definition.  Type interact? "
 "for more details."
@@ -2414,36 +2676,36 @@ msgstr ""
 "Escriba @interact en una línea antes de una función. Teclee interact? "
 "para más detalles."
 
-#: sagenb/notebook/tutorial.py:401
+#: sagenb/notebook/tutorial.py:405
 msgid "Autoevaluate Cells on Load"
 msgstr "Auto-evaluar Celdas al Cargar"
 
-#: sagenb/notebook/tutorial.py:402
+#: sagenb/notebook/tutorial.py:406
 msgid ""
 "Any cells with \"#auto\" in the input is automatically evaluated when the"
 " worksheet is first opened."
 msgstr ""
 "Todas las celdas que contengan \"#auto\" se evaluarán automáticamente al "
 "abrir la hoja."
-#: sagenb/notebook/tutorial.py:403
+
+#: sagenb/notebook/tutorial.py:407
 msgid "Time"
 msgstr "Tiempo"
 
-#: sagenb/notebook/tutorial.py:404
+#: sagenb/notebook/tutorial.py:408
 #, python-format
 msgid "Type \"%%time\" at the beginning of the cell."
-msgstr ""
-"Escriba \"%%time\" al inicio de la celda."
+msgstr "Escriba \"%%time\" al inicio de la celda."
 
-#: sagenb/notebook/tutorial.py:406
+#: sagenb/notebook/tutorial.py:410
 msgid "Useful Tips"
 msgstr "Indicaciones Útiles"
 
-#: sagenb/notebook/tutorial.py:407
+#: sagenb/notebook/tutorial.py:411
 msgid "Input Rules"
 msgstr "Reglas de Entrada"
 
-#: sagenb/notebook/tutorial.py:408
+#: sagenb/notebook/tutorial.py:412
 msgid ""
 "Code is evaluated by exec'ing (after preparsing).  Only the output of the"
 " last line of the cell is implicitly printed.  If any line starts with "
@@ -2453,19 +2715,20 @@ msgid ""
 "you can write input cells that contains non-evaluated plain text mixed "
 "with examples by starting the block with \">>>\" or including an example."
 msgstr ""
-"El código se evalúa ejecutando (después de preprocesarlo). Sólo se muestra la "
-"salida de la última línea. Si alguna línea comienza por \"sage:\" o \">>>\" "
-"se asume que todo el bloque contiene texto y ejemplos, por lo que solo se "
-"ejecutan las líneas que comiencen por un inductor. Así, se pueden pegar "
-"ejemplos completos de la documentación sin necesidad de editarlos y se puede "
-"escribir texto sin evaluar en las celdas mezclado con ejemplos, comenzando "
-"el bloque con \">>>\" o incluyendo un ejemplo."
+"El código se evalúa mediante ejecución (después de un preprocesado). Sólo se "
+"muestra la salida de la última línea. Si alguna línea comienza por "
+"\"sage:\" o \">>>\" se asume que todo el bloque contiene texto y "
+"ejemplos, por lo que solo se ejecutan las líneas que comiencen por un "
+"inductor. Así, se pueden pegar ejemplos completos de la documentación sin"
+" necesidad de editarlos y se puede escribir texto sin evaluar en las "
+"celdas mezclado con ejemplos, comenzando el bloque con \">>>\" o "
+"incluyendo un ejemplo."
 
-#: sagenb/notebook/tutorial.py:409
+#: sagenb/notebook/tutorial.py:413
 msgid "History"
 msgstr "Historial"
 
-#: sagenb/notebook/tutorial.py:410
+#: sagenb/notebook/tutorial.py:414
 msgid ""
 "Click <a href=\"/history\">log</a> commands you have entered in any "
 "worksheet of this notebook."
@@ -2473,84 +2736,89 @@ msgstr ""
 "Pulse <a href=\"/history\">historial</a> para ver los comandos que ha "
 "tecleado en cualquier hoja de este notebook."
 
-#: sagenb/notebook/tutorial.py:411
+#: sagenb/notebook/tutorial.py:415
 msgid "Typesetting All Output"
-msgstr "Mostrar toda la Salida"
+msgstr "Utilizar siempre tipografía avanzada"
 
-#: sagenb/notebook/tutorial.py:412
+#: sagenb/notebook/tutorial.py:416
 msgid ""
 "Type pretty_print_default() in an input cell and press shift-enter.  All "
 "future output will be typeset automatically."
 msgstr ""
-"Teclee pretty_print_default() en una celda de entrada y pulse shift-enter. "
-"Todo la salida a partir de ahora se imprimirá automáticamente."
+"Teclee pretty_print_default() en una celda de entrada y pulse mayúsculas-"
+"entrar. Toda la salida a partir de ahora se mostrará con tipografía avanzada."
 
-#: sagenb/notebook/tutorial.py:414
+#: sagenb/notebook/tutorial.py:418
 msgid "Files and Scripts"
 msgstr "Archivos y Scripts"
 
-#: sagenb/notebook/tutorial.py:415
+#: sagenb/notebook/tutorial.py:419
 msgid "Loading SAGE/Python Scripts"
 msgstr "Cargando Scripts de SAGE/Python"
 
-#: sagenb/notebook/tutorial.py:416
+#: sagenb/notebook/tutorial.py:420
 msgid ""
 "Use \"load filename.sage\" and \"load filename.py\".  Load is relative to"
 " the path you started the notebook in.  The .sage files are preparsed and"
 " .py files are not.   You may omit the .sage or .py extension.  Files may"
 " load other files."
 msgstr ""
-"Utilice \"load filename.sage\" y \"load filename.py\". La ruta es relativa "
-"a la del directorio donde inició el notebook. Los archivos .sage son "
-"preprocesados y los .py no. Se puede omitir la extensión .sage o .py. Los "
-"archivos pueden cargar otros archivos."
+"Utilice \"load filename.sage\" y \"load filename.py\". La ruta será "
+"relativa a la del directorio donde inició el notebook. Los archivos .sage"
+" son preprocesados y los .py no. Se puede omitir la extensión .sage o "
+".py. Los archivos pueden cargar otros archivos."
 
-#: sagenb/notebook/tutorial.py:417
+#: sagenb/notebook/tutorial.py:421
 msgid "Attaching Scripts"
 msgstr "Adjuntar Scripts"
 
-#: sagenb/notebook/tutorial.py:418
+#: sagenb/notebook/tutorial.py:422
 msgid ""
-"Use \"attach filename.sage\" or \"attach filename.py\".  Attached files "
-"are automatically reloaded when the file changes.  The file "
-"$HOME/.sage/init.sage is attached on startup if it exists."
+"(Currently no different from \"load\", see <a "
+"href=\"https://github.com/sagemath/sagenb/issues/169\" "
+"target=\"_blank\">bug report</a>) Use \"attach filename.sage\" or "
+"\"attach filename.py\".  Attached files are automatically reloaded when "
+"the file changes.  The file $HOME/.sage/init.sage is attached on startup "
+"if it exists."
 msgstr ""
-"Utilice \"attach filename.sage\" o \"attach filename.py\". Los archivos "
-"adjuntos son recargados automáticamente cuando el archivo cambia. El archivo "
+"(Actualmente \"attach\" funciona como \"load\", ver <a "
+"href=\"https://github.com/sagemath/sagenb/issues/169\" "
+"target=\"_blank\">informe de errores</a>) Utilice \"attach "
+"filename.sage\" o \"attach filename.py\". Los archivos adjuntos se "
+"recargarán automáticamente cuando se produzcan cambios en ellos. El archivo "
 "$HOME/.sage/init.sage, si existe, se adjunta automáticamente al inicio."
 
-#: sagenb/notebook/tutorial.py:419
+#: sagenb/notebook/tutorial.py:423
 msgid "Working Directory"
 msgstr "Directorio de Trabajo"
 
-#: sagenb/notebook/tutorial.py:420
+#: sagenb/notebook/tutorial.py:424
 msgid ""
 "Each block of code is run from its own directory.  If any images are "
 "created as a side effect, they will automatically be displayed."
 msgstr ""
-"Cada bloque de código se ejecuta en su propio directorio. Si se crea alguna "
-"imagen como efecto lateral, se mostrará automáticamente."
+"Cada bloque de código se ejecuta en su propio directorio. Si se crea "
+"alguna imagen como efecto colateral, se mostrará automáticamente."
 
-#: sagenb/notebook/tutorial.py:421
+#: sagenb/notebook/tutorial.py:425
 msgid "DIR Variable"
 msgstr "Variable DIR"
 
-#: sagenb/notebook/tutorial.py:422
+#: sagenb/notebook/tutorial.py:426
 msgid ""
 "The variable DIR contains the directory from which you started the SAGE "
 "notebook.  For example, to open a file in that directory, do "
 "\"open(DIR+'filename')\"."
 msgstr ""
-"La variable DIR contiene el directorio desde el que se inicio el notebook "
-"SAGE. Por ejemplo, para abrir un archivo en ese directorio, teclee "
+"La variable DIR contiene el directorio desde el que se inicio el notebook"
+" de SAGE. Por ejemplo, para abrir un archivo en ese directorio, teclee "
 "\"open(DIR+'filename')\"."
 
-
-#: sagenb/notebook/tutorial.py:423
+#: sagenb/notebook/tutorial.py:427
 msgid "DATA Variable"
 msgstr "Variable DATA"
 
-#: sagenb/notebook/tutorial.py:424
+#: sagenb/notebook/tutorial.py:428
 msgid ""
 "Use the Data menu to upload images and other files, and create new files "
 "that can be shared between worksheets.  The DATA variable contains the "
@@ -2559,31 +2827,35 @@ msgid ""
 "uploaded, type \"load foo.sage\"; if foo.py is a Python file, you can "
 "import it by typing \"import foo\"."
 msgstr ""
-"Utilice el menú Datos para subir imágenes y otros archivos, y crear nuevos "
-"archivos que se puedan compartir entre hojas. La variable DATA "
-"contiene la ruta a los archivos de datos. Por ejemplo, para abrir un archivo "
-"de ese directorio, escribir \"open(DATA+'filename')\". Si usted ha subido el "
-"archivo foo.sage, podrá cargarlo con \"load foo.sage\"; Si foo.py es un "
-"archivo Python, podrá importarlo con \"import foo\"."
+"Utilice el menú Datos para subir imágenes y otros archivos, y crear "
+"nuevos archivos que se puedan compartir entre hojas. La variable DATA "
+"contiene la ruta a los archivos de datos. Por ejemplo, para abrir un "
+"archivo de ese directorio, escribir \"open(DATA+'filename')\". Si usted "
+"ha subido el archivo foo.sage, podrá cargarlo con \"load foo.sage\"; Si "
+"foo.py es un archivo Python, podrá importarlo con \"import foo\"."
 
-#: sagenb/notebook/tutorial.py:425
+#: sagenb/notebook/tutorial.py:429
 msgid "Loading and Saving Objects"
 msgstr "Cargando y Guardando Objetos"
 
-#: sagenb/notebook/tutorial.py:426
+#: sagenb/notebook/tutorial.py:430
 msgid ""
-"Use \"save obj1 obj2 ...\" and \"load obj1 obj2 ...\".  This allows for "
-"easy moving of objects from one worksheet to another, and saving of "
-"objects for later use."
+"Use \"save(obj1,DATA+'foo')\" to save an object to the data directory of "
+"a worksheet, and \"obj1 = load(DATA+'foo')\" to load it again.  To use "
+"such objects between worksheets, you may save to any filename (given as a"
+" string) Sage can write to on your system."
 msgstr ""
-"Utilice \"save obj1 obj2 ...\" y \"load obj1 obj2 ...\". Esto permite mover "
-"fácilmente objetos de una hoja a otra, y guardarlos para un uso posterior."
+"Utilice \"save(obj1, DATA + 'foo') para guardar un objeto en el directorio "
+"de datos de una hoja, y \"obj1 = load(DATA + 'foo')\" para cargarlo de "
+"nuevo. Para utilizar tales objetos entre distintas hojas, se pueden "
+"guardar en cualquier archivo (cuyo nombre se da en forma de cadena de "
+"caracteres) en el que Sage pueda escribir."
 
-#: sagenb/notebook/tutorial.py:427
+#: sagenb/notebook/tutorial.py:431
 msgid "Loading and Saving Sessions"
 msgstr "Cargando y Salvando sesiones"
 
-#: sagenb/notebook/tutorial.py:428
+#: sagenb/notebook/tutorial.py:432
 msgid ""
 "Use \"save_session('name')\" to save all variables to an object.  Use "
 "\"load_session('name')\" to <i>merge</i> in all variables from a saved "
@@ -2593,29 +2865,35 @@ msgstr ""
 "objeto. Utilice \"load_session('name')\" para <i>mezclar</i> todas las "
 "variables de una sesión guardada."
 
-#: sagenb/notebook/tutorial.py:429
+#: sagenb/notebook/tutorial.py:433
 msgid "Customizing the Notebook CSS"
 msgstr "Personalizando el Notebook"
 
-#: sagenb/notebook/tutorial.py:430
+#: sagenb/notebook/tutorial.py:434
 msgid ""
 "If you create a file <tt>$HOME/.sage/notebook.css</tt> then it will get "
 "applied when rendering the notebook.   See "
 msgstr ""
-"Si crea un archivo <tt>$HOME/.sage/notebook.css</tt>, será aplicado cuando se "
-"muestre el notebook. Ver"
+"Si crea un archivo <tt>$HOME/.sage/notebook.css</tt>, se aplicará "
+"cuando se muestre el notebook. Ver"
+
+#: sagenb/notebook/user_conf.py:22
+msgid "Language"
+msgstr "Idioma"
 
 #: sagenb/notebook/wiki2html.py:647
 #, python-format
 msgid "Expected \"%(wanted)s\" after \"%(key)s\", got \"%(token)s\""
-msgstr "Se esperaba \"%(wanted)s\" después de \"%(key)s\" y se obtuvo \"%(token)s\""
+msgstr ""
+"Se esperaba \"%(wanted)s\" después de \"%(key)s\" y se obtuvo "
+"\"%(token)s\""
 
 #: sagenb/notebook/wiki2html.py:653
 #, python-format
 msgid "Expected an integer \"%(key)s\" before \"%(token)s\""
 msgstr "Se esperaba un entero \"%(key)s\" antes de \"%(token)s\""
 
-#: sagenb/notebook/wiki2html.py:663 ../sagenb/notebook/wiki2html.py:673
+#: sagenb/notebook/wiki2html.py:663 sagenb/notebook/wiki2html.py:673
 #, python-format
 msgid "Expected an integer \"%(arg)s\" after \"%(key)s\""
 msgstr "Se esperaba un entero\"%(arg)s\" después de \"%(key)s\""
@@ -2625,8 +2903,56 @@ msgstr "Se esperaba un entero\"%(arg)s\" después de \"%(key)s\""
 msgid "Expected a color value \"%(arg)s\" after \"%(key)s\""
 msgstr "Se esperaba un valor de color \"%(arg)s\" después de \"%(key)s\""
 
-#: sagenb/notebook/worksheet.py:2015
+#: sagenb/notebook/worksheet.py:2130
 #, python-format
 msgid "%(seconds)s ago"
 msgstr "hace %(seconds)s"
+
+#: sagenb/notebook/worksheet.py:4421
+msgid "January"
+msgstr "Enero"
+
+#: sagenb/notebook/worksheet.py:4422
+msgid "February"
+msgstr "Febrero"
+
+#: sagenb/notebook/worksheet.py:4423
+msgid "March"
+msgstr "Marzo"
+
+#: sagenb/notebook/worksheet.py:4424
+msgid "April"
+msgstr "Abril"
+
+#: sagenb/notebook/worksheet.py:4425
+msgid "May"
+msgstr "Mayo"
+
+#: sagenb/notebook/worksheet.py:4426
+msgid "June"
+msgstr "Junio"
+
+#: sagenb/notebook/worksheet.py:4427
+msgid "July"
+msgstr "Julio"
+
+#: sagenb/notebook/worksheet.py:4428
+msgid "August"
+msgstr "Agosto"
+
+#: sagenb/notebook/worksheet.py:4429
+msgid "September"
+msgstr "Septiembre"
+
+#: sagenb/notebook/worksheet.py:4430
+msgid "October"
+msgstr "Octubre"
+
+#: sagenb/notebook/worksheet.py:4431
+msgid "November"
+msgstr "Noviembre"
+
+#: sagenb/notebook/worksheet.py:4432
+msgid "December"
+msgstr "Diciembre"
 
