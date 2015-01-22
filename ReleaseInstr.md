@@ -5,6 +5,17 @@ for example, `0.10.8.3`. Also, we will assume that
 `github.org/sagemath/sagenb` is present as `upstream` remote repository
 in your local `SAGENB_ROOT`.
 
+1. As a prerequisite, we assume that any necessary changes to
+   `.gitignore` and `MANIFEST.in` have been committed.  Similarly,
+   any new or updated dependencies should be corrected in the file
+   `util/fetch_deps.py` and/or `setup.py` (dependencies of deps
+   need only to be in `util/fetch_deps.py`), so that the final
+   package can be installed without internet.
+
+   It wouldn't hurt to make sure the notebook actually runs
+   before you start, or alerting to any major changes needed
+   in localizations, either.
+
 1. Change into the sagenb git directory, and update to the latest
    `upstream/master`. We assume that all the required merges to the
    `upstream/master` have happened already and that your master is
@@ -73,6 +84,15 @@ in your local `SAGENB_ROOT`.
     tar cf sagenb-<version>.tar sagenb-<version>
     mv sagenb-<version>.tar SAGE_ROOT/upstream
     ```
+
+   Be very careful to use the GNU version of `tar`; on Mac you should probably use
+   the `gnutar` command, as the default is the BSD version.  When you run the command
+   
+   ```sh
+   file sagenb-<version>.tar
+   ```
+   
+   you should get a result like `sagenb-<version>.tar:       POSIX tar archive (GNU)`.
     
 1. Let Sage know about the new sagenb and update its checksums, and then
    try out the new sagenb and test it.  Here we are not yet committing,
@@ -93,6 +113,8 @@ in your local `SAGENB_ROOT`.
     ```sh
     ./sage -f sagenb  # if necessary to install the new sagenb
     ```
+
+1. (Optional) Check that the Selenium tests pass.
 
 1. (Optional) If you encounter errors or realize there was a mistake,
    you can try to fix them back in sagenb, after reverting the last
@@ -146,4 +168,4 @@ in your local `SAGENB_ROOT`.
 
 1. If you encounter any difficulties, you can also look at the
    [work flow](https://gist.github.com/kini/5852091) that was shown by
-   @kini long ago or see the older release instructions in README.rst
+   @kini long ago.

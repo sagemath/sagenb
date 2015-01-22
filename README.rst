@@ -97,89 +97,30 @@ use sagenb's SCSS files to update its CSS *properly*.
 Localization
 ------------
 
-To add a locale to an existing install, we have some
-possibly outdated instructions:
+The Sage notebook has various localizations available, and
+welcomes updates to those as well as new ones.  The current
+localizations are available in ``sagenb/translations``.
 
-    * Create a new locale, or download one from
-      http://wiki.sagemath.org/i18n . To create a new locale:
+The file ``util/translations.py`` encapsulates much of the
+Python Babel localization utility in an easy-to-use
+interface meant for the Sage notebook.  We recommend its
+use to update and create new translations.  Full help
+is available by running the file in the Sage Python
+shell with the ``-h`` argument::
 
-      * Edit and save a copy of ``sagenb.pot`` using your favorite text
-        editor or POEdit (http://poedit.net)
+    cd $SAGENB_ROOT
+    sage -python ./util/translations.py -h
 
-      * (Recommended) Post the new locale to
-        http://wiki.sagemath.org/i18n
-
-    * Compile your copy via ``msgfmt sagenb.pot -o sagenb.mo``
-
-    * Copy ``sagenb.mo`` to ``sagenb/locale/xx_YY/LC_MESSAGES/``, where
-      xx_YY is a locale code (en_US, pt_BR, en_UK, etc.)
+A more advanced introduction is in preparation.
 
 Release Instructions
 --------------------
 
 Currently, sagenb is an upstream project from Sage proper.
 That means any new sagenb release needs to be packaged properly
-in order to be included in Sage.  Read ``ReleaseInstr.md`` for
-basic details on how to create such a release, including minor changes
+in order to be included in Sage.
+
+Read ``ReleaseInstr.md`` for step-by-step details on how
+to create such a release, including minor changes
 needed on the Sage side to ``build/pkgs/sagenb/package-version.txt``
 and the checksum file.
-
-See the older instructions below for some additional details that would
-need to be taken into account for more major changes, especially the
-ones about the manifest and localization updates.
-
-
-Older Release Instructions
---------------------------
-
-The following advice for release managers of sagenb is taken from the
-old SPKG.txt file that was sitting around. Most of it is probably
-outdated, but here it is anyway. It is modified slightly to cause it to
-make sense in some cases.
-
-    To cut a new release of sagenb, make sure that:
-
-    * All changes are committed.
-
-    * ``.gitignore`` and ``MANIFEST.in`` are current.
-
-    * The notebook runs.
-
-    * The doctests pass: ``sage -t --sagenb``
-
-    * The notebook will be possible to install from the new SPKG without
-      an internet connection.
-
-      * Any dependencies that must be downloaded can be added in
-        ``util/fetch_deps.py`` and inserted in ``setup.py``.
-        Dependencies of dependencies need not be put in ``setup.py``,
-        but need to be put in ``util/fetch_deps.py`` (until we can make
-        it smarter).
-
-    * The Selenium tests pass (optional, for now).
-
-    * The localization file ``sagenb.pot`` is up-to-date.
-
-      * Run ``pybabel extract -F /path/to/babel.cfg /path/to/project -o
-        /path/to/sagenb.po`` (get pybabel with ``easy_install
-        pybabel``).
-
-      * Copy the headers from the existing ``sagenb.pot``.
-
-      * Replace ``sagenb.pot`` with ``sagenb.po``.
-
-    * Then, update the version in ``setup.py`` and commit this change.
-
-    * Run ``dist.sh``, optionally with a ``-g`` argument to package
-      the git repo too.
-
-    * Copy the newly generated ``dist/`` directory from the sagenb
-      repo to the SPKG's root directory and rename it ``src/``
-      , replacing the ``src/`` directory that is currently there
-
-    * Pack up the SPKG with ``sage --pkg --no-compress`` (because
-      everything in ``src/`` is already compressed)
-
-    * Install and test the new spkg: ``sage -f sagenb-*.spkg``
-
-    * Don't forget to push all changes in the sagenb repo to github.

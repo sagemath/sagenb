@@ -292,7 +292,7 @@ canvas3d = (function() {
 
     function render_model(ctx, transform, model) {
         if("color" in model)
-            ctx.strokeStyle = ("#" + model.color);
+            ctx.strokeStyle = model.color;
         else
             ctx.strokeStyle = "black";
 
@@ -319,6 +319,8 @@ canvas3d = (function() {
                         ctx.lineTo(points[j].x, points[j].y);
                 }
             }
+            if("face_colors" in model)
+                ctx.strokeStyle = model.face_colors[i]
             ctx.closePath();
             ctx.stroke();
         }

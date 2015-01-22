@@ -3029,7 +3029,6 @@ class Worksheet(object):
 import base64
 import sagenb.misc.support as _support_
 import sagenb.notebook.interact as _interact_ # for setting current cell id
-from sagenb.notebook.interact import interact
 
 DATA = %r
 DIR = %r
@@ -3044,7 +3043,6 @@ sage.misc.latex.EMBEDDED_MODE=True
 # gets removed from the sage library.
 from sagenb.notebook.all import *
 try:
-    from sage.misc.preparser import load
     load(os.path.join(os.environ['DOT_SAGE'], 'init.sage'), globals(),attach=True)
 except (KeyError, IOError):
     pass
