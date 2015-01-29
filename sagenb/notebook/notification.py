@@ -34,6 +34,9 @@ Message:
         record.fqdn = fqdn
         message = self.format(record)
 
-        for rcpt in self.conf['notification_recipients']:
+        recipients = self.conf['notification_recipients']
+        if recipients is None:
+            recipients = []
+        for rcpt in recipients:
             to = rcpt.strip()
             send_mail(from_address, to, subject, message)

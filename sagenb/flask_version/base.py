@@ -468,8 +468,7 @@ def create_app(path_to_notebook, *args, **kwds):
         from sagenb.notebook.notification import logger
         logger.exception(error)
         return app.message(
-            gettext('''500: Internal server error.
-            An e-mail has been sent to the administrator(s).'''),
+            gettext('''500: Internal server error.'''),
             username=getattr(g, 'username', 'guest')), 500
 
     #autoindex v0.3 doesnt seem to work with modules

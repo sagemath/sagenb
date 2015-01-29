@@ -32,7 +32,7 @@ defaults = {'word_wrap_cols':72,
 
             'ulimit':'',
 
-            'notification_recipients': ['root@localhost'],
+            'notification_recipients': None,
 
             'email':False,
 
