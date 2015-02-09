@@ -3341,29 +3341,13 @@ except (KeyError, IOError):
                 for X in filenames:
                     if os.path.split(X)[-1] == CODE_PY: continue
                     target = os.path.join(cell_dir, os.path.split(X)[1])
-                    try:
-                        # Since we now wipe the cell_dir above, the below should never
-                        # be triggered.
-                        #if os.path.exists(target):
-                        #    if os.path.islink(target) or os.path.isfile(target):
-                        #        os.unlink(target)
-                        #    else:
-                        #        shutil.rmtree(target)
-                        if os.path.isdir(X):
-                            shutil.copytree(X, target,
-                                            ignore=ignore_nonexistent_files)
-                        else:
-                            shutil.copy(X, target)
-                        set_restrictive_permissions(target)
-                        if os.path.isfile(X):
-                            try: 
-                                os.unlink(X)
-                            except: 
-                                pass
-                        else:
-                            shutil.rmtree(X, ignore_errors=True)
-                    except Exception, msg:
-                        print "Error copying file from worksheet process:", msg
+                    if os.path.isdir(X):
+                        shutil.copytree(X, target,
+                                        ignore=ignore_nonexistent_files)
+                        shutil.rmtree(X, ignore_errors=True)
+                    else:
+                        shutil.move(X, target)
+                    set_restrictive_permissions(target)
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())
