@@ -1,7 +1,6 @@
-# Ukrainian (Ukraine) translations for SAGE (www.sagemath.org)
-# Copyright (C) 2013 SAGE
-# This file is distributed under the same license as the SAGE project.
-# FIRST AUTHOR Olena O. Somenko <olenasmn@gmail.com>, 2015.
+# Ukrainian (Ukraine) translations for Sage (www.sagemath.org)
+# This file is distributed under the same license as the Sage project.
+# Olena O. Somenko <olenasmn@gmail.com>, 2015.
 #
 msgid ""
 msgstr ""
