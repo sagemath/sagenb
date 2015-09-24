@@ -3330,23 +3330,33 @@ except (KeyError, IOError):
             if len(filenames) > 0:
                 # Move files to the cell directory
                 cell_dir = os.path.abspath(self.cell_directory(C))
-                # we wipe the cell directory and make a new one
-                # to clean up any cruft (like dead symbolic links
-                # to temporary files that were deleted, old files from old evaluations,
-                # and things like that.
-                if os.path.exists(cell_dir):
+                # We wipe the cell directory and make a new one to
+                # clean up any cruft (like dead symbolic links to
+                # temporary files that were deleted, old files from
+                # old evaluations, ...).
+                try:
                     shutil.rmtree(cell_dir)
+                except OSError:
+                    # Probably the directory didn't exist. If there
+                    # is a different problem, the makedirs() below will
+                    # see it.
+                    pass
                 os.makedirs(cell_dir)
 
                 for X in filenames:
-                    if os.path.split(X)[-1] == CODE_PY: continue
+                    if os.path.split(X)[-1] == CODE_PY:
+                        continue
                     target = os.path.join(cell_dir, os.path.split(X)[1])
+                    # We move X to target. Note that we don't actually
+                    # do a rename: in a client/server setup, X might be
+                    # owned by a different Unix user than ourselves.
                     if os.path.isdir(X):
                         shutil.copytree(X, target,
                                         ignore=ignore_nonexistent_files)
                         shutil.rmtree(X, ignore_errors=True)
                     else:
-                        shutil.move(X, target)
+                        shutil.copy(X, target)
+                        os.unlink(X)
                     set_restrictive_permissions(target)
             # Generate html, etc.
             html = C.files_html(out)
