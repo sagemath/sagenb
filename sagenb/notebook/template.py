@@ -95,7 +95,6 @@ def clean_name(name):
     """
     return ''.join([x if x.isalnum() else '_' for x in name])
 
-
 def template(filename, **user_context):
     """
     Returns HTML, CSS, etc., for a template file rendered in the given

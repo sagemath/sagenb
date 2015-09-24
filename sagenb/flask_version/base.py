@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os, time, re
 from functools import partial
-from flask import Flask, Module, url_for, render_template, request, session, redirect, g, make_response, current_app
+from flask import Flask, Module, url_for, request, session, redirect, g, make_response, current_app, render_template
 from decorators import login_required, guest_or_login_required, with_lock
 from decorators import global_lock
 # Make flask use the old session foo from <=flask-0.9
