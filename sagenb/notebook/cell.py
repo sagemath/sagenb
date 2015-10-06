@@ -1771,7 +1771,7 @@ class Cell(Cell_generic):
                 try:
                     # Fill in the output template
                     output, html = self._interact_output
-                    output = self.parse_html(output, ncols)
+                    output = self.parse_html(output, ncols, False)
                     z = z.replace(INTERACT_TEXT, output)
                     z = z.replace(INTERACT_HTML, html)
                     return z
@@ -1798,16 +1798,15 @@ class Cell(Cell_generic):
         if raw:
             return s
 
+        pre_wrapping = len(s.strip()) > 0 and not \
+            (is_interact or self.is_html() or '<div class="docstring">' in s)
         if html:
-            s = self.parse_html(s, ncols)
-
-        if (not is_interact and not self.is_html() and len(s.strip()) > 0 and
-            '<div class="docstring">' not in s):
-            s = '<pre class="shrunk">' + s.strip('\n') + '</pre>'
-
+            s = self.parse_html(s, ncols, pre_wrapping)
+        elif pre_wrapping:
+            s = '<pre class="shrunk">{}</pre>'.format(s.strip('\n'))
         return s.strip('\n')
 
-    def parse_html(self, s, ncols):
+    def parse_html(self, s, ncols, pre_wrapping):
         r"""
         Parses HTML for output, escaping and wrapping HTML and
         removing script elements.
@@ -1817,6 +1816,8 @@ class Cell(Cell_generic):
         - ``s`` - a string; the HTML to parse
 
         - ``ncols`` - an integer; the number of word wrap columns
+        
+        - ``pre_wrapping`` -- boolean indicating necessity of wrapping in pre
 
         OUTPUT:
 
@@ -1832,7 +1833,10 @@ class Cell(Cell_generic):
             '&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0...Test</body>'
         """
         def format(x):
-            return word_wrap(escape(x), ncols)
+            x = word_wrap(escape(x), ncols)
+            if pre_wrapping:
+                x = '<pre class="shrunk">{}</pre>'.format(x)
+            return x
 
         def format_html(x):
             return self.process_cell_urls(x)
