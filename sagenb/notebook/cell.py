@@ -1797,14 +1797,14 @@ class Cell(Cell_generic):
 
         if raw:
             return s
-
+        s = s.strip('\n')
         pre_wrapping = len(s.strip()) > 0 and not \
             (is_interact or self.is_html() or '<div class="docstring">' in s)
         if html:
             s = self.parse_html(s, ncols, pre_wrapping)
         elif pre_wrapping:
-            s = '<pre class="shrunk">{}</pre>'.format(s.strip('\n'))
-        return s.strip('\n')
+            s = u'<pre class="shrunk">{}</pre>'.format(s)
+        return s
 
     def parse_html(self, s, ncols, pre_wrapping):
         r"""
@@ -1829,13 +1829,15 @@ class Cell(Cell_generic):
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', W)
-            sage: C.parse_html('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">\n<html><head></head><body>Test</body></html>', 80)
-            '&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0...Test</body>'
+            sage: C.parse_html('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">\n<html><head></head><body>Test</body></html>', 80, False)
+            '&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"&gt;\n<head></head><body>Test</body>'
+            sage: C.parse_html('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">\n<html><head></head><body>Test</body></html>', 80, True)
+            u'<pre class="shrunk">&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"&gt;\n</pre><head></head><body>Test</body>'
         """
         def format(x):
             x = word_wrap(escape(x), ncols)
             if pre_wrapping:
-                x = '<pre class="shrunk">{}</pre>'.format(x)
+                x = u'<pre class="shrunk">{}</pre>'.format(x)
             return x
 
         def format_html(x):
