@@ -70,8 +70,9 @@ class SageNBFlask(Flask):
                           view_func=partial(self.static_view_func, root_path))
 
     def message(self, msg, cont='/', username=None, **kwds):
+        from sagenb.misc.misc import SAGE_VERSION
         """Returns an error message to the user."""
-        template_dict = {'msg': msg, 'cont': cont, 'username': username}
+        template_dict = {'msg': msg, 'cont': cont, 'username': username, 'sage_version': SAGE_VERSION}
         template_dict.update(kwds)
         return render_template(os.path.join('html', 'error_message.html'),
                                **template_dict)
