@@ -39,6 +39,9 @@ msgstr "русский (Россия)"
 msgid "fr_FR"
 msgstr "français (France)"
 
+msgid "uk_UA"
+msgstr "українська (Україна)"
+
 #: data/sage/html/base.html:31
 #: data/sage/html/login.html:35
 msgid "The Sage Notebook"
