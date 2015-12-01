@@ -39,6 +39,9 @@ msgstr "español (España)"
 msgid "fr_FR"
 msgstr "français (France)"
 
+msgid "uk_UA"
+msgstr "українська (Україна)"
+
 #: sagenb/data/sage/html/accounts/account_recovery.html:3
 #: sagenb/data/sage/html/accounts/account_recovery.html:8
 msgid "Account Recovery"

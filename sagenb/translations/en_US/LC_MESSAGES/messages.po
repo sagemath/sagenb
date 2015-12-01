@@ -39,3 +39,5 @@ msgstr "русский (Россия)"
 msgid "fr_FR"
 msgstr "français (France)"
 
+msgid "uk_UA"
+msgstr "українська (Україна)"
