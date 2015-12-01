@@ -277,7 +277,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         if self._expect is None:
             self._is_computing = False
         else:
-            self._so_far = self._expect.before
+            self._so_far += self._expect.before
             
         import re
         v = re.findall('START%s.*%s'%(self._number,self._prompt), self._so_far, re.DOTALL)
