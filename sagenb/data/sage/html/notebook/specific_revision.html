@@ -27,7 +27,7 @@
 {% block after_sharebar %}
 {{ actions() }}
 <div id="revision-data">
-    {{ worksheet.html(do_print=true, publish=true, username=username) }}
+    {{ worksheet.html(do_print=true, publish=true, username=username) | safe }}
 </div>
 {{ actions() }}
 <!--<script type="text/javascript">

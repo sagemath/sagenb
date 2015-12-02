@@ -61,7 +61,7 @@ INPUT:
 {% if worksheet.filename() %}
 <script  type="text/javascript">
     worksheet_filename = "{{ worksheet.filename() }}";
-    worksheet_name = {{ worksheet.name()|repr_str }};
+    worksheet_name = {{ worksheet.name() | repr_str | safe }};
     {% if not worksheet.is_published() or worksheet.notebook().conf()['pub_interact'] %}
         server_ping_while_alive();
     {% endif %}
@@ -82,7 +82,7 @@ INPUT:
            title="{{ gettext('Click to rename this worksheet') }}">
             {{ worksheet.name() }}
         </a>
-        <div><span class="lastedit">{{ gettext('last edited') }} {{ worksheet.html_time_last_edited(username) }}</span></div>
+        <div><span class="lastedit">{{ gettext('last edited') }} {{ worksheet.html_time_last_edited(username) | safe }}</span></div>
         {% if worksheet.warn_about_other_person_editing(username) and username != 'guest' and not worksheet.docbrowser() and not worksheet.is_published() %}
         <span class="pingdown">({{ gettext('Someone else is viewing this worksheet') }})</span>
         {% endif %}

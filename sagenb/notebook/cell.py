@@ -551,7 +551,11 @@ class TextCell(Cell_generic):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: from sagenb.flask_version import base # random output -- depends on warnings issued by other sage packages
+            sage: app = base.create_app(tmp_dir(ext='.sagenb'))
+            sage: ctx = app.app_context()
+            sage: ctx.push()
+            sage: nb = base.notebook
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
             sage: C = sagenb.notebook.cell.TextCell(0, '2+3', W)

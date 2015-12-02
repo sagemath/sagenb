@@ -448,10 +448,12 @@ class reCAPTCHAChallenge(AbstractChallenge):
 
         TESTS::
 
+            sage: from sagenb.flask_version import base # random output -- depends on warnings issued by other sage packages
+            sage: app = base.create_app(tmp_dir(ext='.sagenb'))
+            sage: ctx = app.app_context()
+            sage: ctx.push()
+            sage: nb = base.notebook
             sage: from sagenb.notebook.challenge import reCAPTCHAChallenge
-            sage: tmp = tmp_dir(ext='.sagenb')
-            sage: import sagenb.notebook.notebook as n
-            sage: nb = n.Notebook(tmp)
             sage: chal = reCAPTCHAChallenge(nb.conf(), remote_ip = 'localhost')
             sage: chal.html()
             u'...recaptcha...'

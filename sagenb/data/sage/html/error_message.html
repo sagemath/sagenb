@@ -12,7 +12,7 @@
 
 {% block main %}
 <div>
-    {{ msg }}
+    {{ msg | safe }}
 </div>
 {% if cont %}
 <div style="padding: 1.0em; text-align: center;">
