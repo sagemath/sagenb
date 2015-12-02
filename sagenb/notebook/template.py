@@ -114,6 +114,10 @@ def template(filename, **user_context):
 
     EXAMPLES::
 
+        sage: from sagenb.flask_version import base # random output -- depends on warnings issued by other sage packages
+        sage: app = base.create_app(tmp_dir(ext='.sagenb'))
+        sage: ctx = app.app_context()
+        sage: ctx.push()
         sage: from sagenb.notebook.template import template
         sage: s = template(os.path.join('html', 'yes_no.html')); type(s)
         <type 'unicode'>

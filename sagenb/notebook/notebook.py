@@ -1323,7 +1323,11 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: from sagenb.flask_version import base # random output -- depends on warnings issued by other sage packages
+            sage: app = base.create_app(tmp_dir(ext='.sagenb'))
+            sage: ctx = app.app_context()
+            sage: ctx.push()
+            sage: nb = base.notebook
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.body()
