@@ -1323,7 +1323,11 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: from sagenb.flask_version import base # random output -- depends on warnings issued by other sage packages
+            sage: app = base.create_app(tmp_dir(ext='.sagenb'))
+            sage: ctx = app.app_context()
+            sage: ctx.push()
+            sage: nb = base.notebook
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Test', 'admin')
             sage: W.body()
@@ -1724,7 +1728,7 @@ class Notebook(object):
 
         from flask import current_app
         if W is None:
-            return current_app.message(gettext("The worksheet does not exist"))
+            return current_app.message(gettext("The worksheet does not exist"), username=username)
 
         if W.docbrowser() or W.is_published():
             if W.is_published() or self.user_manager().user_is_guest(username):

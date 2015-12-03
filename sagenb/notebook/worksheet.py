@@ -1431,7 +1431,11 @@ class Worksheet(object):
 
         EXAMPLES::
 
-            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: from sagenb.flask_version import base # random output -- depends on warnings issued by other sage packages
+            sage: app = base.create_app(tmp_dir(ext='.sagenb'))
+            sage: ctx = app.app_context()
+            sage: ctx.push()
+            sage: nb = base.notebook
             sage: nb.create_default_users('password')
             sage: W = nb.create_new_worksheet('Publish Test', 'admin')
             sage: W.rate(0, 'this lacks content', 'riemann')
@@ -3330,40 +3334,34 @@ except (KeyError, IOError):
             if len(filenames) > 0:
                 # Move files to the cell directory
                 cell_dir = os.path.abspath(self.cell_directory(C))
-                # we wipe the cell directory and make a new one
-                # to clean up any cruft (like dead symbolic links
-                # to temporary files that were deleted, old files from old evaluations,
-                # and things like that.
-                if os.path.exists(cell_dir):
+                # We wipe the cell directory and make a new one to
+                # clean up any cruft (like dead symbolic links to
+                # temporary files that were deleted, old files from
+                # old evaluations, ...).
+                try:
                     shutil.rmtree(cell_dir)
+                except OSError:
+                    # Probably the directory didn't exist. If there
+                    # is a different problem, the makedirs() below will
+                    # see it.
+                    pass
                 os.makedirs(cell_dir)
 
                 for X in filenames:
-                    if os.path.split(X)[-1] == CODE_PY: continue
+                    if os.path.split(X)[-1] == CODE_PY:
+                        continue
                     target = os.path.join(cell_dir, os.path.split(X)[1])
-                    try:
-                        # Since we now wipe the cell_dir above, the below should never
-                        # be triggered.
-                        #if os.path.exists(target):
-                        #    if os.path.islink(target) or os.path.isfile(target):
-                        #        os.unlink(target)
-                        #    else:
-                        #        shutil.rmtree(target)
-                        if os.path.isdir(X):
-                            shutil.copytree(X, target,
-                                            ignore=ignore_nonexistent_files)
-                        else:
-                            shutil.copy(X, target)
-                        set_restrictive_permissions(target)
-                        if os.path.isfile(X):
-                            try: 
-                                os.unlink(X)
-                            except: 
-                                pass
-                        else:
-                            shutil.rmtree(X, ignore_errors=True)
-                    except Exception, msg:
-                        print "Error copying file from worksheet process:", msg
+                    # We move X to target. Note that we don't actually
+                    # do a rename: in a client/server setup, X might be
+                    # owned by a different Unix user than ourselves.
+                    if os.path.isdir(X):
+                        shutil.copytree(X, target,
+                                        ignore=ignore_nonexistent_files)
+                        shutil.rmtree(X, ignore_errors=True)
+                    else:
+                        shutil.copy(X, target)
+                        os.unlink(X)
+                    set_restrictive_permissions(target)
             # Generate html, etc.
             html = C.files_html(out)
             C.set_output_text(out, html, sage=self.sage())

@@ -96,7 +96,7 @@ class NotebookObject:
 
           .. warning::
 
-              If you are running a server for others to log into, set `automatic_login=False`.
+              If you are running a server for others to log into, set ``automatic_login=False``.
               Otherwise, all of the worksheets on the entire server will be loaded when the server
               automatically logs into the admin account.
 
@@ -125,8 +125,8 @@ class NotebookObject:
 
     .. note::
 
-       The ``require_login`` option has been removed.  Use `automatic_login` to control
-       automatic logins instead---`automatic_login=False` corresponds to `require_login=True`.
+       The ``require_login`` option has been removed.  Use ``automatic_login`` to control
+       automatic logins instead---``automatic_login=False`` corresponds to ``require_login=True``.
 
     EXAMPLES:
 

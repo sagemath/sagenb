@@ -39,7 +39,7 @@ INPUT:
             </script>
     {% endif %}
     <div class="text_cell" id="cell_text_{{ cell.id() }}">
-      {{ cell.plain_text() }}
+      {{ cell.plain_text() | safe }}
     </div>
 {% if JEDITABLE_TINYMCE and not cell.worksheet().is_published() and not cell.worksheet().docbrowser() and not do_print and not publish %}
     <script type="text/javascript">
@@ -57,7 +57,7 @@ INPUT:
             cancel : "{{ gettext('Cancel changes') }}",
             event  : "dblclick",
             style  : "inherit",
-	    data   : {{ cell.plain_text()|repr_str }}
+	    data   : {{ cell.plain_text()|repr_str| safe }}
         });
     </script>
 {% endif %}

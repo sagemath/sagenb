@@ -7,5 +7,5 @@
 {% set select = "text" %}
 
 {% block after_sharebar %}
-<pre class="plaintext" id="cell_intext" name="textfield">{{ worksheet.plain_text(prompts=true, banner=false)|escape|trim }}</pre>
+<pre class="plaintext" id="cell_intext" name="textfield">{{ worksheet.plain_text(prompts=true, banner=false)|trim }}</pre>
 {% endblock %}

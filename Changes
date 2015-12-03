@@ -1,3 +1,8 @@
+0.11.5      Dec 02 2015
+ - Ukrainian translation
+ - security update in Jinja2
+ - file move update and other smaller changes
+
 0.11.4      Jan 29 2015
  - Email default changed to empty list
 

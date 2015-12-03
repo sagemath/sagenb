@@ -35,6 +35,9 @@ msgstr "русский (Россия)"
 msgid "fr_FR"
 msgstr "français (France)"
 
+msgid "uk_UA"
+msgstr "українська (Україна)"
+
 #: flask_version/admin.py:67
 #, python-format
 msgid ""

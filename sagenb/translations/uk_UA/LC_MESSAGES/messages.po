@@ -1,0 +1,2586 @@
+# Ukrainian (Ukraine) translations for Sage (www.sagemath.org)
+# This file is distributed under the same license as the Sage project.
+# Olena O. Somenko <olenasmn@gmail.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sagenb\n"
+"Report-Msgid-Bugs-To: <olenasmn@gmail.com>\n"
+"POT-Creation-Date: 2015-07-16 11:00+0300\n"
+"PO-Revision-Date: 2015-07-20 15:29+0300\n"
+"Last-Translator: Olena O. Somenko <olenasmn@gmail.com>\n"
+"Language-Team: Olena O. Somenko <olenasmn@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+"X-Generator: Poedit 1.8.2\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: uk_UA\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+msgid "cs_CZ"
+msgstr "čeština (Česká republika)"
+
+msgid "de_AT"
+msgstr "Deutsch (Österreich)"
+
+msgid "en_US"
+msgstr "English (United States)"
+
+msgid "es_ES"
+msgstr "español (España)"
+
+msgid "pt_BR"
+msgstr "português (Brasil)"
+
+msgid "ru_RU"
+msgstr "русский (Россия)"
+
+msgid "fr_FR"
+msgstr "français (France)"
+
+msgid "uk_UA"
+msgstr "українська (Україна)"
+
+#: flask_version/admin.py:67
+#, python-format
+msgid ""
+"The temporary password for the new user <em>%(username)s</em> is <em>"
+"%(password)s</em>"
+msgstr ""
+"Тимчасовий пароль для нового користувача <em>%(username)s</em>: <em>"
+"%(password)s</em>"
+
+#: flask_version/admin.py:69
+msgid "New User"
+msgstr "Новий користувач"
+
+#: flask_version/authentication.py:258
+msgid "The confirmation system is not active."
+msgstr "Система підтвердження не активна."
+
+#: flask_version/authentication.py:261
+msgid ""
+"    <h1>Invalid confirmation key</h1>\n"
+"    <p>You are reporting a confirmation key that has not been assigned by "
+"this\n"
+"    server. Please <a href=\"/register\">register</a> with the server.</p>\n"
+"    "
+msgstr ""
+"    <h1>Невірний ключ підтвердження</h1>\n"
+"    <p>Ви надали ключ підтвердження, який не зв'язаний із цим сервером.\n"
+"    Будь-ласка, <a href=\"/register\">зареєструйтесь</a> на сервері.</p>\n"
+"    "
+
+#: flask_version/authentication.py:272
+#, python-format
+msgid "<h1>Email address confirmed for user %(username)s</h1>"
+msgstr ""
+"<h1>Адреса електронної пошти підтверджена для користувача %(username)s</h1>"
+
+#: flask_version/authentication.py:274
+msgid "Email Confirmed"
+msgstr "Адресу електронної пошти підтверджено"
+
+#: flask_version/base.py:226 sagenb/data/sage/html/base_authenticated.html:15
+msgid "Log"
+msgstr "Журнал"
+
+#: flask_version/decorators.py:35
+msgid "You do not have permission to access this location"
+msgstr "Ви не маєте прав для доступу до цієї сторінки"
+
+#: flask_version/worksheet.py:27 flask_version/worksheet.py:36
+#: flask_version/worksheet_listing.py:195
+msgid "You do not have permission to access this worksheet"
+msgstr "Ви не маєте прав для доступу до цього робочого аркуша"
+
+#: flask_version/worksheet.py:75 flask_version/worksheet.py:951
+#: sagenb/data/sage/html/notebook/worksheet_page.html:28
+#: sagenb/notebook/misc.py:237 ../sagenb/notebook/worksheet.py:703
+#: sagenb/notebook/worksheet.py:723 ../sagenb/notebook/worksheet.py:4230
+msgid "Untitled"
+msgstr "Без назви"
+
+#: flask_version/worksheet.py:578
+msgid "Error: can't add more than 500 collaborators at a time"
+msgstr "Помилка: не можна додати більше 500 співавторів за один раз"
+
+#: flask_version/worksheet.py:631 sagenb/data/sage/html/error_message.html:4
+#: sagenb/data/sage/html/login.html:69 sagenb/data/sage/html/login.html:76
+#: sagenb/data/sage/html/login.html:104 sagenb/data/sage/html/login.html:106
+#: sagenb/data/sage/html/recaptcha.html:27
+#: sagenb/data/sage/html/test_report.html:112
+#: sagenb/data/sage/html/test_report.html:131
+#: sagenb/data/sage/html/accounts/registration.html:22
+#: sagenb/data/sage/html/accounts/registration.html:25
+#: sagenb/data/sage/html/accounts/registration.html:28
+#: sagenb/data/sage/html/accounts/registration.html:39
+#: sagenb/data/sage/html/accounts/registration.html:42
+#: sagenb/data/sage/html/accounts/registration.html:49
+#: sagenb/data/sage/html/accounts/registration.html:62
+#: sagenb/data/sage/html/accounts/registration.html:65
+#: sagenb/data/sage/html/accounts/registration.html:74
+#: sagenb/data/sage/html/accounts/registration.html:77
+#: sagenb/data/sage/html/settings/admin_add_user.html:17
+#: sagenb/data/sage/html/settings/admin_add_user.html:19
+#: sagenb/data/sage/js/translated-messages.js:17
+msgid "Error"
+msgstr "Помилка"
+
+#: flask_version/worksheet.py:661
+msgid "No data files"
+msgstr "Немає файлів даних"
+
+#: flask_version/worksheet.py:702
+msgid "illegal link attempt!"
+msgstr "спроба доступу за невірним посиланням!"
+
+#: flask_version/worksheet.py:704
+msgid ""
+"The data filename already exists in other worksheet\n"
+"Delete the file in the other worksheet before creating a link."
+msgstr ""
+"Файл з вибраною назвою вже існує в іншому робочому аркуші.\n"
+"Видаліть файл в іншому аркуші перед створенням зв'язаної копії."
+
+#: flask_version/worksheet.py:720
+#, python-format
+msgid ""
+" Return to <a href=\"%(upload_url)s\" title=\"Upload or create a data file "
+"in a wide range of formats\"><strong>Upload or Create Data File</strong></a> "
+"or <a href=\"%(worksheet_url)s\" title=\"Interactively use the worksheet"
+"\"><strong>%(worksheet_name)s</strong></a>."
+msgstr ""
+" Повернутися до <a href=\"%(upload_url)s\" title=\"Завантажити або створити "
+"файл даних в одному із підтримуваних форматів\"><strong>Завантажити або "
+"створити файл даних</strong></a> або <a href=\"%(worksheet_url)s\" title="
+"\"Інтерактивно використовувати робочий аркуш\"><strong>%(worksheet_name)s</"
+"strong></a>."
+
+#: flask_version/worksheet.py:724
+#, python-format
+msgid "Error uploading file (missing field \"file\"). %(backlinks)s"
+msgstr "Помилка завантаження файлу (відсутнє поле \"Файл\"). %(backlinks)s"
+
+#: flask_version/worksheet.py:731
+#, python-format
+msgid "Error uploading file (missing %(field)s arg).%(backlinks)s"
+msgstr ""
+"Помилка завантаження файлу (відсутній аргумент %(field)s arg).%(backlinks)s"
+
+#: flask_version/worksheet.py:744
+#, python-format
+msgid "Error uploading file (missing filename).%(backlinks)s"
+msgstr "Помилка завантаження файлу (відсутнє ім'я файлу).%(backlinks)s"
+
+#: flask_version/worksheet.py:752
+#, python-format
+msgid "URL must start with http, https, or ftp.%(backlinks)s"
+msgstr "Посилання має починатися з http, https, або ftp.%(backlinks)s"
+
+#: flask_version/worksheet.py:759
+#, python-format
+msgid ""
+"Suspicious filename \"%(filename)s\" encountered uploading file.%(backlinks)s"
+msgstr ""
+"Підозріле ім'я файлу \"%(filename)s\" виявлено при завантаженні файлу."
+"%(backlinks)s"
+
+#: flask_version/worksheet.py:874
+msgid "No such worksheet."
+msgstr "Запитуваний робочий аркуш не знайдено."
+
+#: flask_version/worksheet.py:959
+msgid "Document does not exist."
+msgstr "Запитуваного документу не існує."
+
+#: flask_version/worksheet_listing.py:57
+msgid "Error displaying worksheet listing."
+msgstr "Помилка при відображенні списку робочих аркушів."
+
+#: flask_version/worksheet_listing.py:176
+msgid "Requested public worksheet does not exist"
+msgstr "Запитуваного опублікованого робочого аркуша не існує"
+
+#: flask_version/worksheet_listing.py:295
+#, python-format
+msgid ""
+"This Sage notebook is not configured to load worksheets from 'https' URLs. "
+"Try a different URL or download the worksheet and upload it directly from "
+"your computer.\n"
+"%(backlinks)s"
+msgstr ""
+"Цей Sage Notebook-сервер не налаштований для завантаження робочих аркушів за "
+"посиланнями, що починаються з https. Спробуйте інше посилання або завантажте "
+"файл робочого аркуша, а потім вивантажте його безпосередньо зі свого "
+"комп'ютера.\n"
+"%(backlinks)s"
+
+#: flask_version/worksheet_listing.py:357
+msgid ""
+"Return to <a href=\"/upload\" title=\"Upload a worksheet\"><strong>Upload "
+"File</strong></a>."
+msgstr ""
+"Повернутися до <a href=\"/upload\" title=\"Завантажити робочий аркуш"
+"\"><strong>Завантажити файл</strong></a>."
+
+#: flask_version/worksheet_listing.py:380
+#, python-format
+msgid ""
+"Please specify a worksheet to load.\n"
+"%(backlinks)s"
+msgstr ""
+"Будь-ласка, вкажіть робочий аркуш для завантаження.\n"
+"%(backlinks)s"
+
+#: flask_version/worksheet_listing.py:384
+#, python-format
+msgid ""
+"Invalid filename.\n"
+"%(backlinks)s"
+msgstr ""
+"Неправильне ім'я файлу.\n"
+"%(backlinks)s"
+
+#: flask_version/worksheet_listing.py:425
+#, python-format
+msgid ""
+"There was an error uploading the worksheet.  It could be an old unsupported "
+"format or worse.  If you desperately need its contents contact the <a href="
+"\"http://groups.google.com/group/sage-support\">sage-support group</a> and "
+"post a link to your worksheet.  Alternatively, an sws file is just a bzip2 "
+"tarball; take a look inside!\n"
+"%(backlinks)s"
+msgstr ""
+"Виникла помилка при завантаженні робочого аркуша.  Це може бути старий "
+"непідтримуваний формат або пошкоджений файл. Якщо вам все ж дуже потрібний "
+"вміст цього файлу, напишіть до <a href=\"http://groups.google.com/group/sage-"
+"support\">sage-support group</a> і дайте посилання на ваш робочий аркуш.  В "
+"іншому випадку, спробуйте подивитися всередину sws файлу: це текстовий файл "
+"у tarr-архіві, стиснутому bzip2!\n"
+"%(backlinks)s"
+
+#: flask_version/worksheet_listing.py:436
+#, python-format
+msgid "Error uploading worksheet '%(msg)s'.%(backlinks)s"
+msgstr "Помилка при завантаженні робочого аркуша '%(msg)s'.%(backlinks)s"
+
+#: sagenb/data/sage/html/base.html:33 ../sagenb/data/sage/html/login.html:35
+msgid "The Sage Notebook"
+msgstr "Sage Notebook"
+
+#: sagenb/data/sage/html/base.html:35
+msgid "Searching for Sage server..."
+msgstr "Пошук сервера Sage..."
+
+#: sagenb/data/sage/html/base.html:37
+msgid "Version"
+msgstr "Версія"
+
+#: sagenb/data/sage/html/base_authenticated.html:7
+msgid "Please log in to the Sage notebook"
+msgstr "Будь-ласка, увійдіть до Sage Notebook"
+
+#: sagenb/data/sage/html/base_authenticated.html:7
+msgid "Log in"
+msgstr "Увійти"
+
+#: sagenb/data/sage/html/base_authenticated.html:9
+msgid "Toggle the top bar"
+msgstr "Перемикач верхньої панелі"
+
+#: sagenb/data/sage/html/base_authenticated.html:9
+#: sagenb/data/sage/html/test_report.html:123
+msgid "Toggle"
+msgstr "Перемкнути"
+
+#: sagenb/data/sage/html/base_authenticated.html:10
+msgid "Back to your personal worksheet list"
+msgstr "Повернутися до списку ваших робочих аркушів"
+
+#: sagenb/data/sage/html/base_authenticated.html:10
+msgid "Home"
+msgstr "Додому"
+
+#: sagenb/data/sage/html/base_authenticated.html:12
+#: sagenb/data/sage/html/base_authenticated.html:14
+msgid "Published"
+msgstr "Опубліковані"
+
+#: sagenb/data/sage/html/base_authenticated.html:14
+msgid "Browse the published worksheets"
+msgstr "Переглянути опубліковані робочі аркуші"
+
+#: sagenb/data/sage/html/base_authenticated.html:15
+msgid "View a log of recent computations"
+msgstr "Переглянути історію останніх обчислень"
+
+#: sagenb/data/sage/html/base_authenticated.html:17
+msgid "Change account settings including password"
+msgstr "Змінити налаштування облікового запису, включаючи пароль"
+
+#: sagenb/data/sage/html/base_authenticated.html:17
+msgid "Settings"
+msgstr "Налаштування"
+
+#: sagenb/data/sage/html/base_authenticated.html:18
+msgid "Documentation"
+msgstr "Документація"
+
+#: sagenb/data/sage/html/base_authenticated.html:18
+msgid "Help"
+msgstr "Допомога"
+
+#: sagenb/data/sage/html/base_authenticated.html:19
+msgid "Report a problem or submit a bug to improve Sage"
+msgstr ""
+"Повідомити про проблему або відправити звіт про помилку для покращення "
+"роботи Sage"
+
+#: sagenb/data/sage/html/base_authenticated.html:19
+msgid "Report a Problem"
+msgstr "Повідомити про проблему"
+
+#: sagenb/data/sage/html/base_authenticated.html:20
+msgid "Log out of the Sage notebook"
+msgstr "Вийти із Sage Notebook"
+
+#: sagenb/data/sage/html/base_authenticated.html:20
+msgid "Sign out"
+msgstr "Вийти"
+
+#: sagenb/data/sage/html/docs.html:3
+msgid "Sage Documentation"
+msgstr "Документація Sage"
+
+#: sagenb/data/sage/html/docs.html:15
+msgid "To quickly try out Sage start here"
+msgstr "Для швидкого знайомства з Sage, почніть тут"
+
+#: sagenb/data/sage/html/docs.html:15
+msgid "Tutorial"
+msgstr "Практичні рекомендації"
+
+#: sagenb/data/sage/html/docs.html:16
+msgid "Explore a collection of in-depth tutorials on specific topics"
+msgstr "Переглянути колекцію підібраних практичних рекомендацій з окремих тем"
+
+#: sagenb/data/sage/html/docs.html:16
+msgid "Thematic Tutorials"
+msgstr "Тематичні практичні рекомендації"
+
+#: sagenb/data/sage/html/docs.html:17
+msgid "View a 4000+ page reference manual about Sage"
+msgstr "Переглянути 4000+ сторінок інструкції користувача Sage"
+
+#: sagenb/data/sage/html/docs.html:17
+msgid "Reference Manual"
+msgstr "Інструкція користувача"
+
+#: sagenb/data/sage/html/docs.html:18
+msgid "Learn to write Sage programs"
+msgstr "Навчитися писати програми в Sage"
+
+#: sagenb/data/sage/html/docs.html:18
+msgid "Developer Guide"
+msgstr "Інструкція розробника"
+
+#: sagenb/data/sage/html/docs.html:19
+msgid "How do I construct ... in Sage?"
+msgstr "Як мені створити ... в Sage?"
+
+#: sagenb/data/sage/html/docs.html:19
+msgid "Constructions"
+msgstr "Програмні конструкції"
+
+#: sagenb/data/sage/html/docs.html:22
+msgid "Static version..."
+msgstr "Статична версія..."
+
+#: sagenb/data/sage/html/docs.html:22
+msgid "Fast Static Versions of the Documentation"
+msgstr "Швидка статична версія документації"
+
+#: sagenb/data/sage/html/docs.html:23
+msgid "Help via Internet Chat (IRC)"
+msgstr "Допомога на каналі IRC (Інтернет-чат)"
+
+#: sagenb/data/sage/html/docs.html:29
+msgid "How to use the Sage Notebook"
+msgstr "Як користуватися Sage Notebook"
+
+#: sagenb/data/sage/html/docs.html:31
+msgid ""
+"A <em>worksheet</em> is an ordered list of Sage calculations with output."
+msgstr ""
+"<em>Робочий аркуш</em> — це впорядкований список обчислень Sage із "
+"результатами."
+
+#: sagenb/data/sage/html/docs.html:32
+msgid "A <em>session</em> is a worksheet and a set of variables in some state."
+msgstr "<em>Сесія</em> — це робочий аркуш і набір змінних у деякому стані."
+
+#: sagenb/data/sage/html/docs.html:33
+msgid ""
+"The <em>Sage notebook</em> is a collection of worksheets, saved objects, and "
+"user information."
+msgstr ""
+"<em>Sage Notebook</em> — це колекція робочих аркушів, збережених об'єктів та "
+"інформації користувача."
+
+#: sagenb/data/sage/html/docs.html:46
+msgid ""
+"The Sage Notebook was primarily written by William Stein with substantial "
+"contributions from Tom Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, "
+"Bobby Moretti, Yi Qiang, and Dorian Raymer."
+msgstr ""
+"Sage Notebook був спершу створений William Stein, із суттєвим внеском Tom "
+"Boothby, Timothy Clemans, Alex Clemesha, Mike Hansen, Bobby Moretti, Yi "
+"Qiang, і Dorian Raymer."
+
+#: sagenb/data/sage/html/error_message.html:19
+msgid "Continue"
+msgstr "Продовжити"
+
+#: sagenb/data/sage/html/history.html:3
+#, python-format
+msgid "Sage: History for %(u)s"
+msgstr "Sage: Історія для %(u)s"
+
+#: sagenb/data/sage/html/history.html:13
+msgid "Click here to turn the above into a Sage worksheet"
+msgstr "Натисніть тут, щоб відкрити вибране як робочий аркуш Sage"
+
+#: sagenb/data/sage/html/history.html:13
+msgid ""
+"Create a new Sage worksheet version of the last 100 commands in the above "
+"log."
+msgstr "Створити новий робочий аркуш Sage із останніх 100 команд з історії."
+
+#: sagenb/data/sage/html/login.html:12
+msgid "username"
+msgstr "Ім'я користувача:"
+
+#: sagenb/data/sage/html/login.html:13
+msgid "Select an OpenID provider"
+msgstr "Виберіть провайдера OpenID"
+
+#: sagenb/data/sage/html/login.html:14
+msgid "Send"
+msgstr "Відправити"
+
+#: sagenb/data/sage/html/login.html:22 sagenb/data/sage/html/login.html:84
+msgid "Sign in"
+msgstr "Увійти"
+
+#: sagenb/data/sage/html/login.html:28
+#, python-format
+msgid "Congratulations %(u)s! You can now sign into the Sage Notebook."
+msgstr "Вітаємо %(u)s! Тепер ви можете увійти до Sage Notebook."
+
+#: sagenb/data/sage/html/login.html:32
+msgid "Welcome!"
+msgstr "Ласкаво просимо!"
+
+#: sagenb/data/sage/html/login.html:33
+msgid "<strong>Sage</strong> is a different approach to mathematics software."
+msgstr ""
+"<strong>Sage</strong> — це інший підхід до математичного програмного "
+"забезпечення."
+
+#: sagenb/data/sage/html/login.html:36
+msgid ""
+"With the Sage Notebook anyone can create, collaborate on, and publish "
+"interactive worksheets. In a worksheet, one can write code using Sage, "
+"Python, and other software included in Sage."
+msgstr ""
+"За допомогою Sage Notebook можна створювати інтерактивні робочі аркуші, "
+"спільно працювати над ними та публікувати їх. У робочому аркуші можна писати "
+"код, використовуючи Sage, Python та інше програмне забезпечення, яке "
+"включено до Sage."
+
+#: sagenb/data/sage/html/login.html:39
+msgid "General and Advanced Pure and Applied Mathematics"
+msgstr "Загальна, вища, чиста і прикладна математика"
+
+#: sagenb/data/sage/html/login.html:40
+msgid ""
+"Use Sage for studying calculus, elementary to very advanced number theory, "
+"cryptography, commutative algebra, group theory, graph theory, numerical and "
+"exact linear algebra, and more."
+msgstr ""
+"Використовуйте Sage для вивчення математичного аналізу, елементарної та "
+"розширеної теорії чисел, криптографії, комутативної алгебри, теорії груп, "
+"теорії графів, класичної і численної лінійної алгебри та багато чого іншого."
+
+#: sagenb/data/sage/html/login.html:43
+msgid "Use an Open Source Alternative"
+msgstr "Використовуйте вільнорозповсюджувану альтернативу"
+
+#: sagenb/data/sage/html/login.html:44
+msgid ""
+"By using Sage you help to support a viable open source alternative to Magma, "
+"Maple, Mathematica, and MATLAB. Sage includes many high-quality open source "
+"math packages."
+msgstr ""
+"Використовуючи Sage, ви допомагаєте підтримувати вільнорозповсюджувану "
+"альтернативу Magma, Maple, Mathematica і MATLAB. Sage містить велику "
+"кількість високоякісних математичних пакетів із відкритим вихідним кодом."
+
+#: sagenb/data/sage/html/login.html:47
+msgid "Use Most Mathematics Software from Within Sage"
+msgstr "Використовуйте більшість математичних програм безпосередньо в Sage"
+
+#: sagenb/data/sage/html/login.html:48
+msgid ""
+"Sage makes it easy for you to use most mathematics software together. Sage "
+"includes GAP, GP/PARI, Maxima, and Singular, and dozens of other open "
+"packages."
+msgstr ""
+"За допомогою Sage дуже легко одночасно користуватися більшістю математичних "
+"програм. Sage включає в себе GAP, GP/PARI, Maxima і Singular та багато інших "
+"відкритих пакетів програмного забезпечення."
+
+#: sagenb/data/sage/html/login.html:51
+msgid "Use a Mainstream Programming Language"
+msgstr "Використовуйте сучасну широко розповсюджену мову програмування"
+
+#: sagenb/data/sage/html/login.html:52
+msgid ""
+"You work with Sage using the highly regarded scripting language Python. You "
+"can write programs that combine serious mathematics with anything else."
+msgstr ""
+"Працюючи з Sage, ви використовуєте високо оцінену скриптову мову Python. Ви "
+"можете писати програми, у яких серйозна математика поєднується із будь-чим."
+
+#: sagenb/data/sage/html/login.html:55
+msgid "Acknowledgement"
+msgstr "Подяка"
+
+#: sagenb/data/sage/html/login.html:56
+msgid ""
+"The Sage Notebook is based upon work supported by the National Science "
+"Foundation under grants DMS-0821725, DMS-1020378, DMS-0713225, DMS-0555776, "
+"DMS-0545904, DMS-0838212, DMS-0757627, DUE-1020378, DUE-1022574, "
+"DMS-1015114, etc.    Any opinions, findings, and conclusions or "
+"recommendations expressed in this material are those of the author(s) and do "
+"not necessarily reflect the views of the National Science Foundation.   See "
+"also <a href=\"http://sagemath.org/development-ack.html\">http://sagemath."
+"org/development-ack.html</a>."
+msgstr ""
+"Sage Notebook базується на роботі, підтримуваній National Science Foundation "
+"в рамках грантів DMS-0821725, DMS-1020378, DMS-0713225, DMS-0555776, "
+"DMS-0545904, DMS-0838212, DMS-0757627, DUE-1020378, DUE-1022574, DMS-1015114 "
+"та ін.    Будь-які думки, знахідки, висновки чи рекомендації, представлені "
+"тут, є особистою позицією автора(ів) і можуть не співпадати із поглядами "
+"National Science Foundation.   Див. також <a href=\"http://sagemath.org/"
+"development-ack.html\">http://sagemath.org/development-ack.html</a>."
+
+#: sagenb/data/sage/html/login.html:66
+#: sagenb/data/sage/html/accounts/account_recovery.html:13
+msgid "Username"
+msgstr "Ім'я користувача:"
+
+#: sagenb/data/sage/html/login.html:69
+msgid "Username is not in the system"
+msgstr "Ім'я користувача не знайдено в системі"
+
+#: sagenb/data/sage/html/login.html:73
+#: sagenb/data/sage/html/settings/user_management.html:13
+msgid "Password"
+msgstr "Пароль"
+
+#: sagenb/data/sage/html/login.html:76
+msgid "Wrong password"
+msgstr "Невірний пароль"
+
+#: sagenb/data/sage/html/login.html:80
+msgid "Remember me"
+msgstr "Запам'ятати мене"
+
+#: sagenb/data/sage/html/login.html:89
+msgid "Sign up for a new Sage Notebook account"
+msgstr "Зареєструвати новий обліковий запис в Sage Notebook"
+
+#: sagenb/data/sage/html/login.html:93
+msgid "Browse published Sage worksheets<br>(no login required)"
+msgstr ""
+"Переглянути опубліковані робочі аркуші Sage<br>(реєстрація не потрібна)"
+
+#: sagenb/data/sage/html/login.html:97
+msgid "Forgot password"
+msgstr "Забули пароль?"
+
+#: sagenb/data/sage/html/login.html:104
+msgid "Creating new users is disabled by the administrator."
+msgstr "Створення нових користувачів заборонено адміністратором."
+
+#: sagenb/data/sage/html/login.html:106
+msgid "Javascript must be enabled in order to use the Sage Notebook."
+msgstr "Для роботи Sage Notebook має бути увімкнений Javascript."
+
+#: sagenb/data/sage/html/source_code.html:3 sagenb/notebook/tutorial.py:358
+msgid "Source Code"
+msgstr "Вихідний код"
+
+#: sagenb/data/sage/html/source_code.html:13
+msgid "Sage Source Browser"
+msgstr "Браузер вихідного коду"
+
+#: sagenb/data/sage/html/source_code.html:14
+msgid "browse directory"
+msgstr "перегляд директорії"
+
+#: sagenb/data/sage/html/test_report.html:79
+msgid "Sage Notebook version"
+msgstr "Версія Sage Notebook"
+
+#: sagenb/data/sage/html/test_report.html:85
+msgid "Sage version"
+msgstr "Версія Sage"
+
+#: sagenb/data/sage/html/test_report.html:91
+msgid "Environment"
+msgstr "Середовище"
+
+#: sagenb/data/sage/html/test_report.html:96
+msgid "Start"
+msgstr "Почати"
+
+#: sagenb/data/sage/html/test_report.html:100
+#: sagenb/data/sage/html/worksheet_listing.html:127
+msgid "Stop"
+msgstr "Завершити"
+
+#: sagenb/data/sage/html/test_report.html:104
+msgid "Elapsed"
+msgstr "Минуло"
+
+#: sagenb/data/sage/html/test_report.html:108
+msgid "Status"
+msgstr "Статус"
+
+#: sagenb/data/sage/html/test_report.html:110
+#: sagenb/data/sage/html/test_report.html:129
+msgid "Pass"
+msgstr "Пройдено"
+
+#: sagenb/data/sage/html/test_report.html:111
+#: sagenb/data/sage/html/test_report.html:130
+msgid "Fail"
+msgstr "Збій"
+
+#: sagenb/data/sage/html/test_report.html:113
+msgid "Total"
+msgstr "Всього"
+
+#: sagenb/data/sage/html/test_report.html:121
+msgid "Hide"
+msgstr "Приховати"
+
+#: sagenb/data/sage/html/test_report.html:122
+msgid "Show"
+msgstr "Показати"
+
+#: sagenb/data/sage/html/test_report.html:128
+msgid "Cases / Tests"
+msgstr "Тести"
+
+#: sagenb/data/sage/html/test_report.html:132
+msgid "Count"
+msgstr "Підрахунок"
+
+#: sagenb/data/sage/html/test_report.html:141
+msgid "Totals"
+msgstr "Підсумки"
+
+#: sagenb/data/sage/html/worksheet_listing.html:9
+msgid "Published Worksheets"
+msgstr "Опубліковані робочі аркуші"
+
+#: sagenb/data/sage/html/worksheet_listing.html:11
+msgid "Deleted Worksheets"
+msgstr "Видалені робочі аркуші"
+
+#: sagenb/data/sage/html/worksheet_listing.html:13
+msgid "Active Worksheets"
+msgstr "Активні робочі аркуші"
+
+#: sagenb/data/sage/html/worksheet_listing.html:15
+msgid "Archived Worksheets"
+msgstr "Заархівовані робочі аркуші"
+
+#: sagenb/data/sage/html/worksheet_listing.html:99
+msgid "New Worksheet"
+msgstr "Новий робочий аркуш"
+
+#: sagenb/data/sage/html/worksheet_listing.html:100
+msgid "Upload"
+msgstr "Імпортувати"
+
+#: sagenb/data/sage/html/worksheet_listing.html:101
+msgid "Download All Active"
+msgstr "Зберегти всі виділені"
+
+#: sagenb/data/sage/html/worksheet_listing.html:108
+msgid "Search Worksheets"
+msgstr "Пошук робочих аркушів"
+
+#: sagenb/data/sage/html/worksheet_listing.html:116
+msgid ""
+"Unarchive selected worksheets so it appears in the default worksheet list"
+msgstr ""
+"Розархівувати вибрані робочі аркуші, щоб вони з'явились на домашній сторінці"
+
+#: sagenb/data/sage/html/worksheet_listing.html:116
+msgid "Unarchive"
+msgstr "Розархівувати"
+
+#: sagenb/data/sage/html/worksheet_listing.html:118
+msgid ""
+"Archive selected worksheets so they do not appear in the default worksheet "
+"list"
+msgstr ""
+"Архівувати вибрані робочі аркуші, щоб вони не відображались на домашній "
+"сторінці"
+
+#: sagenb/data/sage/html/worksheet_listing.html:118
+msgid "Archive"
+msgstr "Архівувати"
+
+#: sagenb/data/sage/html/worksheet_listing.html:122
+msgid "Move the selected worksheets to the trash"
+msgstr "Перемістити вибрані робочі аркуші до кошика"
+
+#: sagenb/data/sage/html/worksheet_listing.html:122
+msgid "Delete"
+msgstr "Видалити"
+
+#: sagenb/data/sage/html/worksheet_listing.html:124
+msgid "Move the selected worksheets out of the trash"
+msgstr "Відновити вибрані робочі аркуші з кошика"
+
+#: sagenb/data/sage/html/worksheet_listing.html:124
+msgid "Undelete"
+msgstr "Відновити"
+
+#: sagenb/data/sage/html/worksheet_listing.html:127
+msgid "Stop selected worksheets"
+msgstr "Завершити роботу вибраних робочих аркушів"
+
+#: sagenb/data/sage/html/worksheet_listing.html:128
+msgid "Download selected worksheets"
+msgstr "Завантажити вибрані робочі аркуші"
+
+#: sagenb/data/sage/html/worksheet_listing.html:128
+msgid "Download"
+msgstr "Експортувати"
+
+#: sagenb/data/sage/html/worksheet_listing.html:131
+msgid "Current Folder"
+msgstr "Поточна папка"
+
+#: sagenb/data/sage/html/worksheet_listing.html:132
+msgid "Active"
+msgstr "Активні"
+
+#: sagenb/data/sage/html/worksheet_listing.html:133
+msgid "Archived"
+msgstr "Архів"
+
+#: sagenb/data/sage/html/worksheet_listing.html:134
+msgid "Trash"
+msgstr "Кошик"
+
+#: sagenb/data/sage/html/worksheet_listing.html:138
+msgid "Empty Trash"
+msgstr "Очистити кошик"
+
+#: sagenb/data/sage/html/worksheet_listing.html:153
+#: sagenb/data/sage/html/worksheet/ratings_info.html:9
+msgid "Rating"
+msgstr "Оцінка"
+
+#: sagenb/data/sage/html/worksheet_listing.html:164
+msgid "Owner"
+msgstr "Власник"
+
+#: sagenb/data/sage/html/worksheet_listing.html:164
+msgid "Collaborators"
+msgstr "Співавтори"
+
+#: sagenb/data/sage/html/worksheet_listing.html:170
+#: sagenb/data/sage/html/notebook/worksheet_revision_list.html:16
+msgid "Last Edited"
+msgstr "Остання редакція"
+
+#: sagenb/data/sage/html/worksheet_listing.html:180
+msgid "There are no published worksheets."
+msgstr "Немає опублікованих робочих аркушів."
+
+#: sagenb/data/sage/html/worksheet_listing.html:186
+msgid ""
+"Welcome to Sage! You can <a href=\"/new_worksheet\">create a new worksheet</"
+"a>, view <a href=\"/pub/\">published worksheets</a>, or read the <a href=\"/"
+"help\" target=\"_new\">documentation</a>."
+msgstr ""
+"Ласкаво просимо до Sage! Ви можете <a href=\"/new_worksheet\">створити новий "
+"робочий аркуш</a>, переглянути <a href=\"/pub/\">опубліковані робочі аркуші</"
+"a> чи ознайомитися із <a href=\"/help\" target=\"_new\">документацією</a>."
+
+#: sagenb/data/sage/html/worksheet_listing.html:228
+msgid "running"
+msgstr "активний"
+
+#: sagenb/data/sage/html/worksheet_listing.html:261
+msgid "Add or Delete"
+msgstr "Додати чи Видалити"
+
+#: sagenb/data/sage/html/worksheet_listing.html:263
+msgid "Share now"
+msgstr "Поділитися"
+
+#: sagenb/data/sage/html/worksheet_listing.html:268
+msgid "published"
+msgstr "опубліковано"
+
+#: sagenb/data/sage/html/accounts/account_recovery.html:3
+#: sagenb/data/sage/html/accounts/account_recovery.html:8
+msgid "Account Recovery"
+msgstr "Відновлення облікового запису"
+
+#: sagenb/data/sage/html/accounts/account_recovery.html:9
+msgid ""
+"A new password will be emailed to the email address connected to your "
+"account. However if you didn't confirm your email address you will be unable "
+"to recover your account."
+msgstr ""
+"Новий пароль буде відправлено за адресою електронної пошти, вказаної у "
+"вашому обліковому записі. Однак, якщо ви не підтвердили свою адресу "
+"електронної пошти, ви не зможете відновити свій обліковий запис."
+
+#: sagenb/data/sage/html/accounts/account_recovery.html:17
+msgid "Submit"
+msgstr "Підтвердити"
+
+#: sagenb/data/sage/html/accounts/account_recovery.html:17
+#: sagenb/data/sage/html/accounts/registration.html:83
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:54
+#: sagenb/data/sage/html/notebook/edit_window.html:12
+#: sagenb/data/sage/html/settings/account_settings.html:10
+#: sagenb/data/sage/html/settings/account_settings.html:75
+#: sagenb/data/sage/html/settings/admin_add_user.html:26
+#: sagenb/data/sage/html/settings/notebook_settings.html:20
+#: sagenb/data/sage/html/settings/notebook_settings.html:27
+msgid "Cancel"
+msgstr "Скасувати"
+
+#: sagenb/data/sage/html/accounts/registration.html:3
+msgid "Sign up"
+msgstr "Увійти"
+
+#: sagenb/data/sage/html/accounts/registration.html:9
+msgid "Sign up for a Sage Notebook account"
+msgstr "Зареєструвати новий обліковий запис в Sage Notebook"
+
+#: sagenb/data/sage/html/accounts/registration.html:16
+msgid "Create a username"
+msgstr "Виберіть ім'я користувача"
+
+#: sagenb/data/sage/html/accounts/registration.html:17
+msgid ""
+"Your username must start with a letter and be between 3 and 64 characters "
+"long. You may only use letters, numbers, underscores, @, and dots."
+msgstr ""
+"Ваше ім'я користувача має починатися з літери та містити від 3 до 64 "
+"символів. Можна використовувати лише літери, цифри, знаки підкреслення, @ і "
+"точки."
+
+#: sagenb/data/sage/html/accounts/registration.html:22
+msgid "No username given"
+msgstr "Ім'я користувача не вказано"
+
+#: sagenb/data/sage/html/accounts/registration.html:25
+msgid "Username already in use"
+msgstr "Користувач з таким ім'ям уже зареєстрований"
+
+#: sagenb/data/sage/html/accounts/registration.html:28
+msgid "Bad username"
+msgstr "Некоректне ім'я користувача"
+
+#: sagenb/data/sage/html/accounts/registration.html:32
+msgid "Create a good password"
+msgstr "Створіть надійний пароль"
+
+#: sagenb/data/sage/html/accounts/registration.html:34
+msgid ""
+"Your password must have at least 4 characters. Your password can not contain "
+"your username or spaces."
+msgstr ""
+"Ваш пароль повинен бути не коротше 4 символів. Пароль не може містити ім'я "
+"користувача і пробіли."
+
+#: sagenb/data/sage/html/accounts/registration.html:39
+msgid "No password given"
+msgstr "Пароль не введено"
+
+#: sagenb/data/sage/html/accounts/registration.html:42
+msgid "Bad password"
+msgstr "Невірний пароль"
+
+#: sagenb/data/sage/html/accounts/registration.html:46
+msgid "Re-type your password"
+msgstr "Введіть пароль ще раз"
+
+#: sagenb/data/sage/html/accounts/registration.html:49
+msgid "Passwords didn't match"
+msgstr "Паролі не співпадають"
+
+#: sagenb/data/sage/html/accounts/registration.html:54
+msgid "Enter your email address"
+msgstr "Введіть вашу адресу електронної пошти"
+
+#: sagenb/data/sage/html/accounts/registration.html:56
+msgid ""
+"Your email address is required for account confirmation and recovery. You "
+"will be emailed a confirmation link right after you successfully sign up."
+msgstr ""
+"Ваша адреса електронної пошти необхідна для підтвердження облікового запису "
+"та його відновлення, у тому випадку, якщо ви забудете пароль. Після "
+"реєстрації на цю адресу вам буде надіслано посилання для підтвердження."
+
+#: sagenb/data/sage/html/accounts/registration.html:62
+msgid "No email address given"
+msgstr "Адреса електронної пошти не була введена"
+
+#: sagenb/data/sage/html/accounts/registration.html:65
+msgid "Invalid email address"
+msgstr "Недійсна адреса електронної пошти"
+
+#: sagenb/data/sage/html/accounts/registration.html:71
+msgid "Answer a challenge"
+msgstr "Пройдіть перевірку"
+
+#: sagenb/data/sage/html/accounts/registration.html:74
+msgid "No challenge response given"
+msgstr "Ви не заповнили поле для перевірки"
+
+#: sagenb/data/sage/html/accounts/registration.html:77
+msgid "Invalid challenge response"
+msgstr "Невірна відповідь у полі для перевірки"
+
+#: sagenb/data/sage/html/accounts/registration.html:82
+msgid "Create account"
+msgstr "Створити обліковий запис"
+
+#: sagenb/data/sage/html/notebook/afterpublish_window.html:8
+#, python-format
+msgid ""
+"Worksheet is publicly viewable at <a href=\"%(u)s\" style=\"color:#FFF\" "
+"target=\"_blank\">%(u)s"
+msgstr ""
+"Робочий аркуш доступний всім бажаючим для перегляду за адресою <a href="
+"\"%(u)s\" style=\"color:#FFF\" target=\"_blank\">%(u)s"
+
+#: sagenb/data/sage/html/notebook/afterpublish_window.html:9
+#, python-format
+msgid "Published on %(t)s"
+msgstr "Опубліковано %(t)s"
+
+#: sagenb/data/sage/html/notebook/afterpublish_window.html:11
+msgid "Re-publish worksheet"
+msgstr "Опублікувати повторно"
+
+#: sagenb/data/sage/html/notebook/afterpublish_window.html:12
+msgid "Stop publishing"
+msgstr "Видалити з опублікованих"
+
+#: sagenb/data/sage/html/notebook/afterpublish_window.html:14
+#: sagenb/data/sage/html/notebook/beforepublish_window.html:18
+msgid "Automatically re-publish when changes are made"
+msgstr "Автоматично оновлювати опубліковану версію після внесення змін"
+
+#: sagenb/data/sage/html/notebook/base.html:78
+msgid "Click to rename this worksheet"
+msgstr "Натисніть тут, щоб перейменувати цей робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:81
+msgid "last edited"
+msgstr "Остання редакція"
+
+#: sagenb/data/sage/html/notebook/base.html:83
+msgid "Someone else is viewing this worksheet"
+msgstr "Хтось іще переглядає цей робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:88
+#: sagenb/data/sage/html/notebook/text_cell.html:48
+msgid "Save changes"
+msgstr "Зберегти зміни"
+
+#: sagenb/data/sage/html/notebook/base.html:88
+#: sagenb/data/sage/html/settings/account_settings.html:9
+#: sagenb/data/sage/html/settings/account_settings.html:74
+#: sagenb/data/sage/html/settings/notebook_settings.html:19
+#: sagenb/data/sage/html/settings/notebook_settings.html:26
+msgid "Save"
+msgstr "Зберегти"
+
+#: sagenb/data/sage/html/notebook/base.html:88
+msgid "Save changes and close window"
+msgstr "Зберегти зміни та закрити вікно"
+
+#: sagenb/data/sage/html/notebook/base.html:88
+msgid "Save & quit"
+msgstr "Зберегти і вийти"
+
+#: sagenb/data/sage/html/notebook/base.html:88
+msgid "Discard changes to this worksheet"
+msgstr "Скасувати зміни, внесені до цього робочого аркуша"
+
+#: sagenb/data/sage/html/notebook/base.html:88
+msgid "Discard & quit"
+msgstr "Скасувати і вийти"
+
+#: sagenb/data/sage/html/notebook/base.html:95
+msgid "Select a file related function"
+msgstr "Виберіть, що ви хочете зробити з файлом"
+
+#: sagenb/data/sage/html/notebook/base.html:95
+msgid "File..."
+msgstr "Файл..."
+
+#: sagenb/data/sage/html/notebook/base.html:96
+msgid "Load a new worksheet stored in a file"
+msgstr "Створити новий робочий аркуш, завантаживши його з файлу"
+
+#: sagenb/data/sage/html/notebook/base.html:96
+msgid "Load worksheet from a file..."
+msgstr "Завантажити робочий аркуш з файлу"
+
+#: sagenb/data/sage/html/notebook/base.html:97
+msgid "Create a new worksheet"
+msgstr "Створити новий робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:97
+msgid "New worksheet"
+msgstr "Новий робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:98
+msgid "Save this worksheet to an sws file"
+msgstr "Зберегти цей робочий аркуш як файл sws"
+
+#: sagenb/data/sage/html/notebook/base.html:98
+msgid "Save worksheet to a file..."
+msgstr "Зберегти робочий аркуш у файл"
+
+#: sagenb/data/sage/html/notebook/base.html:99
+#: sagenb/data/sage/html/notebook/base.html:148
+msgid "Print this worksheet"
+msgstr "Надрукувати цей робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:99
+#: sagenb/data/sage/html/notebook/base.html:148
+msgid "Print"
+msgstr "Друкувати"
+
+#: sagenb/data/sage/html/notebook/base.html:100
+msgid "Rename this worksheet"
+msgstr "Перейменувати поточний робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:100
+#: sagenb/data/sage/js/translated-messages.js:11
+msgid "Rename worksheet"
+msgstr "Перейменувати робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:101
+msgid "Copy this worksheet"
+msgstr "Копіювати поточний робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:101
+msgid "Copy worksheet"
+msgstr "Копіювати робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:102
+msgid "Move this worksheet to the trash"
+msgstr "Перемістити цей робочий аркуш до кошика"
+
+#: sagenb/data/sage/html/notebook/base.html:102
+msgid "Delete worksheet"
+msgstr "Видалити робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:106
+msgid "Select a worksheet function"
+msgstr "Виберіть функцію управління робочим аркушем"
+
+#: sagenb/data/sage/html/notebook/base.html:106
+msgid "Action..."
+msgstr "Дія..."
+
+#: sagenb/data/sage/html/notebook/base.html:107
+msgid "Interrupt currently running calculations, if possible"
+msgstr "Перервати поточні активні розрахунки, якщо це можливо"
+
+#: sagenb/data/sage/html/notebook/base.html:107
+msgid "Interrupt"
+msgstr "Перервати"
+
+#: sagenb/data/sage/html/notebook/base.html:108
+msgid "Restart the worksheet process"
+msgstr "Перезапустити процес робочого аркуша"
+
+#: sagenb/data/sage/html/notebook/base.html:108
+msgid "Restart worksheet"
+msgstr "Перезапустити робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:109
+msgid "Quit the worksheet process"
+msgstr "Завершити процес робочого аркуша"
+
+#: sagenb/data/sage/html/notebook/base.html:109
+msgid "Save and quit worksheet"
+msgstr "Завершити і закрити робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:111
+msgid "Evaluate all input cells in the worksheet"
+msgstr "Виконати усі поля вводу робочого аркуша"
+
+#: sagenb/data/sage/html/notebook/base.html:111
+msgid "Evaluate All"
+msgstr "Виконати все"
+
+#: sagenb/data/sage/html/notebook/base.html:112
+msgid "Hide all output"
+msgstr "Приховати всі результати"
+
+#: sagenb/data/sage/html/notebook/base.html:112
+msgid "Hide All Output"
+msgstr "Приховати всі результати"
+
+#: sagenb/data/sage/html/notebook/base.html:113
+msgid "Show all output"
+msgstr "Показати всі результати"
+
+#: sagenb/data/sage/html/notebook/base.html:113
+msgid "Show All Output"
+msgstr "Показати всі результати"
+
+#: sagenb/data/sage/html/notebook/base.html:114
+msgid "Delete all output"
+msgstr "Видалити всі результати"
+
+#: sagenb/data/sage/html/notebook/base.html:114
+msgid "Delete All Output"
+msgstr "Видалити всі результати"
+
+#: sagenb/data/sage/html/notebook/base.html:116
+msgid "Switch to single-cell mode"
+msgstr "Переключитися до режиму з одним полем"
+
+#: sagenb/data/sage/html/notebook/base.html:116
+msgid "One Cell Mode"
+msgstr "Режим з одним полем"
+
+#: sagenb/data/sage/html/notebook/base.html:117
+msgid "Switch to multi-cell mode"
+msgstr "Переключитися до режиму з багатьма полями"
+
+#: sagenb/data/sage/html/notebook/base.html:117
+msgid "Multi Cell Mode"
+msgstr "Режим з багатьма полями"
+
+#: sagenb/data/sage/html/notebook/base.html:120
+msgid "Select an attached file"
+msgstr "Вибрати вкладений файл"
+
+#: sagenb/data/sage/html/notebook/base.html:120
+msgid "Data..."
+msgstr "Дані..."
+
+#: sagenb/data/sage/html/notebook/base.html:121
+msgid "Upload or create a data file in a wide range of formats"
+msgstr ""
+"Завантажте або створіть файл даних в одному із багатьох підтримуваних "
+"форматів"
+
+#: sagenb/data/sage/html/notebook/base.html:121
+msgid "Upload or create file..."
+msgstr "Завантажити або створити файл..."
+
+#: sagenb/data/sage/html/notebook/base.html:131
+#, python-format
+msgid "Evaluate all input cells using %(i)s"
+msgstr "Виконати усі поля вводу, використовуючи %(i)s"
+
+#: sagenb/data/sage/html/notebook/base.html:137
+msgid "Enable/disable pretty_printing"
+msgstr "Увімкнути/вимкнути pretty_printing (автоматичне форматування виводу)"
+
+#: sagenb/data/sage/html/notebook/base.html:149
+msgid "Interactively use this worksheet"
+msgstr "Використовувати цей робочий аркуш інтерактивно"
+
+#: sagenb/data/sage/html/notebook/base.html:149
+msgid "Worksheet"
+msgstr "Робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:150
+msgid "Edit text version of this worksheet"
+msgstr "Редагувати текстову версію цого робочого аркуша"
+
+#: sagenb/data/sage/html/notebook/base.html:150
+msgid "Edit"
+msgstr "Редагувати"
+
+#: sagenb/data/sage/html/notebook/base.html:151
+msgid "View plain text version of this worksheet"
+msgstr "Переглянути текстову версію цього робочого аркуша"
+
+#: sagenb/data/sage/html/notebook/base.html:151
+msgid "Text"
+msgstr "Текст"
+
+#: sagenb/data/sage/html/notebook/base.html:152
+msgid "View changes to this worksheet over time"
+msgstr "Переглянути зміни в цьому робочому аркуші"
+
+#: sagenb/data/sage/html/notebook/base.html:152
+msgid "Revisions"
+msgstr "Зміни"
+
+#: sagenb/data/sage/html/notebook/base.html:153
+msgid "Let others edit this worksheet"
+msgstr "Дозволити іншим редагувати цей робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/base.html:153
+msgid "Share"
+msgstr "Поділитися"
+
+#: sagenb/data/sage/html/notebook/base.html:154
+msgid "Make this worksheet publicly viewable"
+msgstr "Дозволити переглядати цей робочий аркуш усім бажаючим"
+
+#: sagenb/data/sage/html/notebook/base.html:154
+msgid "Publish"
+msgstr "Опублікувати"
+
+#: sagenb/data/sage/html/notebook/base.html:162
+msgid "Exit"
+msgstr "Вихід"
+
+#: sagenb/data/sage/html/notebook/beforepublish_window.html:5
+msgid ""
+"You can publish your worksheet to the Internet, where anyone will be able to "
+"access and view it online."
+msgstr ""
+"Ви можете опублікувати ваш робочий аркуш в Інтернеті, де будь-хто зможе "
+"переглянути його он-лайн."
+
+#: sagenb/data/sage/html/notebook/beforepublish_window.html:7
+msgid ""
+"Your worksheet will be assigned a unique address (URL) that you can send to "
+"your friends and colleagues."
+msgstr ""
+"Вашому робочому аркушеві буде присвоєна унікальна адреса (URL), яку ви "
+"зможете відправити своїм друзям та колегам."
+
+#: sagenb/data/sage/html/notebook/beforepublish_window.html:9
+msgid "Do you want to publish this worksheet?"
+msgstr "Ви хочете опублікувати цей робочий аркуш?"
+
+#: sagenb/data/sage/html/notebook/beforepublish_window.html:14
+msgid "Yes"
+msgstr "Так"
+
+#: sagenb/data/sage/html/notebook/beforepublish_window.html:15
+msgid "No"
+msgstr "Ні"
+
+#: sagenb/data/sage/html/notebook/cell.html:80
+msgid "Click here or press shift-return to evaluate"
+msgstr "Натисніть тут або Shift+Enter для виконання"
+
+#: sagenb/data/sage/html/notebook/cell.html:81
+msgid "evaluate"
+msgstr "виконати"
+
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:35
+msgid "Data file"
+msgstr "Файл даних"
+
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:39
+#, python-format
+msgid ""
+"You may download <a href=\"%(p)s\">%(f)s</a> or create a link to this file "
+"in worksheet "
+msgstr ""
+"Ви можете завантажити <a href=\"%(p)s\">%(f)s</a> або створити посилання на "
+"цей файл у робочому аркуші "
+
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:40
+msgid "select worksheet"
+msgstr "виберіть робочий аркуш"
+
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:44
+#, python-format
+msgid ""
+"or <a href=\"/home/%(wf)s/datafile?name=%(f)s&action=delete\">delete %(f)s.</"
+"a>"
+msgstr ""
+"або <a href=\"/home/%(wf)s/datafile?name=%(f)s&action=delete\">delete %(f)s."
+"</a>"
+
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:46
+#, python-format
+msgid ""
+"Access %(f)s in this worksheet by typing <tt>DATA+'%(f)s'</tt>. Here DATA is "
+"a special variable that gives the exact path to all data files uploaded to "
+"this worksheet."
+msgstr ""
+"Використовуйте %(f)s в цьому робочому аркуші, ввівши <tt>DATA+'%(f)s'</tt>. "
+"Тут DATA — це спеціальна змінна, що містить повний шлях до усіх файлів, "
+"прикріплених до цього робочого аркуша."
+
+#: sagenb/data/sage/html/notebook/download_or_delete_datafile.html:54
+#: sagenb/data/sage/html/notebook/edit_window.html:11
+msgid "Save Changes"
+msgstr "Зберегти зміни"
+
+#: sagenb/data/sage/html/notebook/edit_window.html:10
+msgid "Edit plain text"
+msgstr "Редагувати як звичайний текст"
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:20
+msgid "Edit this."
+msgstr "Редагувати"
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:23
+msgid "Log in to edit a copy."
+msgstr "Увійдіть, щоб відредагувати копію."
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:26
+msgid "Edit a copy."
+msgstr "Редагувати копію."
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:39
+msgid "Download."
+msgstr "Завантажити."
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:45
+#, python-format
+msgid "This page is rated %(wr).1f."
+msgstr "Оцінка цієї сторінки %(wr).1f."
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:54
+msgid "leave a comment"
+msgstr "залишити коментар"
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:55
+msgid "Rerate"
+msgstr "Змінити оцінку"
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:55
+msgid "Rate"
+msgstr "Оцінити"
+
+#: sagenb/data/sage/html/notebook/guest_worksheet_page.html:59
+msgid "Other published documents..."
+msgstr "Інші опубліковані документи..."
+
+#: sagenb/data/sage/html/notebook/plain_text_window.html:4
+msgid "View plain text"
+msgstr "Переглянути як звичайний текст"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:5
+#, python-format
+msgid "Revision from %(ta)s ago"
+msgstr "Змінено %(ta)s днів тому"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:5
+msgid "Revision List"
+msgstr "Список змін"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:12
+msgid "Older"
+msgstr "Старі"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:14
+msgid "Oldest"
+msgstr "Найстаріші"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:18
+msgid "Newer"
+msgstr "Нові"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:20
+msgid "Newest"
+msgstr "Найновіші"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:23
+msgid "Revert to this one"
+msgstr "Відновити до цієї версії"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:23
+msgid "(note that images are not recorded)"
+msgstr "(зверніть увагу, що зображення не записані)"
+
+#: sagenb/data/sage/html/notebook/specific_revision.html:24
+msgid "Publish this one"
+msgstr "Опублікувати цю версію"
+
+#: sagenb/data/sage/html/notebook/text_cell.html:49
+msgid "Cancel changes"
+msgstr "Скасувати зміни"
+
+#: sagenb/data/sage/html/notebook/upload_data_window.html:7
+#, python-format
+msgid "Upload or Create Data File to attach to worksheet \"%(wn)s\""
+msgstr ""
+"Завантажити або створити файл даних та прикріпити його до робочого аркуша "
+"\"%(wn)s\""
+
+#: sagenb/data/sage/html/notebook/upload_data_window.html:15
+msgid "Browse your computer to select a file to upload:"
+msgstr "Виберіть файл на вашому комп'ютері для завантаження:"
+
+#: sagenb/data/sage/html/notebook/upload_data_window.html:19
+msgid "Or enter the URL of a file on the web:"
+msgstr "Або введіть URL-адресу файлу в Інтернеті:"
+
+#: sagenb/data/sage/html/notebook/upload_data_window.html:23
+msgid "Or enter the name of a new file, which will be created:"
+msgstr "Або введіть ім'я нового файлу, котрий буде створено:"
+
+#: sagenb/data/sage/html/notebook/upload_data_window.html:27
+msgid "What do you want to call it? (if different than the original name)"
+msgstr ""
+"Як ви хочете назвати його? (якщо бажаєте змінити ім'я оригінального файлу)"
+
+#: sagenb/data/sage/html/notebook/upload_data_window.html:30
+msgid "Upload or Create Data File"
+msgstr "Завантажити або створити файл даних"
+
+#: sagenb/data/sage/html/notebook/worksheet_revision_list.html:6
+msgid "Revision History -- Previous sessions"
+msgstr "Історія змін — Попередні сесії"
+
+#: sagenb/data/sage/html/notebook/worksheet_revision_list.html:15
+msgid "Revision"
+msgstr "Версія"
+
+#: sagenb/data/sage/html/notebook/worksheet_revision_list.html:22
+#, python-format
+msgid "Revision %(lr)s"
+msgstr "Версія %(lr)s"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:10
+msgid "Share this document"
+msgstr "Поділитися цим документом"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:27
+msgid ""
+"Only the owner of a worksheet is allowed to share it. You can do whatever "
+"you want if you <a href=\"copy\">make your own copy</a>."
+msgstr ""
+"Тільки власник робочого аркуша може поділитися ним. Ви можете робити все, що "
+"вам потрібно, <a href=\"copy\">створивши власну копію</a>."
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:29
+msgid ""
+"This Sage Worksheet is currently shared with the people listed in the box "
+"below."
+msgstr "Цей робочий аркуш наразі не є спільним для людей, перерахованих нижче."
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:30
+msgid "You may add or remove collaborators (separate user names by commas)."
+msgstr ""
+"Ви можете додати чи видалити співавторів (відділяйте їх імена користувачів "
+"комами)."
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:34
+msgid "Give access to your worksheet to the above collaborators"
+msgstr ""
+"Надати доступ до вашого робочого аркуша перерахованим нижче співавторам"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:34
+msgid "Invite Collaborators"
+msgstr "Запросити співавторів"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:40
+msgid "Search results:"
+msgstr "Результати пошуку:"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:46
+msgid "sorry, no match found"
+msgstr "вибачте, по даному запиту нічого не знайдено"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:50
+msgid "Search Users"
+msgstr "Пошук користувачів"
+
+#: sagenb/data/sage/html/notebook/worksheet_share.html:60
+msgid "Known Sage Users:"
+msgstr "Відомі користувачі Sage:"
+
+#: sagenb/data/sage/html/settings/account_settings.html:3
+#: sagenb/data/sage/html/settings/base.html:13
+msgid "Account Settings"
+msgstr "Налаштування облікового запису"
+
+#: sagenb/data/sage/html/settings/account_settings.html:13
+msgid "Change Auto-Save Interval"
+msgstr "Змінити інтервал автоматичного збереження"
+
+#: sagenb/data/sage/html/settings/account_settings.html:15
+msgid "Minutes"
+msgstr "Хвилини"
+
+#: sagenb/data/sage/html/settings/account_settings.html:25
+msgid "Change Password"
+msgstr "Змінити пароль"
+
+#: sagenb/data/sage/html/settings/account_settings.html:31
+msgid "Old password"
+msgstr "Старий пароль"
+
+#: sagenb/data/sage/html/settings/account_settings.html:35
+msgid "New password"
+msgstr "Новий пароль"
+
+#: sagenb/data/sage/html/settings/account_settings.html:39
+msgid "Retype new password"
+msgstr "Введіть пароль ще раз"
+
+#: sagenb/data/sage/html/settings/account_settings.html:48
+msgid "Change E-mail Address"
+msgstr "Змінити адресу електронної пошти"
+
+#: sagenb/data/sage/html/settings/account_settings.html:52
+msgid "Current e-mail"
+msgstr "Поточна адреса електронної пошти"
+
+#: sagenb/data/sage/html/settings/account_settings.html:56
+msgid "New e-mail"
+msgstr "Нова адреса електронної пошти"
+
+#: sagenb/data/sage/html/settings/account_settings.html:64
+msgid "Your Email"
+msgstr "Ваша адреса електронної пошти"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:2
+#: sagenb/data/sage/html/settings/admin_add_user.html:6
+msgid "Add New User"
+msgstr "Додати нового користувача"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:8
+msgid "Username Error"
+msgstr "Помилка в імені користувача"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:12
+msgid "Pick a username"
+msgstr "Виберіть ім'я користувача"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:13
+msgid ""
+"The username must start with a letter and be between 4 and 32 characters "
+"long. It can only consist of letters, numbers, underscores, and one dot (.)."
+msgstr ""
+"Ім'я користувача має починатися з літери та містити від 4 до 32 символів. "
+"Можна використовувати лише літери, цифри, знаки підкреслення і одну точку "
+"(.)."
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:17
+msgid "Invalid username"
+msgstr "Невірне ім'я користувача"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:19
+msgid "Username taken"
+msgstr "Ім'я користувача прийнято"
+
+#: sagenb/data/sage/html/settings/admin_add_user.html:25
+msgid "Create Account"
+msgstr "Створити обліковий запис"
+
+#: sagenb/data/sage/html/settings/base.html:10
+msgid "Manage Users"
+msgstr "Управляти користувачами"
+
+#: sagenb/data/sage/html/settings/base.html:11
+#: sagenb/data/sage/html/settings/notebook_settings.html:2
+msgid "Notebook Settings"
+msgstr "Налаштування Notebook"
+
+#: sagenb/data/sage/html/settings/user_management.html:3
+#: sagenb/data/sage/html/settings/user_management.html:13
+msgid "Users"
+msgstr "Користувачі"
+
+#: sagenb/data/sage/html/settings/user_management.html:7
+msgid "User Management"
+msgstr "Управління користувачами"
+
+#: sagenb/data/sage/html/settings/user_management.html:8
+msgid "Add User"
+msgstr "Додати користувача"
+
+#: sagenb/data/sage/html/settings/user_management.html:10
+#, python-format
+msgid ""
+"The password for the user %(u)s has been reset to <strong>%(p)s</strong>"
+msgstr "Пароль для користувача %(u)s було скинуто до<strong>%(p)s</strong>"
+
+#: sagenb/data/sage/html/settings/user_management.html:13
+msgid "Suspension"
+msgstr "Блокування"
+
+#: sagenb/data/sage/html/settings/user_management.html:16
+msgid "Reset"
+msgstr "Скинути"
+
+#: sagenb/data/sage/html/settings/user_management.html:16
+msgid "Unsuspend"
+msgstr "Розблокувати"
+
+#: sagenb/data/sage/html/settings/user_management.html:16
+msgid "Suspend"
+msgstr "Заблокувати"
+
+#: sagenb/data/sage/html/worksheet/ratings_info.html:3
+#: sagenb/data/sage/html/worksheet/ratings_info.html:6
+#, python-format
+msgid "Ratings for %(wn)s"
+msgstr "Оцінки для %(wn)s"
+
+#: sagenb/data/sage/html/worksheet/ratings_info.html:7
+msgid "Go to the worksheet."
+msgstr "Перейти до робочого аркуша."
+
+#: sagenb/data/sage/html/worksheet/ratings_info.html:9
+msgid "User"
+msgstr "Користувач"
+
+#: sagenb/data/sage/html/worksheet/ratings_info.html:9
+msgid "Comment"
+msgstr "Коментар"
+
+#: sagenb/data/sage/html/worksheet/time_last_edited.html:6
+#, python-format
+msgid "%(t)s by %(le)s"
+msgstr "%(t)s тому користувачем %(le)s"
+
+#: sagenb/data/sage/html/worksheet/time_since_last_edited.html:6
+#: sagenb/notebook/worksheet.py:2010
+#, python-format
+msgid "%(t)s ago by %(le)s"
+msgstr "%(t)s тому користувачем %(le)s"
+
+#: sagenb/data/sage/js/translated-messages.js:4
+msgid "Click to download and install tex fonts."
+msgstr "Натисніть, щоб завантажити та встановити шрифти TeX."
+
+#: sagenb/data/sage/js/translated-messages.js:5
+msgid ""
+"Your browser / OS combination is not supported.\\nPlease use Firefox or "
+"Opera under Linux, Windows, or Mac OS X, or Safari."
+msgstr ""
+"Ваш браузер, операційна система чи їх комбінація не підтримується.\\nБудь-"
+"ласка, скористайтесь Firefox чи Opera в операційних системах Linux, Windows "
+"чи Mac OS X і Safari."
+
+#: sagenb/data/sage/js/translated-messages.js:6
+msgid "Java Applet Hidden"
+msgstr "Java апплет приховано"
+
+#: sagenb/data/sage/js/translated-messages.js:7
+msgid "Click here to pop out"
+msgstr "Відкрити в окремому вікні"
+
+#: sagenb/data/sage/js/translated-messages.js:8
+msgid "Error applying function to worksheet(s)."
+msgstr "Не вдалося застосувати функцію до робочого(их) аркуша(ів)."
+
+#: sagenb/data/sage/js/translated-messages.js:9
+msgid "Title of saved worksheet"
+msgstr "Назва збереженого робочого аркуша."
+
+#: sagenb/data/sage/js/translated-messages.js:10
+msgid "Failed to save worksheet."
+msgstr "Не вдалося зберегти робочий аркуш."
+
+#: sagenb/data/sage/js/translated-messages.js:12
+msgid "Please enter a name for this worksheet."
+msgstr "Будь-ласка, введіть ім'я цього робочого аркуша."
+
+#: sagenb/data/sage/js/translated-messages.js:13
+msgid "Rename"
+msgstr "Перейменувати"
+
+#: sagenb/data/sage/js/translated-messages.js:14
+msgid "Possible failure deleting worksheet."
+msgstr "Можливо, сталась помилка при видаленні робочого аркуша."
+
+#: sagenb/data/sage/js/translated-messages.js:15
+msgid "unprinted"
+msgstr "не надруковано"
+
+#: sagenb/data/sage/js/translated-messages.js:16
+msgid ""
+"You requested to evaluate a cell that, for some reason, the server is "
+"unaware of."
+msgstr "Ви вказали на виконання поля, яке, з деяких причин, невідоме серверу."
+
+#: sagenb/data/sage/js/translated-messages.js:18
+msgid ""
+"This worksheet is read only. Please make a copy or contact the owner to "
+"change it."
+msgstr ""
+"Цей робочий аркуш доступний лише для читання. Будь-ласка, зробіть копію чи "
+"зв'яжіться з автором, щоб отримати права на внесення змін."
+
+#: sagenb/data/sage/js/translated-messages.js:19
+msgid "loading..."
+msgstr "завантаження..."
+
+#: sagenb/data/sage/js/translated-messages.js:20
+msgid "Error updating cell output after "
+msgstr "Помилка оновлення результатів виводу поля після "
+
+#: sagenb/data/sage/js/translated-messages.js:21
+msgid "s (canceling further update checks)."
+msgstr "s (подальші перевірки оновлень припинено)."
+
+#: sagenb/data/sage/js/translated-messages.js:22
+msgid "Problem inserting new input cell after current input cell.\\n"
+msgstr "Виникла проблема при вставці нового поля після поточного.\\n"
+
+#: sagenb/data/sage/js/translated-messages.js:23
+msgid "Worksheet is locked. Cannot insert cells."
+msgstr "Робочий аркуш заблоковано. Не можна вставляти поля."
+
+#: sagenb/data/sage/js/translated-messages.js:24
+msgid "Unable to interrupt calculation."
+msgstr "Неможливо перервати обчислення."
+
+#: sagenb/data/sage/js/translated-messages.js:25
+msgid "Close this box to stop trying."
+msgstr "Закрийте це повідомлення, щоб припинити спроби."
+
+#: sagenb/data/sage/js/translated-messages.js:26
+msgid "Interrupt attempt"
+msgstr "Спроба переривання"
+
+#: sagenb/data/sage/js/translated-messages.js:27
+msgid "<a href='javascript:restart_sage();'>Restart</a>, instead?"
+msgstr ""
+"Можливо, замість цього, ви хочете <a href='javascript:"
+"restart_sage();'>перезапустити</a>, робочий аркуш?"
+
+#: sagenb/data/sage/js/translated-messages.js:28
+msgid ""
+"Emptying the trash will permanently delete all items in the trash. Continue?"
+msgstr ""
+"Очищення кошика остаточно видалить усі робочі аркуші в ньому. Продовжити?"
+
+#: sagenb/data/sage/js/translated-messages.js:29
+msgid "Get Image"
+msgstr "Отримати зображення"
+
+#: sagenb/data/sage/js/translated-messages.js:30
+msgid "Jmol Image"
+msgstr "Зображення Jmol"
+
+#: sagenb/data/sage/js/translated-messages.js:31
+msgid ""
+"To save this image, you can try right-clicking on the image to copy it or "
+"save it to a file, or you may be able to just drag the image to your desktop."
+msgstr ""
+"Щоб зберегти це зображення, натисніть на ньому правою кнопкою миші та "
+"оберіть Копіювати чи Зберегти. Також ви можете просто перетягнути зображення "
+"на робочий стіл."
+
+#: sagenb/data/sage/js/translated-messages.js:32
+msgid "Sorry, but you need a browser that supports the &lt;canvas&gt; tag."
+msgstr ""
+"Вибачте, але потрібен браузер, котрий підтримує HTML тег &lt;canvas&gt;."
+
+#: sagenb/data/sage/js/translated-messages.js:33
+#, python-format
+msgid "Trying again in %(num)d second..."
+msgid_plural "Trying again in %(num)d seconds..."
+msgstr[0] "Наступна спроба через %(num)d секунду..."
+msgstr[1] "Наступна спроба через %(num)d секунди..."
+msgstr[2] "Наступна спроба через %(num)d секунд..."
+
+#: sagenb/notebook/challenge.py:180
+msgid "Please ask the server administrator to configure a challenge!"
+msgstr ""
+"Будь-ласка, зверніться до адміністратора сервера для налаштування захисту "
+"від ботів!"
+
+#: sagenb/notebook/challenge.py:221
+msgid "Is pi > e?"
+msgstr "Чи вірно, що π>e?"
+
+#: sagenb/notebook/challenge.py:221
+msgid "y|yes"
+msgstr "т|так"
+
+#: sagenb/notebook/challenge.py:222
+msgid "What is 3 times 8?"
+msgstr "Скільки буде тричі по вісім?"
+
+#: sagenb/notebook/challenge.py:222
+msgid "24|twenty-four"
+msgstr "24|двадцять чотири"
+
+#: sagenb/notebook/challenge.py:223
+msgid "What is 2 plus 3?"
+msgstr "Скільки буде 2 плюс 3?"
+
+#: sagenb/notebook/challenge.py:223 ../sagenb/notebook/challenge.py:225
+msgid "5|five"
+msgstr "5|п'ять"
+
+#: sagenb/notebook/challenge.py:224
+msgid "How many bits are in one byte?"
+msgstr "Скільки бітів в одному байті?"
+
+#: sagenb/notebook/challenge.py:224
+msgid "8|eight"
+msgstr "8|вісім"
+
+#: sagenb/notebook/challenge.py:225
+msgid "What is the largest prime factor of 15?"
+msgstr "Який найбільший простий дільник числа 15?"
+
+#: sagenb/notebook/conf.py:124
+msgid "Updated"
+msgstr "Оновлено"
+
+#: sagenb/notebook/register.py:19 ../sagenb/notebook/register.py:29
+#, python-format
+msgid ""
+"Hi %(username)s!\n"
+"\n"
+msgstr ""
+"Вітаємо %(username)s!\n"
+"\n"
+
+#: sagenb/notebook/register.py:20
+#, python-format
+msgid ""
+"Thank you for registering for the Sage notebook. To complete your "
+"registration, copy and paste the following link into your browser:\n"
+"\n"
+"%(url_prefix)s://%(addr)s:%(port)s/confirm?key=%(key)s\n"
+"\n"
+"You will be taken to a page which will confirm that you have indeed "
+"registered."
+msgstr ""
+"Дякуємо за реєстрацію в Sage Notebook. Для завершення реєстрації скопіюйте і "
+"вставте наступне посилання у ваш браузер:\n"
+"\n"
+"%(url_prefix)s://%(addr)s:%(port)s/confirm?key=%(key)s\n"
+"\n"
+"Відкриється сторінка, на якій з'явиться повідомлення, що підтверджуватиме "
+"вашу успішну реєстрацію."
+
+#: sagenb/notebook/register.py:30
+#, python-format
+msgid ""
+"Your new password is %(key)s\n"
+"\n"
+"Sign in at %(url_prefix)s://%(addr)s:%(port)s/\n"
+"\n"
+"Make sure to reset your password by going to Settings in the upper right bar."
+msgstr ""
+"Ваш новий пароль: %(key)s\n"
+"\n"
+"Увійдіть на сервер: %(url_prefix)s://%(addr)s:%(port)s/\n"
+"\n"
+"Будь-ласка, скиньте ваш пароль, перейшовши в Налаштування у верхній правій "
+"панелі."
+
+#: sagenb/notebook/server_conf.py:57
+msgid "Appearance"
+msgstr "Вигляд"
+
+#: sagenb/notebook/server_conf.py:58
+msgid "Authentication"
+msgstr "Аутентифікація"
+
+#: sagenb/notebook/server_conf.py:59
+msgid "LDAP"
+msgstr "LDAP"
+
+#: sagenb/notebook/server_conf.py:60
+msgid "Server"
+msgstr "Сервер"
+
+#: sagenb/notebook/server_conf.py:65
+msgid "Number of word-wrap columns"
+msgstr "Максимальна довжина рядка при перенесенні слів"
+
+#: sagenb/notebook/server_conf.py:71
+msgid "Maximum history length"
+msgstr "Максимальна довжина історії"
+
+#: sagenb/notebook/server_conf.py:77
+msgid "Idle timeout (seconds)"
+msgstr "Тайм-аут очікування (в секундах)"
+
+#: sagenb/notebook/server_conf.py:83
+msgid "Idle check interval (seconds)"
+msgstr "Інтервал між запитами (в секундах)"
+
+#: sagenb/notebook/server_conf.py:89
+msgid "Save interval (seconds)"
+msgstr "Інтервал автозберігання (в секундах)"
+
+#: sagenb/notebook/server_conf.py:95
+msgid "Doc worksheet pool size"
+msgstr "Розмір пула документації робочого аркуша"
+
+#: sagenb/notebook/server_conf.py:101
+msgid "Doc worksheet idle timeout (seconds)"
+msgstr "Тайм-аут очікування (в секундах) робочого аркуша"
+
+#: sagenb/notebook/server_conf.py:107
+msgid "Enable published interacts (EXPERIMENTAL; USE AT YOUR OWN RISK)"
+msgstr ""
+"Дозволити інтерактивні опубліковані робочі аркуші (ЕКСПЕРИМЕНТАЛЬНА ФУНКЦІЯ; "
+"ВИКОРИСТОВУЙТЕ НА СВІЙ РИЗИК)"
+
+#: sagenb/notebook/server_conf.py:113
+msgid "Worksheet process users (comma-separated list)"
+msgstr "Користувачі процесу робочого аркуша (список, розділений комами)"
+
+#: sagenb/notebook/server_conf.py:119
+msgid "Default system"
+msgstr "Система за замовчуванням"
+
+#: sagenb/notebook/server_conf.py:125
+msgid "Pretty print (typeset) output"
+msgstr "Автоформатування виводу"
+
+#: sagenb/notebook/server_conf.py:131
+msgid "Worksheet process limits"
+msgstr "Обмеження процесу робочого аркуша"
+
+#: sagenb/notebook/server_conf.py:138
+msgid "Require e-mail for account registration"
+msgstr "Вимагати адресу електронної пошти для реєстрації облікового запису"
+
+#: sagenb/notebook/server_conf.py:145
+msgid "Enable user registration"
+msgstr "Дозволити реєстрацію користувачів"
+
+#: sagenb/notebook/server_conf.py:152
+msgid "Allow OpenID authentication (requires python ssl module)"
+msgstr "Дозволити аутентифікацію через OpenID (потрібен python модуль ssl)"
+
+#: sagenb/notebook/server_conf.py:159
+msgid "Use a challenge for account registration"
+msgstr "Використовувати захист від ботів при реєстрації облікового запису"
+
+#: sagenb/notebook/server_conf.py:166
+msgid "Type of challenge"
+msgstr "Тип захисту"
+
+#: sagenb/notebook/server_conf.py:173
+msgid "reCAPTCHA public key"
+msgstr "Відкритий ключ reCAPTCHA"
+
+#: sagenb/notebook/server_conf.py:179
+msgid "reCAPTCHA private key"
+msgstr "Закритий ключ reCAPTCHA"
+
+#: sagenb/notebook/server_conf.py:185
+msgid "Default Language"
+msgstr "Мова по замовчуванням"
+
+#: sagenb/notebook/server_conf.py:191
+msgid "Model Version"
+msgstr "Версія моделі"
+
+#: sagenb/notebook/server_conf.py:197
+msgid "Enable LDAP Authentication"
+msgstr "Дозволити аутентифікацію через LDAP"
+
+#: sagenb/notebook/server_conf.py:209
+msgid "Bind DN"
+msgstr "Підключатися як (Bind DN)"
+
+#: sagenb/notebook/server_conf.py:215
+msgid "Bind Password"
+msgstr "Пароль підключення"
+
+#: sagenb/notebook/server_conf.py:221
+msgid "Base DN"
+msgstr "База пошуку"
+
+#: sagenb/notebook/server_conf.py:227
+msgid "Username Attribute (i.e. cn, uid or userPrincipalName)"
+msgstr "Атрибут імені користувача (наприклад, cn, uid чи userPrincipalName)"
+
+#: sagenb/notebook/server_conf.py:233
+msgid "Attributes for user lookup"
+msgstr "Атрибути для пошуку користувачів"
+
+#: sagenb/notebook/template.py:74
+#, python-format
+msgid "%(num)d second"
+msgid_plural "%(num)d seconds"
+msgstr[0] "%(num)d секунда"
+msgstr[1] "%(num)d секунди"
+msgstr[2] "%(num)d секунд"
+
+#: sagenb/notebook/template.py:77
+#, python-format
+msgid "%(num)d minute"
+msgid_plural "%(num)d minutes"
+msgstr[0] "%(num)d хвилина"
+msgstr[1] "%(num)d хвилини"
+msgstr[2] "%(num)d хвилин"
+
+#: sagenb/notebook/template.py:80
+#, python-format
+msgid "%(num)d hour"
+msgid_plural "%(num)d hours"
+msgstr[0] "%(num)d година"
+msgstr[1] "%(num)d години"
+msgstr[2] "%(num)d годин"
+
+#: sagenb/notebook/template.py:82
+#, python-format
+msgid "%(num)d day"
+msgid_plural "%(num)d days"
+msgstr[0] "%(num)d доба"
+msgstr[1] "%(num)d доби"
+msgstr[2] "%(num)d діб"
+
+#: sagenb/notebook/template.py:141
+msgid "Sage Notebook"
+msgstr "Sage Notebook"
+
+#: sagenb/notebook/tutorial.py:354
+msgid "Find Help and Documentation"
+msgstr "Знайти довідки та документацію"
+
+#: sagenb/notebook/tutorial.py:355
+msgid "Get Started with Sage"
+msgstr "Початок роботи з Sage"
+
+#: sagenb/notebook/tutorial.py:355
+msgid ""
+"<a href=\"/doc/live/tutorial/index.html\">Work through the tutorial</a> (if "
+"you have trouble with it, view the <a href=\"/doc/static/tutorial/index.html"
+"\">static version</a>)."
+msgstr ""
+"<a href=\"/doc/live/tutorial/index.html\">Ознайомтесь із практичними "
+"рекомендаціями</a> (якщо у вас виникнуть проблеми з їх переглядом, "
+"використовуйте <a href=\"/doc/static/tutorial/index.html\">статичну версію</"
+"a>)."
+
+#: sagenb/notebook/tutorial.py:356
+msgid "Help About"
+msgstr "Контекстна довідка"
+
+#: sagenb/notebook/tutorial.py:357
+msgid ""
+"Type ? immediately after the object or function and press tab or shift-enter "
+"(shift-enter overwrites output and saves to worksheet)."
+msgstr ""
+"Введіть ? відразу після об'єкта чи функції і натисніть Tab або Shift+Enter "
+"(Shift+Enter перезаписує введення і зберігає робочий аркуш)."
+
+#: sagenb/notebook/tutorial.py:359
+msgid ""
+"Put ?? after the object and press tab or shift-enter (shift-enter overwrites "
+"output and saves to worksheet)."
+msgstr ""
+"Введіть ?? після об'єкта і натисніть Tab або Shift+Enter (Shift+Enter "
+"перезаписує введення і зберігає робочий аркуш)."
+
+#: sagenb/notebook/tutorial.py:360
+msgid "Full Text Search of Docs and Source"
+msgstr "Повнотекстовий пошук по документації та вихідному коду"
+
+#: sagenb/notebook/tutorial.py:361
+msgid ""
+"Search the SAGE documentation by typing <pre>search_doc(\"my query\")</pre> "
+"in an input cell and press shift-enter.  Search the source code of SAGE by "
+"typing <pre>search_src(\"my query\")</pre> and pressing shift-enter.  "
+"Arbitrary regular expressions are allowed as queries."
+msgstr ""
+"Для пошуку в документації Sage введіть  <pre>search_doc(\"ваш запит\")</pre> "
+"в поле вводу і натисніть Shift+Enter.  Знайти вихідний код Sage можна, "
+"ввівши <pre>search_src(\"ваш запит\")</pre> і натиснувши Shift+Enter.  У "
+"запитах можна використовувати довільні регулярні вирази."
+
+#: sagenb/notebook/tutorial.py:365
+msgid "Key and Mouse Bindings"
+msgstr "Гарячі клавіші та дії мишею"
+
+#: sagenb/notebook/tutorial.py:366
+msgid "Evaluate Input"
+msgstr "Виконати введення"
+
+#: sagenb/notebook/tutorial.py:367
+msgid ""
+"Press <strong>shift-enter</strong>.  You can start several calculations at "
+"once.  If you press <strong>alt-enter</strong> instead, then a new cell is "
+"created after the current one.  If you press <strong>ctrl-enter</strong> "
+"then the cell is split and both pieces are evaluated separately."
+msgstr ""
+"Натисніть <strong>Shift+Enter</strong>.  Ви можете розпочати декілька "
+"обчислень одночасно.  Якщо ж ви натиснете <strong>Alt-Enter</strong>, то "
+"буде створено нове поле відразу після поточного. А натиснення<strong>Ctrl"
+"+Enter</strong> розбиває поле на дві частини, що будуть виконуватися окремо."
+
+#: sagenb/notebook/tutorial.py:368
+msgid "Tab Completion"
+msgstr "Автозавершення по натисненню Tab"
+
+#: sagenb/notebook/tutorial.py:369
+msgid ""
+"Press <strong>tab</strong> while the cursor is on an identifier. On some web "
+"browsers (e.g., Opera) you must use control-space instead of tab."
+msgstr ""
+"Натисніть <strong>Tab</strong> поки курсор знаходиться на ідентифікаторі. У "
+"деяких браузерах (наприклад, в Opera) замість Tab треба використовувати Ctrl"
+"+Пробіл."
+
+#: sagenb/notebook/tutorial.py:370
+msgid "Insert New Cell"
+msgstr "Вставити нове поле"
+
+#: sagenb/notebook/tutorial.py:371
+msgid ""
+"Put the mouse between an output and input until the horizontal line appears "
+"and click.  If you press Alt-Enter in a cell, the cell is evaluated and a "
+"new cell is inserted after it."
+msgstr ""
+"Наведіть вказівник миші на місце над полем вводу і виводом таким чином, щоб "
+"з'явилась горизонтальна лінія, і натисніть. Якщо ви натиснете Alt+Enter, "
+"поточне поле буде виконано і після нього буде вставлено нове."
+
+#: sagenb/notebook/tutorial.py:372
+msgid "Delete Cell"
+msgstr "Видалити поле"
+
+#: sagenb/notebook/tutorial.py:373
+msgid "Delete all cell contents, then press <strong>backspace</strong>."
+msgstr "Видаліть вміст поля і, потім, натисніть <strong>Backspace</strong>."
+
+#: sagenb/notebook/tutorial.py:374
+msgid "Split and Join Cells"
+msgstr "Розділення та об'єднання полів"
+
+#: sagenb/notebook/tutorial.py:375
+msgid ""
+"Press <strong>ctrl-;</strong> in a cell to split it into two cells, and "
+"<strong>ctrl-backspace</strong> to join them.  Press <strong>ctrl-enter</"
+"strong> to split a cell and evaluate both pieces."
+msgstr ""
+"Натисніть <strong>Ctrl-;</strong> в полі, щоб розбити його на два, і "
+"<strong>Ctrl+Backspace</strong>, щоб об'єднати їх.  Натисніть <strong>Ctrl"
+"+Enter</strong>, щоб виконати розбиття поля на два та виконати обидві "
+"частини."
+
+#: sagenb/notebook/tutorial.py:376
+msgid "Insert New Text Cell"
+msgstr "Вставити нове текстове поле"
+
+#: sagenb/notebook/tutorial.py:377
+msgid ""
+"Move the mouse between cells until a blue bar appears.  <strong>Shift-click</"
+"strong> on the blue bar to create a new text cell.  Double click on existing "
+"text to edit it.  Use $...$ and $$...$$ to include typeset math in the text "
+"block."
+msgstr ""
+"Наведіть вказівник миші між полями так, щоб з'явилась синя лінія. "
+"<strong>Shift+Клік</strong> на синій лінії створить нове поле.  Подвійний "
+"клік по існуючому текстовому полю дозволяє його відредагувати.  Для запису "
+"математичних формул (в LaTeX) введіть $...$ і $$...$$ у текстовому полі."
+
+#: sagenb/notebook/tutorial.py:378
+msgid "Hide/Show Output"
+msgstr "Приховати/Показати результати"
+
+#: sagenb/notebook/tutorial.py:379
+msgid ""
+"Click on the left side of output to toggle between hidden, shown with word "
+"wrap, and shown without word wrap."
+msgstr ""
+"Натисніть зліва від результатів, щоб переключити режим відображення: "
+"прихований, з перенесенням слів, без перенесення слів."
+
+#: sagenb/notebook/tutorial.py:380
+msgid "Indenting Blocks"
+msgstr "Відступи в блоках"
+
+#: sagenb/notebook/tutorial.py:381
+msgid ""
+"Highlight text and press > to indent it all and < to unindent it all (works "
+"in Safari and Firefox).  In Firefox you can also press tab and shift-tab."
+msgstr ""
+"Виділіть текст і натисніть > , щоб зробити відступ та < для видалення "
+"відступу (це працює у браузерах Safari та Firefox).  У Firefox ви також "
+"можете використовувати Tab і Shift+Tab."
+
+#: sagenb/notebook/tutorial.py:382
+msgid "Comment/Uncomment Blocks"
+msgstr "Коментування/Розкоментування блоків"
+
+#: sagenb/notebook/tutorial.py:383
+msgid ""
+"Highlight text and press <strong>ctrl-.</strong> to comment it and "
+"<strong>ctrl-,</strong> to uncomment it. Alternatively, use <strong>ctrl-3</"
+"strong> and <strong>ctrl-4</strong>."
+msgstr ""
+"Виділіть текст і натисніть <strong>Ctrl-.</strong>, щоб закоментувати його, "
+"і<strong>Ctrl-,</strong> щоб розкоментувати. Також можна використовувати "
+"<strong>Ctrl-3</strong> і <strong>Ctrl-4</strong>."
+
+#: sagenb/notebook/tutorial.py:384
+msgid "Paren matching"
+msgstr "Парність дужок"
+
+#: sagenb/notebook/tutorial.py:384
+msgid ""
+"To fix unmatched or mis-matched parentheses, braces or brackets, press "
+"<strong>ctrl-0</strong>.  Parentheses before the cursor will be matched, "
+"minding strings and (Python) comments."
+msgstr ""
+"Щоб виправити непарні круглі, квадратні, фігурні дужки, натисніть "
+"<strong>Ctrl-0</strong>.  Дужки перед курсором стануть парними, з правильним "
+"опрацюванням рядків і коментарів (в Python)."
+
+#: sagenb/notebook/tutorial.py:388
+msgid "Interrupt and Restart Sessions"
+msgstr "Переривання і перезапуск сесій"
+
+#: sagenb/notebook/tutorial.py:389
+msgid "Interrupt Running Calculations"
+msgstr "Переривання поточних обчислень"
+
+#: sagenb/notebook/tutorial.py:390
+msgid ""
+"Click <u>Interrupt</u> or press escape in any input cell. This will "
+"(attempt) to interrupt SAGE by sending many interrupt signals."
+msgstr ""
+"Натисніть <u>Перервати</u> або натисніть  Escape у будь-якому полі вводу. Це "
+"змусить Sage (спробувати) перервати поточну задачу, відправивши велику "
+"кількість сигналів переривання."
+
+#: sagenb/notebook/tutorial.py:391
+msgid "Restart"
+msgstr "Перезапустити"
+
+#: sagenb/notebook/tutorial.py:392
+msgid ""
+"Type \"restart\" to restart the SAGE interpreter for a given worksheet.  "
+"(You have to interrupt first.)"
+msgstr ""
+"Натисніть \"restart\" для перезапуску інтерпретатора Sage у поточному "
+"робочому аркуші.  (Спочатку треба здійснити переривання поточних обчислень.)"
+
+#: sagenb/notebook/tutorial.py:394
+msgid "Special Cell Blocks"
+msgstr "Спеціальні блоки в полях вводу"
+
+#: sagenb/notebook/tutorial.py:395
+msgid "Evaluate Cell using GAP, Singular, etc."
+msgstr "Виконати поле, використовуючи GAP, Singular та ін."
+
+#: sagenb/notebook/tutorial.py:396
+#, python-format
+msgid ""
+"Put \"%%gap\", \"%%singular\", etc. as the first input line of a cell; the "
+"rest of the cell is evaluated in that system."
+msgstr ""
+"Введіть \"%%gap\", \"%%singular\" та ін. першим рядком поля вводу; решта "
+"поля буде виконана в обраній системі."
+
+#: sagenb/notebook/tutorial.py:397
+msgid "Shell Scripts"
+msgstr "Сценарії оболонки (shell)"
+
+#: sagenb/notebook/tutorial.py:398
+#, python-format
+msgid ""
+"Begin a block with %%sh to have the rest of the block evaluated as a shell "
+"script.  The current working directory is maintained."
+msgstr ""
+"Введіть першим рядком %%sh у полі вводу, щоб решта поля була інтерпретована "
+"як сценарій оболонки. Поточна директорія підтримується."
+
+#: sagenb/notebook/tutorial.py:399
+msgid "Interactive Dynamic Widgets"
+msgstr "Інтерактивні динамічні віджети"
+
+#: sagenb/notebook/tutorial.py:400
+msgid ""
+"Put @interact on the line before a function definition.  Type interact? for "
+"more details."
+msgstr ""
+"Введіть @interact у рядку перед визначенням функції. Введіть interact? для "
+"деталізації."
+
+#: sagenb/notebook/tutorial.py:401
+msgid "Autoevaluate Cells on Load"
+msgstr "Автоматично виконувати поля при завантаженні робочого аркуша."
+
+#: sagenb/notebook/tutorial.py:402
+msgid ""
+"Any cells with \"#auto\" in the input is automatically evaluated when the "
+"worksheet is first opened."
+msgstr ""
+"Усі поля із введеним словом \"#auto\" будуть автоматично виконані, коли "
+"відкриється робочий аркуш."
+
+#: sagenb/notebook/tutorial.py:403
+msgid "Time"
+msgstr "Час виконання"
+
+#: sagenb/notebook/tutorial.py:404
+#, python-format
+msgid "Type \"%%time\" at the beginning of the cell."
+msgstr "Введіть \"%%time\" у початок поля."
+
+#: sagenb/notebook/tutorial.py:406
+msgid "Useful Tips"
+msgstr "Корисні поради"
+
+#: sagenb/notebook/tutorial.py:407
+msgid "Input Rules"
+msgstr "Правила введення"
+
+#: sagenb/notebook/tutorial.py:408
+msgid ""
+"Code is evaluated by exec'ing (after preparsing).  Only the output of the "
+"last line of the cell is implicitly printed.  If any line starts with \"sage:"
+"\" or \">>>\" the entire block is assumed to contain text and examples, so "
+"only lines that begin with a prompt are executed.   Thus you can paste in "
+"complete examples from the docs without any editing, and you can write input "
+"cells that contains non-evaluated plain text mixed with examples by starting "
+"the block with \">>>\" or including an example."
+msgstr ""
+"Код виконується за допомогою exec (після препарсингу).  Тільки вивід "
+"останнього рядка в полі буде відображатися по замовчуванням. Якщо який-"
+"небудь рядок починається з \"sage:\" чи \">>>\" то вважається, що все поле "
+"містить текст і приклади, тому будуть виконуватися тільки рядки, що "
+"починаються з підказки. Таким чином, ви можете вставляти приклади із "
+"документації повністю, без будь-яких правок, а також писати у полях вводу "
+"звичайний текст, що не буде виконуватися, разом з прикладами, якщо почнете "
+"поле з \">>>\" або вставите приклад із документації."
+
+#: sagenb/notebook/tutorial.py:409
+msgid "History"
+msgstr "Історія"
+
+#: sagenb/notebook/tutorial.py:410
+msgid ""
+"Click <a href=\"/history\">log</a> commands you have entered in any "
+"worksheet of this notebook."
+msgstr ""
+"Натисніть <a href=\"/Історія\">log</a>, щоб переглянути всі команди, які ви "
+"ввели у будь-якому робочому аркуші."
+
+#: sagenb/notebook/tutorial.py:411
+msgid "Typesetting All Output"
+msgstr "Автоформатування всіх результатів"
+
+#: sagenb/notebook/tutorial.py:412
+msgid ""
+"Type pretty_print_default() in an input cell and press shift-enter.  All "
+"future output will be typeset automatically."
+msgstr ""
+"Введіть pretty_print_default() у полі виводу і натисніть Shift+Enter.  Увесь "
+"наступний вивід буде автоматично відформатовано."
+
+#: sagenb/notebook/tutorial.py:414
+msgid "Files and Scripts"
+msgstr "Файли та сценарії"
+
+#: sagenb/notebook/tutorial.py:415
+msgid "Loading SAGE/Python Scripts"
+msgstr "Підключення сценаріїв Sage/Python"
+
+#: sagenb/notebook/tutorial.py:416
+msgid ""
+"Use \"load filename.sage\" and \"load filename.py\".  Load is relative to "
+"the path you started the notebook in.  The .sage files are preparsed and .py "
+"files are not.   You may omit the .sage or .py extension.  Files may load "
+"other files."
+msgstr ""
+"Використовуйте \"load filename.sage\" і \"load filename.py\".  Шлях load "
+"відноситься до директорії, із якої було запущено Sage Notebook.  Файли .sage "
+"будуть опрацьовані препарсером, а файли .py - ні.   Ви можете опустити "
+"розширення .sage чи .py.  Файли можуть завантажувати інші файли."
+
+#: sagenb/notebook/tutorial.py:417
+msgid "Attaching Scripts"
+msgstr "Прикріплення сценаріїв до робочого аркуша"
+
+#: sagenb/notebook/tutorial.py:418
+msgid ""
+"Use \"attach filename.sage\" or \"attach filename.py\".  Attached files are "
+"automatically reloaded when the file changes.  The file $HOME/.sage/init."
+"sage is attached on startup if it exists."
+msgstr ""
+"Використовуйте \"attach filename.sage\" або \"attach filename.py\".  "
+"Прикріплені файли автоматично перезавантажаться при їх зміні. Якщо існує "
+"файл $HOME/.sage/init.sage, то він прикріплюється при запуску."
+
+#: sagenb/notebook/tutorial.py:419
+msgid "Working Directory"
+msgstr "Робоча директорія"
+
+#: sagenb/notebook/tutorial.py:420
+msgid ""
+"Each block of code is run from its own directory.  If any images are created "
+"as a side effect, they will automatically be displayed."
+msgstr ""
+"Кожне поле запускається у власній директорії. Якщо під час роботи "
+"створюються файли зображень, то вони будуть відображатися автоматично."
+
+#: sagenb/notebook/tutorial.py:421
+msgid "DIR Variable"
+msgstr "Змінна DIR"
+
+#: sagenb/notebook/tutorial.py:422
+msgid ""
+"The variable DIR contains the directory from which you started the SAGE "
+"notebook.  For example, to open a file in that directory, do \"open(DIR"
+"+'filename')\"."
+msgstr ""
+"Змінна DIR містить адресу директорії, із якої було запущено Sage Notebook.  "
+"Наприклад, щоб відкрити файл у цій директорії, введіть \"open(DIR+'ім'я "
+"файлу')\"."
+
+#: sagenb/notebook/tutorial.py:423
+msgid "DATA Variable"
+msgstr "Змінна DATA"
+
+#: sagenb/notebook/tutorial.py:424
+msgid ""
+"Use the Data menu to upload images and other files, and create new files "
+"that can be shared between worksheets.  The DATA variable contains the path "
+"to the data files.  For example, to open a file in that directory, do "
+"\"open(DATA+'filename')\".  If foo.sage is a Sage file that you uploaded, "
+"type \"load foo.sage\"; if foo.py is a Python file, you can import it by "
+"typing \"import foo\"."
+msgstr ""
+"Використовуйте меню Дані, щоб завантажувати картинки та інші файли, а також "
+"створювати нові файли, які можуть бути використані у різних робочих аркушах "
+"одночасно. Змінна DATA містить шлях до цих файлів даних. Наприклад, щоб "
+"відкрити файл у цій директорії, введіть \"open(DATA+'ім'я файлу')\".  Якщо "
+"ви завантажили Sage-файл foo.sage, введіть \"load foo.sage\", щоб виконати "
+"його; якщо foo.py є Python-файл, ви можете імпортувати його за допомогою "
+"\"import foo\"."
+
+#: sagenb/notebook/tutorial.py:425
+msgid "Loading and Saving Objects"
+msgstr "Завантаження та збереження об'єктів"
+
+#: sagenb/notebook/tutorial.py:426
+msgid ""
+"Use \"save obj1 obj2 ...\" and \"load obj1 obj2 ...\".  This allows for easy "
+"moving of objects from one worksheet to another, and saving of objects for "
+"later use."
+msgstr ""
+"Використовуйте \"save obj1 obj2 ...\" і \"load obj1 obj2 ...\".  Таким "
+"чином, можна легко переміщувати об'єкти із одного робочого аркуша в інший і "
+"зберігати їх для подальшого використання."
+
+#: sagenb/notebook/tutorial.py:427
+msgid "Loading and Saving Sessions"
+msgstr "Завантаження та збереження сесій"
+
+#: sagenb/notebook/tutorial.py:428
+msgid ""
+"Use \"save_session('name')\" to save all variables to an object.  Use "
+"\"load_session('name')\" to <i>merge</i> in all variables from a saved "
+"session."
+msgstr ""
+"Використовуйте \"save_session('name')\", щоб зберегти всі змінні в об'єкті.  "
+"Введіть \"load_session('name')\" для того, щоб <i>об'єднати</i> поточне "
+"середовище із змінними зі збереженої сесії."
+
+#: sagenb/notebook/tutorial.py:429
+msgid "Customizing the Notebook CSS"
+msgstr "Кастомізація CSS Sage Notebook"
+
+#: sagenb/notebook/tutorial.py:430
+msgid ""
+"If you create a file <tt>$HOME/.sage/notebook.css</tt> then it will get "
+"applied when rendering the notebook.   See "
+msgstr ""
+"Якщо ви створите файл <tt>$HOME/.sage/notebook.css</tt>, то він буде "
+"використаний при відображенні Sage Notebook. Див. "
+
+#: sagenb/notebook/wiki2html.py:647
+#, python-format
+msgid "Expected \"%(wanted)s\" after \"%(key)s\", got \"%(token)s\""
+msgstr ""
+"Очікувалось \"%(wanted)s\" після \"%(key)s\", але отримано \"%(token)s\""
+
+#: sagenb/notebook/wiki2html.py:653
+#, python-format
+msgid "Expected an integer \"%(key)s\" before \"%(token)s\""
+msgstr "Очікувалось ціле число \"%(key)s\" перед \"%(token)s\""
+
+#: sagenb/notebook/wiki2html.py:663 ../sagenb/notebook/wiki2html.py:673
+#, python-format
+msgid "Expected an integer \"%(arg)s\" after \"%(key)s\""
+msgstr "Очікувалось ціле число \"%(arg)s\" після \"%(key)s\""
+
+#: sagenb/notebook/wiki2html.py:699
+#, python-format
+msgid "Expected a color value \"%(arg)s\" after \"%(key)s\""
+msgstr "Очікувалось значення кольору \"%(arg)s\" після \"%(key)s\""
+
+#: sagenb/notebook/worksheet.py:2015
+#, python-format
+msgid "%(seconds)s ago"
+msgstr "%(seconds)s тому"
+
+#~ msgid "January"
+#~ msgstr "Січень"
+
+#~ msgid "February"
+#~ msgstr "Лютий"
+
+#~ msgid "March"
+#~ msgstr "Березень"
+
+#~ msgid "April"
+#~ msgstr "Квітень"
+
+#~ msgid "May"
+#~ msgstr "Травень"
+
+#~ msgid "June"
+#~ msgstr "Червень"
+
+#~ msgid "July"
+#~ msgstr "Липень"
+
+#~ msgid "August"
+#~ msgstr "Серпень"
+
+#~ msgid "September"
+#~ msgstr "Вересень"
+
+#~ msgid "October"
+#~ msgstr "Жовтень"
+
+#~ msgid "November"
+#~ msgstr "Листопад"
+
+#~ msgid "December"
+#~ msgstr "Грудень"

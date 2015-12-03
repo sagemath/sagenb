@@ -79,7 +79,7 @@ INPUT:
                     </a>
                 {% endif %}
             {% elif do_print or publish %}
-                <div class="cell_input_print">{{ cell.input_text().rstrip()|escape }}&nbsp;</div>
+                <div class="cell_input_print">{{ cell.input_text().rstrip() }}&nbsp;</div>
             {% else %}
                 <textarea class="{{ input_cls }}" rows="{{ (1, cell.input_text().strip()|number_of_rows(80))|max }}"
                           cols="80" spellcheck="false"
@@ -104,7 +104,7 @@ INPUT:
             <table class="cell_output_box">
                 <tr>
                     <td class="cell_number" id="cell_number_{{ cell.id() }}"
-                        {{ '' if do_print else 'onClick="cycle_cell_output_type(%r);"'|format(cell.id()) }} >
+                        {{ '' if do_print else 'onClick=cycle_cell_output_type(%r);'|format(cell.id()) }} >
                         {% for i in range(7) %}&nbsp;{% endfor %}
                     </td>
                     <td class="output_cell">
@@ -112,20 +112,20 @@ INPUT:
                             <div class="cell_output_{{ "print_" if do_print else '' }}{{ cell.cell_output_type() }}"
                                 id="cell_output_{{ cell.id() }}">
                                 {% if cell.introspect() %}
-                                    {{ cell.output_text(0, html=true) }}
+                                    {{ cell.output_text(0, html=true) | safe }}
                                 {% else %}
-                                    {{ cell.output_text(wrap_, html=true) }}
+                                    {{ cell.output_text(wrap_, html=true) | safe }}
                                 {% endif %}
                             </div>
                             {% if not do_print %}
                                 <div class="cell_output_{{ 'print_' if do_print else '' }}nowrap_{{ cell.cell_output_type() }}"
                                      id="cell_output_nowrap_{{ cell.id() }}">
-                                    {{ cell.output_text(0, html=true) }}
+                                    {{ cell.output_text(0, html=true) | safe }}
                                 </div>
                             {% endif %}
                                 <div class="cell_output_html_{{ cell.cell_output_type() }}"
                                      id="cell_output_html_{{ cell.id() }}">
-                                    {{ cell.output_html() }}
+                                    {{ cell.output_html() | safe }}
                                 </div>
                         </div>
                     </td>

@@ -62,7 +62,7 @@ def render_worksheet_list(args, pub, username):
 @login_required
 def home(username):
     if not g.notebook.user_manager().user_is_admin(g.username) and username != g.username:
-        return current_app.message(_("User '%(user)s' does not have permission to view the home page of '%(name)s'.", user=g.username, name=username))
+        return current_app.message(_("User '%(user)s' does not have permission to view the home page of '%(name)s'.", user=g.username, name=username), username=g.username)
     else:
         return render_worksheet_list(request.args, pub=False, username=username)
 
@@ -171,7 +171,7 @@ def public_worksheet_download(id, title):
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
-        return current_app.message(_("You do not have permission to access this worksheet"))
+        return current_app.message(_("You do not have permission to access this worksheet"), username=g.username)
     return unconditional_download(worksheet, title)
 
 @worksheet_listing.route('/home/pub/<id>/cells/<path:filename>')
@@ -180,7 +180,7 @@ def public_worksheet_cells(id, filename):
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
     except KeyError:
-        return current_app.message(_("You do not have permission to access this worksheet"))
+        return current_app.message(_("You do not have permission to access this worksheet"), username=g.username)
     from flask.helpers import send_from_directory
     return send_from_directory(worksheet.cells_directory(), filename)
 
@@ -237,7 +237,7 @@ def download_worksheets():
 def upload():
     from sagenb.misc.misc import SAGE_VERSION
     if g.notebook.readonly_user(g.username):
-        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username), username=g.username)
     return render_template(os.path.join('html', 'upload.html'),
                            username=g.username, sage_version=SAGE_VERSION)
 
@@ -248,7 +248,7 @@ class RetrieveError(Exception):
     try:
         my_urlretrive(...)
     except RetrieveError as err:
-        return current_app.message(str(err))
+        return current_app.message(str(err), username=g.username)
 
     This allows us to factor out all the error message handling into
     my_urlretrieve.
@@ -337,7 +337,7 @@ def upload_worksheet():
     import zipfile
 
     if g.notebook.readonly_user(g.username):
-        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username))
+        return current_app.message(_("Account is in read-only mode"), cont=url_for('home', username=g.username), username=g.username)
 
     backlinks = _("""Return to <a href="/upload" title="Upload a worksheet"><strong>Upload File</strong></a>.""")
 
@@ -351,14 +351,14 @@ def upload_worksheet():
         extension = os.path.splitext(path)[1].lower()
         if extension not in ["", ".txt", ".sws", ".zip", ".html", ".rst"]:
             # Or shall we try to import the document as an sws when in doubt?
-            return current_app.message(_("Unknown worksheet extension: %(ext)s. %(links)s", ext=extension, links=backlinks))
+            return current_app.message(_("Unknown worksheet extension: %(ext)s. %(links)s", ext=extension, links=backlinks), username=g.username)
         filename = tmp_filename()+extension
         try:
             import re
             matches = re.match("file://(?:localhost)?(/.+)", url)
             if matches:
                 if g.notebook.interface != 'localhost':
-                    return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks))
+                    return current_app.message(_("Unable to load file URL's when not running on localhost.\n%(backlinks)s",backlinks=backlinks), username=g.username)
 
                 import shutil
                 shutil.copy(matches.group(1),filename)
@@ -366,18 +366,18 @@ def upload_worksheet():
                 my_urlretrieve(url, filename, backlinks=backlinks)
 
         except RetrieveError as err:
-            return current_app.message(str(err))
+            return current_app.message(str(err), username=g.username)
 
     else:
         #Uploading a file from the user's computer
         dir = tmp_dir()
         file = request.files['file']
         if file.filename is None:
-            return current_app.message(_("Please specify a worksheet to load.\n%(backlinks)s",backlinks=backlinks))
+            return current_app.message(_("Please specify a worksheet to load.\n%(backlinks)s",backlinks=backlinks), username=g.username)
 
         filename = secure_filename(file.filename)
         if len(filename)==0:
-            return current_app.message(_("Invalid filename.\n%(backlinks)s",backlinks=backlinks))
+            return current_app.message(_("Invalid filename.\n%(backlinks)s",backlinks=backlinks), username=g.username)
 
         filename = os.path.join(dir, filename)
         file.save(filename)
@@ -417,12 +417,12 @@ def upload_worksheet():
                             filename = my_urlretrieve(linked_sws[0]['url'], backlinks=backlinks)[0]
                             print 'Importing {0}, linked to from {1}'.format(linked_sws[0]['url'], url)
                         except RetrieveError as err:
-                            return current_app.message(str(err))
+                            return current_app.message(str(err), username=g.username)
                 W = g.notebook.import_worksheet(filename, g.username)
         except Exception, msg:
             print 'error uploading worksheet', msg
             s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!\n%(backlinks)s', backlinks=backlinks)
-            return current_app.message(s, url_for('home', username=g.username))
+            return current_app.message(s, url_for('home', username=g.username), username=g.username)
         finally:
             # Clean up the temporarily uploaded filename.
             os.unlink(filename)
@@ -433,7 +433,7 @@ def upload_worksheet():
 
     except ValueError, msg:
         s = _("Error uploading worksheet '%(msg)s'.%(backlinks)s", msg=msg, backlinks=backlinks)
-        return current_app.message(s, url_for('home', username=g.username))
+        return current_app.message(s, url_for('home', username=g.username), username=g.username)
 
     if new_name:
         W.set_name(new_name)
