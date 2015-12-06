@@ -1,7 +1,7 @@
 import re
 import os, threading, collections
 from functools import wraps
-from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app, Markup
+from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
 from collections import defaultdict
 from werkzeug.utils import secure_filename
@@ -1038,8 +1038,7 @@ def worksheet_file(path):
 
     doc_page_html = open(path).read()
     from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
-    doc_page = Markup(unicode_str(
-        SphinxHTMLProcessor().process_doc_html(doc_page_html))).unescape()
+    doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
 
     title = (extract_title(doc_page_html).replace('&mdash;', '--') or
              'Live Sage Documentation')
