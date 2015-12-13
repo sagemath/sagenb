@@ -97,6 +97,10 @@ Process the output of docutils ``rst2html`` command::
     }}}
     <BLANKLINE>
     <BLANKLINE>
+
+WARNING:
+    
+    Input strings must be unicode.
 """
 #############################################################################
 #       Copyright (C) 2007 William Stein <wstein@gmail.com> and Dorian Raimer
@@ -105,10 +109,14 @@ Process the output of docutils ``rst2html`` command::
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
+from __future__ import unicode_literals
 
 from sgmllib import SGMLParser
-from urllib import splittag
 from htmlentitydefs import entitydefs
+
+from flask import Markup
+from sagenb.misc.misc import unicode_str
+
 
 class genericHTMLProcessor(SGMLParser):
     r"""
@@ -150,6 +158,11 @@ class genericHTMLProcessor(SGMLParser):
         # self.feed() is a SGMLParser method and starts everything
         # off; Most of the functions here are extensions to
         # SGMLParser, and may never actually be visibly called here.
+
+        # This module works with unicode literals. In case that input data is
+        # ascii, exceptions may occur. So, input data must be converted to
+        # unicode if it were not.
+        doc_in = unicode_str(doc_in)  
         self.feed(doc_in) #SGMLParser call
         self.close()     #SGMLParser call
         self.hand_off_temp_pieces('to_doc_pieces')
@@ -375,12 +388,6 @@ class genericHTMLProcessor(SGMLParser):
                 elif p[:4] == '... ':
                     piece += p[4:] + '\n'
                 else:
-                    # in an output string. replace escaped html
-                    # strings so they don't get converted twice.
-                    p = p.replace('&lt;', '<')
-                    p = p.replace('&gt;', '>')
-                    p = p.replace('&amp;', '&')
-                    p = p.replace('&#39;', "'")
                     # first occurrence of an output string
                     # write /// denoting output
                     if output_flag == False:
@@ -392,7 +399,7 @@ class genericHTMLProcessor(SGMLParser):
                     else:
                         piece += p
             piece += '\n}}}\n\n'
-        return piece
+        return Markup(piece).unescape()
                 
     ##############################################
     ## General tag handlers

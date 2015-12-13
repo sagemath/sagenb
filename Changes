@@ -1,3 +1,7 @@
+0.11.6      Dec 12 2015
+ - pexpect upgrade
+ - fixes for autoescape
+
 0.11.5      Dec 02 2015
  - Ukrainian translation
  - security update in Jinja2
