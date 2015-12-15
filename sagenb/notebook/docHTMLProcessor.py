@@ -447,7 +447,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'</head>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'</head>']
         """
         if self.keep_data:
             self.temp_pieces.append("</%(tag)s>" % locals())
@@ -535,7 +535,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'<!--important comment-->'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'<!--important comment-->']
         """
         if self.keep_data:
             self.temp_pieces.append("<!--%(data)s-->" % locals())
@@ -558,7 +558,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'<?instructions>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'<?instructions>']
         """
         if self.keep_data:
             self.temp_pieces.append("<?%(text)s>" % locals())
@@ -580,7 +580,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'<!declaration>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'<!declaration>']
         """
         if self.keep_data:
             self.temp_pieces.append("<!%(text)s>" % locals())
@@ -746,7 +746,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: attrs = [('class', 'highlight')]
             sage: p.start_div(attrs)
             sage: p.all_pieces
-            u'a lot of stuff done bunch of tmp strings' 
+            u'a lot of stuff done bunch of tmp strings'
             sage: p.temp_pieces
             []
             sage: p.in_highlight_div
@@ -871,7 +871,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'<pre>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'<pre>']
         """
         if self.in_highlight_div:
             return
@@ -905,7 +905,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'</pre>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'</pre>']
         """
         if self.in_highlight_div:
             return
@@ -931,7 +931,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: attrs = []
             sage: p.start_form(attrs)
             sage: p.all_pieces
-            u'a lot of stuff done bunch of tmp strings' 
+            u'a lot of stuff done bunch of tmp strings'
             sage: p.temp_pieces
             [] 
         """
@@ -994,7 +994,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'<span>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'<span>']
         """
         if self.in_highlight_div:
             return
@@ -1027,7 +1027,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings', u'</span>'] 
+            ['bunch ', 'of ', 'tmp ', 'strings', u'</span>']
         """
         if self.in_highlight_div:
             return        
@@ -1181,7 +1181,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
             sage: attrs = [('class', 'literal-block')]
             sage: p.start_pre(attrs)
             sage: p.all_pieces
-            u'a lot of stuff done bunch of tmp strings' 
+            u'a lot of stuff done bunch of tmp strings'
             sage: p.temp_pieces
             []
             sage: p.in_pre_litteral_block
@@ -1333,7 +1333,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings',  u'$'] 
+            ['bunch ', 'of ', 'tmp ', 'strings',  u'$']
         """
         self.temp_pieces.append("$")
         return
@@ -1353,7 +1353,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
             sage: p.all_pieces
             'a lot of stuff done '
             sage: p.temp_pieces
-            ['bunch ', 'of ', 'tmp ', 'strings',  u'$', 'x^2',  u'$'] 
+            ['bunch ', 'of ', 'tmp ', 'strings',  u'$', 'x^2',  u'$']
         """
         self.temp_pieces.append("$")
         return
