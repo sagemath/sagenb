@@ -22,8 +22,8 @@ _ = gettext
 
 doc = Module('sagenb.flask_version.doc')
 
-from sagenb.misc.misc import SAGE_DOC
-DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
+from sage.env import SAGE_DOC
+DOC = os.path.join(SAGE_DOC, 'html', 'en')
 
 ################
 # Static paths #

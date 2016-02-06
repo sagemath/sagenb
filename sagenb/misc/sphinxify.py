@@ -24,10 +24,7 @@ from tempfile import mkdtemp
 # We import Sphinx on demand, to reduce Sage startup time.
 Sphinx = None
 
-try:
-    from sage.env import SAGE_DOC
-except ImportError:
-    SAGE_DOC = ''  # used to be None
+from sage.env import SAGE_DOC_SRC
 
 
 def is_sphinx_markup(docstring):
@@ -104,8 +101,8 @@ def sphinxify(docstring, format='html'):
     # Sphinx constructor: Sphinx(srcdir, confdir, outdir, doctreedir,
     # buildername, confoverrides, status, warning, freshenv).
     temp_confdir = False
-    confdir = os.path.join(SAGE_DOC, 'en', 'introspect')
-    if not SAGE_DOC and not os.path.exists(confdir):
+    confdir = os.path.join(SAGE_DOC_SRC, 'en', 'introspect')
+    if not SAGE_DOC_SRC and not os.path.exists(confdir):
         # If we don't have Sage, we need to do our own configuration
         # This may be inefficient or broken.  TODO: Find a faster way to do this.
         temp_confdir = True
@@ -598,7 +595,7 @@ def setup(app):
     '''
 
 
-    # From SAGE_DOC/en/introspect/templates/layout.html:
+    # From SAGE_DOC_SRC/en/introspect/templates/layout.html:
     layout = r"""
 <div class="docstring">
     {% block body %}{% endblock %}
