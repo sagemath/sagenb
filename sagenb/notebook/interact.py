@@ -2333,15 +2333,6 @@ def interact(f, layout=None, width='800px'):
         ...     print factor(Integer(n))
         <html>...
 
-    You do not have to use interact as a decorators; you can also
-    simply write ``interact(f)`` where ``f`` is any Python function
-    that you have defined, though this is frowned upon.  E.g., ``f``
-    can also be a library function as long as it is written in
-    Python::
-
-        sage: interact(matrix)   # put ZZ, 2,2,[1..4] in boxes...
-        <html>...
-
     If your the time to evaluate your function takes awhile, you may
     not want to have it reevaluated every time the inputs change.  In
     order to prevent this, you can add a keyword ``auto_update=False`` to
