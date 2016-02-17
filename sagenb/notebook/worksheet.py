@@ -38,8 +38,7 @@ import traceback
 import locale
 
 # General sage library code
-from sagenb.misc.misc import (cython, load, save,
-                              alarm, cancel_alarm, verbose, DOT_SAGENB,
+from sagenb.misc.misc import (cython, load, save, verbose, DOT_SAGENB,
                               walltime, ignore_nonexistent_files,
                               set_restrictive_permissions,
                               set_permissive_permissions,

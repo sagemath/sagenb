@@ -4,8 +4,11 @@ import urllib2
 
 
 from sage.misc.sage_timeit import sage_timeit
-from sage.misc.all import alarm, cancel_alarm
 from sagenb.misc.misc import walltime, cputime
+from signal import alarm
+
+def cancel_alarm():
+    alarm(0)
 
 
 TIMEOUT = 'timeout'
