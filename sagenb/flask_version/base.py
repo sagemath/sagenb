@@ -8,14 +8,11 @@ from decorators import global_lock
 from flask_oldsessions import OldSecureCookieSessionInterface
 
 from flask.ext.autoindex import AutoIndex
-try:
-    from sage.env import SAGE_SRC
-except ImportError:
-    SAGE_SRC = os.environ.get('SAGE_SRC', os.path.join(os.environ['SAGE_ROOT'], 'devel', 'sage'))
+from sage.env import SAGE_SRC, SAGE_DOC
 SRC = os.path.join(SAGE_SRC, 'sage')
 from flask.ext.openid import OpenID
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext, get_locale
-from sagenb.misc.misc import SAGENB_ROOT, DATA, SAGE_DOC, translations_path, N_, nN_, unicode_str
+from sagenb.misc.misc import SAGENB_ROOT, DATA, translations_path, N_, nN_, unicode_str
 from json import dumps
 from sagenb.notebook.cell import number_of_rows
 from sagenb.notebook.template import (css_escape, clean_name,
@@ -53,10 +50,9 @@ class SageNBFlask(Flask):
         # Doc #
         #######
         #These "should" be in doc.py
-        DOC = os.path.join(SAGE_DOC, 'output', 'html', 'en')
-        self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'output', 'pdf'))
+        DOC = os.path.join(SAGE_DOC, 'html', 'en')
+        self.add_static_path('/pdf', os.path.join(SAGE_DOC, 'pdf'))
         self.add_static_path('/doc/static', DOC)
-        #self.add_static_path('/doc/static/reference', os.path.join(SAGE_DOC, 'reference'))
 
         # Template globals
         self.add_template_global(url_for)

@@ -188,11 +188,7 @@ try:
 except ImportError:
     SAGE_URL = 'http://sagemath.org'
 
-try:
-    from sage.env import SAGE_DOC
-except ImportError:
-    SAGE_DOC = "stub"
-    
+
 # TODO: Get macros from server and user settings.
 try:
     import sage.all
