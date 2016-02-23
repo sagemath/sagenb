@@ -123,13 +123,18 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
         sage: find_next_available_port('127.0.0.1', 9000, verbose=False)   # random output -- depends on network
         9002
     """
+    from signal import alarm
+
     alarm_count = 0  
     for port in range(start, start+max_tries+1):
         try:
-            alarm(5)
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect((interface, port))
-        except socket.error, msg:
+            try:
+                alarm(5)
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect((interface, port))
+            finally:
+                alarm(0)  # cancel alarm
+        except socket.error as msg:
             if msg[1] == 'Connection refused':
                 if verbose: print "Using port = %s"%port
                 return port
@@ -138,9 +143,6 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
             alarm_count += 1
             if alarm_count >= 10:
                  break
-            pass 
-        finally:
-            cancel_alarm()
         if verbose:
             print "Port %s is already in use."%port
             print "Trying next port..."
@@ -188,11 +190,7 @@ try:
 except ImportError:
     SAGE_URL = 'http://sagemath.org'
 
-try:
-    from sage.env import SAGE_DOC
-except ImportError:
-    SAGE_DOC = "stub"
-    
+
 # TODO: Get macros from server and user settings.
 try:
     import sage.all
@@ -260,15 +258,9 @@ except ImportError:
         open(filename,'wb').write(s)
 
 try:
-    from sage.misc.all import alarm, cancel_alarm, verbose
+    from sage.misc.all import verbose
 except ImportError:
     # TODO!
-    @stub
-    def alarm(*args, **kwds):
-        pass
-    @stub
-    def cancel_alarm(*args, **kwds):
-        pass
     @stub
     def verbose(*args, **kwds):
         pass
@@ -353,15 +345,7 @@ def is_Matrix(x):
         return False
     return is_Matrix(x)
 
-try:
-    from sage.misc.all import srange
-except ImportError:
-    # TODO: need to put a really srange here!
-    def srange(start, end=None, step=1, universe=None, check=True, include_endpoint=False, endpoint_tolerance=1e-5):
-        v = [start]
-        while v[-1] <= end:
-            v.append(v[-1]+step)
-        return v
+from sage.all import srange
 
 
 def register_with_cleaner(pid):

@@ -1,3 +1,8 @@
+0.11.7      Feb 23 2016
+ - change imports for Sage changes
+ - small documentation fixes
+ - use new Sage documentation variables
+
 0.11.6.1    Dec 14 2015
  - fix doctests
 

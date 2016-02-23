@@ -150,6 +150,7 @@ VERSION 3:
 import inspect
 import math
 import types
+import collections
 from base64 import standard_b64decode
 
 # Sage libraries
@@ -2333,15 +2334,6 @@ def interact(f, layout=None, width='800px'):
         ...     print factor(Integer(n))
         <html>...
 
-    You do not have to use interact as a decorators; you can also
-    simply write ``interact(f)`` where ``f`` is any Python function
-    that you have defined, though this is frowned upon.  E.g., ``f``
-    can also be a library function as long as it is written in
-    Python::
-
-        sage: interact(matrix)   # put ZZ, 2,2,[1..4] in boxes...
-        <html>...
-
     If your the time to evaluate your function takes awhile, you may
     not want to have it reevaluated every time the inputs change.  In
     order to prevent this, you can add a keyword ``auto_update=False`` to
@@ -2422,7 +2414,8 @@ def interact(f, layout=None, width='800px'):
     * ``u = list`` - buttons if ``len(list)`` at most `5`;
       otherwise, drop down
 
-    * ``u = generator`` - a slider (up to `10000` steps)
+    * ``u = iterator`` (e.g. a generator) - a slider (up to `10000`
+      steps)
 
     * ``u = bool`` - a checkbox
 
@@ -3742,7 +3735,7 @@ def automatic_control(default):
     for _ in range(2):
         if isinstance(default, tuple) and len(default) == 2 and isinstance(default[0], str):
             label, default = default
-        if isinstance(default, tuple) and len(default) == 2 and isinstance(default[1], (tuple, list, types.GeneratorType)):
+        if isinstance(default, tuple) and len(default) == 2 and isinstance(default[1], (tuple, list, collections.Iterator)):
             default_value, default = default
 
     if isinstance(default, control):
@@ -3755,7 +3748,7 @@ def automatic_control(default):
         C = input_box(default, label=label, type=bool)
     elif isinstance(default, list):
         C = selector(default, default=default_value, label=label, buttons=len(default) <= 5)
-    elif isinstance(default, types.GeneratorType):
+    elif isinstance(default, collections.Iterator):
         C = slider(list_of_first_n(default, 10000), default=default_value, label=label)
     elif isinstance(default, Color):
         C = input_box(default, label=label, type=Color)
