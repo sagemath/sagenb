@@ -101,7 +101,7 @@ in your local `SAGENB_ROOT`.
     ```sh
     cd SAGE_ROOT
     echo "<version>" > build/pkgs/sagenb/package-version.txt
-    ./sage -sh -c sage-fix-pkg-checksums
+    ./sage --fix-pkg-checksums
     ./sage -tp --long --sagenb  # test sagenb
     make ptestlong              # test sage
     ```
