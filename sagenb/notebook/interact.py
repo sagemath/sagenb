@@ -2414,7 +2414,8 @@ def interact(f, layout=None, width='800px'):
     * ``u = list`` - buttons if ``len(list)`` at most `5`;
       otherwise, drop down
 
-    * ``u = generator`` - a slider (up to `10000` steps)
+    * ``u = iterator`` (e.g. a generator) - a slider (up to `10000`
+      steps)
 
     * ``u = bool`` - a checkbox
 
