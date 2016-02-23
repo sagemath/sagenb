@@ -345,15 +345,7 @@ def is_Matrix(x):
         return False
     return is_Matrix(x)
 
-try:
-    from sage.misc.all import srange
-except ImportError:
-    # TODO: need to put a really srange here!
-    def srange(start, end=None, step=1, universe=None, check=True, include_endpoint=False, endpoint_tolerance=1e-5):
-        v = [start]
-        while v[-1] <= end:
-            v.append(v[-1]+step)
-        return v
+from sage.all import srange
 
 
 def register_with_cleaner(pid):
