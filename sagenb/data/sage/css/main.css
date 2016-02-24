@@ -6,12 +6,15 @@
 thead { font-weight: bold; }
 
 /* line 12, ../../../../sass/src/main.scss */
-body { background-color: white; }
+* { box-sizing: border-box; }
 
 /* line 15, ../../../../sass/src/main.scss */
+body { background-color: white; }
+
+/* line 18, ../../../../sass/src/main.scss */
 .hidden { display: none; }
 
-/* line 19, ../../../../sass/src/main.scss */
+/* line 22, ../../../../sass/src/main.scss */
 div.fivepix { height: 5px; }
 
 /* line 1, ../../../../sass/src/_topbar.scss */
@@ -70,357 +73,355 @@ div#worksheet-list-controls div.action-buttons { float: left; }
 div#worksheet-list-controls div.folders { float: left; clear: right; margin-left: 100px; }
 
 /******* Top Control Bar (Worksheets)  ********** */
-/* line 26, ../../../../sass/src/main.scss */
-#worksheet-bar { overflow: hidden; clear: both; }
 /* line 29, ../../../../sass/src/main.scss */
+#worksheet-bar { overflow: hidden; clear: both; }
+/* line 32, ../../../../sass/src/main.scss */
 #worksheet-bar a.worksheet_title { text-decoration: none; font-size: 20px; font-weight: bold; color: black; }
-/* line 34, ../../../../sass/src/main.scss */
-#worksheet-bar a.worksheet_title:hover { background-color: #ffffcc; cursor: pointer; }
 /* line 37, ../../../../sass/src/main.scss */
+#worksheet-bar a.worksheet_title:hover { background-color: #ffffcc; cursor: pointer; }
+/* line 40, ../../../../sass/src/main.scss */
 #worksheet-bar div.worksheet_title { float: left; clear: left; padding-left: 1em; background-color: white; color: black; margin-bottom: 0.5em; }
-/* line 44, ../../../../sass/src/main.scss */
-#worksheet-bar #save-discard-buttons { float: right; clear: right; }
 /* line 47, ../../../../sass/src/main.scss */
+#worksheet-bar #save-discard-buttons { float: right; clear: right; }
+/* line 50, ../../../../sass/src/main.scss */
 #worksheet-bar #worksheet-menu { float: left; clear: left; margin-bottom: 0.25em; }
-/* line 51, ../../../../sass/src/main.scss */
-#worksheet-bar #share-publish-buttons { float: right; clear: right; }
 /* line 54, ../../../../sass/src/main.scss */
+#worksheet-bar #share-publish-buttons { float: right; clear: right; }
+/* line 57, ../../../../sass/src/main.scss */
 #worksheet-bar #share-publish-buttons a.print-link { color: #112abb; text-decoration: underline; margin-right: 0.5em; }
-/* line 58, ../../../../sass/src/main.scss */
+/* line 61, ../../../../sass/src/main.scss */
 #worksheet-bar #share-publish-buttons a.print-link img { margin-right: 0.3em; }
 
-/* line 62, ../../../../sass/src/main.scss */
+/* line 65, ../../../../sass/src/main.scss */
 span.control_commands { position: fixed; top: 1ex; right: 1ex; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
-/* line 70, ../../../../sass/src/main.scss */
+/* line 73, ../../../../sass/src/main.scss */
 span.worksheet_control_commands { position: relative; top: 0px; right: 0px; text-align: right; color: blue; font-weight: normal; font-size: 12px; padding: 5px; }
 
-/* line 80, ../../../../sass/src/main.scss */
+/* line 83, ../../../../sass/src/main.scss */
 div.slide_control_commands { float: right; position: fixed; width: 500px; top: 1ex; right: 45%; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
 
-/* line 91, ../../../../sass/src/main.scss */
+/* line 94, ../../../../sass/src/main.scss */
 span.vbar { height: 1.5ex; border-left: 1px solid black; width: 1px; }
 
-/* line 97, ../../../../sass/src/main.scss */
+/* line 100, ../../../../sass/src/main.scss */
 a.slide_mode:hover, a.cell_mode:hover, a.slide_arrow:hover { cursor: pointer; }
 
-/* line 100, ../../../../sass/src/main.scss */
+/* line 103, ../../../../sass/src/main.scss */
 span.worksheet_control_commands a { color: #0000bb; text-decoration: none; padding: 5px; }
-/* line 104, ../../../../sass/src/main.scss */
+/* line 107, ../../../../sass/src/main.scss */
 span.worksheet_control_commands a:hover { cursor: pointer; }
 
-/* line 108, ../../../../sass/src/main.scss */
+/* line 111, ../../../../sass/src/main.scss */
 div.slideshow_control { float: right; }
-/* line 110, ../../../../sass/src/main.scss */
+/* line 113, ../../../../sass/src/main.scss */
 div.slideshow_control:hover { cursor: pointer; }
-/* line 112, ../../../../sass/src/main.scss */
+/* line 115, ../../../../sass/src/main.scss */
 div.slideshow_progress { float: right; background-color: white; padding: 1px; border: 1px solid #cccccc; width: 20%; }
-/* line 118, ../../../../sass/src/main.scss */
+/* line 121, ../../../../sass/src/main.scss */
 div.slideshow_progress_bar { z-index: 1; position: relative; background-color: #dcdcdc; }
-/* line 122, ../../../../sass/src/main.scss */
+/* line 125, ../../../../sass/src/main.scss */
 div.slideshow_progress_bar:hover { cursor: pointer; }
-/* line 124, ../../../../sass/src/main.scss */
+/* line 127, ../../../../sass/src/main.scss */
 div.slideshow_progress_text { position: absolute; z-index: 2; top: 2px; text-align: center; color: black; width: 20%; }
 
-/* line 132, ../../../../sass/src/main.scss */
+/* line 135, ../../../../sass/src/main.scss */
 .completion_menu_selected { background-color: #8888ff; }
 
-/* line 135, ../../../../sass/src/main.scss */
+/* line 138, ../../../../sass/src/main.scss */
 div.docstring { background-color: #fafafa; color: black; border: solid 1px black; padding: 8px; margin: 8px; }
 
-/* line 143, ../../../../sass/src/main.scss */
+/* line 146, ../../../../sass/src/main.scss */
 pre.literal-block { background-color: white; color: black; padding: 0 0 0 5px; border-left: 2px solid silver; }
-/* line 148, ../../../../sass/src/main.scss */
+/* line 151, ../../../../sass/src/main.scss */
 pre.introspection { font-family: monospace; font-size: 15px; background-color: #f1f1f1; color: blue; border: solid 1px black; padding: 8px; margin: 8px; }
 
-/* line 157, ../../../../sass/src/main.scss */
+/* line 160, ../../../../sass/src/main.scss */
 ul.completion_menu_one { list-style: none; position: absolute; z-index: 2; background-color: #efefef; border: solid 1px black; display: inline; margin: 5px; font-family: monospace; font-size: 15px; padding: 5px; }
 
-/* line 169, ../../../../sass/src/main.scss */
+/* line 172, ../../../../sass/src/main.scss */
 li.completion_menu_one { display: inline; position: relative; float: left; margin: 0px; }
 
-/* line 175, ../../../../sass/src/main.scss */
+/* line 178, ../../../../sass/src/main.scss */
 ul.completion_menu_two { display: inline; position: relative; list-style: none; margin: 0px; }
 
-/* line 181, ../../../../sass/src/main.scss */
+/* line 184, ../../../../sass/src/main.scss */
 li.completion_menu_two { display: block; position: relative; margin: 3px; padding-left: 3px; padding-right: 3px; }
-/* line 187, ../../../../sass/src/main.scss */
+/* line 190, ../../../../sass/src/main.scss */
 li.completion_menu_two:hover { background-color: #8888bb; cursor: pointer; }
 
 /**** SEARCH / HELP AREA ******************************** */
-/* line 193, ../../../../sass/src/main.scss */
+/* line 196, ../../../../sass/src/main.scss */
 span.search_doc_topbar { z-index: 12; height: 24px; font-family: monospace; font-size: 12px; width: 158px; top: 40px; left: 5px; position: fixed; border: 1px solid #387caf; background-color: #73a6ff; }
 
-/* line 205, ../../../../sass/src/main.scss */
+/* line 208, ../../../../sass/src/main.scss */
 td.menubar { text-decoration: none; font-size: 15px; font-weight: bold; color: white; }
 
-/* line 211, ../../../../sass/src/main.scss */
+/* line 214, ../../../../sass/src/main.scss */
 a.menubar { text-decoration: none; font-size: 15px; font-weight: bold; color: white; background-color: #73a6ff; }
 
-/* line 218, ../../../../sass/src/main.scss */
+/* line 221, ../../../../sass/src/main.scss */
 input.search_input { position: fixed; left: 5px; top: 65px; height: 32px; width: 160px; padding: 4px; z-index: 12; font-family: monospace; font-size: 14px; color: #222222; color: gray; border: 3px solid #387caf; background: white; }
 
-/* line 234, ../../../../sass/src/main.scss */
+/* line 237, ../../../../sass/src/main.scss */
 span.search_doc { z-index: 12; font-size: 12px; overflow: auto; position: fixed; top: 96px; left: 5px; width: 154px; height: 150px; margin: 0px; border: 1px solid #387caf; background-color: white; padding: 2px; }
 
-/* line 249, ../../../../sass/src/main.scss */
+/* line 252, ../../../../sass/src/main.scss */
 #docs-main-page div.control-bar { margin: 0 auto 1em; padding: 1em 0.5em; border-bottom: 1px solid #c9d7f1; text-align: center; }
-/* line 254, ../../../../sass/src/main.scss */
+/* line 257, ../../../../sass/src/main.scss */
 #docs-main-page ul.controls { margin: 1em auto; list-style-type: none; text-align: center; }
-/* line 258, ../../../../sass/src/main.scss */
+/* line 261, ../../../../sass/src/main.scss */
 #docs-main-page ul.controls li { display: inline; }
-/* line 260, ../../../../sass/src/main.scss */
+/* line 263, ../../../../sass/src/main.scss */
 #docs-main-page ul.controls li a { background-color: #7799bb; color: white; padding: 0.25em 0.5em; font-size: 15px; font-weight: bold; text-decoration: none; }
-/* line 267, ../../../../sass/src/main.scss */
+/* line 270, ../../../../sass/src/main.scss */
 #docs-main-page ul.controls li a:hover { cursor: pointer; }
-/* line 269, ../../../../sass/src/main.scss */
+/* line 272, ../../../../sass/src/main.scss */
 #docs-main-page div.help_window { background-color: white; border: 3px solid #3d86d0; padding: 2em; width: 90%; margin: 0 auto; }
-/* line 275, ../../../../sass/src/main.scss */
+/* line 278, ../../../../sass/src/main.scss */
 #docs-main-page table.help_window { background-color: white; width: 95%; }
-/* line 279, ../../../../sass/src/main.scss */
+/* line 282, ../../../../sass/src/main.scss */
 #docs-main-page td.help_window_sub { background-color: #f5e0aa; width: 100%; padding: 0.5ex; font-weight: bold; }
-/* line 284, ../../../../sass/src/main.scss */
+/* line 287, ../../../../sass/src/main.scss */
 #docs-main-page td.help_window_cmd { background-color: #f5e0aa; width: 30%; padding: 0.5ex; }
-/* line 288, ../../../../sass/src/main.scss */
-#docs-main-page td.help_window_how { padding: 0.5ex; width: 70%; }
 /* line 291, ../../../../sass/src/main.scss */
+#docs-main-page td.help_window_how { padding: 0.5ex; width: 70%; }
+/* line 294, ../../../../sass/src/main.scss */
 #docs-main-page .acknowledgments { font-size: small; text-align: center; }
 
 /*********** INFO PANES ************************* */
-/* line 298, ../../../../sass/src/main.scss */
+/* line 301, ../../../../sass/src/main.scss */
 span.pane { z-index: 30; font-family: monospace; font-size: 12px; position: fixed; left: 5px; top: 33px; width: 180px; height: 100%; margin: 0px; padding-right: 2px; padding-left: 0px; padding-top: 0px; bottom: 0ex; }
-/* line 312, ../../../../sass/src/main.scss */
+/* line 315, ../../../../sass/src/main.scss */
 span.plusminus { color: black; font-size: 8pt; font-family: monospace; }
-/* line 316, ../../../../sass/src/main.scss */
+/* line 319, ../../../../sass/src/main.scss */
 span.plusminus:hover { cursor: pointer; }
-/* line 318, ../../../../sass/src/main.scss */
+/* line 321, ../../../../sass/src/main.scss */
 span.controltoggle { color: blue; font-size: 10pt; text-decoration: underline; }
-/* line 322, ../../../../sass/src/main.scss */
+/* line 325, ../../../../sass/src/main.scss */
 span.controltoggle:hover { cursor: pointer; }
 
-/* line 325, ../../../../sass/src/main.scss */
+/* line 328, ../../../../sass/src/main.scss */
 div.left_pane_bar { position: fixed; left: 0px; top: 36px; background-color: white; width: 8px; height: 100%; z-index: 100; }
-/* line 333, ../../../../sass/src/main.scss */
+/* line 336, ../../../../sass/src/main.scss */
 div.left_pane_bar:hover { background-color: #8888fe; }
 
 /*********** VARIABLES ************************* */
-/* line 339, ../../../../sass/src/main.scss */
+/* line 342, ../../../../sass/src/main.scss */
 span.pane div.variables_topbar { color: black; background: url("corner.png") no-repeat top left; background-color: #dcdcdc; text-decoration: none; font-size: 13px; height: 2ex; padding-left: 10px; padding-bottom: 1px; width: 174px; }
-/* line 349, ../../../../sass/src/main.scss */
+/* line 352, ../../../../sass/src/main.scss */
 span.pane div.variable_list { font-size: 11px; top: 0ex; height: 20ex; border: 2px solid #dcdcdc; width: 180px; overflow: auto; }
 
-/* line 357, ../../../../sass/src/main.scss */
+/* line 360, ../../../../sass/src/main.scss */
 div.variable_name { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
-/* line 363, ../../../../sass/src/main.scss */
+/* line 366, ../../../../sass/src/main.scss */
 span.vartype { color: #657d6c; }
 
 /*********** ATTACHED ************************* */
-/* line 370, ../../../../sass/src/main.scss */
+/* line 373, ../../../../sass/src/main.scss */
 span.pane div.attached_topbar { color: black; height: 2ex; top: 0ex; background: url("corner.png") no-repeat top left; background-color: #dcdcdc; text-decoration: none; font-size: 13px; padding-left: 10px; padding-bottom: 1px; width: 174px; }
-/* line 381, ../../../../sass/src/main.scss */
+/* line 384, ../../../../sass/src/main.scss */
 span.pane div.attached_list { font-size: 11px; top: 0ex; height: 20ex; border: 2px solid #dcdcdc; width: 180px; overflow: auto; }
 
-/* line 389, ../../../../sass/src/main.scss */
+/* line 392, ../../../../sass/src/main.scss */
 div.attached_filename { padding-left: 1ex; border-top: 1px solid #d3e9ff; }
 
 /*********** WORKSHEETS ************************* */
-/* line 395, ../../../../sass/src/main.scss */
+/* line 398, ../../../../sass/src/main.scss */
 div.docstring-introspection-dialog-source .ui-dialog-title { font-size: inherit; color: #007020; font-family: 'Arial', 'Helvetica', sans-serif; }
+
+/* line 403, ../../../../sass/src/main.scss */
 div.docstring-introspection-dialog-doc .ui-dialog-title { font-size: inherit; color: #0000aa; font-family: 'Arial', 'Helvetica', sans-serif; }
 
-/* line 399, ../../../../sass/src/main.scss */
+/* line 408, ../../../../sass/src/main.scss */
 .docstring { font-family: 'Arial', 'Helvetica', sans-serif; }
-/* line 401, ../../../../sass/src/main.scss */
+/* line 410, ../../../../sass/src/main.scss */
 .docstring .click-message { font-size: 0.75em; float: right; clear: both; }
-/* line 405, ../../../../sass/src/main.scss */
+/* line 414, ../../../../sass/src/main.scss */
 .docstring .unprinted-note { float: right; clear: both; font-size: 0.6em; }
 
-/* line 410, ../../../../sass/src/main.scss */
+/* line 419, ../../../../sass/src/main.scss */
 .active-worksheet .interrupt-fail-notification { background-color: #b22222; }
 
-/* line 413, ../../../../sass/src/main.scss */
+/* line 422, ../../../../sass/src/main.scss */
 span.pane div.worksheets_topbar { color: black; height: 3ex; top: 0ex; background: url("/images/corner.png") no-repeat top left; background-color: #cccccc; text-decoration: none; font-size: 15px; padding-left: 10px; padding-top: 10px; width: 174px; }
 
-/* line 425, ../../../../sass/src/main.scss */
+/* line 434, ../../../../sass/src/main.scss */
 a.left_panel_hide { position: relative; top: 0px; right: -1px; text-align: right; color: blue; font-weight: normal; font-size: 12px; }
-/* line 433, ../../../../sass/src/main.scss */
+/* line 442, ../../../../sass/src/main.scss */
 a.left_panel_hide:hover { cursor: pointer; }
 
-/* line 436, ../../../../sass/src/main.scss */
+/* line 445, ../../../../sass/src/main.scss */
 span.X { color: white; font-family: 'Arial', 'Helvetica', sans-serif; font-weight: bold; cursor: pointer; }
 
-/* line 443, ../../../../sass/src/main.scss */
+/* line 452, ../../../../sass/src/main.scss */
 .modal-prompt form { font-size: 0.9em; }
-/* line 446, ../../../../sass/src/main.scss */
+/* line 455, ../../../../sass/src/main.scss */
 .modal-prompt div.message, .modal-prompt div.field { margin-bottom: 0.25em; }
-/* line 448, ../../../../sass/src/main.scss */
+/* line 457, ../../../../sass/src/main.scss */
 .modal-prompt div.button-div { text-align: center; }
 
-/* line 451, ../../../../sass/src/main.scss */
+/* line 460, ../../../../sass/src/main.scss */
 span.pane div.add_new_worksheet_menu { position: relative; color: black; padding-top: 0.5ex; padding-bottom: 0.5ex; left: 0ex; background-color: white; text-decoration: none; font-size: 11px; padding-left: 0px; width: 174px; }
 
-/* line 463, ../../../../sass/src/main.scss */
+/* line 472, ../../../../sass/src/main.scss */
 input.add_new_worksheet_menu { width: 100%; }
 
-/* line 466, ../../../../sass/src/main.scss */
+/* line 475, ../../../../sass/src/main.scss */
 button.add_new_worksheet_menu { font-size: 14px; }
 
-/* line 470, ../../../../sass/src/main.scss */
+/* line 479, ../../../../sass/src/main.scss */
 #upload-worksheet-page h2, #upload-data-page h2 { padding-bottom: 0.5em; border-bottom: 1px solid #cccccc; }
-/* line 473, ../../../../sass/src/main.scss */
+/* line 482, ../../../../sass/src/main.scss */
 #upload-worksheet-page label, #upload-data-page label { display: block; }
-/* line 475, ../../../../sass/src/main.scss */
+/* line 484, ../../../../sass/src/main.scss */
 #upload-worksheet-page div, #upload-data-page div { margin-bottom: 1em; }
 
-/* line 479, ../../../../sass/src/main.scss */
+/* line 488, ../../../../sass/src/main.scss */
 #specific-revision-page #revision-data { padding: 1em 0.5em; border-top: 1px solid #c9d7f1; border-bottom: 1px solid #c9d7f1; }
+/* line 492, ../../../../sass/src/main.scss */
 #specific-revision-page .sharebar a { color: white; border-left: 2px white solid; padding-left: 1em; }
 
-/* line 485, ../../../../sass/src/main.scss */
+/* line 498, ../../../../sass/src/main.scss */
 #revision-list-page #revision-list { width: 100%; }
-/* line 487, ../../../../sass/src/main.scss */
+/* line 500, ../../../../sass/src/main.scss */
 #revision-list-page .revision-title { width: 30%; }
-/* line 489, ../../../../sass/src/main.scss */
+/* line 502, ../../../../sass/src/main.scss */
 #revision-list-page .edit-time { width: 70%; }
 
-/* line 493, ../../../../sass/src/main.scss */
+/* line 506, ../../../../sass/src/main.scss */
 #history-page pre { border-bottom: 1px solid #c9d7f1; padding: 1em 0.5em; }
 
-/* line 497, ../../../../sass/src/main.scss */
+/* line 510, ../../../../sass/src/main.scss */
 span.pane div.delete_worksheet_menu { color: black; top: 0ex; background-color: #cccccc; text-decoration: none; font-size: 11px; padding-left: 10px; width: 174px; display: none; }
 
-/* line 507, ../../../../sass/src/main.scss */
+/* line 520, ../../../../sass/src/main.scss */
 input.delete_worksheet_menu { width: 50%; }
 
-/* line 510, ../../../../sass/src/main.scss */
+/* line 523, ../../../../sass/src/main.scss */
 button.delete_worksheet_menu { font-size: 11px; background-color: #ffcccc; }
 
-/* line 514, ../../../../sass/src/main.scss */
+/* line 527, ../../../../sass/src/main.scss */
 span.pane div.worksheet_list { position: fixed; overflow: scroll; font-size: 12px; top: 25ex; bottom: 2ex; left: 1ex; border: 2px solid #cccccc; width: 180px; }
 
-/* line 524, ../../../../sass/src/main.scss */
+/* line 537, ../../../../sass/src/main.scss */
 a.new_worksheet { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 12pt; text-align: right; color: #0000aa; }
-/* line 529, ../../../../sass/src/main.scss */
+/* line 542, ../../../../sass/src/main.scss */
 a.new_worksheet:hover { cursor: pointer; }
 
-/* line 533, ../../../../sass/src/main.scss */
+/* line 546, ../../../../sass/src/main.scss */
 div.worksheet_menu { top: 50px; }
 
-/* line 536, ../../../../sass/src/main.scss */
+/* line 549, ../../../../sass/src/main.scss */
 a.worksheet_title { text-decoration: none; font-size: 20px; font-weight: bold; color: black; }
-/* line 541, ../../../../sass/src/main.scss */
+/* line 554, ../../../../sass/src/main.scss */
 a.worksheet_title:hover { background-color: #ffffcc; cursor: pointer; }
 
-/* line 546, ../../../../sass/src/main.scss */
+/* line 559, ../../../../sass/src/main.scss */
 div.worksheet_title { padding-left: 1em; background-color: white; color: black; }
-/* line 550, ../../../../sass/src/main.scss */
+/* line 563, ../../../../sass/src/main.scss */
 div.worksheet_print_title { text-decoration: none; font-size: 24px; font-weight: bold; color: black; text-align: center; }
-/* line 556, ../../../../sass/src/main.scss */
+/* line 569, ../../../../sass/src/main.scss */
 div.worksheet_title_under { z-index: 0; padding-top: 3px; padding-left: 1em; background-color: #dcdcdc; font-size: 22px; font-weight: bold; color: black; }
-/* line 564, ../../../../sass/src/main.scss */
+/* line 577, ../../../../sass/src/main.scss */
 div.worksheet_cell_list { padding-left: 0.5ex; }
 
-/* line 568, ../../../../sass/src/main.scss */
+/* line 581, ../../../../sass/src/main.scss */
 a.delete_worksheet { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 8pt; text-decoration: underline; text-align: right; color: #0000aa; }
-/* line 574, ../../../../sass/src/main.scss */
+/* line 587, ../../../../sass/src/main.scss */
 a.delete_worksheet:hover { cursor: pointer; }
-/* line 576, ../../../../sass/src/main.scss */
+/* line 589, ../../../../sass/src/main.scss */
 a.upload_worksheet:hover { cursor: pointer; }
 
-/* line 580, ../../../../sass/src/main.scss */
+/* line 593, ../../../../sass/src/main.scss */
 span.pane a.worksheet_current { font-size: 14px; padding-left: 1ex; background-color: #cccccc; text-decoration: none; color: black; }
-/* line 586, ../../../../sass/src/main.scss */
+/* line 599, ../../../../sass/src/main.scss */
 span.pane a.worksheet_current_computing { font-size: 14px; padding-left: 1ex; background-color: #ffd1d1; text-decoration: none; color: black; }
-/* line 592, ../../../../sass/src/main.scss */
+/* line 605, ../../../../sass/src/main.scss */
 span.pane a.worksheet_other { font-size: 14px; padding-left: 1ex; background-color: white; text-decoration: none; color: black; }
-/* line 598, ../../../../sass/src/main.scss */
+/* line 611, ../../../../sass/src/main.scss */
 span.pane a.worksheet_other:hover { background-color: #cccccc; text-decoration: none; cursor: pointer; }
-/* line 602, ../../../../sass/src/main.scss */
+/* line 615, ../../../../sass/src/main.scss */
 span.pane a.worksheet_other_computing { font-size: 14px; padding-left: 1ex; background-color: #ffd1d1; text-decoration: none; color: black; }
 
 /********** DOC-BROWSER*********************** */
-/* line 611, ../../../../sass/src/main.scss */
+/* line 624, ../../../../sass/src/main.scss */
 .verbatim { background-color: #fafad2; border-style: solid; border-width: 1px 1px; border-color: black; }
 
 /*********** OBJECTS ************************* */
-/* line 620, ../../../../sass/src/main.scss */
+/* line 633, ../../../../sass/src/main.scss */
 span.pane div.objects_topbar { color: black; height: 2ex; top: 0ex; background: url("corner.png") no-repeat top left; background-color: #cccccc; text-decoration: none; font-size: 13px; padding-left: 10px; padding-bottom: 1px; width: 174px; }
-/* line 631, ../../../../sass/src/main.scss */
+/* line 644, ../../../../sass/src/main.scss */
 span.pane div.object_list { font-size: 11px; height: 20ex; border: 2px solid #cccccc; width: 180px; overflow: auto; }
 
-/* line 638, ../../../../sass/src/main.scss */
+/* line 651, ../../../../sass/src/main.scss */
 a.object_name { padding-left: 1ex; border-top: 1px solid #cccccc; background-color: white; text-decoration: none; color: black; }
-/* line 644, ../../../../sass/src/main.scss */
+/* line 657, ../../../../sass/src/main.scss */
 a.object_name:hover { background-color: #cccccc; text-decoration: none; color: black; cursor: pointer; }
 
 /*********** CONTROLS ************************* */
-/* line 652, ../../../../sass/src/main.scss */
+/* line 665, ../../../../sass/src/main.scss */
 div.control_area { vertical-align: top; }
 
-/* line 655, ../../../../sass/src/main.scss */
+/* line 668, ../../../../sass/src/main.scss */
 span.control { border: 1px solid white; font-family: monospace; font-size: 14pt; font-weight: bold; }
-/* line 660, ../../../../sass/src/main.scss */
+/* line 673, ../../../../sass/src/main.scss */
 span.control a.cs { color: #777777; text-decoration: none; border: 0px solid white; }
-/* line 664, ../../../../sass/src/main.scss */
+/* line 677, ../../../../sass/src/main.scss */
 span.control:hover a.cs, span.control a:hover.cs { color: black; border: 1px solid #333333; }
 
 /*********** WORKSHEET ************************* */
-/* line 671, ../../../../sass/src/main.scss */
-div.worksheet { background-color: white; border: 1px solid #aaaaaa; padding: 0.75em 0.2em; }
-/* line 675, ../../../../sass/src/main.scss */
+/* line 684, ../../../../sass/src/main.scss */
+div.worksheet { background-color: #eee; border-radius: 5px; padding: 1em; width: 80%; margin: auto; }
+/* line 691, ../../../../sass/src/main.scss */
 div.banner { background-color: white; font-size: 18px; text-decoration: none; color: #1950c8; }
-/* line 680, ../../../../sass/src/main.scss */
+/* line 696, ../../../../sass/src/main.scss */
 div.banner a.banner { text-decoration: none; border: none; margin-top: 2px; }
 
-/* line 685, ../../../../sass/src/main.scss */
+/* line 701, ../../../../sass/src/main.scss */
 a.banner:visited { color: #1950c8; }
 
-/* line 689, ../../../../sass/src/main.scss */
+/* line 705, ../../../../sass/src/main.scss */
 div.banner a.banner img { text-decoration: none; border: none; margin-top: 2px; }
 
-/* line 696, ../../../../sass/src/main.scss */
+/* line 712, ../../../../sass/src/main.scss */
 input.btn { font-family: monospace; font-size: 13pt; font-weight: bold; color: gray; text-decoration: none; background: white; padding: 0px; margin: 0px; border: 1px solid white; }
-/* line 706, ../../../../sass/src/main.scss */
+/* line 722, ../../../../sass/src/main.scss */
 input.btn:hover { color: black; text-decoration: none; background: white; padding: 0px; margin: 0px; border: 1px solid #333333; }
 
 /*********** CELL INPUT ************************* */
-/* line 717, ../../../../sass/src/main.scss */
-div.cell_visible { display: block; }
-/* line 719, ../../../../sass/src/main.scss */
-div.cell_evaluated { border-left: 1px solid white; padding-left: 3px; }
-/* line 722, ../../../../sass/src/main.scss */
-div.cell_not_evaluated { border-left: 1px solid #ff8888; padding-left: 3px; }
-
-/* line 727, ../../../../sass/src/main.scss */
-td.cell_number { font-size: 12pt; font-family: 'Arial', 'Helvetica', sans-serif; color: #bbbbbb; text-align: left; border-left: 4px solid white; }
 /* line 733, ../../../../sass/src/main.scss */
-td.cell_number:hover { color: #555555; cursor: pointer; }
-/* line 736, ../../../../sass/src/main.scss */
-td.cell_number_running { font-size: 12pt; font-family: 'Arial', 'Helvetica', sans-serif; color: #bbbbbb; border-left: 4px solid #aaffaa; text-align: left; }
+div.cell_visible { display: block; }
+/* line 737, ../../../../sass/src/main.scss */
+div.cell_not_evaluated textarea { border-left: 2px solid #ff0000; }
+
 /* line 742, ../../../../sass/src/main.scss */
+td.cell_number { font-size: 12pt; font-family: 'Arial', 'Helvetica', sans-serif; color: #bbbbbb; text-align: left; }
+/* line 747, ../../../../sass/src/main.scss */
+td.cell_number:hover { color: #555555; cursor: pointer; }
+/* line 750, ../../../../sass/src/main.scss */
+td.cell_number_running { font-size: 12pt; font-family: 'Arial', 'Helvetica', sans-serif; color: #bbbbbb; border-left: 4px solid #aaffaa; text-align: left; }
+/* line 756, ../../../../sass/src/main.scss */
 td.cell_number_running:hover { cursor: wait; }
 
-/* line 747, ../../../../sass/src/main.scss */
+/* line 761, ../../../../sass/src/main.scss */
 div.cellbox { z-index: 2; background-color: white; padding-left: 0.5em; padding-top: 4em; }
 
-/* line 753, ../../../../sass/src/main.scss */
-textarea.cell_input { color: black; background-color: white; border: 1px solid #a8a8a8; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 1px; padding-left: 6px; padding-right: 1px; padding-top: 4px; width: 97%; margin-bottom: 0px; margin-top: 0px; line-height: 1.2em; }
+/* line 767, ../../../../sass/src/main.scss */
+textarea.cell_input, textarea.cell_input_active { color: black; background-color: #fff; border: none; border-radius: 5px; font-family: monospace; font-size: 12pt; overflow: hidden; padding: 10px; width: 100%; margin-bottom: 0px; margin-top: 0px; line-height: 1.2em; }
 
-/* line 769, ../../../../sass/src/main.scss */
+/* line 781, ../../../../sass/src/main.scss */
 pre.cell_input { color: black; background-color: white; border: 1px solid #a8a8a8; font-family: monospace; font-size: 12pt; padding-bottom: 1px; padding-left: 6px; padding-right: 1px; padding-top: 4px; width: 100%; margin-bottom: 0px; margin-top: 0px; }
-/* line 782, ../../../../sass/src/main.scss */
+/* line 794, ../../../../sass/src/main.scss */
 pre.cell_input:hover { cursor: text; }
 
-/* line 785, ../../../../sass/src/main.scss */
+/* line 797, ../../../../sass/src/main.scss */
 textarea.cell_input_hide { background-color: white; border: 0px solid white; font-family: monospace; font-size: 12pt; color: #888888; overflow: hidden; padding-bottom: 2px; padding-left: 7px; padding-right: 2px; padding-top: 5px; height: 1em; margin: 0px; }
 
-/* line 799, ../../../../sass/src/main.scss */
-pre.cell_input_hide { background-color: white; border: 2px solid #e8e8e8; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; height: 1em; margin: 0px; }
 /* line 811, ../../../../sass/src/main.scss */
+pre.cell_input_hide { background-color: white; border: 2px solid #e8e8e8; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; height: 1em; margin: 0px; }
+/* line 823, ../../../../sass/src/main.scss */
 pre.cell_input_hide:hover { cursor: text; }
-
-/* line 814, ../../../../sass/src/main.scss */
-textarea.cell_input_active { background-color: white; border: 2px solid #8888fe; color: black; font-family: monospace; font-size: 12pt; overflow: hidden; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; }
 
 /* line 831, ../../../../sass/src/main.scss */
 div.cell_input_active { background-color: white; border: 2px solid #8888fe; font-family: monospace; font-size: 12pt; padding-bottom: 0px; padding-left: 5px; padding-right: 0px; padding-top: 3px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; z-index: -100; visibility: hidden; position: absolute; }
@@ -428,7 +429,7 @@ div.cell_input_active { background-color: white; border: 2px solid #8888fe; font
 div.cell_input_print { background-color: white; border: 1px solid #a8a8a8; font-family: monospace; font-size: 12pt; padding-bottom: 1px; padding-left: 6px; padding-right: 1px; padding-top: 4px; margin-top: 0px; margin-bottom: 0px; line-height: 1.2em; width: 97%; white-space: pre-wrap; }
 
 /* line 862, ../../../../sass/src/main.scss */
-textarea.cell_input:hover { cursor: text; }
+textarea.cell_input:hover, textarea.cell_input_active:hover { cursor: text; }
 
 /* line 866, ../../../../sass/src/main.scss */
 input.eval_button { display: none; }
@@ -438,71 +439,67 @@ input.eval_button_active { display: block; position: relative; top: 2px; margin:
 /*********** CELL OUTPUT ************************* */
 /* line 879, ../../../../sass/src/main.scss */
 div.cell_div_output { font-family: monospace; font-size: 12pt; margin-top: -5px; margin-bottom: 5px; padding-bottom: 5px; }
-/* line 885, ../../../../sass/src/main.scss */
-div.cell_output_div { overflow-x: auto; overflow-y: hidden; }
+/* line 886, ../../../../sass/src/main.scss */
+div.cell_output_div { overflow-x: auto; overflow-y: hidden; background: #ddd; border-radius: 5px; }
 
-/* line 890, ../../../../sass/src/main.scss */
+/* line 895, ../../../../sass/src/main.scss */
 table.cell_output_box { margin: 0px; padding: 0px; }
-/* line 894, ../../../../sass/src/main.scss */
-table.table_form * td { padding-top: 5px; padding-bottom: 5px; padding-left: 15px; padding-right: 15px; }
 /* line 899, ../../../../sass/src/main.scss */
+table.table_form * td { padding-top: 5px; padding-bottom: 5px; padding-left: 15px; padding-right: 15px; }
+/* line 904, ../../../../sass/src/main.scss */
 table.table_form * th { background: #a6ba4e; height: 29px; padding-left: 15px; padding-right: 15px; padding-top: 5px; padding-bottom: 5px; color: white; text-align: left; }
-/* line 909, ../../../../sass/src/main.scss */
+/* line 914, ../../../../sass/src/main.scss */
 table.table_form * tr.row-a { background: #f8f8f8; text-align: left; }
-/* line 912, ../../../../sass/src/main.scss */
+/* line 917, ../../../../sass/src/main.scss */
 table.table_form * tr.row-b { background: #efefef; text-align: left; }
 
-/* line 917, ../../../../sass/src/main.scss */
-div.cell_div_output_wrap { font-size: 12pt; margin: 0px; padding-left: 0px; color: #0000aa; }
 /* line 922, ../../../../sass/src/main.scss */
-div.cell_output_wrap pre.cell_output_print_wrap { font-size: 12pt; margin: 0px; padding: 0px; color: #0000aa; }
+div.cell_div_output_wrap { font-size: 12pt; margin: 0px; padding-left: 0px; color: #0000aa; }
 /* line 927, ../../../../sass/src/main.scss */
+div.cell_output_wrap pre.cell_output_print_wrap { font-size: 12pt; margin: 0px; padding: 0px; color: #0000aa; }
+/* line 932, ../../../../sass/src/main.scss */
 div.cell_output_print_wrap { font-size: 10pt; }
-/* line 929, ../../../../sass/src/main.scss */
+/* line 934, ../../../../sass/src/main.scss */
 div.cell_output_nowrap, div.cell_output_print_nowrap, div.cell_output_hidden, div.cell_output_nowrap_wrap, div.cell_output_print_nowrap_wrap { display: none; }
-/* line 931, ../../../../sass/src/main.scss */
-div.cell_output_nowrap_nowrap { font-size: 12pt; margin: 0px; padding: 0px; color: #0000aa; }
 /* line 936, ../../../../sass/src/main.scss */
-div.cell_output_nowrap_hidden { display: none; }
-/* line 938, ../../../../sass/src/main.scss */
-div.cell_output_html_wrap, div.cell_output_html_nowrap { font-family: monospace; font-size: 12pt; }
+div.cell_output_nowrap_nowrap { font-size: 12pt; margin: 0px; padding: 0px; color: #0000aa; }
 /* line 941, ../../../../sass/src/main.scss */
-div.cell_output_html_hidden { display: none; }
+div.cell_output_nowrap_hidden { display: none; }
 /* line 943, ../../../../sass/src/main.scss */
+div.cell_output_html_wrap, div.cell_output_html_nowrap { font-family: monospace; font-size: 12pt; }
+/* line 946, ../../../../sass/src/main.scss */
+div.cell_output_html_hidden { display: none; }
+/* line 948, ../../../../sass/src/main.scss */
 div.cell_div_output_running { font-family: monospace; font-size: 12pt; margin: 0px; background-color: white; padding: 0px; }
-/* line 949, ../../../../sass/src/main.scss */
+/* line 954, ../../../../sass/src/main.scss */
 div.cell_div_output_running:hover { cursor: wait; }
-/* line 951, ../../../../sass/src/main.scss */
+/* line 956, ../../../../sass/src/main.scss */
 div.cell_div_output_hidden { width: 100%; height: 3px; margin: 0px; border-left: 4em solid #aaaaaa; }
 
-/* line 958, ../../../../sass/src/main.scss */
+/* line 963, ../../../../sass/src/main.scss */
 pre.shrunk { font-size: 12pt; margin: 0px; }
-/* line 961, ../../../../sass/src/main.scss */
+/* line 966, ../../../../sass/src/main.scss */
 pre.cell_output_hidden, pre.cell_output_hide { display: none; }
 
-/* line 964, ../../../../sass/src/main.scss */
+/* line 969, ../../../../sass/src/main.scss */
 a.file_link { text-decoration: underline; }
 
-/* line 968, ../../../../sass/src/main.scss */
-div.insert_new_cell { height: 16px; display: block; margin: 3px; }
-div.insert_new_cell:hover{background-color:#8888fe;}
-div.legacy_insert_new_cell {height:13px; display:inline-block; width:95%;}
-div.legacy_insert_new_cell:hover{background-color:#8888fe;}
+/* line 973, ../../../../sass/src/main.scss */
+div.insert_new_cell { height: 2px; display: block; background-color: #fff; width: 75%; margin: 10px auto; }
+/* line 979, ../../../../sass/src/main.scss */
+div.insert_new_cell .wksht-icon_button { display: none; }
 
-/* line 974 */
-div.wksht-icon_button {display:inline-block;}
-
-/* line 977, ../../../../sass/src/main.scss */
+/* line 986, ../../../../sass/src/main.scss */
 a.worksheetname { text-decoration: none; font-weight: bold; font-size: 14px; color: #222222; }
-/* line 982, ../../../../sass/src/main.scss */
+/* line 991, ../../../../sass/src/main.scss */
 a.worksheetname:visited { color: #222222; }
-/* line 984, ../../../../sass/src/main.scss */
+/* line 993, ../../../../sass/src/main.scss */
 a.worksheetname_moved { color: #888888; text-decoration: none; font-weight: normal; }
 
-/* line 989, ../../../../sass/src/main.scss */
+/* line 998, ../../../../sass/src/main.scss */
 span.worksheet_buttons { position: relative; top: -20ex; right: 0ex; }
 
-/* line 994, ../../../../sass/src/main.scss */
+/* line 1003, ../../../../sass/src/main.scss */
 .thin-right { position: absolute; top: auto; right: 0; width: 70%; }
 
 /*********** User Home (Worksheet listing) ************************* */
@@ -661,13 +658,13 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 #guest-worksheet-page h1, #guest-worksheet-page h2 { text-align: center; }
 /* line 4, ../../../../sass/src/_guest_worksheet.scss */
 #guest-worksheet-page ul.controls { margin: 0; padding: 0; border: 0; overflow: hidden; *zoom: 1; }
-/* line 60, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-#guest-worksheet-page ul.controls li { list-style-image: none; list-style-type: none; margin-left: 0; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
-/* line 48, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-#guest-worksheet-page ul.controls li:first-child, #guest-worksheet-page ul.controls li.first { padding-left: 0; }
-/* line 49, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 62, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+#guest-worksheet-page ul.controls li { list-style-image: none; list-style-type: none; margin-left: 0; white-space: nowrap; float: left; padding-left: 0.5em; padding-right: 0.5em; }
+/* line 49, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+#guest-worksheet-page ul.controls li:first-child { padding-left: 0; }
+/* line 50, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #guest-worksheet-page ul.controls li:last-child { padding-right: 0; }
-/* line 50, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 52, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #guest-worksheet-page ul.controls li.last { padding-right: 0; }
 
 /* line 3, ../../../../sass/src/_worksheet_aux.scss */
@@ -714,13 +711,13 @@ span.pingdown { font-family: 'Arial', 'Helvetica', sans-serif; font-size: 15px; 
 
 /* line 35, ../../../../sass/src/_settings.scss */
 #settings-nav { margin: 0; padding: 0; border: 0; overflow: hidden; *zoom: 1; }
-/* line 60, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-#settings-nav li { list-style-image: none; list-style-type: none; margin-left: 0; white-space: nowrap; display: inline; float: left; padding-left: 0.5em; padding-right: 0.5em; }
-/* line 48, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
-#settings-nav li:first-child, #settings-nav li.first { padding-left: 0; }
-/* line 49, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 62, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+#settings-nav li { list-style-image: none; list-style-type: none; margin-left: 0; white-space: nowrap; float: left; padding-left: 0.5em; padding-right: 0.5em; }
+/* line 49, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+#settings-nav li:first-child { padding-left: 0; }
+/* line 50, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #settings-nav li:last-child { padding-right: 0; }
-/* line 50, ../../../../../../../../.gem/ruby/1.8/gems/compass-0.12.2/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
+/* line 52, ../../../../../../../../../../../share/compass/frameworks/compass/stylesheets/compass/typography/lists/_horizontal-list.scss */
 #settings-nav li.last { padding-right: 0; }
 /* line 37, ../../../../sass/src/_settings.scss */
 #settings-nav li { border-right: 1px solid #cccccc; }

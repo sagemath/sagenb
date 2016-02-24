@@ -9,6 +9,9 @@
 @import "partials/mixins";
 @import "typography/base";
 
+* {
+  box-sizing: border-box;
+}
 body {
   background-color: white; }
 
@@ -679,9 +682,12 @@ span.control {
 
 div {
   &.worksheet {
-    background-color: white;
-    border: 1px solid #aaaaaa;
-    padding: 0.75em 0.2em; }
+    background-color: $color_bg2;
+    border-radius: 5px;
+    padding: 1em;
+    width: 80%;
+    margin: auto;
+  }
   &.banner {
     background-color: white;
     font-size: 18px;
@@ -726,12 +732,11 @@ input.btn {
 div {
   &.cell_visible {
     display: block; }
-  &.cell_evaluated {
-    border-left: 1px solid white;
-    padding-left: 3px; }
+  &.cell_evaluated { }
   &.cell_not_evaluated {
-    border-left: 1px solid #ff8888;
-    padding-left: 3px; } }
+    textarea {
+      border-left: 2px solid $color_no_eval;
+    } } }
 
 td {
   &.cell_number {
@@ -739,7 +744,6 @@ td {
     @include sans-serif-stack;
     color: #bbbbbb;
     text-align: left;
-    border-left: 4px solid white;
     &:hover {
       color: #555555;
       cursor: pointer; } }
@@ -762,16 +766,14 @@ div.cellbox {
 
 textarea.cell_input {
   color: black;
-  background-color: white;
-  border: 1px solid #a8a8a8;
+  background-color: $color_bg1;
+  border: none;
+  border-radius: 5px;
   @include monospace-stack;
   font-size: 12pt;
   overflow: hidden;
-  padding-bottom: 1px;
-  padding-left: 6px;
-  padding-right: 1px;
-  padding-top: 4px;
-  width: 97%;
+  padding: 10px;
+  width: 100%;
   margin-bottom: 0px;
   margin-top: 0px;
   line-height: 1.2em; }
@@ -822,20 +824,8 @@ pre.cell_input_hide {
     cursor: text; } }
 
 textarea.cell_input_active {
-  background-color: white;
-  border: 2px solid #8888fe;
-  color: black;
-  @include monospace-stack;
-  font-size: 12pt;
-  overflow: hidden;
-  padding-bottom: 0px;
-  padding-left: 5px;
-  padding-right: 0px;
-  padding-top: 3px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  line-height: 1.2em;
-  width: 97%; }
+  @extend .cell_input
+}
 
 div {
   &.cell_input_active {
@@ -891,10 +881,15 @@ div {
     font-size: 12pt;
     margin-top: -5px;
     margin-bottom: 5px;
-    padding-bottom: 5px; }
+    padding-bottom: 5px;
+  }
   &.cell_output_div {
     overflow-x: auto;
-    overflow-y: hidden; } }
+    overflow-y: hidden;
+    background: $color_bg3;
+    border-radius: 5px;
+  }
+}
 
 table {
   &.cell_output_box {
@@ -976,17 +971,16 @@ a.file_link {
 
 div {
   &.insert_new_cell {
-    height: 16px;
+    height: 2px;
     display: block;
-    margin: 3px;
-  &.wksht-icon_button {
-    display:inline-block;}
-    &:hover {background-color:#8888fe;}
-  &.legacy_insert_new_cell{
-    height: 13px;
-    width: 95%;
-    display: inline-block;
-    &:hover{background-color:#8888fe;}}
+    background-color: $color_bg1;
+    width: 75%;
+    margin: 10px auto;
+    .wksht-icon_button {
+      display: none
+    }
+  }
+}
 
 a {
   &.worksheetname {

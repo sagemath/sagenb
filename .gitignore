@@ -15,6 +15,7 @@
 /dist
 MANIFEST
 PKG-INFO
+EGG-INFO
 release_notes.txt
 /sass/src/.sass-cache
 /sagenb/data/jmol

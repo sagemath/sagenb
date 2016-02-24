@@ -9,7 +9,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2010-2013 The MathJax Consortium
+ *  Copyright (c) 2010-2015 The MathJax Consortium
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
  */
 
 MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
-  var VERSION = "2.2";
+  var VERSION = "2.6.0";
   var MML = MathJax.ElementJax.mml,
       HTMLCSS = MathJax.OutputJax["HTML-CSS"];
   
@@ -46,10 +46,12 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       var BOX = this.HTMLgetScripts(stack,s);
       var sub = BOX[0], sup = BOX[1], presub = BOX[2], presup = BOX[3];
 
+      //
       // <mmultiscripts> children other than the base can be <none/>,
       // <mprescripts/>, <mrow></mrow> etc so try to get HTMLgetScale from the
       // first element with a spanID. See issue 362.
-      var sscale = this.HTMLgetScale();
+      //
+      var sscale = scale;
       for (var i = 1; i < this.data.length; i++) {
         if (this.data[i] && this.data[i].spanID) {
           sscale = this.data[i].HTMLgetScale();
@@ -108,32 +110,60 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
       }
       this.HTMLhandleSpace(span);
       this.HTMLhandleColor(span);
+      var bbox = span.bbox;
+      bbox.dx = dx; bbox.s = s; bbox.u = u; bbox.v = v; bbox.delta = delta;
+      bbox.px = dx+base.bbox.w;
       return span;
     },
     HTMLgetScripts: function (stack,s) {
       var sup, sub, BOX = [];
       var i = 1, m = this.data.length, W = 0;
       for (var k = 0; k < 4; k += 2) {
-        while (i < m && this.data[i].type !== "mprescripts") {
+        while (i < m && (this.data[i]||{}).type !== "mprescripts") {
+          var box = [null,null,null,null];
           for (var j = k; j < k+2; j++) {
-            if (this.data[i] && this.data[i].type !== "none") {
+            if (this.data[i] && this.data[i].type !== "none" && this.data[i].type !== "mprescripts") {
               if (!BOX[j]) {
                 BOX[j] = HTMLCSS.createBox(stack); BOX[j].bbox = this.HTMLemptyBBox({});
                 if (W) {HTMLCSS.createBlank(BOX[j],W); BOX[j].bbox.w = BOX[j].bbox.rw = W}
               }
-              this.data[i].toHTML(BOX[j]); this.HTMLcombineBBoxes(this.data[i],BOX[j].bbox);
+              box[j] = this.data[i].toHTML(BOX[j]);
+            } else {
+              box[j] = MathJax.HTML.Element("span",{bbox:this.HTMLemptyBBox({})});
             }
-            i++;
+            if ((this.data[i]||{}).type !== "mprescripts") i++;
           }
+          var isPre = (k === 2);
           sub = BOX[k]; sup = BOX[k+1];
           if (sub && sup) {
-            if (sub.bbox.w < sup.bbox.w) {
-              HTMLCSS.createBlank(sub,sup.bbox.w-sub.bbox.w);
-              sub.bbox.w = sup.bbox.w; sub.bbox.rw = Math.max(sub.bbox.w,sub.bbox.rw);
-            } else if (sub.bbox.w > sup.bbox.w) {
-              HTMLCSS.createBlank(sup,sub.bbox.w-sup.bbox.w);
-              sup.bbox.w = sub.bbox.w; sup.bbox.rw = Math.max(sup.bbox.w,sup.bbox.rw);
+            var w = box[k+1].bbox.w - box[k].bbox.w;
+            if (w > 0) {
+              if (isPre) {
+                box[k].style.paddingLeft = HTMLCSS.Em(w/(box[k].scale||1));
+                BOX[k].w += w;
+              } else {
+                HTMLCSS.createBlank(sub,w);
+              }
+            } else if (w < 0) {
+              if (isPre) {
+                box[k+1].style.paddingLeft = HTMLCSS.Em(-w/(box[k+1].scale||1));
+                BOX[k+1].w += -w;
+              } else {
+                HTMLCSS.createBlank(sup,-w);
+              }
             }
+            this.HTMLcombineBBoxes(box[k],sub.bbox);
+            this.HTMLcombineBBoxes(box[k+1],sup.bbox);
+            if (w > 0) {
+              sub.bbox.w = sup.bbox.w;
+              sub.bbox.rw = Math.max(sub.bbox.w,sub.bbox.rw);
+            } else if (w < 0) {
+              sup.bbox.w = sub.bbox.w;
+              sup.bbox.rw = Math.max(sup.bbox.w,sup.bbox.rw);
+            }
+          } else {
+            if (sub) this.HTMLcombineBBoxes(box[k],sub.bbox);
+            if (sup) this.HTMLcombineBBoxes(box[k+1],sup.bbox);
           }
           if (sub) {W = sub.bbox.w} else if (sup) {W = sup.bbox.w}
         }
@@ -143,6 +173,7 @@ MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
         if (BOX[j]) {
           BOX[j].bbox.w += s;
           BOX[j].bbox.rw = Math.max(BOX[j].bbox.w,BOX[j].bbox.rw);
+          BOX[j].bbox.name = (["sub","sup","presub","presup"])[j];
           this.HTMLcleanBBox(BOX[j].bbox);
         }
       }

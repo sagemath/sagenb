@@ -10,7 +10,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2009-2013 The MathJax Consortium
+ *  Copyright (c) 2009-2015 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
  */
 
 (function (HTMLCSS,MML,AJAX) {
-  var VERSION = "2.2";
+  var VERSION = "2.6.0";
   
   var MAIN   = "MathJax_Main",
       BOLD   = "MathJax_Main-bold",
@@ -37,6 +37,8 @@
       SIZE3  = "MathJax_Size3",
       SIZE4  = "MathJax_Size4";
   var H = "H", V = "V", EXTRAH = {load:"extra", dir:H}, EXTRAV = {load:"extra", dir:V};
+  var ARROWREP = [0x2212,MAIN,0,0,0,0,.1];   // add depth for arrow extender
+  var DARROWREP = [0x3D,MAIN,0,0,0,0,.1];    // add depth for arrow extender
 
   HTMLCSS.Augment({
     FONTDATA: {
@@ -66,7 +68,8 @@
         "MathJax_SansSerif-bold":   "SansSerif/Bold/Main.js",
         "MathJax_SansSerif-italic": "SansSerif/Italic/Main.js",
         "MathJax_Script":           "Script/Regular/Main.js",
-        "MathJax_Typewriter":       "Typewriter/Regular/Main.js"
+        "MathJax_Typewriter":       "Typewriter/Regular/Main.js",
+        "MathJax_Caligraphic-bold": "Caligraphic/Bold/Main.js"
       },
       
       VARIANT: {
@@ -132,7 +135,10 @@
                      0x210F:[0x210F,MML.VARIANT.NORMAL]  // \hslash
                    }},
         "-largeOp": {fonts:[SIZE2,SIZE1,MAIN]},
-        "-smallOp": {fonts:[SIZE1,MAIN]}
+        "-smallOp": {fonts:[SIZE1,MAIN]},
+        "-tex-caligraphic-bold": {fonts:["MathJax_Caligraphic-bold","MathJax_Main-bold","MathJax_Main","MathJax_Math","MathJax_Size1"], bold:true,
+                                  offsetA: 0x41, variantA: "bold-italic"},
+        "-tex-oldstyle-bold": {fonts:["MathJax_Caligraphic-bold","MathJax_Main-bold","MathJax_Main","MathJax_Math","MathJax_Size1"], bold:true}
       },
       
       RANGES: [
@@ -179,7 +185,7 @@
         0x210D: [0x0048,MML.VARIANT.DOUBLESTRUCK],
         0x210E: [0x0068,MML.VARIANT.ITALIC],
         0x2110: [0x004A,MML.VARIANT.SCRIPT],
-        0x2111: [0x004A,MML.VARIANT.FRAKTUR],
+        0x2111: [0x0049,MML.VARIANT.FRAKTUR],
         0x2112: [0x004C,MML.VARIANT.SCRIPT],
         0x2115: [0x004E,MML.VARIANT.DOUBLESTRUCK],
         0x2119: [0x0050,MML.VARIANT.DOUBLESTRUCK],
@@ -368,7 +374,7 @@
         },
         0x2190: // left arrow
         {
-          dir: H, HW: [[1,MAIN]], stretch: {left:[0x2190,MAIN],rep:[0x2212,MAIN]}
+          dir: H, HW: [[1,MAIN]], stretch: {left:[0x2190,MAIN], rep:ARROWREP}
         },
         0x2191: // \uparrow
         {
@@ -376,7 +382,7 @@
         },
         0x2192: // right arrow
         {
-          dir: H, HW: [[1,MAIN]], stretch: {rep:[0x2212,MAIN], right:[0x2192,MAIN]}
+          dir: H, HW: [[1,MAIN]], stretch: {rep:ARROWREP, right:[0x2192,MAIN]}
         },
         0x2193: // \downarrow
         {
@@ -385,7 +391,7 @@
         0x2194: // left-right arrow
         {
           dir: H, HW: [[1,MAIN]],
-          stretch: {left:[0x2190,MAIN],rep:[0x2212,MAIN], right:[0x2192,MAIN]}
+          stretch: {left:[0x2190,MAIN], rep:ARROWREP, right:[0x2192,MAIN]}
         },
         0x2195: // \updownarrow
         {
@@ -394,7 +400,7 @@
         },
         0x21D0: // left double arrow
         {
-          dir: H, HW: [[1,MAIN]], stretch: {left:[0x21D0,MAIN],rep:[0x3D,MAIN]}
+          dir: H, HW: [[1,MAIN]], stretch: {left:[0x21D0,MAIN], rep:DARROWREP}
         },
         0x21D1: // \Uparrow
         {
@@ -402,7 +408,7 @@
         },
         0x21D2: // right double arrow
         {
-          dir: H, HW: [[1,MAIN]], stretch: {rep:[0x3D,MAIN], right:[0x21D2,MAIN]}
+          dir: H, HW: [[1,MAIN]], stretch: {rep:DARROWREP, right:[0x21D2,MAIN]}
         },
         0x21D3: // \Downarrow
         {
@@ -411,7 +417,7 @@
         0x21D4: // left-right double arrow
         {
           dir: H, HW: [[1,MAIN]],
-          stretch: {left:[0x21D0,MAIN],rep:[0x3D,MAIN], right:[0x21D2,MAIN]}
+          stretch: {left:[0x21D0,MAIN], rep:DARROWREP, right:[0x21D2,MAIN]}
         },
         0x21D5: // \Updownarrow
         {
@@ -420,7 +426,7 @@
         },
         0x2212: // horizontal line
         {
-          dir: H, HW: [[.611,MAIN]], stretch: {rep:[0x2212,MAIN]}
+          dir: H, HW: [[.778,MAIN]], stretch: {rep:[0x2212,MAIN]}
         },
         0x221A: // \surd
         {
@@ -564,6 +570,9 @@
         0x295F: EXTRAH, // rightwards harpoon with barb down from bar
         0x2960: EXTRAV, // up harpoon with barb left from bar
         0x2961: EXTRAV, // down harpoon with barb left from bar
+        0x2312: {alias: 0x23DC, dir:H}, // arc
+        0x2322: {alias: 0x23DC, dir:H}, // frown
+        0x2323: {alias: 0x23DD, dir:H}, // smile
         0x27F5: {alias: 0x2190, dir:H}, // long left arrow
         0x27F6: {alias: 0x2192, dir:H}, // long right arrow
         0x27F7: {alias: 0x2194, dir:H}, // long left-right arrow
@@ -1557,8 +1566,6 @@
   HTMLCSS.FONTDATA.FONTS['MathJax_Main'][0x22F1][0] += 700;  // adjust height for \ddots
   HTMLCSS.FONTDATA.FONTS['MathJax_Size4'][0xE154][0] += 200;  // adjust height for brace extender
   HTMLCSS.FONTDATA.FONTS['MathJax_Size4'][0xE154][1] += 200;  // adjust depth for brace extender
-  HTMLCSS.FONTDATA.FONTS['MathJax_Main'][0x2212][1] += 100; // adjust depth of minus (used as arrow extender)
-  HTMLCSS.FONTDATA.FONTS['MathJax_Main'][0x003D][1] += 100; // adjust depth of = (used as arrow extender)
   HTMLCSS.FONTDATA.FONTS['MathJax_Main'][0x2245][2] -= 222; // fix error in character's right bearing
   HTMLCSS.FONTDATA.FONTS['MathJax_Main'][0x2245][5] = {rfix:-222}; // fix error in character's right bearing
   MathJax.Hub.Register.LoadHook(HTMLCSS.fontDir+"/Main/Bold/MathOperators.js",function () {
@@ -1590,7 +1597,7 @@
           HTMLCSS.FONTDATA.REMAP[0x2CB] = 0x60; // grave
           HTMLCSS.FONTDATA.REMAP[0x2DA] = 0xB0; // ring above
           
-          var testString = HTMLCSS.msieCheckGreek =
+          var testString =
             String.fromCharCode(0x393)+" "+String.fromCharCode(0x3A5)+" "+String.fromCharCode(0x39B);
 
           HTMLCSS.FONTDATA.RANGES.push({name: "IEgreek", low: 0x03B1, high: 0x03C9, offset: "IEG", add: 32});
@@ -1762,6 +1769,20 @@
             };
             
           }
+
+          if (HTMLCSS.Font.testFont({family:"MathJax_Greek", weight:"bold", style:"italic", testString: testString})) {
+            HTMLCSS.Augment({
+              FONTDATA: {
+                VARIANT: {
+                  "bold-italic": {offsetG: 0x391,
+                                  variantG: "-Greek-Bold-Italic"},
+                  "-Greek-Bold-Italic": {fonts:["MathJax_Greek-bold-italic"]}
+                },
+                FONTS: {"MathJax_Greek-bold-italic": "Greek/BoldItalic/Main.js"}
+              }
+            });
+          }
+
         }
 
         if (HTMLCSS.msieIE6) {
@@ -1879,7 +1900,6 @@
           delete HTMLCSS.FONTDATA.REMAPACCENT["\u2192"];
         }
         if (browser.isPC && !MathJax.Hub.Browser.versionAtLeast("5.0")) {
-          // FIXME:  patch caligraphic bold, too
           var WinChrome = "-WinChrome";
           HTMLCSS.Augment({
             FONTDATA: {
@@ -1888,6 +1908,7 @@
                 bold:   {remap: {0xE2F1: [0x3E,WinChrome]}},
                 italic: {remap: {0x64:   [0x64,WinChrome]}},
                 "-tex-caligraphic": {remap: {0x54: [0x54,WinChrome]}},
+                "-tex-caligraphic-bold": {remap: {0x54: [0xE2F0,WinChrome]}},
                 "-largeOp": {remap: {0x2A00: [0x2A00,WinChrome]}},
                 "-smallOp": {remap: {0x22C3: [0x22C3,WinChrome]}},
                 "-WinChrome": {fonts:["MathJax_WinChrome"]}
@@ -1918,8 +1939,9 @@
             0xE2F0: [720,69,644,38,947],       // stix-lowercase u italic slashed
             0xE2F1: [587,85,894,96,797]        // stix-lowercase u bold italic slashed
           };
-          
+
         }
+
       }
 
     });

@@ -254,9 +254,25 @@ def my_sigint(x, n):
 
 signal.signal(signal.SIGINT, my_sigint)
 
-from twisted.web import server
+from sagenb.misc.misc import DATA
+
+from twisted.web import server, resource
 from twisted.web.wsgi import WSGIResource
-resource = WSGIResource(reactor, reactor.getThreadPool(), flask_app)
+from twisted.web.static import File
+class SharedRoot(resource.Resource):
+    WSGI = None
+
+    def getChild(self, child, request):
+        request.prepath.pop()
+        request.postpath.insert(0, child)
+        return self.WSGI
+
+    def render(self, request):
+        return self.WSGI.render(request)
+
+resource = SharedRoot()
+resource.WSGI = WSGIResource(reactor, reactor.getThreadPool(), flask_app)
+resource.putChild("assets", File(os.path.join(DATA, 'sage')))
 
 class QuietSite(server.Site):
     def log(*args, **kwargs):

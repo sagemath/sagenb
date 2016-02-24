@@ -10,7 +10,7 @@
  *
  *  ---------------------------------------------------------------------
  *  
- *  Copyright (c) 2011-2013 The MathJax Consortium
+ *  Copyright (c) 2011-2015 The MathJax Consortium
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
  */
 
 (function (SVG,MML,AJAX,HUB) {
-  var VERSION = "2.2";
+  var VERSION = "2.6.0";
   
   var MAIN   = "MathJax_Main",
       BOLD   = "MathJax_Main-bold",
@@ -38,6 +38,8 @@
       SIZE4  = "MathJax_Size4";
   var H = "H", V = "V", EXTRAH = {load:"extra", dir:H}, EXTRAV = {load:"extra", dir:V};
   var STDHW = [[1000,MAIN],[1200,SIZE1],[1800,SIZE2],[2400,SIZE3],[3000,SIZE4]];
+  var ARROWREP = [0x2212,MAIN,0,0,0,0,.1];   // add depth for arrow extender
+  var DARROWREP = [0x3D,MAIN,0,0,0,0,.1];    // add depth for arrow extender
 
   SVG.Augment({
     FONTDATA: {
@@ -64,7 +66,8 @@
         "MathJax_SansSerif-bold":   "SansSerif/Bold/Main.js",
         "MathJax_SansSerif-italic": "SansSerif/Italic/Main.js",
         "MathJax_Script":           "Script/Regular/Main.js",
-        "MathJax_Typewriter":       "Typewriter/Regular/Main.js"
+        "MathJax_Typewriter":       "Typewriter/Regular/Main.js",
+        "MathJax_Caligraphic-bold": "Caligraphic/Bold/Main.js"
       },
       
       VARIANT: {
@@ -130,7 +133,10 @@
                      0x210F:[0x210F,MML.VARIANT.NORMAL]  // \hslash
                    }},
         "-largeOp": {fonts:[SIZE2,SIZE1,MAIN]},
-        "-smallOp": {fonts:[SIZE1,MAIN]}
+        "-smallOp": {fonts:[SIZE1,MAIN]},
+        "-tex-caligraphic-bold": {fonts:["MathJax_Caligraphic-bold","MathJax_Main-bold","MathJax_Main","MathJax_Math","MathJax_Size1"], bold:true,
+                                  offsetA: 0x41, variantA: "bold-italic"},
+        "-tex-oldstyle-bold": {fonts:["MathJax_Caligraphic-bold","MathJax_Main-bold","MathJax_Main","MathJax_Math","MathJax_Size1"], bold:true}
       },
       
       RANGES: [
@@ -178,7 +184,7 @@
         0x210D: [0x0048,MML.VARIANT.DOUBLESTRUCK],
         0x210E: [0x0068,MML.VARIANT.ITALIC],
         0x2110: [0x004A,MML.VARIANT.SCRIPT],
-        0x2111: [0x004A,MML.VARIANT.FRAKTUR],
+        0x2111: [0x0049,MML.VARIANT.FRAKTUR],
         0x2112: [0x004C,MML.VARIANT.SCRIPT],
         0x2115: [0x004E,MML.VARIANT.DOUBLESTRUCK],
         0x2119: [0x0050,MML.VARIANT.DOUBLESTRUCK],
@@ -367,7 +373,7 @@
         },
         0x2190: // left arrow
         {
-          dir: H, HW: [[1000,MAIN]], stretch: {left:[0x2190,MAIN],rep:[0x2212,MAIN], fuzz:300}
+          dir: H, HW: [[1000,MAIN]], stretch: {left:[0x2190,MAIN], rep:ARROWREP, fuzz:300}
         },
         0x2191: // \uparrow
         {
@@ -375,7 +381,7 @@
         },
         0x2192: // right arrow
         {
-          dir: H, HW: [[1000,MAIN]], stretch: {rep:[0x2212,MAIN], right:[0x2192,MAIN], fuzz:300}
+          dir: H, HW: [[1000,MAIN]], stretch: {rep:ARROWREP, right:[0x2192,MAIN], fuzz:300}
         },
         0x2193: // \downarrow
         {
@@ -384,7 +390,7 @@
         0x2194: // left-right arrow
         {
           dir: H, HW: [[1000,MAIN]],
-          stretch: {left:[0x2190,MAIN],rep:[0x2212,MAIN], right:[0x2192,MAIN], fuzz:300}
+          stretch: {left:[0x2190,MAIN], rep:ARROWREP, right:[0x2192,MAIN], fuzz:300}
         },
         0x2195: // \updownarrow
         {
@@ -393,7 +399,7 @@
         },
         0x21D0: // left double arrow
         {
-          dir: H, HW: [[1000,MAIN]], stretch: {left:[0x21D0,MAIN],rep:[0x3D,MAIN], fuzz:300}
+          dir: H, HW: [[1000,MAIN]], stretch: {left:[0x21D0,MAIN], rep:DARROWREP, fuzz:300}
         },
         0x21D1: // \Uparrow
         {
@@ -401,7 +407,7 @@
         },
         0x21D2: // right double arrow
         {
-          dir: H, HW: [[1000,MAIN]], stretch: {rep:[0x3D,MAIN], right:[0x21D2,MAIN], fuzz:300}
+          dir: H, HW: [[1000,MAIN]], stretch: {rep:DARROWREP, right:[0x21D2,MAIN], fuzz:300}
         },
         0x21D3: // \Downarrow
         {
@@ -410,7 +416,7 @@
         0x21D4: // left-right double arrow
         {
           dir: H, HW: [[1000,MAIN]],
-          stretch: {left:[0x21D0,MAIN],rep:[0x3D,MAIN], right:[0x21D2,MAIN], fuzz:300}
+          stretch: {left:[0x21D0,MAIN], rep:DARROWREP, right:[0x21D2,MAIN], fuzz:300}
         },
         0x21D5: // \Updownarrow
         {
@@ -419,7 +425,7 @@
         },
         0x2212: // horizontal line
         {
-          dir: H, HW: [[611,MAIN]], stretch: {rep:[0x2212,MAIN], fuzz:300}
+          dir: H, HW: [[778,MAIN]], stretch: {rep:[0x2212,MAIN], fuzz:300}
         },
         0x221A: // \surd
         {
@@ -559,6 +565,9 @@
         0x295F: EXTRAH, // rightwards harpoon with barb down from bar
         0x2960: EXTRAV, // up harpoon with barb left from bar
         0x2961: EXTRAV, // down harpoon with barb left from bar
+        0x2312: {alias: 0x23DC, dir:H}, // arc
+        0x2322: {alias: 0x23DC, dir:H}, // frown
+        0x2323: {alias: 0x23DD, dir:H}, // smile
         0x27F5: {alias: 0x2190, dir:H}, // long left arrow
         0x27F6: {alias: 0x2192, dir:H}, // long right arrow
         0x27F7: {alias: 0x2194, dir:H}, // long left-right arrow
@@ -1554,13 +1563,21 @@
 
   SVG.FONTDATA.FONTS['MathJax_Main'][0x22EE][0]  += 400;  // adjust height for \vdots
   SVG.FONTDATA.FONTS['MathJax_Main'][0x22F1][0]  += 700;  // adjust height for \ddots
-  SVG.FONTDATA.FONTS['MathJax_Main'][0x2212][1]  += 100;  // adjust depth of minus (used as arrow extender)
-  SVG.FONTDATA.FONTS['MathJax_Main'][0x003D][1]  += 100;  // adjust depth of = (used as arrow extender)
 
   //
   //  Add some spacing characters (more will come later)
   //
   MathJax.Hub.Insert(SVG.FONTDATA.FONTS['MathJax_Main'],{
+    0x2000: [0,0,500,0,0,{space:1}],     // en quad
+    0x2001: [0,0,1000,0,0,{space:1}],    // em quad
+    0x2002: [0,0,500,0,0,{space:1}],     // en space
+    0x2003: [0,0,1000,0,0,{space:1}],    // em space
+    0x2004: [0,0,333,0,0,{space:1}],     // 3-per-em space
+    0x2005: [0,0,250,0,0,{space:1}],     // 4-per-em space
+    0x2006: [0,0,167,0,0,{space:1}],     // 6-per-em space
+    0x2009: [0,0,167,0,0,{space:1}],     // thin space
+    0x200A: [0,0,83,0,0,{space:1}],      // hair space
+    0x200B: [0,0,0,0,0,{space:1}],       // zero-width space
     0xEEE0: [0,0,-575,0,0,{space:1}],
     0xEEE1: [0,0,-300,0,0,{space:1}],
     0xEEE8: [0,0,25,0,0,{space:1}]
