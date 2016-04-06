@@ -6,8 +6,6 @@
 
 import os
 from setuptools import setup
-import distutils.log
-
 
 
 def lremove(string, prefix):
@@ -31,22 +29,18 @@ def all_files(dir, prefix):
     return X
 
 
-install_requires = [ 'twisted>=11.0.0'
-                   , 'flask>=0.10.1'
-                   , 'flask-oldsessions>=0.10'
-                   , 'flask-openid'
-                   , 'flask-autoindex'
-                   , 'babel'
-                   , 'flask-babel'
-                   , 'webassets'
-                   ]
+install_requires = [
+    'twisted>=11.0.0',
+    'flask>=0.10.1',
+    'flask-oldsessions>=0.10',
+    'flask-openid',
+    'flask-autoindex',
+    'flask-babel'
+]
 
-if __name__ == '__main__':
-    if os.environ.get("SAGE_SETUPTOOLS_DEBUG","no")=="yes":
-        distutils.log.set_threshold(distutils.log.DEBUG)
 
-    code = setup(name = 'sagenb',
-          version     = '0.11.7',
+setup(name='sagenb',
+          version     = '0.12',
           description = 'The Sage Notebook',
           license     = 'GNU General Public License (GPL) v3+',
           author      = 'William Stein et al.',
