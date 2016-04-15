@@ -23,8 +23,15 @@ happen on the sage-notebook_ mailing list.
 Installation
 ============
 
-Install Sage, then do ``sage -python setup.py install`` in the current
-directory. Then run the notebook from within Sage as follows::
+First of all, install Sage. The Sage Notebook needs the ``webassets``
+package, which is currently not included in Sage. It can be
+installed by running::
+
+    $ sage --pip install webassets
+
+To install the Sage Notebook, do ``sage --python setup.py install`` in
+the current directory.
+Then run the notebook from within Sage as follows::
 
     sage: import sagenb.notebook.notebook_object as nb
     sage: nb.notebook(directory="mynotebook")
