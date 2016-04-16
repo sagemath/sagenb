@@ -5,16 +5,12 @@ for example, `0.10.8.3`. Also, we will assume that
 `github.org/sagemath/sagenb` is present as `upstream` remote repository
 in your local `SAGENB_ROOT`.
 
-1. As a prerequisite, we assume that any necessary changes to
-   `.gitignore` and `MANIFEST.in` have been committed.  Similarly,
-   any new or updated dependencies should be corrected in the file
-   `util/fetch_deps.py` and/or `setup.py` (dependencies of deps
-   need only to be in `util/fetch_deps.py`), so that the final
-   package can be installed without internet.
-
-   It wouldn't hurt to make sure the notebook actually runs
+1. It wouldn't hurt to make sure the notebook actually runs
    before you start, or alerting to any major changes needed
    in localizations, either.
+
+1. Any new or updated dependencies should be corrected in the file
+   `setup.py`.
 
 1. Change into the sagenb git directory, and update to the latest
    `upstream/master`. We assume that all the required merges to the
@@ -54,46 +50,12 @@ in your local `SAGENB_ROOT`.
     git commit -m "Update Sagenb version to <version>"
     ```
 
-1. Create the dist directory with all the included packages.
+1. Create the sagenb tarball:
 
     ```sh
     ./dist.sh
     ```
 
-1. (Optional) If the above command was already run once, then to avoid
-   downloading all the dependencies all over again, and to just repackage
-   only sagenb, one can also run the dist script with the ``-s`` option:
-
-    ```sh
-    ./dist.sh -s
-    ```
-
-   Be careful to check that the ``dist`` directory still has a copy of
-   each upstream package and the sagenb package; it's worth also checking
-   that ``dist/sagenb-<version>.tar.gz`` only contains sagenb and not
-   extra copies of the upstream files, by checking the output of
-
-    ```sh
-    tar -tzf dist/sagenb-<version>.tar.gz
-    ```
-
-1. Create the sagenb tar file for inclusion into Sage.
-
-    ```sh
-    mv dist sagenb-<version>
-    tar cf sagenb-<version>.tar sagenb-<version>
-    mv sagenb-<version>.tar SAGE_ROOT/upstream
-    ```
-
-   Be very careful to use the GNU version of `tar`; on Mac you should probably use
-   the `gnutar` command, as the default is the BSD version.  When you run the command
-   
-   ```sh
-   file sagenb-<version>.tar
-   ```
-   
-   you should get a result like `sagenb-<version>.tar:       POSIX tar archive (GNU)`.
-    
 1. Let Sage know about the new sagenb and update its checksums, and then
    try out the new sagenb and test it.  Here we are not yet committing,
    in case of any errors.
@@ -150,8 +112,8 @@ in your local `SAGENB_ROOT`.
     git trac push <ticket>
     ```
 
-   You will want to upload the sagenb tar file somewhere convenient and
-   put a link to it on the appropriate Trac ticket as well.
+   You will want to upload the sagenb tar.bz2 file somewhere convenient
+   and put a link to it on the appropriate Trac ticket as well.
 
 1. Now that everything is fine, update the sagenb in Github with the new
    changes.
@@ -165,7 +127,3 @@ in your local `SAGENB_ROOT`.
     git push upstream release
     git push upstream --tags  # This will automatically create sagenb.tar.gz in Github
     ```
-
-1. If you encounter any difficulties, you can also look at the
-   [work flow](https://gist.github.com/kini/5852091) that was shown by
-   @kini long ago.
