@@ -87,7 +87,7 @@ def print_open_msg(address, port, secure=False, path=""):
         s += ' '
     n = max(t+4, 50)
     k = n - t  - 1
-    j = k/2 
+    j = k // 2 
     msg = '┌' + '─' * (n - 2) + '┐\n'
     msg += '│' + ' ' * (n - 2) + '│\n'
     msg += '│' + ' ' * j + s + ' ' * j + '│\n'
