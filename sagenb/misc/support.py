@@ -418,7 +418,7 @@ def syseval(system, cmd, dir=None):
     EXAMPLES::
 
         sage: from sage.misc.python import python
-        sage: sagenb.misc.support.syseval(python, '2+4/3')
+        sage: sagenb.misc.support.syseval(python, '2+4//3')
         3
         ''
         sage: sagenb.misc.support.syseval(python, 'import os; os.chdir(".")')
