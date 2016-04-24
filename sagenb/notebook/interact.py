@@ -1338,7 +1338,7 @@ class Selector(InteractControl):
         self.__labels = lbls
         if nrows is None:
             if ncols is not None:
-                nrows = len(values) / ncols
+                nrows = len(values) // ncols
                 if ncols * nrows < len(values):
                     nrows += 1
             else:
@@ -1348,7 +1348,7 @@ class Selector(InteractControl):
             if nrows <= 0:
                 nrows = 1
         if ncols is None:
-            ncols = len(values) / nrows
+            ncols = len(values) // nrows
             if ncols * nrows < len(values):
                 ncols += 1
                 
