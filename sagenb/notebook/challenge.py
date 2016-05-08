@@ -173,7 +173,7 @@ class NotConfiguredChallenge(AbstractChallenge):
             sage: import sagenb.notebook.notebook as n
             sage: nb = n.Notebook(tmp)
             sage: chal = NotConfiguredChallenge(nb.conf())
-            sage: print chal.html()
+            sage: print(chal.html())
             Please ask the server administrator to configure a challenge!
 
         """
@@ -329,9 +329,9 @@ class SimpleChallenge(AbstractChallenge):
             sage: from sagenb.notebook.challenge import QUESTIONS
             sage: ques, ans = sorted(QUESTIONS.items())[0]
             sage: ans = ans.split('|')[0]
-            sage: print ques
+            sage: print(ques)
             How many bits are in one byte?
-            sage: print ans
+            sage: print(ans)
             8
             sage: req['simple_response_field'] = ans
             sage: chal.is_valid_response(req).is_valid
@@ -624,7 +624,7 @@ class ChallengeDispatcher(object):
             '<p>...'
             sage: nb.conf()['challenge_type'] = 'mistake'
             sage: disp = ChallengeDispatcher(nb.conf())
-            sage: print disp().html()
+            sage: print(disp().html())
             Please ask the server administrator to configure a challenge!
 
         """
