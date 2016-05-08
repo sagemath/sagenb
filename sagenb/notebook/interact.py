@@ -234,7 +234,7 @@ def html(s):
         sage: sagenb.notebook.interact.html('hello')
         <html>hello</html>
     """
-    print "<html>%s</html>" % s
+    print("<html>%s</html>" % s)
 
 def html_slider(id, values, callback, steps, default=0, margin=0):
     """
@@ -1034,7 +1034,7 @@ class InputBox(InteractControl):
                 try:
                     return Color('#' + value)
                 except ValueError:
-                    print "Invalid color '%s', using default Color()" % value
+                    print("Invalid color '%s', using default Color()" % value)
                     return Color()
         else:
             return self.__type(sage_eval(value, globs))
@@ -2283,22 +2283,22 @@ def interact(f, layout=None, width='800px'):
     ::
 
         sage: @interact
-        ... def _(a=5, y=(0..20)): print a + y
-        ...
+        ....: def _(a=5, y=(0..20)): print(a + y)
+        ....:
         <html>...
 
     ::
 
         sage: @interact(layout=[['a','b'],['d']])
-        ... def _(a=x^2, b=(0..20), c=100, d=x+1): print a+b+c+d
-        ...
+        ....: def _(a=x^2, b=(0..20), c=100, d=x+1): print(a+b+c+d)
+        ....:
         <html>...
 
     ::
 
         sage: @interact(layout={'top': [['a', 'b']], 'left': [['c']], 'bottom': [['d']]})
-        ... def _(a=x^2, b=(0..20), c=100, d=x+1): print a+b+c+d
-        ...
+        ....: def _(a=x^2, b=(0..20), c=100, d=x+1): print(a+b+c+d)
+        ....:
         <html>...
     
 
@@ -2330,8 +2330,8 @@ def interact(f, layout=None, width='800px'):
     Place a block of text among the controls::
 
         sage: @interact
-        ... def _(t1=text_control("Factors an integer."), n="1"):
-        ...     print factor(Integer(n))
+        ....: def _(t1=text_control("Factors an integer."), n="1"):
+        ....:     print(factor(Integer(n)))
         <html>...
 
     If your the time to evaluate your function takes awhile, you may
@@ -2458,8 +2458,8 @@ def interact(f, layout=None, width='800px'):
     strings::
 
         sage: @interact
-        ... def _(a=input_box('sage', label="Enter your name", type=str)):
-        ...        print "Hello there %s"%a.capitalize()
+        ....: def _(a=input_box('sage', label="Enter your name", type=str)):
+        ....:        print("Hello there %s"%a.capitalize())
         <html>...
 
     The scope of variables that you control via :func:`interact` are local
@@ -2479,11 +2479,11 @@ def interact(f, layout=None, width='800px'):
     Here's a example with several controls::
 
         sage: @interact
-        ... def _(title=["A Plot Demo", "Something silly", "something tricky"], a=input_box(sin(x*sin(x*sin(x))), 'function'),
-        ...     clr = Color('red'), thickness=[1..30], zoom=(1,0.95,..,0.1), plot_points=(200..2000)):
-        ...     html('<h1 align=center>%s</h1>'%title)
-        ...     print plot_points
-        ...     show(plot(a, -zoom*pi,zoom*pi, color=clr, thickness=thickness, plot_points=plot_points))
+        ....: def _(title=["A Plot Demo", "Something silly", "something tricky"], a=input_box(sin(x*sin(x*sin(x))), 'function'),
+        ....:     clr = Color('red'), thickness=[1..30], zoom=(1,0.95,..,0.1), plot_points=(200..2000)):
+        ....:     html('<h1 align=center>%s</h1>'%title)
+        ....:     print(plot_points)
+        ....:     show(plot(a, -zoom*pi,zoom*pi, color=clr, thickness=thickness, plot_points=plot_points))
         <html>...
 
     For a more compact color control, use an empty label and
@@ -2665,7 +2665,7 @@ def interact(f, layout=None, width='800px'):
     def _():
         z = f(*[variables[arg] for arg in args])
         if z: 
-            print z
+            print(z)
 
     state[SAGE_CELL_ID]['function'] = _
 
@@ -3524,19 +3524,19 @@ class selector(control):
         matrices over various rings::
 
             sage: @interact
-            ... def _(R=selector([ZZ,QQ,GF(17),RDF,RR]), n=(1..10)):
-            ...      M = random_matrix(R, n)
-            ...      show(M)
-            ...      show(matrix_plot(M,cmap='Oranges'))
-            ...      f = M.charpoly()
-            ...      print f
+            ....: def _(R=selector([ZZ,QQ,GF(17),RDF,RR]), n=(1..10)):
+            ....:      M = random_matrix(R, n)
+            ....:      show(M)
+            ....:      show(matrix_plot(M,cmap='Oranges'))
+            ....:      f = M.charpoly()
+            ....:      print(f)
             <html>...
 
         Here we create a drop-down::
 
             sage: @interact
-            ... def _(a=selector([(2,'second'), (3,'third')])):
-            ...       print a
+            ....: def _(a=selector([(2,'second'), (3,'third')])):
+            ....:       print(a)
             <html>...
         """
         if nrows is not None or ncols is not None:
@@ -3848,7 +3848,7 @@ def update(cell_id, var, adapt, value, globs):
     except KeyError:
         # If you change this, make sure to change notebook_lib.js as
         # well.
-        print INTERACT_RESTART
+        print(INTERACT_RESTART)
 
 def recompute(cell_id):
     """
@@ -3885,5 +3885,5 @@ def recompute(cell_id):
     except KeyError:
         # If you change this, make sure to change notebook_lib.js as
         # well.
-        print INTERACT_RESTART
+        print(INTERACT_RESTART)
         
