@@ -69,7 +69,7 @@ Process the output of docutils ``rst2html`` command::
     sage: txt = p.process_doc_html(html)
     sage: len(txt)
     191
-    sage: print txt
+    sage: print(txt)
     <h1 class="title">Additions in Sage</h1>
     <BLANKLINE>
     <BLANKLINE>
@@ -218,7 +218,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: p.all_pieces = 'a lot of stuff done '
             sage: p.temp_pieces = ['sage'+': 4+4\n', '8\n', 'sage'+': 9-4\n', '5\n']
             sage: p.hand_off_temp_pieces('to_cell_pieces')
-            sage: print p.all_pieces
+            sage: print(p.all_pieces)
             a lot of stuff done
             {{{id=0|
             4+4
@@ -240,7 +240,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: p.all_pieces = 'a lot of stuff done '
             sage: p.temp_pieces = ['bunch ', 'of ', 'tmp ', 'strings']
             sage: p.hand_off_temp_pieces('to_cell_pieces')
-            sage: print p.all_pieces
+            sage: print(p.all_pieces)
             a lot of stuff done <pre class="literal-block">
             bunch of tmp strings
             </pre>
@@ -322,7 +322,7 @@ class genericHTMLProcessor(SGMLParser):
             sage: s = "s" + "age: 4 + 4\n8"    # avoid the doctest script to parse "sage:"
             sage: p.process_cell_input_output(s)
             u'\n{{{id=0|\n4 + 4\n///\n8\n}}}\n\n'
-            sage: print p.process_cell_input_output(s)
+            sage: print(p.process_cell_input_output(s))
             {{{id=1|
             4 + 4
             ///
@@ -332,7 +332,7 @@ class genericHTMLProcessor(SGMLParser):
         ::
 
             sage: s = "age: 4 + 4\n8"
-            sage: print p.process_cell_input_output(s)
+            sage: print(p.process_cell_input_output(s))
             <pre class="literal-block">
             age: 4 + 4
             8
@@ -341,7 +341,7 @@ class genericHTMLProcessor(SGMLParser):
         ::
 
             sage: s = '&gt;'*3 + " 4 + 4\n8"
-            sage: print p.process_cell_input_output(s)
+            sage: print(p.process_cell_input_output(s))
             {{{id=2|
             4 + 4
             ///
@@ -351,7 +351,7 @@ class genericHTMLProcessor(SGMLParser):
         ::
 
             sage: s = "s" + "age: 4 + 4\n8\ns" + "age: 2 + 2\n4"
-            sage: print p.process_cell_input_output(s)
+            sage: print(p.process_cell_input_output(s))
             {{{id=3|
             4 + 4
             ///
@@ -709,7 +709,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: from sagenb.notebook.docHTMLProcessor import SphinxHTMLProcessor
             sage: p = SphinxHTMLProcessor()
             sage: s = "sage -rst2html -h"
-            sage: print p.false_positive_input_output_cell(s)
+            sage: print(p.false_positive_input_output_cell(s))
             <div class="highlight"><pre>
             sage -rst2html -h
             </pre></div>
@@ -793,7 +793,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: p.handle_data('%s4+4\n8\n%sx^2\nx^2\n' % (sprompt, sprompt))
             sage: p.end_pre()
             sage: p.end_div()
-            sage: print p.all_pieces
+            sage: print(p.all_pieces)
             a lot of stuff done bunch of tmp strings
             {{{id=0|
             4+4
@@ -821,7 +821,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
             sage: p.start_div(attrs)
             sage: p.handle_data('some data')
             sage: p.end_div()
-            sage: print p.all_pieces
+            sage: print(p.all_pieces)
             a lot of stuff done
             sage: p.temp_pieces
             ['bunch ', 'of ', 'tmp ', 'strings', u'<div class="something-else">', 'some data', u'</div>']
@@ -1061,7 +1061,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
         sage: txt = p.process_doc_html(html)
         sage: len(txt)
         191
-        sage: print txt
+        sage: print(txt)
         <h1 class="title">Additions in Sage</h1>
         <BLANKLINE>
         <BLANKLINE>
@@ -1149,7 +1149,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
             sage: from sagenb.notebook.docHTMLProcessor import docutilsHTMLProcessor
             sage: p = docutilsHTMLProcessor()
             sage: s = "sage -rst2html -h"
-            sage: print p.false_positive_input_output_cell(s)
+            sage: print(p.false_positive_input_output_cell(s))
             <pre class="literal-block">
             sage -rst2html -h
             </pre>
@@ -1224,7 +1224,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
             sage: sprompt = 'sa' + 'ge' + ': '    # to avoid problems with doctest script
             sage: p.handle_data('%s4+4\n8\n%sx^2\nx^2\n' % (sprompt, sprompt))
             sage: p.end_pre()
-            sage: print p.all_pieces
+            sage: print(p.all_pieces)
             a lot of stuff done bunch of tmp strings
             {{{id=0|
             4+4
@@ -1253,7 +1253,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
             sage: p.start_pre(attrs)
             sage: p.handle_data('some data')
             sage: p.end_pre()
-            sage: print p.all_pieces
+            sage: print(p.all_pieces)
             a lot of stuff done
             sage: p.temp_pieces
             ['bunch ', 'of ', 'tmp ', 'strings', u'<pre class="something-else">', 'some data', u'</pre>']

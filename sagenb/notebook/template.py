@@ -90,7 +90,7 @@ def clean_name(name):
     EXAMPLES::
 
         sage: from sagenb.notebook.template import clean_name
-        sage: print clean_name('this!is@bad+string')
+        sage: print(clean_name('this!is@bad+string'))
         this_is_bad_string
     """
     return ''.join([x if x.isalnum() else '_' for x in name])

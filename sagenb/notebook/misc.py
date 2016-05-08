@@ -218,7 +218,7 @@ def encode_response(obj, separators=(',', ':'), **kwargs):
         sage: d['sub'] = {'shape': 'triangle', 'color': 'blue', 'sides': [int(3), int(4), int(5)]}
         sage: encode_response(d, sort_keys = True)
         '{"null":"blah","11":"foo","AR":"MA","archies":["an","mon","hier"],"bar":1.0,"sub":{"color":"blue","shape":"triangle","sides":[3,4,5]}}'
-        sage: print encode_response(d, separators = (', ', ': '), indent = 4)
+        sage: print(encode_response(d, separators = (', ', ': '), indent = 4))
         {
             "...": ...
         }
