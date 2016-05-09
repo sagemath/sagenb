@@ -1,3 +1,7 @@
+0.13        May 9 2016
+ - fix location of stylesheet with Sphinx 1.4
+ - improvements towards Python 3 compatibility
+
 0.12        Apr 7 2016
  - package sagenb as a normal Python package
  - remove bundled mathjax
