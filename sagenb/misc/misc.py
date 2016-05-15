@@ -23,7 +23,7 @@ from pkg_resources import resource_filename
 
 def stub(f):
     def g(*args, **kwds):
-        print "Stub: ", f.func_name
+        print("Stub: {}".format(f.func_name))
         return f(*args, **kwds)
     return g
 
@@ -93,7 +93,7 @@ def print_open_msg(address, port, secure=False, path=""):
     msg += '│' + ' ' * j + s + ' ' * j + '│\n'
     msg += '│' + ' ' * (n - 2) + '│\n'
     msg += '└' + '─' * (n - 2) + '┘'
-    print msg
+    print(msg)
 
 
 def find_next_available_port(interface, start, max_tries=100, verbose=False):
@@ -136,17 +136,17 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
                 alarm(0)  # cancel alarm
         except socket.error as msg:
             if msg[1] == 'Connection refused':
-                if verbose: print "Using port = %s"%port
+                if verbose: print("Using port = %s" % port)
                 return port
         except KeyboardInterrupt:
-            if verbose: print "alarm"                   
+            if verbose: print("alarm")
             alarm_count += 1
             if alarm_count >= 10:
                  break
         if verbose:
-            print "Port %s is already in use."%port
-            print "Trying next port..."
-    raise RuntimeError, "no available port."
+            print("Port %s is already in use." % port)
+            print("Trying next port...")
+    raise RuntimeError("no available port.")
 
 
 def open_page(address, port, secure, path=""):
@@ -353,7 +353,7 @@ def register_with_cleaner(pid):
         import sage.interfaces.cleaner
         sage.interfaces.cleaner.cleaner(pid)  # register pid of forked process with cleaner
     except ImportError:
-        print "generic cleaner needs to be written"
+        print("generic cleaner needs to be written")
 
 try:
     from sage.misc.all import tmp_filename, tmp_dir
