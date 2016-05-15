@@ -2,7 +2,7 @@
 import interact
 
 def javascript(s):
-    print '<html><script>%s</script></html>'%s
+    print('<html><script>%s</script></html>' % s)
 
 def cell_id():
     return interact.SAGE_CELL_ID
