@@ -18,7 +18,7 @@ def get_remote_file(filename, verbose=True):
         10198                  
     """
     if verbose:
-        print "Attempting to load remote file: " + filename
+        print("Attempting to load remote file: " + filename)
     from misc import tmp_filename
     temp_name = tmp_filename() + '.' + os.path.splitext(filename)[1][1:]
     # IMPORTANT -- urllib takes a long time to load,
@@ -30,7 +30,7 @@ def get_remote_file(filename, verbose=True):
         sys.stdout.write("Loading: [")
         sys.stdout.flush()
         urllib.urlretrieve(filename, temp_name, report_hook)
-        print "]"
+        print("]")
     else:
         urllib.urlretrieve(filename, temp_name)
     return temp_name
