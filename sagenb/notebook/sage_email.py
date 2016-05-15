@@ -92,7 +92,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
     try:
         pid = os.fork()
     except:
-        print "Fork not possible -- the email command is not supported on this platform."
+        print("Fork not possible -- the email command is not supported on this platform.")
         return
 
     if from_address is None:
@@ -107,7 +107,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
             from sagenb.misc.misc import register_with_cleaner
             register_with_cleaner(pid)  # register pid of forked process with cleaner
         if verbose:
-            print "Child process %s is sending email to %s..."%(pid,to)
+            print("Child process %s is sending email to %s..." % (pid, to))
         # Now wait for the fake subprocess to finish.
         os.waitpid(pid,0)
         return
@@ -143,7 +143,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
         Callback in case of a successfully sent email.
         """
         if verbose:
-            print "Successfully sent an email to %s."%to
+            print("Successfully sent an email to %s." % to)
         reactor.stop()
         os.kill(os.getpid(),9)                     # suicide
         
@@ -152,10 +152,10 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
         Callback in case of a failure sending an email.
         """
         if verbose:
-            print "Failed to send email to %s."%to
-            print "-"*70
-            print error.getErrorMessage()
-            print "-"*70
+            print("Failed to send email to %s." % to)
+            print("-" * 70)
+            print(error.getErrorMessage())
+            print("-" * 70)
         reactor.stop()
         os.kill(os.getpid(),9)                    # suicide
 
