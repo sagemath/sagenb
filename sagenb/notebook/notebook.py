@@ -171,7 +171,7 @@ class Notebook(object):
                         self.__worksheets[a] = self.__storage.load_worksheet("pub",int(id_number))
                     except Exception:
                         import traceback
-                        print "Warning: problem loading %s/%s: %s"%("pub", int(id_number), traceback.format_exc())
+                        print("Warning: problem loading %s/%s: %s" % ("pub", int(id_number), traceback.format_exc()))
 
         # Set the openid-user dict
         try:
@@ -366,7 +366,7 @@ class Notebook(object):
                         v.append(self.__worksheets[a])
                     except Exception:
                         import traceback
-                        print "Warning: problem loading %s/%s: %s"%("pub", id_number, traceback.format_exc())
+                        print("Warning: problem loading %s/%s: %s" % ("pub", id_number, traceback.format_exc()))
         return v
 
     def users_worksheets(self, username):
@@ -1753,14 +1753,14 @@ class Notebook(object):
         """
         model_version=self.conf()['model_version']
         if model_version is None or model_version<1:
-            print "Upgrading model version to version 1"
+            print("Upgrading model version to version 1")
             # this uses code from get_all_worksheets()
             user_manager = self.user_manager()
             num_users=0
             for username in self._user_manager.users():
                 num_users+=1
                 if num_users%1000==0:
-                    print 'Upgraded %d users'%num_users
+                    print('Upgraded %d users' % num_users)
                 if username in ['_sage_', 'pub']:
                     continue
                 try:
@@ -1783,10 +1783,10 @@ class Notebook(object):
                     # problems logging in anyway, so they probably won't notice not having shared worksheets
                     import sys
                     import traceback
-                    print >> sys.stderr, 'Error on username %s'%username.encode('utf8')
+                    print >> sys.stderr, 'Error on username %s' % username.encode('utf8')
                     print >> sys.stderr, traceback.format_exc()
                     pass
-            print 'Done upgrading to model version 1'
+            print('Done upgrading to model version 1')
             self.conf()['model_version'] = 1
         
 ####################################################################
@@ -1846,21 +1846,21 @@ def migrate_old_notebook_v1(dir):
     # Tell user what is going on and make a backup
     ######################################################################
 
-    print ""
-    print "*" * 80
-    print "*"
-    print "* The Sage notebook at"
-    print "*"
-    print "*      '%s'" % os.path.abspath(dir)
-    print "*"
-    print "* will be upgraded to a new format and stored in"
-    print "*"
-    print "*      '%s.sagenb'." % os.path.abspath(dir)
-    print "*"
-    print "* Your existing notebook will not be modified in any way."
-    print "*"
-    print "*" * 80
-    print ""
+    print("")
+    print("*" * 80)
+    print("*")
+    print("* The Sage notebook at")
+    print("*")
+    print("*      '%s'" % os.path.abspath(dir))
+    print("*")
+    print("* will be upgraded to a new format and stored in")
+    print("*")
+    print("*      '%s.sagenb'." % os.path.abspath(dir))
+    print("*")
+    print("* Your existing notebook will not be modified in any way.")
+    print("*")
+    print("*" * 80)
+    print("")
     ans = raw_input("Would like to continue? [YES or no] ").lower()
     if ans not in ['', 'y', 'yes']:
         raise RuntimeError("User aborted upgrade.")
@@ -1882,7 +1882,7 @@ def migrate_old_notebook_v1(dir):
             new_nb.conf().confs[t] = getattr(old_nb, '_Notebook__' + t)
 
     # Now update the user data from the old notebook to the new one:
-    print "Migrating %s user accounts..." % len(old_nb.user_manager().users())
+    print("Migrating %s user accounts..." % len(old_nb.user_manager().users()))
     users = new_nb.user_manager().users()
     for username, old_user in old_nb.user_manager().users().iteritems():
         new_user = user.User(old_user.username(), '',
@@ -1961,7 +1961,7 @@ def migrate_old_notebook_v1(dir):
                 shutil.rmtree(dest)
             shutil.copytree(old_ws.data_directory(), dest)
         except Exception, msg:
-            print msg
+            print(msg)
 
         try:
             if os.path.exists(old_ws.cells_directory()):
@@ -1970,14 +1970,14 @@ def migrate_old_notebook_v1(dir):
                     shutil.rmtree(dest)
                 shutil.copytree(old_ws.cells_directory(), dest)
         except Exception, msg:
-            print msg
+            print(msg)
 
 
         return new_ws
 
     worksheets = WorksheetDict(new_nb)
     num_worksheets = len(old_nb._Notebook__worksheets)
-    print "Migrating (at most) %s worksheets..." % num_worksheets
+    print("Migrating (at most) %s worksheets..." % num_worksheets)
     from sage.misc.all import walltime
     tm = walltime()
     i = 0
@@ -1988,8 +1988,8 @@ def migrate_old_notebook_v1(dir):
             percent = i / float(num_worksheets)
             # total_time * percent = time_so_far, so
             # remaining_time = total_time - time_so_far = time_so_far*(1/percent - 1)
-            print "    Migrated %s (of %s) worksheets (about %.0f seconds remaining)" % (
-                i, num_worksheets, walltime(tm) * (1 / percent - 1))
+            print("    Migrated %s (of %s) worksheets (about %.0f seconds remaining)" % (
+                i, num_worksheets, walltime(tm) * (1 / percent - 1)))
         new_ws = migrate_old_worksheet(old_ws)
         worksheets[new_ws.filename()] = new_ws
     new_nb._Notebook__worksheets = worksheets
@@ -2004,7 +2004,7 @@ def migrate_old_notebook_v1(dir):
     # Save our newly migrated notebook to disk
     new_nb.save()
 
-    print "Worksheet migration completed."
+    print("Worksheet migration completed.")
     return new_nb
 
 def make_path_relative(dir):
