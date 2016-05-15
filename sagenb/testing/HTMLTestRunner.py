@@ -391,7 +391,7 @@ class HTMLTestRunner(object):
         for status, test_case, output, trace in result_list:
             case_type = test_case.__class__
 
-            if not case_map.has_key(case_type):
+            if case_type not in case_map:
                 case_map[case_type] = []
                 case_types.append(case_type)
 

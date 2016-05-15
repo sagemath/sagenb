@@ -55,7 +55,7 @@ class Configuration(object):
         try:
             return self.confs[key]
         except KeyError:
-            if self.defaults().has_key(key):
+            if key in self.defaults():
                 A = self.defaults()[key]
                 self.confs[key] = A
                 return A

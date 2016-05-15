@@ -48,7 +48,7 @@ def get_keyboard(s):
     # keyboard_map is a dictionary defined at the bottom of this
     # file that maps os/browser codes to functions that give the
     # corresponding keymaps. 
-    if keyboard_map.has_key(s):
+    if s in keyboard_map:
         codes = keyboard_map[s]()
     else:
         # Default in case something goes wrong.  This should

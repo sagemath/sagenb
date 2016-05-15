@@ -296,7 +296,7 @@ class UserManager(object):
             raise ValueError("creating new accounts disabled.")
 
         us = self.users()
-        if us.has_key(username):
+        if username in us:
             print "WARNING: User '%s' already exists -- and is now being replaced."%username
         U = user.User(username, password, email, account_type, external_auth)
         us[username] = U
@@ -324,7 +324,7 @@ class UserManager(object):
         if not self.get_accounts() and not force:
             raise ValueError("creating new accounts disabled.")
         us = self.users()
-        if us.has_key(user.username()):
+        if user.username() in us:
             print "WARNING: User '%s' already exists -- and is now being replaced."%user.username()
 
         self._users[user.username()] = user 

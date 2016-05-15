@@ -471,7 +471,7 @@ class FilesystemDatastore(Datastore):
         # Remove metainformation that perhaps shouldn't be distributed
         for k in ['owner', 'ratings', 'worksheet_that_was_published', 'viewers', 'tags', 'published_id_number',
                   'collaborators', 'auto_publish']:
-            if basic.has_key(k):
+            if k in basic:
                 del basic[k]
                 
         self._save(basic, self._worksheet_conf_filename(username, id_number) + '2')
