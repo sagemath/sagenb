@@ -19,7 +19,7 @@ try:
     from BeautifulSoup import (ICantBelieveItsBeautifulSoup, Tag,
                                CData, Comment, Declaration, ProcessingInstruction)
 except ImportError:
-    raise ImportError, """BeautifulSoup must be installed.
+    raise ImportError("""BeautifulSoup must be installed.
 
 Please either install using Sage spkg installation
 
@@ -31,7 +31,7 @@ or by using one of
     easy_install BeautifulSoup
 
 in the Sage shell (sage --sh).
-"""
+""")
 
 #negative lookbehind: http://www.regular-expressions.info/lookaround.html
 double_dollar = re.compile(r'(?<!\\)\$\$')

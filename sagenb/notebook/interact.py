@@ -3174,7 +3174,7 @@ class slider_generic(control):
             if self.__step_size is None:
                 self.__step_size = (self.__vmax-self.__vmin) / 499.0
             elif self.__step_size <= 0:
-                raise ValueError, "invalid negative step size -- step size must be positive"
+                raise ValueError("invalid negative step size -- step size must be positive")
 
             #Compute list of values
             num_steps = int(math.ceil((self.__vmax-self.__vmin)/float(self.__step_size)))

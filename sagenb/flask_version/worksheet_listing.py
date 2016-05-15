@@ -431,7 +431,7 @@ def upload_worksheet():
                 import shutil
                 shutil.rmtree(dir)
 
-    except ValueError, msg:
+    except ValueError(msg):
         s = _("Error uploading worksheet '%(msg)s'.%(backlinks)s", msg=msg, backlinks=backlinks)
         return current_app.message(s, url_for('home', username=g.username), username=g.username)
 

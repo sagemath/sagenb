@@ -104,7 +104,7 @@ class UserManager(object):
             ValueError: no user 'hello/'
         """
         if not isinstance(username, (str, unicode)) or '/' in username:
-            raise ValueError, "no user '%s'"%username
+            raise ValueError("no user '%s'" % username)
         if username in self.users():
             return self.users()[username]
 
@@ -252,7 +252,7 @@ class UserManager(object):
             False 
         """
         if value not in [True, False]:
-            raise ValueError, "accounts must be True or False"
+            raise ValueError("accounts must be True or False")
         self._accounts = value
 
     def get_accounts(self):
@@ -293,7 +293,7 @@ class UserManager(object):
             william
         """
         if not self.get_accounts() and not force:
-            raise ValueError, "creating new accounts disabled."
+            raise ValueError("creating new accounts disabled.")
 
         us = self.users()
         if us.has_key(username):
@@ -322,7 +322,7 @@ class UserManager(object):
             william
         """
         if not self.get_accounts() and not force:
-            raise ValueError, "creating new accounts disabled."
+            raise ValueError("creating new accounts disabled.")
         us = self.users()
         if us.has_key(user.username()):
             print "WARNING: User '%s' already exists -- and is now being replaced."%user.username()
@@ -506,7 +506,7 @@ class SimpleUserManager(UserManager):
 
     def set_accounts(self, value):
         if value not in [True, False]:
-            raise ValueError, "accounts must be True or False"
+            raise ValueError("accounts must be True or False")
         self._accounts = value
         self._conf['accounts'] = value
 

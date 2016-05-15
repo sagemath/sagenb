@@ -383,7 +383,7 @@ except ImportError:
     @stub
     def cython(*args, **kwds):
         # TODO
-        raise NotImplementedError, "Curently %cython mode requires Sage." 
+        raise NotImplementedError("Curently %cython mode requires Sage.")
 
 #############################################################
 # File permissions

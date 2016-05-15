@@ -97,19 +97,19 @@ class WorksheetDict(dict):
 
         try:
             if '/' not in item:
-                raise KeyError, item
+                raise KeyError(item)
         except TypeError:
-            raise KeyError, item
+            raise KeyError(item)
 
         username, id = item.split('/')
         try:
             id=int(id)
         except ValueError:
-            raise KeyError, item
+            raise KeyError(item)
         try:
             worksheet = self.storage.load_worksheet(username, id)
         except ValueError:
-            raise KeyError, item
+            raise KeyError(item)
 
         dict.__setitem__(self, item, worksheet)
         return worksheet
@@ -494,7 +494,7 @@ class Notebook(object):
         try:
             W = self.__worksheets[filename]
         except KeyError:
-            raise KeyError, "Attempt to delete missing worksheet '%s'"%filename
+            raise KeyError("Attempt to delete missing worksheet '%s'" % filename)
         
         W.quit()
         shutil.rmtree(W.directory(), ignore_errors=False)
@@ -864,7 +864,7 @@ class Notebook(object):
             W = self._import_worksheet_rst(filename, owner)
         else:
             # We only support txt, sws, html and rst files
-            raise ValueError, "unknown extension '%s'"%ext
+            raise ValueError("unknown extension '%s'" % ext)
         self.__worksheets[W.filename()] = W
         return W
 
@@ -1500,7 +1500,7 @@ class Notebook(object):
         try:
             return self.__worksheets[filename]
         except KeyError:
-            raise KeyError, "No worksheet with filename '%s'"%filename
+            raise KeyError("No worksheet with filename '%s'" % filename)
 
     ###########################################################
     # Saving the whole notebook
@@ -1774,7 +1774,7 @@ class Notebook(object):
                             except KeyError:
                                 # user doesn't exist
                                 pass
-                except (UnicodeEncodeError,OSError):
+                except (UnicodeEncodeError, OSError):
                     # Catch UnicodeEncodeError because sometimes a username has a non-ascii character
                     # Catch OSError since sometimes when moving user directories (which happens
                     #   automatically when getting user's worksheets), OSError: [Errno 39] Directory not empty
