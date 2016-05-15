@@ -43,7 +43,7 @@ Login to a new session::
 
     sage: sleep(1)
     sage: login_page = get_url('http://localhost:%s/simple/login?username=admin&password=%s' % (port, passwd))
-    sage: print login_page # random session id
+    sage: print(login_page)  # random session id
     {
     "session": "2afee978c09b3d666c88b9b845c69608"
     }
@@ -53,7 +53,7 @@ Login to a new session::
 Run a command::
 
     sage: sleep(0.5)
-    sage: print get_url('http://localhost:%s/simple/compute?session=%s&code=2*2&timeout=60' % (port, session))
+    sage: print(get_url('http://localhost:%s/simple/compute?session=%s&code=2*2&timeout=60' % (port, session)))
     {
     "status": "done",
     "files": [],
@@ -71,7 +71,7 @@ into your local format.
 Do a longer-running example::
 
     sage: n = next_prime(10^25)*next_prime(10^30)
-    sage: print get_url('http://localhost:%s/simple/compute?session=%s&code=factor(%s)&timeout=0.1' % (port, session, n))
+    sage: print(get_url('http://localhost:%s/simple/compute?session=%s&code=factor(%s)&timeout=0.1' % (port, session, n)))
     {
     "status": "computing",
     "files": [],
@@ -81,7 +81,7 @@ Do a longer-running example::
 
 Get the status of the computation::
 
-    sage: print get_url('http://localhost:%s/simple/status?session=%s&cell=2' % (port, session))
+    sage: print(get_url('http://localhost:%s/simple/status?session=%s&cell=2' % (port, session)))
     {
     "status": "computing",
     "files": [],
@@ -97,7 +97,7 @@ You can download files that your code creates on the remote server. Here
 we write a file, and then download it to our client::
 
     sage: code = "h = open('a.txt', 'w'); h.write('test'); h.close()"
-    sage: print get_url('http://localhost:%s/simple/compute?session=%s&code=%s' % (port, session, urllib.quote(code)))
+    sage: print(get_url('http://localhost:%s/simple/compute?session=%s&code=%s' % (port, session, urllib.quote(code))))
     {
     "status": "done",
     "files": ["a.txt"],
@@ -105,7 +105,7 @@ we write a file, and then download it to our client::
     }
     ___S_A_G_E___
 
-    sage: print get_url('http://localhost:%s/simple/file?session=%s&cell=3&file=a.txt' % (port, session))
+    sage: print(get_url('http://localhost:%s/simple/file?session=%s&cell=3&file=a.txt' % (port, session)))
     test
     
 When you are done, log out::
@@ -161,7 +161,7 @@ def simple_jsonize(data):
     EXAMPLES::
 
         sage: from sagenb.simple.twist import simple_jsonize
-        sage: print simple_jsonize({'a': [1,2,3], 'b': "yep"})
+        sage: print(simple_jsonize({'a': [1,2,3], 'b': "yep"}))
         { "a": [1, 2, 3], "b": "yep" }
     """
     if isinstance(data, dict):
@@ -225,7 +225,7 @@ class LoginResource(resource.Resource):
         session = SessionObject(session_id, username, worksheet)
         sessions[session_id] = session
         status = session.get_status()
-        print ctx.args
+        print(ctx.args)
         return http.Response(stream = "%s\n%s\n" % (simple_jsonize(status), SEP))
 
 class LogoutResource(resource.Resource):
@@ -298,7 +298,7 @@ class CellResource(resource.Resource):
 class ComputeResource(CellResource):
     
     def render(self, ctx):
-        print ctx.args
+        print(ctx.args)
         try:
             session = sessions[ctx.args['session'][0]]
         except KeyError:
@@ -310,7 +310,7 @@ class ComputeResource(CellResource):
         cell = session.worksheet.append_new_cell()
         cell.set_input_text(ctx.args['code'][0])
         cell.evaluate(username = session.username)
-        print cell
+        print(cell)
         return self.start_comp(cell, timeout)
                     
 
