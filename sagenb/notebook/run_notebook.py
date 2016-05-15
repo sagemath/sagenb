@@ -54,11 +54,11 @@ if %(automatic_login)s:
 flask_app = flask_base.create_app(%(notebook_opts)s, **opts)
 
 def save_notebook(notebook):
-    print "Quitting all running worksheets..."
+    print("Quitting all running worksheets...")
     notebook.quit()
-    print "Saving notebook..."
+    print("Saving notebook...")
     notebook.save()
-    print "Notebook cleanly saved."
+    print("Notebook cleanly saved.")
 
 """
     def prepare_kwds(self, kw):
@@ -295,7 +295,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', partial(save_notebook2, flas
                 pid = int(open(kw['pidfile']).read())
 
                 if str(e).startswith('Another twistd server is running,'):
-                    print 'Another Sage Notebook server is running, PID %d.' % pid
+                    print('Another Sage Notebook server is running, PID %d.' % pid)
 
                     old_interface, old_port, old_secure = self.get_old_settings(conf)
                     if (kw['automatic_login'] or kw['upload']) and old_port:
@@ -306,13 +306,13 @@ reactor.addSystemEventTrigger('before', 'shutdown', partial(save_notebook2, flas
                         else:
                             startpath = '/'
 
-                        print 'Opening web browser at http%s://%s:%s%s ...' % (
-                            's' if old_secure else '', old_interface, old_port, startpath)
+                        print('Opening web browser at http%s://%s:%s%s ...' % (
+                            's' if old_secure else '', old_interface, old_port, startpath))
 
                         from sagenb.misc.misc import open_page as browse_to
                         browse_to(old_interface, old_port, old_secure, startpath)
                         return None
-                    print '\nPlease either stop the old server or run the new server in a different directory.'
+                    print('\nPlease either stop the old server or run the new server in a different directory.')
                     return None
 
         ## Create the config file
@@ -368,7 +368,7 @@ def notebook_setup(self=None):
 
     dn = raw_input("Domain name [localhost]: ").strip()
     if dn == '':
-        print "Using default localhost"
+        print("Using default localhost")
         dn = 'localhost'
 
     import random
@@ -414,25 +414,25 @@ def notebook_setup(self=None):
         # We use openssl by default if it exists, since it is open
         # *vastly* faster on Linux, for some weird reason.
         cmd = ['openssl genrsa 1024 > %s' % private_pem]
-        print "Using openssl to generate key"
-        print cmd[0]
+        print("Using openssl to generate key")
+        print(cmd[0])
         subprocess.call(cmd, shell=True)
     else:
         # We checked above that certtool is available.
         cmd = ['certtool --generate-privkey --outfile %s' % private_pem]
-        print "Using certtool to generate key"
-        print cmd[0]
+        print("Using certtool to generate key")
+        print(cmd[0])
         subprocess.call(cmd, shell=True)
 
     cmd = ['certtool --generate-self-signed --template %s --load-privkey %s '
            '--outfile %s' % (template_file, private_pem, public_pem)]
-    print cmd[0]
+    print(cmd[0])
     subprocess.call(cmd, shell=True)
 
     # Set permissions on private cert
     os.chmod(private_pem, 0600)
 
-    print "Successfully configured notebook."
+    print("Successfully configured notebook.")
 
 command={'flask': NotebookRunFlask, 'twistd': NotebookRunTwisted, 'uwsgi': NotebookRunuWSGI, 'tornado': NotebookRunTornado}
 def notebook_run(self,
@@ -516,11 +516,11 @@ def notebook_run(self,
     port = int(port)
 
     if not secure and interface != 'localhost':
-        print '*' * 70
-        print "WARNING: Running the notebook insecurely not on localhost is dangerous"
-        print "because its possible for people to sniff passwords and gain access to"
-        print "your account. Make sure you know what you are doing."
-        print '*' * 70
+        print('*' * 70)
+        print("WARNING: Running the notebook insecurely not on localhost is dangerous")
+        print("because its possible for people to sniff passwords and gain access to")
+        print("your account. Make sure you know what you are doing.")
+        print('*' * 70)
 
     # first use provided values, if none, use loaded values,
     # if none use defaults
@@ -530,7 +530,7 @@ def notebook_run(self,
     directory = nb._dir
 
     if not quiet:
-        print "The notebook files are stored in:", nb._dir
+        print("The notebook files are stored in:", nb._dir)
 
     if timeout is not None:
         nb.conf()['idle_timeout'] = int(timeout)
@@ -563,15 +563,15 @@ def notebook_run(self,
         if nb.user_manager().user_exists('admin'):
             admin = nb.user_manager().user('admin')
             admin.set_password(passwd)
-            print "Password changed for user 'admin'."
+            print("Password changed for user 'admin'.")
         else:
             nb.user_manager().create_default_users(passwd)
-            print "User admin created with the password you specified."
-            print "\n\n"
-            print "*" * 70
-            print "\n"
+            print("User admin created with the password you specified.")
+            print("\n\n")
+            print("*" * 70)
+            print("\n")
             if secure:
-                print "Login to the Sage notebook as admin with the password you specified above."
+                print("Login to the Sage notebook as admin with the password you specified above.")
         #nb.del_user('root')
 
     # For old notebooks, make sure that default users are always created.
@@ -589,7 +589,7 @@ def notebook_run(self,
     if os.path.exists('%s/nb-older-backup.sobj' % directory):
         nb._migrate_worksheets()
         os.unlink('%s/nb-older-backup.sobj' % directory)
-        print "Updating to new format complete."
+        print("Updating to new format complete.")
 
 
     nb.upgrade_model()
@@ -597,11 +597,11 @@ def notebook_run(self,
     del nb
 
     if interface != 'localhost' and not secure:
-            print "*" * 70
-            print "WARNING: Insecure notebook server listening on external interface."
-            print "Unless you are running this via ssh port forwarding, you are"
-            print "**crazy**!  You should run the notebook with the option secure=True."
-            print "*" * 70
+            print("*" * 70)
+            print("WARNING: Insecure notebook server listening on external interface.")
+            print("Unless you are running this via ssh port forwarding, you are")
+            print("**crazy**!  You should run the notebook with the option secure=True.")
+            print("*" * 70)
 
     port = find_next_available_port(interface, port, port_tries)
     if automatic_login:
@@ -609,12 +609,12 @@ def notebook_run(self,
     if secure:
         if (not os.path.exists(private_pem) or
             not os.path.exists(public_pem)):
-            print "In order to use an SECURE encrypted notebook, you must first run notebook.setup()."
-            print "Now running notebook.setup()"
+            print("In order to use an SECURE encrypted notebook, you must first run notebook.setup().")
+            print("Now running notebook.setup()")
             notebook_setup()
         if (not os.path.exists(private_pem) or
             not os.path.exists(public_pem)):
-            print "Failed to setup notebook.  Please try notebook.setup() again manually."
+            print("Failed to setup notebook.  Please try notebook.setup() again manually.")
 
     kw = dict(port=port, automatic_login=automatic_login, secure=secure, private_pem=private_pem, public_pem=public_pem,
               interface=interface, directory=directory, pidfile=pidfile, cwd=cwd, profile=profile, upload = upload )
@@ -626,9 +626,9 @@ def notebook_run(self,
         print_open_msg('localhost' if not interface else interface,
         port, secure=secure)
     if secure and not quiet:
-        print "There is an admin account.  If you do not remember the password,"
-        print "quit the notebook and type notebook(reset=True)."
-    print "Executing", cmd
+        print("There is an admin account.  If you do not remember the password,")
+        print("quit the notebook and type notebook(reset=True).")
+    print("Executing {}".format(cmd))
     if fork:
         import pexpect
         return pexpect.spawn(cmd)
@@ -640,24 +640,24 @@ def notebook_run(self,
         raise socket.error
 
 def get_admin_passwd():
-    print "\n" * 2
-    print "Please choose a new password for the Sage Notebook 'admin' user."
-    print "Do _not_ choose a stupid password, since anybody who could guess your password"
-    print "and connect to your machine could access or delete your files."
-    print "NOTE: Only the hash of the password you type is stored by Sage."
-    print "You can change your password by typing notebook(reset=True)."
-    print "\n" * 2
+    print("\n" * 2)
+    print("Please choose a new password for the Sage Notebook 'admin' user.")
+    print("Do _not_ choose a stupid password, since anybody who could guess your password")
+    print("and connect to your machine could access or delete your files.")
+    print("NOTE: Only the hash of the password you type is stored by Sage.")
+    print("You can change your password by typing notebook(reset=True).")
+    print("\n" * 2)
     while True:
         passwd = getpass.getpass("Enter new password: ")
         from sagenb.misc.misc import min_password_length
         if len(passwd) < min_password_length:
-            print "That password is way too short. Enter a password with at least %d characters."%min_password_length
+            print("That password is way too short. Enter a password with at least %d characters."%min_password_length)
             continue
         passwd2 = getpass.getpass("Retype new password: ")
         if passwd != passwd2:
-            print "Sorry, passwords do not match."
+            print("Sorry, passwords do not match.")
         else:
             break
 
-    print "Please login to the notebook with the username 'admin' and the above password."
+    print("Please login to the notebook with the username 'admin' and the above password.")
     return passwd
