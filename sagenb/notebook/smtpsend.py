@@ -34,10 +34,10 @@ def buildMessage(fromaddr, toaddr, subject, body):
     return message
 
 def sendComplete(result):
-    print "Message sent."
+    print("Message sent.")
 
 def handleError(error):
-    print >> sys.stderr, "Error", error.getErrorMessage()
+    print >> sys.stderr, "Error {}".format(error.getErrorMessage())
 
 def send_mail(fromaddr, toaddr, subject, body, on_success=sendComplete, on_failure=handleError):
     try:

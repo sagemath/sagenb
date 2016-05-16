@@ -15,7 +15,7 @@ class WorksheetProcess_ReferenceImplementation(WorksheetProcess):
     """
     def __init__(self, **kwds):
         for key in kwds.keys():
-            print "WorksheetProcess_ReferenceImplementation: does not support '%s' option.  Ignored."%key
+            print("WorksheetProcess_ReferenceImplementation: does not support '%s' option.  Ignored." % key)
         self._output_status = OutputStatus('',[],True,None)
         self._state = {}
 

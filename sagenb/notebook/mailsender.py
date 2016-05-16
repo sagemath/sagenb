@@ -58,9 +58,9 @@ class SMTPInput:
         try:
             self._rcpt_domain = [(r.split('@'))[1] for r in rcpt]
         except ValueError:
-            raise ValueError, "mal-formed recipient email address"
+            raise ValueError("mal-formed recipient email address")
 
-        print self._rcpt_domain
+        print(self._rcpt_domain)
 
     def exchange_mail(self, exchange):
         smtp_client = internet.TCPClient(exchange, 25, self._factory)
@@ -90,8 +90,8 @@ class MailClient(smtp.ESMTPClient):
         return StringIO(self._mesg._data)
 
     def sentMail(self, code, resp, numOk, addresses, log):
-        print '<< dest SMTP server >> %s: %s' % (code, resp)
-        print 'Sent %s messages.' % numOk
+        print('<< dest SMTP server >> %s: %s' % (code, resp))
+        print('Sent %s messages.' % numOk)
         from twisted.internet import reactor
         reactor.stop()
 

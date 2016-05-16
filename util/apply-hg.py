@@ -8,15 +8,15 @@ import re
 import tempfile
 
 def run(cmd):
-    print cmd
+    print(cmd)
     execcode=os.system(cmd)
     if execcode != 0:
         raise RuntimeError
 
 patch = sys.argv[1]
 args = ' '.join(sys.argv[2:])
-print 'p',patch
-print 'args',args
+print('p {}'.format(patch))
+print('args {}'.format(args))
 
 with open(patch) as f:
     p = f.read()
@@ -31,7 +31,7 @@ commit_message = "\n".join(p[1:i])
 _, filename = tempfile.mkstemp()
 with open(filename, "w")  as f:
     f.write(commit_message)
-print commit_message
+print(commit_message)
 
 run("patch %s < %s" %(args,patch))
 run("git commit -a --author='%s' -F %s -s" % (author, filename) )
