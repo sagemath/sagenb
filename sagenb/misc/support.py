@@ -32,8 +32,8 @@ except ImportError:
 try:
     from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
 except ImportError as msg:
-    print msg
-    print "Sphinx docstrings not available."
+    print(msg)
+    print("Sphinx docstrings not available.")
     # Don't do any Sphinxifying if sphinx's dependencies aren't around
     def sphinxify(s):
         return s
@@ -44,8 +44,8 @@ try:
     from sage.misc.displayhook import DisplayHook
     sys.displayhook = DisplayHook()
 except ImportError as msg:
-    print msg
-    print 'Graphics will not be shown automatically'
+    print(msg)
+    print('Graphics will not be shown automatically')
 
 
 ######################################################################
@@ -203,11 +203,11 @@ def completions(s, globs, format=False, width=90, system="None"):
                     v = [obj + '.'+x for x in D if x and x[0] != '_']
                 else:
                     v = [obj + '.'+x for x in D if x[:n] == method]
-            except Exception, msg:
+            except Exception:
                 v = []
         v = list(set(v))   # make unique
         v.sort()
-    except Exception, msg:
+    except Exception:
         v = []
 
     if prepend:
@@ -287,7 +287,7 @@ def docstring(obj_name, globs, system='sage'):
 def html_markup(s):
     try:
         from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
-    except ImportError, msg:
+    except ImportError:
         # sphinx not available
         def is_sphinx_markup(s): return False
 
@@ -366,7 +366,7 @@ def source_code(s, globs, system='sage'):
             output += src
         return html_markup(output)
     
-    except (TypeError, IndexError), msg:
+    except (TypeError, IndexError):
         return html_markup("Source code for {} is not available.".format(s) +
                            "\nUse {}? to see the documentation.".format(s))
     
@@ -563,7 +563,7 @@ try:
             try:
                 exec s in globals
                 return
-            except NameError, msg:
+            except NameError as msg:
                 # Determine if we hit a NameError that is probably
                 # caused by a variable or function not being defined:
                 if len(msg.args) == 0: raise  # not NameError with

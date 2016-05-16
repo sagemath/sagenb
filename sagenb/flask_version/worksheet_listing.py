@@ -419,8 +419,8 @@ def upload_worksheet():
                         except RetrieveError as err:
                             return current_app.message(str(err), username=g.username)
                 W = g.notebook.import_worksheet(filename, g.username)
-        except Exception, msg:
-            print 'error uploading worksheet', msg
+        except Exception as msg:
+            print('error uploading worksheet {}'.format(msg))
             s = _('There was an error uploading the worksheet.  It could be an old unsupported format or worse.  If you desperately need its contents contact the <a href="http://groups.google.com/group/sage-support">sage-support group</a> and post a link to your worksheet.  Alternatively, an sws file is just a bzip2 tarball; take a look inside!\n%(backlinks)s', backlinks=backlinks)
             return current_app.message(s, url_for('home', username=g.username), username=g.username)
         finally:
@@ -431,7 +431,7 @@ def upload_worksheet():
                 import shutil
                 shutil.rmtree(dir)
 
-    except ValueError, msg:
+    except ValueError as msg:
         s = _("Error uploading worksheet '%(msg)s'.%(backlinks)s", msg=msg, backlinks=backlinks)
         return current_app.message(s, url_for('home', username=g.username), username=g.username)
 

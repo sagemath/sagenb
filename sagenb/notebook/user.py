@@ -65,9 +65,9 @@ class User(object):
             try:
                 self.save_history()
                 del d['history']
-            except Exception, msg:
-                print msg
-                print "Unable to dump history of user %s to disk yet."%self._username
+            except Exception as msg:
+                print(msg)
+                print("Unable to dump history of user %s to disk yet." % self._username)
         return d
 
     def basic(self):

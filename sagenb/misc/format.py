@@ -177,6 +177,6 @@ def displayhook_hack(string):
                 compile(final_lines + '\n', '', 'single')
                 string[i] = "exec compile(%r + '\\n', '', 'single')" % final_lines
                 string = string[:i+1]
-            except SyntaxError, msg:
+            except SyntaxError:
                 pass
     return '\n'.join(string)
