@@ -23,7 +23,7 @@ from sagenb.misc.misc import SAGE_VERSION, DATA
 from flask.ext.babel import gettext, ngettext, lazy_gettext
 from flask import current_app as app
 
-if os.environ.has_key('SAGENB_TEMPLATE_PATH'):
+if 'SAGENB_TEMPLATE_PATH' in os.environ:
     if not os.path.isdir(os.environ['SAGENB_TEMPLATE_PATH']):
         raise ValueError("Enviromental variable SAGENB_TEMPLATE_PATH points to\
                          a non-existant directory")

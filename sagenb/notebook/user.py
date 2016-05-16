@@ -61,7 +61,7 @@ class User(object):
         d = copy.copy(self.__dict__)
 
         # Some old worksheets have this attribute, which we do *not* want to save.
-        if d.has_key('history'):
+        if 'history' in d:
             try:
                 self.save_history()
                 del d['history']

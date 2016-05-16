@@ -516,8 +516,9 @@ class genericHTMLProcessor(SGMLParser):
         """
         if self.keep_data:
             self.temp_pieces.append("&%(ref)s" % locals())
-            if entitydefs.has_key(ref):
+            if ref in entitydefs:
                 self.temp_pieces.append(';')
+
     def handle_comment(self, data):             
         r"""
         INPUT:

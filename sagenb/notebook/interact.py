@@ -2606,7 +2606,7 @@ def interact(f, layout=None, width='800px'):
         sage: @interact
         ... def _(n=(500,(100,5000,1)), p=(1,(0.1,10))):
         ...     n = int(n)
-        ...     if not data.has_key(n):
+        ...     if n not in data:
         ...         data[n] = [(random(), random()) for _ in xrange(n)]
         ...     show(points([(x^p,y^p) for x,y in data[n]], rgbcolor='black'), xmin=0, ymin=0, axes=False)
         <html>...

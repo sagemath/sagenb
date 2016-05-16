@@ -178,9 +178,9 @@ SAGENB_ROOT = os.path.split(resource_filename(__name__, ''))[0]
 
 DATA = os.path.join(SAGENB_ROOT, 'data')
 
-if os.environ.has_key('DOT_SAGENB'):
+if 'DOT_SAGENB' in os.environ:
     DOT_SAGENB = os.environ['DOT_SAGENB']
-elif os.environ.has_key('DOT_SAGE'):
+elif 'DOT_SAGE' in os.environ:
     DOT_SAGENB = os.environ['DOT_SAGE']
 else:
     DOT_SAGENB = os.path.join(os.environ['HOME'], '.sagenb')

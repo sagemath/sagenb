@@ -112,7 +112,7 @@ def replace_courier(soup):
     Most users won't be needing this(?), so this code is not called anywhere
     but kept for reference
     """
-    for t in soup.findAll(lambda s:s.has_key('style') and 'courier' in s['style']):
+    for t in soup.findAll(lambda s: ('style' in s) and 'courier' in s['style']):
         tag = Tag(soup, 'code')
         while t.contents:
             tag.append(t.contents[0])
