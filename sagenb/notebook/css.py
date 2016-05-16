@@ -46,7 +46,7 @@ def css(color='default'):
         elif isinstance(color, (tuple,list)):
             color1, color2 = color
         else:
-            raise ValueError, "unknown color scheme %s"%color
+            raise ValueError("unknown color scheme %s" % color)
 
         main_css = template(os.path.join('css', 'main.css'),
                             color1 = color1, color2 = color2,

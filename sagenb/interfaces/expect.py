@@ -217,7 +217,7 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
             self.start()
 
         if self._expect is None:
-            raise RuntimeError, "unable to start subprocess using command '%s'"%self.command()
+            raise RuntimeError("unable to start subprocess using command '%s'" % self.command())
         
         self._number += 1
 

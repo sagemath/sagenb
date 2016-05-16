@@ -255,7 +255,7 @@ class selenium:
             return True
         if ("false" == boolstr):
             return False
-        raise ValueError, "result is neither 'true' nor 'false': " + boolstr
+        raise ValueError("result is neither 'true' nor 'false': " + boolstr)
     
     def get_boolean_array(self, verb, args):
         boolarr = self.get_string_array(verb, args)
@@ -266,7 +266,7 @@ class selenium:
             if ("false" == boolstr):
                 boolarr[i] = False
                 continue
-            raise ValueError, "result is neither 'true' nor 'false': " + boolarr[i]
+            raise ValueError("result is neither 'true' nor 'false': " + boolarr[i])
         return boolarr
     
     

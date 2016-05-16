@@ -523,7 +523,7 @@ class FilesystemDatastore(Datastore):
         T = tarfile.open(filename, 'r:bz2')
         members = [a for a in T.getmembers() if 'worksheet.txt' in a.name and is_safe(a.name)]
         if len(members) == 0:
-            raise RuntimeError, "unable to import worksheet"
+            raise RuntimeError("unable to import worksheet")
 
         worksheet_txt = members[0].name
         W = self.load_worksheet(username, id_number)

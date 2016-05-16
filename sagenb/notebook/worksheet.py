@@ -3057,7 +3057,7 @@ except (KeyError, IOError):
             print "ERROR initializing compute process:\n"
             print msg
             del self.__sage
-            raise RuntimeError, msg
+            raise RuntimeError(msg)
 
         # make sure we have a __sage attribute
         # We do this to diagnose google issue 81; once we

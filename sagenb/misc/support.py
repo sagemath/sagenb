@@ -576,7 +576,7 @@ try:
                                       # again.
                 nm = v[1]
                 globals[nm] = AutomaticVariable(SR, SR.var(nm))
-        raise NameError, "Too many automatic variable names and functions created (limit=%s)"%max_names
+        raise NameError("Too many automatic variable names and functions created (limit=%s)" % max_names)
 
     def automatic_name_filter(s):
         """
