@@ -2356,7 +2356,7 @@ class Worksheet(object):
             try:
                 meta, input, output, i = extract_first_compute_cell(text)
                 data.append(('compute', (meta, input, output)))
-            except EOFError, msg:
+            except EOFError as msg:
                 #print msg # -- don't print msg, just outputs a blank
                 #                 line every time, which makes for an
                 #                 ugly and unprofessional log.
@@ -2445,7 +2445,7 @@ class Worksheet(object):
         for cell in self.cell_list():
             try:
                 cells_html += cell.html(ncols, do_print=do_print, username=self.username) + '\n'
-            except Exception, msg:
+            except Exception as msg:
                 # catch any exception, since this exception is raised
                 # sometimes, at least for some worksheets:
                 # exceptions.UnicodeDecodeError: 'ascii' codec can't decode byte
@@ -2453,7 +2453,7 @@ class Worksheet(object):
                 # and this causes the entire worksheet to fail to
                 # save/render, which is obviously *not* good (much
                 # worse than a weird issue with one cell).
-                print msg
+                print(msg)
         return cells_html
 
     def html(self, do_print=False, publish=False, username=None):
@@ -2976,11 +2976,11 @@ class Worksheet(object):
 
         try:
             S.quit()
-        except AttributeError, msg:
-            print "WARNING: %s" % msg
-        except Exception, msg:
-            print msg
-            print "WARNING: Error deleting Sage object!"
+        except AttributeError as msg:
+            print("WARNING: %s" % msg)
+        except Exception as msg:
+            print(msg)
+            print("WARNING: Error deleting Sage object!")
 
         try:
             os.kill(pid, 9)
@@ -3053,9 +3053,9 @@ except (KeyError, IOError):
             S.execute(cmd)
             S.output_status()
 
-        except Exception, msg:
-            print "ERROR initializing compute process:\n"
-            print msg
+        except Exception as msg:
+            print("ERROR initializing compute process:\n")
+            print(msg)
             del self.__sage
             raise RuntimeError(msg)
 
@@ -3258,7 +3258,7 @@ except (KeyError, IOError):
 
         try:
             output_status = S.output_status()
-        except RuntimeError, msg:
+        except RuntimeError as msg:
             verbose("Computation was interrupted or failed. Restarting.\n%s" % msg)
             self.__comp_is_running = False
             self.start_next_comp()
@@ -3785,7 +3785,7 @@ except (KeyError, IOError):
                         l += k+1
                         I = C._before_preparse.split('\n')
                         out = out[:i + len(tb)+1] + '    ' + I[n-2] + out[l:]
-        except (ValueError, IndexError) as msg:
+        except (ValueError, IndexError):
             pass
         return out
 

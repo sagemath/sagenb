@@ -128,7 +128,7 @@ def execute_code(string, state, data=None):
     try:
         os.chdir(tempdir)
         exec string in state
-    except Exception, msg:
+    except Exception:
         traceback.print_exc(file=s)
     finally:
         sys.stdout = saved_stream
