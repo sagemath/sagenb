@@ -90,7 +90,7 @@ class User(object):
                 try:
                     self.history = cPickle.load(open(history_file))
                 except:
-                    print "Error loading history for user %s"%self._username
+                    print("Error loading history for user %s" % self._username)
                     self.history = []
             else:
                 self.history = []
@@ -103,7 +103,6 @@ class User(object):
         if misc.notebook is None: return
         history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
         try:
-            #print "Dumping %s history to '%s'"%(self.__username, history_file)
             his = cPickle.dumps(self.history)
         except AttributeError:
             his = cPickle.dumps([])

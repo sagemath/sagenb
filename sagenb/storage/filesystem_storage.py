@@ -441,12 +441,12 @@ class FilesystemDatastore(Datastore):
         except Exception:
             #the worksheet conf loading didn't work, so we make up one
             import traceback
-            print "Warning: problem loading config for %s/%s; using default config: %s"%(username, id_number, traceback.format_exc())
+            print("Warning: problem loading config for %s/%s; using default config: %s" % (username, id_number, traceback.format_exc()))
             W = self._basic_to_worksheet({'owner':username, 'id_number': id_number})
             if username=='_sage_':
                 # save the default configuration, since this may be loaded by a random other user
                 # since *anyone* looking at docs will load all _sage_ worksheets
-                print "Saving default configuration (overwriting corrupt configuration) for %s/%s"%(username, id_number)
+                print("Saving default configuration (overwriting corrupt configuration) for %s/%s" % (username, id_number))
                 self.save_worksheet(W, conf_only=True)
         return W
 
@@ -629,7 +629,7 @@ class FilesystemDatastore(Datastore):
                     v.append(self.load_worksheet(username, int(id_number)))
                 except Exception:
                     import traceback
-                    print "Warning: problem loading %s/%s: %s"%(username, id_number, traceback.format_exc())
+                    print("Warning: problem loading %s/%s: %s" % (username, id_number, traceback.format_exc()))
         return v
 
     def readonly_user(self, username):

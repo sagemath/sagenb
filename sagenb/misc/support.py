@@ -130,7 +130,7 @@ def help(obj):
     from pydoc import resolve, html, describe
     import sagenb.notebook.interact as interact
 
-    print '<html><table notracebacks bgcolor="#386074" cellpadding=10 cellspacing=10><tr><td bgcolor="#f5f5f5"><font color="#37546d">'
+    print('<html><table notracebacks bgcolor="#386074" cellpadding=10 cellspacing=10><tr><td bgcolor="#f5f5f5"><font color="#37546d">')
     object, name = resolve(obj)
     page = html.page(describe(object), html.document(object, name))
     page = page.replace('<a href','<a ')
@@ -140,8 +140,8 @@ def help(obj):
         if not os.path.exists(filename): break
         n += 1
     open(filename, 'w').write(page)
-    print "&nbsp;&nbsp;&nbsp;<a target='_new' href='cell://%s'>Click to open help window</a>&nbsp;&nbsp;&nbsp;"%filename
-    print '<br></font></tr></td></table></html>'
+    print("&nbsp;&nbsp;&nbsp;<a target='_new' href='cell://%s'>Click to open help window</a>&nbsp;&nbsp;&nbsp;" % filename)
+    print('<br></font></tr></td></table></html>')
     
 def get_rightmost_identifier(s):
     X = string.ascii_letters + string.digits + '._'

@@ -30,7 +30,7 @@ from interact import (INTERACT_RESTART, INTERACT_UPDATE_PREFIX,
 # avoid overloading web browser.  For example, it should be possible
 # to gracefully survive:
 #    while True:
-#       print "hello world"
+#       print("hello world")
 # On the other hand, we don't want to loose the output of big matrices
 # and numbers, so don't make this too small.
 MAX_OUTPUT = 32000
@@ -360,7 +360,7 @@ class Cell_generic(object):
         try:
             k = L.index(self)
         except ValueError:
-            print "Warning -- cell %s no longer exists" % self.id()
+            print("Warning -- cell %s no longer exists" % self.id())
             return L[0].id()
         try:
             return L[k + 1].id()
@@ -1188,7 +1188,7 @@ class Cell(Cell_generic):
         try:
             k = L.index(self)
         except ValueError:
-            print "Warning -- cell %s no longer exists" % self.id()
+            print("Warning -- cell %s no longer exists" % self.id())
             return L[0].id()
         try:
             return L[k + 1].id()
@@ -1273,7 +1273,7 @@ class Cell(Cell_generic):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = W.new_cell_after(0, "@interact\ndef f(a=slider(0,10,1,5):\n    print a^2")
+            sage: C = W.new_cell_after(0, "@interact\ndef f(a=slider(0,10,1,5):\n    print(a^2)")
             sage: C.is_interactive_cell()
             True
             sage: C = W.new_cell_after(C.id(), "2+2")
@@ -1303,7 +1303,7 @@ class Cell(Cell_generic):
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: C = W.new_cell_after(0, "@interact\ndef f(a=slider(0,10,1,5):\n    print a^2")
+            sage: C = W.new_cell_after(0, "@interact\ndef f(a=slider(0,10,1,5):\n    print(a^2)")
             sage: C.is_interacting()
             False
         """
@@ -1779,8 +1779,8 @@ class Cell(Cell_generic):
                     z = z.replace(INTERACT_TEXT, output)
                     z = z.replace(INTERACT_HTML, html)
                     return z
-                except (ValueError, AttributeError), msg:
-                    print msg
+                except (ValueError, AttributeError) as msg:
+                    print(msg)
                     pass
             else:
                 # Get rid of the interact div to avoid updating the
@@ -2481,9 +2481,7 @@ class Cell(Cell_generic):
             if (jdata.is_jvm_available()):
                 # make the image with Jmol
                 png_fullpath=png_name+".png"
-                #print png_fullpath
                 script = 'set defaultdirectory \"'+jmoldatafile+'\"\n script SCRIPT\n'
-                #print script
                 jdata.export_image(targetfile = png_fullpath,datafile=script,image_type="PNG", figsize = 4)
             else:
                 images.append('Java Virtual Machine Unavailable.  Cannot make image from old data.  Please reevaluate cell.')

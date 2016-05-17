@@ -191,7 +191,7 @@ class selenium:
         try:
             self.sessionId = result
         except ValueError:
-            raise Exception, result
+            raise Exception(result)
         
     def stop(self):
         self.do_command("testComplete", [])
@@ -208,12 +208,10 @@ class selenium:
         conn.request("POST", "/selenium-server/driver/", body, headers)
     
         response = conn.getresponse()
-        #print response.status, response.reason
         data = unicode(response.read(), "UTF-8")
         result = response.reason
-        #print "Selenium Result: " + repr(data) + "\n\n"
         if (not data.startswith('OK')):
-            raise Exception, data
+            raise Exception(data)
         return data
     
     def get_string(self, verb, args):

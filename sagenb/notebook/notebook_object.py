@@ -298,5 +298,5 @@ def test_notebook(admin_passwd, secure=False, directory=None, port=8050,
         shutil.rmtree(nb._dir)
     p.dispose = dispose
     if verbose:
-        print "Notebook started."
+        print("Notebook started.")
     return p

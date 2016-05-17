@@ -74,7 +74,7 @@ def preprocess_display_latex(text):
             elif count == -1:
                 ls.append('</p>')
             elif abs(count)>1:
-                raise Exception, 'display latex was messed up with html code'
+                raise Exception('display latex was messed up with html code')
         start_tag = not start_tag
     ls.append(parts[-1])
     return ''.join(ls)

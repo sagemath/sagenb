@@ -24,24 +24,20 @@ class TestRunner:
         result = request.GET()
         result = maybeAuthenticate(result)
         result = request.GET('/home/%s/%s/' % (user, worksheet))
-        #print 'test sheet seen: ', (result.text.find('test') != -1)
-        #print result.text
         
         base_url = 'http://localhost:8080/home/%s/%s' % (user, worksheet)
         request = newCellTest.wrap(HTTPRequest(url=base_url + "/new_cell_after"))
         result = request.POST((NVPair("id","0"),))
         new_cell = result.text.split()[0].rstrip('___S_A_G_E___')
-        #print 'new cell number', new_cell 
 
         request = evaluationTest.wrap(HTTPRequest(url=base_url + "/eval"))
         random = Random()
         a, b = random.nextInt(10**1), random.nextInt(10**1) 
-        # print 'random test',a,b,
+
         evalData = ( NVPair("id", new_cell),
                      NVPair("input", "%s * %s"% (a,b)),
                      NVPair("newcell", "0"),)
         result = request.POST(evalData)
-        #print 'input', result.text
 
         count = 0 
         while (True): 
@@ -49,11 +45,10 @@ class TestRunner:
             request = updateTest.wrap(HTTPRequest(url=base_url + "/cell_update"))
             getData = ( NVPair("id", new_cell),)
             result = request.POST(getData)
-            #print 'full result:', result.text
             count += 1            
-            if result.text.find('pre') != -1: 
-                #print 'full result:', result.text
-                print 'wait',count,'test',a,'*',b,'=', strip_answer(result.text)
+            if result.text.find('pre') != -1:
+                txt = 'wait {} test {} * {} = {}'
+                print(txt.format(count, a, b, strip_answer(result.text)))
                 break
 
         request = deleteCellTest.wrap(HTTPRequest(url=base_url + "/delete_cell"))
@@ -66,8 +61,6 @@ class TestRunner:
 def maybeAuthenticate(lastResult):
     if lastResult.statusCode == 401 \
     or lastResult.text.find("password") != -1:
-
-        #print "Challenged, authenticating"
 
         authenticationFormData = ( NVPair("email", user),
                                    NVPair("password", password),)

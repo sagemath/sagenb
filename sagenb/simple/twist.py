@@ -305,7 +305,7 @@ class ComputeResource(CellResource):
             return http.Response(stream = "Invalid session.")
         try:
             timeout = float(ctx.args['timeout'][0])
-        except (KeyError, ValueError), msg:
+        except (KeyError, ValueError):
             timeout = session.default_timeout
         cell = session.worksheet.append_new_cell()
         cell.set_input_text(ctx.args['code'][0])
