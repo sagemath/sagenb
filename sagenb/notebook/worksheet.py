@@ -160,7 +160,7 @@ class Worksheet(object):
                  notebook_worksheet_directory=None, system=None,
                  owner=None, pretty_print=False,
                  auto_publish=False, create_directories=True, live_3D=False):
-        ur"""
+        r"""
         Create and initialize a new worksheet.
 
         INPUT:
@@ -702,7 +702,7 @@ class Worksheet(object):
         self.__viewers = []
 
     def name(self, username=None):
-        ur"""
+        r"""
         Return the name of this worksheet.
 
         OUTPUT: string

@@ -55,7 +55,8 @@
 # @Credits		Dean Edwards for his originally idea [dean.edwards.name] and his JavaScript packer
 # @License		GNU General Public License (GPL)
 
-import re, time, string, SourceMap, BaseConvert
+import re, time, string
+from . import SourceMap, BaseConvert
 class JavaScriptCompressor:
 	
 	# public variables

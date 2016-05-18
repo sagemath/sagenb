@@ -12,11 +12,15 @@ Notebook server.
 #                  http://www.gnu.org/licenses/
 #############################################################################
 
-import time, os, shutil, signal, tempfile
+import time
+import os
+import shutil
+import signal
+import tempfile
 
-import notebook as _notebook
+from . import notebook as _notebook
 
-import run_notebook
+from . import run_notebook
 
 class NotebookObject:
     r"""

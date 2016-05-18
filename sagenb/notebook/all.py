@@ -10,11 +10,11 @@
 
 #from test_notebook import notebook_playback
 
-from sage_email import email
+from .sage_email import email
 
-from notebook_object import notebook, inotebook
+from .notebook_object import notebook, inotebook
 
-from interact import interact, input_box, slider, range_slider, selector, checkbox, input_grid, text_control, color_selector
+from .interact import interact, input_box, slider, range_slider, selector, checkbox, input_grid, text_control, color_selector
 
 # For doctesting.
-import sagenb
+from . import sagenb
