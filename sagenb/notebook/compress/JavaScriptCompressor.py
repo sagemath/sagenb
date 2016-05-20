@@ -55,7 +55,8 @@
 # @Credits		Dean Edwards for his originally idea [dean.edwards.name] and his JavaScript packer
 # @License		GNU General Public License (GPL)
 
-import re, time, string
+import re
+import time
 from . import SourceMap, BaseConvert
 class JavaScriptCompressor:
 	
@@ -112,7 +113,7 @@ class JavaScriptCompressor:
 			if type != "regexp":
 #				clean.append("\n")
 				pass
-		return re.sub("/(\n)+/", "\n", re.sub("/^\s*|\s*$/", "", string.join(clean, "")))
+		return re.sub("/(\n)+/", "\n", re.sub("/^\s*|\s*$/", "", "".join(clean)))
 	def __commonInitMethods(self, jsSource, packed):
 		header = ""
 		sources = ""
@@ -125,7 +126,7 @@ class JavaScriptCompressor:
 		header = self.__getHeader()
 		for a in range(0, self.__totalSources):
 			tempSources.append(self.__sources[a]["code"])
-		sources = string.join(tempSources, ";")
+		sources = ";".join(tempSources)
 		if packed:
 			sources = self.__pack(sources)
 		self.__sourceNewLength = len(sources)
@@ -134,11 +135,11 @@ class JavaScriptCompressor:
 	def __doReplacement(self, matchobj):
 		return self.__BC.toBase(self.__wordsParser(matchobj.group(0)))	
 	def __getHeader(self):
-		return string.join([
+		return "".join([
 			"/* ", self.__getScriptNames(), "JavaScriptCompressor ", self.version, " [www.devpro.it], ",
 			"thanks to Dean Edwards for idea [dean.edwards.name]",
 			" */\n"
-		], "")
+		])
 	def __getScriptNames(self):
 		a = 0
 		result = []
@@ -149,7 +150,7 @@ class JavaScriptCompressor:
 		if a > 0:
 			a = a - 1
 			result[a] = result[a] + " with ";
-		return string.join(result, ", ")
+		return ", ".join(result)
 	def __getSize(self, size):
 		times = 0
 		fsize = float(size)
@@ -167,17 +168,16 @@ class JavaScriptCompressor:
 	def __pack(self, str):
 		self.__container = []
 		str = self.__addslashes(re.sub("\w+", self.__doReplacement, self.__clean(str))).replace("\n", "\\n")
-		return 'eval(function(A,G){return A.replace(/(\\w+)/g,function(a,b){return G[parseInt(b,36)]})}("' + str + '","' + string.join(self.__container, ",") + '".split(",")));'
+		return 'eval(function(A,G){return A.replace(/(\\w+)/g,function(a,b){return G[parseInt(b,36)]})}("' + str + '","' + ",".join(self.__container) + '".split(",")));'
 	def __setStats(self):
 		endTime = "%.3f" % ((time.clock() - self.__startTime) / 1000)
-		self.stats = string.join([
+		self.stats = " ".join([
 			self.__getSize(self.__sourceLength),
 			"to",
 			self.__getSize(self.__sourceNewLength),
 			"in",
 			endTime,
-			"seconds"
-		], " ")
+			"seconds"])
 	def __sourceManager(self, jsSource):
 		b = len(jsSource)
 		dictType = type({})
