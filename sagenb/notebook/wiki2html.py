@@ -276,7 +276,6 @@ class Parser:
 
     def _emph_repl(self, word):
         """Handle emphasis, i.e. '' and '''."""
-        ##print "#", self.is_b, self.is_em, "#"
         if len(word) == 3:
             self.is_b = not self.is_b
             if self.is_em and self.is_b:
@@ -306,7 +305,6 @@ class Parser:
 
     def _emph_ib_or_bi_repl(self, word):
         """Handle mixed emphasis, exactly five '''''."""
-        ##print "*", self.is_b, self.is_em, "*"
         b_before_em = self.is_b > self.is_em > 0
         self.is_b = not self.is_b
         self.is_em = not self.is_em
@@ -1152,7 +1150,7 @@ class Request:
     def clock(self, *args, **kwds):
         pass
     def write(self, w):
-        print "writing ", w
+        print("writing {}".format(w))
         self._s += w
     def getText(self):
         return ''

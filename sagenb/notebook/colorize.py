@@ -71,7 +71,7 @@ class Parser:
         text = cStringIO.StringIO(self.raw)
         try:
             tokenize.tokenize(text.readline, self)
-        except tokenize.TokenError, ex:
+        except tokenize.TokenError as ex:
             msg = ex[0]
             line = ex[1][0]
             self.out.write("<h3>ERROR: %s</h3>%s\n" % (
@@ -82,8 +82,9 @@ class Parser:
         """ Token handler.
         """
         if 0:
-            print "type", toktype, token.tok_name[toktype], "text", toktext,
-            print "start", srow, scol, "end", erow, ecol, "<br />"
+            txt = "type {} {} text {} start {} {} end {} {} <br/>"
+            print(txt.format(toktype, token.tok_name[toktype], toktext,
+                             srow, scol, erow, ecol))
 
         # calculate new positions
         oldpos = self.pos

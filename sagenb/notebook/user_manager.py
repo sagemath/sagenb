@@ -199,7 +199,7 @@ class UserManager(object):
 
         """
         if verbose:
-            print "Creating default users."
+            print("Creating default users.")
         self.add_user('pub', '', '', account_type='user', force=True)
         self.add_user('_sage_', '', '', account_type='user', force=True)
         self.add_user('guest', '', '', account_type='guest', force=True)
@@ -297,7 +297,7 @@ class UserManager(object):
 
         us = self.users()
         if username in us:
-            print "WARNING: User '%s' already exists -- and is now being replaced."%username
+            print("WARNING: User '%s' already exists -- and is now being replaced." % username)
         U = user.User(username, password, email, account_type, external_auth)
         us[username] = U
         self.set_password(username, password)
@@ -325,7 +325,7 @@ class UserManager(object):
             raise ValueError("creating new accounts disabled.")
         us = self.users()
         if user.username() in us:
-            print "WARNING: User '%s' already exists -- and is now being replaced."%user.username()
+            print("WARNING: User '%s' already exists -- and is now being replaced." % user.username())
 
         self._users[user.username()] = user 
 
@@ -482,7 +482,7 @@ class SimpleUserManager(UserManager):
             return False
         user_password = self.password(username)
         if user_password is None and not self.user(username).is_external():
-            print "User %s has None password"%username
+            print("User %s has None password" % username)
             return False
         if user_password.find('$') == -1:
             if user_password == crypt.crypt(password, user.SALT):
@@ -497,7 +497,7 @@ class SimpleUserManager(UserManager):
         try:
             return self._check_password(username, password)
         except AttributeError:
-            return False;
+            return False
 
     def get_accounts(self):
         # need to use notebook's conf because those are already serialized

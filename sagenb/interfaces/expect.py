@@ -131,7 +131,6 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         """
         Start this worksheet process running.
         """
-        #print "Starting worksheet with command: '%s'"%self.command()
         self._expect = pexpect.spawn(self.command())
         self._is_started = True
         self._is_computing = False
@@ -253,8 +252,8 @@ class WorksheetProcess_ExpectImplementation(WorksheetProcess):
         try:
             self._expect.expect(pexpect.EOF, self._timeout)
             # got EOF subprocess must have crashed; cleanup
-            print "got EOF subprocess must have crashed..."
-            print self._expect.before
+            print("got EOF subprocess must have crashed...")
+            print(self._expect.before)
             self.quit()
         except:
             pass

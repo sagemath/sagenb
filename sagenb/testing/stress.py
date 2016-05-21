@@ -97,14 +97,16 @@ class PubStressTest:
         """
         Download the main login screen for the Sage notebook server.
         """
-        if self._verbose: print "testing login screen..."
+        if self._verbose:
+            print("testing login screen...")
         return self._timeit(self._geturlcode(self.url_login_screen()))
 
     def test_pub(self):
         """
         Download the list of published worksheets.
         """
-        if self._verbose: print "testing list of published worksheets..."
+        if self._verbose:
+            print("testing list of published worksheets...")
         return self._timeit(self._geturlcode(self.url_pub()))
 
     def get_urls_of_published_worksheets(self):
@@ -113,7 +115,7 @@ class PubStressTest:
         """
         pub = self._geturl(self.url_pub())
         if pub == TIMEOUT:
-            print TIMEOUT
+            print(TIMEOUT)
             return []
         return [self._url + X.strip('"').strip("'") for X in
                 re.findall('"/home/pub/[0-9]*"', pub)]
@@ -123,7 +125,8 @@ class PubStressTest:
         View every single one of the published worksheets on the
         Sage notebook server.
         """
-        if self._verbose: print "testing download of all published worksheets..."
+        if self._verbose:
+            print("testing download of all published worksheets...")
         tm = walltime()
         pub = self.get_urls_of_published_worksheets()
         try:
@@ -132,7 +135,7 @@ class PubStressTest:
                 t0 = walltime()
                 self._geturl(X, use_alarm=False)
                 if self._verbose:
-                    print "Got %s [%s/%s] %.2f seconds"%(X,i+1,len(pub), walltime(t0))
+                    print("Got %s [%s/%s] %.2f seconds" % (X,i+1,len(pub), walltime(t0)))
             return walltime(tm)
         except KeyboardInterrupt:
             return TIMEOUT

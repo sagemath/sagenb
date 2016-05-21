@@ -46,7 +46,7 @@ def render_worksheet_list(args, pub, username):
                                                                 search=search, reverse=reverse)
     except ValueError as E:
         # for example, the sort key was not valid
-        print "Error displaying worksheet listing: ", E
+        print("Error displaying worksheet listing: {}".format(E))
         return current_app.message(_("Error displaying worksheet listing."))
 
     worksheet_filenames = [x.filename() for x in worksheets]
@@ -193,7 +193,7 @@ def download_worksheets():
     from sagenb.misc.misc import walltime, tmp_filename
 
     t = walltime()
-    print "Starting zipping a group of worksheets in a separate thread..."
+    print("Starting zipping a group of worksheets in a separate thread...")
     zip_filename = tmp_filename() + ".zip"
 
     # child
@@ -222,7 +222,7 @@ def download_worksheets():
     zip.close()
     r = open(zip_filename, 'rb').read()
     os.unlink(zip_filename)
-    print "Finished zipping %s worksheets (%s seconds)"%(len(worksheets), walltime(t))
+    print("Finished zipping %s worksheets (%s seconds)" % (len(worksheets), walltime(t)))
 
     response = current_app.make_response(r)
     response.headers['Content-Type'] = 'application/zip'
@@ -404,7 +404,7 @@ def upload_worksheet():
                         if new_name:
                             W.set_name("%s - %s" % (new_name, W.name()))
                     else:
-                        print "Unknown extension, file %s is ignored" % subfilename
+                        print("Unknown extension, file %s is ignored" % subfilename)
                 return redirect(url_for('home', username=g.username))
 
             else:
@@ -415,7 +415,7 @@ def upload_worksheet():
                         # downloading multiple linked .sws
                         try:
                             filename = my_urlretrieve(linked_sws[0]['url'], backlinks=backlinks)[0]
-                            print 'Importing {0}, linked to from {1}'.format(linked_sws[0]['url'], url)
+                            print('Importing {0}, linked to from {1}'.format(linked_sws[0]['url'], url))
                         except RetrieveError as err:
                             return current_app.message(str(err), username=g.username)
                 W = g.notebook.import_worksheet(filename, g.username)

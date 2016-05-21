@@ -139,7 +139,7 @@ def sphinxify(docstring, format='html'):
         # Remove spurious \(, \), \[, \].
         output = output.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
     else:
-        print "BUG -- Sphinx error"
+        print("BUG -- Sphinx error")
         if format == 'html':
             output = '<pre class="introspection">%s</pre>' % docstring
         else:
@@ -612,10 +612,10 @@ def setup(app):
 if __name__ == '__main__':
     import sys
     if len(sys.argv) == 2:
-        print sphinxify(sys.argv[1])
+        print(sphinxify(sys.argv[1]))
     else:
-        print """Usage:
+        print("""Usage:
 %s 'docstring'
 
 docstring -- docstring to be processed
-"""
+""")

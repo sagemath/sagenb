@@ -79,7 +79,7 @@ WARN_THRESHOLD = 100   # The number of seconds, so if there was no
 # The strings used to synchronized the compute subprocesses.
 # WARNING:  If you make any changes to this, be sure to change the
 # error line below that looks like this:
-#         cmd += 'print "\\x01r\\x01e%s"'%self.synchro()
+#         cmd += 'print("\\x01r\\x01e%s")' % self.synchro()
 SC         = '\x01'
 SAGE_BEGIN = SC + 'b'
 SAGE_END   = SC + 'e'
@@ -2357,7 +2357,7 @@ class Worksheet(object):
                 meta, input, output, i = extract_first_compute_cell(text)
                 data.append(('compute', (meta, input, output)))
             except EOFError as msg:
-                #print msg # -- don't print msg, just outputs a blank
+                # print(msg) # -- don't print msg, just outputs a blank
                 #                 line every time, which makes for an
                 #                 ugly and unprofessional log.
                 break
@@ -3218,7 +3218,7 @@ except (KeyError, IOError):
                 pass
 
         if C.time() and not C.introspect():
-            input += '; print "CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__))\n'
+            input += '; print("CPU time: %.2f s,  Wall time: %.2f s"%(cputime(__SAGE_t__), walltime(__SAGE_w__)))\n'
         self.__comp_is_running = True
         self.sage().execute(input, os.path.abspath(self.data_directory()))
 
@@ -3467,7 +3467,7 @@ except (KeyError, IOError):
         if timeout > 0 and self.time_idle() > timeout:
             # worksheet name may contain unicode, so we use %r, which prints
             # the \xXX form for unicode characters
-            print "Quitting ignored worksheet process for %r." % self.name()
+            print("Quitting ignored worksheet process for %r." % self.name())
             self.quit()
 
     def time_idle(self):
@@ -3608,7 +3608,7 @@ except (KeyError, IOError):
         except AttributeError:
             i = 0
         self.__synchro = i
-        return 'print "%s%s"\n'%(SAGE_BEGIN,i) + s + '\nprint "%s%s"\n'%(SAGE_END,i)
+        return 'print("%s%s")\n'%(SAGE_BEGIN,i) + s + '\nprint("%s%s")\n' % (SAGE_END, i)
 
     def synchro(self):
         try:
@@ -3719,14 +3719,14 @@ except (KeyError, IOError):
             i += 1
         if before_prompt.endswith('??'):
             input = self._get_last_identifier(before_prompt[:-2])
-            input = 'print _support_.source_code("%s", globals(), system="%s")' % (input, self.system())
+            input = 'print(_support_.source_code("%s", globals(), system="%s"))' % (input, self.system())
         elif before_prompt.endswith('?'):
             input = self._get_last_identifier(before_prompt[:-1])
-            input = 'print _support_.docstring("%s", globals(), system="%s")' % (input, self.system())
+            input = 'print(_support_.docstring("%s", globals(), system="%s"))' % (input, self.system())
         else:
             input = self._get_last_identifier(before_prompt)
             C._word_being_completed = input
-            input = 'print "\\n".join(_support_.completions("%s", globals(), system="%s"))' % (input, self.system())
+            input = 'print("\\n".join(_support_.completions("%s", globals(), system="%s")))' % (input, self.system())
         return input
 
     def preparse_nonswitched_input(self, input):
@@ -3850,7 +3850,7 @@ except (KeyError, IOError):
         try:
             A[filename] = os.path.getmtime(filename)
         except OSError:
-            print "WARNING: File %s vanished" % filename
+            print("WARNING: File %s vanished" % filename)
 
     def detach(self, filename):
         A = self.attached_files()
@@ -3903,12 +3903,12 @@ except (KeyError, IOError):
             return '%s = load("%s");'%(name, filename)
 
         if filename in files_seen_so_far:
-            t = "print 'WARNING: Not loading %s -- would create recursive load'"%filename
+            t = "print('WARNING: Not loading %s -- would create recursive load')" % filename
 
         try:
             F = open(filename).read()
         except IOError:
-            return "print 'Error loading %s -- file not found'"%filename
+            return "print('Error loading %s -- file not found')" % filename
         else:
             filename_orig = filename
             filename = filename.rstrip('.txt')
@@ -3919,7 +3919,7 @@ except (KeyError, IOError):
                 try:
                     mod, dir  = cython.cython(filename_orig, compile_message=True, use_cache=True)
                 except (IOError, OSError, RuntimeError) as msg:
-                    return "print r'''Error compiling cython file:\n%s'''"%msg
+                    return "print(r'''Error compiling cython file:\n%s''')" % msg
                 t  = "import sys\n"
                 t += "sys.path.append('%s')\n"%dir
                 t += "from %s import *\n"%mod
@@ -3927,7 +3927,7 @@ except (KeyError, IOError):
             elif filename.endswith('.sage'):
                 t = self.preparse(F)
             else:
-                t = "print 'Loading of file \"%s\" has type not implemented.'"%filename
+                t = "print('Loading of file \"%s\" has type not implemented.')" % filename
 
         t = self.do_sage_extensions_preparsing(t,
                           files_seen_so_far + [this_file], filename)
@@ -3939,7 +3939,7 @@ except (KeyError, IOError):
         return ';'.join(['save(%s,"%s")'%(x,x) for x in v])
 
     def _eval_cmd(self, system, cmd):
-        return u"print _support_.syseval(%s, %r, __SAGE_TMP_DIR__)"%(system, cmd)
+        return u"print(_support_.syseval(%s, %r, __SAGE_TMP_DIR__))" % (system, cmd)
 
     ##########################################################
     # Parsing the %cython, %mathjax, %python, etc., extension.
@@ -4025,7 +4025,7 @@ except (KeyError, IOError):
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__)")
+            (True, u"print(_support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__))")
 
         ::
 
@@ -4051,7 +4051,7 @@ except (KeyError, IOError):
             sage: W.check_for_system_switching(c0.cleaned_input_text(), c0)
             (False, u'2+3')
             sage: W.check_for_system_switching(c1.cleaned_input_text(), c1)
-            (True, u"print _support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__)")
+            (True, u"print(_support_.syseval(gap, u'SymmetricGroup(5)', __SAGE_TMP_DIR__))")
             sage: c0.evaluate()
             sage: W.check_comp()  #random output -- depends on the computer's speed
             ('d', Cell 0: in=%sage
@@ -4114,14 +4114,14 @@ except (KeyError, IOError):
             sage: nb = sagenb.notebook.notebook.load_notebook(tmp_dir(ext='.sagenb'))
             sage: nb.user_manager().add_user('sage','sage','sage@sagemath.org',force=True)
             sage: W = nb.create_new_worksheet('Test', 'sage')
-            sage: W.edit_save("{{{\n2+3\n///\n5\n}}}\n{{{\nopen('afile', 'w').write('some text')\nprint 'hello'\n///\n\n}}}")
+            sage: W.edit_save("{{{\n2+3\n///\n5\n}}}\n{{{\nopen('afile', 'w').write('some text')\nprint('hello')\n///\n\n}}}")
 
         We have two cells::
 
             sage: W.cell_list()
             [Cell 0: in=2+3, out=
             5, Cell 1: in=open('afile', 'w').write('some text')
-            print 'hello', out=
+            print('hello'), out=
             ]
             sage: C0 = W.cell_list()[1]
             sage: open(os.path.join(C0.directory(), 'xyz'), 'w').write('bye')
@@ -4131,10 +4131,10 @@ except (KeyError, IOError):
             sage: C1.evaluate()
             sage: W.check_comp()     # random output -- depends on computer speed
             ('w', Cell 1: in=open('afile', 'w').write('some text')
-            print 'hello', out=)
+            print('hello'), out=)
             sage: W.check_comp()     # random output -- depends on computer speed
             ('d', Cell 1: in=open('afile', 'w').write('some text')
-            print 'hello', out=
+            print('hello'), out=
             hello
             )
             sage: W.check_comp()     # random output -- depends on computer speed
@@ -4147,7 +4147,7 @@ except (KeyError, IOError):
             sage: W.delete_all_output('sage')
             sage: W.cell_list()
             [Cell 0: in=2+3, out=, Cell 1: in=open('afile', 'w').write('some text')
-            print 'hello', out=]
+            print('hello'), out=]
             sage: C0.files(), C1.files()
             ([], [])
 
