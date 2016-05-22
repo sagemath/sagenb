@@ -35,7 +35,7 @@ class TestRunner:
             result = request.POST(getData)
             count += 1            
             if result.text.find('pre') != -1: 
-                print 'wait %s test factor %s%s = %s' % (count, a, b, strip_answer(result.text))
+                print('wait %s test factor %s%s = %s' % (count, a, b, strip_answer(result.text)))
                 break
 
         request = deleteCellTest.wrap(HTTPRequest(url=base_url + "/delete_cell"))

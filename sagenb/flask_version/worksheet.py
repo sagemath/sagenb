@@ -1,5 +1,7 @@
 import re
-import os, threading, collections
+import os
+import threading
+import collections
 from functools import wraps
 from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
 from decorators import login_required, with_lock
@@ -478,7 +480,7 @@ def worksheet_cell_update(worksheet):
 
     if 'Unhandled SIGSEGV' in cell.output_text(raw=True).split('\n'):
         r['interrupted'] = 'restart'
-        print 'Segmentation fault detected in output!'
+        print('Segmentation fault detected in output!')
 
 
     r['output'] = cell.output_text(html=True) + ' '

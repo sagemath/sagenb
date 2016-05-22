@@ -150,7 +150,7 @@ def run_any(tests=all_tests, make_report=False, **kwargs):
         tot = suite.countTestCases()
 
         environment = notebook_test_case.SEL_OPTIONS['environment']
-        print 'Running %d test%s in environment %s...' % (tot, '' if tot == 1 else 's', environment)
+        print('Running %d test%s in environment %s...' % (tot, '' if tot == 1 else 's', environment))
 
         if make_report:
             run_and_report(suite, environment = environment, **kwargs)
