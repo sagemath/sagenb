@@ -78,9 +78,12 @@ class Parser:
                 msg, self.raw[self.lines[line]:]))
 
 
-    def __call__(self, toktype, toktext, (srow,scol), (erow,ecol), line):
-        """ Token handler.
+    def __call__(self, toktype, toktext, srow_scol, erow_ecol, line):
         """
+        Token handler.
+        """
+        srow, scol = srow_scol
+        erow, ecol = erow_ecol
         if 0:
             txt = "type {} {} text {} start {} {} end {} {} <br/>"
             print(txt.format(toktype, token.tok_name[toktype], toktext,
@@ -123,8 +126,9 @@ class Parser:
 
 
 def colorize(source):
-    import os, sys
-    # write colorized version to "[filename].py.html"
+    """
+    write colorized version to "[filename].py.html"
+    """
     html = cStringIO.StringIO()
     Parser(source, html).format(None, None)
     html.flush()
