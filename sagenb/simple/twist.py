@@ -214,7 +214,7 @@ class LoginResource(resource.Resource):
             U = notebook_twist.notebook.user(username)
             if not U.password_is(password):
                 raise ValueError # want to return the same error message
-        except KeyError, ValueError:
+        except (KeyError, ValueError):
             return http.Response(stream = "Invalid login.")
             
         worksheet = notebook_twist.notebook.create_new_worksheet("_simple_session_", username, add_to_list=False)
@@ -326,7 +326,7 @@ class StatusResource(CellResource):
             cell = session.worksheet.get_cell_with_id(cell_id)
             try:
                 timeout = float(ctx.args['timeout'][0])
-            except KeyError, ValueError:
+            except (KeyError, ValueError):
                 timeout = -1
             return self.start_comp(cell, timeout)
         except KeyError:

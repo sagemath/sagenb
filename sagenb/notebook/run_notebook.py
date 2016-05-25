@@ -348,7 +348,7 @@ reactor.addSystemEventTrigger('before', 'shutdown', partial(save_notebook2, flas
             else:
                 secure = False
             return interface, port, secure
-        except IOError, AttributeError:
+        except (IOError, AttributeError):
             return None, None, None
 
 
