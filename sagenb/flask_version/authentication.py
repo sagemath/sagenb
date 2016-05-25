@@ -1,7 +1,7 @@
 import os
 import random
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from decorators import with_lock
+from .decorators import with_lock
 from flask.ext.babel import gettext, ngettext, lazy_gettext
 _ = gettext
 

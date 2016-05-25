@@ -15,7 +15,7 @@ URLS to do:
 """
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from decorators import login_required, guest_or_login_required
+from .decorators import login_required, guest_or_login_required
 
 from flask.ext.babel import gettext, ngettext, lazy_gettext
 _ = gettext

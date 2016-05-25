@@ -1,6 +1,6 @@
 import os
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
-from decorators import login_required, admin_required, with_lock
+from .decorators import login_required, admin_required, with_lock
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
