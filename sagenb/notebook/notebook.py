@@ -15,6 +15,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #
 #############################################################################
+from __future__ import print_function
 
 # For debugging sometimes it is handy to use only the reference implementation.
 USE_REFERENCE_WORKSHEET_PROCESSES = False
@@ -1786,8 +1787,9 @@ class Notebook(object):
                     # problems logging in anyway, so they probably won't notice not having shared worksheets
                     import sys
                     import traceback
-                    print >> sys.stderr, 'Error on username %s' % username.encode('utf8')
-                    print >> sys.stderr, traceback.format_exc()
+                    print('Error on username %s' % username.encode('utf8'),
+                          file=sys.stderr)
+                    print(traceback.format_exc(), file=sys.stderr)
                     pass
             print('Done upgrading to model version 1')
             self.conf()['model_version'] = 1

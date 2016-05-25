@@ -24,7 +24,7 @@ def evalss():
         if result.text.find('wait') == -1:
             break
     ans = eval(result.text)
-    print 'test waited%s ans = %s' % (count, ans['output'])
+    print('test waited%s ans = %s' % (count, ans['output']))
 
 evalssTest = Test(1, "Exec testpage").wrap(evalss)
 

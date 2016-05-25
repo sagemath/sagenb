@@ -290,7 +290,7 @@ Notebook:
 \begin{verbatim}
 import time
 for i in range(10):
-    print i
+    print(i)
     time.sleep(0.5)
 \end{verbatim}
  

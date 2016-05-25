@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from net.grinder.script.Grinder import grinder
 from net.grinder.script import Test
 from net.grinder.plugin.http import HTTPRequest
@@ -33,7 +35,7 @@ class TestRunner:
             result = request.POST(getData)
             count += 1            
             if result.text.find('pre') != -1: 
-                print 'wait',count,'test',a,'*',b,'=', strip_answer(result.text)
+                print('wait', count, 'test', a, '*', b, '=', strip_answer(result.text))
                 break
 
         request = deleteCellTest.wrap(HTTPRequest(url=base_url + "/delete_cell"))

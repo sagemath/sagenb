@@ -200,5 +200,5 @@ if __name__=='__main__':
         text = sys.stdin.read()
     images_dir = sys.argv[2] if len(sys.argv)>2 else ''
 
-    print worksheet2rst(text, images_dir).encode('utf-8')
+    print(worksheet2rst(text, images_dir).encode('utf-8'))
 
