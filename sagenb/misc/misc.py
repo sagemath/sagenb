@@ -30,7 +30,15 @@ def stub(f):
 
 min_password_length = 6
 
-import os, cPickle, socket, sys
+import os
+import socket
+import sys
+
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 
 def print_open_msg(address, port, secure=False, path=""):
     """
@@ -249,12 +257,12 @@ except ImportError:
 try:
     from sage.structure.sage_object import loads, dumps, load, save
 except ImportError:
-    loads = cPickle.loads
-    dumps = cPickle.dumps
+    loads = pickle.loads
+    dumps = pickle.dumps
     def load(filename):
-        return cPickle.loads(open(filename).read())
+        return pickle.loads(open(filename).read())
     def save(obj, filename):
-        s = cPickle.dumps(obj, protocol=2)
+        s = pickle.dumps(obj, protocol=2)
         open(filename,'wb').write(s)
 
 try:
@@ -403,7 +411,7 @@ def set_permissive_permissions(filename):
              stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP)
 
 def encoded_str(obj, encoding='utf-8'):
-    ur"""
+    r"""
     Takes an object and returns an encoded str human-readable representation.
 
     EXAMPLES::
@@ -421,7 +429,7 @@ def encoded_str(obj, encoding='utf-8'):
     return str(obj)
 
 def unicode_str(obj, encoding='utf-8'):
-    ur"""
+    r"""
     Takes an object and returns a unicode human-readable representation.
 
     EXAMPLES::

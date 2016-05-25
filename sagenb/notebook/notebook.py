@@ -27,9 +27,12 @@ import shutil
 import socket
 import time
 import bz2
-import cPickle
 from cgi import escape
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
 
 # Sage libraries
 from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
@@ -1840,7 +1843,7 @@ def migrate_old_notebook_v1(dir):
     Back up and migrates an old saved version of notebook to the new one (`sagenb`)
     """
     nb_sobj = os.path.join(dir, 'nb.sobj')
-    old_nb = cPickle.loads(open(nb_sobj).read())
+    old_nb = pickle.loads(open(nb_sobj).read())
 
     ######################################################################
     # Tell user what is going on and make a backup
@@ -1999,7 +2002,7 @@ def migrate_old_notebook_v1(dir):
     for username in old_nb.user_manager().users().keys():
         history_file = os.path.join(dir, 'worksheets', username, 'history.sobj')
         if os.path.exists(history_file):
-            new_nb._user_history[username] = cPickle.loads(open(history_file).read())
+            new_nb._user_history[username] = pickle.loads(open(history_file).read())
 
     # Save our newly migrated notebook to disk
     new_nb.save()

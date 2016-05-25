@@ -27,10 +27,11 @@ interesting Javascript code is contained under
 ###########################################################################
 
 import os
-import keyboards
-from template import template
+
+from . import keyboards
+from .template import template
 from sagenb.misc.misc import SAGE_URL
-from compress.JavaScriptCompressor import JavaScriptCompressor
+from .compress.JavaScriptCompressor import JavaScriptCompressor
 from hashlib import sha1
 
 # Debug mode?  If sagenb lives under SAGE_ROOT/, we minify/pack and cache
