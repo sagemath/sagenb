@@ -4,7 +4,7 @@ import threading
 import collections
 from functools import wraps
 from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
-from decorators import login_required, with_lock
+from .decorators import login_required, with_lock
 from collections import defaultdict
 from werkzeug.utils import secure_filename
 from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
