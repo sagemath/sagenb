@@ -263,7 +263,7 @@ except ImportError:
         return pickle.loads(open(filename).read())
     def save(obj, filename):
         s = pickle.dumps(obj, protocol=2)
-        open(filename,'wb').write(s)
+        open(filename, 'wb').write(s)
 
 try:
     from sage.misc.all import verbose
@@ -284,8 +284,8 @@ def cputime(t=0):
         t = float(t)
     except TypeError:
         t = 0.0
-    u,s = resource.getrusage(resource.RUSAGE_SELF)[:2] 
-    return u+s - t
+    u, s = resource.getrusage(resource.RUSAGE_SELF)[:2] 
+    return u + s - t
 
 def walltime(t=0):
     return time.time() - t
@@ -352,8 +352,6 @@ def is_Matrix(x):
     except ImportError:
         return False
     return is_Matrix(x)
-
-from sage.all import srange
 
 
 def register_with_cleaner(pid):
