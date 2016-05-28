@@ -37,11 +37,17 @@ Sage notebook server::
              
 """
 
-import copy, cPickle, shutil, tarfile, tempfile
-
+import copy
+import shutil
+import tarfile
+import tempfile
 import os
+try:
+   import cPickle as pickle
+except ImportError:
+   import pickle
 
-from abstract_storage import Datastore
+from .abstract_storage import Datastore
 from sagenb.misc.misc import set_restrictive_permissions, encoded_str
 
 from sage.misc.temporary_file import atomic_write
@@ -166,7 +172,7 @@ class FilesystemDatastore(Datastore):
     #########################################################################
     def _load(self, filename):
         with open(self._abspath(filename)) as f:
-            result = cPickle.load(f)
+            result = pickle.load(f)
         return result
 
     def _save(self, obj, filename):
@@ -191,7 +197,7 @@ class FilesystemDatastore(Datastore):
             sage: len(D._load(fn))
             100000
         """
-        s = cPickle.dumps(obj)
+        s = pickle.dumps(obj)
         if len(s) == 0:
             raise ValueError("Invalid Pickle")
         with atomic_write(self._abspath(filename)) as f:
@@ -651,7 +657,6 @@ class FilesystemDatastore(Datastore):
         Delete all files associated with this datastore.  Dangerous!
         This is only here because it is useful for doctesting.
         """
-        import shutil
         shutil.rmtree(self._path, ignore_errors=True)
 
 
