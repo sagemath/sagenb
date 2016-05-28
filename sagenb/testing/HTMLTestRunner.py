@@ -40,7 +40,7 @@ AUTHORS:
 
 .. _HTMLTestRunner: http://tungwaiyip.info/software/HTMLTestRunner.html
 """
-
+from __future__ import print_function  # must be here !
 
 # The original license.
 """
@@ -109,8 +109,6 @@ CHANGES
  * Back port to Python 2.3. Thank you Frank Horowitz.
  * Fix missing scroll bars in detail log. Thank you Podi.
 """
-from __future__ import print_function
-
 import datetime
 import os
 import StringIO
