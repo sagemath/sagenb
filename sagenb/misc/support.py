@@ -561,7 +561,7 @@ try:
         # functions until everything is defined.
         for _ in range(max_names):
             try:
-                exec s in globals
+                exec(s , globals)
                 return
             except NameError as msg:
                 # Determine if we hit a NameError that is probably
