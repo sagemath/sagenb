@@ -126,7 +126,7 @@ def execute_code(string, state, data=None):
     sys.stdout = s
     try:
         os.chdir(tempdir)
-        exec string in state
+        exec(string, state)
     except Exception:
         traceback.print_exc(file=s)
     finally:
