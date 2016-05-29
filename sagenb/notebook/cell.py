@@ -23,8 +23,8 @@ from cgi import escape
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
                               encoded_str)
-from interact import (INTERACT_RESTART, INTERACT_UPDATE_PREFIX,
-                      INTERACT_TEXT, INTERACT_HTML)
+from .interact import (INTERACT_RESTART, INTERACT_UPDATE_PREFIX,
+                       INTERACT_TEXT, INTERACT_HTML)
 
 # Maximum number of characters allowed in output.  This is needed
 # avoid overloading web browser.  For example, it should be possible
@@ -571,7 +571,7 @@ class TextCell(Cell_generic):
 
 
     def plain_text(self, prompts=False):
-        ur"""
+        r"""
         Returns a plain text version of this text cell.
 
         INPUT:
@@ -1129,7 +1129,7 @@ class Cell(Cell_generic):
         return plaintext_output
 
     def edit_text(self, ncols=0, prompts=False, max_out=None):
-        ur"""
+        r"""
         Returns the text displayed for this compute cell in the Edit
         window.
 
@@ -1727,7 +1727,7 @@ class Cell(Cell_generic):
         return urls
 
     def output_text(self, ncols=0, html=True, raw=False, allow_interact=True):
-        ur"""
+        r"""
         Returns this compute cell's output text.
 
         INPUT:
@@ -1930,7 +1930,7 @@ class Cell(Cell_generic):
     # Introspection #
     #################
     def set_introspect_html(self, html, completing=False, raw=False):
-        ur"""
+        r"""
         Sets this compute cell's introspection text.
 
         INPUT:

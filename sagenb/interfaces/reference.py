@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*
-import os, StringIO, sys, traceback, tempfile
+import os
+import StringIO
+import sys
+import traceback
+import tempfile
 
-from status import OutputStatus
+from .status import OutputStatus
 from sagenb.misc.format import displayhook_hack
-from worksheet_process import WorksheetProcess
+from .worksheet_process import WorksheetProcess
 
 ###################################################################
 # Reference implementation

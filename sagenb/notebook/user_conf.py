@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*
 """nodoctest
 """
-import os, copy
+import os
+import copy
 
-import server_conf
-from conf import (Configuration, POS, DESC, GROUP, TYPE, CHOICES, T_BOOL,
-                  T_INTEGER, T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST)
+from . import server_conf
+from .conf import (Configuration, POS, DESC, GROUP, TYPE, CHOICES, T_BOOL,
+                   T_INTEGER, T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST)
 from sagenb.misc.misc import SAGENB_ROOT, get_languages
 from flask.ext.babel import lazy_gettext
 

@@ -430,7 +430,7 @@ def notebook_setup(self=None):
     subprocess.call(cmd, shell=True)
 
     # Set permissions on private cert
-    os.chmod(private_pem, 0600)
+    os.chmod(private_pem, 0o600)
 
     print("Successfully configured notebook.")
 
