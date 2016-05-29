@@ -55,7 +55,7 @@ notebook:
 #############################################################################
 
 #from js import JSKeyHandler
-import js
+from . import js
 
 
 js.keyhandler.add('request_introspections', key = "KEY_SPC",   ctrl=True)  # control space

@@ -14,13 +14,18 @@ import os
 import base64
 import string
 import sys
-import __builtin__
-from cPickle import PicklingError
 import pydoc
 
-from misc import loads, dumps, cython, session_init
+import __builtin__
 
-import sageinspect
+try:
+    from cPickle import PicklingError
+except ImportError:
+    from pickle import PicklingError
+
+from .misc import loads, dumps, cython, session_init
+
+from . import sageinspect
 
 try:
     from sage.misc.sagedoc import format_src
@@ -92,7 +97,7 @@ def init(object_directory=None, globs={}):
 
 
 def setup_systems(globs):
-    from misc import InlineFortran
+    from .misc import InlineFortran
     fortran = InlineFortran(globs)
     globs['fortran'] = fortran
 

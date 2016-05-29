@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-import interact
+from . import interact
 
 def javascript(s):
     print('<html><script>%s</script></html>' % s)
@@ -15,10 +15,9 @@ def draggable(option=''):
             "enable" -- Enable the draggable functionality.
             "disable" -- Temporarily disable the draggable functionality.
     """
-    s = '$("#cell_outer_%s").draggable("%s")'%(cell_id(), option)
+    s = '$("#cell_outer_%s").draggable("%s")' % (cell_id(), option)
     javascript(s)
 
 def resizable():
-    s = '$("#cell_outer_%s").resizable()'%cell_id()
+    s = '$("#cell_outer_%s").resizable()' % cell_id()
     javascript(s)    
-

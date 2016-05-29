@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*
 import re
-import urllib2
 
+from six.moves.urllib.request import urlopen
 
 from sage.misc.sage_timeit import sage_timeit
 from sagenb.misc.misc import walltime, cputime
@@ -75,7 +75,7 @@ class PubStressTest:
         Return code that when evaluated returns the data at the given
         url as a string.
         """
-        return "urllib2.urlopen('%s').read()"%(url)
+        return "urlopen('%s').read()" % url
 
     def _geturl(self, url, use_alarm=True):
         """
@@ -84,10 +84,10 @@ class PubStressTest:
         timeout is exceeded.
         """
         if not use_alarm:
-            return urllib2.urlopen(url).read()
+            return urlopen(url).read()
         try:
             alarm(self._url_timeout)
-            return urllib2.urlopen(url).read()
+            return urlopen(url).read()
         except KeyboardInterrupt:
             return TIMEOUT
         finally:

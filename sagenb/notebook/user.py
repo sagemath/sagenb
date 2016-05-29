@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*
 import copy
 import crypt
-import cPickle
 import random
 import hashlib
 import os
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 SALT = 'aa'
 
-import user_conf
+from . import user_conf
 
 from sage.misc.temporary_file import atomic_write
 
@@ -88,7 +92,7 @@ class User(object):
             history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
             if os.path.exists(history_file):
                 try:
-                    self.history = cPickle.load(open(history_file))
+                    self.history = pickle.load(open(history_file))
                 except:
                     print("Error loading history for user %s" % self._username)
                     self.history = []
@@ -103,9 +107,9 @@ class User(object):
         if misc.notebook is None: return
         history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
         try:
-            his = cPickle.dumps(self.history)
+            his = pickle.dumps(self.history)
         except AttributeError:
-            his = cPickle.dumps([])
+            his = pickle.dumps([])
         with atomic_write(history_file) as f:
             f.write(his)
 

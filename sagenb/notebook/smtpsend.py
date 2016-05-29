@@ -8,6 +8,7 @@
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
+from __future__ import print_function  # must be here !
 
 """
 Sending mail using Twisted
@@ -15,14 +16,17 @@ Sending mail using Twisted
 AUTHOR:
     -- Bobby Moretti
 """
-from __future__ import print_function
+
 
 from twisted.mail import smtp, relaymanager
 from twisted.internet import reactor, defer
 from email.MIMEBase import MIMEBase
 from email.MIMEMultipart import MIMEMultipart
 from email import Encoders
-import sys, mimetypes, os
+import sys
+import mimetypes
+import os
+
 
 def buildMessage(fromaddr, toaddr, subject, body):
     message = MIMEMultipart()
