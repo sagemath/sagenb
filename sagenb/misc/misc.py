@@ -346,6 +346,9 @@ except ImportError:
 ########################################
 # this is needed for @interact
 ########################################
+
+from sage.all import srange
+
 def is_Matrix(x):
     try:
         from sage.structure.element import is_Matrix
