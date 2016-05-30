@@ -344,7 +344,9 @@ except ImportError:
             pass
 
 ########################################
-# this is needed for @interact
+# this is needed for @interact:
+# srange, Color, sage_eval and is_Matrix
+# are imported from here in notebook/interact.py
 ########################################
 
 from sage.all import srange
