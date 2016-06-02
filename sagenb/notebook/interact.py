@@ -154,7 +154,7 @@ import collections
 from base64 import standard_b64decode
 
 # Sage libraries
-from sagenb.misc.misc import srange, sage_eval, Color, is_Matrix
+from sagenb.misc.misc import sage_eval, Color, is_Matrix
 from sage.arith.srange import srange
 from sage.misc.cachefunc import cached_method
 
