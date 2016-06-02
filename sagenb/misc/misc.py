@@ -345,11 +345,9 @@ except ImportError:
 
 ########################################
 # this is needed for @interact:
-# srange, Color, sage_eval and is_Matrix
+# Color, sage_eval and is_Matrix
 # are imported from here in notebook/interact.py
 ########################################
-
-from sage.all import srange
 
 def is_Matrix(x):
     try:
