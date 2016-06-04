@@ -38,12 +38,12 @@ class SageNBFlask(Flask):
         self.add_static_path('/javascript', DATA)
         self.add_static_path('/static', DATA)
         self.add_static_path('/java', DATA)
-        self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jmol"))
-        self.add_static_path('/jsmol', os.path.join(os.environ["SAGE_ROOT"],"local","share","jsmol"))
-        self.add_static_path('/jsmol/js', os.path.join(os.environ["SAGE_ROOT"],"local","share","jsmol","js"))
-        self.add_static_path('/j2s', os.path.join(os.environ["SAGE_ROOT"],"local","share","jsmol","j2s"))
-        self.add_static_path('/jsmol/j2s', os.path.join(os.environ["SAGE_ROOT"],"local","share","jsmol","j2s"))
-        self.add_static_path('/j2s/core', os.path.join(os.environ["SAGE_ROOT"],"local","share","jsmol","j2s","core"))
+        self.add_static_path('/java/jmol', os.path.join(os.environ["SAGE_LOCAL"],"share","jmol"))
+        self.add_static_path('/jsmol', os.path.join(os.environ["SAGE_LOCAL"],"share","jsmol"))
+        self.add_static_path('/jsmol/js', os.path.join(os.environ["SAGE_LOCAL"],"share","jsmol","js"))
+        self.add_static_path('/j2s', os.path.join(os.environ["SAGE_LOCAL"],"share","jsmol","j2s"))
+        self.add_static_path('/jsmol/j2s', os.path.join(os.environ["SAGE_LOCAL"],"share","jsmol","j2s"))
+        self.add_static_path('/j2s/core', os.path.join(os.environ["SAGE_LOCAL"],"share","jsmol","j2s","core"))
         import mimetypes
         mimetypes.add_type('text/plain','.jmol')
 
