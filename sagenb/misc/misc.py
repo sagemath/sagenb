@@ -344,8 +344,11 @@ except ImportError:
             pass
 
 ########################################
-# this is needed for @interact
+# this is needed for @interact:
+# Color, sage_eval and is_Matrix
+# are imported from here in notebook/interact.py
 ########################################
+
 def is_Matrix(x):
     try:
         from sage.structure.element import is_Matrix
