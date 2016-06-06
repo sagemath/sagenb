@@ -2575,8 +2575,8 @@ def interact(f, layout=None, width='800px'):
 
         sage: @interact
         ....: def _(q1=(-1,(-3,3)), q2=(-2,(-3,3)),
-        ....:    cmap=['autumn', 'bone', 'cool', 'copper', 'gray', 'hot', 'hsv',
-        ....:          'jet', 'pink', 'prism', 'spring', 'summer', 'winter']):
+        ....:     cmap=['autumn', 'bone', 'cool', 'copper', 'gray', 'hot', 'hsv',
+        ....:           'jet', 'pink', 'prism', 'spring', 'summer', 'winter']):
         ....:     x,y = var('x,y')
         ....:     f = q1/sqrt((x+1)^2 + y^2) + q2/sqrt((x-1)^2+(y+0.5)^2)
         ....:     C = contour_plot(f, (x,-2,2), (y,-2,2), plot_points=30, contours=15, cmap=cmap)
