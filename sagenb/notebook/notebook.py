@@ -987,28 +987,28 @@ class Notebook(object):
             sage: name = tmp_filename() + '.html'
             sage: fd = open(name,'w')
             sage: fd.write(''.join([
-            ... '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n',
-            ... '  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n',
-            ... '\n',
-            ... '<html xmlns="http://www.w3.org/1999/xhtml">\n',
-            ... '  <head>\n',
-            ... '   <title>Test notebook &mdash; test</title>\n',
-            ... ' </head>\n',
-            ... '  <body>\n',
-            ... '   <div class="document">\n',
-            ... '      <div class="documentwrapper">\n',
-            ... '        <div class="bodywrapper">\n',
-            ... '          <div class="body">\n',
-            ... '<p>Here are some computations:</p>\n',
-            ... '\n',
-            ... '<div class="highlight-python"><div class="highlight"><pre>\n',
-            ... '<span class="gp">sage',
-            ... ': </span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span>\n',
-            ... '<span class="go">2</span>\n',
-            ... '</pre></div></div>\n',
-            ... '\n',
-            ... '</div></div></div></div>\n',
-            ... '</body></html>']))
+            ....: '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"\n',
+            ....: '  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">\n',
+            ....: '\n',
+            ....: '<html xmlns="http://www.w3.org/1999/xhtml">\n',
+            ....: '  <head>\n',
+            ....: '   <title>Test notebook &mdash; test</title>\n',
+            ....: ' </head>\n',
+            ....: '  <body>\n',
+            ....: '   <div class="document">\n',
+            ....: '      <div class="documentwrapper">\n',
+            ....: '        <div class="bodywrapper">\n',
+            ....: '          <div class="body">\n',
+            ....: '<p>Here are some computations:</p>\n',
+            ....: '\n',
+            ....: '<div class="highlight-python"><div class="highlight"><pre>\n',
+            ....: '<span class="gp">sage',
+            ....: ': </span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span>\n',
+            ....: '<span class="go">2</span>\n',
+            ....: '</pre></div></div>\n',
+            ....: '\n',
+            ....: '</div></div></div></div>\n',
+            ....: '</body></html>']))
             sage: fd.close()
             sage: W = nb._import_worksheet_html(name, 'admin')
             sage: W.name()
@@ -1070,18 +1070,18 @@ class Notebook(object):
 
             sage: sprompt = 'sage' + ':'
             sage: rst = '\n'.join(['=============',
-            ...       'Test Notebook',
-            ...       '=============',
-            ...       '',
-            ...       'Let\'s do some computations::',
-            ...       '',
-            ...       '    %s 2+2' % sprompt,
-            ...       '    4',
-            ...       '',
-            ...       '::',
-            ...       '',
-            ...       '    %s x^2' % sprompt,
-            ...       '    x^2'])
+            ....:     'Test Notebook',
+            ....:     '=============',
+            ....:     '',
+            ....:     'Let\'s do some computations::',
+            ....:     '',
+            ....:     '    %s 2+2' % sprompt,
+            ....:     '    4',
+            ....:     '',
+            ....:     '::',
+            ....:     '',
+            ....:     '    %s x^2' % sprompt,
+            ....:     '    x^2'])
             sage: name = tmp_filename() + '.rst'
             sage: fd = open(name,'w')
             sage: fd.write(rst)
@@ -1152,18 +1152,18 @@ class Notebook(object):
 
             sage: sprompt = 'sage' + ':'
             sage: rst = '\n'.join(['=============',
-            ...       'Test Notebook',
-            ...       '=============',
-            ...       '',
-            ...       'Let\'s do some computations::',
-            ...       '',
-            ...       '    %s 2+2' % sprompt,
-            ...       '    4',
-            ...       '',
-            ...       '::',
-            ...       '',
-            ...       '    %s x^2' % sprompt,
-            ...       '    x^2'])
+            ....:     'Test Notebook',
+            ....:     '=============',
+            ....:     '',
+            ....:     'Let\'s do some computations::',
+            ....:     '',
+            ....:     '    %s 2+2' % sprompt,
+            ....:     '    4',
+            ....:     '',
+            ....:     '::',
+            ....:     '',
+            ....:     '    %s x^2' % sprompt,
+            ....:     '    x^2'])
             sage: from docutils.core import publish_string
             sage: html = publish_string(rst, writer_name='html')
             sage: name = tmp_filename() + '.html'
