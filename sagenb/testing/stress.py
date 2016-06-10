@@ -13,6 +13,7 @@ def cancel_alarm():
 
 TIMEOUT = 'timeout'
 
+
 class PubStressTest:
     """
     Stress test viewing things that a non-authenticated viewer can
@@ -152,4 +153,3 @@ class PubStressTest:
             if method.startswith('test_'):
                 v[method] = getattr(self, method)()
         return v
-

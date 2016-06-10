@@ -19,7 +19,7 @@ __docformat__ = "restructuredtext en"
 
 # This file has been automatically generated via XSL
 
-import httplib
+import http.client
 import urllib
 import re
 
@@ -198,7 +198,7 @@ class selenium:
         self.sessionId = None
 
     def do_command(self, verb, args):
-        conn = httplib.HTTPConnection(self.host, self.port)
+        conn = http.client.HTTPConnection(self.host, self.port)
         body = u'cmd=' + urllib.quote_plus(unicode(verb).encode('utf-8'))
         for i in range(len(args)):
             body += '&' + unicode(i+1) + '=' + urllib.quote_plus(unicode(args[i]).encode('utf-8'))

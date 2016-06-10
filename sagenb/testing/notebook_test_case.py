@@ -4,6 +4,7 @@ Notebook Test Case
 
 This contains the base class for all SageNB test cases.
 """
+from __future__ import absolute_import
 
 import copy
 import os
@@ -16,7 +17,7 @@ import tempfile
 import time
 import unittest
 
-from selenium.selenium import selenium
+from .selenium.selenium import selenium
 
 # Default options.
 NB_OPTIONS = {
