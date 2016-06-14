@@ -111,7 +111,7 @@ CHANGES
 """
 import datetime
 import os
-import StringIO
+from io import StringIO
 import sys
 import unittest
 
