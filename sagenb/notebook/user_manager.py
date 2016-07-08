@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 from . import user
 import crypt
 import hashlib
@@ -516,7 +517,7 @@ class ExtAuthUserManager(SimpleUserManager):
     def __init__(self, accounts=None, conf=None):
         SimpleUserManager.__init__(self, accounts=accounts, conf=conf)
 
-        from auth import LdapAuth
+        from .auth import LdapAuth
 
         # keys must match to a T_BOOL option in server_config.py
         # so we can turn this auth method on/off

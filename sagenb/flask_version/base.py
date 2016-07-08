@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import absolute_import
 import os
 import time
 import re
@@ -106,7 +107,7 @@ def index():
         response.set_cookie('cookie_test_%s'%g.notebook.port, expires=1)
         return response
 
-    from authentication import login
+    from .authentication import login
 
     if current_app.startup_token is not None and 'startup_token' in request.args:
         if request.args['startup_token'] == current_app.startup_token:
@@ -221,7 +222,7 @@ def history():
 @login_required
 def live_history():
     W = g.notebook.create_new_worksheet_from_history(gettext('Log'), g.username, 100)
-    from worksheet import url_for_worksheet
+    from .worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))
 
 ###########
@@ -452,22 +453,22 @@ def create_app(path_to_notebook, *args, **kwds):
     ########################
     app.register_blueprint(base)
 
-    from worksheet_listing import worksheet_listing
+    from .worksheet_listing import worksheet_listing
     app.register_blueprint(worksheet_listing)
 
-    from admin import admin
+    from .admin import admin
     app.register_blueprint(admin)
 
-    from authentication import authentication
+    from .authentication import authentication
     app.register_blueprint(authentication)
 
-    from doc import doc
+    from .doc import doc
     app.register_blueprint(doc)
 
-    from worksheet import ws as worksheet
+    from .worksheet import ws as worksheet
     app.register_blueprint(worksheet)
 
-    from settings import settings
+    from .settings import settings
     app.register_blueprint(settings)
 
     # Handles all uncaught exceptions by sending an e-mail to the

@@ -30,6 +30,7 @@ results
 Each kind of text is dealt with separately.
 
 """
+from __future__ import absolute_import
 #**************************************************
 # Copyright (C) 2011 Pablo Angulo
 #
@@ -40,8 +41,8 @@ Each kind of text is dealt with separately.
 import sys
 import os
 import re
-from comments2rst import html2rst
-from results2rst import results2rst
+from .comments2rst import html2rst
+from .results2rst import results2rst
 import codecs
 
 #We parse lines one by one but keep track of current scope

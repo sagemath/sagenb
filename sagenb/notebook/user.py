@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*
+from __future__ import absolute_import
 import copy
 import crypt
 import random
@@ -87,7 +88,7 @@ class User(object):
         try:
             return self.history
         except AttributeError:
-            import misc   # late import
+            from . import misc   # late import
             if misc.notebook is None: return []       
             history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
             if os.path.exists(history_file):
@@ -103,7 +104,7 @@ class User(object):
     def save_history(self):
         if not hasattr(self, 'history'):
             return
-        import misc   # late import
+        from . import misc   # late import
         if misc.notebook is None: return
         history_file = "%s/worksheets/%s/history.sobj"%(misc.notebook.directory(), self._username)
         try:

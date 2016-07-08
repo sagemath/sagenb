@@ -2,6 +2,7 @@
 """nodoctest
 Configuration
 """
+from __future__ import absolute_import
 
 #############################################################################
 #       Copyright (C) 2007 William Stein <wstein@gmail.com>
@@ -132,7 +133,7 @@ class Configuration(object):
         return updated
 
     def html_table(self, updated = {}):
-        from server_conf import G_LDAP
+        from .server_conf import G_LDAP
 
         # check if LDAP can be used
         try:

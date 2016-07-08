@@ -1,5 +1,6 @@
 """
 """
+from __future__ import absolute_import
 import os
 import urllib, urlparse
 from flask import Module, url_for, render_template, request, session, redirect, g, current_app
@@ -146,7 +147,7 @@ def pub():
 @worksheet_listing.route('/home/pub/<id>/')
 @guest_or_login_required
 def public_worksheet(id):
-    from worksheet import pub_worksheet
+    from .worksheet import pub_worksheet
     filename = 'pub/%s'%id
     if g.notebook.conf()['pub_interact']:
         try:
@@ -166,7 +167,7 @@ def public_worksheet(id):
 
 @worksheet_listing.route('/home/pub/<id>/download/<path:title>')
 def public_worksheet_download(id, title):
-    from worksheet import unconditional_download
+    from .worksheet import unconditional_download
     worksheet_filename =  "pub" + "/" + id
     try:
         worksheet = g.notebook.get_worksheet_with_filename(worksheet_filename)
@@ -438,5 +439,5 @@ def upload_worksheet():
     if new_name:
         W.set_name(new_name)
 
-    from worksheet import url_for_worksheet
+    from .worksheet import url_for_worksheet
     return redirect(url_for_worksheet(W))

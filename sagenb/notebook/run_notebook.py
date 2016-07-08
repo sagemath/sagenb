@@ -2,6 +2,7 @@
 """nodoctest
 Serve the Sage Notebook.
 """
+from __future__ import absolute_import
 
 #############################################################################
 #       Copyright (C) 2009 William Stein <wstein@gmail.com>
@@ -24,7 +25,7 @@ from twisted.python.runtime import platformType
 from sagenb.misc.misc import (DOT_SAGENB, find_next_available_port,
                               print_open_msg)
 
-import notebook
+from . import notebook
 
 conf_path     = os.path.join(DOT_SAGENB, 'notebook')
 
