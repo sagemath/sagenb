@@ -102,7 +102,6 @@ def update_worksheets():
     for S in all_worksheet_processes:
         S.update()
 
-from . import notebook as _notebook
 def worksheet_filename(name, owner):
     """
     Return the relative directory name of this worksheet with given
