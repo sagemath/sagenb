@@ -1,3 +1,4 @@
+from __future__ import absolute_import
 import re
 import os
 import threading
@@ -44,7 +45,7 @@ def worksheet_view(f):
                 worksheet.set_active(g.username)
 
             #This was in twist.Worksheet.childFactory
-            from base import notebook_updates
+            from .base import notebook_updates
             notebook_updates()
 
             return f(username, id, **kwds)
@@ -384,7 +385,7 @@ def worksheet_eval(worksheet):
     documentation of the function and the source code of the function
     respectively.
     """
-    from base import notebook_updates
+    from .base import notebook_updates
 
     r = {}
 

@@ -16,6 +16,7 @@ AUTHORS:
 #
 #############################################################################
 from __future__ import print_function
+from __future__ import absolute_import
 
 # For debugging sometimes it is handy to use only the reference implementation.
 USE_REFERENCE_WORKSHEET_PROCESSES = False
@@ -48,7 +49,7 @@ from . import keyboards    # keyboard layouts
 from . import server_conf  # server configuration
 from . import user_conf    # user configuration
 from . import user         # users
-from   template import template, prettify_time_ago
+from   .template import template, prettify_time_ago
 from flask.ext.babel import gettext, lazy_gettext
 
 try:
@@ -146,7 +147,7 @@ class Notebook(object):
             # Worksheet has never been saved before, so the server conf doesn't exist.
             self.__worksheets = WorksheetDict(self)
 
-        from user_manager import SimpleUserManager, OpenIDUserManager
+        from .user_manager import SimpleUserManager, OpenIDUserManager
         self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
 
         # Set up email notification logger
@@ -1034,12 +1035,12 @@ class Notebook(object):
         """
         # Inspired from sagenb.notebook.twist.WorksheetFile.render
         doc_page_html = open(filename).read()
-        from docHTMLProcessor import SphinxHTMLProcessor
+        from .docHTMLProcessor import SphinxHTMLProcessor
         # FIXME: does SphinxHTMLProcessor raise an appropriate message
         # if the html file does not contain a Sphinx HTML page?
         doc_page = SphinxHTMLProcessor().process_doc_html(doc_page_html)
 
-        from misc import extract_title
+        from .misc import extract_title
         title = extract_title(doc_page_html).replace('&mdash;','--')
 
         worksheet = self.create_new_worksheet(title, owner)
@@ -1123,7 +1124,7 @@ class Notebook(object):
         html = D['whole']
 
         # Do the translation html -> txt
-        from docHTMLProcessor import docutilsHTMLProcessor
+        from .docHTMLProcessor import docutilsHTMLProcessor
         translator = docutilsHTMLProcessor()
         worksheet_txt = translator.process_doc_html(html)
 
@@ -1193,12 +1194,12 @@ class Notebook(object):
         html = open(filename).read()
 
         # Do the translation html -> txt
-        from docHTMLProcessor import docutilsHTMLProcessor
+        from .docHTMLProcessor import docutilsHTMLProcessor
         translator = docutilsHTMLProcessor()
         worksheet_txt = translator.process_doc_html(html)
 
         # Extract title
-        from worksheet import extract_name
+        from .worksheet import extract_name
         title, _ = extract_name(worksheet_txt)
         if title.startswith('<h1 class="title">'):
             title = title[18:]

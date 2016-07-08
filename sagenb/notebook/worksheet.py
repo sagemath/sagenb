@@ -16,6 +16,7 @@ AUTHORS:
 
  - William Stein
 """
+from __future__ import absolute_import
 
 ###########################################################################
 #       Copyright (C) 2006-2009 William Stein <wstein@gmail.com>
@@ -54,8 +55,8 @@ import sagenb.misc.support  as support
 from sagenb.misc.format import relocate_future_imports
 
 # Imports specifically relevant to the sage notebook
-from cell import Cell, TextCell
-from template import template, clean_name, prettify_time_ago
+from .cell import Cell, TextCell
+from .template import template, clean_name, prettify_time_ago
 from flask.ext.babel import gettext, lazy_gettext
 _ = gettext
 
@@ -101,7 +102,7 @@ def update_worksheets():
     for S in all_worksheet_processes:
         S.update()
 
-import notebook as _notebook
+from . import notebook as _notebook
 def worksheet_filename(name, owner):
     """
     Return the relative directory name of this worksheet with given
@@ -930,7 +931,7 @@ class Worksheet(object):
             True
         """
         if not hasattr(self, '_notebook'):
-            import misc
+            from . import misc
             self._notebook = misc.notebook
         return self._notebook 
 
@@ -3027,7 +3028,7 @@ class Worksheet(object):
     def initialize_sage(self):
         S = self.__sage
         try:
-            import misc
+            from . import misc
             cmd = """
 import base64
 import sagenb.misc.support as _support_

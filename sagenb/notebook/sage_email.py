@@ -15,6 +15,7 @@ EXAMPLES::
 AUTHOR:
     -- William Stein (2008-12-13)
 """
+from __future__ import absolute_import
 
 #############################################################################
 #       Copyright (C) 2008 William Stein <wstein@gmail.com>
@@ -134,7 +135,7 @@ def email(to, subject, body = '', from_address = None, verbose = True, block = F
             os.kill(os.getpid(),9)                 # suicide
 
     # Now we're the child process.  Let's do stuff with Twisetd!
-    from smtpsend import send_mail, reactor
+    from .smtpsend import send_mail, reactor
 
     # First define two callback functions.  Each one optionally prints
     # some information, then kills the subprocess dead.

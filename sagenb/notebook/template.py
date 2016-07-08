@@ -8,6 +8,7 @@ AUTHORS:
 
 - Timothy Clemans and Mike Hansen (2008-10-27): major update
 """
+from __future__ import absolute_import
 #############################################################################
 #       Copyright (C) 2007 William Stein <wstein@gmail.com>
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -129,7 +130,7 @@ def template(filename, **user_context):
         True
     """
     from sagenb.notebook.notebook import MATHJAX, JEDITABLE_TINYMCE
-    from misc import notebook
+    from .misc import notebook
     #A dictionary containing the default context
     default_context = {'sitename': gettext('Sage Notebook'),
                        'sage_version': SAGE_VERSION,

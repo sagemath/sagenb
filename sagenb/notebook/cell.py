@@ -5,6 +5,7 @@ A Cell
 A cell is a single input/output block. Worksheets are built out of
 a list of cells.
 """
+from __future__ import absolute_import
 
 ###########################################################################
 #       Copyright (C) 2006 William Stein <wstein@gmail.com>
@@ -563,7 +564,7 @@ class TextCell(Cell_generic):
             u'...text_cell...2+3...'
             sage: C.set_input_text("$2+3$")
         """
-        from template import template
+        from .template import template
         return template(os.path.join('html', 'notebook', 'text_cell.html'),
                         cell = self, wrap = wrap, div_wrap = div_wrap,
                         do_print = do_print,
@@ -2213,7 +2214,7 @@ class Cell(Cell_generic):
             sage: C.html()
             u'...cell_outer_0...2+3...5...'
         """
-        from template import template
+        from .template import template
 
         if wrap is None:
             wrap = self.notebook().conf()['word_wrap_cols']
@@ -2417,7 +2418,7 @@ class Cell(Cell_generic):
         jmoldatafile=''
         hasjmolimages = False
         jmolimagebase=''
-        from worksheet import CODE_PY
+        from .worksheet import CODE_PY
         # The question mark trick here is so that images will be
         # reloaded when the async request requests the output text for
         # a computation.  This is inspired by
