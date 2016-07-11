@@ -2052,23 +2052,21 @@ def sort_worksheet_list(v, sort, reverse):
     """
     f = None
     if sort == 'last_edited':
-        def c(a):
-            return a.last_edited()
-        reverse = not reverse
+        def c(a, b):
+            return -cmp(a.last_edited(), b.last_edited())
         f = c
     elif sort == 'name':
-        def c(a):
-            return (a.name().lower(), -a.last_edited())
+        def c(a, b):
+            return cmp((a.name().lower(), -a.last_edited()), (b.name().lower(), -b.last_edited()))
         f = c
     elif sort == 'owner':
-        def c(a):
-            return (a.owner().lower(), -a.last_edited())
+        def c(a, b):
+            return cmp((a.owner().lower(), -a.last_edited()), (b.owner().lower(), -b.last_edited()))
         f = c
     elif sort == "rating":
-        def c(a):
-            return (a.rating(), -a.last_edited())
-        reverse = not reverse
+        def c(a, b):
+            return -cmp((a.rating(), -a.last_edited()), (b.rating(), -b.last_edited()))
         f = c
     else:
         raise ValueError("invalid sort key '%s'" % sort)
-    v.sort(key=f, reverse=reverse)
+    v.sort(cmp = f, reverse=reverse)
