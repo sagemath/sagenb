@@ -431,7 +431,7 @@ class Worksheet(object):
                 self.set_worksheet_that_was_published(value)
         self.create_directories()
 
-    def __cmp__(self, other):
+    def __lt__(self, other):
         """
         We compare two worksheets.
 
@@ -441,8 +441,7 @@ class Worksheet(object):
 
         OUTPUT:
 
-        -  ``-1,0,1`` - comparison is on the underlying
-           file names.
+        - boolean - comparison is on the underlying file names.
 
         EXAMPLES::
 
@@ -450,15 +449,12 @@ class Worksheet(object):
             sage: nb.create_default_users('password')
             sage: W2 = nb.create_new_worksheet('test2', 'admin')
             sage: W1 = nb.create_new_worksheet('test1', 'admin')
-            sage: cmp(W1, W2)
-            1
-            sage: cmp(W2, W1)
-            -1
+            sage: W1 <= W2
+            True
+            sage: W2 <= W1
+            False
         """
-        try:
-            return cmp(self.filename(), other.filename())
-        except AttributeError:
-            return cmp(type(self), type(other))
+        return self.filename() <= other.filename()
 
     def __repr__(self):
         r"""

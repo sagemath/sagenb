@@ -100,7 +100,7 @@ class Cell_generic(object):
         """
         return "Cell_generic %s" % self._id
 
-    def __cmp__(self, right):
+    def __lt__(self, right):
         """
         Compares generic cells by ID.
 
@@ -131,7 +131,7 @@ class Cell_generic(object):
             sage: [C1 == C2, C1 == C3, C2 == C3]
             [True, True, True]
         """
-        return cmp(self.id(), right.id())
+        return self.id() < right.id()
 
     def id(self):
         """

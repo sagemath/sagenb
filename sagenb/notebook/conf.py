@@ -174,14 +174,10 @@ class Configuration(object):
             s += u'<div class="section">\n  <h2>%s</h2>\n  <table>\n' % lazy_gettext(group)
 
             opts = G[group]
-            def sortf(x, y):
-                wx = DS[x].get(POS, POS_DEFAULT)
-                wy = DS[y].get(POS, POS_DEFAULT)
-                if wx == wy:
-                    return cmp(x, y)
-                else:
-                    return cmp(wx, wy)
-            opts.sort(sortf)
+
+            def sort_key(x):
+                return (DS[x].get(POS, POS_DEFAULT), x)
+            opts.sort(key=sort_key)
             for o in opts:
                 s += u'    <tr>\n      <td>%s</td>\n      <td>\n' % lazy_gettext(DS[o][DESC])
                 input_type = 'text'
