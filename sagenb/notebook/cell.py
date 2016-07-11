@@ -118,18 +118,18 @@ class Cell_generic(object):
             sage: C1 = sagenb.notebook.cell.Cell_generic(0, None)
             sage: C2 = sagenb.notebook.cell.Cell_generic(1, None)
             sage: C3 = sagenb.notebook.cell.Cell_generic(0, None)
-            sage: [C1 == C2, C1 == C3, C2 == C3]
-            [False, True, False]
+            sage: [C1 < C2, C1 < C3, C2 < C3]
+            [True, False, False]
             sage: C1 = sagenb.notebook.cell.TextCell('bagel', 'abc', None)
             sage: C2 = sagenb.notebook.cell.TextCell('lox', 'abc', None)
             sage: C3 = sagenb.notebook.cell.TextCell('lox', 'xyz', None)
-            sage: [C1 == C2, C1 == C3, C2 == C3]
-            [False, False, True]
+            sage: [C1 < C2, C1 < C3, C2 < C3]
+            [True, True, False]
             sage: C1 = sagenb.notebook.cell.Cell(7, '3+2', '5', None)
             sage: C2 = sagenb.notebook.cell.Cell(7, '3+2', 'five', None)
             sage: C3 = sagenb.notebook.cell.Cell('7', '2+3', '5', None)
-            sage: [C1 == C2, C1 == C3, C2 == C3]
-            [True, True, True]
+            sage: [C1 < C2, C1 < C3, C2 < C3]
+            [False, False, False]
         """
         return self.id() < right.id()
 
