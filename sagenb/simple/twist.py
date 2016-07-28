@@ -132,7 +132,13 @@ When you are done, log out::
 #
 
 
-import re, random, os.path, shutil, time
+import re
+import random
+import os.path
+import shutil
+import time
+
+from future.utils import viewitems
 
 from twisted.internet.task import LoopingCall
 from twisted.python import log
@@ -165,7 +171,8 @@ def simple_jsonize(data):
         { "a": [1, 2, 3], "b": "yep" }
     """
     if isinstance(data, dict):
-        values = ['"%s": %s' % (key, simple_jsonize(value)) for key, value in data.iteritems()]
+        values = ['"%s": %s' % (key, simple_jsonize(value))
+                  for key, value in viewitems(data)]
         return "{\n%s\n}" % ',\n'.join(values)
     elif isinstance(data, (list, tuple)):
         values = [simple_jsonize(value) for value in data]

@@ -11,7 +11,7 @@ This is called by sws2rst
 #
 # Distributed under the terms of the GPL License
 #**************************************************
-
+from future.utils import viewitems
 
 import re
 import os
@@ -87,9 +87,11 @@ escapable_chars = { '+' :r'\+',
                     '*' :r'\*',
                     '|' :r'\|',
                     '-' :r'\-'}
+
+
 def escape_chars(text):
-    for c,r in escapable_chars.iteritems():
-        text = text.replace(c,r)
+    for c, r in viewitems(escapable_chars):
+        text = text.replace(c, r)
     return text
 
 #This is supposed to be handled by BeautifulSoup, but doesn't work
@@ -99,9 +101,11 @@ xml_entities = {'&lt;':'<',
             '&quot;':'"',
             '&apos;':"'",
 }
+
+
 def replace_xml_entities(text):
-    for c,r in xml_entities.iteritems():
-        text = text.replace(c,r)
+    for c, r in viewitems(xml_entities):
+        text = text.replace(c, r)
     return text
  
 

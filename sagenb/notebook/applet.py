@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*
+from future.utils import viewitems
 
 
 class Applet:
-    
     def __init__(self, id, code, archive, codebase="", width=400, height=400, params={}):
         self.id = id
         self.code = code
@@ -13,7 +13,8 @@ class Applet:
         self.codebase = "/java/" + codebase
         
     def html_tag(self):
-        params_text = "\n".join(["""<param name="%s" value="%s"/>""" % x for x in self.params.iteritems()])
+        params_text = "\n".join(["""<param name="%s" value="%s"/>""" % x
+                                 for x in viewitems(self.params)])
         tag = """
         <applet id="%s", code="%s" width="%s" height="%s" codebase="%s" archive="%s" MAYSCRIPT>
           %s
@@ -26,4 +27,3 @@ class Applet:
                ",".join(self.archive), 
                params_text)
         return tag
-        
