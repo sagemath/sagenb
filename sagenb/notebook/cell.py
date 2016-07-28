@@ -118,6 +118,39 @@ class Cell_generic(object):
             sage: C1 = sagenb.notebook.cell.Cell_generic(0, None)
             sage: C2 = sagenb.notebook.cell.Cell_generic(1, None)
             sage: C3 = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: [C1 < C2, C1 < C3, C2 < C3]
+            [True, False, False]
+            sage: C1 = sagenb.notebook.cell.TextCell('bagel', 'abc', None)
+            sage: C2 = sagenb.notebook.cell.TextCell('lox', 'abc', None)
+            sage: C3 = sagenb.notebook.cell.TextCell('lox', 'xyz', None)
+            sage: [C1 < C2, C1 < C3, C2 < C3]
+            [True, True, False]
+            sage: C1 = sagenb.notebook.cell.Cell(7, '3+2', '5', None)
+            sage: C2 = sagenb.notebook.cell.Cell(7, '3+2', 'five', None)
+            sage: C3 = sagenb.notebook.cell.Cell('7', '2+3', '5', None)
+            sage: [C1 < C2, C1 < C3, C2 < C3]
+            [False, False, False]
+        """
+        return self.id() < right.id()
+
+    def __eq__(self, right):
+        """
+        Compares generic cells by ID.
+
+        INPUT:
+
+        - ``right`` - a :class:`Cell_generic` instance; the cell to
+          compare to this cell
+
+        OUTPUT:
+
+        - a boolean
+
+        EXAMPLES::
+
+            sage: C1 = sagenb.notebook.cell.Cell_generic(0, None)
+            sage: C2 = sagenb.notebook.cell.Cell_generic(1, None)
+            sage: C3 = sagenb.notebook.cell.Cell_generic(0, None)
             sage: [C1 == C2, C1 == C3, C2 == C3]
             [False, True, False]
             sage: C1 = sagenb.notebook.cell.TextCell('bagel', 'abc', None)
@@ -131,7 +164,7 @@ class Cell_generic(object):
             sage: [C1 == C2, C1 == C3, C2 == C3]
             [True, True, True]
         """
-        return self.id() < right.id()
+        return self.id() == right.id()
 
     def id(self):
         """
@@ -154,7 +187,7 @@ class Cell_generic(object):
             'yellow'
         """
         return self._id
-
+
     def set_id(self, id):
         """
         Sets this generic cell's ID.
