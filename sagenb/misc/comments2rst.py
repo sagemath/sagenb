@@ -11,7 +11,7 @@ This is called by sws2rst
 #
 # Distributed under the terms of the GPL License
 #**************************************************
-from future.utils import viewitems
+from future.utils import iteritems
 
 import re
 import os
@@ -90,7 +90,7 @@ escapable_chars = { '+' :r'\+',
 
 
 def escape_chars(text):
-    for c, r in viewitems(escapable_chars):
+    for c, r in iteritems(escapable_chars):
         text = text.replace(c, r)
     return text
 
@@ -104,7 +104,7 @@ xml_entities = {'&lt;':'<',
 
 
 def replace_xml_entities(text):
-    for c, r in viewitems(xml_entities):
+    for c, r in iteritems(xml_entities):
         text = text.replace(c, r)
     return text
  

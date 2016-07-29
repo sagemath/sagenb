@@ -46,7 +46,7 @@ try:
    import cPickle as pickle
 except ImportError:
    import pickle
-from future.utils import viewitems
+from future.utils import iteritems
 
 from .abstract_storage import Datastore
 from sagenb.misc.misc import set_restrictive_permissions, encoded_str
@@ -218,7 +218,7 @@ class FilesystemDatastore(Datastore):
         return dict([(name, User_from_basic(basic)) for name, basic in obj])
 
     def _users_to_basic(self, users):
-        new = sorted([[name, U.basic()] for name, U in viewitems(users)])
+        new = sorted([[name, U.basic()] for name, U in iteritems(users)])
         return new
 
     def _basic_to_server_conf(self, obj):

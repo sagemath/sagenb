@@ -22,7 +22,7 @@ from exceptions import SystemExit
 
 from twisted.python.runtime import platformType
 
-from future.utils import viewitems
+from future.utils import iteritems
 
 from sagenb.misc.misc import (DOT_SAGENB, find_next_available_port,
                               print_open_msg)
@@ -397,7 +397,7 @@ def notebook_setup(self=None):
                 }
 
     s = ""
-    for key, val in viewitems(template_dict):
+    for key, val in iteritems(template_dict):
         if val is None:
             continue
         if val is True:

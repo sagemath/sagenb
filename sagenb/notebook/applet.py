@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-from future.utils import viewitems
+from future.utils import iteritems
 
 
 class Applet:
@@ -14,7 +14,7 @@ class Applet:
 
     def html_tag(self):
         params_text = "\n".join(["""<param name="%s" value="%s"/>""" % x
-                                 for x in viewitems(self.params)])
+                                 for x in iteritems(self.params)])
         tag = """
         <applet id="%s", code="%s" width="%s" height="%s" codebase="%s" archive="%s" MAYSCRIPT>
           %s

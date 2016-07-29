@@ -16,7 +16,7 @@ import string
 import sys
 import pydoc
 
-from future.utils import viewitems
+from future.utils import iteritems
 import __builtin__
 
 try:
@@ -488,7 +488,7 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
     m = cython_import(filename, verbose=verbose, compile_message=compile_message,
                      use_cache=use_cache,
                      create_local_c_file=create_local_c_file)
-    for k, x in viewitems(m.__dict__):
+    for k, x in iteritems(m.__dict__):
         if k[0] != '_':
             globals[k] = x
             

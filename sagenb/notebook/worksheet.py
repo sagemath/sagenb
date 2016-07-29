@@ -24,7 +24,7 @@ from __future__ import absolute_import
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
 ###########################################################################
-from future.utils import viewitems
+from future.utils import iteritems
 
 # Import standard Python libraries that we will use below
 import base64
@@ -403,7 +403,7 @@ class Worksheet(object):
             del self.__cells
         except AttributeError: 
             pass
-        for key, value in viewitems(obj):
+        for key, value in iteritems(obj):
             if key == 'name':
                 if repr(value) == '<_LazyString broken>':
                     value = ''
@@ -1560,7 +1560,7 @@ class Worksheet(object):
         except AttributeError:
             self.user_view(self.owner())
             d = copy.copy(self.__user_view)
-        for user, val in viewitems(d):
+        for user, val in iteritems(d):
             if not isinstance(val, list):
                 d[user] = [val]
         return d
@@ -1577,7 +1577,7 @@ class Worksheet(object):
               ACTIVE, TRASH.
         """
         d = {}
-        for user, v in viewitems(tags):
+        for user, v in iteritems(tags):
             if len(v) >= 1:
                 d[user] = v[0]  # must be a single int for now, until
                                 # the tag system is implemented
@@ -3821,8 +3821,8 @@ except (KeyError, IOError):
             A[init_sage] = 0
 
         # since we change A during the iteration
-        # important to use a view on the dictionary
-        for F, tm in viewitems(A):
+        # we need to make a copy first
+        for F, tm in list(A.items()):
             try:
                 new_tm = os.path.getmtime(F)
             except OSError:

@@ -36,7 +36,7 @@ try:
 except ImportError:
     import pickle
 
-from future.utils import viewitems
+from future.utils import iteritems
 
 # Sage libraries
 from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
@@ -248,21 +248,21 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: from future.utils import viewitems
+            sage: from future.utils import iteritems
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
-            sage: sorted(list(viewitems(nb.user_manager().users())))
+            sage: sorted(list(iteritems(nb.user_manager().users())))
             [('_sage_', _sage_), ('admin', admin), ('guest', guest), ('pub', pub)]
-            sage: sorted(list(viewitems(nb.user_manager().passwords()))) #random
+            sage: sorted(list(iteritems(nb.user_manager().passwords()))) #random
             [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
             sage: nb.create_default_users('newpassword')
             WARNING: User 'pub' already exists -- and is now being replaced.
             WARNING: User '_sage_' already exists -- and is now being replaced.
             WARNING: User 'guest' already exists -- and is now being replaced.
             WARNING: User 'admin' already exists -- and is now being replaced.
-            sage: sorted(list(viewitems(nb.user_manager().passwords()))) #random
+            sage: sorted(list(iteritems(nb.user_manager().passwords()))) #random
             [('_sage_', ''), ('admin', ''), ('guest', ''), ('pub', '')]
-            sage: len(list(viewitems(nb.user_manager().passwords())))
+            sage: len(list(iteritems(nb.user_manager().passwords())))
             4
         """
         self.user_manager().create_default_users(passwd)
@@ -1527,7 +1527,7 @@ class Notebook(object):
             if not n.startswith('doc_browser'):
                 S.save_worksheet(W)
         if hasattr(self, '_user_history'):
-            for username, H in viewitems(self._user_history):
+            for username, H in iteritems(self._user_history):
                 S.save_user_history(username, H)
 
     def save_worksheet(self, W, conf_only=False):
@@ -1893,7 +1893,7 @@ def migrate_old_notebook_v1(dir):
     # Now update the user data from the old notebook to the new one:
     print("Migrating %s user accounts..." % len(old_nb.user_manager().users()))
     users = new_nb.user_manager().users()
-    for username, old_user in viewitems(old_nb.user_manager().users()):
+    for username, old_user in iteritems(old_nb.user_manager().users()):
         new_user = user.User(old_user.username(), '',
                              old_user.get_email(), old_user.account_type())
         new_user.set_hashed_password(old_user.password())
@@ -1920,7 +1920,7 @@ def migrate_old_notebook_v1(dir):
         # some ugly creation of new attributes from what used to be stored
         tags = {}
         try:
-            for user, val in viewitems(old_ws._Worksheet__user_view):
+            for user, val in iteritems(old_ws._Worksheet__user_view):
                 if isinstance(user, str):
                     # There was a bug in the old notebook where sometimes the
                     # user was the *module* "user", so we don't include that
@@ -1990,7 +1990,7 @@ def migrate_old_notebook_v1(dir):
     from sage.misc.all import walltime
     tm = walltime()
     i = 0
-    for ws_name, old_ws in viewitems(old_nb._Notebook__worksheets):
+    for ws_name, old_ws in iteritems(old_nb._Notebook__worksheets):
         if old_ws.docbrowser(): continue
         i += 1
         if i % 25==0:

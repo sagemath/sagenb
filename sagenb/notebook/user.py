@@ -11,7 +11,7 @@ try:
 except ImportError:
     import pickle
 
-from future.utils import viewitems
+from future.utils import iteritems
 
 SALT = 'aa'
 
@@ -24,7 +24,7 @@ def User_from_basic(basic):
     Create a user from a basic data structure.
     """
     user = User(basic['username'])
-    user.__dict__.update(dict([('_' + x, y) for x, y in viewitems(basic)]))
+    user.__dict__.update(dict([('_' + x, y) for x, y in iteritems(basic)]))
     user._conf = user_conf.UserConfiguration_from_basic(user._conf)
     return user
 
@@ -83,7 +83,7 @@ class User(object):
         Return a basic Python data structure from which self can be
         reconstructed.
         """
-        d = {x[1:]: y for x, y in viewitems(self.__dict__) if x[0] == '_'}
+        d = {x[1:]: y for x, y in iteritems(self.__dict__) if x[0] == '_'}
         d['conf'] = self._conf.basic()
         return d
 

@@ -138,7 +138,7 @@ import os.path
 import shutil
 import time
 
-from future.utils import viewitems
+from future.utils import iteritems
 
 from twisted.internet.task import LoopingCall
 from twisted.python import log
@@ -172,7 +172,7 @@ def simple_jsonize(data):
     """
     if isinstance(data, dict):
         values = ['"%s": %s' % (key, simple_jsonize(value))
-                  for key, value in viewitems(data)]
+                  for key, value in iteritems(data)]
         return "{\n%s\n}" % ',\n'.join(values)
     elif isinstance(data, (list, tuple)):
         values = [simple_jsonize(value) for value in data]
