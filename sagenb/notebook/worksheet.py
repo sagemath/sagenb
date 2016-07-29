@@ -14,7 +14,7 @@ the file system (not in the notebook pickle sobj).
 
 AUTHORS:
 
- - William Stein
+- William Stein
 """
 from __future__ import absolute_import
 
@@ -24,7 +24,7 @@ from __future__ import absolute_import
 #  Distributed under the terms of the GNU General Public License (GPL)
 #                  http://www.gnu.org/licenses/
 ###########################################################################
-from future.utils import iteritems
+from six import iteritems
 
 # Import standard Python libraries that we will use below
 import base64

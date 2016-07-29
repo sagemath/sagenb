@@ -4,7 +4,7 @@ The Sage Notebook
 
 AUTHORS:
 
-  - William Stein
+- William Stein
 """
 
 #############################################################################
@@ -15,8 +15,7 @@ AUTHORS:
 #                  http://www.gnu.org/licenses/
 #
 #############################################################################
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import print_function, absolute_import
 
 # For debugging sometimes it is handy to use only the reference implementation.
 USE_REFERENCE_WORKSHEET_PROCESSES = False
@@ -36,7 +35,7 @@ try:
 except ImportError:
     import pickle
 
-from future.utils import iteritems
+from six import iteritems
 
 # Sage libraries
 from sagenb.misc.misc import (pad_zeros, cputime, tmp_dir, load, save,
@@ -248,7 +247,7 @@ class Notebook(object):
 
         EXAMPLES::
 
-            sage: from future.utils import iteritems
+            sage: from six import iteritems
             sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
             sage: nb.create_default_users('password')
             sage: sorted(list(iteritems(nb.user_manager().users())))

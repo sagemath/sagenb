@@ -488,7 +488,7 @@ def check_nested_class_picklability(app, what, name, obj, skip, options):
     """
     Print a warning if pickling is broken for nested classes.
     """
-    from future.utils import iteritems
+    from six import iteritems
     import types
     if hasattr(obj, '__dict__') and hasattr(obj, '__module__'):
         # Check picklability of nested classes.  Adapted from

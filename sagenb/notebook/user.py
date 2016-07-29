@@ -11,7 +11,7 @@ try:
 except ImportError:
     import pickle
 
-from future.utils import iteritems
+from six import iteritems
 
 SALT = 'aa'
 

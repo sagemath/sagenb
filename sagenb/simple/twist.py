@@ -138,7 +138,7 @@ import os.path
 import shutil
 import time
 
-from future.utils import iteritems
+from six import iteritems
 
 from twisted.internet.task import LoopingCall
 from twisted.python import log

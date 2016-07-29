@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-from future.utils import iteritems
+from six import iteritems
 
 
 class Applet:

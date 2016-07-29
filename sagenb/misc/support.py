@@ -16,7 +16,7 @@ import string
 import sys
 import pydoc
 
-from future.utils import iteritems
+from six import iteritems
 import __builtin__
 
 try:

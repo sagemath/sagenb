@@ -22,7 +22,7 @@ from exceptions import SystemExit
 
 from twisted.python.runtime import platformType
 
-from future.utils import iteritems
+from six import iteritems
 
 from sagenb.misc.misc import (DOT_SAGENB, find_next_available_port,
                               print_open_msg)

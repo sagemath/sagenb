@@ -46,7 +46,7 @@ try:
    import cPickle as pickle
 except ImportError:
    import pickle
-from future.utils import iteritems
+from six import iteritems
 
 from .abstract_storage import Datastore
 from sagenb.misc.misc import set_restrictive_permissions, encoded_str

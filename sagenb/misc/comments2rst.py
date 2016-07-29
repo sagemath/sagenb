@@ -11,7 +11,7 @@ This is called by sws2rst
 #
 # Distributed under the terms of the GPL License
 #**************************************************
-from future.utils import iteritems
+from six import iteritems
 
 import re
 import os

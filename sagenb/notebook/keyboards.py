@@ -42,7 +42,7 @@ http://sage.math.washington.edu/home/boothby/modular.old/www/keys_capture.html
 and follow the directions you see there.  Copy the output, and email
 it to boothby@u.washington.edu
 """
-from future.utils import iteritems
+from six import iteritems
 
 
 def get_keyboard(s):
