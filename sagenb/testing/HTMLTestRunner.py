@@ -111,7 +111,7 @@ CHANGES
 """
 import datetime
 import os
-from io import StringIO
+from six import StringIO
 import sys
 import unittest
 
@@ -247,7 +247,7 @@ class _TestResult(unittest.TestResult):
         """
         unittest.TestResult.startTest(self, test)
         # Just one buffer for both stdout and stderr.
-        self.outputBuffer = StringIO.StringIO()
+        self.outputBuffer = StringIO()
         stdout_redirector.fp = self.outputBuffer
         stderr_redirector.fp = self.outputBuffer
         self.stdout0 = sys.stdout

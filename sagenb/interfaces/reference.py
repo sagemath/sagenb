@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*
 import os
-import StringIO
+from six import StringIO
 import sys
 import traceback
 import tempfile
@@ -125,7 +125,7 @@ def execute_code(string, state, data=None):
         # make a symbolic link from the data directory into local tmp directory
         os.symlink(data, os.path.join(tempdir, os.path.split(data)[1]))
     
-    s = StringIO.StringIO()
+    s = StringIO()
     saved_stream = sys.stdout
     sys.stdout = s
     try:

@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*
 """nodoctest
 """
-
-# -*- coding: utf-8 -*-
 #############################################################################
 #       Copyright (C) 2007 William Stein <wstein@gmail.com>
 #  Distributed under the terms of the GNU General Public License (GPL)
@@ -22,7 +20,7 @@
 import cgi
 import string
 import sys
-import cStringIO
+from six.moves import cStringIO as StringIO
 import keyword
 import token
 import tokenize
@@ -68,7 +66,7 @@ class Parser:
 
         # parse the source and write it
         self.pos = 0
-        text = cStringIO.StringIO(self.raw)
+        text = StringIO(self.raw)
         try:
             tokenize.tokenize(text.readline, self)
         except tokenize.TokenError as ex:
@@ -129,7 +127,7 @@ def colorize(source):
     """
     write colorized version to "[filename].py.html"
     """
-    html = cStringIO.StringIO()
+    html = StringIO()
     Parser(source, html).format(None, None)
     html.flush()
     html.seek(0)
