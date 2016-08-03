@@ -13,7 +13,7 @@ from twisted.application import service
 from twisted.application import internet
 from twisted.internet import protocol
 from twisted.mail import smtp, relaymanager
-from StringIO import StringIO
+from six import StringIO
 from email.MIMEBase import MIMEBase
 from email.MIMEMultipart import MIMEMultipart
 from email import Encoders
