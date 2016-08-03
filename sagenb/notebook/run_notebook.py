@@ -22,6 +22,8 @@ from exceptions import SystemExit
 
 from twisted.python.runtime import platformType
 
+from six import iteritems
+
 from sagenb.misc.misc import (DOT_SAGENB, find_next_available_port,
                               print_open_msg)
 
@@ -395,10 +397,10 @@ def notebook_setup(self=None):
                 }
 
     s = ""
-    for key, val in template_dict.iteritems():
+    for key, val in iteritems(template_dict):
         if val is None:
             continue
-        if val == True:
+        if val is True:
             w = ''
         elif isinstance(val, list):
             w = ' '.join(['"%s"' % x for x in val])

@@ -42,8 +42,9 @@ http://sage.math.washington.edu/home/boothby/modular.old/www/keys_capture.html
 and follow the directions you see there.  Copy the output, and email
 it to boothby@u.washington.edu
 """
+from six import iteritems
 
-                
+
 def get_keyboard(s):
     # keyboard_map is a dictionary defined at the bottom of this
     # file that maps os/browser codes to functions that give the
@@ -60,9 +61,9 @@ def get_keyboard(s):
     # We now add in each default keycode if it isn't already present.
     # The point of this is that it allows us to easily alias keys to
     # predefined keys, but doesn't overwrite anything.
-    for key, val in defaults.iteritems():
+    for key, val in iteritems(defaults):
         if '%s =' % key not in codes:
-            codes += '\nvar %s = %s;' % (key,val)
+            codes += '\nvar %s = %s;' % (key, val)
 
     return codes.strip()
 
