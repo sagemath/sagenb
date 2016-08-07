@@ -187,7 +187,7 @@ class Cell_generic(object):
             'yellow'
         """
         return self._id
-
+
     def set_id(self, id):
         """
         Sets this generic cell's ID.
