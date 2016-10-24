@@ -1456,7 +1456,7 @@ class Notebook(object):
             text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
             try:
                 text_file_content = text_file_content.decode('utf-8')
-            except:
+            except UnicodeDecodeError:
                 text_file_content = text_file_content.decode('latin-1')
 
         return template(os.path.join("html", "notebook", "download_or_delete_datafile.html"),
