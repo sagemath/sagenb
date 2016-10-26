@@ -1454,6 +1454,9 @@ class Notebook(object):
         if ext in ['.txt', '.tex', '.sage', '.spyx', '.py', '.f', '.f90', '.c']:
             file_is_text = True
             text_file_content = open(os.path.join(ws.data_directory(), filename)).read()
+            # Detect the character encoding
+            from BeautifulSoup import UnicodeDammit
+            text_file_content = UnicodeDammit(text_file_content).unicode
 
         return template(os.path.join("html", "notebook", "download_or_delete_datafile.html"),
                         worksheet = ws, notebook = self,
