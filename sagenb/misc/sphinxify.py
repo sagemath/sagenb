@@ -101,8 +101,11 @@ def sphinxify(docstring, format='html'):
     # Sphinx constructor: Sphinx(srcdir, confdir, outdir, doctreedir,
     # buildername, confoverrides, status, warning, freshenv).
     temp_confdir = False
-    confdir = os.path.join(SAGE_DOC_SRC, 'en', 'introspect')
-    if not os.path.exists(confdir):
+    if SAGE_DOC_SRC is not None:
+        confdir = os.path.join(SAGE_DOC_SRC, 'en', 'introspect')
+    else:
+        confdir = None
+    if not (confdir and os.path.exists(confdir)):
         # Try the new location for this; see Trac #21732
         confdir = os.path.join(SAGE_SRC, 'sage', 'misc', 'docs', 'introspect')
         
