@@ -24,7 +24,7 @@ from tempfile import mkdtemp
 # We import Sphinx on demand, to reduce Sage startup time.
 Sphinx = None
 
-from sage.env import SAGE_DOC_SRC
+from sage.env import SAGE_DOC_SRC, SAGE_SRC
 
 
 def is_sphinx_markup(docstring):
@@ -102,12 +102,16 @@ def sphinxify(docstring, format='html'):
     # buildername, confoverrides, status, warning, freshenv).
     temp_confdir = False
     confdir = os.path.join(SAGE_DOC_SRC, 'en', 'introspect')
-    if not SAGE_DOC_SRC and not os.path.exists(confdir):
-        # If we don't have Sage, we need to do our own configuration
-        # This may be inefficient or broken.  TODO: Find a faster way to do this.
-        temp_confdir = True
-        confdir = mkdtemp()
-        generate_configuration(confdir)
+    if not os.path.exists(confdir):
+        # Try the new location for this; see Trac #21732
+        confdir = os.path.join(SAGE_SRC, 'sage', 'misc', 'docs', 'introspect')
+        
+        if not os.path.exists(confdir):
+            # If we don't have Sage, we need to do our own configuration
+            # This may be inefficient or broken.  TODO: Find a faster way to do this.
+            temp_confdir = True
+            confdir = mkdtemp()
+            generate_configuration(confdir)
 
     doctreedir = os.path.join(srcdir, 'doctrees')
     confoverrides = {'html_context': {}, 'master_doc': 'docstring'}
