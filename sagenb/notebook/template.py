@@ -124,7 +124,7 @@ def template(filename, **user_context):
         <type 'unicode'>
         sage: 'Yes' in s
         True
-        sage: u = unicode('Are Gröbner bases awesome?','utf-8')
+        sage: u = u'Are Gröbner bases awesome?'
         sage: s = template(os.path.join('html', 'yes_no.html'), message=u)
         sage: 'Gr\xc3\xb6bner' in s.encode('utf-8')
         True
