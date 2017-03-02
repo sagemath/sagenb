@@ -97,7 +97,11 @@ class FilesystemDatastore(Datastore):
     #########################################################################
     def _makepath(self, path):
         p = self._abspath(path)
-        if not os.path.exists(p): os.makedirs(p)
+        try:
+            os.makedirs(p)
+        except OSError:
+            if not os.path.isdir(p):
+                raise
         return path
     
     def _deep_user_path(self, username):
@@ -117,17 +121,21 @@ class FilesystemDatastore(Datastore):
         username = str(username)
         path = self._abspath(os.path.join(self._home_path, username))
         if not os.path.islink(path):
-            if not os.path.exists(path):
-                self._makepath(path)
-
             old_dir = os.getcwd()
             os.chdir(self._abspath(self._home_path))
             new_path = self._deep_user_path(username)
 
-            #Move the directory to the __store__ directory
-            os.rename(path, new_path)
+            # Ensure that new_path exists:
+            if os.path.exists(path):
+                # If the old path exists, move it to the new path.
+                # If both the old and new path exist, that's an error
+                # and this will raise an exception.
+                os.rename(path, new_path)
+            else:
+                # Otherwise, simply create the new path.
+                self._makepath(os.path.join(self._home_path, new_path))
 
-            #new_path now points to the actual directory
+            # new_path now points to the actual directory
             os.symlink(new_path, username)
             os.chdir(old_dir)
 
