@@ -45,6 +45,7 @@ class SageNBFlask(Flask):
         self.add_static_path('/j2s', os.path.join(os.environ["SAGE_SHARE"],"jsmol","j2s"))
         self.add_static_path('/jsmol/j2s', os.path.join(os.environ["SAGE_SHARE"],"jsmol","j2s"))
         self.add_static_path('/j2s/core', os.path.join(os.environ["SAGE_SHARE"],"jsmol","j2s","core"))
+        self.add_static_path('/threejs', os.path.join(os.environ["SAGE_SHARE"],"threejs"))
         import mimetypes
         mimetypes.add_type('text/plain','.jmol')
 
