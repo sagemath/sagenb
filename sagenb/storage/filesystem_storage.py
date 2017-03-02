@@ -116,13 +116,16 @@ class FilesystemDatastore(Datastore):
         # There are weird cases, e.g., old notebook server migration
         # where username is None, and if we don't string it here,
         # saving can be broken (at a bad moment!).
-        
         # There are also some cases where the username could have unicode in it.
         username = str(username)
-        path = self._abspath(os.path.join(self._home_path, username))
+
+        home = self._abspath(self._home_path)
+        path = os.path.join(home, username)
         if not os.path.islink(path):
+            self._makepath(home)
+
             old_dir = os.getcwd()
-            os.chdir(self._abspath(self._home_path))
+            os.chdir(home)
             new_path = self._deep_user_path(username)
 
             # Ensure that new_path exists:
@@ -133,7 +136,7 @@ class FilesystemDatastore(Datastore):
                 os.rename(path, new_path)
             else:
                 # Otherwise, simply create the new path.
-                self._makepath(os.path.join(self._home_path, new_path))
+                self._makepath(os.path.join(home, new_path))
 
             # new_path now points to the actual directory
             os.symlink(new_path, username)
