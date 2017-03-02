@@ -451,9 +451,9 @@ class Worksheet(object):
             sage: W2 = nb.create_new_worksheet('test2', 'admin')
             sage: W1 = nb.create_new_worksheet('test1', 'admin')
             sage: W1 <= W2
-            True
-            sage: W2 <= W1
             False
+            sage: W2 <= W1
+            True
         """
         return self.filename() <= other.filename()
 
