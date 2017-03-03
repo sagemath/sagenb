@@ -104,16 +104,16 @@ def code_parser(text):
     '::\n\n    sage: a=2'
     : s="def f(n):\n    return n+1\n"
     : code_parser(s)
-    '::\n\n    sage: def f(n):\n    ...       return n+1'
+    '::\n\n    sage: def f(n):\n    ....:     return n+1'
     : s="sage: def f(n):\nsage:     return n+1\n"
     : code_parser(s)
-    '::\n\n    sage: def f(n):\n    ...       return n+1'
+    '::\n\n    sage: def f(n):\n    ....:     return n+1'
     """
     lines = ['::', '']
     for s in text.splitlines():
         l = s[6:] if s.startswith('sage: ') else s
         if not l: continue
-        prefix = '    ...   ' if l[0] == ' ' else '    sage: '
+        prefix = '    ....: ' if l[0] == ' ' else '    sage: '
         lines.append(prefix + l)
     return '\n'.join(lines)
 
