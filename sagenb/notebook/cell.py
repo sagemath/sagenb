@@ -622,7 +622,7 @@ class TextCell(Cell_generic):
             sage: C = sagenb.notebook.cell.TextCell(0, '2+3', None)
             sage: C.plain_text()
             u'2+3'
-            sage: C = sagenb.notebook.cell.TextCell(0, u'ěščřžýáíéďĎ', None)
+            sage: C = sagenb.notebook.cell.TextCell(0, 'ěščřžýáíéďĎ', None)
             sage: C.plain_text()
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
@@ -1187,7 +1187,7 @@ class Cell(Cell_generic):
             sage: C = sagenb.notebook.cell.Cell(0, '2+3', '5', None)
             sage: C.edit_text()
             u'{{{id=0|\n2+3\n///\n5\n}}}'
-            sage: C = sagenb.notebook.cell.Cell(0, u'ěščřžýáíéďĎ', u'ěščřžýáíéďĎ', None)
+            sage: C = sagenb.notebook.cell.Cell(0, 'ěščřžýáíéďĎ', 'ěščřžýáíéďĎ', None)
             sage: C.edit_text()
             u'{{{id=0|\n\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e\n///\n\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e\n}}}'
         """
@@ -1793,7 +1793,7 @@ class Cell(Cell_generic):
             u'<pre class="shrunk">5</pre>'
             sage: C.output_text(raw=True)
             u'5'
-            sage: C = sagenb.notebook.cell.Cell(0, u'ěščřžýáíéďĎ', u'ěščřžýáíéďĎ', W)
+            sage: C = sagenb.notebook.cell.Cell(0, 'ěščřžýáíéďĎ', 'ěščřžýáíéďĎ', W)
             sage: C.output_text()
             u'<pre class="shrunk">\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e</pre>'
             sage: C.output_text(raw=True)
@@ -1993,7 +1993,7 @@ class Cell(Cell_generic):
             sage: C.set_introspect_html('`foobar`')
             sage: C.introspect_html()
             u'`foobar`'
-            sage: C.set_introspect_html(u'ěščřžýáíéďĎ')
+            sage: C.set_introspect_html('ěščřžýáíéďĎ')
             sage: C.introspect_html()
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
             sage: W.quit()

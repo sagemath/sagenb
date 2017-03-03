@@ -199,7 +199,7 @@ class Worksheet(object):
             sage: nb.create_default_users('password')
             sage: import sagenb.notebook.misc
             sage: sagenb.notebook.misc.notebook = nb
-            sage: W = nb.create_new_worksheet(u'Test with unicode ěščřžýáíéďĎ', 'admin')
+            sage: W = nb.create_new_worksheet('Test with unicode ěščřžýáíéďĎ', 'admin')
             sage: W
             admin/0: [Cell 1: in=, out=]
         """
@@ -711,7 +711,7 @@ class Worksheet(object):
             sage: W = nb.create_new_worksheet('A Test Worksheet', 'admin')
             sage: W.name()
             u'A Test Worksheet'
-            sage: W = nb.create_new_worksheet(u'ěščřžýáíéďĎ', 'admin')
+            sage: W = nb.create_new_worksheet('ěščřžýáíéďĎ', 'admin')
             sage: W.name()
             u'\u011b\u0161\u010d\u0159\u017e\xfd\xe1\xed\xe9\u010f\u010e'
         """
