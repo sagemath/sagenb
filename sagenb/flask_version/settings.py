@@ -1,12 +1,12 @@
 import os
 import random
-from flask import Module, url_for, render_template, request, session, redirect, g, current_app
+from flask import Blueprint, url_for, render_template, request, session, redirect, g, current_app
 from .decorators import login_required, with_lock
 from flask.ext.babel import gettext, ngettext, lazy_gettext
 _ = gettext
 
 
-settings = Module('sagenb.flask_version.settings')
+settings = Blueprint('settings', 'sagenb.flask_version.settings')
 
 @settings.route('/settings', methods = ['GET','POST'])
 @login_required

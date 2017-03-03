@@ -4,7 +4,7 @@ import os
 import threading
 import collections
 from functools import wraps
-from flask import Module, make_response, url_for, render_template, request, session, redirect, g, current_app
+from flask import Blueprint, make_response, url_for, render_template, request, session, redirect, g, current_app
 from .decorators import login_required, with_lock
 from collections import defaultdict
 from werkzeug.utils import secure_filename
@@ -14,7 +14,7 @@ _ = gettext
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
 from sagenb.notebook.misc import encode_response
 
-ws = Module('sagenb.flask_version.worksheet')
+ws = Blueprint('worksheet', 'sagenb.flask_version.worksheet')
 worksheet_locks = defaultdict(threading.Lock)
 
 def worksheet_view(f):
