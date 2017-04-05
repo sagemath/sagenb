@@ -481,7 +481,7 @@ class Worksheet(object):
             False
         """
         return self.filename() < other.filename()
-      
+
     def __repr__(self):
         r"""
         Return string representation of this worksheet, which is simply the
