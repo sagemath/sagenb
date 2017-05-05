@@ -194,7 +194,7 @@ class FilesystemDatastore(Datastore):
         Check that interrupting ``_save`` is safe::
 
             sage: from sagenb.storage.filesystem_storage import FilesystemDatastore
-            sage: D = FilesystemDatastore("")
+            sage: D = FilesystemDatastore(tmp_dir())
             sage: fn = tmp_filename()
             sage: s = "X" * 100000
             sage: D._save(s, fn)
