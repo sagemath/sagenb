@@ -52,7 +52,6 @@ from sagenb.interfaces import (WorksheetProcess_ExpectImplementation,
                                WorksheetProcess_ReferenceImplementation,
                                WorksheetProcess_RemoteExpectImplementation)
 
-import sagenb.misc.support  as support
 from sagenb.misc.format import relocate_future_imports
 
 # Imports specifically relevant to the sage notebook
@@ -3812,6 +3811,7 @@ except (KeyError, IOError):
         return out
 
     def _get_last_identifier(self, s):
+        import sagenb.misc.support  as support
         return support.get_rightmost_identifier(s)
 
     def preparse(self, s):
