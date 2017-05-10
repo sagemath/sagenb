@@ -35,6 +35,7 @@ how to do this are as follows.
         $ ln -s ~/src/sagenb-git/sagenb sagenb  # or wherever your clone is
         $ cd ~/src/sagenb-git
         $ SAGE_ROOT/sage --python setup.py develop
+        $ ln -s SAGE_ROOT/sage/local/share/mathjax sagenb/data/mathjax
 
 #.  You can also add the `sagenb`_ git repository as a remote branch
     called ``upstream``::
