@@ -148,7 +148,7 @@ class Notebook(object):
             # Worksheet has never been saved before, so the server conf doesn't exist.
             self.__worksheets = WorksheetDict(self)
 
-        from .user_manager import SimpleUserManager, OpenIDUserManager
+        from sagenb.notebook.user_manager import SimpleUserManager, OpenIDUserManager
         self._user_manager = OpenIDUserManager(conf=self.conf()) if user_manager is None else user_manager
 
         # Set up email notification logger
