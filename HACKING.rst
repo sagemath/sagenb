@@ -27,10 +27,10 @@ how to do this are as follows.
 
 #.  Where ``SAGE_ROOT`` represents the base path of your Sage
     installation, perform the following commands. If you have more than one
-    sagenb installation in ``SAGE_ROOT/local/lib/python/site-packages``,
+    sagenb installation in ``SAGE_ROOT/local/lib/python2.7/site-packages``,
     then change directory into the latest version::
 
-        $ cd SAGE_ROOT/local/lib/python/site-packages/sagenb-*
+        $ cd SAGE_ROOT/local/lib/python2.7/site-packages/
         $ mv sagenb sagenb-old
         $ ln -s ~/src/sagenb-git/sagenb sagenb  # or wherever your clone is
         $ cd ~/src/sagenb-git
