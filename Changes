@@ -1,3 +1,9 @@
+1.0         May 24 2017
+ - variours py3 compatibility changes
+ - absolute imports
+ - see https://github.com/sagemath/sagenb/commits/master
+   for complete list
+
 0.13        May 9 2016
  - fix location of stylesheet with Sphinx 1.4
  - improvements towards Python 3 compatibility
