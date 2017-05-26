@@ -456,6 +456,31 @@ class Worksheet(object):
         """
         return self.filename() == other.filename()
 
+    def __ne__(self, other):
+        """
+        We compare two worksheets.
+
+        INPUT:
+
+        -  ``self, other`` -- worksheets
+
+        OUTPUT:
+
+        - boolean - comparison is on the underlying file names.
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.create_default_users('password')
+            sage: W2 = nb.create_new_worksheet('test2', 'admin')
+            sage: W1 = nb.create_new_worksheet('test1', 'admin')
+            sage: W1 != W1
+            False
+            sage: W2 != W1
+            True
+        """
+        return self.filename() != other.filename()
+
     def __lt__(self, other):
         """
         We compare two worksheets.
@@ -474,12 +499,87 @@ class Worksheet(object):
             sage: nb.create_default_users('password')
             sage: W2 = nb.create_new_worksheet('test2', 'admin')
             sage: W1 = nb.create_new_worksheet('test1', 'admin')
-            sage: W1 <= W2
-            True
-            sage: W2 <= W1
+            sage: W1 < W2
             False
+            sage: W2 < W1
+            True
         """
         return self.filename() < other.filename()
+
+    def __gt__(self, other):
+        """
+        We compare two worksheets.
+
+        INPUT:
+
+        -  ``self, other`` -- worksheets
+
+        OUTPUT:
+
+        - boolean - comparison is on the underlying file names.
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.create_default_users('password')
+            sage: W2 = nb.create_new_worksheet('test2', 'admin')
+            sage: W1 = nb.create_new_worksheet('test1', 'admin')
+            sage: W1 > W2
+            True
+            sage: W2 > W1
+            False
+        """
+        return self.filename() > other.filename()
+      
+    def __le__(self, other):
+        """
+        We compare two worksheets.
+
+        INPUT:
+
+        -  ``self, other`` -- worksheets
+
+        OUTPUT:
+
+        - boolean - comparison is on the underlying file names.
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.create_default_users('password')
+            sage: W2 = nb.create_new_worksheet('test2', 'admin')
+            sage: W1 = nb.create_new_worksheet('test1', 'admin')
+            sage: W1 <= W2
+            False
+            sage: W2 <= W1
+            True
+        """
+        return self.filename() <= other.filename()
+
+    def __ge__(self, other):
+        """
+        We compare two worksheets.
+
+        INPUT:
+
+        -  ``self, other`` -- worksheets
+
+        OUTPUT:
+
+        - boolean - comparison is on the underlying file names.
+
+        EXAMPLES::
+
+            sage: nb = sagenb.notebook.notebook.Notebook(tmp_dir(ext='.sagenb'))
+            sage: nb.create_default_users('password')
+            sage: W2 = nb.create_new_worksheet('test2', 'admin')
+            sage: W1 = nb.create_new_worksheet('test1', 'admin')
+            sage: W1 >= W2
+            True
+            sage: W2 >= W1
+            False
+        """
+        return self.filename() >= other.filename()
 
     def __repr__(self):
         r"""
