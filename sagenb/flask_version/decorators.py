@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import Flask, url_for, render_template, request, session, redirect, g, current_app
-from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask_babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 from threading import Lock

@@ -57,7 +57,7 @@ from sagenb.misc.format import relocate_future_imports
 # Imports specifically relevant to the sage notebook
 from .cell import Cell, TextCell
 from .template import template, clean_name, prettify_time_ago
-from flask.ext.babel import gettext, lazy_gettext
+from flask_babel import gettext, lazy_gettext
 _ = gettext
 
 # Set some constants that will be used for regular expressions below.
@@ -4527,7 +4527,7 @@ def convert_time_to_string(t):
     Converts ``t`` (in Unix time) to a locale-specific string
     describing the time and date.
     """
-    from flask.ext.babel import format_datetime
+    from flask_babel import format_datetime
     import datetime, time
     try:
         return format_datetime(datetime.datetime.fromtimestamp(float(t)))

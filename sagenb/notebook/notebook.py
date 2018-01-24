@@ -51,7 +51,7 @@ from . import server_conf  # server configuration
 from . import user_conf    # user configuration
 from . import user         # users
 from   .template import template, prettify_time_ago
-from flask.ext.babel import gettext, lazy_gettext
+from flask_babel import gettext, lazy_gettext
 
 try:
     # sage is installed

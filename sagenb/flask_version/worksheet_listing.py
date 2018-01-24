@@ -5,7 +5,7 @@ import os
 import urllib, urlparse
 from flask import Blueprint, url_for, render_template, request, session, redirect, g, current_app
 from .decorators import login_required, guest_or_login_required, with_lock
-from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask_babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 worksheet_listing = Blueprint('worksheet_listing',
