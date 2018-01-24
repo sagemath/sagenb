@@ -32,7 +32,7 @@ from six.moves.urllib.parse import urlencode
 from six.moves.urllib.request import urlopen, Request
 
 from sagenb.notebook.template import template
-from flask.ext.babel import gettext, lazy_gettext
+from flask_babel import gettext, lazy_gettext
 _ = lazy_gettext
 
 class ChallengeResponse(object):

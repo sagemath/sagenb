@@ -21,7 +21,7 @@ import jinja2
 import os, re, sys
 
 from sagenb.misc.misc import SAGE_VERSION, DATA
-from flask.ext.babel import gettext, ngettext, lazy_gettext
+from flask_babel import gettext, ngettext, lazy_gettext
 from flask import current_app as app
 
 if 'SAGENB_TEMPLATE_PATH' in os.environ:

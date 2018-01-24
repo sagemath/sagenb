@@ -8,7 +8,7 @@ from flask import Blueprint, make_response, url_for, render_template, request, s
 from .decorators import login_required, with_lock
 from collections import defaultdict
 from werkzeug.utils import secure_filename
-from flask.ext.babel import Babel, gettext, ngettext, lazy_gettext
+from flask_babel import Babel, gettext, ngettext, lazy_gettext
 _ = gettext
 
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX

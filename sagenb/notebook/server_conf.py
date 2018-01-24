@@ -8,7 +8,7 @@ from . import conf
 from .conf import (POS, DESC, GROUP, TYPE, CHOICES, T_BOOL, T_INTEGER,
                    T_CHOICE, T_REAL, T_COLOR, T_STRING, T_LIST, T_INFO)
 from sagenb.misc.misc import get_languages, N_
-from flask.ext.babel import gettext, lazy_gettext
+from flask_babel import gettext, lazy_gettext
 _ = lazy_gettext
 
 defaults = {'word_wrap_cols':72,

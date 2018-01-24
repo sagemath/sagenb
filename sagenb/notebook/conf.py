@@ -10,7 +10,7 @@ from __future__ import absolute_import
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
-from flask.ext.babel import gettext, lazy_gettext
+from flask_babel import gettext, lazy_gettext
 
 POS = 'pos'
 DESC = 'desc'
