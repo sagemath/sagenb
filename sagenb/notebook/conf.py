@@ -68,7 +68,6 @@ class Configuration(object):
         
     def html_conf_form(self, action):
         D = self.defaults()
-        C = self.confs
         K = list(set(self.confs.keys() + D.keys()))
         K.sort()
         options = ''

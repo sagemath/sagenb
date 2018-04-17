@@ -376,6 +376,7 @@ def source_code(s, globs, system='sage'):
         return html_markup("Source code for {} is not available.".format(s) +
                            "\nUse {}? to see the documentation.".format(s))
     
+
 def tabulate(v, width=90, ncols=3):
     e = len(v)
     if e == 0:
@@ -390,16 +391,16 @@ def tabulate(v, width=90, ncols=3):
             ncols -= 1
         else:
             break
-    n = max(len(x) for x in v)
     s = ''
     for r in range(nrows):
         for c in range(ncols):
-            i = r + c*nrows
+            i = r + c * nrows
             if i < e:
                 w = v[i]
                 s += w + ' '*(col_widths[c] - len(w))
         s += '\n'
     return s
+
 
 def syseval(system, cmd, dir=None):
     """

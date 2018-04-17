@@ -10,14 +10,11 @@ request = HTTPRequest(url = "http://www.google.com")
 
 def evalss():
     wait = 250
-    random = Random()
-    a, b  = (random.nextInt(), random.nextInt())
-    #input = '%s*%s' % (a, b)
     input = 'from+sage.all+import+*;factor(ZZ.random_element(10**40))'
     result = request.GET('/execute?input=%s' % input)
     id = result.text
     count = 0
-    while (True):
+    while True:
         grinder.sleep(wait) 
         result = request.GET('/get?id=%s' % id)
         count += 1
