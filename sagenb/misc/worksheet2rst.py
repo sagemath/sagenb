@@ -154,7 +154,6 @@ def worksheet2rst(s, images_dir=''):
     state = States.COMMENT
     result = ['.. -*- coding: utf-8 -*-\n']
     ls = []
-    last = 0
     for line in s.splitlines():
         regex, next_state= transitions[state]
         m = regex.match(line) 
@@ -164,7 +163,7 @@ def worksheet2rst(s, images_dir=''):
                 img_path = images_dir + os.path.sep
                 result.append(html2rst(u'\n'.join(ls), img_path))
             elif state == States.RESULT:
-                img_path = os.path.join(images_dir, 'cell_%s_'%last_cell_id)
+                img_path = os.path.join(images_dir, 'cell_%s_' % last_cell_id)
                 result.append(results2rst(u'\n'.join(ls),
                                              img_path))
                 result.append('')
@@ -182,7 +181,7 @@ def worksheet2rst(s, images_dir=''):
         img_path = images_dir + os.path.sep
         result.append(html2rst(u'\n'.join(ls), img_path))
     elif state == States.RESULT:
-        img_path = os.path.join(images_dir, 'cell_%s_'%last_cell_id)
+        img_path = os.path.join(images_dir, 'cell_%s_' % last_cell_id)
         result.append(result_parser(u'\n'.join(ls),
                                      img_path))
         result.append('')

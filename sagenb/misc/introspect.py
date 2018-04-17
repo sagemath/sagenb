@@ -50,7 +50,6 @@ def introspect(S, query, format='html'):
     return get_completions(S, query)
 
 
-
 def _get_docstring(S, query):
     cmd = '_support_.docstring("%s", globals())'%query
     z = S.eval(cmd)
@@ -58,15 +57,15 @@ def _get_docstring(S, query):
     z = word_wrap(z, ncols=numcols)    
     return z
 
+
 def _get_source_code(S, query):
     cmd = '"".join(_support_.source_code("%s", globals()))'%query
     z = S.eval(cmd)
     z = z.replace('\\n','\n').replace("\\","").replace('\\t','        ')[1:-1]
     return z
 
-def _get_completions(S, query):
-    cmd = '"<br>".join(_support_.completions("%s", globals()))'%query
-    z = S.eval(cmd)
-    _last_ = z
-    return z[1:-1]
 
+def _get_completions(S, query):
+    cmd = '"<br>".join(_support_.completions("%s", globals()))' % query
+    z = S.eval(cmd)
+    return z[1:-1]

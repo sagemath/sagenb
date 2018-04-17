@@ -2164,7 +2164,7 @@ class Worksheet(object):
         try:
             r = [unicode(x.lower()) for x in [self.owner(), self.publisher(), self.name(), contents]]
             r = u" ".join(r)
-        except UnicodeDecodeError as e:
+        except UnicodeDecodeError:
             return False
 
         # Check that every single word is in the file from disk.
@@ -2477,7 +2477,7 @@ class Worksheet(object):
             try:
                 meta, input, output, i = extract_first_compute_cell(text)
                 data.append(('compute', (meta, input, output)))
-            except EOFError as msg:
+            except EOFError:
                 # print(msg) # -- don't print msg, just outputs a blank
                 #                 line every time, which makes for an
                 #                 ugly and unprofessional log.
@@ -3314,7 +3314,7 @@ except (KeyError, IOError):
 
         try:
             input = relocate_future_imports(input)
-        except SyntaxError as msg:
+        except SyntaxError:
             t = traceback.format_exc()
             s = 'File "<unknown>",'
             i = t.find(s)
