@@ -308,7 +308,7 @@ class FilesystemDatastore(Datastore):
             sage: U.users()
             {'admin': admin, 'wstein': wstein}
         """
-        for user in self._basic_to_users(self._load('users.pickle')).itervalues():
+        for user in self._basic_to_users(self._load('users.pickle')).values():
             user_manager.add_user_object(user, force=True) 
             user_manager.set_password(user.username(), user.password(), encrypt = False)
         return user_manager
