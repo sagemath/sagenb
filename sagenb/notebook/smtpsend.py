@@ -20,9 +20,9 @@ AUTHOR:
 
 from twisted.mail import smtp, relaymanager
 from twisted.internet import reactor, defer
-from email.MIMEBase import MIMEBase
-from email.MIMEMultipart import MIMEMultipart
-from email import Encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email import encoders
 import sys
 import mimetypes
 import os
