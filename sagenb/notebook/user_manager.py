@@ -3,6 +3,11 @@ from . import user
 import crypt
 import hashlib
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
 SALT = 'aa'
 
 class UserManager(object):
