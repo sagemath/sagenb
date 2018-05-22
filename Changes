@@ -1,3 +1,6 @@
+1.0.2       May 22 2018
+ - more py3 compatibility changes
+
 1.0         May 24 2017
  - variours py3 compatibility changes
  - absolute imports
