@@ -35,6 +35,11 @@ try:
 except ImportError:
     import pickle
 
+try:
+    basestring
+except NameError:
+    basestring = (str, bytes)
+    
 from six import iteritems
 
 # Sage libraries

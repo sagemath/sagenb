@@ -23,6 +23,11 @@ from twisted.python.runtime import platformType
 
 from six import iteritems
 
+try:
+    basestring
+except NameError:
+    basestring = (str, bytes)
+
 from sagenb.misc.misc import (DOT_SAGENB, find_next_available_port,
                               print_open_msg)
 

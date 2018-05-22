@@ -3,6 +3,11 @@ from . import user
 import crypt
 import hashlib
 
+try:
+    unicode
+except NameError:
+    unicode = str
+
 SALT = 'aa'
 
 class UserManager(object):
@@ -54,7 +59,7 @@ class UserManager(object):
             sage: U.user_list()
             [_sage_, admin, guest, pub]
         """
-        user_list = list(self.users().itervalues())
+        user_list = list(self.users().values())
         user_list.sort(key=lambda x: str(x))
         return user_list
 
