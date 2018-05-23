@@ -21,6 +21,14 @@ Check that github issue #195 is fixed::
 
 from pkg_resources import resource_filename
 
+try:
+    CRE = ConnectionRefusedError
+    PYTHON_VERSION = 3
+except NameError:
+    CRE = tuple
+    PYTHON_VERSION = 2
+
+
 def stub(f):
     def g(*args, **kwds):
         print("Stub: {}".format(f.func_name))
@@ -143,11 +151,14 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
             finally:
                 alarm(0)  # cancel alarm
         except socket.error as msg:
-            if msg[1] == 'Connection refused':
-                if verbose: print("Using port = %s" % port)
+            if ((PYTHON_VERSION == 2 and msg[1] == 'Connection refused')
+                    or (PYTHON_VERSION == 3 and isinstance(msg, CRE)):
+                if verbose:
+                    print("Using port = %s" % port)
                 return port
         except KeyboardInterrupt:
-            if verbose: print("alarm")
+            if verbose:
+                print("alarm")
             alarm_count += 1
             if alarm_count >= 10:
                  break

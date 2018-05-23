@@ -183,7 +183,7 @@ class FilesystemDatastore(Datastore):
     # The input filename is always relative to self._path.
     #########################################################################
     def _load(self, filename):
-        with open(self._abspath(filename)) as f:
+        with open(self._abspath(filename), 'rb') as f:
             result = pickle.load(f)
         return result
 
@@ -215,7 +215,7 @@ class FilesystemDatastore(Datastore):
         s = pickle.dumps(obj)
         if len(s) == 0:
             raise ValueError("Invalid Pickle")
-        with atomic_write(self._abspath(filename)) as f:
+        with atomic_write(self._abspath(filename), binary=True) as f:
             f.write(s)
 
     def _permissions(self, filename):
