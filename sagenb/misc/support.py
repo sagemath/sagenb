@@ -8,24 +8,14 @@ AUTHORS:
 
 - Nick Alexander
 """
+from six import iteritems
 
-import inspect
 import os
 import base64
 import string
 import sys
-import pydoc
 
-from six import iteritems
-import __builtin__
-
-try:
-    from cPickle import PicklingError
-except ImportError:
-    from pickle import PicklingError
-
-from .misc import loads, dumps, cython, session_init
-
+from .misc import cython, session_init
 from . import sageinspect
 
 try:
@@ -282,13 +272,14 @@ def docstring(obj_name, globs, system='sage'):
         pass
     s += '**Type:** %s'%type(obj)
     s += newline
-    s += '**Definition:** %s'%sageinspect.sage_getdef(obj, obj_name)
+    s += '**Definition:** %s' % sageinspect.sage_getdef(obj, obj_name)
     s += newline
     s += '**Docstring:**'
     s += newline
     s += sageinspect.sage_getdoc(obj, obj_name)
     s = s.rstrip()
     return html_markup(s.decode('utf-8'))
+
 
 def html_markup(s):
     try:
@@ -467,7 +458,7 @@ def cython_import(filename, verbose=False, compile_message=False,
                                             use_cache=use_cache,
                                             create_local_c_file=create_local_c_file)
     sys.path.append(build_dir)
-    return __builtin__.__import__(name)
+    return __import__(name)
 
 
 def cython_import_all(filename, globals, verbose=False, compile_message=False,
