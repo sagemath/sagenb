@@ -112,7 +112,7 @@ WARNING:
 from __future__ import unicode_literals
 
 from sgmllib import SGMLParser
-from htmlentitydefs import entitydefs
+from html.entities import entitydefs
 
 from flask import Markup
 from sagenb.misc.misc import unicode_str
