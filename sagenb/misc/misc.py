@@ -18,8 +18,16 @@ Check that github issue #195 is fixed::
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
-
+import sys
 from pkg_resources import resource_filename
+
+PYTHON_VERSION = sys.version[0]
+
+if PYTHON_VERSION == '3':
+    CRE = ConnectionRefusedError
+except NameError:
+    CRE = tuple
+
 
 def stub(f):
     def g(*args, **kwds):
@@ -143,11 +151,14 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
             finally:
                 alarm(0)  # cancel alarm
         except socket.error as msg:
-            if msg[1] == 'Connection refused':
-                if verbose: print("Using port = %s" % port)
+            if ((PYTHON_VERSION == '2' and msg[1] == 'Connection refused')
+                    or (PYTHON_VERSION == '3' and isinstance(msg, CRE)):
+                if verbose:
+                    print("Using port = %s" % port)
                 return port
         except KeyboardInterrupt:
-            if verbose: print("alarm")
+            if verbose:
+                print("alarm")
             alarm_count += 1
             if alarm_count >= 10:
                  break
