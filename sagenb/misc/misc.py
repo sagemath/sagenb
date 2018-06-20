@@ -25,7 +25,7 @@ PYTHON_VERSION = sys.version[0]
 
 if PYTHON_VERSION == '3':
     CRE = ConnectionRefusedError
-except NameError:
+else:
     CRE = tuple
 
 
@@ -152,7 +152,7 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
                 alarm(0)  # cancel alarm
         except socket.error as msg:
             if ((PYTHON_VERSION == '2' and msg[1] == 'Connection refused')
-                    or (PYTHON_VERSION == '3' and isinstance(msg, CRE)):
+                    or (PYTHON_VERSION == '3' and isinstance(msg, CRE))):
                 if verbose:
                     print("Using port = %s" % port)
                 return port
