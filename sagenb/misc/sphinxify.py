@@ -133,7 +133,7 @@ def sphinxify(docstring, format='html'):
         #    "/media/...path.../blah.png"
         # to
         #    "/doc/static/reference/media/...path.../blah.png"
-        output = re.sub("""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
+        output = re.sub(r"""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
                           'src="/doc/static/reference/media/\\2"',
                           output)
         # Remove spurious \(, \), \[, \].

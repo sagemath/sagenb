@@ -1465,7 +1465,6 @@ class Selector(InteractControl):
         vals = self.__values
         lbls = self.__labels
         default = self.__default
-        label = self.label()
         use_buttons = self.use_buttons()
         event = self.interact()
         if use_buttons:
