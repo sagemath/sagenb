@@ -44,6 +44,7 @@ INPUT:
 {% if readonly is defined and readonly %}
 <h1>{{ gettext('Account is read only.  You may download or delete worksheets or data.') }}</h1>
 {% endif %}
+<h3><a href="https://trac.sagemath.org/ticket/25837">{{ gettext('This notebook is deprecated. Click here for details.') }}</a></h3>
 <div id="user-main-controls" class="user-controls">
     {% if pub is not defined or not pub %}
     <a href="/new_worksheet" target="_blank">{{ gettext('New Worksheet') }}</a>
