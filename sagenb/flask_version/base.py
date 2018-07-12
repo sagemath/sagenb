@@ -447,7 +447,7 @@ def create_app(path_to_notebook, *args, **kwds):
     #this function must be modified to add per user language support
     @babel.localeselector
     def get_locale():
-        return g.notebook.conf()['default_language']
+        return notebook.conf()['default_language']
 
     ########################
     # Register the modules #
