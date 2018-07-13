@@ -490,9 +490,9 @@ def ignore_nonexistent_files(curdir, dirlist):
         sage: os.symlink(opj(s, 'bad'), opj(s, 'bad.txt'))
         sage: slist = sorted(os.listdir(s)); slist
         ['bad.txt', 'good.txt', 'hi.txt']
-        sage: map(lambda x: ope(opj(s, x)), slist)
+        sage: [ope(opj(s, x)) for x in slist]
         [False, True, True]
-        sage: map(lambda x: os.path.islink(opj(s, x)), slist)
+        sage: [os.path.islink(opj(s, x)) for x in slist]
         [True, True, False]
         sage: shutil.copytree(s, t)
         Traceback (most recent call last):
@@ -503,9 +503,9 @@ def ignore_nonexistent_files(curdir, dirlist):
         sage: shutil.copytree(s, t, ignore = ignore_nonexistent_files)
         sage: tlist = sorted(os.listdir(t)); tlist
         ['good.txt', 'hi.txt']
-        sage: map(lambda x: ope(opj(t, x)), tlist)
+        sage: [ope(opj(t, x)) for x in tlist]
         [True, True]
-        sage: map(lambda x: os.path.islink(opj(t, x)), tlist)  # Note!
+        sage: [os.path.islink(opj(t, x)) for x in tlist]  # Note!
         [False, False]
     """
     ignore = []
@@ -517,6 +517,7 @@ def ignore_nonexistent_files(curdir, dirlist):
 
 def translations_path():
     return os.path.join(SAGENB_ROOT, 'translations')
+
 
 def get_languages():
     from babel import Locale

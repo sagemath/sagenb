@@ -8,7 +8,7 @@ AUTHORS:
 
 - Nick Alexander
 """
-from six import iteritems
+from six import iteritems, text_type
 
 import os
 import base64
@@ -431,9 +431,9 @@ def syseval(system, cmd, dir=None):
     if dir:
         if hasattr(system.__class__, 'chdir'):
             system.chdir(dir)
-    if isinstance(cmd, unicode):
+    if isinstance(cmd, text_type):
         cmd = cmd.encode('utf-8', 'ignore')
-    return system.eval(cmd, sage_globals, locals = sage_globals)
+    return system.eval(cmd, sage_globals, locals=sage_globals)
 
 ######################################################################
 # Cython
