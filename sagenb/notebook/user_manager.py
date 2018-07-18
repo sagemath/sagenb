@@ -53,7 +53,7 @@ class UserManager(object):
     def user_list(self):
         """
         Return a sorted list of the users that have logged into the notebook.
-
+        
         EXAMPLES::
 
             sage: from sagenb.notebook.user_manager import SimpleUserManager
