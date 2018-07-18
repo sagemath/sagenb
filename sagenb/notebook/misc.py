@@ -55,14 +55,15 @@ def is_valid_username(username):
         sage: is_valid_username('dandrews@sagemath.org')
         True
     """
-    import string
+    from string import ascii_letters
 
-    if not (len(username) > 2 and len(username) < 65):
+    if not (2 < len(username) < 65):
         return False
-    if not username[0] in string.letters:
+    if not username[0] in ascii_letters:
         return False
     m = re_valid_username.match(username)
     return m.start() == 0 and m.end() == len(username)
+
 
 def is_valid_password(password, username):
     r"""
@@ -90,9 +91,10 @@ def is_valid_password(password, username):
     if len(password) < 4 or ' ' in password:
         return False
     if username:
-        if string.lower(username) in string.lower(password):
+        if username.lower() in password.lower():
             return False
     return True
+
 
 def do_passwords_match(pass1, pass2):
     """
@@ -113,9 +115,10 @@ re_valid_email = re.compile(r"""
     [a-z]+$                             # top-level domain is at least 1 char
 """ % {'unquoted': r"[a-z0-9!#$%&'*+\-/=?^_`{|}~]"}, re.IGNORECASE | re.VERBOSE)
 
+
 def is_valid_email(email):
     """
-    Validates an email address.  The implemention here is short, but
+    Validates an email address.  The implementation here is short, but
     it should cover the more common forms.  In particular, it
     allows "plus addresses," e.g.,
 

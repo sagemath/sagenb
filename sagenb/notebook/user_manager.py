@@ -52,8 +52,8 @@ class UserManager(object):
 
     def user_list(self):
         """
-        Returns a sorted list of the users that have logged into the notebook.
-
+        Return a sorted list of the users that have logged into the notebook.
+        
         EXAMPLES::
 
             sage: from sagenb.notebook.user_manager import SimpleUserManager
@@ -62,9 +62,7 @@ class UserManager(object):
             sage: U.user_list()
             [_sage_, admin, guest, pub]
         """
-        user_list = list(self.users().values())
-        user_list.sort(key=lambda x: str(x))
-        return user_list
+        return sorted(self.users().values(), key=str)
 
     def users(self):
         """
@@ -159,7 +157,7 @@ class UserManager(object):
             sage: u = U.usernames(); u.sort(); u
             ['_sage_', 'admin', 'guest', 'pub']
         """
-        return self.users().keys()
+        return list(self.users())
 
     def user_is_admin(self, username):
         """
