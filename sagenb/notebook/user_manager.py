@@ -13,7 +13,8 @@ SALT = 'aa'
 class UserManager(object):
     def __init__(self, accounts=False):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U == loads(dumps(U))
@@ -24,7 +25,8 @@ class UserManager(object):
 
     def __eq__(self, other):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U1 = SimpleUserManager()
             sage: U2 = SimpleUserManager(accounts=False)
@@ -50,18 +52,17 @@ class UserManager(object):
 
     def user_list(self):
         """
-        Returns a sorted list of the users that have logged into the notebook.
+        Return a sorted list of the users that have logged into the notebook.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
             sage: U.user_list()
             [_sage_, admin, guest, pub]
         """
-        user_list = list(self.users().values())
-        user_list.sort(key=lambda x: str(x))
-        return user_list
+        return sorted(self.users().values(), key=str)
 
     def users(self):
         """
@@ -71,7 +72,8 @@ class UserManager(object):
         Note that these are just the users that have logged into the notebook and are
         note necessarily all of the valid users.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -129,13 +131,14 @@ class UserManager(object):
 
     def user_exists(self, username):
         """
-        Returns True if and only if the user \emph{username} has signed in before.
+        Returns True if and only if the user ``username`` has signed in before.
 
         Note that this should not be used to check to see if a username is valid since 
         there are UserManager backends (such as LDAP) where we could have many valid usernames, but
         not all of them will have actually logged into the notebook.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -146,20 +149,22 @@ class UserManager(object):
 
     def usernames(self):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
             sage: u = U.usernames(); u.sort(); u
             ['_sage_', 'admin', 'guest', 'pub']
         """
-        return self.users().keys()
+        return list(self.users())
 
     def user_is_admin(self, username):
         """
         Returns True if the user username is an admin user.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -177,7 +182,8 @@ class UserManager(object):
         """
         Returns True if the user username is an gues user.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -196,7 +202,8 @@ class UserManager(object):
         Creates the default users (pub, _sage_, guest, and admin) in the current
         notebook.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -215,7 +222,8 @@ class UserManager(object):
         """
         Deletes the user username from the users dictionary.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -233,7 +241,8 @@ class UserManager(object):
         """        
         Returns the configuration dictionary for the user username.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -247,7 +256,8 @@ class UserManager(object):
         """
         Set whether or not accounts can be created for this notebook.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -265,7 +275,8 @@ class UserManager(object):
         """
         Get whether or not accounts can be created for this notebook.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('password')
@@ -288,7 +299,8 @@ class UserManager(object):
             email -- the email address
             account_type -- one of 'user', 'admin', or 'guest'
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.add_user('william', 'password', 'email@address.com', account_type='admin')
@@ -315,7 +327,8 @@ class UserManager(object):
         INPUT:
             user -- a User object 
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: from sagenb.notebook.user import User 
             sage: U = SimpleUserManager()
@@ -338,7 +351,8 @@ class UserManager(object):
 class SimpleUserManager(UserManager):
     def __init__(self, accounts=True, conf=None):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U == loads(dumps(U))
@@ -353,7 +367,8 @@ class SimpleUserManager(UserManager):
         """
         Sets the password of user to be the password of other_user.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: UM = SimpleUserManager(accounts=True)
             sage: UM.create_default_users('passpass')
@@ -380,7 +395,8 @@ class SimpleUserManager(UserManager):
         automatically create users for the usernames 'pub', '_sage_',
         'admin', and 'guest'.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.user('guest')
@@ -427,7 +443,8 @@ class SimpleUserManager(UserManager):
         
     def set_password(self, username, new_password, encrypt = True):
         """
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
@@ -455,7 +472,8 @@ class SimpleUserManager(UserManager):
         Return a dictionary whose keys are the usernames and whose values are
         the encrypted passwords associated to the user.
 
-        EXAMPLES:
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
@@ -473,7 +491,9 @@ class SimpleUserManager(UserManager):
     def password(self, username):
         """
         Return the stored password for username. Might be encrypted.
-        EXAMPLES:
+
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import SimpleUserManager
             sage: U = SimpleUserManager()
             sage: U.create_default_users('passpass')
@@ -569,7 +589,9 @@ class OpenIDUserManager(ExtAuthUserManager):
     def __init__(self, accounts=True, conf=None):
         """
         Creates an user_manager that supports OpenID identities
-        EXAMPLES:
+
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import OpenIDUserManager 
             sage: UM = OpenIDUserManager()
             sage: UM.create_default_users('passpass')
@@ -594,7 +616,9 @@ class OpenIDUserManager(ExtAuthUserManager):
     def get_username_from_openid(self, identity_url):
         """
         Return the username corresponding ot a given identity_url
-        EXAMPLES:
+
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import OpenIDUserManager
             sage: UM = OpenIDUserManager()
             sage: UM.create_default_users('passpass')
@@ -610,7 +634,9 @@ class OpenIDUserManager(ExtAuthUserManager):
     def create_new_openid(self, identity_url, username):
         """
         Create a new identity_url -- username pairing
-        EXAMPLES:
+
+        EXAMPLES::
+
             sage: from sagenb.notebook.user_manager import OpenIDUserManager
             sage: UM = OpenIDUserManager()
             sage: UM.create_default_users('passpass')
