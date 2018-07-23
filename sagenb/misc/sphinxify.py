@@ -11,20 +11,20 @@ AUTHORS:
 
 - Tim Joseph Dumol (2009-09-29): initial version
 """
-#**************************************************
+# **************************************************
 # Copyright (C) 2009 Tim Dumol <tim@timdumol.com>
 #
 # Distributed under the terms of the BSD License
-#**************************************************
+# **************************************************
 import os
 import re
 import shutil
 from tempfile import mkdtemp
 
+from sage.env import SAGE_DOC_SRC
+
 # We import Sphinx on demand, to reduce Sage startup time.
 Sphinx = None
-
-from sage.env import SAGE_DOC_SRC
 
 
 def is_sphinx_markup(docstring):
@@ -94,9 +94,8 @@ def sphinxify(docstring, format='html'):
         suffix = '.txt'
     output_name = base_name + suffix
 
-    filed = open(rst_name, 'w')
-    filed.write(docstring)
-    filed.close()
+    with open(rst_name, 'w') as filed:
+        filed.write(docstring)
 
     # Sphinx constructor: Sphinx(srcdir, confdir, outdir, doctreedir,
     # buildername, confoverrides, status, warning, freshenv).
@@ -119,9 +118,9 @@ def sphinxify(docstring, format='html'):
     sphinx_app.build(None, [rst_name])
     sys.path = old_sys_path
 
-    #We need to remove "_" from __builtin__ that the gettext module installs
-    import __builtin__
-    __builtin__.__dict__.pop('_', None)
+    # We need to remove "_" from __builtin__ that the gettext module installs
+    from six.moves import builtins
+    builtins.__dict__.pop('_', None)
 
     if os.path.exists(output_name):
         output = open(output_name, 'r').read()
@@ -134,8 +133,8 @@ def sphinxify(docstring, format='html'):
         # to
         #    "/doc/static/reference/media/...path.../blah.png"
         output = re.sub(r"""src=['"](/?\.\.)*/?media/([^"']*)['"]""",
-                          'src="/doc/static/reference/media/\\2"',
-                          output)
+                        'src="/doc/static/reference/media/\\2"',
+                        output)
         # Remove spurious \(, \), \[, \].
         output = output.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
     else:
@@ -310,12 +309,12 @@ if (os.environ.get('SAGE_DOC_MATHJAX', False)
     sagenb_path = working_set.find(Requirement.parse('sagenb')).location
     mathjax_relative = os.path.join('sagenb','data','mathjax')
 
-    # It would be really nice if sphinx would copy the entire mathjax directory, 
+    # It would be really nice if sphinx would copy the entire mathjax directory,
     # (so we could have a _static/mathjax directory), rather than the contents of the directory
 
     mathjax_static = os.path.join(sagenb_path, mathjax_relative)
     html_static_path.append(mathjax_static)
-    exclude_patterns=['**/'+os.path.join(mathjax_relative, i) for i in ('docs', 'README*', 'test', 
+    exclude_patterns=['**/'+os.path.join(mathjax_relative, i) for i in ('docs', 'README*', 'test',
                                                                         'unpacked', 'LICENSE')]
 else:
      extensions.append('sphinx.ext.pngmath')
@@ -595,7 +594,6 @@ def setup(app):
     app.connect('autodoc-skip-member', skip_member)
     '''
 
-
     # From SAGE_DOC_SRC/en/introspect/templates/layout.html:
     layout = r"""
 <div class="docstring">
@@ -609,6 +607,7 @@ def setup(app):
     open(os.path.join(directory, 'templates', 'layout.html'),
          'w').write(layout)
     open(os.path.join(directory, 'static', 'empty'), 'w').write('')
+
 
 if __name__ == '__main__':
     import sys
