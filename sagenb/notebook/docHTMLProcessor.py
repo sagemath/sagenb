@@ -7,7 +7,7 @@ file.
 
 This takes an HTML document, i.e., Sage documentation, and returns it in
 the editable format (notebook worksheet format with evaluable examples). It
-also returns a string representing the CSS link for the document.  The SGML
+also returns a string representing the CSS link for the document.  The HTML
 parser is setup to return only the body of the HTML documentation page and
 to re-format Sage examples and type-setting.
 
@@ -25,7 +25,7 @@ This module contains three classes:
 
 .. NOTE:: 
 
-    This extension of sgmllib.SGMLParser was partly inspired by Mark
+    This extension of htmllib.HTMLParser was partly inspired by Mark
     Pilgrim's 'Dive Into Python' examples.
 
 AUTHORS:
@@ -111,14 +111,14 @@ WARNING:
 #############################################################################
 from __future__ import unicode_literals
 
-from sgmllib import SGMLParser
+from html.parser import HTMLParser
 from html.entities import entitydefs
 
 from flask import Markup
 from sagenb.misc.misc import unicode_str
 
 
-class genericHTMLProcessor(SGMLParser):
+class genericHTMLProcessor(HTMLParser):
     r"""
     This class gathers the methods that are common to both classes
     :class:`sagenb.notebook.SphinxHTMLProcessor` and
@@ -155,16 +155,16 @@ class genericHTMLProcessor(SGMLParser):
             u'<h1 class="title">Title</h1>\n\n<p>nSome text</p>\n\n\n\n'
 
         """        
-        # self.feed() is a SGMLParser method and starts everything
+        # self.feed() is a HTMLParser method and starts everything
         # off; Most of the functions here are extensions to
-        # SGMLParser, and may never actually be visibly called here.
+        # HTMLParser, and may never actually be visibly called here.
 
         # This module works with unicode literals. In case that input data is
         # ascii, exceptions may occur. So, input data must be converted to
         # unicode if it were not.
         doc_in = unicode_str(doc_in)  
-        self.feed(doc_in) #SGMLParser call
-        self.close()     #SGMLParser call
+        self.feed(doc_in) #HTMLParser call
+        self.close()     #HTMLParser call
         self.hand_off_temp_pieces('to_doc_pieces')
         return self.all_pieces.replace('\\(', '').replace('\\)', '').replace('\\[', '').replace('\\]', '')
 
@@ -658,7 +658,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
     def reset(self):
         r"""
         Initialize necessary variables.  Called by
-        :meth:`SGMLParser.__init__`.
+        :meth:`HTMLParser.__init__`.
 
         EXAMPLES::
 
@@ -686,7 +686,7 @@ class SphinxHTMLProcessor(genericHTMLProcessor):
         # counters
         self.cellcount = 0
                 
-        SGMLParser.reset(self)
+        HTMLParser.reset(self)
 
     def false_positive_input_output_cell(self, cell_piece):
         r"""
@@ -1095,7 +1095,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
     def reset(self):
         r"""
         Initialize necessary variables.  Called by
-        :meth:`SGMLParser.__init__`.
+        :meth:`HTMLParser.__init__`.
 
         EXAMPLES::
 
@@ -1126,7 +1126,7 @@ class docutilsHTMLProcessor(genericHTMLProcessor):
         # counters
         self.cellcount = 0
                 
-        SGMLParser.reset(self)
+        HTMLParser.reset(self)
 
     def false_positive_input_output_cell(self, cell_piece):
         r"""
