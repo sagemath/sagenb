@@ -19,6 +19,7 @@ Check that github issue #195 is fixed::
 #                  http://www.gnu.org/licenses/
 #############################################################################
 import sys
+from six import text_type, binary_type
 from pkg_resources import resource_filename
 
 PYTHON_VERSION = sys.version[0]
@@ -426,6 +427,8 @@ def encoded_str(obj, encoding='utf-8'):
     r"""
     Takes an object and returns an encoded str human-readable representation.
 
+    string to bytes
+
     EXAMPLES::
 
         sage: from sagenb.misc.misc import encoded_str
@@ -436,13 +439,16 @@ def encoded_str(obj, encoding='utf-8'):
         sage: encoded_str(123)
         '123'
     """
-    if isinstance(obj, unicode):
+    if isinstance(obj, text_type):
         return obj.encode(encoding, 'ignore')
-    return str(obj)
+    return binary_type(obj)
+
 
 def unicode_str(obj, encoding='utf-8'):
     r"""
     Takes an object and returns a unicode human-readable representation.
+
+    (bytes or string) to string
 
     EXAMPLES::
 
@@ -454,12 +460,11 @@ def unicode_str(obj, encoding='utf-8'):
         sage: unicode_str(123)
         u'123'
     """
-    if isinstance(obj, str):
+    if isinstance(obj, binary_type):
         return obj.decode(encoding, 'ignore')
-    elif isinstance(obj, unicode):
+    elif isinstance(obj, text_type):
         return obj
-    return unicode(obj)
-        
+    return text_type(obj)
 
 
 def ignore_nonexistent_files(curdir, dirlist):
