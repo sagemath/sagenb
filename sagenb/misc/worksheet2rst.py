@@ -61,9 +61,9 @@ class States(object):
     RESULT_TO_BE_DROPPED = 3
 
 # REs for splitting comments, code and results
-START_CELL_RE = re.compile('^\{\{\{id=(\d*)\|')
-END_CODE_RE   = re.compile('^\/\/\/')
-END_CELL_RE   = re.compile('^\}\}\}')
+START_CELL_RE = re.compile(r'^\{\{\{id=(\d*)\|')
+END_CODE_RE   = re.compile(r'^\/\/\/')
+END_CELL_RE   = re.compile(r'^\}\}\}')
 
 #When to switch State, and which State to
 transitions = {

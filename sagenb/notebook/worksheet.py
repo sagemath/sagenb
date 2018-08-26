@@ -61,8 +61,8 @@ from flask_babel import gettext, lazy_gettext
 _ = gettext
 
 # Set some constants that will be used for regular expressions below.
-whitespace = re.compile('\s')  # Match any whitespace character
-non_whitespace = re.compile('\S')
+whitespace = re.compile(r'\s')  # Match any whitespace character
+non_whitespace = re.compile(r'\S')
 
 # The file to which the Sage code that will be evaluated is written.
 CODE_PY = "___code___.py"

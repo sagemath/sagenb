@@ -73,7 +73,7 @@ class JavaScriptCompressor:
 	__totalSources = 0
 	__sources = []
 	__delimeter = [{"name":"doublequote", "start":'"', "end":'"', "noslash":True}, {"name":"singlequote", "start":"'", "end":"'", "noslash":True}, {"name":"singlelinecomment", "start":"//", "end":["\n", "\r"]}, {"name":"multilinecomment", "start":"/*", "end":"*/"}, {"name":"regexp", "start":"/", "end":"/", "match":"^/[^\n\r]+/$", "noslash":True}]
-	__cleanFinder = ["(\n|\r)+", "( |\t)+", "(\n )|( \n)|( \n )", "\s+(\)|})", "(\(|{)\s+", "\s*(;|,|:|<|>|\&|\||\=|\?|\+|\-|\%)\s*", "\)\s+{", "}\s+\("]
+	__cleanFinder = [r"(\n|\r)+", r"( |\t)+", r"(\n )|( \n)|( \n )", r"\s+(\)|})", r"(\(|{)\s+", r"\s*(;|,|:|<|>|\&|\||\=|\?|\+|\-|\%)\s*", r"\)\s+{", r"}\s+\("]
 	__cleanReplacer = ["\n", " ", "\n", "\\1", "\\1", "\\1", "){", "}("]
 	__container = []
 	__BC = BaseConvert.BaseConvert("0123456789abcdefghijklmnopqrstuvwxyz")
@@ -113,7 +113,7 @@ class JavaScriptCompressor:
 			if type != "regexp":
 #				clean.append("\n")
 				pass
-		return re.sub("/(\n)+/", "\n", re.sub("/^\s*|\s*$/", "", "".join(clean)))
+		return re.sub("/(\n)+/", "\n", re.sub(r"/^\s*|\s*$/", "", "".join(clean)))
 	def __commonInitMethods(self, jsSource, packed):
 		header = ""
 		sources = ""
@@ -167,7 +167,7 @@ class JavaScriptCompressor:
 		return resultSize + " " + sizeType[times]
 	def __pack(self, str):
 		self.__container = []
-		str = self.__addslashes(re.sub("\w+", self.__doReplacement, self.__clean(str))).replace("\n", "\\n")
+		str = self.__addslashes(re.sub(r"\w+", self.__doReplacement, self.__clean(str))).replace("\n", "\\n")
 		return 'eval(function(A,G){return A.replace(/(\\w+)/g,function(a,b){return G[parseInt(b,36)]})}("' + str + '","' + ",".join(self.__container) + '".split(",")));'
 	def __setStats(self):
 		endTime = "%.3f" % ((time.clock() - self.__startTime) / 1000)
