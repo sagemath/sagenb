@@ -20,6 +20,7 @@ import shutil
 import textwrap
 import time
 from cgi import escape
+from sys import maxsize
 
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
@@ -705,9 +706,8 @@ class Cell(Cell_generic):
 
         # start with a random integer so that evaluations of the cell
         # from different runs have different version numbers.
-        from sys import maxint
         from random import randint
-        self._version = randint(0,maxint)
+        self._version = randint(0, maxsize)
 
     def __repr__(self):
         """
@@ -2193,9 +2193,8 @@ class Cell(Cell_generic):
         except AttributeError:
             # start with a random integer so that evaluations of the cell
             # from different runs have different version numbers.
-            from sys import maxint
             from random import randint
-            self._version = randint(0,maxint)
+            self._version = randint(0, maxsize)
             return self._version
 
     def time(self):
