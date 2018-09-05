@@ -541,7 +541,7 @@ try:
             return args[0].__getattribute__(str(self))(*args[1:], **kwds)
 
     def automatic_name_eval(s, globals, max_names=10000):
-        """
+        r"""
         Exec the string ``s`` in the scope of the ``globals``
         dictionary, and if any :exc:`NameError`\ s are raised, try to
         fix them by defining the variable that caused the error to be
@@ -549,9 +549,9 @@ try:
         
         INPUT:
 
-           - ``s`` -- a string
-           - ``globals`` -- a dictionary
-           - ``max_names`` -- a positive integer (default: 10000)
+        - ``s`` -- a string
+        - ``globals`` -- a dictionary
+        - ``max_names`` -- a positive integer (default: 10000)
         """
         # This entire automatic naming system really boils down to
         # this bit of code below.  We simply try to exec the string s
