@@ -869,23 +869,23 @@ def worksheet_publish(worksheet):
     if 'yes' in request.values and 'auto' in request.values:
         g.notebook.publish_worksheet(worksheet, g.username)
         worksheet.set_auto_publish(True)
-        return redirect(worksheet_publish.url_for(worksheet))
+        return redirect(url_for_worksheet(worksheet))
     # Just publishes worksheet
     elif 'yes' in request.values:
         g.notebook.publish_worksheet(worksheet, g.username)
-        return redirect(worksheet_publish.url_for(worksheet))
+        return redirect(url_for_worksheet(worksheet))
     # Stops publication of worksheet
     elif 'stop' in request.values:
         g.notebook.delete_worksheet(worksheet.published_version().filename())
-        return redirect(worksheet_publish.url_for(worksheet))
+        return redirect(url_for_worksheet(worksheet))
     # Re-publishes worksheet
     elif 're' in request.values:
         g.notebook.publish_worksheet(worksheet, g.username)
-        return redirect(worksheet_publish.url_for(worksheet))
+        return redirect(url_for_worksheet(worksheet))
     # Sets worksheet to be published automatically when saved
     elif 'auto' in request.values:
         worksheet.set_auto_publish(not worksheet.is_auto_publish())
-        return redirect(worksheet_publish.url_for(worksheet))
+        return redirect(url_for_worksheet(worksheet))
     # Returns boolean of "Is this worksheet set to be published automatically when saved?"
     elif 'is_auto' in request.values:
         return str(worksheet.is_auto_publish())
