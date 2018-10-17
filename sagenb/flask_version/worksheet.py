@@ -880,7 +880,7 @@ def worksheet_publish(worksheet):
         return redirect(worksheet_publish.url_for(worksheet))
     # Re-publishes worksheet
     elif 're' in request.values:
-        W = g.notebook.publish_worksheet(worksheet, g.username)
+        g.notebook.publish_worksheet(worksheet, g.username)
         return redirect(worksheet_publish.url_for(worksheet))
     # Sets worksheet to be published automatically when saved
     elif 'auto' in request.values:

@@ -10,10 +10,10 @@ from .decorators import global_lock
 # Make flask use the old session foo from <=flask-0.9
 from flask_oldsessions import OldSecureCookieSessionInterface
 
-from flask.ext.autoindex import AutoIndex
+from flask_autoindex import AutoIndex
 from sage.env import SAGE_SRC, SAGE_DOC
 SRC = os.path.join(SAGE_SRC, 'sage')
-from flask.ext.openid import OpenID
+from flask_openid import OpenID
 from flask_babel import Babel, gettext, ngettext, lazy_gettext, get_locale
 from sagenb.misc.misc import SAGENB_ROOT, DATA, translations_path, N_, nN_, unicode_str
 from json import dumps
@@ -447,7 +447,7 @@ def create_app(path_to_notebook, *args, **kwds):
     #this function must be modified to add per user language support
     @babel.localeselector
     def get_locale():
-        return g.notebook.conf()['default_language']
+        return notebook.conf()['default_language']
 
     ########################
     # Register the modules #

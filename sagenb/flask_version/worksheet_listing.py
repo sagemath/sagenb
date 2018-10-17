@@ -2,7 +2,14 @@
 """
 from __future__ import absolute_import
 import os
-import urllib, urlparse
+
+try:
+    from urllib.request import urlopen
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+    from urllib import urlopen
+
 from flask import Blueprint, url_for, render_template, request, session, redirect, g, current_app
 from .decorators import login_required, guest_or_login_required, with_lock
 from flask_babel import Babel, gettext, ngettext, lazy_gettext

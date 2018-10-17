@@ -20,6 +20,7 @@ import shutil
 import textwrap
 import time
 from cgi import escape
+from sys import maxsize
 
 from sagenb.misc.misc import (word_wrap, strip_string_literals,
                               set_restrictive_permissions, unicode_str,
@@ -440,9 +441,11 @@ class Cell_generic(object):
         return isinstance(self, Cell)
 
     def is_auto_cell(self):
-        """
-        Returns whether this is an automatically evaluated generic
-        cell.  This is always false for :class:`Cell_generic`\ s and
+        r"""
+        Return whether this is an automatically evaluated generic
+        cell.
+
+        This is always false for :class:`Cell_generic`\ s and
         :class:`TextCell`\ s.
 
         OUTPUT:
@@ -646,8 +649,10 @@ class TextCell(Cell_generic):
         return self._text
 
     def set_cell_output_type(self, typ='wrap'):
-        """
-        Sets this text cell's output type.  This does nothing for
+        r"""
+        Set this text cell's output type.
+
+        This does nothing for
         :class:`TextCell`\ s.
 
         INPUT:
@@ -701,9 +706,8 @@ class Cell(Cell_generic):
 
         # start with a random integer so that evaluations of the cell
         # from different runs have different version numbers.
-        from sys import maxint
         from random import randint
-        self._version = randint(0,maxint)
+        self._version = randint(0, maxsize)
 
     def __repr__(self):
         """
@@ -1320,8 +1324,8 @@ class Cell(Cell_generic):
         if len(s) == 0:
             return False
         s = s[0]
-        return bool(re.search('(?<!\w)interact\s*\(.*\).*', s) or
-                    re.search('\s*@\s*interact', s))
+        return bool(re.search(r'(?<!\w)interact\s*\(.*\).*', s) or
+                    re.search(r'\s*@\s*interact', s))
 
     def is_interacting(self):
         r"""
@@ -1344,8 +1348,8 @@ class Cell(Cell_generic):
         return hasattr(self, 'interact')
 
     def stop_interacting(self):
-        """
-        Stops :func:`sagenb.notebook.interact.interact`\ ion for this
+        r"""
+        Stop :func:`sagenb.notebook.interact.interact`\ ion for this
         compute cell.
 
         TODO: Add doctests.
@@ -2189,9 +2193,8 @@ class Cell(Cell_generic):
         except AttributeError:
             # start with a random integer so that evaluations of the cell
             # from different runs have different version numbers.
-            from sys import maxint
             from random import randint
-            self._version = randint(0,maxint)
+            self._version = randint(0, maxsize)
             return self._version
 
     def time(self):

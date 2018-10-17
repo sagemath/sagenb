@@ -18,8 +18,17 @@ Check that github issue #195 is fixed::
 #  The full text of the GPL is available at:
 #                  http://www.gnu.org/licenses/
 #############################################################################
-
+import sys
+from six import text_type, binary_type
 from pkg_resources import resource_filename
+
+PYTHON_VERSION = sys.version[0]
+
+if PYTHON_VERSION == '3':
+    CRE = ConnectionRefusedError
+else:
+    CRE = tuple
+
 
 def stub(f):
     def g(*args, **kwds):
@@ -143,11 +152,14 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
             finally:
                 alarm(0)  # cancel alarm
         except socket.error as msg:
-            if msg[1] == 'Connection refused':
-                if verbose: print("Using port = %s" % port)
+            if ((PYTHON_VERSION == '2' and msg[1] == 'Connection refused')
+                    or (PYTHON_VERSION == '3' and isinstance(msg, CRE))):
+                if verbose:
+                    print("Using port = %s" % port)
                 return port
         except KeyboardInterrupt:
-            if verbose: print("alarm")
+            if verbose:
+                print("alarm")
             alarm_count += 1
             if alarm_count >= 10:
                  break
@@ -415,6 +427,8 @@ def encoded_str(obj, encoding='utf-8'):
     r"""
     Takes an object and returns an encoded str human-readable representation.
 
+    string to bytes
+
     EXAMPLES::
 
         sage: from sagenb.misc.misc import encoded_str
@@ -425,13 +439,16 @@ def encoded_str(obj, encoding='utf-8'):
         sage: encoded_str(123)
         '123'
     """
-    if isinstance(obj, unicode):
+    if isinstance(obj, text_type):
         return obj.encode(encoding, 'ignore')
-    return str(obj)
+    return binary_type(obj)
+
 
 def unicode_str(obj, encoding='utf-8'):
     r"""
     Takes an object and returns a unicode human-readable representation.
+
+    (bytes or string) to string
 
     EXAMPLES::
 
@@ -443,12 +460,11 @@ def unicode_str(obj, encoding='utf-8'):
         sage: unicode_str(123)
         u'123'
     """
-    if isinstance(obj, str):
+    if isinstance(obj, binary_type):
         return obj.decode(encoding, 'ignore')
-    elif isinstance(obj, unicode):
+    elif isinstance(obj, text_type):
         return obj
-    return unicode(obj)
-        
+    return text_type(obj)
 
 
 def ignore_nonexistent_files(curdir, dirlist):
@@ -479,9 +495,9 @@ def ignore_nonexistent_files(curdir, dirlist):
         sage: os.symlink(opj(s, 'bad'), opj(s, 'bad.txt'))
         sage: slist = sorted(os.listdir(s)); slist
         ['bad.txt', 'good.txt', 'hi.txt']
-        sage: map(lambda x: ope(opj(s, x)), slist)
+        sage: [ope(opj(s, x)) for x in slist]
         [False, True, True]
-        sage: map(lambda x: os.path.islink(opj(s, x)), slist)
+        sage: [os.path.islink(opj(s, x)) for x in slist]
         [True, True, False]
         sage: shutil.copytree(s, t)
         Traceback (most recent call last):
@@ -492,9 +508,9 @@ def ignore_nonexistent_files(curdir, dirlist):
         sage: shutil.copytree(s, t, ignore = ignore_nonexistent_files)
         sage: tlist = sorted(os.listdir(t)); tlist
         ['good.txt', 'hi.txt']
-        sage: map(lambda x: ope(opj(t, x)), tlist)
+        sage: [ope(opj(t, x)) for x in tlist]
         [True, True]
-        sage: map(lambda x: os.path.islink(opj(t, x)), tlist)  # Note!
+        sage: [os.path.islink(opj(t, x)) for x in tlist]  # Note!
         [False, False]
     """
     ignore = []
@@ -506,6 +522,7 @@ def ignore_nonexistent_files(curdir, dirlist):
 
 def translations_path():
     return os.path.join(SAGENB_ROOT, 'translations')
+
 
 def get_languages():
     from babel import Locale

@@ -59,7 +59,7 @@ class Parser:
         'parent': r'(?:%s)?' % re.escape(PARENT_PREFIX),
     }
     url_rule = r'%(url_guard)s(%(url)s)\:([^\s\<%(punct)s]|([%(punct)s][^\s\<%(punct)s]))+' % {
-        'url_guard': u'(^|(?<!\w))',
+        'url_guard': ur'(^|(?<!\w))',
         'url': url_pattern,
         'punct': punct_pattern,
     }
@@ -953,7 +953,7 @@ class Parser:
         scan_re = re.compile(rules, re.UNICODE)
         number_re = re.compile(self.ol_rule, re.UNICODE)
         term_re = re.compile(self.dl_rule, re.UNICODE)
-        indent_re = re.compile("^\s*", re.UNICODE)
+        indent_re = re.compile(r"^\s*", re.UNICODE)
         eol_re = re.compile(r'\r?\n', re.UNICODE)
         self.request.clock.stop('compile_huge_and_ugly')        
 

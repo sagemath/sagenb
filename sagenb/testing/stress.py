@@ -4,7 +4,7 @@ import re
 from six.moves.urllib.request import urlopen
 
 from sage.misc.sage_timeit import sage_timeit
-from sagenb.misc.misc import walltime, cputime
+from sagenb.misc.misc import walltime
 from signal import alarm
 
 def cancel_alarm():

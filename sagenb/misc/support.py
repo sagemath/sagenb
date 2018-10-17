@@ -8,24 +8,14 @@ AUTHORS:
 
 - Nick Alexander
 """
+from six import iteritems, text_type
 
-import inspect
 import os
 import base64
 import string
 import sys
-import pydoc
 
-from six import iteritems
-import __builtin__
-
-try:
-    from cPickle import PicklingError
-except ImportError:
-    from pickle import PicklingError
-
-from .misc import loads, dumps, cython, session_init
-
+from .misc import cython, session_init
 from . import sageinspect
 
 try:
@@ -282,13 +272,14 @@ def docstring(obj_name, globs, system='sage'):
         pass
     s += '**Type:** %s'%type(obj)
     s += newline
-    s += '**Definition:** %s'%sageinspect.sage_getdef(obj, obj_name)
+    s += '**Definition:** %s' % sageinspect.sage_getdef(obj, obj_name)
     s += newline
     s += '**Docstring:**'
     s += newline
     s += sageinspect.sage_getdoc(obj, obj_name)
     s = s.rstrip()
     return html_markup(s.decode('utf-8'))
+
 
 def html_markup(s):
     try:
@@ -440,9 +431,9 @@ def syseval(system, cmd, dir=None):
     if dir:
         if hasattr(system.__class__, 'chdir'):
             system.chdir(dir)
-    if isinstance(cmd, unicode):
+    if isinstance(cmd, text_type):
         cmd = cmd.encode('utf-8', 'ignore')
-    return system.eval(cmd, sage_globals, locals = sage_globals)
+    return system.eval(cmd, sage_globals, locals=sage_globals)
 
 ######################################################################
 # Cython
@@ -467,7 +458,7 @@ def cython_import(filename, verbose=False, compile_message=False,
                                             use_cache=use_cache,
                                             create_local_c_file=create_local_c_file)
     sys.path.append(build_dir)
-    return __builtin__.__import__(name)
+    return __import__(name)
 
 
 def cython_import_all(filename, globals, verbose=False, compile_message=False,
@@ -550,7 +541,7 @@ try:
             return args[0].__getattribute__(str(self))(*args[1:], **kwds)
 
     def automatic_name_eval(s, globals, max_names=10000):
-        """
+        r"""
         Exec the string ``s`` in the scope of the ``globals``
         dictionary, and if any :exc:`NameError`\ s are raised, try to
         fix them by defining the variable that caused the error to be
@@ -558,9 +549,9 @@ try:
         
         INPUT:
 
-           - ``s`` -- a string
-           - ``globals`` -- a dictionary
-           - ``max_names`` -- a positive integer (default: 10000)
+        - ``s`` -- a string
+        - ``globals`` -- a dictionary
+        - ``max_names`` -- a positive integer (default: 10000)
         """
         # This entire automatic naming system really boils down to
         # this bit of code below.  We simply try to exec the string s

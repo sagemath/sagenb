@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
-"""nodoctest
+"""
+nodoctest
 """
 
 #############################################################################
@@ -14,18 +15,13 @@ from __future__ import print_function  # must be here !
 Sending mail using Twisted
 
 AUTHOR:
-    -- Bobby Moretti
+
+Bobby Moretti
 """
-
-
-from twisted.mail import smtp, relaymanager
-from twisted.internet import reactor, defer
+from twisted.mail import smtp, relaymanager  # problematic with python 3
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
-from email import encoders
 import sys
-import mimetypes
-import os
 
 
 def buildMessage(fromaddr, toaddr, subject, body):
