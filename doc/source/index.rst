@@ -54,14 +54,3 @@ Storage
 
    storage/abstract_storage
    storage/filesystem_storage
-
-.. Commented out, for now.
-
-   Interfaces
-   ----------
-
-   SKIP sagenb/interfaces/worksheet_process
-   SKIP sagenb/interfaces/reference
-   SKIP sagenb/interfaces/expect
-
-# .. include:: ../footer.txt
