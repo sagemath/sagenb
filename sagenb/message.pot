@@ -496,40 +496,44 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:69
+#: sagenb/data/sage/html/login.html:63
+msgid "This notebook is deprecated. Click here for details."
+msgstr ""
+
+#: sagenb/data/sage/html/login.html:70
 msgid "Username is not in the system"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:73
+#: sagenb/data/sage/html/login.html:74
 #: sagenb/data/sage/html/settings/user_management.html:13
 msgid "Password"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:76
+#: sagenb/data/sage/html/login.html:77
 msgid "Wrong password"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:80
+#: sagenb/data/sage/html/login.html:81
 msgid "Remember me"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:89
+#: sagenb/data/sage/html/login.html:90
 msgid "Sign up for a new Sage Notebook account"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:93
+#: sagenb/data/sage/html/login.html:94
 msgid "Browse published Sage worksheets<br>(no login required)"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:97
+#: sagenb/data/sage/html/login.html:98
 msgid "Forgot password"
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:104
+#: sagenb/data/sage/html/login.html:105
 msgid "Creating new users is disabled by the administrator."
 msgstr ""
 
-#: sagenb/data/sage/html/login.html:106
+#: sagenb/data/sage/html/login.html:107
 msgid "Javascript must be enabled in order to use the Sage Notebook."
 msgstr ""
 
