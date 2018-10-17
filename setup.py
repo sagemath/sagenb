@@ -40,7 +40,7 @@ install_requires = [
 
 
 setup(name='sagenb',
-          version     = '1.0.3',
+          version     = '1.0.4',
           description = 'The Sage Notebook',
           license     = 'GNU General Public License (GPL) v3+',
           author      = 'William Stein et al.',
