@@ -15,6 +15,7 @@ import sys, os
 from six.moves import range
 extensions = ['sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autodoc']
 master_doc = 'index'
+sys.path.append('../')
 
 # We use the main document's title, if we can find it.
 rst_file = open('index.rst', 'r')
