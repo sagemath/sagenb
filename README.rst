@@ -24,7 +24,8 @@ Installation
 ============
 
 Install Sage, then do ``sage -python setup.py install`` in the current
-directory. Then run the notebook from within Sage as follows::
+directory. Optionally, `cd doc/` and run `make html` to build documentation.
+Then run the notebook from within Sage as follows::
 
     sage: import sagenb.notebook.notebook_object as nb
     sage: nb.notebook(directory="mynotebook")
