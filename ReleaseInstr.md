@@ -76,6 +76,9 @@ in your local `SAGENB_ROOT`.
     ./sage -f sagenb  # if necessary to install the new sagenb
     ```
 
+1. Check that the documentation is installed in ``$SAGE_LOCAL/share/docs/sagenb``
+   by e.g. opening with a browser the URL ``file://$SAGE_LOCAL/share/docs/sagenb/index.html``.
+   
 1. (Optional) Check that the Selenium tests pass.
 
 1. (Optional) If you encounter errors or realize there was a mistake,
