@@ -1,3 +1,12 @@
+1.1.1       November 5 2018
+ - just of repackaging of 1.1.0 from the same sources
+ - in particular, remove the bundled mathjax
+
+1.1.0       October 18 2018
+ - deprecate the Sage Notebook
+ - build documentation
+ - various improvements towards Python 3 compatibility
+
 1.0.3       June 10 2018
  - fixed doctests for compatibility with sphinx 1.7.5
 
