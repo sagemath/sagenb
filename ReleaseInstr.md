@@ -22,7 +22,7 @@ in your local `SAGENB_ROOT`.
     cd SAGENB_ROOT
     git checkout master
     git fetch upstream
-    git rebase upstream/master  
+    git rebase upstream/master
     ```
 
 1. Edit `Changes` file to highlight the main changes. Edit `setup.py` to
@@ -39,7 +39,7 @@ in your local `SAGENB_ROOT`.
     +          version     = '0.10.8.3',
                description = 'The Sage Notebook',
                license     = 'GNU General Public License (GPL) v3+',
-               author      = 'William Stein et al.',                      
+               author      = 'William Stein et al.',
     ```
 
 1. Commit the updated version change.
@@ -63,7 +63,7 @@ in your local `SAGENB_ROOT`.
     ```sh
     cd SAGE_ROOT
     echo "<version>" > build/pkgs/sagenb/package-version.txt
-    ./sage --fix-pkg-checksums
+    ./sage --package fix-checksum sagenb
     ./sage -tp --long --sagenb  # test sagenb
     make ptestlong              # test sage
     ```
@@ -78,7 +78,7 @@ in your local `SAGENB_ROOT`.
 
 1. Check that the documentation is installed in ``$SAGE_LOCAL/share/docs/sagenb``
    by e.g. opening with a browser the URL ``file://$SAGE_LOCAL/share/docs/sagenb/index.html``.
-   
+
 1. (Optional) Check that the Selenium tests pass.
 
 1. (Optional) If you encounter errors or realize there was a mistake,
