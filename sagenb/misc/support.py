@@ -246,9 +246,10 @@ def docstring(obj_name, globs, system='sage'):
     TESTS:
 
     Check that Trac 10860 is fixed and we can handle Unicode help
-    strings in the notebook::
+    strings in the notebook, see also Trac 26906::
 
-        sage: from sagenb.misc.support import docstring
+        sage: from sagenb.misc.support import init, docstring
+        sage: init()
         sage: D = docstring("r.lm", globs=globals())
     """
     if system not in ['sage', 'python']:
