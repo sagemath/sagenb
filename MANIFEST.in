@@ -3,5 +3,6 @@ graft sass
 graft util
 prune sass/src/.sass-cache
 include *.txt *.rst *.md MANIFEST.in .gitignore dist.sh COPYING Changes
+recursive-include doc *
 prune .git
 global-exclude *.pyc *.pyo *.orig *.rej *~ \#* *\# *.sassc *.scssc *.DS_Store
