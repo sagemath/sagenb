@@ -1,3 +1,9 @@
+1.1.2       February 2 2019
+ - port to sphinx 1.8.3, simplified docbuilding code
+ - update to MANIFEST.in to bundle doc/ - needed by
+   new setuptools
+ - few more minor fixes
+
 1.1.1       November 5 2018
  - just of repackaging of 1.1.0 from the same sources
  - in particular, remove the bundled mathjax
