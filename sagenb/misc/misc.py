@@ -20,7 +20,7 @@ Check that github issue #195 is fixed::
 #############################################################################
 import sys
 from six import text_type, binary_type
-from pkg_resources import resource_filename
+from pkg_resources import resource_filename, Requirement, working_set
 
 PYTHON_VERSION = sys.version[0]
 
@@ -104,7 +104,7 @@ def print_open_msg(address, port, secure=False, path=""):
         s += ' '
     n = max(t+4, 50)
     k = n - t  - 1
-    j = k // 2 
+    j = k // 2
     msg = '┌' + '─' * (n - 2) + '┐\n'
     msg += '│' + ' ' * (n - 2) + '│\n'
     msg += '│' + ' ' * j + s + ' ' * j + '│\n'
@@ -142,7 +142,7 @@ def find_next_available_port(interface, start, max_tries=100, verbose=False):
     """
     from signal import alarm
 
-    alarm_count = 0  
+    alarm_count = 0
     for port in range(start, start+max_tries+1):
         try:
             try:
@@ -180,7 +180,7 @@ def open_page(address, port, secure, path=""):
 def pad_zeros(s, size=3):
     """
     EXAMPLES::
-    
+
         sage: pad_zeros(100)
         '100'
         sage: pad_zeros(10)
@@ -191,7 +191,7 @@ def pad_zeros(s, size=3):
         '00389'
         sage: pad_zeros(389, 10)
         '0000000389'
-    """    
+    """
     return "0"*(size-len(str(s))) + str(s)
 
 SAGENB_ROOT = os.path.split(resource_filename(__name__, ''))[0]
@@ -205,85 +205,27 @@ elif 'DOT_SAGE' in os.environ:
 else:
     DOT_SAGENB = os.path.join(os.environ['HOME'], '.sagenb')
 
-try:
-    from sage.env import SAGE_URL
-except ImportError:
-    SAGE_URL = 'http://sagemath.org'
+SAGE_URL = 'http://sagemath.org'
 
 
-# TODO: Get macros from server and user settings.
-try:
-    import sage.all
-    from sage.misc.latex_macros import sage_mathjax_macros
-    mathjax_macros = sage_mathjax_macros()
-except ImportError:
-    mathjax_macros = [
-        "ZZ : '{\\\\Bold{Z}}'",
-        "RR : '{\\\\Bold{R}}'",
-        "CC : '{\\\\Bold{C}}'",
-        "QQ : '{\\\\Bold{Q}}'",
-        "QQbar : '{\\\\overline{\\\\QQ}}'",
-        "GF : ['{\\\\Bold{F}_{#1}}', 1]",
-        "Zp : ['{\\\\ZZ_{#1}}', 1]",
-        "Qp : ['{\\\\QQ_{#1}}', 1]",
-        "Zmod : ['{\\\\ZZ/#1\\\\ZZ}', 1]",
-        "CIF : '{\\\\Bold{C}}'",
-        "CLF : '{\\\\Bold{C}}'",
-        "RDF : '{\\\\Bold{R}}'",
-        "RIF : '{\\\\Bold{I} \\\\Bold{R}}'",
-        "RLF : '{\\\\Bold{R}}'",
-        "CFF : '{\\\\Bold{CFF}}'",
-        "Bold : ['{\\\\mathbf{#1}}', 1]"
-        ]
-except Exception:
-    sage_mathjax_macros_easy = []
-    raise
-try:
-    from sage.misc.session import init as session_init
-except ImportError:
-    @stub
-    def session_init(*args, **kwds):
-        pass
-    
-try:
-    from sage.misc.sage_eval import sage_eval
-except ImportError:
-    def sage_eval(value, globs):
-        # worry about ^ and preparser -- this gets used in interact.py,
-        # which is a bit weird, but heh.
-        return eval(value, globs)
+import sage.all
+from sage.misc.latex_macros import sage_mathjax_macros
+mathjax_macros = sage_mathjax_macros()
+from sage.misc.session import init as session_init
+from sage.misc.sage_eval import sage_eval
+from sage.misc.viewer import browser
+from sage.structure.sage_object import loads, dumps, load, save
+from sage.misc.all import verbose
+from sage.version import version as SAGE_VERSION
+from sage.plot.colors import Color
+from sage.structure.element import is_Matrix
+from sage.misc.all import tmp_filename, tmp_dir
+from sage.misc.inline_fortran import InlineFortran
+from sage.misc.cython import cython
 
-try:
-    from sage.misc.package import is_package_installed
-except ImportError:
-    def is_package_installed(name, *args, **kwds):
-        return False
-
-try:
-    from sage.misc.viewer import browser
-except ImportError:
-    @stub
-    def browser():
-        return "open"
-
-try:
-    from sage.structure.sage_object import loads, dumps, load, save
-except ImportError:
-    loads = pickle.loads
-    dumps = pickle.dumps
-    def load(filename):
-        return pickle.loads(open(filename).read())
-    def save(obj, filename):
-        s = pickle.dumps(obj, protocol=2)
-        open(filename, 'wb').write(s)
-
-try:
-    from sage.misc.all import verbose
-except ImportError:
-    # TODO!
-    @stub
-    def verbose(*args, **kwds):
-        pass
+def register_with_cleaner(pid):
+    import sage.interfaces.cleaner
+    sage.interfaces.cleaner.cleaner(pid)  # register pid of forked process with cleaner
 
 
 ################################
@@ -296,7 +238,7 @@ def cputime(t=0):
         t = float(t)
     except TypeError:
         t = 0.0
-    u, s = resource.getrusage(resource.RUSAGE_SELF)[:2] 
+    u, s = resource.getrusage(resource.RUSAGE_SELF)[:2]
     return u + s - t
 
 def walltime(t=0):
@@ -329,82 +271,12 @@ def word_wrap(s, ncols=85):
     return '\n'.join(t)
 
 
-try:
-    from sage.repl.preparse import strip_string_literals
-except ImportError:
-    def strip_string_literals(code, state=None):
-        # todo -- do we need this?
-        return code
+from sage.repl.preparse import strip_string_literals
 
 try:
-    from pkg_resources import Requirement, working_set
     SAGENB_VERSION = working_set.find(Requirement.parse('sagenb')).version
 except AttributeError:
     SAGENB_VERSION = ""
-
-try:
-    import sage.version
-    SAGE_VERSION=sage.version.version
-except ImportError:
-    SAGE_VERSION=""
-
-try:
-    from sage.plot.colors import Color
-except ImportError:
-    class Color:
-        def __init__(self, *args, **kwds):
-            pass
-
-########################################
-# this is needed for @interact:
-# Color, sage_eval and is_Matrix
-# are imported from here in notebook/interact.py
-########################################
-
-def is_Matrix(x):
-    try:
-        from sage.structure.element import is_Matrix
-    except ImportError:
-        return False
-    return is_Matrix(x)
-
-
-def register_with_cleaner(pid):
-    try:
-        import sage.interfaces.cleaner
-        sage.interfaces.cleaner.cleaner(pid)  # register pid of forked process with cleaner
-    except ImportError:
-        print("generic cleaner needs to be written")
-
-try:
-    from sage.misc.all import tmp_filename, tmp_dir
-except ImportError:
-    def tmp_filename(name='tmp'):
-        # We use mktemp instead of mkstemp since the semantics of the
-        # tmp_filename function simply don't allow for what mkstemp
-        # provides.
-        import tempfile
-        return tempfile.mktemp()
-
-    def tmp_dir(name='dir'):
-        import tempfile
-        return tempfile.mkdtemp()
-
-
-try:
-    from sage.misc.inline_fortran import InlineFortran
-except ImportError:
-    @stub
-    def InlineFortran(*args, **kwds):
-        pass
-
-try:
-    from sage.misc.cython import cython
-except ImportError:
-    @stub
-    def cython(*args, **kwds):
-        # TODO
-        raise NotImplementedError("Curently %cython mode requires Sage.")
 
 #############################################################
 # File permissions
@@ -417,7 +289,7 @@ def set_restrictive_permissions(filename, allow_execute=False):
     if allow_execute:
         x = x | stat.S_IXGRP |  stat.S_IXOTH
     os.chmod(filename, x)
-    
+
 def set_permissive_permissions(filename):
     os.chmod(filename, stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH | \
              stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR | \

@@ -42,7 +42,6 @@ Miscellaneous
    misc/misc
    misc/support
    misc/introspect
-   misc/sageinspect
    misc/sphinxify
    notebook/docHTMLProcessor
 

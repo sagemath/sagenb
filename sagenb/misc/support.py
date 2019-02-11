@@ -16,32 +16,12 @@ import string
 import sys
 
 from .misc import cython, session_init
-from . import sageinspect
+from sage.misc import sageinspect
 
-try:
-    from sage.misc.sagedoc import format_src
-except ImportError:
-    # Fallback
-    def format_src(s, *args, **kwds):
-        return s
-
-try:
-    from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
-except ImportError as msg:
-    print(msg)
-    print("Sphinx docstrings not available.")
-    # Don't do any Sphinxifying if sphinx's dependencies aren't around
-    def sphinxify(s):
-        return s
-    def is_sphinx_markup(s):
-        return False
-
-try:
-    from sage.misc.displayhook import DisplayHook
-    sys.displayhook = DisplayHook()
-except ImportError as msg:
-    print(msg)
-    print('Graphics will not be shown automatically')
+from sage.misc.sagedoc import format_src
+from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
+from sage.misc.displayhook import DisplayHook
+sys.displayhook = DisplayHook()
 
 
 ######################################################################
@@ -60,31 +40,25 @@ def init(object_directory=None, globs={}):
     global EMBEDDED_MODE
 
     os.environ['PAGER'] = 'cat'
-    
+
     sage_globals = globs
     #globals_at_init = set(globs.keys())
     globals_at_init = globs.values()
     global_names_at_init = set(globs.keys())
     EMBEDDED_MODE = True
-    
+
     setup_systems(globs)
     session_init(globs)
 
     # Ugly cruft.  Initialize the embedded mode of the old Sage
     # notebook, which is going to be included in old copies of Sage
     # forever.
-    try:
-        import sage.server.support
-        sage.server.support.EMBEDDED_MODE = True
-    except ImportError:
-        pass
+    import sage.server.support
+    sage.server.support.EMBEDDED_MODE = True
     # Also initialize EMBEDDED_MODE in Sage's misc.sageinspect module,
     # which is used to format docstrings in the notebook.
-    try:
-        import sage.misc.sageinspect
-        sage.misc.sageinspect.EMBEDDED_MODE = True
-    except ImportError:
-        pass
+    import sage.misc.sageinspect
+    sage.misc.sageinspect.EMBEDDED_MODE = True
 
 
 def setup_systems(globs):
@@ -102,18 +76,18 @@ def help(obj):
     help is often more extensive than that given by 'obj?'.  This
     function does not return a value --- it prints HTML as a side
     effect.
-    
+
     .. note::
 
        This a wrapper around the built-in help. If formats the output
        as HTML without word wrap, which looks better in the notebook.
 
     INPUT:
-    
+
     -  ``obj`` - a Python object, module, etc.
-    
+
     TESTS::
-    
+
         sage: import numpy.linalg
         sage: current_dir = os.getcwd()
         sage: os.chdir(tmp_dir('server_doctest'))
@@ -138,14 +112,14 @@ def help(obj):
     open(filename, 'w').write(page)
     print("&nbsp;&nbsp;&nbsp;<a target='_new' href='cell://%s'>Click to open help window</a>&nbsp;&nbsp;&nbsp;" % filename)
     print('<br></font></tr></td></table></html>')
-    
+
 def get_rightmost_identifier(s):
     X = string.ascii_letters + string.digits + '._'
     i = len(s)-1
     while i >= 0 and s[i] in X:
         i -= 1
     return s[i+1:]
-    
+
 def completions(s, globs, format=False, width=90, system="None"):
     """
     Return a list of completions in the given context.
@@ -157,9 +131,9 @@ def completions(s, globs, format=False, width=90, system="None"):
 
     - ``format`` - a bool (default: False); whether to tabulate the
       list
-    
+
     - ``width`` - an int; character width of the table
-    
+
     - ``system`` - a string (default: 'None'); system prefix for the
       completions
 
@@ -178,7 +152,7 @@ def completions(s, globs, format=False, width=90, system="None"):
     try:
         if not '.' in s and not '(' in s:
             v = [x for x in globs.keys() if x[:n] == s] + \
-                [x for x in __builtins__.keys() if x[:n] == s] 
+                [x for x in __builtins__.keys() if x[:n] == s]
         else:
             if not ')' in s:
                 i = s.rfind('.')
@@ -209,19 +183,19 @@ def completions(s, globs, format=False, width=90, system="None"):
     if prepend:
         i = len(prepend)
         v = [x[i:] for x in v]
-        
+
     if format:
         if len(v) == 0:
             return "No completions of '%s' currently defined"%s
         else:
             return tabulate(v, width)
-    return v    
+    return v
 
 def docstring(obj_name, globs, system='sage'):
     r"""
     Format an object's docstring to process and display in the Sage
     notebook.
-    
+
     INPUT:
 
     - ``obj_name`` - a string; a name of an object
@@ -283,11 +257,7 @@ def docstring(obj_name, globs, system='sage'):
 
 
 def html_markup(s):
-    try:
-        from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
-    except ImportError:
-        # sphinx not available
-        def is_sphinx_markup(s): return False
+    from sagenb.misc.sphinxify import sphinxify, is_sphinx_markup
 
     if is_sphinx_markup(s):
         try:
@@ -311,7 +281,7 @@ def source_code(s, globs, system='sage'):
     r"""
     Format an object's source code to process and display in the
     Sage notebook.
-    
+
     INPUT:
 
     - ``s`` - a string; a name of an object
@@ -340,7 +310,7 @@ def source_code(s, globs, system='sage'):
         obj = eval(s, globs)
     except NameError:
         return html_markup("No object %s"%s)
-    
+
     try:
         try:
             return html_markup(obj._sage_src_())
@@ -363,11 +333,11 @@ def source_code(s, globs, system='sage'):
             output += newline
             output += src
         return html_markup(output)
-    
+
     except (TypeError, IndexError):
         return html_markup("Source code for {} is not available.".format(s) +
                            "\nUse {}? to see the documentation.".format(s))
-    
+
 
 def tabulate(v, width=90, ncols=3):
     e = len(v)
@@ -400,7 +370,7 @@ def syseval(system, cmd, dir=None):
     (e.g., python, gap).
 
     INPUT:
-        
+
     - ``system`` - an object with an eval method that takes an input
 
     - ``cmd`` - a string input
@@ -413,7 +383,7 @@ def syseval(system, cmd, dir=None):
     OUTPUT:
 
     - :func:`system.eval`'s output
-                  
+
     EXAMPLES::
 
         sage: from sage.misc.python import python
@@ -446,12 +416,12 @@ def cython_import(filename, verbose=False, compile_message=False,
     module.  Raises an ``ImportError`` if anything goes wrong.
 
     INPUT:
-    
+
     - ``filename`` - a string; name of a file that contains Cython
       code
-    
+
     OUTPUT:
-    
+
     - the module that contains the compiled Cython code.
     """
     name, build_dir = cython(filename, verbose=verbose,
@@ -474,7 +444,7 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
     Raises an ``ImportError`` exception if anything goes wrong.
 
     INPUT:
-    
+
     - ``filename`` - a string; name of a file that contains Cython
       code
     """
@@ -484,30 +454,18 @@ def cython_import_all(filename, globals, verbose=False, compile_message=False,
     for k, x in iteritems(m.__dict__):
         if k[0] != '_':
             globals[k] = x
-            
 
 
 ###################################################
 # Preparser
 ###################################################
-try:
-    from sage.repl.preparse import preparse, preparse_file
-    def do_preparse():
-        """
-        Return True if the preparser is set to on, and False otherwise.
-        """
-        import sage.repl.interpreter
-        return sage.repl.interpreter._do_preparse
-except ImportError:
-    def preparse(line, *args, **kwds):
-        return line
-    def preparse_file(contents, *args, **kwds):
-        return contents
-    def do_preparse():
-        """
-        Return True if the preparser is set to on, and False otherwise.
-        """
-        return False
+from sage.repl.preparse import preparse, preparse_file
+import sage.repl.interpreter
+def do_preparse():
+    """
+    Return True if the preparser is set to on, and False otherwise.
+    """
+    return sage.repl.interpreter._do_preparse
 
 
 ########################################################################
@@ -515,148 +473,144 @@ except ImportError:
 # Automatic Creation of Variable Names
 #
 # See the docstring for automatic_names below for an explanation of how
-# this works. 
+# this works.
 #
 ########################################################################
 
 _automatic_names = False
-# We wrap everything in a try/catch, in case this is being imported
-# without the sage library present, e.g., in FEMhub.
-try:
-    from sage.symbolic.all import Expression, SR
-    class AutomaticVariable(Expression):
+
+from sage.symbolic.all import Expression, SR
+class AutomaticVariable(Expression):
+    """
+    An automatically created symbolic variable with an additional
+    :meth:`__call__` method designed so that doing self(foo,...)
+    results in foo.self(...).
+    """
+    def __call__(self, *args, **kwds):
         """
-        An automatically created symbolic variable with an additional
-        :meth:`__call__` method designed so that doing self(foo,...)
-        results in foo.self(...).
+        Call method such that self(foo, ...) is transformed into
+        foo.self(...).  Note that self(foo=...,...) is not
+        transformed, it is treated as a normal symbolic
+        substitution.
         """
-        def __call__(self, *args, **kwds):
-            """
-            Call method such that self(foo, ...) is transformed into
-            foo.self(...).  Note that self(foo=...,...) is not
-            transformed, it is treated as a normal symbolic
-            substitution.
-            """
-            if len(args) == 0:
-                return Expression.__call__(self, **kwds)
-            return args[0].__getattribute__(str(self))(*args[1:], **kwds)
+        if len(args) == 0:
+            return Expression.__call__(self, **kwds)
+        return args[0].__getattribute__(str(self))(*args[1:], **kwds)
 
-    def automatic_name_eval(s, globals, max_names=10000):
-        r"""
-        Exec the string ``s`` in the scope of the ``globals``
-        dictionary, and if any :exc:`NameError`\ s are raised, try to
-        fix them by defining the variable that caused the error to be
-        raised, then eval again.  Try up to ``max_names`` times.
-        
-        INPUT:
+def automatic_name_eval(s, globals, max_names=10000):
+    r"""
+    Exec the string ``s`` in the scope of the ``globals``
+    dictionary, and if any :exc:`NameError`\ s are raised, try to
+    fix them by defining the variable that caused the error to be
+    raised, then eval again.  Try up to ``max_names`` times.
 
-        - ``s`` -- a string
-        - ``globals`` -- a dictionary
-        - ``max_names`` -- a positive integer (default: 10000)
-        """
-        # This entire automatic naming system really boils down to
-        # this bit of code below.  We simply try to exec the string s
-        # in the globals namespace, defining undefined variables and
-        # functions until everything is defined.
-        for _ in range(max_names):
-            try:
-                exec(s , globals)
-                return
-            except NameError as msg:
-                # Determine if we hit a NameError that is probably
-                # caused by a variable or function not being defined:
-                if len(msg.args) == 0: raise  # not NameError with
-                                              # specific variable name
-                v = msg.args[0].split("'")
-                if len(v) < 2: raise  # also not NameError with
-                                      # specific variable name We did
-                                      # find an undefined variable: we
-                                      # simply define it and try
-                                      # again.
-                nm = v[1]
-                globals[nm] = AutomaticVariable(SR, SR.var(nm))
-        raise NameError("Too many automatic variable names and functions created (limit=%s)" % max_names)
+    INPUT:
 
-    def automatic_name_filter(s):
-        """
-        Wrap the string ``s`` in a call that will cause evaluation of
-        ``s`` to automatically create undefined variable names.
+    - ``s`` -- a string
+    - ``globals`` -- a dictionary
+    - ``max_names`` -- a positive integer (default: 10000)
+    """
+    # This entire automatic naming system really boils down to
+    # this bit of code below.  We simply try to exec the string s
+    # in the globals namespace, defining undefined variables and
+    # functions until everything is defined.
+    for _ in range(max_names):
+        try:
+            exec(s , globals)
+            return
+        except NameError as msg:
+            # Determine if we hit a NameError that is probably
+            # caused by a variable or function not being defined:
+            if len(msg.args) == 0: raise  # not NameError with
+                                          # specific variable name
+            v = msg.args[0].split("'")
+            if len(v) < 2: raise  # also not NameError with
+                                  # specific variable name We did
+                                  # find an undefined variable: we
+                                  # simply define it and try
+                                  # again.
+            nm = v[1]
+            globals[nm] = AutomaticVariable(SR, SR.var(nm))
+    raise NameError("Too many automatic variable names and functions created (limit=%s)" % max_names)
 
-        INPUT:
+def automatic_name_filter(s):
+    """
+    Wrap the string ``s`` in a call that will cause evaluation of
+    ``s`` to automatically create undefined variable names.
 
-           - ``s`` -- a string
+    INPUT:
 
-        OUTPUT:
+       - ``s`` -- a string
 
-           - a string
-        """
-        return '_support_.automatic_name_eval(_support_.base64.b64decode("%s"),globals())'%base64.b64encode(s)
+    OUTPUT:
 
-    def automatic_names(state=None):
-        """
-        Turn automatic creation of variables and functional calling of
-        methods on or off.  Returns the current ``state`` if no
-        argument is given.
+       - a string
+    """
+    return '_support_.automatic_name_eval(_support_.base64.b64decode("%s"),globals())'%base64.b64encode(s)
 
-        This ONLY works in the Sage notebook.  It is not supported on
-        the command line.
+def automatic_names(state=None):
+    """
+    Turn automatic creation of variables and functional calling of
+    methods on or off.  Returns the current ``state`` if no
+    argument is given.
 
-        INPUT:
+    This ONLY works in the Sage notebook.  It is not supported on
+    the command line.
 
-        - ``state`` -- a boolean (default: None); whether to turn
-          automatic variable creation and functional calling on or off
+    INPUT:
 
-        OUTPUT:
+    - ``state`` -- a boolean (default: None); whether to turn
+      automatic variable creation and functional calling on or off
 
-        - a boolean, if ``state`` is None; otherwise, None
+    OUTPUT:
 
-        EXAMPLES::
+    - a boolean, if ``state`` is None; otherwise, None
 
-            sage: automatic_names(True)      # not tested
-            sage: x + y + z                  # not tested
-            x + y + z
+    EXAMPLES::
 
-        Here, ``trig_expand``, ``y``, and ``theta`` are all
-        automatically created::
-        
-            sage: trig_expand((2*x + 4*y + sin(2*theta))^2)   # not tested
-            4*(sin(theta)*cos(theta) + x + 2*y)^2
-           
-        IMPLEMENTATION: Here's how this works, internally.  We define
-        an :class:`AutomaticVariable` class derived from
-        :class:`~sage.symbolic.all.Expression`.  An instance of
-        :class:`AutomaticVariable` is a specific symbolic variable,
-        but with a special :meth:`~AutomaticVariable.__call__` method.
-        We overload the call method so that ``foo(bar, ...)`` gets
-        transformed to ``bar.foo(...)``.  At the same time, we still
-        want expressions like ``f^2 - b`` to work, i.e., we don't want
-        to have to figure out whether a name appearing in a
-        :exc:`NameError` is meant to be a symbolic variable or a
-        function name. Instead, we just make an object that is both!
+        sage: automatic_names(True)      # not tested
+        sage: x + y + z                  # not tested
+        x + y + z
 
-        This entire approach is very simple---we do absolutely no
-        parsing of the actual input.  The actual real work amounts to
-        only a few lines of code.  The primary catch to this approach
-        is that if you evaluate a big block of code in the notebook,
-        and the first few lines take a long time, and the next few
-        lines define 10 new variables, the slow first few lines will
-        be evaluated 10 times.  Of course, the advantage of this
-        approach is that even very subtle code that might inject
-        surprisingly named variables into the namespace will just work
-        correctly, which would be impossible to guarantee with static
-        parsing, no matter how sophisticated it is.  Finally, given
-        the target audience: people wanting to simplify use of Sage
-        for Calculus for undergrads, I think this is an acceptable
-        tradeoff, especially given that this implementation is so
-        simple.
-        """
-        global _automatic_names
-        if state is None:
-            return _automatic_names
-        _automatic_names = bool(state)
-        
-except ImportError:
-    pass
+    Here, ``trig_expand``, ``y``, and ``theta`` are all
+    automatically created::
+
+        sage: trig_expand((2*x + 4*y + sin(2*theta))^2)   # not tested
+        4*(sin(theta)*cos(theta) + x + 2*y)^2
+
+    IMPLEMENTATION: Here's how this works, internally.  We define
+    an :class:`AutomaticVariable` class derived from
+    :class:`~sage.symbolic.all.Expression`.  An instance of
+    :class:`AutomaticVariable` is a specific symbolic variable,
+    but with a special :meth:`~AutomaticVariable.__call__` method.
+    We overload the call method so that ``foo(bar, ...)`` gets
+    transformed to ``bar.foo(...)``.  At the same time, we still
+    want expressions like ``f^2 - b`` to work, i.e., we don't want
+    to have to figure out whether a name appearing in a
+    :exc:`NameError` is meant to be a symbolic variable or a
+    function name. Instead, we just make an object that is both!
+
+    This entire approach is very simple---we do absolutely no
+    parsing of the actual input.  The actual real work amounts to
+    only a few lines of code.  The primary catch to this approach
+    is that if you evaluate a big block of code in the notebook,
+    and the first few lines take a long time, and the next few
+    lines define 10 new variables, the slow first few lines will
+    be evaluated 10 times.  Of course, the advantage of this
+    approach is that even very subtle code that might inject
+    surprisingly named variables into the namespace will just work
+    correctly, which would be impossible to guarantee with static
+    parsing, no matter how sophisticated it is.  Finally, given
+    the target audience: people wanting to simplify use of Sage
+    for Calculus for undergrads, I think this is an acceptable
+    tradeoff, especially given that this implementation is so
+    simple.
+    """
+    global _automatic_names
+    if state is None:
+        return _automatic_names
+    _automatic_names = bool(state)
+
 
 from sagenb.misc.format import displayhook_hack
 
@@ -681,7 +635,7 @@ def preparse_worksheet_cell(s, globals):
 
         - a string
     """
-    if do_preparse(): 
+    if do_preparse():
         s = preparse_file(s, globals=globals)
     s = displayhook_hack(s)
     if _automatic_names:
