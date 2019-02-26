@@ -19,7 +19,9 @@ def lookup_current_user():
 
 
 @authentication.route('/login', methods=['POST', 'GET'])
-def login(template_dict={}):
+def login(template_dict=None):
+    if template_dict is None:
+        template_dict = {}
     from sagenb.misc.misc import SAGE_VERSION
     template_dict.update({'accounts': g.notebook.user_manager().get_accounts(),
                           'recovery': g.notebook.conf()['email'],
