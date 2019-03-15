@@ -2,13 +2,12 @@ from __future__ import absolute_import
 import re
 import os
 import threading
-import collections
 from functools import wraps
-from flask import Blueprint, make_response, url_for, render_template, request, session, redirect, g, current_app
-from .decorators import login_required, with_lock
+from flask import Blueprint, make_response, url_for, request, redirect, g, current_app
+from .decorators import login_required
 from collections import defaultdict
 from werkzeug.utils import secure_filename
-from flask_babel import Babel, gettext, ngettext, lazy_gettext
+from flask_babel import gettext
 _ = gettext
 
 from sagenb.notebook.interact import INTERACT_UPDATE_PREFIX
@@ -350,7 +349,6 @@ def worksheet_delete_cell(worksheet):
     if len(worksheet.compute_cell_id_list()) <= 1:
         r['command'] = 'ignore'
     else:
-        prev_id = worksheet.delete_cell_with_id(id)
         r['command'] = 'delete'
         r['prev_id'] = worksheet.delete_cell_with_id(id)
         r['cell_id_list'] = worksheet.cell_id_list()
@@ -675,7 +673,7 @@ def worksheet_jsmol_data(worksheet):
 
     current_app.logger.debug('JSmol call:  %s', call)
     current_app.logger.debug('JSmol query: %s', query)
-    if encoding == None:
+    if encoding is None:
         def encoder(x): 
             return x
     elif encoding == u'base64':
@@ -835,7 +833,6 @@ def worksheet_do_upload_data(worksheet):
 
     response = redirect(worksheet_datafile.url_for(worksheet, name=name))
 
-    import re
     matches = re.match("file://(?:localhost)?(/.+)", url)
     if matches:
         f = file(dest, 'wb')
