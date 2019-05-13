@@ -152,6 +152,7 @@ import math
 import types
 import collections
 from base64 import standard_b64decode
+from six.moves import range
 
 # Sage libraries
 from sagenb.misc.misc import sage_eval, Color, is_Matrix
@@ -1182,7 +1183,7 @@ class InputGrid(InteractControl):
         if type(default_value) != list:
             default_value = [[default_value for _ in range(columns)] for _ in range(rows)]
         elif not all(type(elt) == list for elt in default_value):
-            default_value = [[default_value[i * columns + j] for j in xrange(columns)] for i in xrange(rows)]
+            default_value = [[default_value[i * columns + j] for j in range(columns)] for i in range(rows)]
 
         self.__default_value_grid = default_value
 
@@ -2550,7 +2551,7 @@ def interact(f, layout=None, width='800px'):
 
     A random polygon::
 
-        sage: pts = [(random(), random()) for _ in xrange(20)]
+        sage: pts = [(random(), random()) for _ in range(20)]
         sage: @interact
         ....: def _(n = (4..len(pts)), c=Color('purple') ):
         ....:     G = points(pts[:n],pointsize=60) + polygon(pts[:n], rgbcolor=c)
@@ -2607,7 +2608,7 @@ def interact(f, layout=None, width='800px'):
         ....: def _(n=(500,(100,5000,1)), p=(1,(0.1,10))):
         ....:     n = int(n)
         ....:     if n not in data:
-        ....:         data[n] = [(random(), random()) for _ in xrange(n)]
+        ....:         data[n] = [(random(), random()) for _ in range(n)]
         ....:     show(points([(x^p,y^p) for x,y in data[n]], rgbcolor='black'), xmin=0, ymin=0, axes=False)
         <html>...
 
