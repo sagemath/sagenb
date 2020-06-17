@@ -8,7 +8,11 @@
 
 
 
-This is the standalone Sage Notebook.
+This is the standalone Sage Notebook - *retired*
+
+*the lifetime of web-based frontends is short, alas*
+*so long, and thanks for all the issues and PRs*
+*switch to e.g. jupyter - which is now the default web-based notebook for Sagemath*
 
 Most of the notebook does not depend on having Sage installed. Only
 a few miscellaneous functions are imported from Sage. We welcome help in
